@@ -1,0 +1,25 @@
+.header-bar {
+    background-color: #3d696a;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.header-bar__logo {
+    width: 45px;
+}
+
+.header-bar__title {
+    color: white;
+    margin: 0;
+    margin-left: 5px;
+}
+
+.header-bar__actions {
+    margin-left: auto;
+}
+
+.header-bar__icon {
+    color: white;
+}
