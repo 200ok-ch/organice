@@ -1,0 +1,17 @@
+.entry-header-bar {
+    background-color: #3d696a;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.entry-header-bar__logo {
+    width: 45px;
+}
+
+.entry-header-bar__title {
+    color: white;
+    margin: 0;
+    margin-left: 5px;
+}
