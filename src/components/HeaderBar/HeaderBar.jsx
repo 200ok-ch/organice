@@ -11,34 +11,32 @@ class HeaderBar extends Component {
     // TODO: "whats new" button
     // TODO: settings button
 
+    const { onSignInClick } = this.props;
+
     return (
       <div className="header-bar">
         <img className="header-bar__logo" src={logo} alt="Logo" width="45" height="45" />
         <h2 className="header-bar__title">org-web</h2>
 
         <div className="header-bar__actions">
+          {/* TODO: show this conditionally */}
+          <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>
+
           <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-github header-bar__icon" />
+            <i className="fab fa-github header-bar__actions__item" />
           </a>
         </div>
-
-        <span style={{color: 'white'}}>The value of a is {this.props.a}</span>
-        <button onClick={() => this.props.someAction()}>Press me!</button>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, props) => {
-  return {
-    a: state.auth.get('a'),
-  };
+  return {};
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    someAction: () => dispatch({type: 'test1', value: 2}),
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderBar);

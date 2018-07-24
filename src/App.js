@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import './base.css';
 
 import Entry from './components/Entry/Entry';
 

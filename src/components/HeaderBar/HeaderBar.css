@@ -18,8 +18,14 @@
 
 .header-bar__actions {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+
+    color: white;
 }
 
-.header-bar__icon {
+.header-bar__actions__item {
     color: white;
+
+    margin-left: 20px;
 }
