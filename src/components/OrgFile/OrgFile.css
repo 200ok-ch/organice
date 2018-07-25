@@ -1,0 +1,11 @@
+.org-file__parsing-error-message {
+    text-align: center;
+    font-size: 16px;
+
+    margin: 10px;
+}
+
+.org-file__btn {
+    margin: 10px;
+    text-align: center;
+}

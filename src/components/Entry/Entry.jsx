@@ -14,6 +14,7 @@ import HeaderBar from '../HeaderBar/HeaderBar';
 import Landing from '../Landing/Landing';
 import FileBrowser from '../FileBrowser/FileBrowser';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import OrgFile from '../OrgFile/OrgFile';
 
 import * as dropboxActions from '../../actions/dropbox';
 
@@ -39,7 +40,11 @@ class Entry extends PureComponent {
   }
 
   render() {
-    const { isAuthenticated, loadingMessage } = this.props;
+    const {
+      isAuthenticated,
+      loadingMessage,
+      isOrgFileDownloaded,
+    } = this.props;
 
     return (
       <div>
@@ -48,7 +53,11 @@ class Entry extends PureComponent {
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
         {isAuthenticated ? (
-          <FileBrowser />
+          isOrgFileDownloaded ? (
+            <OrgFile />
+          ) : (
+            <FileBrowser />
+          )
         ) : (
           <Landing onSignInClick={this.handleSignIn} />
         )}
@@ -60,6 +69,7 @@ class Entry extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
+    isOrgFileDownloaded: !!state.org.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
   };
 };
