@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
+import { readInitialState, subscribeToChanges } from './util/local_storage_persister';
 
 import './App.css';
 import './base.css';
@@ -11,7 +12,8 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.store = Store();
+    this.store = Store(readInitialState());
+    this.store.subscribe(subscribeToChanges(this.store));
   }
 
   render() {
