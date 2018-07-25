@@ -30,8 +30,7 @@ class FileBrowser extends Component {
       if (selectedFile.get('isDirectory')) {
         this.props.dropbox.getDirectoryListing(selectedFile.get('path'));
       } else {
-        // TODO: download the file.
-        console.log('normal file!');
+        this.props.dropbox.downloadFile(selectedFile.get('path'));
       }
     };
   }
@@ -67,8 +66,9 @@ class FileBrowser extends Component {
             const iconClass = classNames('fas', {
               'fa-folder': file.get('isDirectory'),
               'file-browser__file-list__icon--directory': file.get('isDirectory'),
-              'fa-file': !file.get('isDirectory'),
+              'fa-file': !file.get('isDirectory') && !file.get('name').endsWith('.org-web-bak'),
               'file-browser__file-list__icon--not-org': !file.get('name').endsWith('.org'),
+              'fa-copy': file.get('name').endsWith('.org-web-bak'),
             });
 
             return (

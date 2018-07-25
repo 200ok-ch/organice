@@ -42,3 +42,39 @@ export const getDirectoryListing = path => {
     });
   };
 };
+
+export const pushBackup = (path, contents) => {
+  return (dispatch, getState) => {
+    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+
+    dropbox.filesUpload({
+      path: `${path}.org-web-bak`,
+      contents,
+      mode: {
+        '.tag': 'overwrite',
+      },
+      autorename: true,
+    });
+  };
+};
+
+export const downloadFile = path => {
+  console.log("path = ", path);
+
+  return (dispatch, getState) => {
+    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+
+    dispatch(setLoadingMessage('Downloading file...'));
+
+    dropbox.filesDownload({ path }).then(response => {
+      const reader = new FileReader();
+      reader.addEventListener('loadend', () => {
+        // TODO: display the contents somehow.
+        console.log(reader.result);
+        dispatch(hideLoadingMessage());
+        dispatch(pushBackup(path, reader.result));
+      });
+      reader.readAsText(response.fileBlob);
+    });
+  };
+};
