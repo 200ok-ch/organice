@@ -14,6 +14,7 @@ import parseQueryString from '../../util/parse_query_string';
 
 import HeaderBar from '../HeaderBar/HeaderBar';
 import Landing from '../Landing/Landing';
+import FileBrowser from '../FileBrowser/FileBrowser';
 
 import * as dropboxActions from '../../actions/dropbox';
 
@@ -46,10 +47,10 @@ class Entry extends Component {
         <HeaderBar onSignInClick={this.handleSignIn} />
 
         {isAuthenticated ? (
-          'Signed in'
-          ) : (
-            <Landing onSignInClick={this.handleSignIn} />
-          )}
+          <FileBrowser />
+        ) : (
+          <Landing onSignInClick={this.handleSignIn} />
+        )}
       </div>
     );
   }
