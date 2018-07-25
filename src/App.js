@@ -12,7 +12,10 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.store = Store(readInitialState());
+    let initialState = readInitialState();
+    initialState.dropbox = initialState.dropbox.set('currentFileBrowserDirectoryPath', '');
+
+    this.store = Store(initialState);
     this.store.subscribe(subscribeToChanges(this.store));
   }
 

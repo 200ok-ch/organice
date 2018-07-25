@@ -1,0 +1,26 @@
+.file-browser__header {
+    margin: 5px;
+}
+
+.file-browser__file-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.file-browser__file-list__element {
+    border-top: 1px solid #D8D8D8;
+    padding: 10px;
+    font-family: Courier;
+}
+
+.file-browser__file-list__element:last-of-type {
+    border-bottom: 1px solid #D8D8D8;
+}
+
+.file-browser__file-list__icon--not-org {
+    color: lightgray;
+}
+
+.file-browser__file-list__icon--directory {
+    color: #3d696a;
+}
