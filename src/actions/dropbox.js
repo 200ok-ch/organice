@@ -2,6 +2,8 @@ import { Dropbox } from 'dropbox';
 
 import { fromJS } from 'immutable';
 
+import { setLoadingMessage, hideLoadingMessage } from './base';
+
 export const authenticate = accessToken => ({
   type: 'AUTHENTICATE',
   accessToken,
@@ -23,7 +25,7 @@ export const getDirectoryListing = path => {
   return (dispatch, getState) => {
     const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
 
-    // TODO: set a loading message
+    dispatch(setLoadingMessage('Getting listing...'));
     dropbox.filesListFolder({ path }).then(response => {
       const directoryListing = fromJS(response.entries.map(entry => ({
         id: entry.id,
@@ -33,8 +35,7 @@ export const getDirectoryListing = path => {
       })));
 
       dispatch(setCurrentFileBrowserDirectoryListing(path, directoryListing));
-
-      // TODO: remove the loading message.
+      dispatch(hideLoadingMessage());
     }).catch(error => {
       console.error('There was an error retrieving files!');
       console.error(error);

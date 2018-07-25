@@ -1,6 +1,6 @@
 /* global process */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -15,10 +15,11 @@ import parseQueryString from '../../util/parse_query_string';
 import HeaderBar from '../HeaderBar/HeaderBar';
 import Landing from '../Landing/Landing';
 import FileBrowser from '../FileBrowser/FileBrowser';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 
 import * as dropboxActions from '../../actions/dropbox';
 
-class Entry extends Component {
+class Entry extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -40,11 +41,13 @@ class Entry extends Component {
   }
 
   render() {
-    const { isAuthenticated } = this.props;
+    const { isAuthenticated, loadingMessage } = this.props;
 
     return (
       <div>
         <HeaderBar onSignInClick={this.handleSignIn} />
+
+        {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
         {isAuthenticated ? (
           <FileBrowser />
@@ -58,6 +61,7 @@ class Entry extends Component {
 
 const mapStateToProps = (state, props) => {
   return {
+    loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
   };
 };
