@@ -25,8 +25,6 @@ export const getDirectoryListing = path => {
 
     // TODO: set a loading message
     dropbox.filesListFolder({ path }).then(response => {
-      console.log("response = ", response);
-
       const directoryListing = fromJS(response.entries.map(entry => ({
         id: entry.id,
         name: entry.name,

@@ -4,13 +4,42 @@ import { bindActionCreators } from 'redux';
 
 import './FileBrowser.css';
 
+import _ from 'lodash';
+
 import classNames from 'classnames';
 
 import * as dropboxActions from '../../actions/dropbox';
 
 class FileBrowser extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, ['handleParentDirectoryClick']);
+  }
+
   componentDidMount() {
     this.props.dropbox.getDirectoryListing('');
+  }
+
+  handleFileListElementClick(fileId) {
+    return () => {
+      const { currentFileBrowserDirectoryListing } = this.props;
+
+      const selectedFile = currentFileBrowserDirectoryListing.find(file => file.get('id') === fileId);
+
+      if (selectedFile.get('isDirectory')) {
+        this.props.dropbox.getDirectoryListing(selectedFile.get('path'));
+      } else {
+        // TODO: download the file.
+        console.log('normal file!');
+      }
+    };
+  }
+
+  handleParentDirectoryClick() {
+    const pathParts = this.props.currentFileBrowserDirectoryPath.split('/');
+    const parentPath = pathParts.slice(0, pathParts.length - 1).join('/');
+    this.props.dropbox.getDirectoryListing(parentPath);
   }
 
   render() {
@@ -19,13 +48,21 @@ class FileBrowser extends Component {
       currentFileBrowserDirectoryListing,
     } = this.props;
 
+    const isTopLevelDirectory = currentFileBrowserDirectoryPath === '';
+
     return (
       <div>
         <h3 className="file-browser__header">
-          Directory: {currentFileBrowserDirectoryPath === '' ? '/' : currentFileBrowserDirectoryPath}
+          Directory: {isTopLevelDirectory ? '/' : currentFileBrowserDirectoryPath}
         </h3>
 
         <ul className="file-browser__file-list">
+          {!isTopLevelDirectory && (
+            <li className="file-browser__file-list__element" onClick={this.handleParentDirectoryClick}>
+              <i className="fas fa-folder file-browser__file-list__icon--directory" /> ..
+            </li>
+          )}
+
           {(currentFileBrowserDirectoryListing || []).map(file => {
             const iconClass = classNames('fas', {
               'fa-folder': file.get('isDirectory'),
@@ -35,7 +72,9 @@ class FileBrowser extends Component {
             });
 
             return (
-              <li className="file-browser__file-list__element" key={file.get('id')}>
+              <li className="file-browser__file-list__element"
+                  key={file.get('id')}
+                  onClick={this.handleFileListElementClick(file.get('id'))}>
                 <i className={iconClass} /> {file.get('name')}{file.get('isDirectory') ? '/' : ''}
               </li>
             );
