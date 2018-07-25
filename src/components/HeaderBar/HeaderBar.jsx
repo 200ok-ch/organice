@@ -11,7 +11,7 @@ class HeaderBar extends Component {
     // TODO: "whats new" button
     // TODO: settings button
 
-    const { onSignInClick } = this.props;
+    const { onSignInClick, isAuthenticated } = this.props;
 
     return (
       <div className="header-bar">
@@ -19,8 +19,7 @@ class HeaderBar extends Component {
         <h2 className="header-bar__title">org-web</h2>
 
         <div className="header-bar__actions">
-          {/* TODO: show this conditionally */}
-          <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>
+          {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
           <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-github header-bar__actions__item" />
@@ -32,7 +31,9 @@ class HeaderBar extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  return {};
+  return {
+    isAuthenticated: !!state.dropbox.get('accessToken'),
+  };
 };
 
 const mapDispatchToProps = dispatch => {

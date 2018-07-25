@@ -1,13 +1,8 @@
 import { Map } from 'immutable';
 
-const authenticate = (state, action) => {
-  console.log("state = ", state);
-
-  const r =  state.set('accessToken', action.accessToken);
-  console.log("r = ", r);
-
-  return r;
-};
+const authenticate = (state, action) => (
+  state.set('accessToken', action.accessToken)
+);
 
 const signOut = (state, action) => (
   state.set('accessToken', null)
