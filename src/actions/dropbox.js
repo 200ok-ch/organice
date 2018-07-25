@@ -3,6 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage } from './base';
+import { displayFile } from './org';
 
 export const authenticate = accessToken => ({
   type: 'AUTHENTICATE',
@@ -59,8 +60,6 @@ export const pushBackup = (path, contents) => {
 };
 
 export const downloadFile = path => {
-  console.log("path = ", path);
-
   return (dispatch, getState) => {
     const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
 
@@ -69,8 +68,7 @@ export const downloadFile = path => {
     dropbox.filesDownload({ path }).then(response => {
       const reader = new FileReader();
       reader.addEventListener('loadend', () => {
-        // TODO: display the contents somehow.
-        console.log(reader.result);
+        dispatch(displayFile(path, reader.result));
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, reader.result));
       });

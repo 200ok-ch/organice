@@ -4,8 +4,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import './Entry.css';
-
 import { Dropbox } from 'dropbox';
 
 import _ from 'lodash';
