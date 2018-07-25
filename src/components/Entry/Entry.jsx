@@ -1,8 +1,8 @@
 /* global process */
 
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import Store from '../../store';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './Entry.css';
 
@@ -10,15 +10,26 @@ import { Dropbox } from 'dropbox';
 
 import _ from 'lodash';
 
-import HeaderBar from '../HeaderBar/HeaderBar';
+import parseQueryString from '../../util/parse_query_string';
 
-export default class Entry extends Component {
+import HeaderBar from '../HeaderBar/HeaderBar';
+import Landing from '../Landing/Landing';
+
+import * as dropboxActions from '../../actions/dropbox';
+
+class Entry extends Component {
   constructor(props) {
     super(props);
 
-    this.store = Store();
-
     _.bindAll(this, ['handleSignIn']);
+  }
+
+  componentDidMount() {
+    const accessToken = parseQueryString(window.location.hash).access_token;
+    if (accessToken) {
+      this.props.dropbox.authenticate(accessToken);
+      window.location.hash = '';
+    }
   }
 
   handleSignIn() {
@@ -28,16 +39,32 @@ export default class Entry extends Component {
   }
 
   render() {
-    return (
-      <Provider store={this.store}>
-        <div>
-          <HeaderBar onSignInClick={this.handleSignIn} />
+    const { isAuthenticated } = this.props;
 
-          <br />
-          <br />
-          <div className="btn landing-button" onClick={this.handleSignIn}>Sign in</div>
-        </div>
-      </Provider>
+    return (
+      <div>
+        <HeaderBar onSignInClick={this.handleSignIn} />
+
+        {isAuthenticated ? (
+          'Signed in'
+          ) : (
+            <Landing onSignInClick={this.handleSignIn} />
+          )}
+      </div>
     );
   }
 }
+
+const mapStateToProps = (state, props) => {
+  return {
+    isAuthenticated: !!state.dropbox.get('accessToken'),
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dropbox: bindActionCreators(dropboxActions, dispatch),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Entry);
