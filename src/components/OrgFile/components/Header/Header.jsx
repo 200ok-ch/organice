@@ -5,6 +5,7 @@ import './Header.css';
 import classNames from 'classnames';
 
 import TitleLine from '../TitleLine/TitleLine';
+import HeaderContent from '../HeaderContent/HeaderContent';
 
 export default class Header extends PureComponent {
   render() {
@@ -25,7 +26,7 @@ export default class Header extends PureComponent {
                    color={color}
                    hasContent={hasContent}
                    isSelected={isSelected} />
-        {/* TODO: add in HeaderContent here. */}
+        <HeaderContent header={header} />
       </div>
     );
   }

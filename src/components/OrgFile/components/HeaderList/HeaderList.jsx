@@ -14,7 +14,7 @@ class HeaderList extends PureComponent {
       return {
         header,
         displayed: false,
-        hasContent: false,
+        hasContent: !!header.get('rawDescription'),
       };
     }).toArray();
 
