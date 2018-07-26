@@ -9,7 +9,7 @@ import classNames from 'classnames';
 
 import * as orgActions from '../../../../actions/org';
 
-import AttributedString from '../AttributedString/AttributedString';
+import AttributedString from '../AttributedString';
 
 class TitleLine extends PureComponent {
   constructor(props) {

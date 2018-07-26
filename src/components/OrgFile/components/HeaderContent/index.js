@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import './HeaderContent.css';
 
-import AttributedString from '../AttributedString/AttributedString';
+import AttributedString from '../AttributedString';
 
 class HeaderContent extends PureComponent {
   render() {

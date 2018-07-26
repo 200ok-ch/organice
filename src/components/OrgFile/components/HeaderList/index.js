@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import './HeaderList.css';
 
-import Header from '../Header/Header';
+import Header from '../Header';
 
 class HeaderList extends PureComponent {
   render() {

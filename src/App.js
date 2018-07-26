@@ -6,7 +6,7 @@ import { readInitialState, subscribeToChanges } from './util/local_storage_persi
 import './App.css';
 import './base.css';
 
-import Entry from './components/Entry/Entry';
+import Entry from './components/Entry';
 
 class App extends Component {
   constructor(props) {

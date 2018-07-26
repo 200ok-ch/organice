@@ -4,8 +4,8 @@ import './Header.css';
 
 import classNames from 'classnames';
 
-import TitleLine from '../TitleLine/TitleLine';
-import HeaderContent from '../HeaderContent/HeaderContent';
+import TitleLine from '../TitleLine';
+import HeaderContent from '../HeaderContent';
 
 export default class Header extends PureComponent {
   render() {

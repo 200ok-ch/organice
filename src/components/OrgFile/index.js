@@ -6,7 +6,7 @@ import './OrgFile.css';
 
 import _ from 'lodash';
 
-import HeaderList from './components/HeaderList/HeaderList';
+import HeaderList from './components/HeaderList';
 
 import * as orgActions from '../../actions/org';
 

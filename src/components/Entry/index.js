@@ -10,11 +10,11 @@ import _ from 'lodash';
 
 import parseQueryString from '../../util/parse_query_string';
 
-import HeaderBar from '../HeaderBar/HeaderBar';
-import Landing from '../Landing/Landing';
-import FileBrowser from '../FileBrowser/FileBrowser';
-import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
-import OrgFile from '../OrgFile/OrgFile';
+import HeaderBar from '../HeaderBar';
+import Landing from '../Landing';
+import FileBrowser from '../FileBrowser';
+import LoadingIndicator from '../LoadingIndicator';
+import OrgFile from '../OrgFile';
 
 import * as dropboxActions from '../../actions/dropbox';
 
