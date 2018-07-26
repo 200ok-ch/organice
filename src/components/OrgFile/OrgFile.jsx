@@ -6,6 +6,8 @@ import './OrgFile.css';
 
 import _ from 'lodash';
 
+import HeaderList from './components/HeaderList/HeaderList';
+
 import * as orgActions from '../../actions/org';
 
 class OrgFile extends PureComponent {
@@ -32,7 +34,7 @@ class OrgFile extends PureComponent {
             {' '}and include the org file if possible!
           </div>
         ) : (
-          <div>There are {headers.size} header(s)</div>
+          <HeaderList />
         )}
 
         <div className="btn org-file__btn" onClick={this.handleBackToFileBrowserClick}>

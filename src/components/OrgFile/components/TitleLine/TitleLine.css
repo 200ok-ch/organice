@@ -1,0 +1,29 @@
+.title-line {
+    margin-top: -18px;
+}
+
+.todo-keyword {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.todo-keyword--todo {
+    color: red;
+}
+
+.todo-keyword--done {
+    color: green;
+}
+
+.todo-keyword--none {
+    color: lightgray;
+}
+
+.header-tag {
+    background-color: white;
+    border: 1px solid lightgray;
+    padding: 1px 2px;
+    margin: 2px;
+    display: inline-block;
+    border-radius: 5px;
+}
