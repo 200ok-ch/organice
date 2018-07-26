@@ -1,12 +1,35 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './TitleLine.css';
 
+import _ from 'lodash';
 import classNames from 'classnames';
+
+import * as orgActions from '../../../../actions/org';
 
 import AttributedString from '../AttributedString/AttributedString';
 
-export default class TitleLine extends PureComponent {
+class TitleLine extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, ['handleTitleClick']);
+  }
+
+  handleTitleClick() {
+    const { header, hasContent } = this.props;
+
+    // TODO: update this to include the bit about being selected.
+    // TODO: start here: implement selection!
+    if (hasContent && !header.get('opened')) {
+      this.props.org.toggleHeaderOpened(header.get('id'));
+    }
+
+    // TODO: select the header here too.
+  }
+
   render() {
     const { header, color, hasContent } = this.props;
     const todoKeyword = header.get('todoKeyword');
@@ -17,7 +40,7 @@ export default class TitleLine extends PureComponent {
     };
 
     return (
-      <div className="title-line">
+      <div className="title-line" onClick={this.handleTitleClick}>
         {!!todoKeyword ? (
           <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}>
             {todoKeyword}
@@ -27,7 +50,7 @@ export default class TitleLine extends PureComponent {
         <div>
           <span style={titleStyle}>
             <AttributedString parts={header.getIn(['titleLine', 'title'])} />
-            {!header.get('opened') || hasContent ? '...' : ''}
+            {!header.get('opened') && hasContent ? '...' : ''}
           </span>
 
           {header.getIn(['titleLine', 'tags']).size > 0 && (
@@ -42,3 +65,15 @@ export default class TitleLine extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state, props) => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    org: bindActionCreators(orgActions, dispatch),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);
