@@ -8,7 +8,7 @@ import Header from '../Header/Header';
 
 class HeaderList extends PureComponent {
   render() {
-    const { headers } = this.props;
+    const { headers, selectedHeaderId } = this.props;
 
     const headerRenderData = headers.map(header => {
       return {
@@ -60,7 +60,8 @@ class HeaderList extends PureComponent {
             <Header key={header.get('id')}
                     header={header}
                     color={color}
-                    hasContent={headerRenderDatum.hasContent} />
+                    hasContent={headerRenderDatum.hasContent}
+                    isSelected={header.get('id') === selectedHeaderId} />
           );
         })}
       </div>
@@ -71,6 +72,7 @@ class HeaderList extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     headers: state.org.get('headers'),
+    selectedHeaderId: state.org.get('selectedHeaderId'),
   };
 };
 

@@ -37,6 +37,10 @@ const toggleHeaderOpened = (state, action) => {
   return state.setIn(['headers', headerIndex, 'opened'], !isOpened);
 };
 
+const selectHeader = (state, action) => {
+  return state.set('selectedHeaderId', action.headerId);
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -45,6 +49,8 @@ export default (state = new Map(), action) => {
     return stopDisplayingFile(state, action);
   case 'TOGGLE_HEADER_OPENED':
     return toggleHeaderOpened(state, action);
+  case 'SELECT_HEADER':
+    return selectHeader(state, action);
   default:
     return state;
   }

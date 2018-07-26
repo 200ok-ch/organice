@@ -19,15 +19,13 @@ class TitleLine extends PureComponent {
   }
 
   handleTitleClick() {
-    const { header, hasContent } = this.props;
+    const { header, hasContent, isSelected } = this.props;
 
-    // TODO: update this to include the bit about being selected.
-    // TODO: start here: implement selection!
-    if (hasContent && !header.get('opened')) {
+    if (hasContent && (!header.get('opened') || isSelected)) {
       this.props.org.toggleHeaderOpened(header.get('id'));
     }
 
-    // TODO: select the header here too.
+    this.props.org.selectHeader(header.get('id'));
   }
 
   render() {

@@ -5,3 +5,7 @@
     position: relative;
     overflowY: hidden;
 }
+
+.header--selected {
+    background-color: rgba(239, 255, 0, 0.28);
+}

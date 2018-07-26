@@ -11,3 +11,8 @@ export const toggleHeaderOpened = headerId => ({
   type: 'TOGGLE_HEADER_OPENED',
   headerId,
 });
+
+export const selectHeader = headerId => ({
+  type: 'SELECT_HEADER',
+  headerId
+});
