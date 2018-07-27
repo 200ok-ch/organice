@@ -30,7 +30,7 @@ class TitleLine extends PureComponent {
 
   render() {
     const { header, color, hasContent } = this.props;
-    const todoKeyword = header.get('todoKeyword');
+    const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
       color,

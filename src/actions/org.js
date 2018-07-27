@@ -1,6 +1,5 @@
 export const displayFile = (path, contents) => ({
-  type: 'DISPLAY_FILE',
-  path, contents,
+  type: 'DISPLAY_FILE', path, contents,
 });
 
 export const stopDisplayingFile = () => ({
@@ -8,11 +7,13 @@ export const stopDisplayingFile = () => ({
 });
 
 export const toggleHeaderOpened = headerId => ({
-  type: 'TOGGLE_HEADER_OPENED',
-  headerId,
+  type: 'TOGGLE_HEADER_OPENED', headerId,
 });
 
 export const selectHeader = headerId => ({
-  type: 'SELECT_HEADER',
-  headerId
+  type: 'SELECT_HEADER', headerId,
+});
+
+export const advanceTodoState = () => ({
+  type: 'ADVANCE_TODO_STATE',
 });

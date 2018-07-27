@@ -1,5 +1,6 @@
 .title-line {
     margin-top: -18px;
+    display: flex;
 }
 
 .todo-keyword {

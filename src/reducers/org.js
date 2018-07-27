@@ -41,6 +41,28 @@ const selectHeader = (state, action) => {
   return state.set('selectedHeaderId', action.headerId);
 };
 
+const advanceTodoState = (state, action) => {
+  const headerId = state.get('selectedHeaderId');
+  if (!headerId) {
+    return state;
+  }
+
+  const headers = state.get('headers');
+  const header = headerWithId(headers, headerId);
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+
+  const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
+  const currentTodoSet = state.get('todoKeywordSets').find(todoKeywordSet => (
+    todoKeywordSet.get('keywords').contains(currentTodoState)
+  )) || state.get('todoKeywordSets').first();
+
+  const currentStateIndex = currentTodoSet.get('keywords').indexOf(currentTodoState);
+  const newStateIndex = currentStateIndex + 1;
+  const newTodoState = currentTodoSet.get('keywords').get(newStateIndex) || '';
+
+  return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -51,6 +73,8 @@ export default (state = new Map(), action) => {
     return toggleHeaderOpened(state, action);
   case 'SELECT_HEADER':
     return selectHeader(state, action);
+  case 'ADVANCE_TODO_STATE':
+    return advanceTodoState(state, action);
   default:
     return state;
   }
