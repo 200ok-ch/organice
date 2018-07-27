@@ -7,7 +7,13 @@ import {
   parseLinks,
   newHeaderWithTitle,
 } from '../lib/parse_org';
-import { indexOfHeaderWithId, headerWithId, subheadersOfHeaderWithId } from '../lib/org_utils';
+import {
+  indexOfHeaderWithId,
+  headerWithId,
+  subheadersOfHeaderWithId,
+  indexOfPreviousSibling,
+  openDirectParent,
+} from '../lib/org_utils';
 
 const displayFile = (state, action) => {
   const parsedFile = parseOrg(action.contents);
@@ -134,6 +140,108 @@ const removeHeader = (state, action) => {
   return state.set('headers', headers);
 };
 
+const moveHeaderUp = (state, action) => {
+  let headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const previousSiblingIndex = indexOfPreviousSibling(headers, headerIndex);
+  if (previousSiblingIndex === null) {
+    return state;
+  }
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+  _.times(1 + subheaders.size).forEach(() => {
+    headers = headers.insert(previousSiblingIndex, headers.get(headerIndex + subheaders.size));
+    headers = headers.delete(headerIndex + subheaders.size + 1);
+  });
+
+  return state.set('headers', headers);
+};
+
+const moveHeaderDown = (state, action) => {
+  let headers = state.get('headers');
+  const header = headerWithId(headers, action.headerId);
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+  const nextSiblingIndex = headerIndex + subheaders.size + 1;
+  const nextSibling = headers.get(nextSiblingIndex);
+  if (nextSibling.get('nestingLevel') < header.get('nestingLevel')) {
+    return state;
+  }
+
+  const nextSiblingSubheaders = subheadersOfHeaderWithId(headers, nextSibling.get('id'));
+  _.times(1 + nextSiblingSubheaders.size).forEach(() => {
+    headers = headers.insert(headerIndex, headers.get(nextSiblingIndex + nextSiblingSubheaders.size));
+    headers = headers.delete(nextSiblingIndex + nextSiblingSubheaders.size + 1);
+  });
+
+  return state.set('headers', headers);
+};
+
+const moveHeaderLeft = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  return state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
+    Math.max(nestingLevel - 1, 1)
+  ));
+};
+
+const moveHeaderRight = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  state = state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
+    nestingLevel + 1
+  ));
+
+  return openDirectParent(state, action.headerId);
+};
+
+const moveSubtreeLeft = (state, action) => {
+  const headers = state.get('headers');
+  const header = headerWithId(headers, action.headerId);
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  if (header.get('nestingLevel') === 1) {
+    return state;
+  }
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+
+  state = state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
+    nestingLevel - 1
+  ));
+
+  subheaders.forEach((_, index) => {
+    state = state.updateIn(['headers', headerIndex + index + 1, 'nestingLevel'], nestingLevel => (
+      nestingLevel - 1
+    ));
+  });
+
+  return state;
+};
+
+const moveSubtreeRight = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+
+  state = state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
+    nestingLevel + 1
+  ));
+  subheaders.forEach((_, index) => {
+    state = state.updateIn(['headers', headerIndex + index + 1, 'nestingLevel'], nestingLevel => (
+      nestingLevel + 1
+    ));
+  });
+
+  return openDirectParent(state, action.headerId);
+};
+
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -164,6 +272,18 @@ export default (state = new Map(), action) => {
     return selectNextSiblingHeader(state, action);
   case 'REMOVE_HEADER':
     return removeHeader(state, action);
+  case 'MOVE_HEADER_UP':
+    return moveHeaderUp(state, action);
+  case 'MOVE_HEADER_DOWN':
+    return moveHeaderDown(state, action);
+  case 'MOVE_HEADER_LEFT':
+    return moveHeaderLeft(state, action);
+  case 'MOVE_HEADER_RIGHT':
+    return moveHeaderRight(state, action);
+  case 'MOVE_SUBTREE_LEFT':
+    return moveSubtreeLeft(state, action);
+  case 'MOVE_SUBTREE_RIGHT':
+    return moveSubtreeRight(state, action);
   default:
     return state;
   }

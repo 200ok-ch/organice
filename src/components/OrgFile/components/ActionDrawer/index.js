@@ -57,33 +57,27 @@ class ActionDrawer extends PureComponent {
   }
 
   handleMoveHeaderUpClick() {
-    // TODO:
-    console.log('handleMoveHeaderUpClick');
+    this.props.org.moveHeaderUp(this.props.selectedHeaderId);
   }
 
   handleMoveHeaderDownClick() {
-    // TODO:
-    console.log('handleMoveHeaderDownClick');
+    this.props.org.moveHeaderDown(this.props.selectedHeaderId);
   }
 
   handleMoveHeaderLeftClick() {
-    // TODO:
-    console.log('handleMoveHeaderLeftClick');
+    this.props.org.moveHeaderLeft(this.props.selectedHeaderId);
   }
 
   handleMoveHeaderRightClick() {
-    // TODO:
-    console.log('handleMoveHeaderRightClick');
+    this.props.org.moveHeaderRight(this.props.selectedHeaderId);
   }
 
   handleMoveSubtreeLeftClick() {
-    // TODO:
-    console.log('handleMoveSubtreeLeftClick');
+    this.props.org.moveSubtreeLeft(this.props.selectedHeaderId);
   }
 
   handleMoveSubtreeRightClick() {
-    // TODO:
-    console.log('handleMoveSubtreeRightClick');
+    this.props.org.moveSubtreeRight(this.props.selectedHeaderId);
   }
 
   handleUndoClick() {

@@ -40,3 +40,31 @@ export const directParentIdOfHeaderWithId = (headers, headerId) => {
 
   return null;
 };
+
+export const indexOfPreviousSibling = (headers, headerIndex) => {
+  const nestingLevel = headers.getIn([headerIndex, 'nestingLevel']);
+
+  for (let i = headerIndex - 1; i >= 0; --i) {
+    const header = headers.get(i);
+
+    if (header.get('nestingLevel') < nestingLevel) {
+      return null;
+    }
+
+    if (header.get('nestingLevel') === nestingLevel) {
+      return i;
+    }
+  }
+
+  return null;
+};
+
+export const openDirectParent = (state, headerId) => {
+  const parentHeaderId = directParentIdOfHeaderWithId(state.get('headers'), headerId);
+  if (parentHeaderId !== null) {
+    const parentHeaderIndex = indexOfHeaderWithId(state.get('headers'), parentHeaderId);
+    state = state.setIn(['headers', parentHeaderIndex, 'opened'], true);
+  }
+
+  return state;
+};

@@ -53,3 +53,27 @@ export const selectNextSiblingHeader = headerId => ({
 export const removeHeader = headerId => ({
   type: 'REMOVE_HEADER', headerId,
 });
+
+export const moveHeaderUp = headerId => ({
+  type: 'MOVE_HEADER_UP', headerId,
+});
+
+export const moveHeaderDown = headerId => ({
+  type: 'MOVE_HEADER_DOWN', headerId,
+});
+
+export const moveHeaderLeft = headerId => ({
+  type: 'MOVE_HEADER_LEFT', headerId,
+});
+
+export const moveHeaderRight = headerId => ({
+  type: 'MOVE_HEADER_RIGHT', headerId,
+});
+
+export const moveSubtreeLeft = headerId => ({
+  type: 'MOVE_SUBTREE_LEFT', headerId,
+});
+
+export const moveSubtreeRight = headerId => ({
+  type: 'MOVE_SUBTREE_RIGHT', headerId,
+});
