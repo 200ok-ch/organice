@@ -41,3 +41,11 @@ export const exitDescriptionEditMode = () => ({
 export const updateHeaderDescription = (headerId, newRawDescription) => ({
   type: 'UPDATE_HEADER_DESCRIPTION', headerId, newRawDescription,
 });
+
+export const addHeader = headerId => ({
+  type: 'ADD_HEADER', headerId,
+});
+
+export const selectNextSiblingHeader = headerId => ({
+  type: 'SELECT_NEXT_SIBLING_HEADER', headerId,
+});

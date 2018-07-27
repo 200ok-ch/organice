@@ -3,7 +3,8 @@
     margin-top: 5px;
     padding-top: 5px;
     position: relative;
-    overflowY: hidden;
+    overflow-y: hidden;
+    min-height: 23px;
 }
 
 .header--selected {

@@ -46,8 +46,9 @@ class ActionDrawer extends PureComponent {
   }
 
   handleAddHeaderClick() {
-    // TODO:
-    console.log('handleAddHeaderClick');
+    this.props.org.addHeader(this.props.selectedHeaderId);
+    this.props.org.selectNextSiblingHeader(this.props.selectedHeaderId);
+    this.props.org.enterTitleEditMode();
   }
 
   handleRemoveHeaderClick() {
@@ -140,6 +141,7 @@ const mapStateToProps = (state, props) => {
   return {
     inTitleEditMode: state.org.get('inTitleEditMode'),
     inDescriptionEditMode: state.org.get('inDescriptionEditMode'),
+    selectedHeaderId: state.org.get('selectedHeaderId'),
   };
 };
 

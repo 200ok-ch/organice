@@ -1,6 +1,11 @@
 import { Map } from 'immutable';
 
-import { parseOrg, parseTitleLine, parseLinks } from '../lib/parse_org';
+import {
+  parseOrg,
+  parseTitleLine,
+  parseLinks,
+  newHeaderWithTitle,
+} from '../lib/parse_org';
 import { indexOfHeaderWithId, headerWithId, subheadersOfHeaderWithId } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -83,6 +88,37 @@ const updateHeaderDescription = (state, action) => {
   ));
 };
 
+const addHeader = (state, action) => {
+  const headers = state.get('headers');
+  const header = headerWithId(headers, action.headerId);
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+
+  const newHeader = newHeaderWithTitle('',
+                                       header.get('nestingLevel'),
+                                       state.get('todoKeywordSets'));
+
+  return state.update('headers', headers => (
+    headers.insert(headerIndex + subheaders.size + 1, newHeader)
+  ));
+};
+
+const selectNextSiblingHeader = (state, action) => {
+  const headers = state.get('headers');
+  const header = headerWithId(headers, action.headerId);
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+
+  const nextSibling = headers.get(headerIndex + subheaders.size + 1);
+
+  if (!nextSibling || nextSibling.get('nestingLevel') !== header.get('nestingLevel')) {
+    return state;
+  }
+
+  return state.set('selectedHeaderId', nextSibling.get('id'));
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -107,6 +143,10 @@ export default (state = new Map(), action) => {
     return state.set('inDescriptionEditMode', false);
   case 'UPDATE_HEADER_DESCRIPTION':
     return updateHeaderDescription(state, action);
+  case 'ADD_HEADER':
+    return addHeader(state, action);
+  case 'SELECT_NEXT_SIBLING_HEADER':
+    return selectNextSiblingHeader(state, action);
   default:
     return state;
   }
