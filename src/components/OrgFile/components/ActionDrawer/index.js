@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -14,24 +14,132 @@ class ActionDrawer extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleAdvanceTodoClick']);
+    _.bindAll(this, [
+      'handleAdvanceTodoClick',
+      'handleEditTitleClick',
+      'handleEditDescriptionClick',
+      'handleAddHeaderClick',
+      'handleRemoveHeaderClick',
+      'handleMoveHeaderUpClick',
+      'handleMoveHeaderDownClick',
+      'handleMoveHeaderLeftClick',
+      'handleMoveHeaderRightClick',
+      'handleMoveSubtreeLeftClick',
+      'handleMoveSubtreeRightClick',
+      'handleUndoClick',
+      'handlePushClick',
+      'handlePullClick',
+      'handleDoneClick',
+    ]);
   }
 
   handleAdvanceTodoClick() {
     this.props.org.advanceTodoState();
   }
 
+  handleEditTitleClick() {
+    this.props.org.enterTitleEditMode();
+  }
+
+  handleEditDescriptionClick() {
+    // TODO:
+    console.log('handleEditDescriptionClick');
+  }
+
+  handleAddHeaderClick() {
+    // TODO:
+    console.log('handleAddHeaderClick');
+  }
+
+  handleRemoveHeaderClick() {
+    // TODO:
+    console.log('handleRemoveHeaderClick');
+  }
+
+  handleMoveHeaderUpClick() {
+    // TODO:
+    console.log('handleMoveHeaderUpClick');
+  }
+
+  handleMoveHeaderDownClick() {
+    // TODO:
+    console.log('handleMoveHeaderDownClick');
+  }
+
+  handleMoveHeaderLeftClick() {
+    // TODO:
+    console.log('handleMoveHeaderLeftClick');
+  }
+
+  handleMoveHeaderRightClick() {
+    // TODO:
+    console.log('handleMoveHeaderRightClick');
+  }
+
+  handleMoveSubtreeLeftClick() {
+    // TODO:
+    console.log('handleMoveSubtreeLeftClick');
+  }
+
+  handleMoveSubtreeRightClick() {
+    // TODO:
+    console.log('handleMoveSubtreeRightClick');
+  }
+
+  handleUndoClick() {
+    // TODO:
+    console.log('handleUndoClick');
+  }
+
+  handlePushClick() {
+    // TODO:
+    console.log('handlePushClick');
+  }
+
+  handlePullClick() {
+    // TODO:
+    console.log('handlePullClick');
+  }
+
+  handleDoneClick() {
+    this.props.org.exitTitleEditMode();
+  }
+
   render() {
+    const { inTitleEditMode } = this.props;
+
     return (
       <div className="action-drawer-container nice-scroll">
-        <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
+        {inTitleEditMode ? (
+          <button className="btn action-drawer__done-btn"
+                  onClick={this.handleDoneClick}>Done</button>
+        ) : (
+          <Fragment>
+            <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
+            <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />
+            <ActionButton iconName="edit" isDisabled={false} onClick={this.handleEditDescriptionClick} />
+            <ActionButton iconName="plus" isDisabled={false} onClick={this.handleAddHeaderClick} />
+            <ActionButton iconName="times" isDisabled={false} onClick={this.handleRemoveHeaderClick} />
+            <ActionButton iconName="arrow-up" isDisabled={false} onClick={this.handleMoveHeaderUpClick} />
+            <ActionButton iconName="arrow-down" isDisabled={false} onClick={this.handleMoveHeaderDownClick} />
+            <ActionButton iconName="arrow-left" isDisabled={false} onClick={this.handleMoveHeaderLeftClick} />
+            <ActionButton iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} />
+            <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} />
+            <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} />
+            <ActionButton iconName="undo" isDisabled={false} onClick={this.handleUndoClick} />
+            <ActionButton iconName="cloud-upload-alt" isDisabled={false} onClick={this.handlePushClick} />
+            <ActionButton iconName="cloud-download-alt" isDisabled={false} onClick={this.handlePullClick} />
+          </Fragment>
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, props) => {
-  return {};
+  return {
+    inTitleEditMode: state.org.get('inTitleEditMode'),
+  };
 };
 
 const mapDispatchToProps = dispatch => {

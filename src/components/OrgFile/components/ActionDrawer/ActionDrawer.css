@@ -17,3 +17,11 @@
 .action-drawer__btn {
     margin-right: 20px;
 }
+
+.action-drawer__done-btn {
+    font-weight: bold;
+
+    height: 60px;
+    width: 100%;
+    margin-left: -10px;
+}

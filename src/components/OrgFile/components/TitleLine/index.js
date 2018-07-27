@@ -15,7 +15,43 @@ class TitleLine extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleTitleClick']);
+    _.bindAll(this, [
+      'handleTitleClick',
+      'handleTextareaBlur',
+      'handleTitleChange',
+      'handleTitleFieldClick'
+    ]);
+
+    this.state = {
+      titleValue: this.calculateRawTitle(props.header),
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { header } = this.props;
+
+    if (this.props.inEditMode && !nextProps.inEditMode) {
+      this.props.org.updateHeaderTitle(header.get('id'), this.state.titleValue);
+    }
+
+    this.setState({ titleValue: this.calculateRawTitle(nextProps.header) });
+  }
+
+  calculateRawTitle(header) {
+    const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
+    const tags = header.getIn(['titleLine', 'tags']);
+
+    let titleValue = header.getIn(['titleLine', 'rawTitle']);
+
+    if (!!todoKeyword) {
+      titleValue = `${todoKeyword} ${titleValue}`;
+    }
+
+    if (!!tags && tags.size > 0) {
+      titleValue = `${titleValue} :${tags.join(':')}:`;
+    }
+
+    return titleValue;
   }
 
   handleTitleClick() {
@@ -28,8 +64,25 @@ class TitleLine extends PureComponent {
     this.props.org.selectHeader(header.get('id'));
   }
 
+  handleTextareaBlur() {
+    this.props.org.exitTitleEditMode();
+  }
+
+  handleTitleChange(event) {
+    this.setState({ titleValue: event.target.value });
+  }
+
+  handleTitleFieldClick(event) {
+    event.stopPropagation();
+  }
+
   render() {
-    const { header, color, hasContent } = this.props;
+    const {
+      header,
+      color,
+      hasContent,
+      inEditMode,
+    } = this.props;
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
@@ -39,33 +92,48 @@ class TitleLine extends PureComponent {
 
     return (
       <div className="title-line" onClick={this.handleTitleClick}>
-        {!!todoKeyword ? (
+        {!inEditMode && !!todoKeyword ? (
           <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}>
             {todoKeyword}
           </span>
         ) : ''}
 
-        <div>
-          <span style={titleStyle}>
-            <AttributedString parts={header.getIn(['titleLine', 'title'])} />
-            {!header.get('opened') && hasContent ? '...' : ''}
-          </span>
+        {inEditMode ? (
+          <textarea autoFocus
+                    className="textarea"
+                    rows="2"
+                    value={this.state.titleValue}
+                    onBlur={this.handleTextareaBlur}
+                    onChange={this.handleTitleChange}
+                    onClick={this.handleTitleFieldClick} />
+        ) : (
+          <div>
+            <span style={titleStyle}>
+              <AttributedString parts={header.getIn(['titleLine', 'title'])} />
+              {!header.get('opened') && hasContent ? '...' : ''}
+            </span>
 
-          {header.getIn(['titleLine', 'tags']).size > 0 && (
-            <div>
-              {header.getIn(['titleLine', 'tags']).toSet().toList().map(tag => (
-                <div className="header-tag" key={tag}>{tag}</div>
-              ))}
-            </div>
-          )}
-        </div>
+            {header.getIn(['titleLine', 'tags']).size > 0 && (
+              <div>
+                {header.getIn(['titleLine', 'tags']).toSet().toList().map(tag => (
+                  <div className="header-tag" key={tag}>{tag}</div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, props) => {
-  return {};
+  return {
+    inEditMode: (
+      state.org.get('inTitleEditMode') && state.org.get('selectedHeaderId') === props.header.get('id')
+    ),
+    selectedHeaderId: state.org.get('selectedHeaderId'),
+  };
 };
 
 const mapDispatchToProps = dispatch => {

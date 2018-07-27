@@ -17,3 +17,15 @@ export const selectHeader = headerId => ({
 export const advanceTodoState = () => ({
   type: 'ADVANCE_TODO_STATE',
 });
+
+export const enterTitleEditMode = () => ({
+  type: 'ENTER_TITLE_EDIT_MODE',
+});
+
+export const exitTitleEditMode = () => ({
+  type: 'EXIT_TITLE_EDIT_MODE',
+});
+
+export const updateHeaderTitle = (headerId, newRawTitle) => ({
+  type: 'UPDATE_HEADER_TITLE', headerId, newRawTitle,
+});
