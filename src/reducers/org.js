@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import _ from 'lodash';
 
 import {
   parseOrg,
@@ -119,6 +120,20 @@ const selectNextSiblingHeader = (state, action) => {
   return state.set('selectedHeaderId', nextSibling.get('id'));
 };
 
+const removeHeader = (state, action) => {
+  let headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+  const numHeadersToRemove = 1 + subheaders.size;
+
+  _.times(numHeadersToRemove).forEach(() => {
+    headers = headers.delete(headerIndex);
+  });
+
+  return state.set('headers', headers);
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -147,6 +162,8 @@ export default (state = new Map(), action) => {
     return addHeader(state, action);
   case 'SELECT_NEXT_SIBLING_HEADER':
     return selectNextSiblingHeader(state, action);
+  case 'REMOVE_HEADER':
+    return removeHeader(state, action);
   default:
     return state;
   }

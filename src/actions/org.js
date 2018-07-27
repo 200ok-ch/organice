@@ -49,3 +49,7 @@ export const addHeader = headerId => ({
 export const selectNextSiblingHeader = headerId => ({
   type: 'SELECT_NEXT_SIBLING_HEADER', headerId,
 });
+
+export const removeHeader = headerId => ({
+  type: 'REMOVE_HEADER', headerId,
+});
