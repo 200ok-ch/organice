@@ -241,6 +241,9 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
+const noOp = state => (
+  state.update('noOpCounter', counter => (counter || 0) + 1)
+);
 
 export default (state = new Map(), action) => {
   switch (action.type) {
@@ -284,6 +287,8 @@ export default (state = new Map(), action) => {
     return moveSubtreeLeft(state, action);
   case 'MOVE_SUBTREE_RIGHT':
     return moveSubtreeRight(state, action);
+  case 'NO_OP':
+    return noOp(state, action);
   default:
     return state;
   }

@@ -7,6 +7,7 @@ import './ActionDrawer.css';
 import _ from 'lodash';
 
 import * as orgActions from '../../../../actions/org';
+import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import ActionButton from './components/ActionButton';
 
@@ -31,6 +32,12 @@ class ActionDrawer extends PureComponent {
       'handlePullClick',
       'handleDoneClick',
     ]);
+  }
+
+  componentDidMount() {
+    // Send a no-op action to take care of the bug where redux-undo won't allow the first
+    // action to be undone.
+    this.props.org.noOp();
   }
 
   handleAdvanceTodoClick() {
@@ -81,8 +88,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handleUndoClick() {
-    // TODO:
-    console.log('handleUndoClick');
+    this.props.undo.undo();
   }
 
   handlePushClick() {
@@ -101,7 +107,7 @@ class ActionDrawer extends PureComponent {
   }
 
   render() {
-    const { inTitleEditMode, inDescriptionEditMode } = this.props;
+    const { inTitleEditMode, inDescriptionEditMode, historyCount } = this.props;
 
     return (
       <div className="action-drawer-container nice-scroll">
@@ -121,7 +127,7 @@ class ActionDrawer extends PureComponent {
             <ActionButton iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} />
             <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} />
             <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} />
-            <ActionButton iconName="undo" isDisabled={false} onClick={this.handleUndoClick} />
+            <ActionButton iconName="undo" isDisabled={historyCount <= 1} onClick={this.handleUndoClick} />
             <ActionButton iconName="cloud-upload-alt" isDisabled={false} onClick={this.handlePushClick} />
             <ActionButton iconName="cloud-download-alt" isDisabled={false} onClick={this.handlePullClick} />
           </Fragment>
@@ -133,15 +139,17 @@ class ActionDrawer extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    inTitleEditMode: state.org.get('inTitleEditMode'),
-    inDescriptionEditMode: state.org.get('inDescriptionEditMode'),
-    selectedHeaderId: state.org.get('selectedHeaderId'),
+    inTitleEditMode: state.org.present.get('inTitleEditMode'),
+    inDescriptionEditMode: state.org.present.get('inDescriptionEditMode'),
+    selectedHeaderId: state.org.present.get('selectedHeaderId'),
+    historyCount: state.org.past.length,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     org: bindActionCreators(orgActions, dispatch),
+    undo: bindActionCreators(undoActions, dispatch),
   };
 };
 

@@ -70,8 +70,8 @@ class HeaderList extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    headers: state.org.get('headers'),
-    selectedHeaderId: state.org.get('selectedHeaderId'),
+    headers: state.org.present.get('headers'),
+    selectedHeaderId: state.org.present.get('selectedHeaderId'),
   };
 };
 

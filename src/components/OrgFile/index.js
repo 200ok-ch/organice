@@ -50,7 +50,7 @@ class OrgFile extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    headers: state.org.get('headers'),
+    headers: state.org.present.get('headers'),
   };
 };
 

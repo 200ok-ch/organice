@@ -69,7 +69,7 @@ class Entry extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
-    isOrgFileDownloaded: !!state.org.get('path'),
+    isOrgFileDownloaded: !!state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
   };
 };

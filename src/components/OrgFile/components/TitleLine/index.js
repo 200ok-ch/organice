@@ -130,7 +130,7 @@ class TitleLine extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     inEditMode: (
-      state.org.get('inTitleEditMode') && state.org.get('selectedHeaderId') === props.header.get('id')
+      state.org.present.get('inTitleEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
   };
 };

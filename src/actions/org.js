@@ -77,3 +77,7 @@ export const moveSubtreeLeft = headerId => ({
 export const moveSubtreeRight = headerId => ({
   type: 'MOVE_SUBTREE_RIGHT', headerId,
 });
+
+export const noOp = () => ({
+  type: 'NO_OP',
+});
