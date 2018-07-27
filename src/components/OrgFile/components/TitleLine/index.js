@@ -132,7 +132,6 @@ const mapStateToProps = (state, props) => {
     inEditMode: (
       state.org.get('inTitleEditMode') && state.org.get('selectedHeaderId') === props.header.get('id')
     ),
-    selectedHeaderId: state.org.get('selectedHeaderId'),
   };
 };
 

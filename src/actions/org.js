@@ -29,3 +29,15 @@ export const exitTitleEditMode = () => ({
 export const updateHeaderTitle = (headerId, newRawTitle) => ({
   type: 'UPDATE_HEADER_TITLE', headerId, newRawTitle,
 });
+
+export const enterDescriptionEditMode = () => ({
+  type: 'ENTER_DESCRIPTION_EDIT_MODE',
+});
+
+export const exitDescriptionEditMode = () => ({
+  type: 'EXIT_DESCRIPTION_EDIT_MODE',
+});
+
+export const updateHeaderDescription = (headerId, newRawDescription) => ({
+  type: 'UPDATE_HEADER_DESCRIPTION', headerId, newRawDescription,
+});

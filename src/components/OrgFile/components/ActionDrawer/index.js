@@ -42,8 +42,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handleEditDescriptionClick() {
-    // TODO:
-    console.log('handleEditDescriptionClick');
+    this.props.org.enterDescriptionEditMode();
   }
 
   handleAddHeaderClick() {
@@ -103,14 +102,15 @@ class ActionDrawer extends PureComponent {
 
   handleDoneClick() {
     this.props.org.exitTitleEditMode();
+    this.props.org.exitDescriptionEditMode();
   }
 
   render() {
-    const { inTitleEditMode } = this.props;
+    const { inTitleEditMode, inDescriptionEditMode } = this.props;
 
     return (
       <div className="action-drawer-container nice-scroll">
-        {inTitleEditMode ? (
+        {(inTitleEditMode || inDescriptionEditMode) ? (
           <button className="btn action-drawer__done-btn"
                   onClick={this.handleDoneClick}>Done</button>
         ) : (
@@ -139,6 +139,7 @@ class ActionDrawer extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     inTitleEditMode: state.org.get('inTitleEditMode'),
+    inDescriptionEditMode: state.org.get('inDescriptionEditMode'),
   };
 };
 

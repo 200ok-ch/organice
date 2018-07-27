@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-import { parseOrg, parseTitleLine } from '../lib/parse_org';
+import { parseOrg, parseTitleLine, parseLinks } from '../lib/parse_org';
 import { indexOfHeaderWithId, headerWithId, subheadersOfHeaderWithId } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -72,6 +72,17 @@ const updateHeaderTitle = (state, action) => {
   return state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
 };
 
+const updateHeaderDescription = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  return state.updateIn(['headers', headerIndex], header => (
+    header
+      .set('rawDescription', action.newRawDescription)
+      .set('description', parseLinks(action.newRawDescription))
+  ));
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -90,6 +101,12 @@ export default (state = new Map(), action) => {
     return state.set('inTitleEditMode', false);
   case 'UPDATE_HEADER_TITLE':
     return updateHeaderTitle(state, action);
+  case 'ENTER_DESCRIPTION_EDIT_MODE':
+    return state.set('inDescriptionEditMode', true);
+  case 'EXIT_DESCRIPTION_EDIT_MODE':
+    return state.set('inDescriptionEditMode', false);
+  case 'UPDATE_HEADER_DESCRIPTION':
+    return updateHeaderDescription(state, action);
   default:
     return state;
   }
