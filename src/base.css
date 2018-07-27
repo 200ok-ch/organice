@@ -16,3 +16,7 @@
 .btn--disabled {
     background-color: lightgray;
 }
+
+.nice-scroll {
+    -webkit-overflow-scrolling: touch;
+}

@@ -7,6 +7,7 @@ import './OrgFile.css';
 import _ from 'lodash';
 
 import HeaderList from './components/HeaderList';
+import ActionDrawer from './components/ActionDrawer';
 
 import * as orgActions from '../../actions/org';
 
@@ -40,6 +41,8 @@ class OrgFile extends PureComponent {
         <div className="btn org-file__btn" onClick={this.handleBackToFileBrowserClick}>
           Back to file browser
         </div>
+
+        <ActionDrawer />
       </div>
     );
   }

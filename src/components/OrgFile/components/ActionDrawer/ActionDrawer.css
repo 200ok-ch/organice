@@ -1,0 +1,19 @@
+.action-drawer-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    border: 1px solid lightgray;
+    background-color: white;
+    box-shadow: 2px 2px 5px 0px rgba(148, 148, 148, 0.75);
+    padding-bottom: 6px;
+    padding-top: 6px;
+    padding-left: 20px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.action-drawer__btn {
+    margin-right: 20px;
+}
