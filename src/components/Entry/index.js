@@ -25,8 +25,6 @@ class Entry extends PureComponent {
   constructor(props) {
     super(props);
 
-    console.log(process.env);
-
     _.bindAll(this, [
       'handleSignIn',
       'handleViewSample',

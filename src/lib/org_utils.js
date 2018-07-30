@@ -68,3 +68,58 @@ export const openDirectParent = (state, headerId) => {
 
   return state;
 };
+
+export const getOpenHeaderPaths = headers => {
+  let openedHeaders = [];
+  for (let i = 0; i < headers.size; ++i) {
+    const header = headers.get(i);
+    if (!header.get('opened')) {
+      continue;
+    }
+
+    const title = header.getIn(['titleLine', 'rawTitle']);
+
+    const subheaders = subheadersOfHeaderWithId(headers, header.get('id'));
+    const openSubheaderPaths = getOpenHeaderPaths(subheaders);
+
+    if (openSubheaderPaths.length > 0) {
+      openSubheaderPaths.forEach(openedSubheaderPath => {
+        openedHeaders.push([title].concat(openedSubheaderPath));
+      });
+    } else {
+      openedHeaders.push([title]);
+    }
+
+    i += subheaders.size;
+  }
+
+  return openedHeaders;
+};
+
+export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => {
+  if (headerPath.size === 0) {
+    return headers;
+  }
+
+  const firstTitle = headerPath.first();
+  const headerIndex = headers.findIndex(header => {
+    const rawTitle = header.getIn(['titleLine', 'rawTitle']);
+    const nestingLevel = header.get('nestingLevel');
+    return rawTitle === firstTitle && nestingLevel <= maxNestingLevel;
+  });
+  if (headerIndex === -1) {
+    return headers;
+  }
+
+  headers = headers.update(headerIndex, header => header.set('opened', true));
+
+  let subheaders = subheadersOfHeaderWithId(headers, headers.getIn([headerIndex, 'id']));
+  subheaders = openHeaderWithPath(subheaders, headerPath.rest(), maxNestingLevel + 1);
+
+  headers = headers
+    .take(headerIndex + 1)
+    .concat(subheaders)
+    .concat(headers.takeLast(headers.size - (headerIndex + 1 + subheaders.size)));
+
+  return headers;
+};

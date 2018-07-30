@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage } from './base';
-import { displayFile } from './org';
+import { displayFile, applyOpennessState } from './org';
 
 import exportOrg from '../lib/export_org';
 
@@ -75,6 +75,7 @@ export const downloadFile = path => {
       const reader = new FileReader();
       reader.addEventListener('loadend', () => {
         dispatch(displayFile(path, reader.result));
+        dispatch(applyOpennessState());
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, reader.result));
       });

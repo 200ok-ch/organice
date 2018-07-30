@@ -13,6 +13,7 @@ import {
   subheadersOfHeaderWithId,
   indexOfPreviousSibling,
   openDirectParent,
+  openHeaderWithPath,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -245,6 +246,25 @@ const noOp = state => (
   state.update('noOpCounter', counter => (counter || 0) + 1)
 );
 
+const applyOpennessState = (state, action) => {
+  const opennessState = state.get('opennessState');
+  if (!opennessState) {
+    return state;
+  }
+
+  const fileOpennessState = opennessState.get(state.get('path'));
+  if (!fileOpennessState || fileOpennessState.size === 0) {
+    return state;
+  }
+
+  let headers = state.get('headers');
+  fileOpennessState.forEach(openHeaderPath => {
+    headers = openHeaderWithPath(headers, openHeaderPath);
+  });
+
+  return state.set('headers', headers);
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'DISPLAY_FILE':
@@ -289,6 +309,8 @@ export default (state = new Map(), action) => {
     return moveSubtreeRight(state, action);
   case 'NO_OP':
     return noOp(state, action);
+  case 'APPLY_OPENNESS_STATE':
+    return applyOpennessState(state, action);
   default:
     return state;
   }

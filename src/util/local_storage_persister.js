@@ -1,4 +1,6 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
+
+import { getOpenHeaderPaths } from '../lib/org_utils';
 
 const isLocalStorageAvailable = () => {
   try {
@@ -57,6 +59,11 @@ const fields = [
   }
 ];
 
+export const readOpennessState = () => {
+  const opennessStateJSONString = localStorage.getItem('headerOpenness');
+  return !!opennessStateJSONString ? JSON.parse(opennessStateJSONString) : null;
+};
+
 export const readInitialState = () => {
   if (!isLocalStorageAvailable()) {
     return undefined;
@@ -79,6 +86,18 @@ export const readInitialState = () => {
     initialState[field.category] = initialState[field.category].set(field.name, value);
   });
 
+  const opennessState = readOpennessState();
+  if (!!opennessState) {
+    if (!initialState.org) {
+      initialState.org = {
+        past: [],
+        present: Map(),
+        future: [],
+      };
+    }
+    initialState.org.present = initialState.org.present.set('opennessState', fromJS(opennessState));
+  }
+
   return initialState;
 };
 
@@ -92,6 +111,23 @@ export const subscribeToChanges = store => {
       fields.filter(field => field.category === 'dropbox').map(field => field.name).forEach(field => {
         localStorage.setItem(field, state.dropbox.get(field));
       });
+      fields.filter(field => field.category === 'org').map(field => field.name).forEach(field => {
+        localStorage.setItem(field, state.org.present.get(field));
+      });
+
+      const currentFilePath = state.org.present.get('path');
+      if (!!currentFilePath && state.org.present.get('headers')) {
+        const openHeaderPaths = getOpenHeaderPaths(state.org.present.get('headers'));
+
+        let opennessState = {};
+        const opennessStateJSONString = localStorage.getItem('headerOpenness');
+        if (opennessStateJSONString) {
+          opennessState = JSON.parse(opennessStateJSONString);
+        }
+
+        opennessState[currentFilePath] = openHeaderPaths;
+        localStorage.setItem('headerOpenness', JSON.stringify(opennessState));
+      }
     };
   }
 };

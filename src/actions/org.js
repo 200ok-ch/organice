@@ -81,3 +81,7 @@ export const moveSubtreeRight = headerId => ({
 export const noOp = () => ({
   type: 'NO_OP',
 });
+
+export const applyOpennessState = () => ({
+  type: 'APPLY_OPENNESS_STATE',
+});
