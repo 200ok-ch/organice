@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
 import { readInitialState, subscribeToChanges } from './util/local_storage_persister';
@@ -8,7 +8,7 @@ import './base.css';
 
 import Entry from './components/Entry';
 
-class App extends Component {
+class App extends PureComponent {
   constructor(props) {
     super(props);
 

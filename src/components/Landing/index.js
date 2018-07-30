@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import './Landing.css';
 
-export default class Landing extends Component {
+export default class Landing extends PureComponent {
   render() {
     const { onSignInClick, onViewSampleClick } = this.props;
 

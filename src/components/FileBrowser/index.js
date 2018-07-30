@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -10,7 +10,7 @@ import classNames from 'classnames';
 
 import * as dropboxActions from '../../actions/dropbox';
 
-class FileBrowser extends Component {
+class FileBrowser extends PureComponent {
   constructor(props) {
     super(props);
 

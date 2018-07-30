@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -10,7 +10,7 @@ import * as baseActions from '../../actions/base';
 
 import _ from 'lodash';
 
-class HeaderBar extends Component {
+class HeaderBar extends PureComponent {
   constructor(props) {
     super(props);
 

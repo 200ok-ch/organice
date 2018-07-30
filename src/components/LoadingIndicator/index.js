@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import './LoadingIndicator.css';
 
-export default class LoadingIndicator extends Component {
+export default class LoadingIndicator extends PureComponent {
   render() {
     const { message } = this.props;
 
