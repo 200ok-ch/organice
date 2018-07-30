@@ -1,29 +1,19 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import './OrgFile.css';
-
-import _ from 'lodash';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
 
-import * as orgActions from '../../actions/org';
-
 class OrgFile extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, ['handleBackToFileBrowserClick']);
-  }
-
-  handleBackToFileBrowserClick() {
-    this.props.org.stopDisplayingFile();
-  }
-
   render() {
-    const { headers } = this.props;
+    const {
+      headers,
+      backButtonText,
+      onBackClick,
+      shouldDisableSyncButtons,
+    } = this.props;
 
     return (
       <div>
@@ -38,11 +28,11 @@ class OrgFile extends PureComponent {
           <HeaderList />
         )}
 
-        <div className="btn org-file__btn" onClick={this.handleBackToFileBrowserClick}>
-          Back to file browser
+        <div className="btn org-file__btn" onClick={onBackClick}>
+          {backButtonText}
         </div>
 
-        <ActionDrawer />
+        <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />
       </div>
     );
   }
@@ -55,9 +45,7 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    org: bindActionCreators(orgActions, dispatch),
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrgFile);

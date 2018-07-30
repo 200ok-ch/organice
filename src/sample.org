@@ -1,0 +1,53 @@
+#+TODO: TODO | DONE
+#+TODO: START INPROGRESS STALLED | FINISHED
+
+* This is an actual org file - feel free to play around with it! (Don't worry about messing it up - your changes won't be saved, so just refresh the page to reset it)
+* For starters, tap on this header to open it
+This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about org-web.
+** This is a subheader
+** This is a subheader too!
+* Actions
+The long row of buttons at the bottom is called the "action drawer".
+** Todos
+This header has a few TODO items as subheaders.
+*** TODO Learn how to use TODOs in org-web
+With this header selected, tap the checkmark button in the action drawer. Tap it again, and then again again!
+*** DONE Check out org-web
+*** START Investigate custom TODO states
+org-web also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Tap the checkmark button a few times with this header selected.
+
+Note that when the cycle restarts, it defaults to the first set of todo states. Manually edit the header to get back to a different todo state cycle (more on editing headers below!)
+** Editing headers
+The next two buttons in the action drawer edit the header and description respectively. Try editing this header.
+** Adding and removing headers
+*** To add a new header, click the + button in the action drawer.
+*** To remove a header, click the x.
+** Moving headers
+*** The next 4 buttons in the action drawer (the up, down, left, and right arrows) move the selected header.
+*** The left and right chevrons move the selected header and its entire nested subtree. Give them a try!
+** Undoing
+*** The next button is Undo. This works just like Emacs-style undo in that your history is completely linear and you can "undo undos".
+** Syncing
+*** The upload button pushes your changes up to Dropbox
+*** The download button pulls down the latest version of the file from Dropbox
+*** Neither of those buttons are enabled in this demo :)
+*** On the settings screen (gear icon in the upper right hand corner when signed in), you can enable "Live sync", which will push changes up to Dropbox as soon as you make them
+* Syncing with Dropbox
+org-web pulls down your org files from Dropbox. Click the "Sign in" button in the upper right hand corner to sign in with Dropbox and authenticate org-web.
+** Symlink your org files to Dropbox
+If you don't already keep your org files in Dropbox, I recommend symlinking them in:
+
+ln -s ~/Documents/todo.org ~/Dropbox/todo.org
+** Backups
+The first time you push changes from org-web back up to Dropbox, org-web will make a backup of the original file first. It'll be named your-file-name.org.org-web-bak. Dropbox also keeps a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up to Dropbox :)
+* org-web operates completely client side
+You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
+* Future plans
+org-web is currently pretty usable for simple tasks, but there's a lot more to do. Here are a few of the things on the list:
+** More first-class support for org features like tags and timestamps
+** Better routing
+** Search
+** Support for other sync backends in addition to Dropbox
+** Ability to create new files
+** Archiving
+** Ability to Tweet a header directly from org-web (just kidding)

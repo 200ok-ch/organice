@@ -18,12 +18,19 @@ import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 
 import * as dropboxActions from '../../actions/dropbox';
+import * as orgActions from '../../actions/org';
+import * as baseActions from '../../actions/base';
 
 class Entry extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSignIn']);
+    _.bindAll(this, [
+      'handleSignIn',
+      'handleViewSample',
+      'handleLiveFileBack',
+      'handleSampleFileBack',
+    ]);
   }
 
   componentDidMount() {
@@ -40,12 +47,25 @@ class Entry extends PureComponent {
     window.location = authURL;
   }
 
+  handleLiveFileBack() {
+    this.props.org.stopDisplayingFile();
+  }
+
+  handleViewSample() {
+    this.props.base.displaySample();
+  }
+
+  handleSampleFileBack() {
+    this.props.base.hideSample();
+  }
+
   render() {
     const {
       isAuthenticated,
       loadingMessage,
       isOrgFileDownloaded,
       isShowingSettingsPage,
+      isShowingSamplePage,
     } = this.props;
 
     return (
@@ -59,13 +79,21 @@ class Entry extends PureComponent {
             <Settings />
           ) : (
             isOrgFileDownloaded ? (
-              <OrgFile />
+              <OrgFile backButtonText="Back to file browser"
+                       onBackClick={this.handleLiveFileBack}
+                       shouldDisableSyncButtons={false} />
             ) : (
               <FileBrowser />
             )
           )
         ) : (
-          <Landing onSignInClick={this.handleSignIn} />
+          isShowingSamplePage ? (
+            <OrgFile backButtonText="Exit sample"
+                     onBackClick={this.handleSampleFileBack}
+                     shouldDisableSyncButtons={true} />
+          ) : (
+            <Landing onSignInClick={this.handleSignIn} onViewSampleClick={this.handleViewSample} />
+          )
         )}
       </div>
     );
@@ -78,12 +106,15 @@ const mapStateToProps = (state, props) => {
     isOrgFileDownloaded: !!state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
+    isShowingSamplePage: state.base.get('isShowingSamplePage'),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     dropbox: bindActionCreators(dropboxActions, dispatch),
+    org: bindActionCreators(orgActions, dispatch),
+    base: bindActionCreators(baseActions, dispatch),
   };
 };
 

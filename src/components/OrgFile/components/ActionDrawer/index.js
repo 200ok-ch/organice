@@ -107,7 +107,12 @@ class ActionDrawer extends PureComponent {
   }
 
   render() {
-    const { inTitleEditMode, inDescriptionEditMode, historyCount } = this.props;
+    const {
+      inTitleEditMode,
+      inDescriptionEditMode,
+      historyCount,
+      shouldDisableSyncButtons,
+    } = this.props;
 
     return (
       <div className="action-drawer-container nice-scroll">
@@ -128,8 +133,8 @@ class ActionDrawer extends PureComponent {
             <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} />
             <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} />
             <ActionButton iconName="undo" isDisabled={historyCount <= 1} onClick={this.handleUndoClick} />
-            <ActionButton iconName="cloud-upload-alt" isDisabled={false} onClick={this.handlePushClick} />
-            <ActionButton iconName="cloud-download-alt" isDisabled={false} onClick={this.handlePullClick} />
+            <ActionButton iconName="cloud-upload-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePushClick} />
+            <ActionButton iconName="cloud-download-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePullClick} />
           </Fragment>
         )}
       </div>
