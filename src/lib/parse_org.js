@@ -135,7 +135,7 @@ export const parseOrg = (fileContents) => {
             return keyword !== '|';
           });
           const keywords = keywordStrings.map(keywordString => {
-            const todoRegex = /([^\(]*)(\(.*\))?/g;
+            const todoRegex = /([^(]*)(\(.*\))?/g;
             const match = todoRegex.exec(keywordString);
             const keyword = match[1];
 
