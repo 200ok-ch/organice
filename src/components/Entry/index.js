@@ -15,6 +15,7 @@ import Landing from '../Landing';
 import FileBrowser from '../FileBrowser';
 import LoadingIndicator from '../LoadingIndicator';
 import OrgFile from '../OrgFile';
+import Settings from '../Settings';
 
 import * as dropboxActions from '../../actions/dropbox';
 
@@ -44,6 +45,7 @@ class Entry extends PureComponent {
       isAuthenticated,
       loadingMessage,
       isOrgFileDownloaded,
+      isShowingSettingsPage,
     } = this.props;
 
     return (
@@ -53,10 +55,14 @@ class Entry extends PureComponent {
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
         {isAuthenticated ? (
-          isOrgFileDownloaded ? (
-            <OrgFile />
+          isShowingSettingsPage ? (
+            <Settings />
           ) : (
-            <FileBrowser />
+            isOrgFileDownloaded ? (
+              <OrgFile />
+            ) : (
+              <FileBrowser />
+            )
           )
         ) : (
           <Landing onSignInClick={this.handleSignIn} />
@@ -71,6 +77,7 @@ const mapStateToProps = (state, props) => {
     loadingMessage: state.base.get('loadingMessage'),
     isOrgFileDownloaded: !!state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
+    isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
   };
 };
 

@@ -1,0 +1,12 @@
+.settings-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 20px;
+}
+
+.settings-btn {
+    font-size: 16px;
+    width: 90%;
+}
