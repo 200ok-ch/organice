@@ -5,6 +5,8 @@ import { fromJS } from 'immutable';
 import { setLoadingMessage, hideLoadingMessage } from './base';
 import { displayFile } from './org';
 
+import exportOrg from '../lib/export_org';
+
 export const authenticate = accessToken => ({
   type: 'AUTHENTICATE',
   accessToken,
@@ -73,6 +75,29 @@ export const downloadFile = path => {
         dispatch(pushBackup(path, reader.result));
       });
       reader.readAsText(response.fileBlob);
+    });
+  };
+};
+
+export const pushCurrentFile = () => {
+  return (dispatch, getState) => {
+    const contents = exportOrg(getState().org.present.get('headers'),
+                               getState().org.present.get('todoKeywordSets'));
+    const path = getState().org.present.get('path');
+
+    dispatch(setLoadingMessage('Pushing...'));
+    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+    dropbox.filesUpload({
+      path, contents,
+      mode: {
+        '.tag': 'overwrite',
+      },
+      autorename: true,
+    }).then(response => {
+      dispatch(hideLoadingMessage());
+    }).catch(error => {
+      alert(`There was an error pushing the file: ${error}`);
+      dispatch(hideLoadingMessage());
     });
   };
 };

@@ -7,6 +7,7 @@ import './ActionDrawer.css';
 import _ from 'lodash';
 
 import * as orgActions from '../../../../actions/org';
+import * as dropboxActions from '../../../../actions/dropbox';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import ActionButton from './components/ActionButton';
@@ -92,8 +93,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handlePushClick() {
-    // TODO:
-    console.log('handlePushClick');
+    this.props.dropbox.pushCurrentFile();
   }
 
   handlePullClick() {
@@ -149,6 +149,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     org: bindActionCreators(orgActions, dispatch),
+    dropbox: bindActionCreators(dropboxActions, dispatch),
     undo: bindActionCreators(undoActions, dispatch),
   };
 };
