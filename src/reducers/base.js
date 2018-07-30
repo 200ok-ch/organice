@@ -24,6 +24,14 @@ const hideSamplePage = state => (
   state.set('isShowingSamplePage', false)
 );
 
+const showWhatsNewPage = state => (
+  state.set('isShowingWhatsNewPage', true)
+);
+
+const hideWhatsNewPage = state => (
+  state.set('isShowingWhatsNewPage', false)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -38,6 +46,10 @@ export default (state = new Map(), action) => {
     return showSamplePage(state, action);
   case 'HIDE_SAMPLE_PAGE':
     return hideSamplePage(state, action);
+  case 'SHOW_WHATS_NEW_PAGE':
+    return showWhatsNewPage(state, action);
+  case 'HIDE_WHATS_NEW_PAGE':
+    return hideWhatsNewPage(state, action);
   default:
     return state;
   }

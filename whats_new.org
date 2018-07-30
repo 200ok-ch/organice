@@ -1,0 +1,30 @@
+* July 4th, 2017
+** Fixed bug with preserving header openness state across reloads
+* June 3rd, 2017
+** Added setting to preserve open headers across reloads
+* May 29th, 2017
+** Added setting to enable tapping the TODO label to advance the TODO state
+** Fixed export bug that caused blank descriptions to be exported as a newline
+* May 21st, 2017
+** Added some schnazzy (sp?) icons to the file chooser
+* May 20th, 2017
+** Added force touch/3d touch on devices that support it
+*** Force push the add header button (+) to reveal a new button that adds a new TODO header
+*** More uses of force push to come!
+* May 13th, 2017
+** Display tags more natively
+** Added link to the Github repo - bug reports, feature requests, and pull requests welcome!
+* May 7th, 2017
+** Confirmation is no longer required to remove a header, since its easy to undo now
+** Fixed bug where first action couldn't be undone
+* May 6th, 2017
+** Added undo button
+* April 29th, 2017
+** Backups are now made on first load of a file, rather than with every push. Should speed things up a bit!
+** Added some nice animations
+* April 27th, 2017
+** org-web is now open source! [[https://github.com/DanielDe/org-web]]
+** Added setting for larger font size
+** Added setting for fancy bullets
+** Added setting for cozier header spacing
+** Added a button to view new features (what you're reading now!)

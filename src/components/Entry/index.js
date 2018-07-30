@@ -25,11 +25,14 @@ class Entry extends PureComponent {
   constructor(props) {
     super(props);
 
+    console.log(process.env);
+
     _.bindAll(this, [
       'handleSignIn',
       'handleViewSample',
       'handleLiveFileBack',
       'handleSampleFileBack',
+      'handleWhatsNewFileBack',
     ]);
   }
 
@@ -59,6 +62,10 @@ class Entry extends PureComponent {
     this.props.base.hideSample();
   }
 
+  handleWhatsNewFileBack() {
+    this.props.base.hideWhatsNew();
+  }
+
   render() {
     const {
       isAuthenticated,
@@ -66,6 +73,7 @@ class Entry extends PureComponent {
       isOrgFileDownloaded,
       isShowingSettingsPage,
       isShowingSamplePage,
+      isShowingWhatsNewPage,
     } = this.props;
 
     return (
@@ -74,25 +82,34 @@ class Entry extends PureComponent {
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
-        {isAuthenticated ? (
-          isShowingSettingsPage ? (
-            <Settings />
-          ) : (
-            isOrgFileDownloaded ? (
-              <OrgFile backButtonText="Back to file browser"
-                       onBackClick={this.handleLiveFileBack}
-                       shouldDisableSyncButtons={false} />
-            ) : (
-              <FileBrowser />
-            )
-          )
+        {isShowingWhatsNewPage ? (
+          <OrgFile backButtonText="Done"
+                   onBackClick={this.handleWhatsNewFileBack}
+                   shouldDisableActionDrawer={true}
+                   shouldDisableSyncButtons={false} />
         ) : (
-          isShowingSamplePage ? (
-            <OrgFile backButtonText="Exit sample"
-                     onBackClick={this.handleSampleFileBack}
-                     shouldDisableSyncButtons={true} />
+          isAuthenticated ? (
+            isShowingSettingsPage ? (
+              <Settings />
+            ) : (
+              isOrgFileDownloaded ? (
+                <OrgFile backButtonText="Back to file browser"
+                         onBackClick={this.handleLiveFileBack}
+                         shouldDisableActionDrawer={false}
+                         shouldDisableSyncButtons={false} />
+              ) : (
+                <FileBrowser />
+              )
+            )
           ) : (
-            <Landing onSignInClick={this.handleSignIn} onViewSampleClick={this.handleViewSample} />
+            isShowingSamplePage ? (
+              <OrgFile backButtonText="Exit sample"
+                       onBackClick={this.handleSampleFileBack}
+                       shouldDisableActionDrawer={false}
+                       shouldDisableSyncButtons={true} />
+            ) : (
+              <Landing onSignInClick={this.handleSignIn} onViewSampleClick={this.handleViewSample} />
+            )
           )
         )}
       </div>
@@ -107,6 +124,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     isShowingSamplePage: state.base.get('isShowingSamplePage'),
+    isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
   };
 };
 

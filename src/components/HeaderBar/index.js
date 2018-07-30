@@ -14,7 +14,7 @@ class HeaderBar extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSettingsClick']);
+    _.bindAll(this, ['handleSettingsClick', 'handleWhatsNewClick']);
   }
 
   handleSettingsClick() {
@@ -27,9 +27,17 @@ class HeaderBar extends Component {
     }
   }
 
-  render() {
-    // TODO: "whats new" button
+  handleWhatsNewClick() {
+    const { isShowingWhatsNewPage } = this.props;
 
+    if (isShowingWhatsNewPage) {
+      this.props.base.hideWhatsNew();
+    } else {
+      this.props.base.displayWhatsNew();
+    }
+  }
+
+  render() {
     const { onSignInClick, isAuthenticated } = this.props;
 
     return (
@@ -39,6 +47,8 @@ class HeaderBar extends Component {
 
         <div className="header-bar__actions">
           {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
+
+          <i className="fas fa-gift header-bar__actions__item" onClick={this.handleWhatsNewClick} />
 
           <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-github header-bar__actions__item" />
@@ -57,6 +67,7 @@ const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
+    isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
   };
 };
 

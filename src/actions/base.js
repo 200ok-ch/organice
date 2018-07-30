@@ -40,3 +40,25 @@ export const hideSample = () => {
     dispatch(stopDisplayingFile());
   };
 };
+
+export const showWhatsNewPage = () => ({
+  type: 'SHOW_WHATS_NEW_PAGE',
+});
+
+export const hideWhatsNewPage = () => ({
+  type: 'HIDE_WHATS_NEW_PAGE',
+});
+
+export const displayWhatsNew = () => {
+  return (dispatch, getState) => {
+    dispatch(showWhatsNewPage());
+    dispatch(displayFile('*WHATS_NEW*', JSON.parse(process.env.REACT_APP_WHATS_NEW_FILE_CONTENTS)));
+  };
+};
+
+export const hideWhatsNew = () => {
+  return (dispatch, getState) => {
+    dispatch(hideWhatsNewPage());
+    dispatch(stopDisplayingFile());
+  };
+};

@@ -13,6 +13,7 @@ class OrgFile extends PureComponent {
       backButtonText,
       onBackClick,
       shouldDisableSyncButtons,
+      shouldDisableActionDrawer,
     } = this.props;
 
     return (
@@ -32,7 +33,7 @@ class OrgFile extends PureComponent {
           {backButtonText}
         </div>
 
-        <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />
+        {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
       </div>
     );
   }
