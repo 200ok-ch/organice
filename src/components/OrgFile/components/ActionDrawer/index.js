@@ -97,8 +97,8 @@ class ActionDrawer extends PureComponent {
   }
 
   handlePullClick() {
-    // TODO:
-    console.log('handlePullClick');
+    // TODO: Check for dirtiness and add a warning message.
+    this.props.dropbox.redownloadCurrentFile();
   }
 
   handleDoneClick() {

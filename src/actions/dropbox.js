@@ -7,6 +7,10 @@ import { displayFile } from './org';
 
 import exportOrg from '../lib/export_org';
 
+const getDropboxClient = getState => (
+  new Dropbox({ accessToken: getState().dropbox.get('accessToken') })
+);
+
 export const authenticate = accessToken => ({
   type: 'AUTHENTICATE',
   accessToken,
@@ -86,7 +90,7 @@ export const pushCurrentFile = () => {
     const path = getState().org.present.get('path');
 
     dispatch(setLoadingMessage('Pushing...'));
-    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+    const dropbox = getDropboxClient(getState);
     dropbox.filesUpload({
       path, contents,
       mode: {
@@ -99,5 +103,12 @@ export const pushCurrentFile = () => {
       alert(`There was an error pushing the file: ${error}`);
       dispatch(hideLoadingMessage());
     });
+  };
+};
+
+export const redownloadCurrentFile = () => {
+  return (dispatch, getState) => {
+    const path = getState().org.present.get('path');
+    dispatch(downloadFile(path));
   };
 };
