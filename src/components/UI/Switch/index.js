@@ -10,7 +10,7 @@ export default class Switch extends PureComponent {
     const { isEnabled, onToggle } = this.props;
 
     const disabledColor = rgbaObject(255, 255, 255, 1);
-    const enabledColor = rgbaObject(59, 105, 106, 1);
+    const enabledColor = rgbaObject(94, 52, 140, 1);
 
     const switchStyle = {
       colorFactor: spring(isEnabled ? 1 : 0, { stiffness: 300 }),
