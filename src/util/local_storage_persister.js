@@ -12,11 +12,11 @@ const isLocalStorageAvailable = () => {
 };
 
 const fields = [
-  // {
-  //   category: 'org',
-  //   name: 'filePath',
-  //   type: 'nullable'
-  // },
+  {
+    category: 'org',
+    name: 'path',
+    type: 'nullable'
+  },
   {
     category: 'base',
     name: 'fontSize',

@@ -18,6 +18,10 @@ class OrgFile extends PureComponent {
       isDirty,
     } = this.props;
 
+    if (!headers) {
+      return <div></div>;
+    }
+
     return (
       <div>
         {headers.size === 0 ? (

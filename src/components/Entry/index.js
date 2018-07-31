@@ -38,10 +38,16 @@ class Entry extends PureComponent {
   }
 
   componentDidMount() {
+    const { orgFilePath } = this.props;
+
     const accessToken = parseQueryString(window.location.hash).access_token;
     if (accessToken) {
       this.props.dropbox.authenticate(accessToken);
       window.location.hash = '';
+    }
+
+    if (orgFilePath) {
+      this.props.dropbox.downloadFile(orgFilePath);
     }
   }
 
@@ -130,6 +136,7 @@ const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
     isOrgFileDownloaded: !!state.org.present.get('path'),
+    orgFilePath: state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     isShowingSamplePage: state.base.get('isShowingSamplePage'),
