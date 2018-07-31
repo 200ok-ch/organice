@@ -32,6 +32,10 @@ const hideWhatsNewPage = state => (
   state.set('isShowingWhatsNewPage', false)
 );
 
+const setFontSize = (state, action) => (
+  state.set('fontSize', action.newFontSize)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -50,6 +54,8 @@ export default (state = new Map(), action) => {
     return showWhatsNewPage(state, action);
   case 'HIDE_WHATS_NEW_PAGE':
     return hideWhatsNewPage(state, action);
+  case 'SET_FONT_SIZE':
+    return setFontSize(state, action);
   default:
     return state;
   }

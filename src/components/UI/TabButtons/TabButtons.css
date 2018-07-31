@@ -1,0 +1,19 @@
+.tab-buttons {
+    display: inline-block;
+    border: 1px solid #D8D8D8;
+    height: 34px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.tab-buttons__btn {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 7px;
+}
+
+.tab-buttons__btn--selected {
+    background-color: #3D696A;
+    color: white;
+}

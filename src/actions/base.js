@@ -62,3 +62,7 @@ export const hideWhatsNew = () => {
     dispatch(stopDisplayingFile());
   };
 };
+
+export const setFontSize = newFontSize => ({
+  type: 'SET_FONT_SIZE', newFontSize,
+});

@@ -4,9 +4,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import './Entry.css';
+
 import { Dropbox } from 'dropbox';
 
 import _ from 'lodash';
+import classNames from 'classnames';
 
 import parseQueryString from '../../util/parse_query_string';
 
@@ -72,10 +75,15 @@ class Entry extends PureComponent {
       isShowingSettingsPage,
       isShowingSamplePage,
       isShowingWhatsNewPage,
+      fontSize,
     } = this.props;
 
+    const className = classNames('entry-container', {
+      'entry-container--large-font': fontSize === 'Large',
+    });
+
     return (
-      <div>
+      <div className={className}>
         <HeaderBar onSignInClick={this.handleSignIn} />
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
@@ -123,6 +131,7 @@ const mapStateToProps = (state, props) => {
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     isShowingSamplePage: state.base.get('isShowingSamplePage'),
     isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
+    fontSize: state.base.get('fontSize'),
   };
 };
 

@@ -17,11 +17,11 @@ const fields = [
   //   name: 'filePath',
   //   type: 'nullable'
   // },
-  // {
-  //   category: 'org',
-  //   name: 'fontSize',
-  //   type: 'nullable'
-  // },
+  {
+    category: 'base',
+    name: 'fontSize',
+    type: 'nullable'
+  },
   // {
   //   category: 'org',
   //   name: 'bulletStyle',
@@ -71,6 +71,12 @@ export const readInitialState = () => {
 
   let initialState = {
     dropbox: Map(),
+    org: {
+      past: [],
+      present: Map(),
+      future: [],
+    },
+    base: Map(),
   };
 
   fields.forEach(field => {
@@ -83,18 +89,15 @@ export const readInitialState = () => {
       value = value === 'true';
     }
 
-    initialState[field.category] = initialState[field.category].set(field.name, value);
+    if (field.category === 'org') {
+      initialState[field.category].present = initialState[field.category].present.set(field.name, value);
+    } else {
+      initialState[field.category] = initialState[field.category].set(field.name, value);
+    }
   });
 
   const opennessState = readOpennessState();
   if (!!opennessState) {
-    if (!initialState.org) {
-      initialState.org = {
-        past: [],
-        present: Map(),
-        future: [],
-      };
-    }
     initialState.org.present = initialState.org.present.set('opennessState', fromJS(opennessState));
   }
 
@@ -108,11 +111,11 @@ export const subscribeToChanges = store => {
     return () => {
       const state = store.getState();
 
-      fields.filter(field => field.category === 'dropbox').map(field => field.name).forEach(field => {
-        localStorage.setItem(field, state.dropbox.get(field));
-      });
       fields.filter(field => field.category === 'org').map(field => field.name).forEach(field => {
         localStorage.setItem(field, state.org.present.get(field));
+      });
+      fields.filter(field => field.category !== 'org').forEach(field => {
+        localStorage.setItem(field.name, state[field.category].get(field.name));
       });
 
       const currentFilePath = state.org.present.get('path');

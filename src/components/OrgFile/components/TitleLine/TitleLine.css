@@ -3,6 +3,10 @@
     display: flex;
 }
 
+.entry-container--large-font .title-line {
+    margin-top: -24px;
+}
+
 .todo-keyword {
     font-weight: bold;
     margin-right: 5px;

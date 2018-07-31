@@ -1,3 +1,20 @@
+.setting-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+    border-bottom: 1px solid #D8D8D8;
+    padding: 5px 0;
+}
+
+.setting-container:first-of-type {
+    border-top: 1px solid #D8D8D8;
+}
+
+.setting-label {
+    max-width: calc(100% - 90px)
+}
+
 .settings-buttons-container {
     display: flex;
     flex-direction: column;
