@@ -1,0 +1,38 @@
+* org-web - org mode on the web
+org-web lets you directly edit your org files online. It syncs with Dropbox and is optimized for mobile use.
+
+It was born out of my desire to be able to easily view and edit my org files from my phone. You can see it in action [[https://org-web.org][here]].
+
+If you don't already keep your org files in Dropbox, I recommend symlinking them in:
+
+#+BEGIN_SRC
+ln -s ~/Documents/todo.org ~/Dropbox/todo.org
+#+END_SRC
+** Development
+org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebookincubator/create-react-app][Create React App]].
+
+To install the necessary packages, run:
+
+#+BEGIN_SRC
+yarn install
+#+END_SRC
+
+To run the app you need to invoke this complicated looking command to set a couple environment variables appropriately (this is a hack until Create React App [[https://github.com/facebook/create-react-app/issues/3722][builds in nicer support for loading raw files]]). This is the command for the [[https://fishshell.com/][Fish shell]]:
+
+#+BEGIN_SRC
+env SAMPLE_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") WHATS_NEW_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./whats_new.org', 'r').read()))") yarn start
+#+END_SRC
+
+And here it is for bash:
+
+#+BEGIN_SRC
+SAMPLE_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") WHATS_NEW_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./whats_new.org', 'r').read()))") yarn start
+#+END_SRC
+
+To test against your actual Dropbox, you'll need to create a ~.env~ file with org-web's client ID:
+
+#+BEGIN_SRC
+REACT_APP_DROPBOX_CLIENT_ID=u857m8dfqth1ofi
+#+END_SRC
+
+Note that this will only work if you're running the app on ~http://localhost:3000~.
