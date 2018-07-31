@@ -32,11 +32,11 @@ const fields = [
     name: 'shouldTapTodoToAdvance',
     type: 'boolean'
   },
-  // {
-  //   category: 'org',
-  //   name: 'latestVersion',
-  //   type: 'nullable'
-  // },
+  {
+    category: 'base',
+    name: 'lastSeenWhatsNewHeader',
+    type: 'nullable'
+  },
   {
     category: 'dropbox',
     name: 'accessToken',

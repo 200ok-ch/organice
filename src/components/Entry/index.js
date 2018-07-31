@@ -12,6 +12,8 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import parseQueryString from '../../util/parse_query_string';
+import { parseOrg } from '../../lib/parse_org';
+import { whatsNewFileContents } from '../../lib/static_file_contents';
 
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -38,7 +40,7 @@ class Entry extends PureComponent {
   }
 
   componentDidMount() {
-    const { orgFilePath } = this.props;
+    const { orgFilePath, lastSeenWhatsNewHeader, isAuthenticated } = this.props;
 
     const accessToken = parseQueryString(window.location.hash).access_token;
     if (accessToken) {
@@ -49,6 +51,13 @@ class Entry extends PureComponent {
     if (orgFilePath) {
       this.props.dropbox.downloadFile(orgFilePath);
     }
+
+    const whatsNewFile = parseOrg(whatsNewFileContents);
+    const firstHeaderTitle = whatsNewFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
+    if (isAuthenticated && !!lastSeenWhatsNewHeader && firstHeaderTitle !== lastSeenWhatsNewHeader) {
+      this.props.base.setHasUnseenWhatsNew(true);
+    }
+    this.props.base.setLastSeenWhatsNewHeader(firstHeaderTitle);
   }
 
   handleSignIn() {
@@ -142,6 +151,7 @@ const mapStateToProps = (state, props) => {
     isShowingSamplePage: state.base.get('isShowingSamplePage'),
     isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
     fontSize: state.base.get('fontSize'),
+    lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
   };
 };
 

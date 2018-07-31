@@ -1,6 +1,5 @@
-/* global process */
-
 import { displayFile, stopDisplayingFile } from './org';
+import { sampleFileContents, whatsNewFileContents } from '../lib/static_file_contents';
 
 export const setLoadingMessage = loadingMessage => ({
   type: 'SET_LOADING_MESSAGE',
@@ -27,10 +26,9 @@ export const hideSamplePage = () => ({
   type: 'HIDE_SAMPLE_PAGE',
 });
 
-export const displaySample = () => {
-  return (dispatch, getState) => {
+export const displaySample = () => {  return (dispatch, getState) => {
     dispatch(showSamplePage());
-    dispatch(displayFile(null, JSON.parse(process.env.REACT_APP_SAMPLE_FILE_CONTENTS)));
+    dispatch(displayFile(null, sampleFileContents));
   };
 };
 
@@ -52,7 +50,7 @@ export const hideWhatsNewPage = () => ({
 export const displayWhatsNew = () => {
   return (dispatch, getState) => {
     dispatch(showWhatsNewPage());
-    dispatch(displayFile(null, JSON.parse(process.env.REACT_APP_WHATS_NEW_FILE_CONTENTS)));
+    dispatch(displayFile(null, whatsNewFileContents));
   };
 };
 
@@ -73,4 +71,12 @@ export const setBulletStyle = newBulletStyle => ({
 
 export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE', newShouldTapTodoToAdvance,
+});
+
+export const setHasUnseenWhatsNew = newHasUnseenWhatsNew => ({
+  type: 'SET_HAS_UNSEEN_WHATS_NEW', newHasUnseenWhatsNew,
+});
+
+export const setLastSeenWhatsNewHeader = newLastSeenWhatsNewHeader => ({
+  type: 'SET_LAST_SEEN_WHATS_NEW_HEADER', newLastSeenWhatsNewHeader,
 });

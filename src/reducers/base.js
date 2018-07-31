@@ -25,7 +25,9 @@ const hideSamplePage = state => (
 );
 
 const showWhatsNewPage = state => (
-  state.set('isShowingWhatsNewPage', true)
+  state
+    .set('isShowingWhatsNewPage', true)
+    .set('hasUnseenWhatsNew', false)
 );
 
 const hideWhatsNewPage = state => (
@@ -42,6 +44,14 @@ const setBulletStyle = (state, action) => (
 
 const setShouldTapTodoToAdvance = (state, action) => (
   state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance)
+);
+
+const setHasUnseenWhatsNew = (state, action) => (
+  state.set('hasUnseenWhatsNew', action.newHasUnseenWhatsNew)
+);
+
+const setLastSeenWhatsNewHeader = (state, action) => (
+  state.set('lastSeenWhatsNewHeader', action.newLastSeenWhatsNewHeader)
 );
 
 export default (state = new Map(), action) => {
@@ -68,6 +78,10 @@ export default (state = new Map(), action) => {
     return setBulletStyle(state, action);
   case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
     return setShouldTapTodoToAdvance(state, action);
+  case 'SET_HAS_UNSEEN_WHATS_NEW':
+    return setHasUnseenWhatsNew(state, action);
+  case 'SET_LAST_SEEN_WHATS_NEW_HEADER':
+    return setLastSeenWhatsNewHeader(state, action);
   default:
     return state;
   }

@@ -9,6 +9,7 @@ import './HeaderBar.css';
 import * as baseActions from '../../actions/base';
 
 import _ from 'lodash';
+import classNames from 'classnames';
 
 class HeaderBar extends PureComponent {
   constructor(props) {
@@ -38,7 +39,11 @@ class HeaderBar extends PureComponent {
   }
 
   render() {
-    const { onSignInClick, isAuthenticated } = this.props;
+    const { onSignInClick, isAuthenticated, hasUnseenWhatsNew } = this.props;
+
+    const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
+      'whats-new-icon--has-unseen': hasUnseenWhatsNew,
+    });
 
     return (
       <div className="header-bar">
@@ -48,7 +53,7 @@ class HeaderBar extends PureComponent {
         <div className="header-bar__actions">
           {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
-          <i className="fas fa-gift header-bar__actions__item" onClick={this.handleWhatsNewClick} />
+          <i className={whatsNewClassName} onClick={this.handleWhatsNewClick} />
 
           <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-github header-bar__actions__item" />
@@ -68,6 +73,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
+    hasUnseenWhatsNew: state.base.get('hasUnseenWhatsNew'),
   };
 };
 
