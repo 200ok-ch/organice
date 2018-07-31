@@ -65,7 +65,7 @@ class Settings extends PureComponent {
 
         <div className="setting-container">
           <div className="setting-label">Tap TODO to advance state</div>
-          <TabButtons buttons={['Yes', 'No']}
+          <TabButtons buttons={['No', 'Yes']}
                       selectedButton={tapTodoToAdvance}
                       onSelect={this.handleTapTodoToAdvanceChange} />
         </div>
@@ -83,7 +83,7 @@ const mapStateToProps = (state, props) => {
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
-    tapTodoToAdvance: state.base.get('tapTodoToAdvance') || 'Yes',
+    tapTodoToAdvance: state.base.get('tapTodoToAdvance') || 'No',
   };
 };
 

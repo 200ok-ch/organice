@@ -30,7 +30,7 @@ export const hideSamplePage = () => ({
 export const displaySample = () => {
   return (dispatch, getState) => {
     dispatch(showSamplePage());
-    dispatch(displayFile('*SAMPLE*', JSON.parse(process.env.REACT_APP_SAMPLE_FILE_CONTENTS)));
+    dispatch(displayFile(null, JSON.parse(process.env.REACT_APP_SAMPLE_FILE_CONTENTS)));
   };
 };
 
@@ -52,7 +52,7 @@ export const hideWhatsNewPage = () => ({
 export const displayWhatsNew = () => {
   return (dispatch, getState) => {
     dispatch(showWhatsNewPage());
-    dispatch(displayFile('*WHATS_NEW*', JSON.parse(process.env.REACT_APP_WHATS_NEW_FILE_CONTENTS)));
+    dispatch(displayFile(null, JSON.parse(process.env.REACT_APP_WHATS_NEW_FILE_CONTENTS)));
   };
 };
 

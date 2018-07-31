@@ -39,6 +39,12 @@ class ActionDrawer extends PureComponent {
     // Send a no-op action to take care of the bug where redux-undo won't allow the first
     // action to be undone.
     this.props.org.noOp();
+
+    document.querySelector('html').style.paddingBottom = '90px';
+  }
+
+  componentWillUnmount() {
+    document.querySelector('html').style.paddingBottom = '0px';
   }
 
   handleAdvanceTodoClick() {
