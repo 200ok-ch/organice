@@ -40,6 +40,10 @@ const setBulletStyle = (state, action) => (
   state.set('bulletStyle', action.newBulletStyle)
 );
 
+const setTapTodoToAdvance = (state, action) => (
+  state.set('tapTodoToAdvance', action.newTapTodoToAdvance)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -62,6 +66,8 @@ export default (state = new Map(), action) => {
     return setFontSize(state, action);
   case 'SET_BULLET_STYLE':
     return setBulletStyle(state, action);
+  case 'SET_TAP_TODO_TO_ADVANCE':
+    return setTapTodoToAdvance(state, action);
   default:
     return state;
   }

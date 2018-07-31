@@ -70,3 +70,7 @@ export const setFontSize = newFontSize => ({
 export const setBulletStyle = newBulletStyle => ({
   type: 'SET_BULLET_STYLE', newBulletStyle,
 });
+
+export const setTapTodoToAdvance = newTapTodoToAdvance => ({
+  type: 'SET_TAP_TODO_TO_ADVANCE', newTapTodoToAdvance,
+});

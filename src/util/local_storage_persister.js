@@ -27,11 +27,11 @@ const fields = [
     name: 'bulletStyle',
     type: 'nullable'
   },
-  // {
-  //   category: 'org',
-  //   name: 'tapTodoToAdvance',
-  //   type: 'boolean'
-  // },
+  {
+    category: 'base',
+    name: 'tapTodoToAdvance',
+    type: 'nullable'
+  },
   // {
   //   category: 'org',
   //   name: 'latestVersion',

@@ -20,6 +20,7 @@ class Settings extends PureComponent {
       'handleCloseClick',
       'handleFontSizeChange',
       'handleBulletStyleChange',
+      'handleTapTodoToAdvanceChange',
     ]);
   }
 
@@ -35,12 +36,16 @@ class Settings extends PureComponent {
     this.props.base.setBulletStyle(newBulletStyle);
   }
 
+  handleTapTodoToAdvanceChange(newTapTodoToAdvance) {
+    this.props.base.setTapTodoToAdvance(newTapTodoToAdvance);
+  }
+
   handleCloseClick() {
     this.props.base.hideSettingsPage();
   }
 
   render() {
-    const { fontSize, bulletStyle } = this.props;
+    const { fontSize, bulletStyle, tapTodoToAdvance } = this.props;
 
     return (
       <div>
@@ -58,6 +63,13 @@ class Settings extends PureComponent {
                       onSelect={this.handleBulletStyleChange} />
         </div>
 
+        <div className="setting-container">
+          <div className="setting-label">Tap TODO to advance state</div>
+          <TabButtons buttons={['Yes', 'No']}
+                      selectedButton={tapTodoToAdvance}
+                      onSelect={this.handleTapTodoToAdvanceChange} />
+        </div>
+
         <div className="settings-buttons-container">
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
           <button className="btn settings-btn" onClick={this.handleCloseClick}>Close</button>
@@ -71,6 +83,7 @@ const mapStateToProps = (state, props) => {
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
+    tapTodoToAdvance: state.base.get('tapTodoToAdvance') || 'Yes',
   };
 };
 

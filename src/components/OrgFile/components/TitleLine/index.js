@@ -19,7 +19,8 @@ class TitleLine extends PureComponent {
       'handleTitleClick',
       'handleTextareaBlur',
       'handleTitleChange',
-      'handleTitleFieldClick'
+      'handleTitleFieldClick',
+      'handleTodoClick',
     ]);
 
     this.state = {
@@ -64,6 +65,16 @@ class TitleLine extends PureComponent {
     this.props.org.selectHeader(header.get('id'));
   }
 
+  handleTodoClick() {
+    const { header, tapTodoToAdvance } = this.props;
+
+    this.props.org.selectHeader(header.get('id'));
+
+    if (tapTodoToAdvance === 'Yes') {
+      this.props.org.advanceTodoState();
+    }
+  }
+
   handleTextareaBlur() {
     this.props.org.exitTitleEditMode();
   }
@@ -93,7 +104,8 @@ class TitleLine extends PureComponent {
     return (
       <div className="title-line" onClick={this.handleTitleClick}>
         {!inEditMode && !!todoKeyword ? (
-          <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}>
+          <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
+                onClick={this.handleTodoClick}>
             {todoKeyword}
           </span>
         ) : ''}
@@ -132,6 +144,7 @@ const mapStateToProps = (state, props) => {
     inEditMode: (
       state.org.present.get('inTitleEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
+    tapTodoToAdvance: state.base.get('tapTodoToAdvance'),
   };
 };
 
