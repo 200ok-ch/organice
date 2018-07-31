@@ -29,10 +29,6 @@ And here it is for bash:
 SAMPLE_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") WHATS_NEW_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./whats_new.org', 'r').read()))") yarn start
 #+END_SRC
 
-To test against your actual Dropbox, you'll need to create a ~.env~ file with org-web's client ID:
-
-#+BEGIN_SRC
-REACT_APP_DROPBOX_CLIENT_ID=u857m8dfqth1ofi
-#+END_SRC
+To test against your actual Dropbox, you'll need to create a ~.env~ file by copying ~.env.sample~ to just ~.env~.
 
 Note that this will only work if you're running the app on ~http://localhost:3000~.
