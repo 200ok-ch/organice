@@ -22,16 +22,11 @@ const fields = [
     name: 'fontSize',
     type: 'nullable'
   },
-  // {
-  //   category: 'org',
-  //   name: 'bulletStyle',
-  //   type: 'nullable'
-  // },
-  // {
-  //   category: 'org',
-  //   name: 'headerSpacing',
-  //   type: 'nullable'
-  // },
+  {
+    category: 'base',
+    name: 'bulletStyle',
+    type: 'nullable'
+  },
   // {
   //   category: 'org',
   //   name: 'tapTodoToAdvance',
@@ -39,18 +34,8 @@ const fields = [
   // },
   // {
   //   category: 'org',
-  //   name: 'preserveHeaderOpenness',
-  //   type: 'boolean'
-  // },
-  // {
-  //   category: 'org',
   //   name: 'latestVersion',
   //   type: 'nullable'
-  // },
-  // {
-  //   category: 'dropbox',
-  //   name: 'liveSync',
-  //   type: 'boolean'
   // },
   {
     category: 'dropbox',

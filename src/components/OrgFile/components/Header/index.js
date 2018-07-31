@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 
 import './Header.css';
 
@@ -7,9 +8,9 @@ import classNames from 'classnames';
 import TitleLine from '../TitleLine';
 import HeaderContent from '../HeaderContent';
 
-export default class Header extends PureComponent {
+class Header extends PureComponent {
   render() {
-    const { header, color, hasContent, isSelected } = this.props;
+    const { header, color, hasContent, isSelected, bulletStyle } = this.props;
 
     const style = {
       paddingLeft: 20 * header.get('nestingLevel'),
@@ -21,7 +22,7 @@ export default class Header extends PureComponent {
 
     return (
       <div className={className} style={style}>
-        <div style={{marginLeft: -16}}>*</div>
+        <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
         <TitleLine header={header}
                    color={color}
                    hasContent={hasContent}
@@ -31,3 +32,13 @@ export default class Header extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state, props) => {
+  return {
+    bulletStyle: state.base.get('bulletStyle'),
+  };
+};
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -66,3 +66,7 @@ export const hideWhatsNew = () => {
 export const setFontSize = newFontSize => ({
   type: 'SET_FONT_SIZE', newFontSize,
 });
+
+export const setBulletStyle = newBulletStyle => ({
+  type: 'SET_BULLET_STYLE', newBulletStyle,
+});

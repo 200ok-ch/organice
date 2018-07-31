@@ -36,6 +36,10 @@ const setFontSize = (state, action) => (
   state.set('fontSize', action.newFontSize)
 );
 
+const setBulletStyle = (state, action) => (
+  state.set('bulletStyle', action.newBulletStyle)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -56,6 +60,8 @@ export default (state = new Map(), action) => {
     return hideWhatsNewPage(state, action);
   case 'SET_FONT_SIZE':
     return setFontSize(state, action);
+  case 'SET_BULLET_STYLE':
+    return setBulletStyle(state, action);
   default:
     return state;
   }

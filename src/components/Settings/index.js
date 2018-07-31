@@ -17,8 +17,9 @@ class Settings extends PureComponent {
 
     _.bindAll(this, [
       'handleSignOutClick',
-      'handleFontSizeChange',
       'handleCloseClick',
+      'handleFontSizeChange',
+      'handleBulletStyleChange',
     ]);
   }
 
@@ -30,12 +31,16 @@ class Settings extends PureComponent {
     this.props.base.setFontSize(newFontSize);
   }
 
+  handleBulletStyleChange(newBulletStyle) {
+    this.props.base.setBulletStyle(newBulletStyle);
+  }
+
   handleCloseClick() {
     this.props.base.hideSettingsPage();
   }
 
   render() {
-    const { fontSize } = this.props;
+    const { fontSize, bulletStyle } = this.props;
 
     return (
       <div>
@@ -44,6 +49,13 @@ class Settings extends PureComponent {
           <TabButtons buttons={['Regular', 'Large']}
                       selectedButton={fontSize}
                       onSelect={this.handleFontSizeChange} />
+        </div>
+
+        <div className="setting-container">
+          <div className="setting-label">Bullet style</div>
+          <TabButtons buttons={['Classic', 'Fancy']}
+                      selectedButton={bulletStyle}
+                      onSelect={this.handleBulletStyleChange} />
         </div>
 
         <div className="settings-buttons-container">
@@ -58,6 +70,7 @@ class Settings extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
+    bulletStyle: state.base.get('bulletStyle') || 'Classic',
   };
 };
 
