@@ -18,7 +18,9 @@ class FileBrowser extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.dropbox.getDirectoryListing('');
+    const { currentFileBrowserDirectoryPath } = this.props;
+
+    this.props.dropbox.getDirectoryListing(currentFileBrowserDirectoryPath || '');
   }
 
   handleFileListElementClick(fileId) {
