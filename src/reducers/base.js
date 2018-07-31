@@ -40,8 +40,8 @@ const setBulletStyle = (state, action) => (
   state.set('bulletStyle', action.newBulletStyle)
 );
 
-const setTapTodoToAdvance = (state, action) => (
-  state.set('tapTodoToAdvance', action.newTapTodoToAdvance)
+const setShouldTapTodoToAdvance = (state, action) => (
+  state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance)
 );
 
 export default (state = new Map(), action) => {
@@ -66,8 +66,8 @@ export default (state = new Map(), action) => {
     return setFontSize(state, action);
   case 'SET_BULLET_STYLE':
     return setBulletStyle(state, action);
-  case 'SET_TAP_TODO_TO_ADVANCE':
-    return setTapTodoToAdvance(state, action);
+  case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
+    return setShouldTapTodoToAdvance(state, action);
   default:
     return state;
   }

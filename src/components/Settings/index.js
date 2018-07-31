@@ -8,6 +8,7 @@ import * as baseActions from '../../actions/base';
 import './Settings.css';
 
 import TabButtons from '../UI/TabButtons';
+import Switch from '../UI/Switch';
 
 import _ from 'lodash';
 
@@ -20,7 +21,7 @@ class Settings extends PureComponent {
       'handleCloseClick',
       'handleFontSizeChange',
       'handleBulletStyleChange',
-      'handleTapTodoToAdvanceChange',
+      'handleShouldTapTodoToAdvanceChange',
     ]);
   }
 
@@ -36,8 +37,10 @@ class Settings extends PureComponent {
     this.props.base.setBulletStyle(newBulletStyle);
   }
 
-  handleTapTodoToAdvanceChange(newTapTodoToAdvance) {
-    this.props.base.setTapTodoToAdvance(newTapTodoToAdvance);
+  handleShouldTapTodoToAdvanceChange() {
+    const { shouldTapTodoToAdvance } = this.props;
+
+    this.props.base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
   }
 
   handleCloseClick() {
@@ -45,7 +48,7 @@ class Settings extends PureComponent {
   }
 
   render() {
-    const { fontSize, bulletStyle, tapTodoToAdvance } = this.props;
+    const { fontSize, bulletStyle, shouldTapTodoToAdvance } = this.props;
 
     return (
       <div>
@@ -65,9 +68,8 @@ class Settings extends PureComponent {
 
         <div className="setting-container">
           <div className="setting-label">Tap TODO to advance state</div>
-          <TabButtons buttons={['No', 'Yes']}
-                      selectedButton={tapTodoToAdvance}
-                      onSelect={this.handleTapTodoToAdvanceChange} />
+          <Switch isEnabled={shouldTapTodoToAdvance}
+                  onToggle={this.handleShouldTapTodoToAdvanceChange} />
         </div>
 
         <div className="settings-buttons-container">
@@ -83,7 +85,7 @@ const mapStateToProps = (state, props) => {
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
-    tapTodoToAdvance: state.base.get('tapTodoToAdvance') || 'No',
+    shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
   };
 };
 

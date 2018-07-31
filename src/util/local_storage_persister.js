@@ -29,8 +29,8 @@ const fields = [
   },
   {
     category: 'base',
-    name: 'tapTodoToAdvance',
-    type: 'nullable'
+    name: 'shouldTapTodoToAdvance',
+    type: 'boolean'
   },
   // {
   //   category: 'org',
