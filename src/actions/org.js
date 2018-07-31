@@ -1,10 +1,15 @@
+import { ActionTypes } from 'redux-linear-undo';
+
 export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE', path, contents,
 });
 
-export const stopDisplayingFile = () => ({
-  type: 'STOP_DISPLAYING_FILE',
-});
+export const stopDisplayingFile = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: 'STOP_DISPLAYING_FILE' });
+    dispatch({ type: ActionTypes.CLEAR_HISTORY });
+  };
+};
 
 export const toggleHeaderOpened = headerId => ({
   type: 'TOGGLE_HEADER_OPENED', headerId,
