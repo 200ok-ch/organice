@@ -9,7 +9,7 @@ If you don't already keep your org files in Dropbox, I recommend symlinking them
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 #+END_SRC
 ** Development
-org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebookincubator/create-react-app][Create React App]].
+org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
 
 To install the necessary packages, run:
 
