@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage } from './base';
-import { displayFile, applyOpennessState } from './org';
+import { displayFile, applyOpennessState, setDirty } from './org';
 
 import exportOrg from '../lib/export_org';
 
@@ -78,6 +78,7 @@ export const downloadFile = path => {
         dispatch(applyOpennessState());
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, reader.result));
+        dispatch(setDirty(false));
       });
       reader.readAsText(response.fileBlob);
     });
@@ -100,6 +101,7 @@ export const pushCurrentFile = () => {
       autorename: true,
     }).then(response => {
       dispatch(hideLoadingMessage());
+      dispatch(setDirty(false));
     }).catch(error => {
       alert(`There was an error pushing the file: ${error}`);
       dispatch(hideLoadingMessage());

@@ -9,3 +9,14 @@
     margin: 10px;
     text-align: center;
 }
+
+.dirty-indicator {
+    padding: 3px;
+    background-color: gray;
+    opacity: 0.5;
+    color: white;
+    position: fixed;
+    bottom: 100px;
+    right: 10px;
+    font-weight: bold;
+}

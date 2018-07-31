@@ -91,6 +91,7 @@ class Entry extends PureComponent {
         {isShowingWhatsNewPage ? (
           <OrgFile backButtonText="Done"
                    onBackClick={this.handleWhatsNewFileBack}
+                   shouldDisableDirtyIndicator={true}
                    shouldDisableActionDrawer={true}
                    shouldDisableSyncButtons={false} />
         ) : (
@@ -101,6 +102,7 @@ class Entry extends PureComponent {
               isOrgFileDownloaded ? (
                 <OrgFile backButtonText="Back to file browser"
                          onBackClick={this.handleLiveFileBack}
+                         shouldDisableDirtyIndicator={false}
                          shouldDisableActionDrawer={false}
                          shouldDisableSyncButtons={false} />
               ) : (
@@ -108,9 +110,10 @@ class Entry extends PureComponent {
               )
             )
           ) : (
-            isShowingSamplePage ? (
+           isShowingSamplePage ? (
               <OrgFile backButtonText="Exit sample"
                        onBackClick={this.handleSampleFileBack}
+                       shouldDisableDirtyIndicator={true}
                        shouldDisableActionDrawer={false}
                        shouldDisableSyncButtons={true} />
             ) : (

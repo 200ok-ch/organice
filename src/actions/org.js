@@ -85,3 +85,7 @@ export const noOp = () => ({
 export const applyOpennessState = () => ({
   type: 'APPLY_OPENNESS_STATE',
 });
+
+export const setDirty = isDirty => ({
+  type: 'SET_DIRTY', isDirty,
+});

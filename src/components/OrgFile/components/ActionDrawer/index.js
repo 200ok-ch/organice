@@ -97,8 +97,17 @@ class ActionDrawer extends PureComponent {
   }
 
   handlePullClick() {
-    // TODO: Check for dirtiness and add a warning message.
-    this.props.dropbox.redownloadCurrentFile();
+    const { isDirty } = this.props;
+
+    const pull = () => this.props.dropbox.redownloadCurrentFile();
+
+    if (isDirty) {
+      if (window.confirm('You have unpushed changes. Are you sure you want to overwrite them?')) {
+        pull();
+      }
+    } else {
+      pull();
+    }
   }
 
   handleDoneClick() {
@@ -148,6 +157,7 @@ const mapStateToProps = (state, props) => {
     inDescriptionEditMode: state.org.present.get('inDescriptionEditMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     historyCount: state.org.past.length,
+    isDirty: state.org.present.get('isDirty'),
   };
 };
 

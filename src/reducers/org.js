@@ -265,7 +265,22 @@ const applyOpennessState = (state, action) => {
   return state.set('headers', headers);
 };
 
+const setDirty = (state, action) => (
+  state.set('isDirty', action.isDirty)
+);
+
 export default (state = new Map(), action) => {
+  const dirtyingActions = [
+    'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
+    'ADD_HEADER', 'REMOVE_HEADER', 'MOVE_HEADER_UP',
+    'MOVE_HEADER_DOWN', 'MOVE_HEADER_LEFT', 'MOVE_HEADER_RIGHT',
+    'MOVE_SUBTREE_LEFT', 'MOVE_SUBTREE_RIGHT',
+  ];
+
+  if (dirtyingActions.includes(action.type)) {
+    state = state.set('isDirty', true);
+  }
+
   switch (action.type) {
   case 'DISPLAY_FILE':
     return displayFile(state, action);
@@ -311,6 +326,8 @@ export default (state = new Map(), action) => {
     return noOp(state, action);
   case 'APPLY_OPENNESS_STATE':
     return applyOpennessState(state, action);
+  case 'SET_DIRTY':
+    return setDirty(state, action);
   default:
     return state;
   }

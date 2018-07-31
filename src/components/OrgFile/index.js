@@ -12,8 +12,10 @@ class OrgFile extends PureComponent {
       headers,
       backButtonText,
       onBackClick,
+      shouldDisableDirtyIndicator,
       shouldDisableSyncButtons,
       shouldDisableActionDrawer,
+      isDirty,
     } = this.props;
 
     return (
@@ -33,6 +35,8 @@ class OrgFile extends PureComponent {
           {backButtonText}
         </div>
 
+        {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
+
         {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
       </div>
     );
@@ -42,6 +46,7 @@ class OrgFile extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     headers: state.org.present.get('headers'),
+    isDirty: state.org.present.get('isDirty'),
   };
 };
 
