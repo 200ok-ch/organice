@@ -5,9 +5,13 @@ import './HeaderList.css';
 
 import Header from '../Header';
 
+import { numSubheadersOfHeaderWithId } from '../../../../lib/org_utils';
+
+import classNames from 'classnames';
+
 class HeaderList extends PureComponent {
   render() {
-    const { headers, selectedHeaderId } = this.props;
+    const { headers, selectedHeaderId, focusedHeaderId } = this.props;
 
     const headerRenderData = headers.map(header => {
       return {
@@ -40,6 +44,23 @@ class HeaderList extends PureComponent {
       }
     });
 
+    if (!!focusedHeaderId) {
+      const focusedHeaderIndex = headerRenderData.findIndex(headerRenderDatum => (
+        headerRenderDatum.header.get('id') === focusedHeaderId
+      ));
+
+      const previousHeaders = headerRenderData.slice(0, focusedHeaderIndex);
+      previousHeaders.forEach(headerRenderDatum => (
+        headerRenderDatum.displayed = false
+      ));
+
+      const numSubheaders = numSubheadersOfHeaderWithId(headers, focusedHeaderId);
+      const followingHeaders = headerRenderData.slice(focusedHeaderIndex + numSubheaders + 1);
+      followingHeaders.forEach(headerRenderDatum => (
+        headerRenderDatum.displayed = false
+      ));
+    }
+
     const headerColors = ['rgba(38, 143, 214, 1)', 'rgba(42, 164, 168, 1)',
                           'rgba(181, 142, 78, 1)', 'rgba(220, 64, 95, 1)',
                           'rgba(101, 128, 152, 1)', 'rgba(146, 164, 175, 1)',
@@ -49,8 +70,11 @@ class HeaderList extends PureComponent {
       headerRenderDatum.displayed
     ));
 
+    const className = classNames('header-list-container', {
+      'header-list-container--focused': !!focusedHeaderId,
+    });
     return (
-      <div className="header-list-container">
+      <div className={className}>
         {displayedHeaderRenderData.map((headerRenderDatum, index) => {
           const header = headerRenderDatum.header;
           const color = headerColors[(header.get('nestingLevel') - 1) % headerColors.length];
@@ -72,6 +96,7 @@ const mapStateToProps = (state, props) => {
   return {
     headers: state.org.present.get('headers'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
+    focusedHeaderId: state.org.present.get('focusedHeaderId'),
   };
 };
 

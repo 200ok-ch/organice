@@ -22,6 +22,10 @@ export const subheadersOfHeaderWithId = (headers, headerId) => {
   }
 };
 
+export const numSubheadersOfHeaderWithId = (headers, headerId) => (
+  subheadersOfHeaderWithId(headers, headerId).size
+);
+
 export const directParentIdOfHeaderWithId = (headers, headerId) => {
   const header = headerWithId(headers, headerId);
   const headerIndex = indexOfHeaderWithId(headers, headerId);

@@ -28,6 +28,8 @@ class ActionDrawer extends PureComponent {
       'handleMoveHeaderRightClick',
       'handleMoveSubtreeLeftClick',
       'handleMoveSubtreeRightClick',
+      'handleFocus',
+      'handleUnfocus',
       'handleUndoClick',
       'handlePushClick',
       'handlePullClick',
@@ -94,6 +96,14 @@ class ActionDrawer extends PureComponent {
     this.props.org.moveSubtreeRight(this.props.selectedHeaderId);
   }
 
+  handleFocus() {
+    this.props.org.focusHeader(this.props.selectedHeaderId);
+  }
+
+  handleUnfocus() {
+    this.props.org.unfocusHeader();
+  }
+
   handleUndoClick() {
     this.props.undo.undo();
   }
@@ -127,6 +137,7 @@ class ActionDrawer extends PureComponent {
       inDescriptionEditMode,
       historyCount,
       shouldDisableSyncButtons,
+      isFocusedHeaderActive,
     } = this.props;
 
     return (
@@ -147,6 +158,11 @@ class ActionDrawer extends PureComponent {
             <ActionButton iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} />
             <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} />
             <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} />
+            {isFocusedHeaderActive ? (
+              <ActionButton iconName="expand" isDisabled={false} onClick={this.handleUnfocus} />
+            ) : (
+              <ActionButton iconName="compress" isDisabled={false} onClick={this.handleFocus} />
+            )}
             <ActionButton iconName="undo" isDisabled={historyCount <= 1} onClick={this.handleUndoClick} />
             <ActionButton iconName="cloud-upload-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePushClick} />
             <ActionButton iconName="cloud-download-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePullClick} />
@@ -164,6 +180,7 @@ const mapStateToProps = (state, props) => {
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     historyCount: state.org.past.length,
     isDirty: state.org.present.get('isDirty'),
+    isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
   };
 };
 

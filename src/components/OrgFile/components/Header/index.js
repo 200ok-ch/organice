@@ -8,12 +8,18 @@ import classNames from 'classnames';
 import TitleLine from '../TitleLine';
 import HeaderContent from '../HeaderContent';
 
+import { headerWithId } from '../../../../lib/org_utils';
+
 class Header extends PureComponent {
   render() {
-    const { header, color, hasContent, isSelected, bulletStyle } = this.props;
+    const { header, color, hasContent, isSelected, bulletStyle, focusedHeader } = this.props;
+
+    const indentLevel = !!focusedHeader ? (
+      header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
+    ) : header.get('nestingLevel');
 
     const style = {
-      paddingLeft: 20 * header.get('nestingLevel'),
+      paddingLeft: 20 * indentLevel,
     };
 
     const className = classNames('header', {
@@ -34,8 +40,13 @@ class Header extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
+  const focusedHeader = !!state.org.present.get('focusedHeaderId') ? (
+    headerWithId(state.org.present.get('headers'), state.org.present.get('focusedHeaderId'))
+  ) : null;
+
   return {
     bulletStyle: state.base.get('bulletStyle'),
+    focusedHeader,
   };
 };
 

@@ -1,3 +1,6 @@
+* July 31st, 2018 (afternoon)
+** Implemented a "Focus" button - see the sample file for details.
+** Other minor niceties and bug fixes.
 * July 31st, 2018
 ** Finished a complete rewrite to use more modern tooling and best practices
 *** Achieved almost complete parity with the original version, minus a couple features that weren't used often. Please let me know if those features were important to you (or if you notice any bugs) by [[https://github.com/DanielDe/org-web/issues/new][creating an issue]].

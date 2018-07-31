@@ -107,6 +107,10 @@ const addHeader = (state, action) => {
                                        header.get('nestingLevel'),
                                        state.get('todoKeywordSets'));
 
+  if (action.headerId === state.get('focusedHeaderId')) {
+    state = state.set('focusedHeaderId', null);
+  }
+
   return state.update('headers', headers => (
     headers.insert(headerIndex + subheaders.size + 1, newHeader)
   ));
@@ -137,6 +141,10 @@ const removeHeader = (state, action) => {
   _.times(numHeadersToRemove).forEach(() => {
     headers = headers.delete(headerIndex);
   });
+
+  if (action.headerId === state.get('focusedHeaderId')) {
+    state = state.set('focusedHeaderId', null);
+  }
 
   return state.set('headers', headers);
 };
@@ -242,6 +250,14 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
+const focusHeader = (state, action) => {
+  return state.set('focusedHeaderId', action.headerId);
+};
+
+const unfocusHeader = state => (
+  state.set('focusedHeaderId', null)
+);
+
 const noOp = state => (
   state.update('noOpCounter', counter => (counter || 0) + 1)
 );
@@ -328,6 +344,10 @@ export default (state = new Map(), action) => {
     return applyOpennessState(state, action);
   case 'SET_DIRTY':
     return setDirty(state, action);
+  case 'FOCUS_HEADER':
+    return focusHeader(state, action);
+  case 'UNFOCUS_HEADER':
+    return unfocusHeader(state, action);
   default:
     return state;
   }

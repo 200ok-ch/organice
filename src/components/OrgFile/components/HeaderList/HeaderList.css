@@ -1,4 +1,10 @@
 .header-list-container {
     font-family: Courier;
-    margin-top: 30px;
+    margin-top: 10px;
+}
+
+.header-list-container--focused {
+    box-shadow: inset 0px 0px 5px 0px rgba(148, 148, 148, 0.75);
+    margin: 0;
+    margin-top: 10px;
 }

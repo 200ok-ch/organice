@@ -8,6 +8,7 @@ export const stopDisplayingFile = () => {
   return (dispatch, getState) => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
     dispatch({ type: ActionTypes.CLEAR_HISTORY });
+    dispatch(unfocusHeader());
   };
 };
 
@@ -81,6 +82,14 @@ export const moveSubtreeLeft = headerId => ({
 
 export const moveSubtreeRight = headerId => ({
   type: 'MOVE_SUBTREE_RIGHT', headerId,
+});
+
+export const focusHeader = headerId => ({
+  type: 'FOCUS_HEADER', headerId,
+});
+
+export const unfocusHeader = () => ({
+  type: 'UNFOCUS_HEADER',
 });
 
 export const noOp = () => ({
