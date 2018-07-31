@@ -15,7 +15,11 @@ class Settings extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSignOutClick', 'handleFontSizeChange']);
+    _.bindAll(this, [
+      'handleSignOutClick',
+      'handleFontSizeChange',
+      'handleCloseClick',
+    ]);
   }
 
   handleSignOutClick() {
@@ -24,6 +28,10 @@ class Settings extends PureComponent {
 
   handleFontSizeChange(newFontSize) {
     this.props.base.setFontSize(newFontSize);
+  }
+
+  handleCloseClick() {
+    this.props.base.hideSettingsPage();
   }
 
   render() {
@@ -40,6 +48,7 @@ class Settings extends PureComponent {
 
         <div className="settings-buttons-container">
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
+          <button className="btn settings-btn" onClick={this.handleCloseClick}>Close</button>
         </div>
       </div>
     );
