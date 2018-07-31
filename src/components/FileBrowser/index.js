@@ -63,7 +63,7 @@ class FileBrowser extends PureComponent {
           )}
 
           {(currentFileBrowserDirectoryListing || []).map(file => {
-            const iconClass = classNames('fas', {
+            const iconClass = classNames('file-browser__file-list__icon fas', {
               'fa-folder': file.get('isDirectory'),
               'file-browser__file-list__icon--directory': file.get('isDirectory'),
               'fa-file': !file.get('isDirectory') && !file.get('name').endsWith('.org-web-bak'),
