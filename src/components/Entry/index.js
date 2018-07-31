@@ -108,7 +108,8 @@ class Entry extends PureComponent {
                    onBackClick={this.handleWhatsNewFileBack}
                    shouldDisableDirtyIndicator={true}
                    shouldDisableActionDrawer={true}
-                   shouldDisableSyncButtons={false} />
+                   shouldDisableSyncButtons={false}
+                   parsingErrorMessage={"The contents of whats_new.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
         ) : (
           isAuthenticated ? (
             isShowingSettingsPage ? (
@@ -130,7 +131,8 @@ class Entry extends PureComponent {
                        onBackClick={this.handleSampleFileBack}
                        shouldDisableDirtyIndicator={true}
                        shouldDisableActionDrawer={false}
-                       shouldDisableSyncButtons={true} />
+                       shouldDisableSyncButtons={true}
+                       parsingErrorMessage={"The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
             ) : (
               <Landing onSignInClick={this.handleSignIn} onViewSampleClick={this.handleViewSample} />
             )

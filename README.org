@@ -19,7 +19,13 @@ To install the necessary packages, run:
 yarn install
 #+END_SRC
 
-To run the app you need to invoke this complicated looking command to set a couple environment variables appropriately (this is a hack until Create React App [[https://github.com/facebook/create-react-app/issues/3722][builds in nicer support for loading raw files]]). This is the command for the [[https://fishshell.com/][Fish shell]]:
+To run the app, run:
+
+#+BEGIN_SRC
+yarn start
+#+END_SRC
+
+Getting the "Sample" and "What's New" files to load requires this complicated looking command to set a couple environment variables appropriately (this is a hack until Create React App [[https://github.com/facebook/create-react-app/issues/3722][builds in nicer support for loading raw files]]). This is the command for the [[https://fishshell.com/][Fish shell]]:
 
 #+BEGIN_SRC
 env SAMPLE_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") WHATS_NEW_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./whats_new.org', 'r').read()))") yarn start

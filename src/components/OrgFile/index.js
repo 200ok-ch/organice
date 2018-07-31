@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import './OrgFile.css';
@@ -16,6 +16,7 @@ class OrgFile extends PureComponent {
       shouldDisableSyncButtons,
       shouldDisableActionDrawer,
       isDirty,
+      parsingErrorMessage,
     } = this.props;
 
     if (!headers) {
@@ -27,9 +28,16 @@ class OrgFile extends PureComponent {
         {headers.size === 0 ? (
           <div className="org-file__parsing-error-message">
             <h3>Couldn't parse file</h3>
-            If you think this is a bug, please
-            {' '}<a href="https://github.com/DanielDe/org-web/issues/new" target="_blank" rel="noopener noreferrer">create an issue</a>
-            {' '}and include the org file if possible!
+
+            {!!parsingErrorMessage ? (
+              <Fragment>{parsingErrorMessage}</Fragment>
+            ) : (
+              <Fragment>
+                If you think this is a bug, please
+                {' '}<a href="https://github.com/DanielDe/org-web/issues/new" target="_blank" rel="noopener noreferrer">create an issue</a>
+                {' '}and include the org file if possible!
+              </Fragment>
+            )}
           </div>
         ) : (
           <HeaderList />
