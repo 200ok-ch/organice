@@ -47,8 +47,14 @@ export const hideWhatsNewPage = () => ({
   type: 'HIDE_WHATS_NEW_PAGE',
 });
 
+export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
+  type: 'SET_LAST_VIEWED_FILE', lastViewedPath, lastViewedContents,
+});
+
 export const displayWhatsNew = () => {
   return (dispatch, getState) => {
+    dispatch(setLastViewedFile(getState().org.present.get('path'),
+                               getState().org.present.get('contents')));
     dispatch(showWhatsNewPage());
     dispatch(displayFile(null, whatsNewFileContents));
   };
@@ -58,6 +64,11 @@ export const hideWhatsNew = () => {
   return (dispatch, getState) => {
     dispatch(hideWhatsNewPage());
     dispatch(stopDisplayingFile());
+
+    if (!!getState().base.get('lastViewedPath')) {
+      dispatch(displayFile(getState().base.get('lastViewedPath'),
+                           getState().base.get('lastViewedContents')));
+    }
   };
 };
 

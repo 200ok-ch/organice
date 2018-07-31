@@ -54,6 +54,12 @@ const setLastSeenWhatsNewHeader = (state, action) => (
   state.set('lastSeenWhatsNewHeader', action.newLastSeenWhatsNewHeader)
 );
 
+const setLastViewedFile = (state, action) => (
+  state
+    .set('lastViewedPath', action.lastViewedPath)
+    .set('lastViewedContents', action.lastViewedContents)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -82,6 +88,8 @@ export default (state = new Map(), action) => {
     return setHasUnseenWhatsNew(state, action);
   case 'SET_LAST_SEEN_WHATS_NEW_HEADER':
     return setLastSeenWhatsNewHeader(state, action);
+  case 'SET_LAST_VIEWED_FILE':
+    return setLastViewedFile(state, action);
   default:
     return state;
   }
