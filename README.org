@@ -8,6 +8,8 @@ If you don't already keep your org files in Dropbox, I recommend symlinking them
 #+BEGIN_SRC
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 #+END_SRC
+
+*Important note:* On July 31st, 2018 I did a force push to ~master~ with a complete rewrite. The current ~master~ branch shares no history with the previous one, which you should be aware of if you've cloned or forked!
 ** Development
 org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
 
