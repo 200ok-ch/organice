@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import './Entry.css';
 
@@ -107,6 +107,16 @@ class Entry extends PureComponent {
     );
   }
 
+  renderFileBrowser({ match: { params: { path = '' } } }) {
+    if (!!path) {
+      path = '/' + path;
+    }
+
+    return (
+      <FileBrowser path={path} />
+    );
+  }
+
   render() {
     const {
       isAuthenticated,
@@ -131,6 +141,15 @@ class Entry extends PureComponent {
               isAuthenticated ? (
                 <Switch>
                   <Route path="/settings" component={Settings} />
+                  <Route path="/files/:path*" render={this.renderFileBrowser} />
+                  <Route path="/file/:filePath+" render={(props) => {
+                      return (
+                        <div>{props.match.params.filePath}</div>
+                      );
+                    }} />
+                  <Redirect to="/files" />
+
+                  {/*
                   <Route render={() => (
                       isOrgFileDownloaded ? (
                         <OrgFile backButtonText="Back to file browser"
@@ -142,6 +161,7 @@ class Entry extends PureComponent {
                         <FileBrowser />
                       )
                   )} />
+                   */}
                 </Switch>
               ) : (
                 <Switch>

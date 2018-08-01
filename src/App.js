@@ -13,10 +13,7 @@ class App extends PureComponent {
   constructor(props) {
     super(props);
 
-    let initialState = readInitialState();
-    initialState.dropbox = initialState.dropbox.set('currentFileBrowserDirectoryPath', '');
-
-    this.store = Store(initialState);
+    this.store = Store(readInitialState());
     this.store.subscribe(subscribeToChanges(this.store));
   }
 

@@ -2,27 +2,28 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import './FileBrowser.css';
+import { Link } from 'react-router-dom';
 
-import _ from 'lodash';
+import './FileBrowser.css';
 
 import classNames from 'classnames';
 
 import * as dropboxActions from '../../actions/dropbox';
 
 class FileBrowser extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, ['handleParentDirectoryClick']);
-  }
-
   componentDidMount() {
-    const { currentFileBrowserDirectoryPath } = this.props;
-
-    this.props.dropbox.getDirectoryListing(currentFileBrowserDirectoryPath || '');
+    this.props.dropbox.getDirectoryListing(this.props.path);
   }
 
+  componentDidUpdate(prevProps) {
+    const { path } = this.props;
+
+    if (prevProps.path !== path) {
+      this.props.dropbox.getDirectoryListing(path);
+    }
+  }
+
+  // TODO: probably kill this.
   handleFileListElementClick(fileId) {
     return () => {
       const { currentFileBrowserDirectoryListing } = this.props;
@@ -37,31 +38,32 @@ class FileBrowser extends PureComponent {
     };
   }
 
-  handleParentDirectoryClick() {
-    const pathParts = this.props.currentFileBrowserDirectoryPath.split('/');
-    const parentPath = pathParts.slice(0, pathParts.length - 1).join('/');
-    this.props.dropbox.getDirectoryListing(parentPath);
+  getParentDirectoryPath() {
+    const pathParts = this.props.path.split('/');
+    return pathParts.slice(0, pathParts.length - 1).join('/');
   }
 
   render() {
     const {
-      currentFileBrowserDirectoryPath,
+      path,
       currentFileBrowserDirectoryListing,
     } = this.props;
 
-    const isTopLevelDirectory = currentFileBrowserDirectoryPath === '';
+    const isTopLevelDirectory = path === '';
 
     return (
-      <div>
+      <div className="file-browser-container">
         <h3 className="file-browser__header">
-          Directory: {isTopLevelDirectory ? '/' : currentFileBrowserDirectoryPath}
+          Directory: {isTopLevelDirectory ? '/' : path}
         </h3>
 
         <ul className="file-browser__file-list">
           {!isTopLevelDirectory && (
-            <li className="file-browser__file-list__element" onClick={this.handleParentDirectoryClick}>
-              <i className="fas fa-folder file-browser__file-list__icon--directory" /> ..
-            </li>
+            <Link to={`/files${this.getParentDirectoryPath()}`}>
+              <li className="file-browser__file-list__element">
+                <i className="fas fa-folder file-browser__file-list__icon--directory" /> ..
+              </li>
+            </Link>
           )}
 
           {(currentFileBrowserDirectoryListing || []).map(file => {
@@ -72,6 +74,18 @@ class FileBrowser extends PureComponent {
               'file-browser__file-list__icon--not-org': !file.get('name').endsWith('.org'),
               'fa-copy': file.get('name').endsWith('.org-web-bak'),
             });
+
+            if (file.get('isDirectory')) {
+              return (
+                <Link to={`/files${file.get('path')}`} key={file.get('id')}>
+                  <li className="file-browser__file-list__element">
+                    <i className={iconClass} /> {file.get('name')}/
+                  </li>
+                </Link>
+              );
+            } else {
+              // TODO: link to files
+            }
 
             return (
               <li className="file-browser__file-list__element"
@@ -89,7 +103,6 @@ class FileBrowser extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    currentFileBrowserDirectoryPath: state.dropbox.get('currentFileBrowserDirectoryPath'),
     currentFileBrowserDirectoryListing: state.dropbox.get('currentFileBrowserDirectoryListing'),
   };
 };

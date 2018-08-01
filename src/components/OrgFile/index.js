@@ -2,19 +2,24 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Redirect } from 'react-router-dom';
+
 import './OrgFile.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
 
 import * as baseActions from '../../actions/base';
+import * as dropboxActions from '../../actions/dropbox';
 
 class OrgFile extends PureComponent {
   componentDidMount() {
-    const { staticFile } = this.props;
+    const { staticFile, path } = this.props;
 
     if (!!staticFile) {
       this.props.base.loadStaticFile(staticFile);
+    } else if (!!path) {
+      this.props.dropbox.downloadFile(path);
     }
   }
 
@@ -36,7 +41,12 @@ class OrgFile extends PureComponent {
       shouldDisableActionDrawer,
       isDirty,
       parsingErrorMessage,
+      path,
     } = this.props;
+
+    if (!path) {
+      return <Redirect to="/files" />;
+    }
 
     if (!headers) {
       return <div></div>;
@@ -78,12 +88,14 @@ const mapStateToProps = (state, props) => {
   return {
     headers: state.org.present.get('headers'),
     isDirty: state.org.present.get('isDirty'),
+    path: state.org.present.get('path'),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     base: bindActionCreators(baseActions, dispatch),
+    dropbox: bindActionCreators(dropboxActions, dispatch),
   };
 };
 

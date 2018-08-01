@@ -8,11 +8,9 @@ const signOut = (state, action) => (
   state.set('accessToken', null)
 );
 
-const setCurrentFileBrowserDirectoryListing = (state, action) => {
-  return state
-    .set('currentFileBrowserDirectoryPath', action.directoryPath)
-    .set('currentFileBrowserDirectoryListing', action.directoryListing);
-};
+const setCurrentFileBrowserDirectoryListing = (state, action) => (
+  state.set('currentFileBrowserDirectoryListing', action.directoryListing)
+);
 
 export default (state = new Map(), action) => {
   switch (action.type) {
