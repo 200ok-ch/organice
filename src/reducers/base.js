@@ -8,14 +8,6 @@ const hideLoadingMessage = (state, action) => (
   state.set('loadingMessage', null)
 );
 
-const showSettingsPage = state => (
-  state.set('isShowingSettingsPage', true)
-);
-
-const hideSettingsPage = state => (
-  state.set('isShowingSettingsPage', false)
-);
-
 const setFontSize = (state, action) => (
   state.set('fontSize', action.newFontSize)
 );
@@ -48,10 +40,6 @@ export default (state = new Map(), action) => {
     return setLoadingMessage(state, action);
   case 'HIDE_LOADING_MESSAGE':
     return hideLoadingMessage(state, action);
-  case 'SHOW_SETTINGS_PAGE':
-    return showSettingsPage(state, action);
-  case 'HIDE_SETTINGS_PAGE':
-    return hideSettingsPage(state, action);
   case 'SET_FONT_SIZE':
     return setFontSize(state, action);
   case 'SET_BULLET_STYLE':

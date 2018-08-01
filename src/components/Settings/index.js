@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { withRouter } from 'react-router-dom';
+
 import * as dropboxActions from '../../actions/dropbox';
 import * as baseActions from '../../actions/base';
 
@@ -44,7 +46,7 @@ class Settings extends PureComponent {
   }
 
   handleCloseClick() {
-    this.props.base.hideSettingsPage();
+    this.props.history.goBack();
   }
 
   render() {
@@ -96,4 +98,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Settings));

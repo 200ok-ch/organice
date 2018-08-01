@@ -17,17 +17,11 @@ class HeaderBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSettingsClick', 'handleWhatsNewClose']);
+    _.bindAll(this, ['handleSettingsClose', 'handleWhatsNewClose']);
   }
 
-  handleSettingsClick() {
-    const { isShowingSettingsPage } = this.props;
-
-    if (isShowingSettingsPage) {
-      this.props.base.hideSettingsPage();
-    } else {
-      this.props.base.showSettingsPage();
-    }
+  handleSettingsClose() {
+    this.props.history.goBack();
   }
 
   handleWhatsNewClose() {
@@ -43,6 +37,7 @@ class HeaderBar extends PureComponent {
     } = this.props;
 
     const isWhatsNewPageActive = pathname === '/whats_new';
+    const isSettingsPageActive = pathname === '/settings';
 
     const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
       'whats-new-icon--has-unseen': hasUnseenWhatsNew,
@@ -69,7 +64,13 @@ class HeaderBar extends PureComponent {
           </a>
 
           {isAuthenticated && (
-            <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsClick} />
+            isSettingsPageActive ? (
+              <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsClose} />
+            ) : (
+              <Link to="/settings">
+                <i className="fas fa-cogs header-bar__actions__item" />
+              </Link>
+            )
           )}
         </div>
       </div>
@@ -80,7 +81,6 @@ class HeaderBar extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
-    isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     hasUnseenWhatsNew: state.base.get('hasUnseenWhatsNew'),
   };
 };

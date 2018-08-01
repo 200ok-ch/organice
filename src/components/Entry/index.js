@@ -1,6 +1,6 @@
 /* global process */
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -112,7 +112,6 @@ class Entry extends PureComponent {
       isAuthenticated,
       loadingMessage,
       isOrgFileDownloaded,
-      isShowingSettingsPage,
       fontSize,
     } = this.props;
 
@@ -129,19 +128,19 @@ class Entry extends PureComponent {
         <Route path="/whats_new" exact={true} render={this.renderWhatsNewFile} />
 
         {isAuthenticated ? (
-            isShowingSettingsPage ? (
-              <Settings />
+          <Fragment>
+            <Route path="/settings" component={Settings} />
+
+            {isOrgFileDownloaded ? (
+              <OrgFile backButtonText="Back to file browser"
+                       onBackClick={this.handleLiveFileBack}
+                       shouldDisableDirtyIndicator={false}
+                       shouldDisableActionDrawer={false}
+                       shouldDisableSyncButtons={false} />
             ) : (
-              isOrgFileDownloaded ? (
-                <OrgFile backButtonText="Back to file browser"
-                         onBackClick={this.handleLiveFileBack}
-                         shouldDisableDirtyIndicator={false}
-                         shouldDisableActionDrawer={false}
-                         shouldDisableSyncButtons={false} />
-              ) : (
-                <FileBrowser />
-              )
-            )
+              <FileBrowser />
+            )}
+          </Fragment>
         ) : (
           <Switch>
             <Route path="/sample" exact={true} render={this.renderSampleFile} />
@@ -160,7 +159,6 @@ const mapStateToProps = (state, props) => {
     isOrgFileDownloaded: !!state.org.present.get('path'),
     orgFilePath: state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
-    isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     fontSize: state.base.get('fontSize'),
     lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
   };
