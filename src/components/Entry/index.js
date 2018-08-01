@@ -1,6 +1,6 @@
 /* global process */
 
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -125,29 +125,32 @@ class Entry extends PureComponent {
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
-        <Route path="/whats_new" exact={true} render={this.renderWhatsNewFile} />
-
-        {isAuthenticated ? (
-          <Fragment>
-            <Route path="/settings" component={Settings} />
-
-            {isOrgFileDownloaded ? (
-              <OrgFile backButtonText="Back to file browser"
-                       onBackClick={this.handleLiveFileBack}
-                       shouldDisableDirtyIndicator={false}
-                       shouldDisableActionDrawer={false}
-                       shouldDisableSyncButtons={false} />
-            ) : (
-              <FileBrowser />
-            )}
-          </Fragment>
-        ) : (
-          <Switch>
-            <Route path="/sample" exact={true} render={this.renderSampleFile} />
-            <Route render={this.renderLanding} />
-          </Switch>
-          )
-        }
+        <Switch>
+          <Route path="/whats_new" exact={true} render={this.renderWhatsNewFile} />
+          <Route render={() => (
+              isAuthenticated ? (
+                <Switch>
+                  <Route path="/settings" component={Settings} />
+                  <Route render={() => (
+                      isOrgFileDownloaded ? (
+                        <OrgFile backButtonText="Back to file browser"
+                                 onBackClick={this.handleLiveFileBack}
+                                 shouldDisableDirtyIndicator={false}
+                                 shouldDisableActionDrawer={false}
+                                 shouldDisableSyncButtons={false} />
+                      ) : (
+                        <FileBrowser />
+                      )
+                  )} />
+                </Switch>
+              ) : (
+                <Switch>
+                  <Route path="/sample" exact={true} render={this.renderSampleFile} />
+                  <Route render={this.renderLanding} />
+                </Switch>
+              )
+          )} />
+        </Switch>
       </div>
     );
   }
