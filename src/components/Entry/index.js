@@ -63,6 +63,8 @@ class Entry extends PureComponent {
   }
 
   handleSignIn() {
+    this.props.history.push('/');
+
     const dropbox = new Dropbox({ clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID });
     const authURL = dropbox.getAuthenticationUrl(window.location.href);
     window.location = authURL;
