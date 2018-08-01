@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Link, withRouter } from 'react-router-dom';
+
 import logo from './org-web.svg';
 
 import './HeaderBar.css';
@@ -15,7 +17,7 @@ class HeaderBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSettingsClick', 'handleWhatsNewClick']);
+    _.bindAll(this, ['handleSettingsClick', 'handleWhatsNewClose']);
   }
 
   handleSettingsClick() {
@@ -28,19 +30,20 @@ class HeaderBar extends PureComponent {
     }
   }
 
-  handleWhatsNewClick() {
-    const { isShowingWhatsNewPage } = this.props;
-
-    if (isShowingWhatsNewPage) {
-      this.props.base.hideWhatsNew();
-    } else {
-      this.props.base.displayWhatsNew();
-    }
+  handleWhatsNewClose() {
+    this.props.history.goBack();
   }
 
   render() {
-    const { onSignInClick, isAuthenticated, hasUnseenWhatsNew } = this.props;
+    const {
+      onSignInClick,
+      isAuthenticated,
+      hasUnseenWhatsNew,
+      location: { pathname },
+    } = this.props;
 
+    const isWhatsNewPageActive = pathname === '/whats_new';
+l
     const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
       'whats-new-icon--has-unseen': hasUnseenWhatsNew,
     });
@@ -53,7 +56,13 @@ class HeaderBar extends PureComponent {
         <div className="header-bar__actions">
           {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
-          <i className={whatsNewClassName} onClick={this.handleWhatsNewClick} />
+          {isWhatsNewPageActive ? (
+            <i className={whatsNewClassName} onClick={this.handleWhatsNewClose} />
+          ) : (
+            <Link to="/whats_new">
+              <i className={whatsNewClassName} />
+            </Link>
+          )}
 
           <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-github header-bar__actions__item" />
@@ -72,7 +81,6 @@ const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
-    isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
     hasUnseenWhatsNew: state.base.get('hasUnseenWhatsNew'),
   };
 };
@@ -83,4 +91,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderBar);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HeaderBar));

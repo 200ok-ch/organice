@@ -4,6 +4,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Route, withRouter } from 'react-router-dom';
+
 import './Entry.css';
 
 import { Dropbox } from 'dropbox';
@@ -36,6 +38,7 @@ class Entry extends PureComponent {
       'handleLiveFileBack',
       'handleSampleFileBack',
       'handleWhatsNewFileBack',
+      'renderWhatsNewFile',
     ]);
   }
 
@@ -79,7 +82,19 @@ class Entry extends PureComponent {
   }
 
   handleWhatsNewFileBack() {
-    this.props.base.hideWhatsNew();
+    this.props.history.goBack();
+  }
+
+  renderWhatsNewFile() {
+    return (
+      <OrgFile backButtonText="Done"
+               onBackClick={this.handleWhatsNewFileBack}
+               staticFile="whats_new"
+               shouldDisableDirtyIndicator={true}
+               shouldDisableActionDrawer={true}
+               shouldDisableSyncButtons={false}
+               parsingErrorMessage={"The contents of whats_new.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
+    );
   }
 
   render() {
@@ -89,7 +104,6 @@ class Entry extends PureComponent {
       isOrgFileDownloaded,
       isShowingSettingsPage,
       isShowingSamplePage,
-      isShowingWhatsNewPage,
       fontSize,
     } = this.props;
 
@@ -103,7 +117,10 @@ class Entry extends PureComponent {
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
-        {isShowingWhatsNewPage ? (
+        <Route path="/whats_new" exact={true} render={this.renderWhatsNewFile} />
+
+        {/* TODO: kill this */}
+        {false ? (
           <OrgFile backButtonText="Done"
                    onBackClick={this.handleWhatsNewFileBack}
                    shouldDisableDirtyIndicator={true}
@@ -126,7 +143,7 @@ class Entry extends PureComponent {
               )
             )
           ) : (
-           isShowingSamplePage ? (
+            isShowingSamplePage ? (
               <OrgFile backButtonText="Exit sample"
                        onBackClick={this.handleSampleFileBack}
                        shouldDisableDirtyIndicator={true}
@@ -151,7 +168,6 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
     isShowingSamplePage: state.base.get('isShowingSamplePage'),
-    isShowingWhatsNewPage: state.base.get('isShowingWhatsNewPage'),
     fontSize: state.base.get('fontSize'),
     lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
   };
@@ -165,4 +181,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Entry);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entry));

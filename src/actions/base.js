@@ -18,20 +18,24 @@ export const hideSettingsPage = () => ({
   type: 'HIDE_SETTINGS_PAGE',
 });
 
+// TODO: kill this
 export const showSamplePage = () => ({
   type: 'SHOW_SAMPLE_PAGE',
 });
 
+// TODO: kill this
 export const hideSamplePage = () => ({
   type: 'HIDE_SAMPLE_PAGE',
 });
 
+// TODO: kill this
 export const displaySample = () => {  return (dispatch, getState) => {
     dispatch(showSamplePage());
     dispatch(displayFile(null, sampleFileContents));
   };
 };
 
+// TODO: kill this
 export const hideSample = () => {
   return (dispatch, getState) => {
     dispatch(hideSamplePage());
@@ -39,30 +43,26 @@ export const hideSample = () => {
   };
 };
 
-export const showWhatsNewPage = () => ({
-  type: 'SHOW_WHATS_NEW_PAGE',
-});
-
-export const hideWhatsNewPage = () => ({
-  type: 'HIDE_WHATS_NEW_PAGE',
-});
-
 export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
   type: 'SET_LAST_VIEWED_FILE', lastViewedPath, lastViewedContents,
 });
 
-export const displayWhatsNew = () => {
+export const loadStaticFile = staticFile => {
   return (dispatch, getState) => {
     dispatch(setLastViewedFile(getState().org.present.get('path'),
                                getState().org.present.get('contents')));
-    dispatch(showWhatsNewPage());
-    dispatch(displayFile(null, whatsNewFileContents));
+
+    const fileContents = {
+      'whats_new': whatsNewFileContents,
+      'sample': sampleFileContents,
+    }[staticFile];
+
+    dispatch(displayFile(null, fileContents));
   };
 };
 
-export const hideWhatsNew = () => {
+export const unloadStaticFile = () => {
   return (dispatch, getState) => {
-    dispatch(hideWhatsNewPage());
     dispatch(stopDisplayingFile());
 
     if (!!getState().base.get('lastViewedPath')) {

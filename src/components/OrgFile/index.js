@@ -1,12 +1,31 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './OrgFile.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
 
+import * as baseActions from '../../actions/base';
+
 class OrgFile extends PureComponent {
+  componentDidMount() {
+    const { staticFile } = this.props;
+
+    if (!!staticFile) {
+      this.props.base.loadStaticFile(staticFile);
+    }
+  }
+
+  componentWillUnmount() {
+    const { staticFile } = this.props;
+
+    if (!!staticFile) {
+      this.props.base.unloadStaticFile();
+    }
+  }
+
   render() {
     const {
       headers,
@@ -63,7 +82,9 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    base: bindActionCreators(baseActions, dispatch),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrgFile);

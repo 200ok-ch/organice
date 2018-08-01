@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
 import { readInitialState, subscribeToChanges } from './util/local_storage_persister';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import './App.css';
 import './base.css';
@@ -21,11 +22,13 @@ class App extends PureComponent {
 
   render() {
     return (
-      <Provider store={this.store}>
-        <div className="App">
-          <Entry />
-        </div>
-      </Provider>
+      <Router>
+        <Provider store={this.store}>
+          <div className="App">
+            <Entry />
+          </div>
+        </Provider>
+      </Router>
     );
   }
 }
