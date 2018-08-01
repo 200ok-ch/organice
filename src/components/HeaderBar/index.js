@@ -43,7 +43,7 @@ class HeaderBar extends PureComponent {
     } = this.props;
 
     const isWhatsNewPageActive = pathname === '/whats_new';
-l
+
     const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
       'whats-new-icon--has-unseen': hasUnseenWhatsNew,
     });

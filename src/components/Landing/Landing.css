@@ -4,6 +4,10 @@
     align-items: center;
 }
 
+.landing-container a {
+    text-decoration: none;
+}
+
 .landing-button {
     text-align: center;
 

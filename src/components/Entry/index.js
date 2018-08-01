@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Route, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
 import './Entry.css';
 
@@ -34,11 +34,11 @@ class Entry extends PureComponent {
 
     _.bindAll(this, [
       'handleSignIn',
-      'handleViewSample',
       'handleLiveFileBack',
-      'handleSampleFileBack',
-      'handleWhatsNewFileBack',
+      'handleStaticFileBack',
       'renderWhatsNewFile',
+      'renderSampleFile',
+      'renderLanding',
     ]);
   }
 
@@ -51,7 +51,7 @@ class Entry extends PureComponent {
       window.location.hash = '';
     }
 
-    if (orgFilePath) {
+    if (isAuthenticated && orgFilePath) {
       this.props.dropbox.downloadFile(orgFilePath);
     }
 
@@ -73,27 +73,37 @@ class Entry extends PureComponent {
     this.props.org.stopDisplayingFile();
   }
 
-  handleViewSample() {
-    this.props.base.displaySample();
-  }
-
-  handleSampleFileBack() {
-    this.props.base.hideSample();
-  }
-
-  handleWhatsNewFileBack() {
+  handleStaticFileBack() {
     this.props.history.goBack();
   }
 
   renderWhatsNewFile() {
     return (
       <OrgFile backButtonText="Done"
-               onBackClick={this.handleWhatsNewFileBack}
+               onBackClick={this.handleStaticFileBack}
                staticFile="whats_new"
                shouldDisableDirtyIndicator={true}
                shouldDisableActionDrawer={true}
                shouldDisableSyncButtons={false}
                parsingErrorMessage={"The contents of whats_new.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
+    );
+  }
+
+  renderSampleFile() {
+    return (
+      <OrgFile backButtonText="Exit sample"
+               onBackClick={this.handleStaticFileBack}
+               staticFile="sample"
+               shouldDisableDirtyIndicator={true}
+               shouldDisableActionDrawer={false}
+               shouldDisableSyncButtons={true}
+               parsingErrorMessage={"The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
+    );
+  }
+
+  renderLanding() {
+    return (
+      <Landing onSignInClick={this.handleSignIn} />
     );
   }
 
@@ -103,7 +113,6 @@ class Entry extends PureComponent {
       loadingMessage,
       isOrgFileDownloaded,
       isShowingSettingsPage,
-      isShowingSamplePage,
       fontSize,
     } = this.props;
 
@@ -119,16 +128,7 @@ class Entry extends PureComponent {
 
         <Route path="/whats_new" exact={true} render={this.renderWhatsNewFile} />
 
-        {/* TODO: kill this */}
-        {false ? (
-          <OrgFile backButtonText="Done"
-                   onBackClick={this.handleWhatsNewFileBack}
-                   shouldDisableDirtyIndicator={true}
-                   shouldDisableActionDrawer={true}
-                   shouldDisableSyncButtons={false}
-                   parsingErrorMessage={"The contents of whats_new.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
-        ) : (
-          isAuthenticated ? (
+        {isAuthenticated ? (
             isShowingSettingsPage ? (
               <Settings />
             ) : (
@@ -142,19 +142,13 @@ class Entry extends PureComponent {
                 <FileBrowser />
               )
             )
-          ) : (
-            isShowingSamplePage ? (
-              <OrgFile backButtonText="Exit sample"
-                       onBackClick={this.handleSampleFileBack}
-                       shouldDisableDirtyIndicator={true}
-                       shouldDisableActionDrawer={false}
-                       shouldDisableSyncButtons={true}
-                       parsingErrorMessage={"The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
-            ) : (
-              <Landing onSignInClick={this.handleSignIn} onViewSampleClick={this.handleViewSample} />
-            )
+        ) : (
+          <Switch>
+            <Route path="/sample" exact={true} render={this.renderSampleFile} />
+            <Route render={this.renderLanding} />
+          </Switch>
           )
-        )}
+        }
       </div>
     );
   }
@@ -167,7 +161,6 @@ const mapStateToProps = (state, props) => {
     orgFilePath: state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
     isShowingSettingsPage: state.base.get('isShowingSettingsPage'),
-    isShowingSamplePage: state.base.get('isShowingSamplePage'),
     fontSize: state.base.get('fontSize'),
     lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
   };

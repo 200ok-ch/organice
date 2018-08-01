@@ -18,31 +18,6 @@ export const hideSettingsPage = () => ({
   type: 'HIDE_SETTINGS_PAGE',
 });
 
-// TODO: kill this
-export const showSamplePage = () => ({
-  type: 'SHOW_SAMPLE_PAGE',
-});
-
-// TODO: kill this
-export const hideSamplePage = () => ({
-  type: 'HIDE_SAMPLE_PAGE',
-});
-
-// TODO: kill this
-export const displaySample = () => {  return (dispatch, getState) => {
-    dispatch(showSamplePage());
-    dispatch(displayFile(null, sampleFileContents));
-  };
-};
-
-// TODO: kill this
-export const hideSample = () => {
-  return (dispatch, getState) => {
-    dispatch(hideSamplePage());
-    dispatch(stopDisplayingFile());
-  };
-};
-
 export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
   type: 'SET_LAST_VIEWED_FILE', lastViewedPath, lastViewedContents,
 });

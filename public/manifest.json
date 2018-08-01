@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "org-web",
+  "name": "org-web",
   "icons": [
     {
       "src": "favicon.ico",
