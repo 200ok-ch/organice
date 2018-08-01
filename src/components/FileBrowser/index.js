@@ -23,21 +23,6 @@ class FileBrowser extends PureComponent {
     }
   }
 
-  // TODO: probably kill this.
-  handleFileListElementClick(fileId) {
-    return () => {
-      const { currentFileBrowserDirectoryListing } = this.props;
-
-      const selectedFile = currentFileBrowserDirectoryListing.find(file => file.get('id') === fileId);
-
-      if (selectedFile.get('isDirectory')) {
-        this.props.dropbox.getDirectoryListing(selectedFile.get('path'));
-      } else {
-        this.props.dropbox.downloadFile(selectedFile.get('path'));
-      }
-    };
-  }
-
   getParentDirectoryPath() {
     const pathParts = this.props.path.split('/');
     return pathParts.slice(0, pathParts.length - 1).join('/');
@@ -84,17 +69,15 @@ class FileBrowser extends PureComponent {
                 </Link>
               );
             } else {
-              // TODO: link to files
+              return (
+                <Link to={`/file${file.get('path')}`} key={file.get('id')}>
+                  <li className="file-browser__file-list__element">
+                    <i className={iconClass} /> {file.get('name')}
+                  </li>
+                </Link>
+              );
             }
-
-            return (
-              <li className="file-browser__file-list__element"
-                  key={file.get('id')}
-                  onClick={this.handleFileListElementClick(file.get('id'))}>
-                <i className={iconClass} /> {file.get('name')}{file.get('isDirectory') ? '/' : ''}
-              </li>
-            );
-            })}
+          })}
         </ul>
       </div>
     );

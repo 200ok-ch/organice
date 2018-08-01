@@ -39,20 +39,18 @@ class Entry extends PureComponent {
       'renderWhatsNewFile',
       'renderSampleFile',
       'renderLanding',
+      'renderFileBrowser',
+      'renderFile',
     ]);
   }
 
   componentDidMount() {
-    const { orgFilePath, lastSeenWhatsNewHeader, isAuthenticated } = this.props;
+    const { lastSeenWhatsNewHeader, isAuthenticated } = this.props;
 
     const accessToken = parseQueryString(window.location.hash).access_token;
     if (accessToken) {
       this.props.dropbox.authenticate(accessToken);
       window.location.hash = '';
-    }
-
-    if (isAuthenticated && orgFilePath) {
-      this.props.dropbox.downloadFile(orgFilePath);
     }
 
     const whatsNewFile = parseOrg(whatsNewFileContents);
@@ -70,6 +68,7 @@ class Entry extends PureComponent {
   }
 
   handleLiveFileBack() {
+    this.props.history.goBack();
     this.props.org.stopDisplayingFile();
   }
 
@@ -112,8 +111,21 @@ class Entry extends PureComponent {
       path = '/' + path;
     }
 
+    return <FileBrowser path={path} />;
+  }
+
+  renderFile({ match: { params: { path } } }) {
+    if (!!path) {
+      path = '/' + path;
+    }
+
     return (
-      <FileBrowser path={path} />
+      <OrgFile path={path}
+               backButtonText="Back to file browser"
+               onBackClick={this.handleLiveFileBack}
+               shouldDisableDirtyIndicator={false}
+               shouldDisableActionDrawer={false}
+               shouldDisableSyncButtons={false} />
     );
   }
 
@@ -121,7 +133,6 @@ class Entry extends PureComponent {
     const {
       isAuthenticated,
       loadingMessage,
-      isOrgFileDownloaded,
       fontSize,
     } = this.props;
 
@@ -141,27 +152,9 @@ class Entry extends PureComponent {
               isAuthenticated ? (
                 <Switch>
                   <Route path="/settings" component={Settings} />
+                  <Route path="/file/:path+" render={this.renderFile} />
                   <Route path="/files/:path*" render={this.renderFileBrowser} />
-                  <Route path="/file/:filePath+" render={(props) => {
-                      return (
-                        <div>{props.match.params.filePath}</div>
-                      );
-                    }} />
                   <Redirect to="/files" />
-
-                  {/*
-                  <Route render={() => (
-                      isOrgFileDownloaded ? (
-                        <OrgFile backButtonText="Back to file browser"
-                                 onBackClick={this.handleLiveFileBack}
-                                 shouldDisableDirtyIndicator={false}
-                                 shouldDisableActionDrawer={false}
-                                 shouldDisableSyncButtons={false} />
-                      ) : (
-                        <FileBrowser />
-                      )
-                  )} />
-                   */}
                 </Switch>
               ) : (
                 <Switch>
@@ -179,8 +172,6 @@ class Entry extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
-    isOrgFileDownloaded: !!state.org.present.get('path'),
-    orgFilePath: state.org.present.get('path'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
     fontSize: state.base.get('fontSize'),
     lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),

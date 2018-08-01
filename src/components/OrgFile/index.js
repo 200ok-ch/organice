@@ -42,9 +42,10 @@ class OrgFile extends PureComponent {
       isDirty,
       parsingErrorMessage,
       path,
+      staticFile,
     } = this.props;
 
-    if (!path) {
+    if (!path && !staticFile) {
       return <Redirect to="/files" />;
     }
 
@@ -88,7 +89,6 @@ const mapStateToProps = (state, props) => {
   return {
     headers: state.org.present.get('headers'),
     isDirty: state.org.present.get('isDirty'),
-    path: state.org.present.get('path'),
   };
 };
 
