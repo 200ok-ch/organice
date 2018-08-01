@@ -12,6 +12,8 @@ import './Settings.css';
 import TabButtons from '../UI/TabButtons';
 import Switch from '../UI/Switch';
 
+import goBackOrToRoot from '../../util/go_back_or_to_root';
+
 import _ from 'lodash';
 
 class Settings extends PureComponent {
@@ -46,7 +48,7 @@ class Settings extends PureComponent {
   }
 
   handleCloseClick() {
-    this.props.history.goBack();
+    goBackOrToRoot(this.props.history);
   }
 
   render() {

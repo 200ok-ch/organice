@@ -13,19 +13,17 @@ import * as baseActions from '../../actions/base';
 import _ from 'lodash';
 import classNames from 'classnames';
 
+import goBackOrToRoot from '../../util/go_back_or_to_root';
+
 class HeaderBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSettingsClose', 'handleWhatsNewClose']);
+    _.bindAll(this, ['handleSettingsWhatsNewClose']);
   }
 
-  handleSettingsClose() {
-    this.props.history.goBack();
-  }
-
-  handleWhatsNewClose() {
-    this.props.history.goBack();
+  handleSettingsWhatsNewClose() {
+    goBackOrToRoot(this.props.history);
   }
 
   render() {
@@ -52,7 +50,7 @@ class HeaderBar extends PureComponent {
           {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
           {isWhatsNewPageActive ? (
-            <i className={whatsNewClassName} onClick={this.handleWhatsNewClose} />
+            <i className={whatsNewClassName} onClick={this.handleSettingsWhatsNewClose} />
           ) : (
             <Link to="/whats_new">
               <i className={whatsNewClassName} />
@@ -65,7 +63,7 @@ class HeaderBar extends PureComponent {
 
           {isAuthenticated && (
             isSettingsPageActive ? (
-              <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsClose} />
+              <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsWhatsNewClose} />
             ) : (
               <Link to="/settings">
                 <i className="fas fa-cogs header-bar__actions__item" />

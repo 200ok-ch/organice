@@ -14,6 +14,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import parseQueryString from '../../util/parse_query_string';
+import goBackOrToRoot from '../../util/go_back_or_to_root';
 import { parseOrg } from '../../lib/parse_org';
 import { whatsNewFileContents } from '../../lib/static_file_contents';
 
@@ -68,12 +69,12 @@ class Entry extends PureComponent {
   }
 
   handleLiveFileBack() {
-    this.props.history.goBack();
+    goBackOrToRoot(this.props.history);
     this.props.org.stopDisplayingFile();
   }
 
   handleStaticFileBack() {
-    this.props.history.goBack();
+    goBackOrToRoot(this.props.history);
   }
 
   renderWhatsNewFile() {
@@ -159,7 +160,8 @@ class Entry extends PureComponent {
               ) : (
                 <Switch>
                   <Route path="/sample" exact={true} render={this.renderSampleFile} />
-                  <Route render={this.renderLanding} />
+                  <Route path="/" exact={true} render={this.renderLanding} />
+                  <Redirect to="/" />
                 </Switch>
               )
           )} />
