@@ -13,11 +13,6 @@ const isLocalStorageAvailable = () => {
 
 const fields = [
   {
-    category: 'org',
-    name: 'path',
-    type: 'nullable'
-  },
-  {
     category: 'base',
     name: 'fontSize',
     type: 'nullable'

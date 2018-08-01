@@ -14,11 +14,11 @@ import * as dropboxActions from '../../actions/dropbox';
 
 class OrgFile extends PureComponent {
   componentDidMount() {
-    const { staticFile, path } = this.props;
+    const { staticFile, path, loadedPath } = this.props;
 
     if (!!staticFile) {
       this.props.base.loadStaticFile(staticFile);
-    } else if (!!path) {
+    } else if (!!path && path !== loadedPath) {
       this.props.dropbox.downloadFile(path);
     }
   }
@@ -89,6 +89,7 @@ const mapStateToProps = (state, props) => {
   return {
     headers: state.org.present.get('headers'),
     isDirty: state.org.present.get('isDirty'),
+    loadedPath: state.org.present.get('path'),
   };
 };
 
