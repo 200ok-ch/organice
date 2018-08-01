@@ -40,6 +40,10 @@ const toggleHeaderOpened = (state, action) => {
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
   const isOpened = headerWithId(headers, action.headerId).get('opened');
 
+  if (isOpened && state.get('focusedHeaderId') === action.headerId) {
+    return state;
+  }
+
   if (isOpened) {
     const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
     subheaders.forEach((subheader, index) => {
