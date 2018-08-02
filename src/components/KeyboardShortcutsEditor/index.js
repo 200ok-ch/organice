@@ -2,13 +2,15 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import { Map } from 'immutable';
 
 import ShortcutRow from './components/ShortcutRow';
 
 import * as baseActions from '../../actions/base';
+
+import goBackOrToRoot from '../../util/go_back_or_to_root';
 
 import './KeyboardShortcutsEditor.css';
 
@@ -35,7 +37,7 @@ class KeyboardShortcutsEditor extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleBindingChange']);
+    _.bindAll(this, ['handleBindingChange', 'handleDoneClick']);
   }
 
   handleBindingChange(bindingName, newBinding) {
@@ -49,6 +51,10 @@ class KeyboardShortcutsEditor extends PureComponent {
     }
 
     this.props.base.setCustomKeybinding(bindingName, newBinding);
+  }
+
+  handleDoneClick() {
+    goBackOrToRoot(this.props.history);
   }
 
   getKeybindings() {
@@ -70,7 +76,7 @@ class KeyboardShortcutsEditor extends PureComponent {
         ))}
 
         <div className="keyboard-shortcuts-editor__btn-container">
-          <Link to="/settings" className="btn settings-btn">Done</Link>
+          <div className="btn settings-btn" onClick={this.handleDoneClick}>Done</div>
         </div>
       </div>
     );
@@ -89,4 +95,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(KeyboardShortcutsEditor);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(KeyboardShortcutsEditor));
