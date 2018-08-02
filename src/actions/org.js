@@ -56,6 +56,14 @@ export const selectNextSiblingHeader = headerId => ({
   type: 'SELECT_NEXT_SIBLING_HEADER', headerId,
 });
 
+export const selectNextVisibleHeader = headerId => ({
+  type: 'SELECT_NEXT_VISIBLE_HEADER', headerId,
+});
+
+export const selectPreviousVisibleHeader = headerId => ({
+  type: 'SELECT_PREVIOUS_VISIBLE_HEADER', headerId,
+});
+
 export const removeHeader = headerId => ({
   type: 'REMOVE_HEADER', headerId,
 });

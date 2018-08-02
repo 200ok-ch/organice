@@ -45,6 +45,22 @@ export const directParentIdOfHeaderWithId = (headers, headerId) => {
   return null;
 };
 
+export const parentIdOfHeaderWithId = (headers, headerId) => {
+  const header = headerWithId(headers, headerId);
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+
+  const previousHeaders = headers.slice(0, headerIndex).reverse();
+  const parentHeader = previousHeaders.find(previousHeader => (
+    previousHeader.get('nestingLevel') < header.get('nestingLevel')
+  ));
+
+  if (!parentHeader) {
+    return null;
+  }
+
+  return parentHeader.get('id');
+};
+
 export const indexOfPreviousSibling = (headers, headerIndex) => {
   const nestingLevel = headers.getIn([headerIndex, 'nestingLevel']);
 
@@ -61,6 +77,26 @@ export const indexOfPreviousSibling = (headers, headerIndex) => {
   }
 
   return null;
+};
+
+const isHeaderVisible = (headers, headerId) => {
+  const parentHeaderId = parentIdOfHeaderWithId(headers, headerId);
+  if (!parentHeaderId) {
+    return true;
+  }
+
+  const parentHeader = headerWithId(headers, parentHeaderId);
+  return parentHeader.get('opened') && isHeaderVisible(headers, parentHeader);
+};
+
+export const nextVisibleHeaderAfterIndex = (headers, headerIndex) => {
+  const followingHeaders = headers.slice(headerIndex + 1);
+  return followingHeaders.find(header => isHeaderVisible(headers, header.get('id')));
+};
+
+export const previousVisibleHeaderAfterIndex = (headers, headerIndex) => {
+  const previousHeaders = headers.slice(0, headerIndex).reverse();
+  return previousHeaders.find(header => isHeaderVisible(headers, header.get('id')));
 };
 
 export const openDirectParent = (state, headerId) => {

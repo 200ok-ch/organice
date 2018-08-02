@@ -10,6 +10,7 @@
     "lodash": "^4.17.10",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-hotkeys": "^1.1.4",
     "react-motion": "^0.5.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",

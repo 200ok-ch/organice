@@ -14,6 +14,8 @@ import {
   indexOfPreviousSibling,
   openDirectParent,
   openHeaderWithPath,
+  nextVisibleHeaderAfterIndex,
+  previousVisibleHeaderAfterIndex,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -133,6 +135,37 @@ const selectNextSiblingHeader = (state, action) => {
   }
 
   return state.set('selectedHeaderId', nextSibling.get('id'));
+};
+
+const selectNextVisibleHeader = (state, action) => {
+  const headers = state.get('headers');
+
+  if (!state.get('selectedHeaderId')) {
+    return state.set('selectedHeaderId', headers.getIn([0, 'id']));
+  }
+
+  const headerIndex = indexOfHeaderWithId(headers, state.get('selectedHeaderId'));
+
+  const nextVisibleHeader = nextVisibleHeaderAfterIndex(headers, headerIndex);
+
+  if (!nextVisibleHeader) {
+    return state;
+  }
+
+  return state.set('selectedHeaderId', nextVisibleHeader.get('id'));
+};
+
+const selectPreviousVisibleHeader = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, state.get('selectedHeaderId'));
+
+  const previousVisibleHeader = previousVisibleHeaderAfterIndex(headers, headerIndex);
+
+  if (!previousVisibleHeader) {
+    return state;
+  }
+
+  return state.set('selectedHeaderId', previousVisibleHeader.get('id'));
 };
 
 const removeHeader = (state, action) => {
@@ -328,6 +361,10 @@ export default (state = new Map(), action) => {
     return addHeader(state, action);
   case 'SELECT_NEXT_SIBLING_HEADER':
     return selectNextSiblingHeader(state, action);
+  case 'SELECT_NEXT_VISIBLE_HEADER':
+    return selectNextVisibleHeader(state, action);
+  case 'SELECT_PREVIOUS_VISIBLE_HEADER':
+    return selectPreviousVisibleHeader(state, action);
   case 'REMOVE_HEADER':
     return removeHeader(state, action);
   case 'MOVE_HEADER_UP':
