@@ -121,7 +121,7 @@ class OrgFile extends PureComponent {
     this.props.org.moveHeaderLeft(this.props.selectedHeaderId);
   }
 
-  handleMoveHeaderRightHotKey() {
+  handleMoveHeaderRightHotKey(event) {
     this.props.org.moveHeaderRight(this.props.selectedHeaderId);
   }
 
@@ -176,21 +176,28 @@ class OrgFile extends PureComponent {
       undo: 'ctrl+shift+-',
     };
 
+    // Automatically call preventDefault on all the keyboard events that come through for
+    // these hotkeys.
+    const preventDefaultAndCall = callback => event => {
+      event.preventDefault();
+      callback();
+    };
+
     const handlers = {
-      selectNextVisibleHeader: this.handleSelectNextVisibleHeaderHotKey,
-      selectPreviousVisibleHeader: this.handleSelectPreviousVisibleHeaderHotKey,
-      toggleHeaderOpened: this.handleToggleHeaderOpenedHotKey,
-      advanceTodo: this.handleAdvanceTodoHotKey,
-      editTitle: this.handleEditTitleHotKey,
-      editDescription: this.handleEditDescriptionHotKey,
-      exitEditMode: this.handleExitEditModeHotKey,
-      addHeader: this.handleAddHeaderHotKey,
-      removeHeader: this.handleRemoveHeaderHotKey,
-      moveHeaderUp: this.handleMoveHeaderUpHotKey,
-      moveHeaderDown: this.handleMoveHeaderDownHotKey,
-      moveHeaderLeft: this.handleMoveHeaderLeftHotKey,
-      moveHeaderRight: this.handleMoveHeaderRightHotKey,
-      undo: this.handleUndoHotKey,
+      selectNextVisibleHeader: preventDefaultAndCall(this.handleSelectNextVisibleHeaderHotKey),
+      selectPreviousVisibleHeader: preventDefaultAndCall(this.handleSelectPreviousVisibleHeaderHotKey),
+      toggleHeaderOpened: preventDefaultAndCall(this.handleToggleHeaderOpenedHotKey),
+      advanceTodo: preventDefaultAndCall(this.handleAdvanceTodoHotKey),
+      editTitle: preventDefaultAndCall(this.handleEditTitleHotKey),
+      editDescription: preventDefaultAndCall(this.handleEditDescriptionHotKey),
+      exitEditMode: preventDefaultAndCall(this.handleExitEditModeHotKey),
+      addHeader: preventDefaultAndCall(this.handleAddHeaderHotKey),
+      removeHeader: preventDefaultAndCall(this.handleRemoveHeaderHotKey),
+      moveHeaderUp: preventDefaultAndCall(this.handleMoveHeaderUpHotKey),
+      moveHeaderDown: preventDefaultAndCall(this.handleMoveHeaderDownHotKey),
+      moveHeaderLeft: preventDefaultAndCall(this.handleMoveHeaderLeftHotKey),
+      moveHeaderRight: preventDefaultAndCall(this.handleMoveHeaderRightHotKey),
+      undo: preventDefaultAndCall(this.handleUndoHotKey),
     };
 
     return (
