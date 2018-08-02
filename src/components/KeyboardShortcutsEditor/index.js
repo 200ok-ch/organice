@@ -55,7 +55,7 @@ class KeyboardShortcutsEditor extends PureComponent {
     const { customKeybindings } = this.props;
 
     return this.DEFAULT_BINDINGS.map(([bindingName, binding]) => (
-      [bindingName, customKeybindings[bindingName] || binding]
+      [bindingName, customKeybindings.get(bindingName, binding)]
     ));
   }
 
