@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import * as dropboxActions from '../../actions/dropbox';
 import * as baseActions from '../../actions/base';
@@ -30,7 +30,9 @@ class Settings extends PureComponent {
   }
 
   handleSignOutClick() {
-    this.props.dropbox.signOut();
+    if (window.confirm('Are you sure you want to sign out?')) {
+      this.props.dropbox.signOut();
+    }
   }
 
   handleFontSizeChange(newFontSize) {
@@ -55,7 +57,7 @@ class Settings extends PureComponent {
     const { fontSize, bulletStyle, shouldTapTodoToAdvance } = this.props;
 
     return (
-      <div>
+      <div className="settings-container">
         <div className="setting-container">
           <div className="setting-label">Font size</div>
           <TabButtons buttons={['Regular', 'Large']}
@@ -77,6 +79,9 @@ class Settings extends PureComponent {
         </div>
 
         <div className="settings-buttons-container">
+          <Link to="/settings/shortcuts" className="btn settings-btn">
+            Keyboard shortcuts
+          </Link>
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
           <button className="btn settings-btn" onClick={this.handleCloseClick}>Close</button>
         </div>

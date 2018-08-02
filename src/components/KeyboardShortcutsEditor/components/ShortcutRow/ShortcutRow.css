@@ -1,0 +1,29 @@
+.keyboard-shortcut-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+    border-bottom: 1px solid #D8D8D8;
+    padding: 5px 0;
+}
+
+.keyboard-shortcut-container:first-of-type {
+    border-top: 1px solid #D8D8D8;
+}
+
+.keyboard-shortcut-container__shortcut-name {
+    max-width: calc(90% - 100px);
+}
+
+.keyboard-shortcut-container__shortcut-key {
+    height: 34px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: lightgray;
+    border: 1px solid gray;
+
+    font-family: Courier;
+}

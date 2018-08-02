@@ -121,7 +121,7 @@ class OrgFile extends PureComponent {
     this.props.org.moveHeaderLeft(this.props.selectedHeaderId);
   }
 
-  handleMoveHeaderRightHotKey(event) {
+  handleMoveHeaderRightHotKey() {
     this.props.org.moveHeaderRight(this.props.selectedHeaderId);
   }
 
@@ -178,26 +178,26 @@ class OrgFile extends PureComponent {
 
     // Automatically call preventDefault on all the keyboard events that come through for
     // these hotkeys.
-    const preventDefaultAndCall = callback => event => {
+    const preventDefault = callback => event => {
       event.preventDefault();
-      callback();
+      callback(event);
     };
 
     const handlers = {
-      selectNextVisibleHeader: preventDefaultAndCall(this.handleSelectNextVisibleHeaderHotKey),
-      selectPreviousVisibleHeader: preventDefaultAndCall(this.handleSelectPreviousVisibleHeaderHotKey),
-      toggleHeaderOpened: preventDefaultAndCall(this.handleToggleHeaderOpenedHotKey),
-      advanceTodo: preventDefaultAndCall(this.handleAdvanceTodoHotKey),
-      editTitle: preventDefaultAndCall(this.handleEditTitleHotKey),
-      editDescription: preventDefaultAndCall(this.handleEditDescriptionHotKey),
-      exitEditMode: preventDefaultAndCall(this.handleExitEditModeHotKey),
-      addHeader: preventDefaultAndCall(this.handleAddHeaderHotKey),
-      removeHeader: preventDefaultAndCall(this.handleRemoveHeaderHotKey),
-      moveHeaderUp: preventDefaultAndCall(this.handleMoveHeaderUpHotKey),
-      moveHeaderDown: preventDefaultAndCall(this.handleMoveHeaderDownHotKey),
-      moveHeaderLeft: preventDefaultAndCall(this.handleMoveHeaderLeftHotKey),
-      moveHeaderRight: preventDefaultAndCall(this.handleMoveHeaderRightHotKey),
-      undo: preventDefaultAndCall(this.handleUndoHotKey),
+      selectNextVisibleHeader: preventDefault(this.handleSelectNextVisibleHeaderHotKey),
+      selectPreviousVisibleHeader: preventDefault(this.handleSelectPreviousVisibleHeaderHotKey),
+      toggleHeaderOpened: preventDefault(this.handleToggleHeaderOpenedHotKey),
+      advanceTodo: preventDefault(this.handleAdvanceTodoHotKey),
+      editTitle: preventDefault(this.handleEditTitleHotKey),
+      editDescription: preventDefault(this.handleEditDescriptionHotKey),
+      exitEditMode: preventDefault(this.handleExitEditModeHotKey),
+      addHeader: preventDefault(this.handleAddHeaderHotKey),
+      removeHeader: preventDefault(this.handleRemoveHeaderHotKey),
+      moveHeaderUp: preventDefault(this.handleMoveHeaderUpHotKey),
+      moveHeaderDown: preventDefault(this.handleMoveHeaderDownHotKey),
+      moveHeaderLeft: preventDefault(this.handleMoveHeaderLeftHotKey),
+      moveHeaderRight: preventDefault(this.handleMoveHeaderRightHotKey),
+      undo: preventDefault(this.handleUndoHotKey),
     };
 
     return (

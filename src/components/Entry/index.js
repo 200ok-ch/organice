@@ -24,6 +24,7 @@ import FileBrowser from '../FileBrowser';
 import LoadingIndicator from '../LoadingIndicator';
 import OrgFile from '../OrgFile';
 import Settings from '../Settings';
+import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 
 import * as dropboxActions from '../../actions/dropbox';
 import * as orgActions from '../../actions/org';
@@ -154,6 +155,7 @@ class Entry extends PureComponent {
           <Route render={() => (
               isAuthenticated ? (
                 <Switch>
+                  <Route path="/settings/shortcuts" component={KeyboardShortcutsEditor} />
                   <Route path="/settings" component={Settings} />
                   <Route path="/file/:path+" render={this.renderFile} />
                   <Route path="/files/:path*" render={this.renderFileBrowser} />

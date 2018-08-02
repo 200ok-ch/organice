@@ -7,6 +7,10 @@
     padding: 5px 0;
 }
 
+.settings-container a {
+    text-decoration: none;
+}
+
 .setting-container:first-of-type {
     border-top: 1px solid #D8D8D8;
 }
@@ -27,4 +31,6 @@
     font-size: 20px;
     width: 90%;
     margin-bottom: 20px;
+    box-sizing: border-box;
+    text-align: center;
 }

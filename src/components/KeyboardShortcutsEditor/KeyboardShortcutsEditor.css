@@ -1,0 +1,11 @@
+.keyboard-shortcuts-editor-container a {
+    text-decoration: none;
+}
+
+.keyboard-shortcuts-editor__btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 20px;
+}
