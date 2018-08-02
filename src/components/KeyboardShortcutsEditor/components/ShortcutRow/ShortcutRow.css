@@ -22,8 +22,15 @@
     align-items: center;
     justify-content: center;
 
-    background-color: lightgray;
+    color: #5E348C;
+    background-color: #F1F1F1;
     border: 1px solid gray;
+    box-sizing: border-box;
 
     font-family: Courier;
+}
+
+.keyboard-shortcut-container__shortcut-key--edit-mode {
+    border: 2px solid #5E348C;
+    background-color: white;
 }

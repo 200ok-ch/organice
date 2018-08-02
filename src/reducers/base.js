@@ -34,6 +34,14 @@ const setLastViewedFile = (state, action) => (
     .set('lastViewedContents', action.lastViewedContents)
 );
 
+const setCustomKeybinding = (state, action) => {
+  if (!state.get('customKeybindings')) {
+    state = state.set('customKeybindings', new Map());
+  }
+
+  return state.setIn(['customKeybindings', action.keybindingName], action.keybinding);
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -52,6 +60,8 @@ export default (state = new Map(), action) => {
     return setLastSeenWhatsNewHeader(state, action);
   case 'SET_LAST_VIEWED_FILE':
     return setLastViewedFile(state, action);
+  case 'SET_CUSTOM_KEYBINDING':
+    return setCustomKeybinding(state, action);
   default:
     return state;
   }

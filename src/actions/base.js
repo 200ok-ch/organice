@@ -58,3 +58,7 @@ export const setHasUnseenWhatsNew = newHasUnseenWhatsNew => ({
 export const setLastSeenWhatsNewHeader = newLastSeenWhatsNewHeader => ({
   type: 'SET_LAST_SEEN_WHATS_NEW_HEADER', newLastSeenWhatsNewHeader,
 });
+
+export const setCustomKeybinding = (keybindingName, keybinding) => ({
+  type: 'SET_CUSTOM_KEYBINDING', keybindingName, keybinding,
+});
