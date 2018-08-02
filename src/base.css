@@ -24,3 +24,7 @@
 .textarea {
     width: 95%;
 }
+
+div[tabindex="-1"]:focus {
+    outline: 0;
+}

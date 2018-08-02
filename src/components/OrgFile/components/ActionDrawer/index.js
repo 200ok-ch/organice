@@ -58,6 +58,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handleEditDescriptionClick() {
+    this.props.org.openHeader(this.props.selectedHeaderId);
     this.props.org.enterDescriptionEditMode();
   }
 

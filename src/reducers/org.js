@@ -36,6 +36,13 @@ const stopDisplayingFile = state => (
     .set('todoKeywordSets', null)
 );
 
+const openHeader = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  return state.setIn(['headers', headerIndex, 'opened'], true);
+};
+
 const toggleHeaderOpened = (state, action) => {
   const headers = state.get('headers');
 
@@ -341,6 +348,8 @@ export default (state = new Map(), action) => {
     return stopDisplayingFile(state, action);
   case 'TOGGLE_HEADER_OPENED':
     return toggleHeaderOpened(state, action);
+  case 'OPEN_HEADER':
+    return openHeader(state, action);
   case 'SELECT_HEADER':
     return selectHeader(state, action);
   case 'ADVANCE_TODO_STATE':

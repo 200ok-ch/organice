@@ -12,6 +12,10 @@ export const stopDisplayingFile = () => {
   };
 };
 
+export const openHeader = headerId => ({
+  type: 'OPEN_HEADER', headerId,
+});
+
 export const toggleHeaderOpened = headerId => ({
   type: 'TOGGLE_HEADER_OPENED', headerId,
 });

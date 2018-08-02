@@ -14,6 +14,7 @@ import ActionDrawer from './components/ActionDrawer';
 import * as baseActions from '../../actions/base';
 import * as dropboxActions from '../../actions/dropbox';
 import * as orgActions from '../../actions/org';
+import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import _ from 'lodash';
 
@@ -28,6 +29,7 @@ class OrgFile extends PureComponent {
       'handleAdvanceTodoHotKey',
       'handleEditTitleHotKey',
       'handleEditDescriptionHotKey',
+      'handleExitEditModeHotKey',
       'handleAddHeaderHotKey',
       'handleRemoveHeaderHotKey',
       'handleMoveHeaderUpHotKey',
@@ -35,6 +37,7 @@ class OrgFile extends PureComponent {
       'handleMoveHeaderLeftHotKey',
       'handleMoveHeaderRightHotKey',
       'handleUndoHotKey',
+      'handleContainerRef',
     ]);
   }
 
@@ -45,10 +48,6 @@ class OrgFile extends PureComponent {
       this.props.base.loadStaticFile(staticFile);
     } else if (!!path && path !== loadedPath) {
       this.props.dropbox.downloadFile(path);
-    }
-
-    if (!!this.container) {
-      this.container.focus();
     }
   }
 
@@ -69,47 +68,72 @@ class OrgFile extends PureComponent {
   }
 
   handleToggleHeaderOpenedHotKey() {
-    console.log('handleToggleHeaderOpenedHotKey');
+    const { selectedHeaderId } = this.props;
+
+    if (selectedHeaderId) {
+      this.props.org.toggleHeaderOpened(selectedHeaderId);
+    }
   }
 
   handleAdvanceTodoHotKey() {
-    console.log('handleAdvanceTodoHotKey');
+    this.props.org.advanceTodoState();
   }
 
   handleEditTitleHotKey() {
-    console.log('handleEditTitleHotKey');
+    this.props.org.enterTitleEditMode();
   }
 
   handleEditDescriptionHotKey() {
-    console.log('handleEditDescriptionHotKey');
+    this.props.org.openHeader(this.props.selectedHeaderId);
+    this.props.org.enterDescriptionEditMode();
+  }
+
+  handleExitEditModeHotKey() {
+    this.props.org.exitTitleEditMode();
+    this.props.org.exitDescriptionEditMode();
+    this.container.focus();
   }
 
   handleAddHeaderHotKey() {
-    console.log('handleAddHeaderHotKey');
+    const { selectedHeaderId } = this.props;
+
+    this.props.org.addHeader(selectedHeaderId);
+    this.props.org.selectNextSiblingHeader(selectedHeaderId);
+    this.props.org.enterTitleEditMode();
   }
 
   handleRemoveHeaderHotKey() {
-    console.log('handleRemoveHeaderHotKey');
+    const { selectedHeaderId } = this.props;
+
+    this.props.org.selectNextSiblingHeader(selectedHeaderId);
+    this.props.org.removeHeader(selectedHeaderId);
   }
 
   handleMoveHeaderUpHotKey() {
-    console.log('handleMoveHeaderUpHotKey');
+    this.props.org.moveHeaderUp(this.props.selectedHeaderId);
   }
 
   handleMoveHeaderDownHotKey() {
-    console.log('handleMoveHeaderDownHotKey');
+    this.props.org.moveHeaderDown(this.props.selectedHeaderId);
   }
 
   handleMoveHeaderLeftHotKey() {
-    console.log('handleMoveHeaderLeftHotKey');
+    this.props.org.moveHeaderLeft(this.props.selectedHeaderId);
   }
 
   handleMoveHeaderRightHotKey() {
-    console.log('handleMoveHeaderRightHotKey');
+    this.props.org.moveHeaderRight(this.props.selectedHeaderId);
   }
 
   handleUndoHotKey() {
-    console.log('handleUndoHotKey');
+    this.props.undo.undo();
+  }
+
+  handleContainerRef(container) {
+    this.container = container;
+    if (this.container) {
+      this.container.focus();
+    }
   }
 
   render() {
@@ -140,8 +164,9 @@ class OrgFile extends PureComponent {
       selectPreviousVisibleHeader: 'ctrl+p',
       toggleHeaderOpened: 'tab',
       advanceTodo: 'ctrl+t',
-      editTitle: 't',
-      editDescription: 'd',
+      editTitle: 'ctrl+h',
+      editDescription: 'ctrl+d',
+      exitEditMode: 'command+enter',
       addHeader: 'ctrl+enter',
       removeHeader: ['del', 'backspace'],
       moveHeaderUp: 'ctrl+command+p',
@@ -158,6 +183,7 @@ class OrgFile extends PureComponent {
       advanceTodo: this.handleAdvanceTodoHotKey,
       editTitle: this.handleEditTitleHotKey,
       editDescription: this.handleEditDescriptionHotKey,
+      exitEditMode: this.handleExitEditModeHotKey,
       addHeader: this.handleAddHeaderHotKey,
       removeHeader: this.handleRemoveHeaderHotKey,
       moveHeaderUp: this.handleMoveHeaderUpHotKey,
@@ -169,7 +195,7 @@ class OrgFile extends PureComponent {
 
     return (
       <HotKeys keyMap={keyMap} handlers={handlers}>
-        <div ref={div => this.container = div}>
+        <div className="org-file-container" tabIndex="-1" ref={this.handleContainerRef}>
           {headers.size === 0 ? (
             <div className="org-file__parsing-error-message">
               <h3>Couldn't parse file</h3>
@@ -206,6 +232,7 @@ const mapStateToProps = (state, props) => {
     headers: state.org.present.get('headers'),
     isDirty: state.org.present.get('isDirty'),
     loadedPath: state.org.present.get('path'),
+    selectedHeaderId: state.org.present.get('selectedHeaderId'),
   };
 };
 
@@ -214,6 +241,7 @@ const mapDispatchToProps = dispatch => {
     base: bindActionCreators(baseActions, dispatch),
     dropbox: bindActionCreators(dropboxActions, dispatch),
     org: bindActionCreators(orgActions, dispatch),
+    undo: bindActionCreators(undoActions, dispatch),
   };
 };
 
