@@ -33,6 +33,11 @@ const fields = [
     type: 'nullable'
   },
   {
+    category: 'base',
+    name: 'customKeybindings',
+    type: 'json',
+  },
+  {
     category: 'dropbox',
     name: 'accessToken',
     type: 'nullable'
@@ -67,6 +72,12 @@ export const readInitialState = () => {
       }
     } else if (field.type === 'boolean') {
       value = value === 'true';
+    } else if (field.type === 'json') {
+      if (!value) {
+        value = new Map();
+      } else {
+        value = fromJS(JSON.parse(value));
+      }
     }
 
     if (field.category === 'org') {
@@ -95,7 +106,11 @@ export const subscribeToChanges = store => {
         localStorage.setItem(field, state.org.present.get(field));
       });
       fields.filter(field => field.category !== 'org').forEach(field => {
-        localStorage.setItem(field.name, state[field.category].get(field.name));
+        if (field.type === 'json') {
+          localStorage.setItem(field.name, JSON.stringify(state[field.category].get(field.name) || {}));
+        } else {
+          localStorage.setItem(field.name, state[field.category].get(field.name));
+        }
       });
 
       const currentFilePath = state.org.present.get('path');
