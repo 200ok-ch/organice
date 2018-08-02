@@ -1,3 +1,6 @@
+* August 2nd, 2018
+** Added keyboard shortcuts, as well as a way to set custom bindings
+*** Find it in Settings > Keyboard shortcuts
 * August 1st, 2018
 ** Added routing (and therefore back/forward button support)
 * July 31st, 2018 (afternoon)
