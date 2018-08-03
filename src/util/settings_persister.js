@@ -1,4 +1,7 @@
+import { Dropbox } from 'dropbox';
+
 import { Map, fromJS } from 'immutable';
+import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
 
@@ -9,6 +12,19 @@ const isLocalStorageAvailable = () => {
   } catch(e) {
     return false;
   }
+};
+
+const pushFileToDropbox = (accessToken, path, contents) => {
+  const dropbox = new Dropbox({ accessToken });
+  dropbox.filesUpload({
+    path, contents,
+    mode: {
+      '.tag': 'overwrite',
+    },
+    autorename: true,
+  }).catch(error => {
+    console.log(`There was an error trying to push settings to your Dropbox account: ${error}`);
+  });
 };
 
 const fields = [
@@ -107,16 +123,29 @@ export const subscribeToChanges = store => {
     return () => {
       const state = store.getState();
 
-      fields.filter(field => field.category === 'org').map(field => field.name).forEach(field => {
-        localStorage.setItem(field, state.org.present.get(field));
-      });
-      fields.filter(field => field.category !== 'org').forEach(field => {
+      const fieldsToPersist = fields.filter(field => field.category === 'org').map(field => field.name).map(field => (
+        [field, state.org.present.get(field)]
+      )).concat(fields.filter(field => field.category !== 'org').map(field => {
         if (field.type === 'json') {
-          localStorage.setItem(field.name, JSON.stringify(state[field.category].get(field.name) || {}));
+          return [field.name, JSON.stringify(state[field.category].get(field.name) || {})];
         } else {
-          localStorage.setItem(field.name, state[field.category].get(field.name));
+          return [field.name, state[field.category].get(field.name)];
         }
-      });
+      }));
+
+      fieldsToPersist.forEach(([name, value]) => (
+        localStorage.setItem(name, value)
+      ));
+
+      if (state.base.get('shouldStoreSettingsInDropbox')) {
+        const settingsFileContents = JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
+          name !== 'accessToken'
+        ))));
+
+        pushFileToDropbox(state.dropbox.get('accessToken'),
+                          '/.org-web-config.json',
+                          settingsFileContents);
+      }
 
       const currentFilePath = state.org.present.get('path');
       if (!!currentFilePath && state.org.present.get('headers')) {

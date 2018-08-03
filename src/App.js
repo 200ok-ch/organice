@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
-import { readInitialState, subscribeToChanges } from './util/local_storage_persister';
+import { readInitialState, subscribeToChanges } from './util/settings_persister';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import './App.css';
