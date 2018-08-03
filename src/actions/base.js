@@ -51,6 +51,10 @@ export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE', newShouldTapTodoToAdvance,
 });
 
+export const setShouldStoreSettingsInDropbox = newShouldStoreSettingsInDropbox => ({
+  type: 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX', newShouldStoreSettingsInDropbox,
+});
+
 export const setHasUnseenWhatsNew = newHasUnseenWhatsNew => ({
   type: 'SET_HAS_UNSEEN_WHATS_NEW', newHasUnseenWhatsNew,
 });

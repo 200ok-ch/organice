@@ -20,6 +20,10 @@ const setShouldTapTodoToAdvance = (state, action) => (
   state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance)
 );
 
+const setShouldStoreSettingsInDropbox = (state, action) => (
+  state.set('shouldStoreSettingsInDropbox', action.newShouldStoreSettingsInDropbox)
+);
+
 const setHasUnseenWhatsNew = (state, action) => (
   state.set('hasUnseenWhatsNew', action.newHasUnseenWhatsNew)
 );
@@ -54,6 +58,8 @@ export default (state = new Map(), action) => {
     return setBulletStyle(state, action);
   case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
     return setShouldTapTodoToAdvance(state, action);
+  case 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX':
+    return setShouldStoreSettingsInDropbox(state, action);
   case 'SET_HAS_UNSEEN_WHATS_NEW':
     return setHasUnseenWhatsNew(state, action);
   case 'SET_LAST_SEEN_WHATS_NEW_HEADER':

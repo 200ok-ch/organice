@@ -19,6 +19,13 @@
     max-width: calc(100% - 90px)
 }
 
+.setting-label__description {
+    font-size: 14px;
+    color: gray;
+    max-width: calc(100% - 25px);
+    margin-top: 5px;
+}
+
 .settings-buttons-container {
     display: flex;
     flex-direction: column;

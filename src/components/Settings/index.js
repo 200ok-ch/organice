@@ -26,6 +26,7 @@ class Settings extends PureComponent {
       'handleFontSizeChange',
       'handleBulletStyleChange',
       'handleShouldTapTodoToAdvanceChange',
+      'handleShouldStoreSettingsInDropbox',
     ]);
   }
 
@@ -49,12 +50,23 @@ class Settings extends PureComponent {
     this.props.base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
   }
 
+  handleShouldStoreSettingsInDropbox() {
+    const { shouldStoreSettingsInDropbox } = this.props;
+
+    this.props.base.setShouldStoreSettingsInDropbox(!shouldStoreSettingsInDropbox);
+  }
+
   handleCloseClick() {
     goBackOrToRoot(this.props.history);
   }
 
   render() {
-    const { fontSize, bulletStyle, shouldTapTodoToAdvance } = this.props;
+    const {
+      fontSize,
+      bulletStyle,
+      shouldTapTodoToAdvance,
+      shouldStoreSettingsInDropbox,
+    } = this.props;
 
     return (
       <div className="settings-container">
@@ -78,6 +90,17 @@ class Settings extends PureComponent {
                   onToggle={this.handleShouldTapTodoToAdvanceChange} />
         </div>
 
+        <div className="setting-container">
+          <div className="setting-label">
+            Store settings in Dropbox
+            <div className="setting-label__description">
+              Store settings and keyboard shortcuts in a .org-web-config.json file in your Dropbox to sync betweeen multiple devices.
+            </div>
+          </div>
+          <Switch isEnabled={shouldStoreSettingsInDropbox}
+                  onToggle={this.handleShouldStoreSettingsInDropbox} />
+        </div>
+
         <div className="settings-buttons-container">
           <Link to="/settings/shortcuts" className="btn settings-btn">
             Keyboard shortcuts
@@ -95,6 +118,7 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    shouldStoreSettingsInDropbox: state.base.get('shouldStoreSettingsInDropbox'),
   };
 };
 

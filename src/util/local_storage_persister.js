@@ -29,6 +29,11 @@ const fields = [
   },
   {
     category: 'base',
+    name: 'shouldStoreSettingsInDropbox',
+    type: 'boolean'
+  },
+  {
+    category: 'base',
     name: 'lastSeenWhatsNewHeader',
     type: 'nullable'
   },
