@@ -12,7 +12,15 @@ import { headerWithId } from '../../../../lib/org_utils';
 
 class Header extends PureComponent {
   render() {
-    const { header, color, hasContent, isSelected, bulletStyle, focusedHeader } = this.props;
+    const {
+      header,
+      color,
+      hasContent,
+      isSelected,
+      bulletStyle,
+      focusedHeader,
+      onRef,
+    } = this.props;
 
     const indentLevel = !!focusedHeader ? (
       header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
@@ -27,7 +35,7 @@ class Header extends PureComponent {
     });
 
     return (
-      <div className={className} style={style}>
+      <div className={className} style={style} ref={onRef}>
         <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
         <TitleLine header={header}
                    color={color}

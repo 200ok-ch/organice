@@ -7,9 +7,34 @@ import Header from '../Header';
 
 import { numSubheadersOfHeaderWithId } from '../../../../lib/org_utils';
 
+import _ from 'lodash';
 import classNames from 'classnames';
 
 class HeaderList extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.headerRefs = {};
+
+    _.bindAll(this, ['handleHeaderRef']);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const selectedHeaderDiv = this.headerRefs[nextProps.selectedHeaderId];
+    if (!!selectedHeaderDiv) {
+      const boundingRectangle = selectedHeaderDiv.getBoundingClientRect();
+      const viewportHeight = document.documentElement.clientHeight;
+
+      if (boundingRectangle.top > viewportHeight * 0.9 || boundingRectangle.bottom < 0) {
+        selectedHeaderDiv.scrollIntoView();
+      }
+    }
+  }
+
+  handleHeaderRef(headerId) {
+    return div => this.headerRefs[headerId] = div;
+  }
+
   render() {
     const { headers, selectedHeaderId, focusedHeaderId } = this.props;
 
@@ -84,7 +109,8 @@ class HeaderList extends PureComponent {
                     header={header}
                     color={color}
                     hasContent={headerRenderDatum.hasContent}
-                    isSelected={header.get('id') === selectedHeaderId} />
+                    isSelected={header.get('id') === selectedHeaderId}
+                    onRef={this.handleHeaderRef(header.get('id'))} />
           );
         })}
       </div>
