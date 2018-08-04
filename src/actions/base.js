@@ -1,6 +1,8 @@
 import { displayFile, stopDisplayingFile } from './org';
 import { sampleFileContents, whatsNewFileContents } from '../lib/static_file_contents';
 
+import { Dropbox } from 'dropbox';
+
 export const setLoadingMessage = loadingMessage => ({
   type: 'SET_LOADING_MESSAGE',
   loadingMessage,
@@ -51,9 +53,24 @@ export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE', newShouldTapTodoToAdvance,
 });
 
-export const setShouldStoreSettingsInDropbox = newShouldStoreSettingsInDropbox => ({
-  type: 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX', newShouldStoreSettingsInDropbox,
-});
+export const setShouldStoreSettingsInDropbox = newShouldStoreSettingsInDropbox => {
+  return (dispatch, getState) => {
+    dispatch({ type: 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX', newShouldStoreSettingsInDropbox });
+
+    if (!newShouldStoreSettingsInDropbox) {
+      const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+      dropbox.filesDelete({
+        path: '/.org-web-config.json',
+      }).catch(error => {
+        if (!error.error.error['.tag'] === 'path_lookup') {
+          alert(`There was an error trying to delete the .org-web-config.json file: ${error}`);
+        }
+      });
+
+      window.previousSettingsFileContents = null;
+    }
+  };
+};
 
 export const setHasUnseenWhatsNew = newHasUnseenWhatsNew => ({
   type: 'SET_HAS_UNSEEN_WHATS_NEW', newHasUnseenWhatsNew,

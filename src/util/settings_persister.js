@@ -23,7 +23,7 @@ const pushFileToDropbox = (accessToken, path, contents) => {
     },
     autorename: true,
   }).catch(error => {
-    console.log(`There was an error trying to push settings to your Dropbox account: ${error}`);
+    alert(`There was an error trying to push settings to your Dropbox account: ${error}`);
   });
 };
 
