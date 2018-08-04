@@ -52,12 +52,18 @@ class FileBrowser extends PureComponent {
           )}
 
           {(currentFileBrowserDirectoryListing || []).map(file => {
+            const isDirectory = file.get('isDirectory');
+            const isBackupFile = file.get('name').endsWith('.org-web-bak');
+            const isOrgFile = file.get('name').endsWith('.org');
+            const isSettingsFile = file.get('name') === '.org-web-config.json';
+
             const iconClass = classNames('file-browser__file-list__icon fas', {
-              'fa-folder': file.get('isDirectory'),
-              'file-browser__file-list__icon--directory': file.get('isDirectory'),
-              'fa-file': !file.get('isDirectory') && !file.get('name').endsWith('.org-web-bak'),
-              'file-browser__file-list__icon--not-org': !file.get('name').endsWith('.org'),
-              'fa-copy': file.get('name').endsWith('.org-web-bak'),
+              'fa-folder': isDirectory,
+              'file-browser__file-list__icon--directory': isDirectory,
+              'fa-file': !isDirectory && !isBackupFile && !isSettingsFile,
+              'file-browser__file-list__icon--not-org': !isOrgFile,
+              'fa-copy': isBackupFile,
+              'fa-cogs': isSettingsFile,
             });
 
             if (file.get('isDirectory')) {

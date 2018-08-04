@@ -142,9 +142,13 @@ export const subscribeToChanges = store => {
           name !== 'accessToken'
         ))));
 
-        pushFileToDropbox(state.dropbox.get('accessToken'),
-                          '/.org-web-config.json',
-                          settingsFileContents);
+        if (window.previousSettingsFileContents !== settingsFileContents) {
+          pushFileToDropbox(state.dropbox.get('accessToken'),
+                            '/.org-web-config.json',
+                            settingsFileContents);
+        }
+
+        window.previousSettingsFileContents = settingsFileContents;
       }
 
       const currentFilePath = state.org.present.get('path');
