@@ -1,5 +1,7 @@
 import { Map } from 'immutable';
 
+import { applyBaseSettingsFromConfig } from '../util/settings_persister';
+
 const setLoadingMessage = (state, action) => (
   state.set('loadingMessage', action.loadingMessage)
 );
@@ -46,6 +48,14 @@ const setCustomKeybinding = (state, action) => {
   return state.setIn(['customKeybindings', action.keybindingName], action.keybinding);
 };
 
+const restoreSettings = (state, action) => {
+  if (!action.newSettings) {
+    return state;
+  }
+
+  return applyBaseSettingsFromConfig(state, action.newSettings);
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -68,6 +78,8 @@ export default (state = new Map(), action) => {
     return setLastViewedFile(state, action);
   case 'SET_CUSTOM_KEYBINDING':
     return setCustomKeybinding(state, action);
+  case 'RESTORE_SETTINGS':
+    return restoreSettings(state, action);
   default:
     return state;
   }

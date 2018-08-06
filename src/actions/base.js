@@ -83,3 +83,7 @@ export const setLastSeenWhatsNewHeader = newLastSeenWhatsNewHeader => ({
 export const setCustomKeybinding = (keybindingName, keybinding) => ({
   type: 'SET_CUSTOM_KEYBINDING', keybindingName, keybinding,
 });
+
+export const restoreSettings = newSettings => ({
+  type: 'RESTORE_SETTINGS', newSettings,
+});

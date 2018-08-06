@@ -4,6 +4,7 @@ import { Map, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
+import { restoreSettings } from '../actions/base';
 
 const isLocalStorageAvailable = () => {
   try {
@@ -27,47 +28,102 @@ const pushFileToDropbox = (accessToken, path, contents) => {
   });
 };
 
-const fields = [
+const pullFileFromDropbox = (accessToken, path) => {
+  const dropbox = new Dropbox({ accessToken });
+
+  return new Promise((resolve, reject) => {
+    dropbox.filesDownload({ path }).then(response => {
+      const reader = new FileReader();
+      reader.addEventListener('loadend', () => {
+        resolve(reader.result);
+      });
+      reader.readAsText(response.fileBlob);
+    }).catch(error => {
+      reject(error);
+    });
+  });
+};
+
+export const persistableFields = [
   {
     category: 'base',
     name: 'fontSize',
-    type: 'nullable'
+    type: 'nullable',
+    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'bulletStyle',
-    type: 'nullable'
+    type: 'nullable',
+    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldTapTodoToAdvance',
-    type: 'boolean'
+    type: 'boolean',
+    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldStoreSettingsInDropbox',
-    type: 'boolean'
+    type: 'boolean',
+    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'lastSeenWhatsNewHeader',
-    type: 'nullable'
+    type: 'nullable',
+    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'customKeybindings',
     type: 'json',
+    shouldStoreInConfig: true,
   },
   {
     category: 'dropbox',
     name: 'accessToken',
-    type: 'nullable'
+    type: 'nullable',
+    shouldStoreInConfig: false,
   }
 ];
 
 export const readOpennessState = () => {
   const opennessStateJSONString = localStorage.getItem('headerOpenness');
   return !!opennessStateJSONString ? JSON.parse(opennessStateJSONString) : null;
+};
+
+const getFieldsToPersist = (state, fields) => (
+  fields.filter(field => field.category === 'org').map(field => field.name).map(field => (
+    [field, state.org.present.get(field)]
+  )).concat(persistableFields.filter(field => field.category !== 'org').map(field => {
+    if (field.type === 'json') {
+      return [field.name, JSON.stringify(state[field.category].get(field.name) || {})];
+    } else {
+      return [field.name, state[field.category].get(field.name)];
+    }
+  }))
+);
+
+const getConfigFileContents = fieldsToPersist => (
+  JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
+    name !== 'accessToken'
+  ))))
+);
+
+export const applyBaseSettingsFromConfig = (state, config) => {
+  persistableFields.filter(field => (
+    field.shouldStoreInConfig
+  )).forEach(field => {
+    if (field.type === 'json') {
+      state = state.set(field.name, Map(JSON.parse(config[field.name])));
+    } else {
+      state = state.set(field.name, config[field.name]);
+    }
+  });
+
+  return state;
 };
 
 export const readInitialState = () => {
@@ -85,7 +141,7 @@ export const readInitialState = () => {
     base: Map(),
   };
 
-  fields.forEach(field => {
+  persistableFields.forEach(field => {
     let value = localStorage.getItem(field.name);
     if (field.type === 'nullable') {
       if (value === 'null') {
@@ -113,7 +169,27 @@ export const readInitialState = () => {
     initialState.org.present = initialState.org.present.set('opennessState', fromJS(opennessState));
   }
 
+  // Cache the config file contents locally so we don't overwrite on initial page load.
+  window.previousSettingsFileContents = getConfigFileContents(getFieldsToPersist(initialState, persistableFields));
+
   return initialState;
+};
+
+export const loadSettingsFromConfigFile = store => {
+  const accessToken = store.getState().dropbox.get('accessToken');
+  if (!accessToken) {
+    return;
+  }
+
+  pullFileFromDropbox(accessToken, '/.org-web-config.json').then(configFileContents => {
+    try {
+      const config = JSON.parse(configFileContents);
+      store.dispatch(restoreSettings(config));
+    } catch(_error) {
+      // Something went wrong parsing the config file, but we don't care, we'll just
+      // overwrite it with a good local copy.
+    }
+  }).catch(() => {});
 };
 
 export const subscribeToChanges = store => {
@@ -123,26 +199,17 @@ export const subscribeToChanges = store => {
     return () => {
       const state = store.getState();
 
-      const fieldsToPersist = fields.filter(field => field.category === 'org').map(field => field.name).map(field => (
-        [field, state.org.present.get(field)]
-      )).concat(fields.filter(field => field.category !== 'org').map(field => {
-        if (field.type === 'json') {
-          return [field.name, JSON.stringify(state[field.category].get(field.name) || {})];
-        } else {
-          return [field.name, state[field.category].get(field.name)];
-        }
-      }));
+      const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
       fieldsToPersist.forEach(([name, value]) => (
         localStorage.setItem(name, value)
       ));
 
       if (state.base.get('shouldStoreSettingsInDropbox')) {
-        const settingsFileContents = JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
-          name !== 'accessToken'
-        ))));
+        const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {
+          console.log('pushing new config');
           pushFileToDropbox(state.dropbox.get('accessToken'),
                             '/.org-web-config.json',
                             settingsFileContents);
