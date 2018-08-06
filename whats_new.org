@@ -1,3 +1,5 @@
+* August 6th, 2018
+** Implemented new setting to store settings in a .org-web-config.json file in your Dropbox. This will keep settings in sync across multiple devices.
 * August 2nd, 2018
 ** Added keyboard shortcuts, as well as a way to set custom bindings
 *** Find it in Settings > Keyboard shortcuts
