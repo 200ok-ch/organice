@@ -11,6 +11,7 @@ import ShortcutRow from './components/ShortcutRow';
 import * as baseActions from '../../actions/base';
 
 import goBackOrToRoot from '../../util/go_back_or_to_root';
+import { calculateNamedKeybindings } from '../../lib/keybindings';
 
 import './KeyboardShortcutsEditor.css';
 
@@ -41,7 +42,9 @@ class KeyboardShortcutsEditor extends PureComponent {
   }
 
   handleBindingChange(bindingName, newBinding) {
-    const alreadyInUseBinding = this.getKeybindings().filter(([_, binding]) => (
+    const { customKeybindings } = this.props;
+
+    const alreadyInUseBinding = calculateNamedKeybindings(customKeybindings).filter(([_, binding]) => (
       binding === newBinding
     ))[0];
 
@@ -57,18 +60,12 @@ class KeyboardShortcutsEditor extends PureComponent {
     goBackOrToRoot(this.props.history);
   }
 
-  getKeybindings() {
+  render() {
     const { customKeybindings } = this.props;
 
-    return this.DEFAULT_BINDINGS.map(([bindingName, binding]) => (
-      [bindingName, customKeybindings.get(bindingName, binding)]
-    ));
-  }
-
-  render() {
     return (
       <div className="keyboard-shortcuts-editor-container">
-        {this.getKeybindings().map(([name, binding]) => (
+        {calculateNamedKeybindings(customKeybindings).map(([name, binding]) => (
           <ShortcutRow key={name}
                        name={name}
                        binding={binding}

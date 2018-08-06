@@ -16,6 +16,8 @@ import * as dropboxActions from '../../actions/dropbox';
 import * as orgActions from '../../actions/org';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
+import { calculateActionedKeybindings } from '../../lib/keybindings';
+
 import _ from 'lodash';
 
 class OrgFile extends PureComponent {
@@ -148,6 +150,7 @@ class OrgFile extends PureComponent {
       parsingErrorMessage,
       path,
       staticFile,
+      customKeybindings,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -158,23 +161,7 @@ class OrgFile extends PureComponent {
       return <div></div>;
     }
 
-    // TODO: move this into a setting screen somewhere.
-    const keyMap = {
-      selectNextVisibleHeader: 'ctrl+n',
-      selectPreviousVisibleHeader: 'ctrl+p',
-      toggleHeaderOpened: 'tab',
-      advanceTodo: 'ctrl+t',
-      editTitle: 'ctrl+h',
-      editDescription: 'ctrl+d',
-      exitEditMode: 'command+enter',
-      addHeader: 'ctrl+enter',
-      removeHeader: ['del', 'backspace'],
-      moveHeaderUp: 'ctrl+command+p',
-      moveHeaderDown: 'ctrl+command+n',
-      moveHeaderLeft: 'ctrl+command+b',
-      moveHeaderRight: 'ctrl+command+f',
-      undo: 'ctrl+shift+-',
-    };
+    const keyMap = _.fromPairs(calculateActionedKeybindings(customKeybindings));
 
     // Automatically call preventDefault on all the keyboard events that come through for
     // these hotkeys.
@@ -240,6 +227,7 @@ const mapStateToProps = (state, props) => {
     isDirty: state.org.present.get('isDirty'),
     loadedPath: state.org.present.get('path'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
+    customKeybindings: state.base.get('customKeybindings'),
   };
 };
 
