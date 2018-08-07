@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Landing /> renders 1`] = `
+<div
+  className="landing-container"
+>
+  <h1
+    className="landing-app-name"
+  >
+    org-web
+  </h1>
+  <h2
+    className="landing-tagline"
+  >
+    Directly edit your org files online.
+  </h2>
+  <h2
+    className="landing-tagline"
+  >
+    Optimized for mobile.
+  </h2>
+  <h2
+    className="landing-tagline"
+  >
+    Syncs with Dropbox.
+  </h2>
+  <a
+    href="/sample"
+    onClick={[Function]}
+  >
+    <div
+      className="btn landing-button view-sample-button"
+    >
+      View sample
+    </div>
+  </a>
+  <div
+    className="btn landing-button"
+    onClick={undefined}
+  >
+    Sign in
+  </div>
+</div>
+`;

@@ -6,6 +6,7 @@
     "classnames": "^2.2.6",
     "dotenv": "^6.0.0",
     "dropbox": "^4.0.9",
+    "enzyme-adapter-react-16": "^1.1.1",
     "immutable": "^3.8.2",
     "lodash": "^4.17.10",
     "react": "^16.4.1",
@@ -24,5 +25,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "enzyme": "^3.3.0",
+    "react-test-renderer": "^16.4.2"
   }
 }
