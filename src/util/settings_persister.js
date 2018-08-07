@@ -108,13 +108,17 @@ const getFieldsToPersist = (state, fields) => (
 
 const getConfigFileContents = fieldsToPersist => (
   JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
-    name !== 'accessToken'
+    !['accessToken', 'lastSeenWhatsNewHeader'].includes(name)
   ))))
 );
 
 export const applyBaseSettingsFromConfig = (state, config) => {
   persistableFields.filter(field => (
     field.shouldStoreInConfig
+  )).filter(field => (
+    // I accidentally included this field in some config files, so I need to forever
+    // filter it out here. Whoops...
+    field.name !== 'lastSeenWhatsNewHeader'
   )).forEach(field => {
     if (field.type === 'json') {
       state = state.set(field.name, Map(JSON.parse(config[field.name])));

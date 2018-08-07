@@ -48,6 +48,10 @@ class OrgFile extends PureComponent {
 
     if (!!staticFile) {
       this.props.base.loadStaticFile(staticFile);
+
+      if (staticFile === 'whats_new') {
+        this.props.base.setHasUnseenWhatsNew(false);
+      }
     } else if (!!path && path !== loadedPath) {
       this.props.dropbox.downloadFile(path);
     }
