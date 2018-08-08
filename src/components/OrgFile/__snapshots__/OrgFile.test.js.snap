@@ -1,0 +1,262 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<OrgFile /> renders an org file 1`] = `
+<div
+  className="org-file-container"
+  tabIndex="-1"
+>
+  <div
+    className="header-list-container"
+  >
+    <div
+      className="header"
+      style={
+        Object {
+          "paddingLeft": 20,
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "color": "rgba(38, 143, 214, 1)",
+            "marginLeft": -16,
+          }
+        }
+      >
+        *
+      </div>
+      <div
+        className="title-line"
+        onClick={[Function]}
+      >
+        
+        <div>
+          <span
+            style={
+              Object {
+                "color": "rgba(38, 143, 214, 1)",
+                "fontWeight": "bold",
+              }
+            }
+          >
+            <span>
+              Top level header
+            </span>
+            ...
+          </span>
+        </div>
+      </div>
+      <div />
+    </div>
+    <div
+      className="header"
+      style={
+        Object {
+          "paddingLeft": 20,
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "color": "rgba(38, 143, 214, 1)",
+            "marginLeft": -16,
+          }
+        }
+      >
+        *
+      </div>
+      <div
+        className="title-line"
+        onClick={[Function]}
+      >
+        
+        <div>
+          <span
+            style={
+              Object {
+                "color": "rgba(38, 143, 214, 1)",
+                "fontWeight": "bold",
+              }
+            }
+          >
+            <span>
+              Another top level header
+            </span>
+            ...
+          </span>
+        </div>
+      </div>
+      <div />
+    </div>
+    <div
+      className="header"
+      style={
+        Object {
+          "paddingLeft": 20,
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "color": "rgba(38, 143, 214, 1)",
+            "marginLeft": -16,
+          }
+        }
+      >
+        *
+      </div>
+      <div
+        className="title-line"
+        onClick={[Function]}
+      >
+        
+        <div>
+          <span
+            style={
+              Object {
+                "color": "rgba(38, 143, 214, 1)",
+                "fontWeight": "bold",
+              }
+            }
+          >
+            <span>
+              A header with tags                                              
+            </span>
+            
+          </span>
+          <div>
+            <div
+              className="header-tag"
+            >
+              tag1
+            </div>
+            <div
+              className="header-tag"
+            >
+              tag2
+            </div>
+          </div>
+        </div>
+      </div>
+      <div />
+    </div>
+    <div
+      className="header"
+      style={
+        Object {
+          "paddingLeft": 20,
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "color": "rgba(38, 143, 214, 1)",
+            "marginLeft": -16,
+          }
+        }
+      >
+        *
+      </div>
+      <div
+        className="title-line"
+        onClick={[Function]}
+      >
+        
+        <div>
+          <span
+            style={
+              Object {
+                "color": "rgba(38, 143, 214, 1)",
+                "fontWeight": "bold",
+              }
+            }
+          >
+            <span>
+              A header with 
+              <a
+                href="https://google.com"
+              >
+                a link
+              </a>
+            </span>
+            ...
+          </span>
+        </div>
+      </div>
+      <div />
+    </div>
+  </div>
+  <div
+    className="btn org-file__btn"
+    onClick={undefined}
+  />
+  <div
+    className="action-drawer-container nice-scroll"
+  >
+    <button
+      className="fas fa-check btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-pencil-alt btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-edit btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-plus btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-times btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-arrow-up btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-arrow-down btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-arrow-left btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-arrow-right btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-chevron-left btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-chevron-right btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-compress btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-undo btn btn--circle action-drawer__btn btn--disabled"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-cloud-upload-alt btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+    <button
+      className="fas fa-cloud-download-alt btn btn--circle action-drawer__btn"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;

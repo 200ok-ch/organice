@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "enzyme": "^3.3.0",
+    "enzyme-to-json": "^3.3.4",
     "react-test-renderer": "^16.4.2"
   }
 }
