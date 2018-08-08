@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import renderer from 'react-test-renderer';
 
 import { MemoryRouter } from 'react-router-dom';
@@ -16,6 +16,8 @@ import { displayFile } from '../../actions/org';
 
 import { Map, fromJS } from 'immutable';
 
+import toJSON from 'enzyme-to-json';
+
 jest.mock('react-hotkeys', () => {
   const React = require('react');
   const Fragment = React.Fragment;
@@ -23,18 +25,6 @@ jest.mock('react-hotkeys', () => {
   return {
     HotKeys: ({ children }) => <Fragment>{children}</Fragment>,
   };
-});
-
-const store = createStore(rootReducer, {
-  org: {
-    past: [],
-    present: new Map(),
-    future: [],
-  },
-  dropbox: new Map(),
-  base: new fromJS({
-    customKeybindings: {}
-  }),
 });
 
 const testOrgFile = `
@@ -49,10 +39,21 @@ Some description content
 `;
 
 test('<OrgFile /> renders an org file', () => {
+  const store = createStore(rootReducer, {
+    org: {
+      past: [],
+      present: new Map(),
+      future: [],
+    },
+    dropbox: new Map(),
+    base: new fromJS({
+      customKeybindings: {}
+    }),
+  });
   store.dispatch(displayFile('/some/test/file', testOrgFile));
 
   const component = renderer.create(
-    <MemoryRouter>
+    <MemoryRouter keyLength={0}>
       <Provider store={store}>
         <OrgFile path="/some/test/file" />
       </Provider>
@@ -60,4 +61,59 @@ test('<OrgFile /> renders an org file', () => {
   );
 
   expect(component.toJSON()).toMatchSnapshot();
+});
+
+test('Can select a header in an org file', () => {
+  const store = createStore(rootReducer, {
+    org: {
+      past: [],
+      present: new Map(),
+      future: [],
+    },
+    dropbox: new Map(),
+    base: new fromJS({
+      customKeybindings: {}
+    }),
+  });
+  store.dispatch(displayFile('/some/test/file', testOrgFile));
+
+  const component = mount(
+    <MemoryRouter keyLength={0}>
+      <Provider store={store}>
+        <OrgFile path="/some/test/file" />
+      </Provider>
+    </MemoryRouter>
+  );
+
+  component.find('.title-line').first().simulate('click');
+
+  expect(toJSON(component)).toMatchSnapshot();
+});
+
+test('Can advance todo state for selected header in an org file', () => {
+  const store = createStore(rootReducer, {
+    org: {
+      past: [],
+      present: new Map(),
+      future: [],
+    },
+    dropbox: new Map(),
+    base: new fromJS({
+      customKeybindings: {}
+    }),
+  });
+  store.dispatch(displayFile('/some/test/file', testOrgFile));
+
+  const component = mount(
+    <MemoryRouter keyLength={0}>
+      <Provider store={store}>
+        <OrgFile path="/some/test/file" />
+      </Provider>
+    </MemoryRouter>
+  );
+
+  component.find('.title-line').first().simulate('click');
+  component.find('.fas.fa-check').simulate('click');
+
+  expect(toJSON(component)).toMatchSnapshot();
 });

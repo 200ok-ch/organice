@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 
+import { getNextId } from '../../../../lib/parse_org';
+
 export default class AttributedString extends PureComponent {
   render() {
     const { parts } = this.props;
@@ -14,7 +16,7 @@ export default class AttributedString extends PureComponent {
             const uri = part.getIn(['contents', 'uri']);
             const title = part.getIn(['contents', 'title']) || uri;
 
-            return <a key={Math.random()} href={uri}>{title}</a>;
+            return <a key={getNextId()} href={uri}>{title}</a>;
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);
             return '';

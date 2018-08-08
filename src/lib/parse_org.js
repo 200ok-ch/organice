@@ -1,5 +1,10 @@
 import Immutable from 'immutable';
 
+export const getNextId = (() => {
+  let nextId = 0;
+  return () => nextId++;
+})();
+
 // Accepts a raw string description and returns a list of objects representing it.
 export const parseLinks = (description) => {
   // Match strings containing either [[uri]] or [[uri][title]].
@@ -108,7 +113,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     rawDescription: '',
     description: [],
     opened: false,
-    id: Math.random(),
+    id: getNextId(),
     nestingLevel
   });
 };
