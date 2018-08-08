@@ -38,8 +38,10 @@ Some description content
 * A header with [[https://google.com][a link]]
 `;
 
-test('<OrgFile /> renders an org file', () => {
-  const store = createStore(rootReducer, {
+let store, component;
+
+beforeEach(() => {
+  store = createStore(rootReducer, {
     org: {
       past: [],
       present: new Map(),
@@ -52,66 +54,26 @@ test('<OrgFile /> renders an org file', () => {
   });
   store.dispatch(displayFile('/some/test/file', testOrgFile));
 
-  const component = renderer.create(
+  component = mount(
     <MemoryRouter keyLength={0}>
       <Provider store={store}>
         <OrgFile path="/some/test/file" />
       </Provider>
     </MemoryRouter>
   );
+});
 
-  expect(component.toJSON()).toMatchSnapshot();
+test('<OrgFile /> renders an org file', () => {
+  expect(toJSON(component)).toMatchSnapshot();
 });
 
 test('Can select a header in an org file', () => {
-  const store = createStore(rootReducer, {
-    org: {
-      past: [],
-      present: new Map(),
-      future: [],
-    },
-    dropbox: new Map(),
-    base: new fromJS({
-      customKeybindings: {}
-    }),
-  });
-  store.dispatch(displayFile('/some/test/file', testOrgFile));
-
-  const component = mount(
-    <MemoryRouter keyLength={0}>
-      <Provider store={store}>
-        <OrgFile path="/some/test/file" />
-      </Provider>
-    </MemoryRouter>
-  );
-
   component.find('.title-line').first().simulate('click');
 
   expect(toJSON(component)).toMatchSnapshot();
 });
 
 test('Can advance todo state for selected header in an org file', () => {
-  const store = createStore(rootReducer, {
-    org: {
-      past: [],
-      present: new Map(),
-      future: [],
-    },
-    dropbox: new Map(),
-    base: new fromJS({
-      customKeybindings: {}
-    }),
-  });
-  store.dispatch(displayFile('/some/test/file', testOrgFile));
-
-  const component = mount(
-    <MemoryRouter keyLength={0}>
-      <Provider store={store}>
-        <OrgFile path="/some/test/file" />
-      </Provider>
-    </MemoryRouter>
-  );
-
   component.find('.title-line').first().simulate('click');
   component.find('.fas.fa-check').simulate('click');
 
