@@ -13,17 +13,16 @@ import * as baseActions from '../../actions/base';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-import goBackOrToRoot from '../../util/go_back_or_to_root';
-
 class HeaderBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleSettingsWhatsNewClose']);
+    _.bindAll(this, ['handleWhatsNewClick', 'handleWhatsNewPageDoneClick']);
   }
 
-  handleSettingsWhatsNewClose() {
-    goBackOrToRoot(this.props.history);
+  getPathRoot() {
+    const { location: { pathname } } = this.props;
+    return pathname.split('/')[1];
   }
 
   renderFileBrowserBackButton() {
@@ -88,12 +87,13 @@ class HeaderBar extends PureComponent {
   }
 
   renderBackButton() {
-    const { location: { pathname } } = this.props;
+    const { isWhatsNewPageDisplayed } = this.props;
 
-    const pathRoot = pathname.split('/')[1];
-    console.log("pathRoot = ", pathRoot);
+    if (isWhatsNewPageDisplayed) {
+      return null;
+    }
 
-    switch (pathRoot) {
+    switch (this.getPathRoot()) {
     case '':
       return this.renderLogo();
     case 'files':
@@ -107,50 +107,61 @@ class HeaderBar extends PureComponent {
     }
   }
 
-  render() {
+  handleWhatsNewClick() {
+    this.props.base.showWhatsNewPage();
+  }
+
+  handleWhatsNewPageDoneClick() {
+    this.props.base.hideWhatsNewPage();
+  }
+
+  renderActions() {
     const {
-      onSignInClick,
       isAuthenticated,
+      onSignInClick,
       hasUnseenWhatsNew,
-      location: { pathname },
+      isWhatsNewPageDisplayed,
     } = this.props;
 
-    const isWhatsNewPageActive = pathname === '/whats_new';
-    const isSettingsPageActive = pathname === '/settings';
+    if (isWhatsNewPageDisplayed) {
+      return (
+        <div className="header-bar__actions" onClick={this.handleWhatsNewPageDoneClick}>
+          Done
+        </div>
+      );
+    } else {
+      const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
+        'whats-new-icon--has-unseen': hasUnseenWhatsNew,
+      });
 
-    const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
-      'whats-new-icon--has-unseen': hasUnseenWhatsNew,
-    });
+      switch (this.getPathRoot()) {
+      default:
+        return (
+          <div className="header-bar__actions">
+            {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
-    return (
-      <div className="header-bar">
-        {this.renderBackButton()}
+            <i className={whatsNewClassName} onClick={this.handleWhatsNewClick} />
 
-        <div className="header-bar__actions">
-          {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
+            <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-github header-bar__actions__item" />
+            </a>
 
-          {isWhatsNewPageActive ? (
-            <i className={whatsNewClassName} onClick={this.handleSettingsWhatsNewClose} />
-          ) : (
-            <Link to="/whats_new">
-              <i className={whatsNewClassName} />
-            </Link>
-          )}
-
-          <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-github header-bar__actions__item" />
-          </a>
-
-          {isAuthenticated && (
-            isSettingsPageActive ? (
-              <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsWhatsNewClose} />
-            ) : (
+            {isAuthenticated && (
               <Link to="/settings">
                 <i className="fas fa-cogs header-bar__actions__item" />
               </Link>
-            )
-          )}
-        </div>
+            )}
+          </div>
+        );
+      }
+    }
+  }
+
+  render() {
+    return (
+      <div className="header-bar">
+        {this.renderBackButton()}
+        {this.renderActions()}
       </div>
     );
   }
@@ -160,6 +171,7 @@ const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     hasUnseenWhatsNew: state.base.get('hasUnseenWhatsNew'),
+    isWhatsNewPageDisplayed: state.base.get('isWhatsNewPageDisplayed'),
   };
 };
 

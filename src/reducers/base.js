@@ -56,6 +56,14 @@ const restoreSettings = (state, action) => {
   return applyBaseSettingsFromConfig(state, action.newSettings);
 };
 
+const showWhatsNewPage = (state, action) => (
+  state.set('isWhatsNewPageDisplayed', true)
+);
+
+const hideWhatsNewPage = (state, action) => (
+  state.set('isWhatsNewPageDisplayed', false)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -80,6 +88,10 @@ export default (state = new Map(), action) => {
     return setCustomKeybinding(state, action);
   case 'RESTORE_SETTINGS':
     return restoreSettings(state, action);
+  case 'SHOW_WHATS_NEW_PAGE':
+    return showWhatsNewPage(state, action);
+  case 'HIDE_WHATS_NEW_PAGE':
+    return hideWhatsNewPage(state, action);
   default:
     return state;
   }

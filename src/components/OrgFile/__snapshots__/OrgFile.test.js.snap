@@ -54,6 +54,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
           base={
             Object {
               "hideLoadingMessage": [Function],
+              "hideWhatsNewPage": [Function],
               "loadStaticFile": [Function],
               "restoreSettings": [Function],
               "setBulletStyle": [Function],
@@ -65,6 +66,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
               "setLoadingMessage": [Function],
               "setShouldStoreSettingsInDropbox": [Function],
               "setShouldTapTodoToAdvance": [Function],
+              "showWhatsNewPage": [Function],
               "unloadStaticFile": [Function],
             }
           }
@@ -2065,6 +2067,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
           base={
             Object {
               "hideLoadingMessage": [Function],
+              "hideWhatsNewPage": [Function],
               "loadStaticFile": [Function],
               "restoreSettings": [Function],
               "setBulletStyle": [Function],
@@ -2076,6 +2079,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
               "setLoadingMessage": [Function],
               "setShouldStoreSettingsInDropbox": [Function],
               "setShouldTapTodoToAdvance": [Function],
+              "showWhatsNewPage": [Function],
               "unloadStaticFile": [Function],
             }
           }
@@ -4954,6 +4958,7 @@ exports[`Can select a header in an org file 1`] = `
           base={
             Object {
               "hideLoadingMessage": [Function],
+              "hideWhatsNewPage": [Function],
               "loadStaticFile": [Function],
               "restoreSettings": [Function],
               "setBulletStyle": [Function],
@@ -4965,6 +4970,7 @@ exports[`Can select a header in an org file 1`] = `
               "setLoadingMessage": [Function],
               "setShouldStoreSettingsInDropbox": [Function],
               "setShouldTapTodoToAdvance": [Function],
+              "showWhatsNewPage": [Function],
               "unloadStaticFile": [Function],
             }
           }

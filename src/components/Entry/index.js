@@ -141,6 +141,7 @@ class Entry extends PureComponent {
       isAuthenticated,
       loadingMessage,
       fontSize,
+      isWhatsNewPageDisplayed,
     } = this.props;
 
     const className = classNames('entry-container', {
@@ -153,26 +154,25 @@ class Entry extends PureComponent {
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
-        <Switch>
-          <Route path="/whats_new" exact={true} render={this.renderWhatsNewFile} />
-          <Route render={() => (
-              isAuthenticated ? (
-                <Switch>
-                  <Route path="/settings/shortcuts" component={KeyboardShortcutsEditor} />
-                  <Route path="/settings" component={Settings} />
-                  <Route path="/file/:path+" render={this.renderFile} />
-                  <Route path="/files/:path*" render={this.renderFileBrowser} />
-                  <Redirect to="/files" />
-                </Switch>
-              ) : (
-                <Switch>
-                  <Route path="/sample" exact={true} render={this.renderSampleFile} />
-                  <Route path="/" exact={true} render={this.renderLanding} />
-                  <Redirect to="/" />
-                </Switch>
-              )
-          )} />
-        </Switch>
+        {isWhatsNewPageDisplayed ? (
+          this.renderWhatsNewFile()
+        ) : (
+          isAuthenticated ? (
+            <Switch>
+              <Route path="/settings/shortcuts" component={KeyboardShortcutsEditor} />
+              <Route path="/settings" component={Settings} />
+              <Route path="/file/:path+" render={this.renderFile} />
+              <Route path="/files/:path*" render={this.renderFileBrowser} />
+              <Redirect to="/files" />
+            </Switch>
+          ) : (
+            <Switch>
+              <Route path="/sample" exact={true} render={this.renderSampleFile} />
+              <Route path="/" exact={true} render={this.renderLanding} />
+              <Redirect to="/" />
+            </Switch>
+          )
+        )}
       </div>
     );
   }
@@ -184,6 +184,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     fontSize: state.base.get('fontSize'),
     lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
+    isWhatsNewPageDisplayed: state.base.get('isWhatsNewPageDisplayed'),
   };
 };
 
