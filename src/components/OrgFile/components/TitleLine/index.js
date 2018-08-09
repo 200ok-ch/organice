@@ -113,7 +113,7 @@ class TitleLine extends PureComponent {
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"
-                    rows="2"
+                    rows="3"
                     value={this.state.titleValue}
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleTitleChange}

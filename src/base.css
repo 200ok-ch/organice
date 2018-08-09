@@ -23,6 +23,7 @@
 
 .textarea {
     width: 95%;
+    font-size: 16px;
 }
 
 div[tabindex="-1"]:focus {

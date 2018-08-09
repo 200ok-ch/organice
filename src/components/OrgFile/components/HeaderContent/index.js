@@ -51,7 +51,7 @@ class HeaderContent extends PureComponent {
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"
-                    rows="*"
+                    rows="8"
                     value={this.state.descriptionValue}
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleDescriptionChange} />
