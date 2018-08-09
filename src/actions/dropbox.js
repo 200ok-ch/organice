@@ -2,7 +2,7 @@ import { Dropbox } from 'dropbox';
 
 import { fromJS } from 'immutable';
 
-import { setLoadingMessage, hideLoadingMessage } from './base';
+import { setLoadingMessage, hideLoadingMessage, setActiveModalPage } from './base';
 import { displayFile, applyOpennessState, setDirty } from './org';
 
 import exportOrg from '../lib/export_org';
@@ -16,9 +16,12 @@ export const authenticate = accessToken => ({
   accessToken,
 });
 
-export const signOut = () => ({
-  type: 'SIGN_OUT',
-});
+export const signOut = () => (
+  (dispatch, getState) => {
+    dispatch({ type: 'SIGN_OUT' });
+    dispatch(setActiveModalPage(null));
+  }
+);
 
 export const setCurrentFileBrowserDirectoryListing = (directoryPath, directoryListing) => {
   return {
