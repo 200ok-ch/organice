@@ -10,7 +10,6 @@ import ShortcutRow from './components/ShortcutRow';
 
 import * as baseActions from '../../actions/base';
 
-import goBackOrToRoot from '../../util/go_back_or_to_root';
 import { calculateNamedKeybindings } from '../../lib/keybindings';
 
 import './KeyboardShortcutsEditor.css';
@@ -38,7 +37,7 @@ class KeyboardShortcutsEditor extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleBindingChange', 'handleDoneClick']);
+    _.bindAll(this, ['handleBindingChange']);
   }
 
   handleBindingChange(bindingName, newBinding) {
@@ -56,10 +55,6 @@ class KeyboardShortcutsEditor extends PureComponent {
     this.props.base.setCustomKeybinding(bindingName, newBinding);
   }
 
-  handleDoneClick() {
-    goBackOrToRoot(this.props.history);
-  }
-
   render() {
     const { customKeybindings } = this.props;
 
@@ -71,10 +66,6 @@ class KeyboardShortcutsEditor extends PureComponent {
                        binding={binding}
                        onBindingChange={this.handleBindingChange} />
         ))}
-
-        <div className="keyboard-shortcuts-editor__btn-container">
-          <div className="btn settings-btn" onClick={this.handleDoneClick}>Done</div>
-        </div>
       </div>
     );
   }
