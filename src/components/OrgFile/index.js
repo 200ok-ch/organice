@@ -103,11 +103,7 @@ class OrgFile extends PureComponent {
   }
 
   handleAddHeaderHotKey() {
-    const { selectedHeaderId } = this.props;
-
-    this.props.org.addHeader(selectedHeaderId);
-    this.props.org.selectNextSiblingHeader(selectedHeaderId);
-    this.props.org.enterTitleEditMode();
+    this.props.org.addHeaderAndEdit(this.props.selectedHeaderId);
   }
 
   handleRemoveHeaderHotKey() {

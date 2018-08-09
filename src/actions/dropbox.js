@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage, setActiveModalPage } from './base';
-import { displayFile, applyOpennessState, setDirty } from './org';
+import { displayFile, applyOpennessState, setDirty, unfocusHeader } from './org';
 
 import exportOrg from '../lib/export_org';
 
@@ -116,5 +116,6 @@ export const redownloadCurrentFile = () => {
   return (dispatch, getState) => {
     const path = getState().org.present.get('path');
     dispatch(downloadFile(path));
+    dispatch(unfocusHeader());
   };
 };

@@ -63,9 +63,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handleAddHeaderClick() {
-    this.props.org.addHeader(this.props.selectedHeaderId);
-    this.props.org.selectNextSiblingHeader(this.props.selectedHeaderId);
-    this.props.org.enterTitleEditMode();
+    this.props.org.addHeaderAndEdit(this.props.selectedHeaderId);
   }
 
   handleRemoveHeaderClick() {

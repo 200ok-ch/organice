@@ -60,6 +60,14 @@ export const selectNextSiblingHeader = headerId => ({
   type: 'SELECT_NEXT_SIBLING_HEADER', headerId,
 });
 
+export const addHeaderAndEdit = headerId => (
+  dispatch => {
+    dispatch(addHeader(headerId));
+    dispatch(selectNextSiblingHeader(headerId));
+    dispatch(enterTitleEditMode());
+  }
+);
+
 export const selectNextVisibleHeader = headerId => ({
   type: 'SELECT_NEXT_VISIBLE_HEADER', headerId,
 });
