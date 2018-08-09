@@ -16,6 +16,19 @@
     margin-left: 5px;
 }
 
+.header-bar__back-button {
+    color: white;
+    text-decoration: none;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.header-bar__back-button__directory-path {
+    margin-left: 5px;
+}
+
 .header-bar__actions {
     margin-left: auto;
     display: flex;

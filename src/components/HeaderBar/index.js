@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -26,6 +26,34 @@ class HeaderBar extends PureComponent {
     goBackOrToRoot(this.props.history);
   }
 
+  renderBackButton() {
+    const { location: { pathname } } = this.props;
+
+    if (pathname.startsWith('/files')) {
+      let directoryPath = pathname.substr('/files'.length);
+      if (directoryPath.endsWith('/')) {
+        directoryPath = directoryPath.substring(0, directoryPath.length - 1);
+      }
+
+      if (directoryPath === '') {
+        return null;
+      } else {
+        const pathParts = directoryPath.split('/');
+        const parentDirectoryName = pathParts[pathParts.length - 2];
+        const parentPath = pathParts.slice(0, pathParts.length - 1).join('/');
+
+        return (
+          <Link to={`/files${parentPath}`} className="header-bar__back-button">
+            <i className="fas fa-chevron-left" />
+            <span className="header-bar__back-button__directory-path">{parentDirectoryName}/</span>
+          </Link>
+        );
+      }
+    }
+
+    return null;
+  }
+
   render() {
     const {
       onSignInClick,
@@ -43,8 +71,14 @@ class HeaderBar extends PureComponent {
 
     return (
       <div className="header-bar">
-        <img className="header-bar__logo" src={logo} alt="Logo" width="45" height="45" />
-        <h2 className="header-bar__title">org-web</h2>
+        {isAuthenticated ? (
+          this.renderBackButton()
+        ) : (
+          <Fragment>
+            <img className="header-bar__logo" src={logo} alt="Logo" width="45" height="45" />
+            <h2 className="header-bar__title">org-web</h2>
+          </Fragment>
+        )}
 
         <div className="header-bar__actions">
           {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
