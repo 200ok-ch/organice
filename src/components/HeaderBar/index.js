@@ -69,16 +69,42 @@ class HeaderBar extends PureComponent {
     );
   }
 
+  renderLogo() {
+    return (
+      <Fragment>
+        <img className="header-bar__logo" src={logo} alt="Logo" width="45" height="45" />
+        <h2 className="header-bar__title">org-web</h2>
+      </Fragment>
+    );
+  }
+
+  renderSampleFileBackButton() {
+    return (
+      <Link to={`/`} className="header-bar__back-button">
+        <i className="fas fa-chevron-left" />
+        <span className="header-bar__back-button__directory-path">Home</span>
+      </Link>
+    );
+  }
+
   renderBackButton() {
     const { location: { pathname } } = this.props;
 
-    if (pathname.startsWith('/files')) {
-      return this.renderFileBrowserBackButton();
-    } else if (pathname.startsWith('/file')) {
-      return this.renderOrgFileBackButton();
-    }
+    const pathRoot = pathname.split('/')[1];
+    console.log("pathRoot = ", pathRoot);
 
-    return null;
+    switch (pathRoot) {
+    case '':
+      return this.renderLogo();
+    case 'files':
+      return this.renderFileBrowserBackButton();
+    case 'file':
+      return this.renderOrgFileBackButton();
+    case 'sample':
+      return this.renderSampleFileBackButton();
+    default:
+      return null;
+    }
   }
 
   render() {
@@ -98,14 +124,7 @@ class HeaderBar extends PureComponent {
 
     return (
       <div className="header-bar">
-        {isAuthenticated ? (
-          this.renderBackButton()
-        ) : (
-          <Fragment>
-            <img className="header-bar__logo" src={logo} alt="Logo" width="45" height="45" />
-            <h2 className="header-bar__title">org-web</h2>
-          </Fragment>
-        )}
+        {this.renderBackButton()}
 
         <div className="header-bar__actions">
           {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
