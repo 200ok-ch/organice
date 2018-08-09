@@ -1,6 +1,6 @@
 /* global process */
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -120,7 +120,7 @@ class Entry extends PureComponent {
       isAuthenticated,
       loadingMessage,
       fontSize,
-      isWhatsNewPageDisplayed,
+      activeModalPage,
     } = this.props;
 
     const className = classNames('entry-container', {
@@ -133,17 +133,22 @@ class Entry extends PureComponent {
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
-        {isWhatsNewPageDisplayed ? (
+        {activeModalPage === 'whats_new' ? (
           this.renderWhatsNewFile()
         ) : (
           isAuthenticated ? (
-            <Switch>
-              <Route path="/settings/shortcuts" component={KeyboardShortcutsEditor} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/file/:path+" render={this.renderFile} />
-              <Route path="/files/:path*" render={this.renderFileBrowser} />
-              <Redirect to="/files" />
-            </Switch>
+            ['keyboard_shortcuts_editor', 'settings'].includes(activeModalPage) ? (
+              <Fragment>
+                {activeModalPage === 'settings' && <Settings />}
+                {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
+              </Fragment>
+            ) : (
+              <Switch>
+                <Route path="/file/:path+" render={this.renderFile} />
+                <Route path="/files/:path*" render={this.renderFileBrowser} />
+                <Redirect to="/files" />
+              </Switch>
+            )
           ) : (
             <Switch>
               <Route path="/sample" exact={true} render={this.renderSampleFile} />
@@ -163,7 +168,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     fontSize: state.base.get('fontSize'),
     lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
-    isWhatsNewPageDisplayed: state.base.get('isWhatsNewPageDisplayed'),
+    activeModalPage: state.base.get('activeModalPage'),
   };
 };
 

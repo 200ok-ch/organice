@@ -17,7 +17,12 @@ class HeaderBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleWhatsNewClick', 'handleWhatsNewPageDoneClick']);
+    _.bindAll(this, [
+      'handleWhatsNewClick',
+      'handleSettingsClick',
+      'handleModalPageDoneClick',
+      'handleKeyboardShortcutsEditorBackClick',
+    ]);
   }
 
   getPathRoot() {
@@ -86,11 +91,28 @@ class HeaderBar extends PureComponent {
     );
   }
 
-  renderBackButton() {
-    const { isWhatsNewPageDisplayed } = this.props;
+  handleKeyboardShortcutsEditorBackClick() {
+    this.props.base.setActiveModalPage('settings');
+  }
 
-    if (isWhatsNewPageDisplayed) {
+  renderKeyboardShortcutsEditorBackButton() {
+    return (
+      <div className="header-bar__back-button" onClick={this.handleKeyboardShortcutsEditorBackClick}>
+        <i className="fas fa-chevron-left" />
+        <span className="header-bar__back-button__directory-path">Settings</span>
+      </div>
+    );
+  }
+
+  renderBackButton() {
+    const { activeModalPage } = this.props;
+
+    switch (activeModalPage) {
+    case 'whats_new':
       return null;
+    case 'keyboard_shortcuts_editor':
+      return this.renderKeyboardShortcutsEditorBackButton();
+    default:
     }
 
     switch (this.getPathRoot()) {
@@ -108,11 +130,15 @@ class HeaderBar extends PureComponent {
   }
 
   handleWhatsNewClick() {
-    this.props.base.showWhatsNewPage();
+    this.props.base.setActiveModalPage('whats_new');
   }
 
-  handleWhatsNewPageDoneClick() {
-    this.props.base.hideWhatsNewPage();
+  handleSettingsClick() {
+    this.props.base.setActiveModalPage('settings');
+  }
+
+  handleModalPageDoneClick() {
+    this.props.base.setActiveModalPage(null);
   }
 
   renderActions() {
@@ -120,12 +146,12 @@ class HeaderBar extends PureComponent {
       isAuthenticated,
       onSignInClick,
       hasUnseenWhatsNew,
-      isWhatsNewPageDisplayed,
+      activeModalPage,
     } = this.props;
 
-    if (isWhatsNewPageDisplayed) {
+    if (!!activeModalPage) {
       return (
-        <div className="header-bar__actions" onClick={this.handleWhatsNewPageDoneClick}>
+        <div className="header-bar__actions" onClick={this.handleModalPageDoneClick}>
           Done
         </div>
       );
@@ -147,9 +173,7 @@ class HeaderBar extends PureComponent {
             </a>
 
             {isAuthenticated && (
-              <Link to="/settings">
-                <i className="fas fa-cogs header-bar__actions__item" />
-              </Link>
+              <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsClick} />
             )}
           </div>
         );
@@ -171,7 +195,7 @@ const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     hasUnseenWhatsNew: state.base.get('hasUnseenWhatsNew'),
-    isWhatsNewPageDisplayed: state.base.get('isWhatsNewPageDisplayed'),
+    activeModalPage: state.base.get('activeModalPage'),
   };
 };
 

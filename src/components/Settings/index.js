@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import * as dropboxActions from '../../actions/dropbox';
 import * as baseActions from '../../actions/base';
@@ -12,8 +12,6 @@ import './Settings.css';
 import TabButtons from '../UI/TabButtons';
 import Switch from '../UI/Switch';
 
-import goBackOrToRoot from '../../util/go_back_or_to_root';
-
 import _ from 'lodash';
 
 class Settings extends PureComponent {
@@ -22,7 +20,7 @@ class Settings extends PureComponent {
 
     _.bindAll(this, [
       'handleSignOutClick',
-      'handleCloseClick',
+      'handleKeyboardShortcutsClick',
       'handleFontSizeChange',
       'handleBulletStyleChange',
       'handleShouldTapTodoToAdvanceChange',
@@ -34,6 +32,10 @@ class Settings extends PureComponent {
     if (window.confirm('Are you sure you want to sign out?')) {
       this.props.dropbox.signOut();
     }
+  }
+
+  handleKeyboardShortcutsClick() {
+    this.props.base.setActiveModalPage('keyboard_shortcuts_editor');
   }
 
   handleFontSizeChange(newFontSize) {
@@ -54,10 +56,6 @@ class Settings extends PureComponent {
     const { shouldStoreSettingsInDropbox } = this.props;
 
     this.props.base.setShouldStoreSettingsInDropbox(!shouldStoreSettingsInDropbox);
-  }
-
-  handleCloseClick() {
-    goBackOrToRoot(this.props.history);
   }
 
   render() {
@@ -102,11 +100,10 @@ class Settings extends PureComponent {
         </div>
 
         <div className="settings-buttons-container">
-          <Link to="/settings/shortcuts" className="btn settings-btn">
+          <button className="btn settings-btn" onClick={this.handleKeyboardShortcutsClick}>
             Keyboard shortcuts
-          </Link>
+          </button>
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
-          <button className="btn settings-btn" onClick={this.handleCloseClick}>Close</button>
         </div>
       </div>
     );

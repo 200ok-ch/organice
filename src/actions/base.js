@@ -88,10 +88,6 @@ export const restoreSettings = newSettings => ({
   type: 'RESTORE_SETTINGS', newSettings,
 });
 
-export const showWhatsNewPage = () => ({
-  type: 'SHOW_WHATS_NEW_PAGE',
-});
-
-export const hideWhatsNewPage = () => ({
-  type: 'HIDE_WHATS_NEW_PAGE',
+export const setActiveModalPage = activeModalPage => ({
+  type: 'SET_ACTIVE_MODAL_PAGE', activeModalPage,
 });
