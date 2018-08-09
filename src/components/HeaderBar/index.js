@@ -26,29 +26,56 @@ class HeaderBar extends PureComponent {
     goBackOrToRoot(this.props.history);
   }
 
+  renderFileBrowserBackButton() {
+    const { location: { pathname } } = this.props;
+
+    let directoryPath = pathname.substr('/files'.length);
+    if (directoryPath.endsWith('/')) {
+      directoryPath = directoryPath.substring(0, directoryPath.length - 1);
+    }
+
+    if (directoryPath === '') {
+      return null;
+    } else {
+      const pathParts = directoryPath.split('/');
+      const parentDirectoryName = pathParts[pathParts.length - 2];
+      const parentPath = pathParts.slice(0, pathParts.length - 1).join('/');
+
+      return (
+        <Link to={`/files${parentPath}`} className="header-bar__back-button">
+          <i className="fas fa-chevron-left" />
+          <span className="header-bar__back-button__directory-path">{parentDirectoryName}/</span>
+        </Link>
+      );
+    }
+  }
+
+  renderOrgFileBackButton() {
+    const { location: { pathname } } = this.props;
+
+    let filePath = pathname.substr('/file'.length);
+    if (filePath.endsWith('/')) {
+      filePath = filePath.substring(0, filePath.length - 1);
+    }
+
+    const pathParts = filePath.split('/');
+    const directoryPath = pathParts.slice(0, pathParts.length - 1).join('/');
+
+    return (
+      <Link to={`/files${directoryPath}`} className="header-bar__back-button">
+        <i className="fas fa-chevron-left" />
+        <span className="header-bar__back-button__directory-path">File browser</span>
+      </Link>
+    );
+  }
+
   renderBackButton() {
     const { location: { pathname } } = this.props;
 
     if (pathname.startsWith('/files')) {
-      let directoryPath = pathname.substr('/files'.length);
-      if (directoryPath.endsWith('/')) {
-        directoryPath = directoryPath.substring(0, directoryPath.length - 1);
-      }
-
-      if (directoryPath === '') {
-        return null;
-      } else {
-        const pathParts = directoryPath.split('/');
-        const parentDirectoryName = pathParts[pathParts.length - 2];
-        const parentPath = pathParts.slice(0, pathParts.length - 1).join('/');
-
-        return (
-          <Link to={`/files${parentPath}`} className="header-bar__back-button">
-            <i className="fas fa-chevron-left" />
-            <span className="header-bar__back-button__directory-path">{parentDirectoryName}/</span>
-          </Link>
-        );
-      }
+      return this.renderFileBrowserBackButton();
+    } else if (pathname.startsWith('/file')) {
+      return this.renderOrgFileBackButton();
     }
 
     return null;

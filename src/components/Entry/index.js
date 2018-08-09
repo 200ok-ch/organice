@@ -81,6 +81,7 @@ class Entry extends PureComponent {
   }
 
   renderWhatsNewFile() {
+    // TODO: get rid of backButtonText and onBackClick props
     return (
       <OrgFile backButtonText="Done"
                onBackClick={this.handleStaticFileBack}
@@ -93,6 +94,7 @@ class Entry extends PureComponent {
   }
 
   renderSampleFile() {
+    // TODO: get rid of backButtonText and onBackClick props
     return (
       <OrgFile backButtonText="Exit sample"
                onBackClick={this.handleStaticFileBack}
@@ -123,6 +125,7 @@ class Entry extends PureComponent {
       path = '/' + path;
     }
 
+    // TODO: get rid of backButtonText and onBackClick props
     return (
       <OrgFile path={path}
                backButtonText="Back to file browser"
