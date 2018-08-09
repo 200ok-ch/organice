@@ -155,6 +155,7 @@ class OrgFile extends PureComponent {
       path,
       staticFile,
       customKeybindings,
+      inEditMode,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -169,26 +170,30 @@ class OrgFile extends PureComponent {
 
     // Automatically call preventDefault on all the keyboard events that come through for
     // these hotkeys.
-    const preventDefault = callback => event => {
+    const preventDefaultAndHandleEditMode = (callback, ignoreInEditMode = false) => event => {
+      if (ignoreInEditMode && inEditMode) {
+        return;
+      }
+
       event.preventDefault();
       callback(event);
     };
 
     const handlers = {
-      selectNextVisibleHeader: preventDefault(this.handleSelectNextVisibleHeaderHotKey),
-      selectPreviousVisibleHeader: preventDefault(this.handleSelectPreviousVisibleHeaderHotKey),
-      toggleHeaderOpened: preventDefault(this.handleToggleHeaderOpenedHotKey),
-      advanceTodo: preventDefault(this.handleAdvanceTodoHotKey),
-      editTitle: preventDefault(this.handleEditTitleHotKey),
-      editDescription: preventDefault(this.handleEditDescriptionHotKey),
-      exitEditMode: preventDefault(this.handleExitEditModeHotKey),
-      addHeader: preventDefault(this.handleAddHeaderHotKey),
-      removeHeader: preventDefault(this.handleRemoveHeaderHotKey),
-      moveHeaderUp: preventDefault(this.handleMoveHeaderUpHotKey),
-      moveHeaderDown: preventDefault(this.handleMoveHeaderDownHotKey),
-      moveHeaderLeft: preventDefault(this.handleMoveHeaderLeftHotKey),
-      moveHeaderRight: preventDefault(this.handleMoveHeaderRightHotKey),
-      undo: preventDefault(this.handleUndoHotKey),
+      selectNextVisibleHeader: preventDefaultAndHandleEditMode(this.handleSelectNextVisibleHeaderHotKey),
+      selectPreviousVisibleHeader: preventDefaultAndHandleEditMode(this.handleSelectPreviousVisibleHeaderHotKey),
+      toggleHeaderOpened: preventDefaultAndHandleEditMode(this.handleToggleHeaderOpenedHotKey, true),
+      advanceTodo: preventDefaultAndHandleEditMode(this.handleAdvanceTodoHotKey),
+      editTitle: preventDefaultAndHandleEditMode(this.handleEditTitleHotKey),
+      editDescription: preventDefaultAndHandleEditMode(this.handleEditDescriptionHotKey),
+      exitEditMode: preventDefaultAndHandleEditMode(this.handleExitEditModeHotKey),
+      addHeader: preventDefaultAndHandleEditMode(this.handleAddHeaderHotKey),
+      removeHeader: preventDefaultAndHandleEditMode(this.handleRemoveHeaderHotKey, true),
+      moveHeaderUp: preventDefaultAndHandleEditMode(this.handleMoveHeaderUpHotKey),
+      moveHeaderDown: preventDefaultAndHandleEditMode(this.handleMoveHeaderDownHotKey),
+      moveHeaderLeft: preventDefaultAndHandleEditMode(this.handleMoveHeaderLeftHotKey),
+      moveHeaderRight: preventDefaultAndHandleEditMode(this.handleMoveHeaderRightHotKey),
+      undo: preventDefaultAndHandleEditMode(this.handleUndoHotKey),
     };
 
     return (
@@ -232,6 +237,7 @@ const mapStateToProps = (state, props) => {
     loadedPath: state.org.present.get('path'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     customKeybindings: state.base.get('customKeybindings'),
+    inEditMode: state.org.present.get('inTitleEditMode') || state.org.present.get('inDescriptionEditMode'),
   };
 };
 
