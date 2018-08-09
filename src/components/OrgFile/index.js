@@ -62,6 +62,8 @@ class OrgFile extends PureComponent {
 
     if (!!staticFile) {
       this.props.base.unloadStaticFile();
+    } else {
+      this.props.org.stopDisplayingFile();
     }
   }
 
@@ -145,8 +147,6 @@ class OrgFile extends PureComponent {
   render() {
     const {
       headers,
-      backButtonText,
-      onBackClick,
       shouldDisableDirtyIndicator,
       shouldDisableSyncButtons,
       shouldDisableActionDrawer,
@@ -216,10 +216,6 @@ class OrgFile extends PureComponent {
           ) : (
             <HeaderList />
           )}
-
-          <div className="btn org-file__btn" onClick={onBackClick}>
-            {backButtonText}
-          </div>
 
           {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 

@@ -14,7 +14,6 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import parseQueryString from '../../util/parse_query_string';
-import goBackOrToRoot from '../../util/go_back_or_to_root';
 import { parseOrg } from '../../lib/parse_org';
 import { whatsNewFileContents } from '../../lib/static_file_contents';
 
@@ -36,8 +35,6 @@ class Entry extends PureComponent {
 
     _.bindAll(this, [
       'handleSignIn',
-      'handleLiveFileBack',
-      'handleStaticFileBack',
       'renderWhatsNewFile',
       'renderSampleFile',
       'renderLanding',
@@ -71,21 +68,9 @@ class Entry extends PureComponent {
     window.location = authURL;
   }
 
-  handleLiveFileBack() {
-    goBackOrToRoot(this.props.history);
-    this.props.org.stopDisplayingFile();
-  }
-
-  handleStaticFileBack() {
-    goBackOrToRoot(this.props.history);
-  }
-
   renderWhatsNewFile() {
-    // TODO: get rid of backButtonText and onBackClick props
     return (
-      <OrgFile backButtonText="Done"
-               onBackClick={this.handleStaticFileBack}
-               staticFile="whats_new"
+      <OrgFile staticFile="whats_new"
                shouldDisableDirtyIndicator={true}
                shouldDisableActionDrawer={true}
                shouldDisableSyncButtons={false}
@@ -94,11 +79,8 @@ class Entry extends PureComponent {
   }
 
   renderSampleFile() {
-    // TODO: get rid of backButtonText and onBackClick props
     return (
-      <OrgFile backButtonText="Exit sample"
-               onBackClick={this.handleStaticFileBack}
-               staticFile="sample"
+      <OrgFile staticFile="sample"
                shouldDisableDirtyIndicator={true}
                shouldDisableActionDrawer={false}
                shouldDisableSyncButtons={true}
@@ -125,11 +107,8 @@ class Entry extends PureComponent {
       path = '/' + path;
     }
 
-    // TODO: get rid of backButtonText and onBackClick props
     return (
       <OrgFile path={path}
-               backButtonText="Back to file browser"
-               onBackClick={this.handleLiveFileBack}
                shouldDisableDirtyIndicator={false}
                shouldDisableActionDrawer={false}
                shouldDisableSyncButtons={false} />
