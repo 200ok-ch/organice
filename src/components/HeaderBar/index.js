@@ -112,6 +112,8 @@ class HeaderBar extends PureComponent {
       return null;
     case 'keyboard_shortcuts_editor':
       return this.renderKeyboardShortcutsEditorBackButton();
+    case 'settings':
+      return null;
     default:
     }
 
