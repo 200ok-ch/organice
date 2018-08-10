@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {
   parseOrg,
   parseTitleLine,
-  parseLinks,
+  parseRawText,
   newHeaderWithTitle,
 } from '../lib/parse_org';
 import {
@@ -105,7 +105,7 @@ const updateHeaderDescription = (state, action) => {
   return state.updateIn(['headers', headerIndex], header => (
     header
       .set('rawDescription', action.newRawDescription)
-      .set('description', parseLinks(action.newRawDescription))
+      .set('description', parseRawText(action.newRawDescription))
   ));
 };
 

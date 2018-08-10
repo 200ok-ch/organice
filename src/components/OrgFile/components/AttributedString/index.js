@@ -17,6 +17,9 @@ export default class AttributedString extends PureComponent {
             const title = part.getIn(['contents', 'title']) || uri;
 
             return <a key={getNextId()} href={uri}>{title}</a>;
+          case 'table':
+            // TODO: update the key used here.
+            return <span key={Math.random()}>table!</span>;
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);
             return '';

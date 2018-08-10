@@ -1,77 +1,167 @@
-import Immutable from 'immutable';
+import { fromJS, List } from 'immutable';
+import _ from 'lodash';
 
 export const getNextId = (() => {
   let nextId = 0;
   return () => nextId++;
 })();
 
-// Accepts a raw string description and returns a list of objects representing it.
-export const parseLinks = (description) => {
-  // Match strings containing either [[uri]] or [[uri][title]].
+const parseLinks = (line, { shouldAppendNewline = false } = {}) => {
   const linkRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])/g;
-  let matches = [];
-  let match = linkRegex.exec(description);
+  const matches = [];
+  let match = linkRegex.exec(line);
   while (match) {
     if (match[2]) {
       matches.push({
         rawText: match[0],
         uri: match[2],
-        index: match.index
+        index: match.index,
       });
     } else {
       matches.push({
         rawText: match[0],
         uri: match[3],
         title: match[4],
-        index: match.index
+        index: match.index,
       });
     }
-    match = linkRegex.exec(description);
+    match = linkRegex.exec(line);
   }
 
-  let descriptionParts = [];
+  const lineParts = [];
   let startIndex = 0;
   matches.forEach(match => {
     let index = match.index;
 
-    // Add the text part before this link if necessary
     if (index !== startIndex) {
-      const text = description.substring(startIndex, index);
-      descriptionParts.push({
+      const text = line.substring(startIndex, index);
+      lineParts.push({
         type: 'text',
-        contents: text
+        contents: text,
       });
     }
 
-    // Add the link part.
-    let linkPart = {
+    const linkPart = {
       type: 'link',
       contents: {
-        uri: match.uri
-      }
+        uri: match.uri,
+      },
     };
     if (match.title) {
       linkPart.contents.title = match.title;
     }
-    descriptionParts.push(linkPart);
+    lineParts.push(linkPart);
 
-    // Adjust the start index.
     startIndex = match.index + match.rawText.length;
   });
 
-  // Add on any trailing text if necessary.
-  if (startIndex !== description.length) {
-    const text = description.substring(startIndex, description.length);
-    descriptionParts.push({
+  if (startIndex !== line.length || shouldAppendNewline) {
+    const trailingText = line.substring(startIndex, line.length) + (shouldAppendNewline ? '\n' : '');
+    lineParts.push({
       type: 'text',
-      contents: text
+      contents: trailingText,
     });
   }
 
-  return Immutable.fromJS(descriptionParts);
+  return lineParts;
 };
 
-const defaultKeywordSets = Immutable.fromJS([{
+const parseTable = tableLines => {
+  if (tableLines[0].includes('!!!!!')) {
+    console.log("tableLines = ", tableLines);
+  }
+
+  const table = {
+    type: 'table',
+    contents: [
+      []
+    ],
+    columnProperties: [],
+  };
+
+  tableLines.map(line => line.trim()).forEach(line => {
+    if (line.startsWith('|-')) {
+      table.contents.push([]);
+    } else {
+      const lastRow = _.last(table.contents);
+      const lineCells = line.substr(1, line.length - 2).split('|');
+
+      if (lastRow.length === 0) {
+        lineCells.forEach(cell => lastRow.push(cell));
+      } else {
+        lineCells.forEach((cellContents, cellIndex) => {
+          lastRow[cellIndex] += `\n${cellContents}`;
+        });
+      }
+    }
+  });
+
+  if (_.last(table.contents).length === 0) {
+    table.contents = table.contents.slice(0, table.contents.length - 1);
+  }
+
+  // const tableJSON = {
+  //   contents: [
+  //     [
+  //       [
+  //         {...attributedStringPart},
+  //         {...attributedStringPart},
+  //         {...attributedStringPart},
+  //       ]
+  //     ]
+  //   ],
+  //   columnProperties: [
+  //     {
+  //       alignment: 'right',
+  //       width: null,
+  //     }
+  //   ]
+  // };
+
+  if (tableLines[0].includes('!!!!!')) {
+    console.log("table = ", table);
+    console.log(JSON.stringify(table.contents, null, 2));
+  }
+
+  return table;
+};
+
+export const parseRawText = (rawText, { excludeTables = false } = {}) => {
+  const lines = rawText.split('\n');
+  const rawLineParts = _.flatten(lines.map((line, lineIndex) => {
+    if (line.trim().startsWith('|')) {
+      return [{
+        type: 'raw-table', line,
+      }];
+    } else {
+      return parseLinks(line, { shouldAppendNewline: lineIndex !== lines.length - 1 });
+    }
+  }));
+
+  const processedLineParts = [];
+  for (let partIndex = 0; partIndex < rawLineParts.length; ++partIndex) {
+    const linePart = rawLineParts[partIndex];
+    if (linePart.type === 'raw-table') {
+      const tableLines = _.takeWhile(rawLineParts.slice(partIndex), part => (
+        part.type === 'raw-table'
+      )).map(part => part.line);
+
+      processedLineParts.push(parseTable(tableLines));
+
+      partIndex += tableLines.length - 1;
+    } else {
+      processedLineParts.push(linePart);
+    }
+  }
+
+  if (rawText.trim().startsWith('!!!!!')) {
+    console.log("processedLineParts = ", processedLineParts);
+  }
+
+  return fromJS(processedLineParts);
+};
+
+const defaultKeywordSets = fromJS([{
   keywords: ['TODO', 'DONE'],
   default: true
 }]);
@@ -97,9 +187,9 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
     }
   }
 
-  const title = parseLinks(rawTitle);
+  const title = parseRawText(rawTitle, { excludeTables: true });
 
-  return Immutable.fromJS({ title, rawTitle, todoKeyword, tags });
+  return fromJS({ title, rawTitle, todoKeyword, tags });
 };
 
 export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
@@ -108,7 +198,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
   }
 
   const titleLine = parseTitleLine(line, todoKeywordSets);
-  return Immutable.fromJS({
+  return fromJS({
     titleLine,
     rawDescription: '',
     description: [],
@@ -119,10 +209,10 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
 };
 
 export const parseOrg = (fileContents) => {
-  let headers = new Immutable.List();
+  let headers = new List();
   const lines = fileContents.split('\n');
 
-  let todoKeywordSets = new Immutable.List();
+  let todoKeywordSets = new List();
 
   lines.forEach(line => {
     if (line.startsWith('*')) {
@@ -146,7 +236,7 @@ export const parseOrg = (fileContents) => {
 
             return keyword;
           });
-          todoKeywordSets = todoKeywordSets.push(Immutable.fromJS({
+          todoKeywordSets = todoKeywordSets.push(fromJS({
             keywords,
             configLine: line,
             default: false
@@ -164,10 +254,10 @@ export const parseOrg = (fileContents) => {
   }
 
   headers = headers.map(header => {
-    return header.set('description', parseLinks(header.get('rawDescription')));
+    return header.set('description', parseRawText(header.get('rawDescription')));
   });
 
-  return Immutable.fromJS({
+  return fromJS({
     headers, todoKeywordSets
   });
 };

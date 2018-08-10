@@ -54,9 +54,9 @@ exports[`<OrgFile /> renders an org file 1`] = `
           base={
             Object {
               "hideLoadingMessage": [Function],
-              "hideWhatsNewPage": [Function],
               "loadStaticFile": [Function],
               "restoreSettings": [Function],
+              "setActiveModalPage": [Function],
               "setBulletStyle": [Function],
               "setCustomKeybinding": [Function],
               "setFontSize": [Function],
@@ -66,7 +66,6 @@ exports[`<OrgFile /> renders an org file 1`] = `
               "setLoadingMessage": [Function],
               "setShouldStoreSettingsInDropbox": [Function],
               "setShouldTapTodoToAdvance": [Function],
-              "showWhatsNewPage": [Function],
               "unloadStaticFile": [Function],
             }
           }
@@ -187,7 +186,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                   Immutable.Map {
                     type: "text",
                     contents: "
-                    Some description content",
+                    ",
+                  },
+                  Immutable.Map {
+                    type: "text",
+                    contents: "Some description content",
                   },
                 ],
                 opened: false,
@@ -255,6 +258,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
           org={
             Object {
               "addHeader": [Function],
+              "addHeaderAndEdit": [Function],
               "advanceTodoState": [Function],
               "applyOpennessState": [Function],
               "displayFile": [Function],
@@ -441,7 +445,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                           Immutable.Map {
                             type: "text",
                             contents: "
-                            Some description content",
+                            ",
+                          },
+                          Immutable.Map {
+                            type: "text",
+                            contents: "Some description content",
                           },
                         ],
                         opened: false,
@@ -641,6 +649,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -754,6 +763,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -813,7 +823,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                             Immutable.Map {
                               type: "text",
                               contents: "
-                              Some description content",
+                              ",
+                            },
+                            Immutable.Map {
+                              type: "text",
+                              contents: "Some description content",
                             },
                           ],
                           opened: false,
@@ -849,7 +863,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               Immutable.Map {
                                 type: "text",
                                 contents: "
-                                Some description content",
+                                ",
+                              },
+                              Immutable.Map {
+                                type: "text",
+                                contents: "Some description content",
                               },
                             ],
                             opened: false,
@@ -901,7 +919,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   Immutable.Map {
                                     type: "text",
                                     contents: "
-                                    Some description content",
+                                    ",
+                                  },
+                                  Immutable.Map {
+                                    type: "text",
+                                    contents: "Some description content",
                                   },
                                 ],
                                 opened: false,
@@ -934,7 +956,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                     Immutable.Map {
                                       type: "text",
                                       contents: "
-                                      Some description content",
+                                      ",
+                                    },
+                                    Immutable.Map {
+                                      type: "text",
+                                      contents: "Some description content",
                                     },
                                   ],
                                   opened: false,
@@ -946,6 +972,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -1030,7 +1057,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   Immutable.Map {
                                     type: "text",
                                     contents: "
-                                    Some description content",
+                                    ",
+                                  },
+                                  Immutable.Map {
+                                    type: "text",
+                                    contents: "Some description content",
                                   },
                                 ],
                                 opened: false,
@@ -1060,7 +1091,11 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                     Immutable.Map {
                                       type: "text",
                                       contents: "
-                                      Some description content",
+                                      ",
+                                    },
+                                    Immutable.Map {
+                                      type: "text",
+                                      contents: "Some description content",
                                     },
                                   ],
                                   opened: false,
@@ -1071,6 +1106,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -1247,6 +1283,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -1377,6 +1414,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -1597,6 +1635,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -1749,6 +1788,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -1788,9 +1828,6 @@ exports[`<OrgFile /> renders an org file 1`] = `
                   </div>
                 </HeaderList>
               </Connect(HeaderList)>
-              <div
-                className="btn org-file__btn"
-              />
               <Connect(ActionDrawer)>
                 <ActionDrawer
                   dropbox={
@@ -1810,6 +1847,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                   org={
                     Object {
                       "addHeader": [Function],
+                      "addHeaderAndEdit": [Function],
                       "advanceTodoState": [Function],
                       "applyOpennessState": [Function],
                       "displayFile": [Function],
@@ -2067,9 +2105,9 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
           base={
             Object {
               "hideLoadingMessage": [Function],
-              "hideWhatsNewPage": [Function],
               "loadStaticFile": [Function],
               "restoreSettings": [Function],
+              "setActiveModalPage": [Function],
               "setBulletStyle": [Function],
               "setCustomKeybinding": [Function],
               "setFontSize": [Function],
@@ -2079,7 +2117,6 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
               "setLoadingMessage": [Function],
               "setShouldStoreSettingsInDropbox": [Function],
               "setShouldTapTodoToAdvance": [Function],
-              "showWhatsNewPage": [Function],
               "unloadStaticFile": [Function],
             }
           }
@@ -2200,7 +2237,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                   Immutable.Map {
                     type: "text",
                     contents: "
-                    Some description content",
+                    ",
+                  },
+                  Immutable.Map {
+                    type: "text",
+                    contents: "Some description content",
                   },
                 ],
                 opened: false,
@@ -2269,6 +2310,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
           org={
             Object {
               "addHeader": [Function],
+              "addHeaderAndEdit": [Function],
               "advanceTodoState": [Function],
               "applyOpennessState": [Function],
               "displayFile": [Function],
@@ -2456,7 +2498,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                           Immutable.Map {
                             type: "text",
                             contents: "
-                            Some description content",
+                            ",
+                          },
+                          Immutable.Map {
+                            type: "text",
+                            contents: "Some description content",
                           },
                         ],
                         opened: false,
@@ -2657,6 +2703,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -2775,6 +2822,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -2954,6 +3002,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3066,6 +3115,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3234,6 +3284,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3352,6 +3403,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3520,6 +3572,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3638,6 +3691,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3697,7 +3751,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                             Immutable.Map {
                               type: "text",
                               contents: "
-                              Some description content",
+                              ",
+                            },
+                            Immutable.Map {
+                              type: "text",
+                              contents: "Some description content",
                             },
                           ],
                           opened: false,
@@ -3733,7 +3791,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               Immutable.Map {
                                 type: "text",
                                 contents: "
-                                Some description content",
+                                ",
+                              },
+                              Immutable.Map {
+                                type: "text",
+                                contents: "Some description content",
                               },
                             ],
                             opened: false,
@@ -3785,7 +3847,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                   Immutable.Map {
                                     type: "text",
                                     contents: "
-                                    Some description content",
+                                    ",
+                                  },
+                                  Immutable.Map {
+                                    type: "text",
+                                    contents: "Some description content",
                                   },
                                 ],
                                 opened: false,
@@ -3818,7 +3884,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                     Immutable.Map {
                                       type: "text",
                                       contents: "
-                                      Some description content",
+                                      ",
+                                    },
+                                    Immutable.Map {
+                                      type: "text",
+                                      contents: "Some description content",
                                     },
                                   ],
                                   opened: false,
@@ -3830,6 +3900,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -3914,7 +3985,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                   Immutable.Map {
                                     type: "text",
                                     contents: "
-                                    Some description content",
+                                    ",
+                                  },
+                                  Immutable.Map {
+                                    type: "text",
+                                    contents: "Some description content",
                                   },
                                 ],
                                 opened: false,
@@ -3944,7 +4019,11 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                     Immutable.Map {
                                       type: "text",
                                       contents: "
-                                      Some description content",
+                                      ",
+                                    },
+                                    Immutable.Map {
+                                      type: "text",
+                                      contents: "Some description content",
                                     },
                                   ],
                                   opened: false,
@@ -3955,6 +4034,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -4131,6 +4211,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -4261,6 +4342,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -4481,6 +4563,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -4633,6 +4716,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -4673,9 +4757,6 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                 </HeaderList>
               </Connect(HeaderList)>
               <div
-                className="btn org-file__btn"
-              />
-              <div
                 className="dirty-indicator"
               >
                 Unpushed changes
@@ -4700,6 +4781,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                   org={
                     Object {
                       "addHeader": [Function],
+                      "addHeaderAndEdit": [Function],
                       "advanceTodoState": [Function],
                       "applyOpennessState": [Function],
                       "displayFile": [Function],
@@ -4958,9 +5040,9 @@ exports[`Can select a header in an org file 1`] = `
           base={
             Object {
               "hideLoadingMessage": [Function],
-              "hideWhatsNewPage": [Function],
               "loadStaticFile": [Function],
               "restoreSettings": [Function],
+              "setActiveModalPage": [Function],
               "setBulletStyle": [Function],
               "setCustomKeybinding": [Function],
               "setFontSize": [Function],
@@ -4970,7 +5052,6 @@ exports[`Can select a header in an org file 1`] = `
               "setLoadingMessage": [Function],
               "setShouldStoreSettingsInDropbox": [Function],
               "setShouldTapTodoToAdvance": [Function],
-              "showWhatsNewPage": [Function],
               "unloadStaticFile": [Function],
             }
           }
@@ -5091,7 +5172,11 @@ exports[`Can select a header in an org file 1`] = `
                   Immutable.Map {
                     type: "text",
                     contents: "
-                    Some description content",
+                    ",
+                  },
+                  Immutable.Map {
+                    type: "text",
+                    contents: "Some description content",
                   },
                 ],
                 opened: false,
@@ -5159,6 +5244,7 @@ exports[`Can select a header in an org file 1`] = `
           org={
             Object {
               "addHeader": [Function],
+              "addHeaderAndEdit": [Function],
               "advanceTodoState": [Function],
               "applyOpennessState": [Function],
               "displayFile": [Function],
@@ -5346,7 +5432,11 @@ exports[`Can select a header in an org file 1`] = `
                           Immutable.Map {
                             type: "text",
                             contents: "
-                            Some description content",
+                            ",
+                          },
+                          Immutable.Map {
+                            type: "text",
+                            contents: "Some description content",
                           },
                         ],
                         opened: false,
@@ -5547,6 +5637,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -5659,6 +5750,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -5838,6 +5930,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -5950,6 +6043,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -6118,6 +6212,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -6236,6 +6331,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -6404,6 +6500,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -6522,6 +6619,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -6581,7 +6679,11 @@ exports[`Can select a header in an org file 1`] = `
                             Immutable.Map {
                               type: "text",
                               contents: "
-                              Some description content",
+                              ",
+                            },
+                            Immutable.Map {
+                              type: "text",
+                              contents: "Some description content",
                             },
                           ],
                           opened: false,
@@ -6617,7 +6719,11 @@ exports[`Can select a header in an org file 1`] = `
                               Immutable.Map {
                                 type: "text",
                                 contents: "
-                                Some description content",
+                                ",
+                              },
+                              Immutable.Map {
+                                type: "text",
+                                contents: "Some description content",
                               },
                             ],
                             opened: false,
@@ -6669,7 +6775,11 @@ exports[`Can select a header in an org file 1`] = `
                                   Immutable.Map {
                                     type: "text",
                                     contents: "
-                                    Some description content",
+                                    ",
+                                  },
+                                  Immutable.Map {
+                                    type: "text",
+                                    contents: "Some description content",
                                   },
                                 ],
                                 opened: false,
@@ -6702,7 +6812,11 @@ exports[`Can select a header in an org file 1`] = `
                                     Immutable.Map {
                                       type: "text",
                                       contents: "
-                                      Some description content",
+                                      ",
+                                    },
+                                    Immutable.Map {
+                                      type: "text",
+                                      contents: "Some description content",
                                     },
                                   ],
                                   opened: false,
@@ -6714,6 +6828,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -6798,7 +6913,11 @@ exports[`Can select a header in an org file 1`] = `
                                   Immutable.Map {
                                     type: "text",
                                     contents: "
-                                    Some description content",
+                                    ",
+                                  },
+                                  Immutable.Map {
+                                    type: "text",
+                                    contents: "Some description content",
                                   },
                                 ],
                                 opened: false,
@@ -6828,7 +6947,11 @@ exports[`Can select a header in an org file 1`] = `
                                     Immutable.Map {
                                       type: "text",
                                       contents: "
-                                      Some description content",
+                                      ",
+                                    },
+                                    Immutable.Map {
+                                      type: "text",
+                                      contents: "Some description content",
                                     },
                                   ],
                                   opened: false,
@@ -6839,6 +6962,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -7015,6 +7139,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -7145,6 +7270,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -7365,6 +7491,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -7517,6 +7644,7 @@ exports[`Can select a header in an org file 1`] = `
                               org={
                                 Object {
                                   "addHeader": [Function],
+                                  "addHeaderAndEdit": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
@@ -7556,9 +7684,6 @@ exports[`Can select a header in an org file 1`] = `
                   </div>
                 </HeaderList>
               </Connect(HeaderList)>
-              <div
-                className="btn org-file__btn"
-              />
               <Connect(ActionDrawer)>
                 <ActionDrawer
                   dropbox={
@@ -7578,6 +7703,7 @@ exports[`Can select a header in an org file 1`] = `
                   org={
                     Object {
                       "addHeader": [Function],
+                      "addHeaderAndEdit": [Function],
                       "advanceTodoState": [Function],
                       "applyOpennessState": [Function],
                       "displayFile": [Function],
