@@ -150,8 +150,8 @@ class ActionDrawer extends PureComponent {
             {!!selectedTableCellId && (
               <Fragment>
                 <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="angle-double-down" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="angle-double-right" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="caret-down" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="caret-right" subIconName="table" isDisabled={false} />
                 <ActionButton iconName="arrow-up" subIconName="table" isDisabled={false} />
                 <ActionButton iconName="arrow-down" subIconName="table" isDisabled={false} />
                 <ActionButton iconName="arrow-left" subIconName="table" isDisabled={false} />
