@@ -190,8 +190,11 @@ export const updateTableContainingCellId = (headers, cellId, updaterCallbackGene
   const rowIndexContainingCellId = tablePart.get('contents').findIndex(row => (
     row.get('contents').some(cell => cell.get('id') === cellId)
   ));
+  const columnIndexContainingCellId = tablePart.getIn([
+    'contents', rowIndexContainingCellId, 'contents',
+  ]).findIndex(cell => cell.get('id') === cellId);
 
   return headers.updateIn([
     containingHeaderIndex, 'description', tablePartIndex, 'contents'
-  ], updaterCallbackGenerator(rowIndexContainingCellId));
+  ], updaterCallbackGenerator(rowIndexContainingCellId, columnIndexContainingCellId));
 };

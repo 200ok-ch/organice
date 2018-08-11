@@ -375,13 +375,13 @@ const moveTableRowDown = state => {
   }
 
   return state.update('headers', headers => (
-    updateTableContainingCellId(headers, selectedTableCellId, rowIndexContainingCellId => rows => (
-      rowIndexContainingCellId + 1 === rows.size ? (
+    updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
+      rowIndex + 1 === rows.size ? (
         rows
       ) : (
         rows
-          .insert(rowIndexContainingCellId, rows.get(rowIndexContainingCellId + 1))
-          .delete(rowIndexContainingCellId + 2)
+          .insert(rowIndex, rows.get(rowIndex + 1))
+          .delete(rowIndex + 2)
       )
     ))
   ));
@@ -394,13 +394,13 @@ const moveTableRowUp = (state, action) => {
   }
 
   return state.update('headers', headers => (
-    updateTableContainingCellId(headers, selectedTableCellId, rowIndexContainingCellId => rows => (
-      rowIndexContainingCellId === 0 ? (
+    updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
+      rowIndex === 0 ? (
         rows
       ) : (
         rows
-          .insert(rowIndexContainingCellId - 1, rows.get(rowIndexContainingCellId))
-          .delete(rowIndexContainingCellId + 1)
+          .insert(rowIndex - 1, rows.get(rowIndex))
+          .delete(rowIndex + 1)
       )
     ))
   ));
@@ -412,7 +412,25 @@ const moveTableColumnLeft = (state, action) => {
     return state;
   }
 
-  return state;
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => rows => (
+      columnIndex === 0 ? (
+        rows
+      ) : (
+        rows.map(row => (
+          row.update('contents', contents => (
+            contents.size === 0 ? (
+              contents
+            ) : (
+              contents
+                .insert(columnIndex - 1, contents.get(columnIndex))
+                .delete(columnIndex + 1)
+            )
+          ))
+        ))
+      )
+    ))
+  ));
 };
 
 const moveTableColumnRight = (state, action) => {
@@ -421,7 +439,25 @@ const moveTableColumnRight = (state, action) => {
     return state;
   }
 
-  return state;
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => rows => (
+      columnIndex + 1 >= rows.getIn([0, 'contents']).size ? (
+        rows
+      ) : (
+        rows.map(row => (
+          row.update('contents', contents => (
+            contents.size === 0 ? (
+              contents
+            ) : (
+              contents
+                .insert(columnIndex, contents.get(columnIndex + 1))
+                .delete(columnIndex + 2)
+            )
+          ))
+        ))
+      )
+    ))
+  ));
 };
 
 export default (state = new Map(), action) => {
