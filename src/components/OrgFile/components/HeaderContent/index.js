@@ -14,7 +14,7 @@ class HeaderContent extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleDescriptionChange','handleTextareaBlur']);
+    _.bindAll(this, ['handleDescriptionChange','handleTextareaBlur', 'handleTableCellSelect']);
 
     this.state = {
       descriptionValue: props.header.get('rawDescription'),
@@ -39,8 +39,13 @@ class HeaderContent extends PureComponent {
     this.props.org.exitDescriptionEditMode();
   }
 
+  handleTableCellSelect(cellId) {
+    console.log("cellId = ", cellId);
+    this.props.org.setSelectedTableCellId(cellId);
+  }
+
   render() {
-    const { header, inEditMode } = this.props;
+    const { header, inEditMode, selectedTableCellId } = this.props;
 
     if (!header.get('opened')) {
       return <div></div>;
@@ -56,7 +61,9 @@ class HeaderContent extends PureComponent {
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleDescriptionChange} />
         ) : (
-          <AttributedString parts={header.get('description')} />
+          <AttributedString parts={header.get('description')}
+                            onTableCellSelect={this.handleTableCellSelect}
+                            selectedTableCellId={selectedTableCellId} />
         )}
       </div>
     );
@@ -68,6 +75,7 @@ const mapStateToProps = (state, props) => {
     inEditMode: (
       state.org.present.get('inDescriptionEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
+    selectedTableCellId: state.org.present.get('selectedTableCellId'),
   };
 };
 

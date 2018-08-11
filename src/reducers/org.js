@@ -329,6 +329,10 @@ const setDirty = (state, action) => (
   state.set('isDirty', action.isDirty)
 );
 
+const setSelectedTableCellId = (state, action) => (
+  state.set('selectedTableCellId', action.cellId)
+);
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -398,6 +402,8 @@ export default (state = new Map(), action) => {
     return focusHeader(state, action);
   case 'UNFOCUS_HEADER':
     return unfocusHeader(state, action);
+  case 'SET_SELECTED_TABLE_CELL_ID':
+    return setSelectedTableCellId(state, action);
   default:
     return state;
   }

@@ -4,23 +4,41 @@ import AttributedString from '../../../AttributedString';
 
 import './TablePart.css';
 
-import { getNextId } from '../../../../../../lib/parse_org';
+import _ from 'lodash';
+import classNames from 'classnames';
 
 export default class TablePart extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, ['handleCellSelect']);
+  }
+
+  handleCellSelect(cellId) {
+    return () => this.props.onCellSelect(cellId);
+  }
+
   render() {
-    const { table } = this.props;
-    console.log("table = ", table.toJS());
+    const { table, selectedTableCellId } = this.props;
 
     return (
       <table className="table-part">
         <tbody>
           {table.get('contents').map(row => (
             <tr key={row.get('id')}>
-              {row.get('contents').map(cell => (
-                <td className="table-part__cell" key={cell.get('id')}>
-                  <AttributedString parts={cell.get('contents')} />
-                </td>
-              ))}
+              {row.get('contents').map(cell => {
+                const className = classNames('table-part__cell', {
+                  'table-part__cell--selected': cell.get('id') === selectedTableCellId
+                });
+
+                return (
+                  <td className={className}
+                      key={cell.get('id')}
+                      onClick={this.handleCellSelect(cell.get('id'))}>
+                    <AttributedString parts={cell.get('contents')} />
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

@@ -20,9 +20,12 @@ export const toggleHeaderOpened = headerId => ({
   type: 'TOGGLE_HEADER_OPENED', headerId,
 });
 
-export const selectHeader = headerId => ({
-  type: 'SELECT_HEADER', headerId,
-});
+export const selectHeader = headerId => (
+  dispatch => {
+    dispatch({ type: 'SELECT_HEADER', headerId });
+    dispatch(setSelectedTableCellId(null));
+  }
+);
 
 export const advanceTodoState = () => ({
   type: 'ADVANCE_TODO_STATE',
@@ -122,4 +125,8 @@ export const applyOpennessState = () => ({
 
 export const setDirty = isDirty => ({
   type: 'SET_DIRTY', isDirty,
+});
+
+export const setSelectedTableCellId = cellId => ({
+  type: 'SET_SELECTED_TABLE_CELL_ID', cellId,
 });

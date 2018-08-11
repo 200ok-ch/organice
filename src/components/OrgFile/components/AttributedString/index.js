@@ -6,7 +6,7 @@ import TablePart from './components/TablePart';
 
 export default class AttributedString extends PureComponent {
   render() {
-    const { parts } = this.props;
+    const { parts, onTableCellSelect, selectedTableCellId } = this.props;
 
     return (
       <span>
@@ -20,7 +20,12 @@ export default class AttributedString extends PureComponent {
 
             return <a key={getNextId()} href={uri}>{title}</a>;
           case 'table':
-            return <TablePart key={getNextId()} table={part} />;
+            return (
+              <TablePart key={getNextId()}
+                         table={part}
+                         onCellSelect={onTableCellSelect}
+                         selectedTableCellId={selectedTableCellId} />
+            );
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);
             return '';

@@ -9,3 +9,7 @@
 
     white-space: pre;
 }
+
+.table-part__cell--selected {
+    background-color: rgba(94, 52, 140, 0.5);
+}
