@@ -15,10 +15,10 @@ export default class TablePart extends PureComponent {
       <table className="table-part">
         <tbody>
           {table.get('contents').map(row => (
-            <tr key={getNextId()}>
-              {row.map(cellContents => (
-                <td className="table-part__cell" key={getNextId()}>
-                  <AttributedString parts={cellContents} />
+            <tr key={row.get('id')}>
+              {row.get('contents').map(cell => (
+                <td className="table-part__cell" key={cell.get('id')}>
+                  <AttributedString parts={cell.get('contents')} />
                 </td>
               ))}
             </tr>

@@ -96,33 +96,17 @@ const parseTable = tableLines => {
     }
   });
 
-  table.contents = table.contents.map(row => (
-    row.map(cellContents => (
-      parseLinks(cellContents)
-    ))
-  ));
+  table.contents = table.contents.map(row => ({
+    id: getNextId(),
+    contents: row.map(cellContents => ({
+      id: getNextId(),
+      contents: parseLinks(cellContents),
+    }))
+  }));
 
   if (_.last(table.contents).length === 0) {
     table.contents = table.contents.slice(0, table.contents.length - 1);
   }
-
-  // const tableJSON = {
-  //   contents: [
-  //     [
-  //       [
-  //         {...attributedStringPart},
-  //         {...attributedStringPart},
-  //         {...attributedStringPart},
-  //       ]
-  //     ]
-  //   ],
-  //   columnProperties: [
-  //     {
-  //       alignment: 'right',
-  //       width: null,
-  //     }
-  //   ]
-  // };
 
   if (tableLines[0].includes('!!!!!')) {
     console.log("table = ", table);
