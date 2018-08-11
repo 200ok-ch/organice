@@ -163,3 +163,35 @@ export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => 
 
   return headers;
 };
+
+export const tablePartContainsCellId = (tablePart, cellId) => (
+  tablePart.get('contents').some(row => (
+    row.get('contents').some(cell => cell.get('id') === cellId)
+  ))
+);
+
+export const headerThatContainsTableCellId = (headers, cellId) => (
+  headers.find(header => (
+    header.get('description').filter(descriptionPart => (
+      descriptionPart.get('type') === 'table'
+    )).some(tablePart => (
+      tablePartContainsCellId(tablePart, cellId)
+    ))
+  ))
+);
+
+export const updateTableContainingCellId = (headers, cellId, updaterCallbackGenerator) => {
+  const containingHeader = headerThatContainsTableCellId(headers, cellId);
+  const containingHeaderIndex = indexOfHeaderWithId(headers, containingHeader.get('id'));
+  const tablePartIndex = containingHeader.get('description').findIndex(descriptionPart => (
+    descriptionPart.get('type') === 'table' && tablePartContainsCellId(descriptionPart, cellId)
+  ));
+  const tablePart = containingHeader.getIn(['description', tablePartIndex]);
+  const rowIndexContainingCellId = tablePart.get('contents').findIndex(row => (
+    row.get('contents').some(cell => cell.get('id') === cellId)
+  ));
+
+  return headers.updateIn([
+    containingHeaderIndex, 'description', tablePartIndex, 'contents'
+  ], updaterCallbackGenerator(rowIndexContainingCellId));
+};

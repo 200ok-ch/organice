@@ -16,6 +16,7 @@ import {
   openHeaderWithPath,
   nextVisibleHeaderAfterIndex,
   previousVisibleHeaderAfterIndex,
+  updateTableContainingCellId,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -333,6 +334,96 @@ const setSelectedTableCellId = (state, action) => (
   state.set('selectedTableCellId', action.cellId)
 );
 
+const enterTableEditMode = (state, action) => {
+  if (!state.get('selectedTableCellId')) {
+    return state;
+  }
+
+  return state.set('inTableEditMode', true);
+};
+
+const exitTableEditMode = (state, action) => {
+  if (!state.get('selectedTableCellId')) {
+    return state;
+  }
+
+  return state.set('inTableEditMode', false);
+};
+
+const addNewTableRow = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state;
+};
+
+const addNewTableColumn = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state;
+};
+
+const moveTableRowDown = state => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, selectedTableCellId, rowIndexContainingCellId => rows => (
+      rowIndexContainingCellId + 1 === rows.size ? (
+        rows
+      ) : (
+        rows
+          .insert(rowIndexContainingCellId, rows.get(rowIndexContainingCellId + 1))
+          .delete(rowIndexContainingCellId + 2)
+      )
+    ))
+  ));
+};
+
+const moveTableRowUp = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, selectedTableCellId, rowIndexContainingCellId => rows => (
+      rowIndexContainingCellId === 0 ? (
+        rows
+      ) : (
+        rows
+          .insert(rowIndexContainingCellId - 1, rows.get(rowIndexContainingCellId))
+          .delete(rowIndexContainingCellId + 1)
+      )
+    ))
+  ));
+};
+
+const moveTableColumnLeft = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state;
+};
+
+const moveTableColumnRight = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state;
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -404,6 +495,22 @@ export default (state = new Map(), action) => {
     return unfocusHeader(state, action);
   case 'SET_SELECTED_TABLE_CELL_ID':
     return setSelectedTableCellId(state, action);
+  case 'ENTER_TABLE_EDIT_MODE':
+    return enterTableEditMode(state, action);
+  case 'EXIT_TABLE_EDIT_MODE':
+    return exitTableEditMode(state, action);
+  case 'ADD_NEW_TABLE_ROW':
+    return addNewTableRow(state, action);
+  case 'ADD_NEW_TABLE_COLUMN':
+    return addNewTableColumn(state, action);
+  case 'MOVE_TABLE_ROW_DOWN':
+    return moveTableRowDown(state, action);
+  case 'MOVE_TABLE_ROW_UP':
+    return moveTableRowUp(state, action);
+  case 'MOVE_TABLE_COLUMN_LEFT':
+    return moveTableColumnLeft(state, action);
+  case 'MOVE_TABLE_COLUMN_RIGHT':
+    return moveTableColumnRight(state, action);
   default:
     return state;
   }

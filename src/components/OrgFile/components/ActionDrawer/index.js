@@ -10,7 +10,7 @@ import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
-import ActionButton from './components/ActionButton';
+import ActionButton from './components/ActionButton/';
 
 class ActionDrawer extends PureComponent {
   constructor(props) {
@@ -34,6 +34,13 @@ class ActionDrawer extends PureComponent {
       'handlePushClick',
       'handlePullClick',
       'handleDoneClick',
+      'handleEnterTableEditModeClick',
+      'handleAddNewTableRowClick',
+      'handleAddNewTableColumnClick',
+      'handleMoveTableRowDownClick',
+      'handleMoveTableRowUpClick',
+      'handleMoveTableColumnLeftClick',
+      'handleMoveTableColumnRightClick',
     ]);
   }
 
@@ -130,6 +137,34 @@ class ActionDrawer extends PureComponent {
     this.props.org.exitDescriptionEditMode();
   }
 
+  handleEnterTableEditModeClick() {
+    this.props.org.enterTableEditMode();
+  }
+
+  handleAddNewTableRowClick() {
+    this.props.org.addNewTableRow();
+  }
+
+  handleAddNewTableColumnClick() {
+    this.props.org.addNewTableColumn();
+  }
+
+  handleMoveTableRowDownClick() {
+    this.props.org.moveTableRowDown();
+  }
+
+  handleMoveTableRowUpClick() {
+    this.props.org.moveTableRowUp();
+  }
+
+  handleMoveTableColumnLeftClick() {
+    this.props.org.moveTableColumnLeft();
+  }
+
+  handleMoveTableColumnRightClick() {
+    this.props.org.moveTableColumnRight();
+  }
+
   render() {
     const {
       inTitleEditMode,
@@ -149,13 +184,13 @@ class ActionDrawer extends PureComponent {
           <Fragment>
             {!!selectedTableCellId && (
               <Fragment>
-                <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="caret-down" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="caret-right" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="arrow-up" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="arrow-down" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="arrow-left" subIconName="table" isDisabled={false} />
-                <ActionButton iconName="arrow-right" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} onClick={this.handleEnterTableEditModeClick} />
+                <ActionButton iconName="caret-down" subIconName="table" isDisabled={false} onClick={this.handleAddNewTableRowClick} />
+                <ActionButton iconName="caret-right" subIconName="table" isDisabled={false} onClick={this.handleAddNewTableColumnClick} />
+                <ActionButton iconName="arrow-up" subIconName="table" isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
+                <ActionButton iconName="arrow-down" subIconName="table" isDisabled={false} onClick={this.handleMoveTableRowDownClick} />
+                <ActionButton iconName="arrow-left" subIconName="table" isDisabled={false} onClick={this.handleMoveTableColumnLeftClick} />
+                <ActionButton iconName="arrow-right" subIconName="table" isDisabled={false} onClick={this.handleMoveTableColumnRightClick} />
                 <div className="action-drawer__separator" />
               </Fragment>
             )}

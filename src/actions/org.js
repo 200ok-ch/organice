@@ -139,3 +139,35 @@ export const setSelectedTableCellId = cellId => (
     }
   }
 );
+
+export const enterTableEditMode = () => ({
+  type: 'ENTER_TABLE_EDIT_MODE',
+});
+
+export const exitTableEditMode = () => ({
+  type: 'EXIT_TABLE_EDIT_MODE',
+});
+
+export const addNewTableRow = () => ({
+  type: 'ADD_NEW_TABLE_ROW',
+});
+
+export const addNewTableColumn = () => ({
+  type: 'ADD_NEW_TABLE_COLUMN',
+});
+
+export const moveTableRowDown = () => ({
+  type: 'MOVE_TABLE_ROW_DOWN',
+});
+
+export const moveTableRowUp = () => ({
+  type: 'MOVE_TABLE_ROW_UP',
+});
+
+export const moveTableColumnLeft = () => ({
+  type: 'MOVE_TABLE_COLUMN_LEFT',
+});
+
+export const moveTableColumnRight = () => ({
+  type: 'MOVE_TABLE_COLUMN_RIGHT',
+});
