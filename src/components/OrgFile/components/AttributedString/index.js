@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 
 import { getNextId } from '../../../../lib/parse_org';
 
+import TablePart from './components/TablePart';
+
 export default class AttributedString extends PureComponent {
   render() {
     const { parts } = this.props;
@@ -18,8 +20,7 @@ export default class AttributedString extends PureComponent {
 
             return <a key={getNextId()} href={uri}>{title}</a>;
           case 'table':
-            // TODO: update the key used here.
-            return <span key={Math.random()}>table!</span>;
+            return <TablePart key={getNextId()} table={part} />;
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);
             return '';

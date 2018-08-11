@@ -6,6 +6,7 @@ export const getNextId = (() => {
   return () => nextId++;
 })();
 
+// TODO: update `line` to something like `rawText`.
 const parseLinks = (line, { shouldAppendNewline = false } = {}) => {
   const linkRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])/g;
   const matches = [];
@@ -95,6 +96,12 @@ const parseTable = tableLines => {
       }
     }
   });
+
+  table.contents = table.contents.map(row => (
+    row.map(cellContents => (
+      parseLinks(cellContents)
+    ))
+  ));
 
   if (_.last(table.contents).length === 0) {
     table.contents = table.contents.slice(0, table.contents.length - 1);

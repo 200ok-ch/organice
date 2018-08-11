@@ -576,7 +576,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -879,7 +879,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -1206,7 +1206,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -1536,7 +1536,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -2630,7 +2630,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header header--selected"
+                          className="header nice-scroll header--selected"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -2929,7 +2929,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -3211,7 +3211,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -3499,7 +3499,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -3807,7 +3807,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -4134,7 +4134,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -4464,7 +4464,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -5564,7 +5564,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header header--selected"
+                          className="header nice-scroll header--selected"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -5857,7 +5857,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -6139,7 +6139,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -6427,7 +6427,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -6735,7 +6735,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -7062,7 +7062,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -7392,7 +7392,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header"
+                          className="header nice-scroll"
                           style={
                             Object {
                               "paddingLeft": 20,
