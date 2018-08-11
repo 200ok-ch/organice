@@ -16,6 +16,7 @@
 
 .action-drawer__btn {
     margin-right: 20px;
+    position: relative;
 }
 
 .action-drawer__done-btn {
@@ -24,4 +25,13 @@
     height: 60px;
     width: 100%;
     margin-left: -10px;
+}
+
+.action-drawer__separator {
+    background-color: lightgray;
+    width: 2px;
+    height: 35px;
+    display: inline-block;
+    margin-right: 20px;
+    transform: translateY(12px);
 }
