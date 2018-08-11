@@ -6,11 +6,10 @@ export const getNextId = (() => {
   return () => nextId++;
 })();
 
-// TODO: update `line` to something like `rawText`.
-const parseLinks = (line, { shouldAppendNewline = false } = {}) => {
+const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
   const linkRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])/g;
   const matches = [];
-  let match = linkRegex.exec(line);
+  let match = linkRegex.exec(rawText);
   while (match) {
     if (match[2]) {
       matches.push({
@@ -26,7 +25,7 @@ const parseLinks = (line, { shouldAppendNewline = false } = {}) => {
         index: match.index,
       });
     }
-    match = linkRegex.exec(line);
+    match = linkRegex.exec(rawText);
   }
 
   const lineParts = [];
@@ -35,7 +34,7 @@ const parseLinks = (line, { shouldAppendNewline = false } = {}) => {
     let index = match.index;
 
     if (index !== startIndex) {
-      const text = line.substring(startIndex, index);
+      const text = rawText.substring(startIndex, index);
       lineParts.push({
         type: 'text',
         contents: text,
@@ -56,8 +55,8 @@ const parseLinks = (line, { shouldAppendNewline = false } = {}) => {
     startIndex = match.index + match.rawText.length;
   });
 
-  if (startIndex !== line.length || shouldAppendNewline) {
-    const trailingText = line.substring(startIndex, line.length) + (shouldAppendNewline ? '\n' : '');
+  if (startIndex !== rawText.length || shouldAppendNewline) {
+    const trailingText = rawText.substring(startIndex, rawText.length) + (shouldAppendNewline ? '\n' : '');
     lineParts.push({
       type: 'text',
       contents: trailingText,
