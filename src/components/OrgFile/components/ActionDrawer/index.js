@@ -137,6 +137,7 @@ class ActionDrawer extends PureComponent {
       historyCount,
       shouldDisableSyncButtons,
       isFocusedHeaderActive,
+      selectedTableCellId
     } = this.props;
 
     return (
@@ -146,15 +147,18 @@ class ActionDrawer extends PureComponent {
                   onClick={this.handleDoneClick}>Done</button>
         ) : (
           <Fragment>
-            <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} />
-            <ActionButton iconName="angle-double-down" subIconName="table" isDisabled={false} />
-            <ActionButton iconName="angle-double-right" subIconName="table" isDisabled={false} />
-            <ActionButton iconName="arrow-up" subIconName="table" isDisabled={false} />
-            <ActionButton iconName="arrow-down" subIconName="table" isDisabled={false} />
-            <ActionButton iconName="arrow-left" subIconName="table" isDisabled={false} />
-            <ActionButton iconName="arrow-right" subIconName="table" isDisabled={false} />
-
-            <div className="action-drawer__separator" />
+            {!!selectedTableCellId && (
+              <Fragment>
+                <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="angle-double-down" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="angle-double-right" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="arrow-up" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="arrow-down" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="arrow-left" subIconName="table" isDisabled={false} />
+                <ActionButton iconName="arrow-right" subIconName="table" isDisabled={false} />
+                <div className="action-drawer__separator" />
+              </Fragment>
+            )}
 
             <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
             <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />
@@ -190,6 +194,7 @@ const mapStateToProps = (state, props) => {
     historyCount: state.org.past.length,
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
+    selectedTableCellId: state.org.present.get('selectedTableCellId'),
   };
 };
 

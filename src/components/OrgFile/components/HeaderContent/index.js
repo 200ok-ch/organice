@@ -40,7 +40,6 @@ class HeaderContent extends PureComponent {
   }
 
   handleTableCellSelect(cellId) {
-    console.log("cellId = ", cellId);
     this.props.org.setSelectedTableCellId(cellId);
   }
 

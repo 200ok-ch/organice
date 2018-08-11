@@ -23,7 +23,10 @@ export const toggleHeaderOpened = headerId => ({
 export const selectHeader = headerId => (
   dispatch => {
     dispatch({ type: 'SELECT_HEADER', headerId });
-    dispatch(setSelectedTableCellId(null));
+
+    if (!!headerId) {
+      dispatch(setSelectedTableCellId(null));
+    }
   }
 );
 
@@ -127,6 +130,12 @@ export const setDirty = isDirty => ({
   type: 'SET_DIRTY', isDirty,
 });
 
-export const setSelectedTableCellId = cellId => ({
-  type: 'SET_SELECTED_TABLE_CELL_ID', cellId,
-});
+export const setSelectedTableCellId = cellId => (
+  dispatch => {
+    dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+
+    if (!!cellId) {
+      dispatch(selectHeader(null));
+    }
+  }
+);
