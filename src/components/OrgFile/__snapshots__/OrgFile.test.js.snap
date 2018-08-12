@@ -259,12 +259,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
             Object {
               "addHeader": [Function],
               "addHeaderAndEdit": [Function],
+              "addNewTableColumn": [Function],
+              "addNewTableRow": [Function],
               "advanceTodoState": [Function],
               "applyOpennessState": [Function],
               "displayFile": [Function],
               "enterDescriptionEditMode": [Function],
+              "enterTableEditMode": [Function],
               "enterTitleEditMode": [Function],
               "exitDescriptionEditMode": [Function],
+              "exitTableEditMode": [Function],
               "exitTitleEditMode": [Function],
               "focusHeader": [Function],
               "moveHeaderDown": [Function],
@@ -273,19 +277,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
               "moveHeaderUp": [Function],
               "moveSubtreeLeft": [Function],
               "moveSubtreeRight": [Function],
+              "moveTableColumnLeft": [Function],
+              "moveTableColumnRight": [Function],
+              "moveTableRowDown": [Function],
+              "moveTableRowUp": [Function],
               "noOp": [Function],
               "openHeader": [Function],
               "removeHeader": [Function],
+              "removeTableColumn": [Function],
+              "removeTableRow": [Function],
               "selectHeader": [Function],
               "selectNextSiblingHeader": [Function],
               "selectNextVisibleHeader": [Function],
               "selectPreviousVisibleHeader": [Function],
               "setDirty": [Function],
+              "setSelectedTableCellId": [Function],
               "stopDisplayingFile": [Function],
               "toggleHeaderOpened": [Function],
               "unfocusHeader": [Function],
               "updateHeaderDescription": [Function],
               "updateHeaderTitle": [Function],
+              "updateTableCellValue": [Function],
             }
           }
           path="/some/test/file"
@@ -650,12 +662,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -664,19 +680,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -764,12 +788,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -778,19 +806,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -973,12 +1009,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -987,19 +1027,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -1107,12 +1155,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -1121,19 +1173,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -1284,12 +1344,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -1298,19 +1362,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -1415,12 +1487,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -1429,19 +1505,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -1636,12 +1720,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -1650,19 +1738,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -1789,12 +1885,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                 Object {
                                   "addHeader": [Function],
                                   "addHeaderAndEdit": [Function],
+                                  "addNewTableColumn": [Function],
+                                  "addNewTableRow": [Function],
                                   "advanceTodoState": [Function],
                                   "applyOpennessState": [Function],
                                   "displayFile": [Function],
                                   "enterDescriptionEditMode": [Function],
+                                  "enterTableEditMode": [Function],
                                   "enterTitleEditMode": [Function],
                                   "exitDescriptionEditMode": [Function],
+                                  "exitTableEditMode": [Function],
                                   "exitTitleEditMode": [Function],
                                   "focusHeader": [Function],
                                   "moveHeaderDown": [Function],
@@ -1803,19 +1903,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   "moveHeaderUp": [Function],
                                   "moveSubtreeLeft": [Function],
                                   "moveSubtreeRight": [Function],
+                                  "moveTableColumnLeft": [Function],
+                                  "moveTableColumnRight": [Function],
+                                  "moveTableRowDown": [Function],
+                                  "moveTableRowUp": [Function],
                                   "noOp": [Function],
                                   "openHeader": [Function],
                                   "removeHeader": [Function],
+                                  "removeTableColumn": [Function],
+                                  "removeTableRow": [Function],
                                   "selectHeader": [Function],
                                   "selectNextSiblingHeader": [Function],
                                   "selectNextVisibleHeader": [Function],
                                   "selectPreviousVisibleHeader": [Function],
                                   "setDirty": [Function],
+                                  "setSelectedTableCellId": [Function],
                                   "stopDisplayingFile": [Function],
                                   "toggleHeaderOpened": [Function],
                                   "unfocusHeader": [Function],
                                   "updateHeaderDescription": [Function],
                                   "updateHeaderTitle": [Function],
+                                  "updateTableCellValue": [Function],
                                 }
                               }
                             >
@@ -1848,12 +1956,16 @@ exports[`<OrgFile /> renders an org file 1`] = `
                     Object {
                       "addHeader": [Function],
                       "addHeaderAndEdit": [Function],
+                      "addNewTableColumn": [Function],
+                      "addNewTableRow": [Function],
                       "advanceTodoState": [Function],
                       "applyOpennessState": [Function],
                       "displayFile": [Function],
                       "enterDescriptionEditMode": [Function],
+                      "enterTableEditMode": [Function],
                       "enterTitleEditMode": [Function],
                       "exitDescriptionEditMode": [Function],
+                      "exitTableEditMode": [Function],
                       "exitTitleEditMode": [Function],
                       "focusHeader": [Function],
                       "moveHeaderDown": [Function],
@@ -1862,19 +1974,27 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       "moveHeaderUp": [Function],
                       "moveSubtreeLeft": [Function],
                       "moveSubtreeRight": [Function],
+                      "moveTableColumnLeft": [Function],
+                      "moveTableColumnRight": [Function],
+                      "moveTableRowDown": [Function],
+                      "moveTableRowUp": [Function],
                       "noOp": [Function],
                       "openHeader": [Function],
                       "removeHeader": [Function],
+                      "removeTableColumn": [Function],
+                      "removeTableRow": [Function],
                       "selectHeader": [Function],
                       "selectNextSiblingHeader": [Function],
                       "selectNextVisibleHeader": [Function],
                       "selectPreviousVisibleHeader": [Function],
                       "setDirty": [Function],
+                      "setSelectedTableCellId": [Function],
                       "stopDisplayingFile": [Function],
                       "toggleHeaderOpened": [Function],
                       "unfocusHeader": [Function],
                       "updateHeaderDescription": [Function],
                       "updateHeaderTitle": [Function],
+                      "updateTableCellValue": [Function],
                     }
                   }
                   undo={
@@ -1897,7 +2017,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-check btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-check btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1907,7 +2027,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-pencil-alt btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-pencil-alt btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1917,7 +2037,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-edit btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-edit btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1927,7 +2047,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-plus btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-plus btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1937,7 +2057,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-times btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-times btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1947,7 +2067,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-arrow-up btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-arrow-up btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1957,7 +2077,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-arrow-down btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-arrow-down btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1967,7 +2087,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-arrow-left btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-arrow-left btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1977,7 +2097,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-arrow-right btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-arrow-right btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1987,7 +2107,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-chevron-left btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-chevron-left btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -1997,7 +2117,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-chevron-right btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-chevron-right btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2007,7 +2127,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-compress btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-compress btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2017,7 +2137,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-undo btn btn--circle action-drawer__btn btn--disabled"
+                        className="fas fa-lg fa-undo btn btn--circle action-drawer__btn btn--disabled"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2026,7 +2146,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-cloud-upload-alt btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-cloud-upload-alt btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2035,7 +2155,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-cloud-download-alt btn btn--circle action-drawer__btn"
+                        className="fas fa-lg fa-cloud-download-alt btn btn--circle action-drawer__btn"
                         onClick={[Function]}
                       />
                     </ActionButton>
