@@ -9,6 +9,9 @@ import {
   newHeaderWithTitle,
 } from '../lib/parse_org';
 import {
+  attributedStringToRawText,
+} from '../lib/export_org';
+import {
   indexOfHeaderWithId,
   headerWithId,
   subheadersOfHeaderWithId,
@@ -20,6 +23,7 @@ import {
   updateTableContainingCellId,
   newEmptyTableRowLikeRows,
   newEmptyTableCell,
+  headerThatContainsTableCellId,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -353,17 +357,29 @@ const exitTableEditMode = (state, action) => {
   return state.set('inTableEditMode', false);
 };
 
+const updateDescriptionOfHeaderContainingTableCell = (state, cellId) => {
+  const headers = state.get('headers');
+  const header = headerThatContainsTableCellId(headers, cellId);
+  const headerIndex = indexOfHeaderWithId(headers, header.get('id'));
+
+  return state.updateIn(['headers', headerIndex], header => (
+    header.set('rawDescription', attributedStringToRawText(header.get('description')))
+  ));
+};
+
 const addNewTableRow = (state, action) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
       rows.insert(rowIndex + 1, newEmptyTableRowLikeRows(rows))
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const removeTableRow = (state, action) => {
@@ -372,11 +388,13 @@ const removeTableRow = (state, action) => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
       rows.delete(rowIndex)
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const addNewTableColumn = (state, action) => {
@@ -385,7 +403,7 @@ const addNewTableColumn = (state, action) => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows => (
       rows.map(row => (
         row.update('contents', contents => (
@@ -394,6 +412,8 @@ const addNewTableColumn = (state, action) => {
       ))
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const removeTableColumn = (state, action) => {
@@ -402,7 +422,7 @@ const removeTableColumn = (state, action) => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows => (
       rows.map(row => (
         row.update('contents', contents => (
@@ -411,6 +431,8 @@ const removeTableColumn = (state, action) => {
       ))
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const moveTableRowDown = state => {
@@ -419,7 +441,7 @@ const moveTableRowDown = state => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
       rowIndex + 1 === rows.size ? (
         rows
@@ -430,6 +452,8 @@ const moveTableRowDown = state => {
       )
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const moveTableRowUp = (state, action) => {
@@ -438,7 +462,7 @@ const moveTableRowUp = (state, action) => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
       rowIndex === 0 ? (
         rows
@@ -449,6 +473,8 @@ const moveTableRowUp = (state, action) => {
       )
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const moveTableColumnLeft = (state, action) => {
@@ -457,7 +483,7 @@ const moveTableColumnLeft = (state, action) => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => rows => (
       columnIndex === 0 ? (
         rows
@@ -476,6 +502,8 @@ const moveTableColumnLeft = (state, action) => {
       )
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const moveTableColumnRight = (state, action) => {
@@ -484,7 +512,7 @@ const moveTableColumnRight = (state, action) => {
     return state;
   }
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => rows => (
       columnIndex + 1 >= rows.getIn([0, 'contents']).size ? (
         rows
@@ -503,10 +531,12 @@ const moveTableColumnRight = (state, action) => {
       )
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
 const updateTableCellValue = (state, action) => {
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     updateTableContainingCellId(headers, action.cellId, (rowIndex, colIndex) => rows => (
       rows.updateIn([rowIndex, 'contents', colIndex], cell => (
         cell
@@ -515,6 +545,8 @@ const updateTableCellValue = (state, action) => {
       ))
     ))
   ));
+
+  return updateDescriptionOfHeaderContainingTableCell(state, action.cellId);
 };
 
 export default (state = new Map(), action) => {

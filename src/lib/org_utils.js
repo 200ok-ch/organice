@@ -168,7 +168,7 @@ export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => 
   return headers;
 };
 
-export const tablePartContainsCellId = (tablePart, cellId) => (
+const tablePartContainsCellId = (tablePart, cellId) => (
   tablePart.get('contents').some(row => (
     row.get('contents').some(cell => cell.get('id') === cellId)
   ))
@@ -212,6 +212,7 @@ export const newEmptyTableRowLikeRows = rows => (
         cell
           .set('id', getNextId())
           .set('contents', new List())
+          .set('rawContents', '')
       ))
     ))
 );
@@ -219,4 +220,5 @@ export const newEmptyTableRowLikeRows = rows => (
 export const newEmptyTableCell = () => (fromJS({
   id: getNextId(),
   contents: [],
+  rawContents: '',
 }));

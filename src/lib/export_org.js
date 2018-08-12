@@ -52,7 +52,7 @@ const tablePartToRawText = tablePart => {
         const content = cell.get('contents');
         const formattedText = formattedAttributedStringText(content);
         const formattedLineLengths = formattedText.split('\n').map(line => line.trim().length);
-        const line = cell.get('rawContents').split('\n')[lineIndex].trim();
+        const line = (cell.get('rawContents').split('\n')[lineIndex] || '').trim();
 
         const padCount = columnWidths[columnIndex] - formattedLineLengths[lineIndex];
 
