@@ -1,3 +1,7 @@
+import { getNextId } from './parse_org';
+
+import { List } from 'immutable';
+
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
 };
@@ -198,3 +202,16 @@ export const updateTableContainingCellId = (headers, cellId, updaterCallbackGene
     containingHeaderIndex, 'description', tablePartIndex, 'contents'
   ], updaterCallbackGenerator(rowIndexContainingCellId, columnIndexContainingCellId));
 };
+
+export const newEmptyTableRowLikeRows = rows => (
+  rows
+    .get(0)
+    .set('id', getNextId())
+    .update('contents', contents => (
+      contents.map(cell => (
+        cell
+          .set('id', getNextId())
+          .set('contents', new List())
+      ))
+    ))
+);

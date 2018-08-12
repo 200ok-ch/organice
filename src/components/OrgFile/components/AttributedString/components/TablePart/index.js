@@ -35,7 +35,11 @@ export default class TablePart extends PureComponent {
                   <td className={className}
                       key={cell.get('id')}
                       onClick={this.handleCellSelect(cell.get('id'))}>
-                    <AttributedString parts={cell.get('contents')} />
+                    {cell.get('contents').size > 0 ? (
+                      <AttributedString parts={cell.get('contents')} />
+                    ) : (
+                      ' '
+                    )}
                   </td>
                 );
               })}
