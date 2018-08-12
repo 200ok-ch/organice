@@ -93,6 +93,7 @@ const parseTable = tableLines => {
     }
   });
 
+  // Parse the contents of each cell.
   table.contents = table.contents.map(row => ({
     id: getNextId(),
     contents: row.map(rawContents => ({
@@ -102,9 +103,24 @@ const parseTable = tableLines => {
     }))
   }));
 
-  if (_.last(table.contents).length === 0) {
+  // We sometimes end up with an extra, empty row - remove it if so.
+  if (_.last(table.contents).contents.length === 0) {
     table.contents = table.contents.slice(0, table.contents.length - 1);
   }
+
+  // Make sure each row has the same number of columns.
+  const maxNumColumns = Math.max(...table.contents.map(row => row.contents.length));
+  table.contents.forEach(row => {
+    if (row.contents.length < maxNumColumns) {
+      _.times(maxNumColumns - row.contents.length, () => {
+        row.contents.push({
+          id: getNextId(),
+          contents: [],
+          rawContents: '',
+        });
+      });
+    }
+  });
 
   return table;
 };
