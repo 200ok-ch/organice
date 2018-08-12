@@ -57,10 +57,10 @@ const tablePartToRawText = tablePart => {
         const padCount = columnWidths[columnIndex] - formattedLineLengths[lineIndex];
 
         return line + ' '.repeat(padCount);
-      }).toJS().join('  | ')
-    )).map(contentRow => `| ${contentRow}  |`);
+      }).toJS().join(' | ')
+    )).map(contentRow => `| ${contentRow} |`);
 
-    const separator = '|' + columnWidths.map(columnWidth => '-'.repeat(columnWidth + 3)).join('+') + '|';
+    const separator = '|' + columnWidths.map(columnWidth => '-'.repeat(columnWidth + 2)).join('+') + '|';
 
     return contentRows.concat(separator);
   }).toJS()));
