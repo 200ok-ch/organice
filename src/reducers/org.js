@@ -18,6 +18,7 @@ import {
   previousVisibleHeaderAfterIndex,
   updateTableContainingCellId,
   newEmptyTableRowLikeRows,
+  newEmptyTableCell,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -383,7 +384,15 @@ const addNewTableColumn = (state, action) => {
     return state;
   }
 
-  return state;
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows => (
+      rows.map(row => (
+        row.update('contents', contents => (
+          contents.insert(colIndex + 1, newEmptyTableCell())
+        ))
+      ))
+    ))
+  ));
 };
 
 const removeTableColumn = (state, action) => {
@@ -392,7 +401,15 @@ const removeTableColumn = (state, action) => {
     return state;
   }
 
-  return state;
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows => (
+      rows.map(row => (
+        row.update('contents', contents => (
+          contents.delete(colIndex)
+        ))
+      ))
+    ))
+  ));
 };
 
 const moveTableRowDown = state => {

@@ -38,7 +38,7 @@ export default class TablePart extends PureComponent {
                     {cell.get('contents').size > 0 ? (
                       <AttributedString parts={cell.get('contents')} />
                     ) : (
-                      ' '
+                      '   '
                     )}
                   </td>
                 );

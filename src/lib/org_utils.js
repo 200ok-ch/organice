@@ -1,6 +1,6 @@
 import { getNextId } from './parse_org';
 
-import { List } from 'immutable';
+import { List, fromJS } from 'immutable';
 
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
@@ -215,3 +215,8 @@ export const newEmptyTableRowLikeRows = rows => (
       ))
     ))
 );
+
+export const newEmptyTableCell = () => (fromJS({
+  id: getNextId(),
+  contents: [],
+}));
