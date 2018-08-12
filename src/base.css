@@ -24,6 +24,7 @@
 .textarea {
     width: 95%;
     font-size: 16px;
+    font-family: Courier;
 }
 
 div[tabindex="-1"]:focus {
