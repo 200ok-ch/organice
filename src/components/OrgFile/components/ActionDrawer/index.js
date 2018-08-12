@@ -36,7 +36,9 @@ class ActionDrawer extends PureComponent {
       'handleDoneClick',
       'handleEnterTableEditModeClick',
       'handleAddNewTableRowClick',
+      'handleRemoveTableRowClick',
       'handleAddNewTableColumnClick',
+      'handleRemoveTableColumnClick',
       'handleMoveTableRowDownClick',
       'handleMoveTableRowUpClick',
       'handleMoveTableColumnLeftClick',
@@ -145,8 +147,16 @@ class ActionDrawer extends PureComponent {
     this.props.org.addNewTableRow();
   }
 
+  handleRemoveTableRowClick() {
+    this.props.org.removeTableRow();
+  }
+
   handleAddNewTableColumnClick() {
     this.props.org.addNewTableColumn();
+  }
+
+  handleRemoveTableColumnClick() {
+    this.props.org.removeTableColumn();
   }
 
   handleMoveTableRowDownClick() {
@@ -185,12 +195,14 @@ class ActionDrawer extends PureComponent {
             {!!selectedTableCellId && (
               <Fragment>
                 <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} onClick={this.handleEnterTableEditModeClick} />
-                <ActionButton iconName="caret-down" subIconName="table" isDisabled={false} onClick={this.handleAddNewTableRowClick} />
-                <ActionButton iconName="caret-right" subIconName="table" isDisabled={false} onClick={this.handleAddNewTableColumnClick} />
-                <ActionButton iconName="arrow-up" subIconName="table" isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
-                <ActionButton iconName="arrow-down" subIconName="table" isDisabled={false} onClick={this.handleMoveTableRowDownClick} />
-                <ActionButton iconName="arrow-left" subIconName="table" isDisabled={false} onClick={this.handleMoveTableColumnLeftClick} />
-                <ActionButton iconName="arrow-right" subIconName="table" isDisabled={false} onClick={this.handleMoveTableColumnRightClick} />
+                <ActionButton iconName="plus" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleAddNewTableRowClick} />
+                <ActionButton iconName="times" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleRemoveTableRowClick} />
+                <ActionButton iconName="plus" subIconName="columns" isDisabled={false} onClick={this.handleAddNewTableColumnClick} />
+                <ActionButton iconName="times" subIconName="columns" isDisabled={false} onClick={this.handleRemoveTableColumnClick} />
+                <ActionButton iconName="arrow-up" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
+                <ActionButton iconName="arrow-down" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowDownClick} />
+                <ActionButton iconName="arrow-left" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnLeftClick} />
+                <ActionButton iconName="arrow-right" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnRightClick} />
                 <div className="action-drawer__separator" />
               </Fragment>
             )}

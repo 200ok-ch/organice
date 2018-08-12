@@ -23,16 +23,20 @@ export default class ActionButton extends PureComponent {
   }
 
   render() {
-    const { iconName, subIconName, isDisabled } = this.props;
+    const { iconName, subIconName, isDisabled, shouldRotateSubIcon } = this.props;
 
     const className = classNames('fas', 'fa-lg', `fa-${iconName}`, 'btn', 'btn--circle', 'action-drawer__btn', {
       'action-drawer__btn--with-sub-icon': !!subIconName,
       'btn--disabled': isDisabled,
     });
 
+    const subIconClassName = classNames('fas', 'fa-xs', `fa-${subIconName}`, 'action-drawer__btn__sub-icon', {
+      'action-drawer__btn__sub-icon--rotated': shouldRotateSubIcon,
+    });
+
     return (
       <button className={className} onClick={this.handleClick}>
-        {!!subIconName && <i className={`fas fa-xs fa-${subIconName} action-drawer__btn__sub-icon`} />}
+        {!!subIconName && <i className={subIconClassName} />}
       </button>
     );
   }

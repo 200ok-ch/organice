@@ -152,8 +152,16 @@ export const addNewTableRow = () => ({
   type: 'ADD_NEW_TABLE_ROW',
 });
 
+export const removeTableRow = () => ({
+  type: 'REMOVE_TABLE_ROW',
+});
+
 export const addNewTableColumn = () => ({
   type: 'ADD_NEW_TABLE_COLUMN',
+});
+
+export const removeTableColumn = () => ({
+  type: 'REMOVE_TABLE_COLUMN',
 });
 
 export const moveTableRowDown = () => ({

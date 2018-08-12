@@ -359,7 +359,25 @@ const addNewTableRow = (state, action) => {
   return state;
 };
 
+const removeTableRow = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state;
+};
+
 const addNewTableColumn = (state, action) => {
+  const selectedTableCellId = state.get('selectedTableCellId');
+  if (!selectedTableCellId) {
+    return state;
+  }
+
+  return state;
+};
+
+const removeTableColumn = (state, action) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -537,8 +555,12 @@ export default (state = new Map(), action) => {
     return exitTableEditMode(state, action);
   case 'ADD_NEW_TABLE_ROW':
     return addNewTableRow(state, action);
+  case 'REMOVE_TABLE_ROW':
+    return removeTableRow(state, action);
   case 'ADD_NEW_TABLE_COLUMN':
     return addNewTableColumn(state, action);
+  case 'REMOVE_TABLE_COLUMN':
+    return removeTableColumn(state, action);
   case 'MOVE_TABLE_ROW_DOWN':
     return moveTableRowDown(state, action);
   case 'MOVE_TABLE_ROW_UP':
