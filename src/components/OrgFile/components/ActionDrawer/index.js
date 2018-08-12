@@ -10,7 +10,7 @@ import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
-import ActionButton from './components/ActionButton';
+import ActionButton from './components/ActionButton/';
 
 class ActionDrawer extends PureComponent {
   constructor(props) {
@@ -34,6 +34,15 @@ class ActionDrawer extends PureComponent {
       'handlePushClick',
       'handlePullClick',
       'handleDoneClick',
+      'handleEnterTableEditModeClick',
+      'handleAddNewTableRowClick',
+      'handleRemoveTableRowClick',
+      'handleAddNewTableColumnClick',
+      'handleRemoveTableColumnClick',
+      'handleMoveTableRowDownClick',
+      'handleMoveTableRowUpClick',
+      'handleMoveTableColumnLeftClick',
+      'handleMoveTableColumnRightClick',
     ]);
   }
 
@@ -128,6 +137,43 @@ class ActionDrawer extends PureComponent {
   handleDoneClick() {
     this.props.org.exitTitleEditMode();
     this.props.org.exitDescriptionEditMode();
+    this.props.org.exitTableEditMode();
+  }
+
+  handleEnterTableEditModeClick() {
+    this.props.org.enterTableEditMode();
+  }
+
+  handleAddNewTableRowClick() {
+    this.props.org.addNewTableRow();
+  }
+
+  handleRemoveTableRowClick() {
+    this.props.org.removeTableRow();
+  }
+
+  handleAddNewTableColumnClick() {
+    this.props.org.addNewTableColumn();
+  }
+
+  handleRemoveTableColumnClick() {
+    this.props.org.removeTableColumn();
+  }
+
+  handleMoveTableRowDownClick() {
+    this.props.org.moveTableRowDown();
+  }
+
+  handleMoveTableRowUpClick() {
+    this.props.org.moveTableRowUp();
+  }
+
+  handleMoveTableColumnLeftClick() {
+    this.props.org.moveTableColumnLeft();
+  }
+
+  handleMoveTableColumnRightClick() {
+    this.props.org.moveTableColumnRight();
   }
 
   render() {
@@ -137,15 +183,32 @@ class ActionDrawer extends PureComponent {
       historyCount,
       shouldDisableSyncButtons,
       isFocusedHeaderActive,
+      selectedTableCellId,
+      inTableEditMode,
     } = this.props;
 
     return (
       <div className="action-drawer-container nice-scroll">
-        {(inTitleEditMode || inDescriptionEditMode) ? (
+        {(inTitleEditMode || inDescriptionEditMode || inTableEditMode) ? (
           <button className="btn action-drawer__done-btn"
                   onClick={this.handleDoneClick}>Done</button>
         ) : (
           <Fragment>
+            {!!selectedTableCellId && (
+              <Fragment>
+                <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} onClick={this.handleEnterTableEditModeClick} />
+                <ActionButton iconName="plus" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleAddNewTableRowClick} />
+                <ActionButton iconName="times" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleRemoveTableRowClick} />
+                <ActionButton iconName="plus" subIconName="columns" isDisabled={false} onClick={this.handleAddNewTableColumnClick} />
+                <ActionButton iconName="times" subIconName="columns" isDisabled={false} onClick={this.handleRemoveTableColumnClick} />
+                <ActionButton iconName="arrow-up" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
+                <ActionButton iconName="arrow-down" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowDownClick} />
+                <ActionButton iconName="arrow-left" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnLeftClick} />
+                <ActionButton iconName="arrow-right" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnRightClick} />
+                <div className="action-drawer__separator" />
+              </Fragment>
+            )}
+
             <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
             <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />
             <ActionButton iconName="edit" isDisabled={false} onClick={this.handleEditDescriptionClick} />
@@ -176,10 +239,12 @@ const mapStateToProps = (state, props) => {
   return {
     inTitleEditMode: state.org.present.get('inTitleEditMode'),
     inDescriptionEditMode: state.org.present.get('inDescriptionEditMode'),
+    inTableEditMode: state.org.present.get('inTableEditMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     historyCount: state.org.past.length,
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
+    selectedTableCellId: state.org.present.get('selectedTableCellId'),
   };
 };
 

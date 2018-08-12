@@ -213,7 +213,6 @@ export const subscribeToChanges = store => {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {
-          console.log('pushing new config');
           pushFileToDropbox(state.dropbox.get('accessToken'),
                             '/.org-web-config.json',
                             settingsFileContents);

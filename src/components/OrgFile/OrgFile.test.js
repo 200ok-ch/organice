@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
 import { mount } from 'enzyme';
 import renderer from 'react-test-renderer';
+import thunk from 'redux-thunk';
 
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import OrgFile from './';
 
@@ -51,7 +52,7 @@ beforeEach(() => {
     base: new fromJS({
       customKeybindings: {}
     }),
-  });
+  }, applyMiddleware(thunk));
   store.dispatch(displayFile('/some/test/file', testOrgFile));
 
   component = mount(

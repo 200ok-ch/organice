@@ -1,0 +1,17 @@
+.table-part {
+    border-collapse: collapse;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.table-part__cell {
+    border: 1px solid lightgray;
+
+    white-space: pre;
+
+    vertical-align: top;
+}
+
+.table-part__cell--selected {
+    background-color: rgba(239, 255, 0, 0.28);
+}

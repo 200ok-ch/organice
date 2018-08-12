@@ -36,6 +36,36 @@ The next two buttons in the action drawer edit the header and description respec
 *** The download button pulls down the latest version of the file from Dropbox
 *** Neither of those buttons are enabled in this demo :)
 *** On the settings screen (gear icon in the upper right hand corner when signed in), you can enable "Live sync", which will push changes up to Dropbox as soon as you make them
+* Tables
+org-web has native support for viewing and editing tables.
+
+Try playing around with this one by first clicking on a cell:
+
+| Dog name | Age | Weight (in lbs) | Parent   | Score (1-10) |
+|----------+-----+-----------------+----------+--------------|
+| Eloise   |   3 |             5.1 | Erin     |           15 |
+|----------+-----+-----------------+----------+--------------|
+| Starla   |  15 |              40 | Sarah    |           15 |
+|----------+-----+-----------------+----------+--------------|
+| Rex      |  15 |              45 | Sarah    |           15 |
+|----------+-----+-----------------+----------+--------------|
+| Maz      |   1 |              55 | Brittany |           15 |
+|----------+-----+-----------------+----------+--------------|
+| Clooney  | 0.1 |             4.8 | Sarah    |           15 |
+|----------+-----+-----------------+----------+--------------|
+| Murphy   | 0.5 |              25 | Jordan   |           15 |
+** New action drawer items
+When a table cell is selected, new action drawer items appear. From left to right, they are:
+*** Edit cell
+*** Add new row
+*** Remove row
+*** Add new column
+*** Remove column
+*** Move row up
+*** Move row down
+*** Move column left
+*** Move column right
+** Format specifiers (like <r> and <10>) aren't yet supported, but they're on the list!
 * Syncing with Dropbox
 org-web pulls down your org files from Dropbox. Click the "Sign in" button in the upper right hand corner to sign in with Dropbox and authenticate org-web.
 ** Symlink your org files to Dropbox

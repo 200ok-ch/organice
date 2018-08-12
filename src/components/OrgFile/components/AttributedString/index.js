@@ -2,9 +2,18 @@ import React, { PureComponent } from 'react';
 
 import { getNextId } from '../../../../lib/parse_org';
 
+import TablePart from './components/TablePart';
+
 export default class AttributedString extends PureComponent {
   render() {
-    const { parts } = this.props;
+    const {
+      parts,
+      onTableCellSelect,
+      selectedTableCellId,
+      inTableEditMode,
+      onExitTableEditMode,
+      onTableCellValueUpdate,
+    } = this.props;
 
     return (
       <span>
@@ -17,6 +26,16 @@ export default class AttributedString extends PureComponent {
             const title = part.getIn(['contents', 'title']) || uri;
 
             return <a key={getNextId()} href={uri}>{title}</a>;
+          case 'table':
+            return (
+              <TablePart key={part.get('id')}
+                         table={part}
+                         onCellSelect={onTableCellSelect}
+                         selectedTableCellId={selectedTableCellId}
+                         inTableEditMode={inTableEditMode}
+                         onExitEditMode={onExitTableEditMode}
+                         onCellValueUpdate={onTableCellValueUpdate} />
+            );
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);
             return '';
