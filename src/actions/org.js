@@ -179,3 +179,7 @@ export const moveTableColumnLeft = () => ({
 export const moveTableColumnRight = () => ({
   type: 'MOVE_TABLE_COLUMN_RIGHT',
 });
+
+export const updateTableCellValue = (cellId, newValue) => ({
+  type: 'UPDATE_TABLE_CELL_VALUE', cellId, newValue,
+});

@@ -6,7 +6,7 @@ export const getNextId = (() => {
   return () => nextId++;
 })();
 
-const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
+export const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
   const linkRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])/g;
   const matches = [];
   let match = linkRegex.exec(rawText);
@@ -67,11 +67,8 @@ const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
 };
 
 const parseTable = tableLines => {
-  if (tableLines[0].includes('!!!!!')) {
-    console.log("tableLines = ", tableLines);
-  }
-
   const table = {
+    id: getNextId(),
     type: 'table',
     contents: [
       []
@@ -98,19 +95,15 @@ const parseTable = tableLines => {
 
   table.contents = table.contents.map(row => ({
     id: getNextId(),
-    contents: row.map(cellContents => ({
+    contents: row.map(rawContents => ({
       id: getNextId(),
-      contents: parseLinks(cellContents),
+      contents: parseLinks(rawContents),
+      rawContents,
     }))
   }));
 
   if (_.last(table.contents).length === 0) {
     table.contents = table.contents.slice(0, table.contents.length - 1);
-  }
-
-  if (tableLines[0].includes('!!!!!')) {
-    console.log("table = ", table);
-    console.log(JSON.stringify(table.contents, null, 2));
   }
 
   return table;
@@ -142,10 +135,6 @@ export const parseRawText = (rawText, { excludeTables = false } = {}) => {
     } else {
       processedLineParts.push(linePart);
     }
-  }
-
-  if (rawText.trim().startsWith('!!!!!')) {
-    console.log("processedLineParts = ", processedLineParts);
   }
 
   return fromJS(processedLineParts);

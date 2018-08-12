@@ -1,10 +1,11 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import {
   parseOrg,
   parseTitleLine,
   parseRawText,
+  parseLinks,
   newHeaderWithTitle,
 } from '../lib/parse_org';
 import {
@@ -504,6 +505,18 @@ const moveTableColumnRight = (state, action) => {
   ));
 };
 
+const updateTableCellValue = (state, action) => {
+  return state.update('headers', headers => (
+    updateTableContainingCellId(headers, action.cellId, (rowIndex, colIndex) => rows => (
+      rows.updateIn([rowIndex, 'contents', colIndex], cell => (
+        cell
+          .set('rawContents', action.newValue)
+          .set('contents', fromJS(parseLinks(action.newValue)))
+      ))
+    ))
+  ));
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -595,6 +608,8 @@ export default (state = new Map(), action) => {
     return moveTableColumnLeft(state, action);
   case 'MOVE_TABLE_COLUMN_RIGHT':
     return moveTableColumnRight(state, action);
+  case 'UPDATE_TABLE_CELL_VALUE':
+    return updateTableCellValue(state, action);
   default:
     return state;
   }

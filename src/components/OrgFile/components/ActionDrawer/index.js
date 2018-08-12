@@ -137,6 +137,7 @@ class ActionDrawer extends PureComponent {
   handleDoneClick() {
     this.props.org.exitTitleEditMode();
     this.props.org.exitDescriptionEditMode();
+    this.props.org.exitTableEditMode();
   }
 
   handleEnterTableEditModeClick() {
@@ -182,12 +183,13 @@ class ActionDrawer extends PureComponent {
       historyCount,
       shouldDisableSyncButtons,
       isFocusedHeaderActive,
-      selectedTableCellId
+      selectedTableCellId,
+      inTableEditMode,
     } = this.props;
 
     return (
       <div className="action-drawer-container nice-scroll">
-        {(inTitleEditMode || inDescriptionEditMode) ? (
+        {(inTitleEditMode || inDescriptionEditMode || inTableEditMode) ? (
           <button className="btn action-drawer__done-btn"
                   onClick={this.handleDoneClick}>Done</button>
         ) : (
@@ -237,6 +239,7 @@ const mapStateToProps = (state, props) => {
   return {
     inTitleEditMode: state.org.present.get('inTitleEditMode'),
     inDescriptionEditMode: state.org.present.get('inDescriptionEditMode'),
+    inTableEditMode: state.org.present.get('inTableEditMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     historyCount: state.org.past.length,
     isDirty: state.org.present.get('isDirty'),

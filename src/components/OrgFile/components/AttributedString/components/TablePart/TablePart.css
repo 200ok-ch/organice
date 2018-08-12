@@ -8,6 +8,8 @@
     border: 1px solid lightgray;
 
     white-space: pre;
+
+    vertical-align: top;
 }
 
 .table-part__cell--selected {
