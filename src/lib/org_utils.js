@@ -90,7 +90,7 @@ const isHeaderVisible = (headers, headerId) => {
   }
 
   const parentHeader = headerWithId(headers, parentHeaderId);
-  return parentHeader.get('opened') && isHeaderVisible(headers, parentHeader);
+  return parentHeader.get('opened') && isHeaderVisible(headers, parentHeader.get('id'));
 };
 
 export const nextVisibleHeaderAfterIndex = (headers, headerIndex) => {

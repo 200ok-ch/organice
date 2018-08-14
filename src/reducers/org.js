@@ -155,7 +155,7 @@ const selectNextSiblingHeader = (state, action) => {
 const selectNextVisibleHeader = (state, action) => {
   const headers = state.get('headers');
 
-  if (!state.get('selectedHeaderId')) {
+  if (state.get('selectedHeaderId') === undefined) {
     return state.set('selectedHeaderId', headers.getIn([0, 'id']));
   }
 
