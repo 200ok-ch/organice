@@ -102,7 +102,7 @@ class TitleLine extends PureComponent {
     };
 
     return (
-      <div className="title-line" onClick={this.handleTitleClick}>
+      <div className="title-line nice-scroll" onClick={this.handleTitleClick}>
         {!inEditMode && !!todoKeyword ? (
           <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
                 onClick={this.handleTodoClick}>

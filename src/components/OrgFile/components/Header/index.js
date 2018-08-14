@@ -30,7 +30,7 @@ class Header extends PureComponent {
       paddingLeft: 20 * indentLevel,
     };
 
-    const className = classNames('header', 'nice-scroll', {
+    const className = classNames('header', {
       'header--selected': isSelected,
     });
 

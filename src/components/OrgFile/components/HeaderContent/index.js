@@ -65,7 +65,7 @@ class HeaderContent extends PureComponent {
     }
 
     return (
-      <div className="header-content-container">
+      <div className="header-content-container nice-scroll">
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"
