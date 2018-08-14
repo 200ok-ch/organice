@@ -20,3 +20,8 @@
     right: 10px;
     font-weight: bold;
 }
+
+.error-message-container {
+    padding: 10px;
+    font-size: 20px;
+}

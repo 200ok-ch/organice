@@ -41,6 +41,10 @@ class OrgFile extends PureComponent {
       'handleUndoHotKey',
       'handleContainerRef',
     ]);
+
+    this.state = {
+      hasError: false,
+    };
   }
 
   componentDidMount() {
@@ -65,6 +69,10 @@ class OrgFile extends PureComponent {
     } else {
       this.props.org.stopDisplayingFile();
     }
+  }
+
+  componentDidCatch() {
+    this.setState({ hasError: true });
   }
 
   handleSelectNextVisibleHeaderHotKey() {
@@ -160,6 +168,22 @@ class OrgFile extends PureComponent {
 
     if (!headers) {
       return <div></div>;
+    }
+
+    if (this.state.hasError) {
+      return (
+        <div className="error-message-container">
+          Uh oh, you ran into a bug!
+
+          <br />
+          <br />
+
+          This was probably the result of an error in attempting to parse your org file.
+          It'd be super helpful if you could
+          {' '}<a href="https://github.com/DanielDe/org-web/issues/new" target="_blank" rel="noopener noreferrer">create an issue</a>
+          {' '}(and include the org file if possible!)
+        </div>
+      );
     }
 
     const keyMap = _.fromPairs(calculateActionedKeybindings(customKeybindings));
