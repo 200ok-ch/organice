@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -39,7 +39,7 @@ class HeaderBar extends PureComponent {
     }
 
     if (directoryPath === '') {
-      return null;
+      return <div />;
     } else {
       const pathParts = directoryPath.split('/');
       const parentDirectoryName = pathParts[pathParts.length - 2];
@@ -75,10 +75,10 @@ class HeaderBar extends PureComponent {
 
   renderLogo() {
     return (
-      <Fragment>
-        <img className="header-bar__logo" src={logo} alt="Logo" width="45" height="45" />
-        <h2 className="header-bar__title">org-web</h2>
-      </Fragment>
+      <div className="header-bar__logo-container">
+        <img className="header-bar__logo" src={logo} alt="Logo" width="30" height="30" />
+        <h2 className="header-bar__app-name">org-web</h2>
+      </div>
     );
   }
 
@@ -109,11 +109,11 @@ class HeaderBar extends PureComponent {
 
     switch (activeModalPage) {
     case 'whats_new':
-      return null;
+      return <div />;
     case 'keyboard_shortcuts_editor':
       return this.renderKeyboardShortcutsEditorBackButton();
     case 'settings':
-      return null;
+      return <div />;
     default:
     }
 
@@ -127,8 +127,30 @@ class HeaderBar extends PureComponent {
     case 'sample':
       return this.renderSampleFileBackButton();
     default:
-      return null;
+      return <div />;
     }
+  }
+
+  renderTitle() {
+    const titleContainerWithText = text => <div className="header-bar__title">{text}</div>;
+
+    switch (this.props.activeModalPage) {
+    case 'whats_new':
+      return titleContainerWithText('Changelog');
+    case 'settings':
+      return titleContainerWithText('Settings');
+    case 'keyboard_shortcuts_editor':
+      return titleContainerWithText('Shortcuts');
+    default:
+    }
+
+    switch (this.getPathRoot()) {
+    case 'sample':
+      return titleContainerWithText('Sample');
+    default:
+    }
+
+    return titleContainerWithText('');
   }
 
   handleWhatsNewClick() {
@@ -168,7 +190,7 @@ class HeaderBar extends PureComponent {
           <div className="header-bar__actions">
             {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
-            <i className={whatsNewClassName} onClick={this.handleWhatsNewClick} />
+            {isAuthenticated && <i className={whatsNewClassName} onClick={this.handleWhatsNewClick} />}
 
             <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
               <i className="fab fa-github header-bar__actions__item" />
@@ -187,6 +209,7 @@ class HeaderBar extends PureComponent {
     return (
       <div className="header-bar">
         {this.renderBackButton()}
+        {this.renderTitle()}
         {this.renderActions()}
       </div>
     );
