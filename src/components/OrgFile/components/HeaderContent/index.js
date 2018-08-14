@@ -65,7 +65,7 @@ class HeaderContent extends PureComponent {
     }
 
     return (
-      <div>
+      <div className="header-content-container">
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"

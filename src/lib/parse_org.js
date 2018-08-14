@@ -238,8 +238,9 @@ export const parseOrg = (fileContents) => {
           }));
         }
       } else {
-        headers = headers.updateIn([headers.size - 1, 'rawDescription'],
-                                   rawDescription => rawDescription + '\n' + line);
+        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => (
+          rawDescription.length === 0 ? line : rawDescription + '\n' + line
+        ));
       }
     }
   });
