@@ -27,6 +27,14 @@
     font-family: Courier;
 }
 
+.textfield {
+    border: 1px solid #D8D8D8;
+    border-radius: 0;
+    -webkit-appearance: none;
+    padding: 5px;
+    font-size: 16px;
+}
+
 div[tabindex="-1"]:focus {
     outline: 0;
 }

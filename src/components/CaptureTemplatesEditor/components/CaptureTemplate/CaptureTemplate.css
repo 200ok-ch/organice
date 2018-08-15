@@ -1,4 +1,52 @@
 .capture-template-container {
-    border-bottom: 1px solid #D8D8D8;
+    border-bottom: 2px solid #5E348C;
     padding: 5px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.capture-template__field-container {
+    margin-bottom: 5px;
+    border-bottom: 1px solid #D8D8D8;
+    padding-bottom: 5px;
+}
+
+.capture-template__field-container:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.capture-template__field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.capture-template__help-text {
+    color: gray;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.capture-template__letter-textfield {
+    width: 30px;
+}
+
+.capture-template__field__or-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: lightgray;
+    font-size: 14px;
+
+    margin-bottom: 5px;
+}
+
+.capture-template__field__or-line {
+    width: 20px;
+    height: 1px;
+    background-color: #D8D8D8;
+    margin-left: 10px;
+    margin-right: 10px;
 }

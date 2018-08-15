@@ -15,11 +15,15 @@ class CaptureTemplatesEditor extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleAddNewTemplateClick']);
+    _.bindAll(this, ['handleAddNewTemplateClick', 'handleFieldUpdate']);
   }
 
   handleAddNewTemplateClick() {
     this.props.capture.addNewEmptyCaptureTemplate();
+  }
+
+  handleFieldUpdate(templateId, fieldName, newValue) {
+    this.props.capture.updateTemplateFieldValue(templateId, fieldName, newValue);
   }
 
   render() {
@@ -28,8 +32,10 @@ class CaptureTemplatesEditor extends PureComponent {
     return (
       <div>
         <div>
-          {captureTemplates.map(captureTemplate => (
-            <CaptureTemplate key={captureTemplate.get('id')} />
+          {captureTemplates.map(template => (
+            <CaptureTemplate key={template.get('id')}
+                             template={template}
+                             onFieldUpdate={this.handleFieldUpdate} />
           ))}
         </div>
 
