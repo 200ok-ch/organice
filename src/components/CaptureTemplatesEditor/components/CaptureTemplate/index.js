@@ -39,7 +39,8 @@ export default class CaptureTemplate extends PureComponent {
                    className="textfield capture-template__letter-textfield"
                    maxLength="1"
                    value={template.get('letter', '')}
-                   onChange={this.updateField('letter')} />
+                   onChange={this.updateField('letter')}
+                   autoCapitalize="none" />
           </div>
 
           <div className="capture-template__field__or-container">
@@ -53,7 +54,9 @@ export default class CaptureTemplate extends PureComponent {
             <input type="text"
                    className="textfield"
                    value={template.get('iconName')}
-                   onChange={this.updateField('iconName')} />
+                   onChange={this.updateField('iconName')}
+                   autoCapitalize="none"
+                   autoCorrect="none" />
           </div>
 
           <div className="capture-template__help-text">
