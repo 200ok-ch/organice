@@ -143,6 +143,7 @@ export const readInitialState = () => {
       future: [],
     },
     base: Map(),
+    capture: Map(),
   };
 
   persistableFields.forEach(field => {

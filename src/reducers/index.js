@@ -4,6 +4,7 @@ import undoable, { includeAction } from 'redux-linear-undo';
 import baseReducer from './base';
 import dropboxReducer from './dropbox';
 import orgReducer from './org';
+import captureReducer from './capture';
 
 const UNDOABLE_ACTIONS = [
   'ADD_HEADER', 'REMOVE_HEADER', 'MOVE_HEADER_UP',
@@ -21,4 +22,5 @@ export default combineReducers({
     filter: includeAction(UNDOABLE_ACTIONS),
     linearizeHistory: true,
   }),
+  capture: captureReducer,
 });
