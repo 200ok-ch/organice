@@ -24,6 +24,7 @@ import LoadingIndicator from '../LoadingIndicator';
 import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
+import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
 
 import * as dropboxActions from '../../actions/dropbox';
 import * as orgActions from '../../actions/org';
@@ -137,10 +138,11 @@ class Entry extends PureComponent {
           this.renderWhatsNewFile()
         ) : (
           isAuthenticated ? (
-            ['keyboard_shortcuts_editor', 'settings'].includes(activeModalPage) ? (
+            ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor'].includes(activeModalPage) ? (
               <Fragment>
                 {activeModalPage === 'settings' && <Settings />}
                 {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
+                {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
               </Fragment>
             ) : (
               <Switch>

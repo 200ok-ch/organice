@@ -21,6 +21,7 @@ class Settings extends PureComponent {
     _.bindAll(this, [
       'handleSignOutClick',
       'handleKeyboardShortcutsClick',
+      'handleCaptureTemplatesClick',
       'handleFontSizeChange',
       'handleBulletStyleChange',
       'handleShouldTapTodoToAdvanceChange',
@@ -36,6 +37,10 @@ class Settings extends PureComponent {
 
   handleKeyboardShortcutsClick() {
     this.props.base.setActiveModalPage('keyboard_shortcuts_editor');
+  }
+
+  handleCaptureTemplatesClick() {
+    this.props.base.setActiveModalPage('capture_templates_editor');
   }
 
   handleFontSizeChange(newFontSize) {
@@ -102,6 +107,9 @@ class Settings extends PureComponent {
         <div className="settings-buttons-container">
           <button className="btn settings-btn" onClick={this.handleKeyboardShortcutsClick}>
             Keyboard shortcuts
+          </button>
+          <button className="btn settings-btn" onClick={this.handleCaptureTemplatesClick}>
+            Capture templates
           </button>
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
         </div>

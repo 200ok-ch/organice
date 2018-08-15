@@ -21,7 +21,7 @@ class HeaderBar extends PureComponent {
       'handleWhatsNewClick',
       'handleSettingsClick',
       'handleModalPageDoneClick',
-      'handleKeyboardShortcutsEditorBackClick',
+      'handleSettingsSubPageBackClick',
     ]);
   }
 
@@ -91,13 +91,13 @@ class HeaderBar extends PureComponent {
     );
   }
 
-  handleKeyboardShortcutsEditorBackClick() {
+  handleSettingsSubPageBackClick() {
     this.props.base.setActiveModalPage('settings');
   }
 
-  renderKeyboardShortcutsEditorBackButton() {
+  renderSettingsSubPageBackButton() {
     return (
-      <div className="header-bar__back-button" onClick={this.handleKeyboardShortcutsEditorBackClick}>
+      <div className="header-bar__back-button" onClick={this.handleSettingsSubPageBackClick}>
         <i className="fas fa-chevron-left" />
         <span className="header-bar__back-button__directory-path">Settings</span>
       </div>
@@ -111,7 +111,9 @@ class HeaderBar extends PureComponent {
     case 'whats_new':
       return <div />;
     case 'keyboard_shortcuts_editor':
-      return this.renderKeyboardShortcutsEditorBackButton();
+      return this.renderSettingsSubPageBackButton();
+    case 'capture_templates_editor':
+      return this.renderSettingsSubPageBackButton();
     case 'settings':
       return <div />;
     default:
@@ -141,6 +143,8 @@ class HeaderBar extends PureComponent {
       return titleContainerWithText('Settings');
     case 'keyboard_shortcuts_editor':
       return titleContainerWithText('Shortcuts');
+    case 'capture_templates_editor':
+      return titleContainerWithText('Capture');
     default:
     }
 
