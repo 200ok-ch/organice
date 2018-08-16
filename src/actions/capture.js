@@ -13,3 +13,11 @@ export const addNewTemplateOrgFileAvailability = templateId => ({
 export const removeTemplateOrgFileAvailability = (templateId, orgFileAvailabilityIndex) => ({
   type: 'REMOVE_TEMPLATE_ORG_FILE_AVAILABILITY', templateId, orgFileAvailabilityIndex,
 });
+
+export const addNewTemplateHeaderPath = templateId => ({
+  type: 'ADD_NEW_TEMPLATE_HEADER_PATH', templateId,
+});
+
+export const removeTemplateHeaderPath = (templateId, headerPathIndex) => ({
+  type: 'REMOVE_TEMPLATE_HEADER_PATH', templateId, headerPathIndex,
+});

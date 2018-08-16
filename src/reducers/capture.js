@@ -19,6 +19,7 @@ const addNewEmptyCaptureTemplate = state => {
       iconName: '',
       isAvailableInAllOrgFiles: true,
       orgFilesWhereAvailable: [''],
+      headerPaths: [''],
     }))
   ));
 };
@@ -45,6 +46,22 @@ const removeTemplateOrgFileAvailability = (state, action) => {
   ));
 };
 
+const addNewTemplateHeaderPath = (state, action) => {
+  const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
+
+  return state.updateIn(['captureTemplates', templateIndex, 'headerPaths'], headerPaths => (
+    headerPaths.push('')
+  ));
+};
+
+const removeTemplateHeaderPath = (state, action) => {
+  const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
+
+  return state.updateIn(['captureTemplates', templateIndex, 'headerPaths'], headerPaths => (
+    headerPaths.delete(action.headerPathIndex)
+  ));
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE':
@@ -55,6 +72,10 @@ export default (state = new Map(), action) => {
     return addNewTemplateOrgFileAvailability(state, action);
   case 'REMOVE_TEMPLATE_ORG_FILE_AVAILABILITY':
     return removeTemplateOrgFileAvailability(state, action);
+  case 'ADD_NEW_TEMPLATE_HEADER_PATH':
+    return addNewTemplateHeaderPath(state, action);
+  case 'REMOVE_TEMPLATE_HEADER_PATH':
+    return removeTemplateHeaderPath(state, action);
   default:
     return state;
   }

@@ -14,18 +14,8 @@ export default class CaptureTemplate extends PureComponent {
     _.bindAll(this, [
       'toggleAvailabilityInAllOrgFiles',
       'handleAddNewOrgFileAvailability',
+      'handleAddNewHeaderPath',
     ]);
-  }
-
-  componentDidUpdate(prevProps) {
-    const prevTemplate = prevProps.template;
-    const { template } = this.props;
-
-    if (prevTemplate.get('orgFilesWhereAvailable').size === template.get('orgFilesWhereAvailable').size - 1) {
-      this.lastOrgFileAvailabilityField.focus();
-    } else if (prevTemplate.get('isAvailableInAllOrgFiles') && !template.get('isAvailableInAllOrgFiles')) {
-      this.lastOrgFileAvailabilityField.focus();
-    }
   }
 
   updateField(fieldName) {
@@ -48,6 +38,20 @@ export default class CaptureTemplate extends PureComponent {
   handleOrgFileAvailabilityChange(orgFileAvailabilityIndex) {
     return event => this.props.onFieldPathUpdate(this.props.template.get('id'),
                                                  ['orgFilesWhereAvailable', orgFileAvailabilityIndex],
+                                                 event.target.value);
+  }
+
+  handleAddNewHeaderPath() {
+    this.props.onAddNewTemplateHeaderPath(this.props.template.get('id'));
+  }
+
+  handleRemoveHeaderPath(headerPathIndex) {
+    return () => this.props.onRemoveTemplateHeaderPath(this.props.template.get('id'), headerPathIndex);
+  }
+
+  handleHeaderPathChange(headerPathIndex) {
+    return event => this.props.onFieldPathUpdate(this.props.template.get('id'),
+                                                 ['headerPaths', headerPathIndex],
                                                  event.target.value);
   }
 
@@ -118,28 +122,58 @@ export default class CaptureTemplate extends PureComponent {
 
           {!template.get('isAvailableInAllOrgFiles') && (
             <Fragment>
-              <div className="org-files-availability-container">
+              <div className="multi-textfields-container">
                 {template.get('orgFilesWhereAvailable').map((orgFilePath, index) => (
                   <div key={`org-file-availability-${index}`}
-                       className="org-file-availability-container">
+                       className="multi-textfield-container">
                     <input type="text"
                            placeholder="e.g., /org/todo.org"
-                           className="textfield org-file-availability-field"
+                           className="textfield multi-textfield-field"
                            value={orgFilePath}
-                           onChange={this.handleOrgFileAvailabilityChange(index)}
-                           ref={input => this.lastOrgFileAvailabilityField = input} />
-                      <button className="fas fa-times fa-lg remove-org-file-availability-button"
+                           onChange={this.handleOrgFileAvailabilityChange(index)} />
+                      <button className="fas fa-times fa-lg remove-multi-textfield-button"
                               onClick={this.handleRemoveOrgFileAvailability(index)} />
                   </div>
                 ))}
               </div>
 
-              <div className="add-new-org-file-availability-button-container">
-                <button className="fas fa-plus add-new-org-file-availability-button"
+              <div className="add-new-multi-textfield-button-container">
+                <button className="fas fa-plus add-new-multi-textfield-button"
                         onClick={this.handleAddNewOrgFileAvailability} />
               </div>
             </Fragment>
           )}
+        </div>
+
+        <div className="capture-template__field-container">
+          <div className="capture-template__field" style={{marginTop: 7}}>
+            <div>Header path</div>
+          </div>
+
+          <div className="capture-template__help-text">
+            Specify the path to the header under which the new header should be filed.
+            One header per textfield.
+          </div>
+
+          <div className="multi-textfields-container">
+            {template.get('headerPaths').map((headerPath, index) => (
+              <div key={`header-path-${index}`}
+                   className="multi-textfield-container">
+                <input type="text"
+                       placeholder="e.g., Todos"
+                       className="textfield multi-textfield-field"
+                       value={headerPath}
+                       onChange={this.handleHeaderPathChange(index)} />
+                  <button className="fas fa-times fa-lg remove-multi-textfield-button"
+                          onClick={this.handleRemoveHeaderPath(index)} />
+              </div>
+            ))}
+          </div>
+
+          <div className="add-new-multi-textfield-button-container">
+            <button className="fas fa-plus add-new-multi-textfield-button"
+                    onClick={this.handleAddNewHeaderPath} />
+          </div>
         </div>
       </div>
     );

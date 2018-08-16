@@ -51,36 +51,38 @@
     margin-right: 10px;
 }
 
-.org-files-availability-container {
+.multi-textfields-container {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
-.org-file-availability-container {
+.multi-textfield-container {
     width: 75%;
     margin-top: 5px;
 
     display: flex;
 }
 
-.org-file-availability-field {
+.multi-textfield-field {
     font-family: Courier;
 
     flex: 1;
 }
 
-.remove-org-file-availability-button {
+.remove-multi-textfield-button {
     color: gray;
+    border: 0;
+    background-color: transparent;
 }
 
-.add-new-org-file-availability-button-container {
+.add-new-multi-textfield-button-container {
     display: flex;
     justify-content: flex-end;
     margin-top: 5px;
 }
 
-.add-new-org-file-availability-button {
+.add-new-multi-textfield-button {
     background-color:#5E348C;
     border: 0;
     color: white;

@@ -20,6 +20,8 @@ class CaptureTemplatesEditor extends PureComponent {
       'handleFieldPathUpdate',
       'handleAddNewTemplateOrgFileAvailability',
       'handleRemoveTemplateOrgFileAvailability',
+      'handleAddNewTemplateHeaderPath',
+      'handleRemoveTemplateHeaderPath',
     ]);
   }
 
@@ -39,6 +41,14 @@ class CaptureTemplatesEditor extends PureComponent {
     this.props.capture.removeTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex);
   }
 
+  handleAddNewTemplateHeaderPath(templateId) {
+    this.props.capture.addNewTemplateHeaderPath(templateId);
+  }
+
+  handleRemoveTemplateHeaderPath(templateId, headerPathIndex) {
+    this.props.capture.removeTemplateHeaderPath(templateId, headerPathIndex);
+  }
+
   render() {
     const { captureTemplates } = this.props;
 
@@ -50,7 +60,9 @@ class CaptureTemplatesEditor extends PureComponent {
                              template={template}
                              onFieldPathUpdate={this.handleFieldPathUpdate}
                              onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
-                             onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability} />
+                             onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
+                             onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
+                             onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath} />
           ))}
         </div>
 
