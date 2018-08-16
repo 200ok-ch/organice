@@ -15,15 +15,28 @@ class CaptureTemplatesEditor extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleAddNewTemplateClick', 'handleFieldUpdate']);
+    _.bindAll(this, [
+      'handleAddNewTemplateClick',
+      'handleFieldPathUpdate',
+      'handleAddNewTemplateOrgFileAvailability',
+      'handleRemoveTemplateOrgFileAvailability',
+    ]);
   }
 
   handleAddNewTemplateClick() {
     this.props.capture.addNewEmptyCaptureTemplate();
   }
 
-  handleFieldUpdate(templateId, fieldName, newValue) {
-    this.props.capture.updateTemplateFieldValue(templateId, fieldName, newValue);
+  handleFieldPathUpdate(templateId, fieldPath, newValue) {
+    this.props.capture.updateTemplateFieldPathValue(templateId, fieldPath, newValue);
+  }
+
+  handleAddNewTemplateOrgFileAvailability(templateId) {
+    this.props.capture.addNewTemplateOrgFileAvailability(templateId);
+  }
+
+  handleRemoveTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex) {
+    this.props.capture.removeTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex);
   }
 
   render() {
@@ -35,7 +48,9 @@ class CaptureTemplatesEditor extends PureComponent {
           {captureTemplates.map(template => (
             <CaptureTemplate key={template.get('id')}
                              template={template}
-                             onFieldUpdate={this.handleFieldUpdate} />
+                             onFieldPathUpdate={this.handleFieldPathUpdate}
+                             onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
+                             onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability} />
           ))}
         </div>
 

@@ -50,3 +50,40 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+
+.org-files-availability-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.org-file-availability-container {
+    width: 75%;
+    margin-top: 5px;
+
+    display: flex;
+}
+
+.org-file-availability-field {
+    font-family: Courier;
+
+    flex: 1;
+}
+
+.remove-org-file-availability-button {
+    color: gray;
+}
+
+.add-new-org-file-availability-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+.add-new-org-file-availability-button {
+    background-color:#5E348C;
+    border: 0;
+    color: white;
+    width: 45px;
+    height: 45px;
+}
