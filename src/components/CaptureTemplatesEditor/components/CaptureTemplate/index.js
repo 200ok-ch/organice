@@ -210,6 +210,31 @@ export default class CaptureTemplate extends PureComponent {
     );
   }
 
+  renderTemplateField(template) {
+    return (
+      <div className="capture-template__field-container">
+        <div className="capture-template__field" style={{marginTop: 7}}>
+          <div>Template</div>
+        </div>
+
+        <textarea className="textarea template-textarea"
+                  rows="3" />
+
+        <div className="capture-template__help-text">
+          The template for creating the capture item.
+          You can use the following template variables that will be expanded upon capture:
+          <ul>
+            <li><code>%?</code> - Place the cursor here.</li>
+            <li><code>%t</code> - Timestamp, date only.</li>
+            <li><code>%T</code> - Timestamp, with date and time.</li>
+            <li><code>%u</code> - Inactive timestamp, date only.</li>
+            <li><code>%U</code> - Inactive timestamp, with date and time.</li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { template } = this.props;
 
@@ -220,6 +245,7 @@ export default class CaptureTemplate extends PureComponent {
         {this.renderOrgFileAvailability(template)}
         {this.renderHeaderPaths(template)}
         {this.renderPrependField(template)}
+        {this.renderTemplateField(template)}
       </div>
     );
   }

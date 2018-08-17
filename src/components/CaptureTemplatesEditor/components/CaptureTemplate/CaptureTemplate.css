@@ -89,3 +89,9 @@
     width: 45px;
     height: 45px;
 }
+
+.template-textarea {
+    border: 1px solid #D8D8D8;
+
+    margin-top: 5px;
+}
