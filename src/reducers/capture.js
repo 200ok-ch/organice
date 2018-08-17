@@ -20,6 +20,7 @@ const addNewEmptyCaptureTemplate = state => {
       isAvailableInAllOrgFiles: true,
       orgFilesWhereAvailable: [''],
       headerPaths: [''],
+      shouldPrepend: false,
     }))
   ));
 };
