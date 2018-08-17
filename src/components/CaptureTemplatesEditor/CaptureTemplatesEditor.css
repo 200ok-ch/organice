@@ -5,3 +5,9 @@
     margin-top: 10px;
     margin-right: 10px;
 }
+
+.no-capture-templates-message {
+    text-align: center;
+    color: gray;
+    padding: 20px;
+}

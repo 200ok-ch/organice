@@ -213,7 +213,7 @@ export default class CaptureTemplate extends PureComponent {
 
         <div className="capture-template__help-text">
           By default, new captured headers are appended to the specified header path.
-          Enable this to prepend them instead.
+          Enable this setting to prepend them instead.
         </div>
       </div>
     );

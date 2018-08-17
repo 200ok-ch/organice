@@ -80,6 +80,7 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 5px;
+    margin-right: 8px;
 }
 
 .add-new-multi-textfield-button {

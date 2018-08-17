@@ -60,16 +60,27 @@ class CaptureTemplatesEditor extends PureComponent {
     return (
       <div>
         <div>
-          {captureTemplates.map(template => (
-            <CaptureTemplate key={template.get('id')}
-                             template={template}
-                             onFieldPathUpdate={this.handleFieldPathUpdate}
-                             onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
-                             onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
-                             onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
-                             onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
-                             onDeleteTemplate={this.handleDeleteTemplate} />
-          ))}
+          {captureTemplates.size === 0 ? (
+            <div className="no-capture-templates-message">
+              You don't currently have any capture templates - add one by pressing the <i className="fas fa-plus" /> button.
+
+              <br />
+              <br />
+
+              Capture templates show up in the action drawer and give you quick access to creating new headers (kinda like org-capture).
+            </div>
+          ) : (
+            captureTemplates.map(template => (
+              <CaptureTemplate key={template.get('id')}
+                               template={template}
+                               onFieldPathUpdate={this.handleFieldPathUpdate}
+                               onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
+                               onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
+                               onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
+                               onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
+                               onDeleteTemplate={this.handleDeleteTemplate} />
+            ))
+          )}
         </div>
 
         <div className="new-capture-template-button-container">
