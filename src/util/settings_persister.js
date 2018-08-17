@@ -7,6 +7,8 @@ import { getOpenHeaderPaths } from '../lib/org_utils';
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
 
+import { getNextId } from '../lib/parse_org';
+
 const isLocalStorageAvailable = () => {
   try {
     localStorage.setItem('test', 'test');
@@ -138,6 +140,14 @@ export const applyCategorySettingsFromConfig = (state, config, category) => {
   });
 
   return state;
+};
+
+export const applyCaptureSettingsFromConfig = (state, config) => {
+  const captureTemplates = fromJS(JSON.parse(config.captureTemplates)).map(template => (
+    template.set('id', getNextId())
+  ));
+
+  return state.set('captureTempaltes', captureTemplates);
 };
 
 export const readInitialState = () => {

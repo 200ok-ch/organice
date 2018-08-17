@@ -1,7 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 
 import { getNextId } from '../lib/parse_org';
-import { applyCategorySettingsFromConfig } from '../util/settings_persister';
+import { applyCaptureSettingsFromConfig } from '../util/settings_persister';
 
 const indexOfTemplateWithId = (templates, templateId) => (
   templates.findIndex(template => template.get('id') === templateId)
@@ -76,7 +76,7 @@ const restoreCaptureSettings = (state, action) => {
     return state;
   }
 
-  return applyCategorySettingsFromConfig(state, action.newSettings, 'capture');
+  return applyCaptureSettingsFromConfig(state, action.newSettings);
 };
 
 export default (state = new Map(), action) => {

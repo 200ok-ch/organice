@@ -13,10 +13,7 @@ class App extends PureComponent {
   constructor(props) {
     super(props);
 
-    // TODO: remove this.
-    const initialState = readInitialState();
-    initialState.base = initialState.base.set('activeModalPage', 'capture_templates_editor');
-    this.store = Store(initialState);
+    this.store = Store(readInitialState());
     this.store.subscribe(subscribeToChanges(this.store));
 
     loadSettingsFromConfigFile(this.store);
