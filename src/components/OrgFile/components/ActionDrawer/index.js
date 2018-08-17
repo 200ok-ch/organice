@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import './ActionDrawer.css';
 
 import _ from 'lodash';
+import { List } from 'immutable';
 
 import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
@@ -176,6 +177,37 @@ class ActionDrawer extends PureComponent {
     this.props.org.moveTableColumnRight();
   }
 
+  handleCaptureButtonClick(templateId) {
+    return () => console.log(`clickity on ${templateId}`);
+  }
+
+  renderCaptureButtons() {
+    const { captureTemplates, path } = this.props;
+
+    const availableCaptureTemplates = captureTemplates.filter(template => (
+      template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
+        availablePath.trim()
+      )).includes(path.trim())
+    ));
+
+    if (availableCaptureTemplates.size === 0) {
+      return null;
+    }
+
+    return (
+      <Fragment>
+        {availableCaptureTemplates.map(template => (
+          <ActionButton key={template.get('id')}
+                        letter={template.get('letter')}
+                        iconName={template.get('iconName')}
+                        isDisabled={false}
+                        onClick={this.handleCaptureButtonClick(template.get('id'))} />
+        ))}
+        <div className="action-drawer__separator" />
+      </Fragment>
+    );
+  }
+
   render() {
     const {
       inTitleEditMode,
@@ -208,6 +240,8 @@ class ActionDrawer extends PureComponent {
                 <div className="action-drawer__separator" />
               </Fragment>
             )}
+
+            {this.renderCaptureButtons()}
 
             <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
             <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />
@@ -245,6 +279,8 @@ const mapStateToProps = (state, props) => {
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
+    captureTemplates: state.capture.get('captureTemplates', new List()),
+    path: state.org.present.get('path'),
   };
 };
 

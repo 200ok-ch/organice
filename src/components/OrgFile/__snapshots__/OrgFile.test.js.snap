@@ -1841,6 +1841,10 @@ exports[`<OrgFile /> renders an org file 1`] = `
               </Connect(HeaderList)>
               <Connect(ActionDrawer)>
                 <ActionDrawer
+                  captureTemplates={
+                    Immutable.List [
+                    ]
+                  }
                   dropbox={
                     Object {
                       "authenticate": [Function],
@@ -1900,6 +1904,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       "updateTableCellValue": [Function],
                     }
                   }
+                  path="/some/test/file"
                   undo={
                     Object {
                       "clearHistory": [Function],
@@ -4882,6 +4887,10 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
               </div>
               <Connect(ActionDrawer)>
                 <ActionDrawer
+                  captureTemplates={
+                    Immutable.List [
+                    ]
+                  }
                   dropbox={
                     Object {
                       "authenticate": [Function],
@@ -4942,6 +4951,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       "updateTableCellValue": [Function],
                     }
                   }
+                  path="/some/test/file"
                   selectedHeaderId={16}
                   selectedTableCellId={null}
                   undo={
@@ -7914,6 +7924,10 @@ exports[`Can select a header in an org file 1`] = `
               </Connect(HeaderList)>
               <Connect(ActionDrawer)>
                 <ActionDrawer
+                  captureTemplates={
+                    Immutable.List [
+                    ]
+                  }
                   dropbox={
                     Object {
                       "authenticate": [Function],
@@ -7973,6 +7987,7 @@ exports[`Can select a header in an org file 1`] = `
                       "updateTableCellValue": [Function],
                     }
                   }
+                  path="/some/test/file"
                   selectedHeaderId={8}
                   selectedTableCellId={null}
                   undo={
