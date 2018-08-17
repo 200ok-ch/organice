@@ -55,7 +55,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
             Object {
               "hideLoadingMessage": [Function],
               "loadStaticFile": [Function],
-              "restoreSettings": [Function],
+              "restoreBaseSettings": [Function],
               "setActiveModalPage": [Function],
               "setBulletStyle": [Function],
               "setCustomKeybinding": [Function],
@@ -180,14 +180,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                   tags: Immutable.List [
                   ],
                 },
-                rawDescription: "
-                Some description content",
+                rawDescription: "Some description content",
                 description: Immutable.List [
-                  Immutable.Map {
-                    type: "text",
-                    contents: "
-                    ",
-                  },
                   Immutable.Map {
                     type: "text",
                     contents: "Some description content",
@@ -239,14 +233,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                   tags: Immutable.List [
                   ],
                 },
-                rawDescription: "
-                ",
+                rawDescription: "",
                 description: Immutable.List [
-                  Immutable.Map {
-                    type: "text",
-                    contents: "
-                    ",
-                  },
                 ],
                 opened: false,
                 id: 6,
@@ -451,14 +439,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                           tags: Immutable.List [
                           ],
                         },
-                        rawDescription: "
-                        Some description content",
+                        rawDescription: "Some description content",
                         description: Immutable.List [
-                          Immutable.Map {
-                            type: "text",
-                            contents: "
-                            ",
-                          },
                           Immutable.Map {
                             type: "text",
                             contents: "Some description content",
@@ -510,14 +492,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                           tags: Immutable.List [
                           ],
                         },
-                        rawDescription: "
-                        ",
+                        rawDescription: "",
                         description: Immutable.List [
-                          Immutable.Map {
-                            type: "text",
-                            contents: "
-                            ",
-                          },
                         ],
                         opened: false,
                         id: 6,
@@ -588,7 +564,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -705,7 +681,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -853,14 +829,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                             tags: Immutable.List [
                             ],
                           },
-                          rawDescription: "
-                          Some description content",
+                          rawDescription: "Some description content",
                           description: Immutable.List [
-                            Immutable.Map {
-                              type: "text",
-                              contents: "
-                              ",
-                            },
                             Immutable.Map {
                               type: "text",
                               contents: "Some description content",
@@ -893,14 +863,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               tags: Immutable.List [
                               ],
                             },
-                            rawDescription: "
-                            Some description content",
+                            rawDescription: "Some description content",
                             description: Immutable.List [
-                              Immutable.Map {
-                                type: "text",
-                                contents: "
-                                ",
-                              },
                               Immutable.Map {
                                 type: "text",
                                 contents: "Some description content",
@@ -915,7 +879,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -949,14 +913,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                Some description content",
+                                rawDescription: "Some description content",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                   Immutable.Map {
                                     type: "text",
                                     contents: "Some description content",
@@ -986,14 +944,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  Some description content",
+                                  rawDescription: "Some description content",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                     Immutable.Map {
                                       type: "text",
                                       contents: "Some description content",
@@ -1052,7 +1004,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -1099,14 +1051,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                Some description content",
+                                rawDescription: "Some description content",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                   Immutable.Map {
                                     type: "text",
                                     contents: "Some description content",
@@ -1133,14 +1079,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  Some description content",
+                                  rawDescription: "Some description content",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                     Immutable.Map {
                                       type: "text",
                                       contents: "Some description content",
@@ -1266,7 +1206,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -1387,7 +1327,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -1537,7 +1477,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                     </Connect(Header)>
                     <Connect(Header)
                       color="rgba(38, 143, 214, 1)"
-                      hasContent={true}
+                      hasContent={false}
                       header={
                         Immutable.Map {
                           titleLine: Immutable.Map {
@@ -1559,14 +1499,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                             tags: Immutable.List [
                             ],
                           },
-                          rawDescription: "
-                          ",
+                          rawDescription: "",
                           description: Immutable.List [
-                            Immutable.Map {
-                              type: "text",
-                              contents: "
-                              ",
-                            },
                           ],
                           opened: false,
                           id: 6,
@@ -1580,7 +1514,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       <Header
                         color="rgba(38, 143, 214, 1)"
                         focusedHeader={null}
-                        hasContent={true}
+                        hasContent={false}
                         header={
                           Immutable.Map {
                             titleLine: Immutable.Map {
@@ -1602,14 +1536,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               tags: Immutable.List [
                               ],
                             },
-                            rawDescription: "
-                            ",
+                            rawDescription: "",
                             description: Immutable.List [
-                              Immutable.Map {
-                                type: "text",
-                                contents: "
-                                ",
-                              },
                             ],
                             opened: false,
                             id: 6,
@@ -1620,7 +1548,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -1639,7 +1567,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                           </div>
                           <Connect(TitleLine)
                             color="rgba(38, 143, 214, 1)"
-                            hasContent={true}
+                            hasContent={false}
                             header={
                               Immutable.Map {
                                 titleLine: Immutable.Map {
@@ -1661,14 +1589,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                ",
+                                rawDescription: "",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                 ],
                                 opened: false,
                                 id: 6,
@@ -1679,7 +1601,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                           >
                             <TitleLine
                               color="rgba(38, 143, 214, 1)"
-                              hasContent={true}
+                              hasContent={false}
                               header={
                                 Immutable.Map {
                                   titleLine: Immutable.Map {
@@ -1701,14 +1623,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  ",
+                                  rawDescription: "",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                   ],
                                   opened: false,
                                   id: 6,
@@ -1763,7 +1679,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -1802,7 +1718,6 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                         </a>
                                       </span>
                                     </AttributedString>
-                                    ...
                                   </span>
                                 </div>
                               </div>
@@ -1830,14 +1745,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                ",
+                                rawDescription: "",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                 ],
                                 opened: false,
                                 id: 6,
@@ -1867,14 +1776,8 @@ exports[`<OrgFile /> renders an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  ",
+                                  rawDescription: "",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                   ],
                                   opened: false,
                                   id: 6,
@@ -2017,7 +1920,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-check btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-check"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2027,7 +1930,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-pencil-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-pencil-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2037,7 +1940,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-edit btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-edit"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2047,7 +1950,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-plus btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2057,7 +1960,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-times btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-times"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2067,7 +1970,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-up btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-up"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2077,7 +1980,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-down btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-down"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2087,7 +1990,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-left btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-left"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2097,7 +2000,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-right btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-right"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2107,7 +2010,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-chevron-left btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-chevron-left"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2117,7 +2020,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-chevron-right btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-chevron-right"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2127,7 +2030,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-compress btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-compress"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2137,7 +2040,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-undo btn btn--circle action-drawer__btn btn--disabled"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-undo btn--disabled"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2146,7 +2049,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-cloud-upload-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-cloud-upload-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2155,7 +2058,7 @@ exports[`<OrgFile /> renders an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-cloud-download-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-cloud-download-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -2226,7 +2129,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
             Object {
               "hideLoadingMessage": [Function],
               "loadStaticFile": [Function],
-              "restoreSettings": [Function],
+              "restoreBaseSettings": [Function],
               "setActiveModalPage": [Function],
               "setBulletStyle": [Function],
               "setCustomKeybinding": [Function],
@@ -2351,14 +2254,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                   tags: Immutable.List [
                   ],
                 },
-                rawDescription: "
-                Some description content",
+                rawDescription: "Some description content",
                 description: Immutable.List [
-                  Immutable.Map {
-                    type: "text",
-                    contents: "
-                    ",
-                  },
                   Immutable.Map {
                     type: "text",
                     contents: "Some description content",
@@ -2410,14 +2307,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                   tags: Immutable.List [
                   ],
                 },
-                rawDescription: "
-                ",
+                rawDescription: "",
                 description: Immutable.List [
-                  Immutable.Map {
-                    type: "text",
-                    contents: "
-                    ",
-                  },
                 ],
                 opened: false,
                 id: 22,
@@ -2624,14 +2515,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                           tags: Immutable.List [
                           ],
                         },
-                        rawDescription: "
-                        Some description content",
+                        rawDescription: "Some description content",
                         description: Immutable.List [
-                          Immutable.Map {
-                            type: "text",
-                            contents: "
-                            ",
-                          },
                           Immutable.Map {
                             type: "text",
                             contents: "Some description content",
@@ -2683,14 +2568,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                           tags: Immutable.List [
                           ],
                         },
-                        rawDescription: "
-                        ",
+                        rawDescription: "",
                         description: Immutable.List [
-                          Immutable.Map {
-                            type: "text",
-                            contents: "
-                            ",
-                          },
                         ],
                         opened: false,
                         id: 22,
@@ -2762,7 +2641,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll header--selected"
+                          className="header header--selected"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -2879,7 +2758,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <span
@@ -3010,7 +2889,9 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                               selectedTableCellId={null}
                             >
-                              <div>
+                              <div
+                                className="header-content-container nice-scroll"
+                              >
                                 <AttributedString
                                   onExitTableEditMode={[Function]}
                                   onTableCellSelect={[Function]}
@@ -3090,7 +2971,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -3207,7 +3088,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -3397,7 +3278,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -3514,7 +3395,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <span
@@ -3710,7 +3591,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -3827,7 +3708,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <span
@@ -3981,14 +3862,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                             tags: Immutable.List [
                             ],
                           },
-                          rawDescription: "
-                          Some description content",
+                          rawDescription: "Some description content",
                           description: Immutable.List [
-                            Immutable.Map {
-                              type: "text",
-                              contents: "
-                              ",
-                            },
                             Immutable.Map {
                               type: "text",
                               contents: "Some description content",
@@ -4021,14 +3896,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               tags: Immutable.List [
                               ],
                             },
-                            rawDescription: "
-                            Some description content",
+                            rawDescription: "Some description content",
                             description: Immutable.List [
-                              Immutable.Map {
-                                type: "text",
-                                contents: "
-                                ",
-                              },
                               Immutable.Map {
                                 type: "text",
                                 contents: "Some description content",
@@ -4043,7 +3912,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -4077,14 +3946,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                Some description content",
+                                rawDescription: "Some description content",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                   Immutable.Map {
                                     type: "text",
                                     contents: "Some description content",
@@ -4114,14 +3977,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  Some description content",
+                                  rawDescription: "Some description content",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                     Immutable.Map {
                                       type: "text",
                                       contents: "Some description content",
@@ -4180,7 +4037,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -4227,14 +4084,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                Some description content",
+                                rawDescription: "Some description content",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                   Immutable.Map {
                                     type: "text",
                                     contents: "Some description content",
@@ -4261,14 +4112,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  Some description content",
+                                  rawDescription: "Some description content",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                     Immutable.Map {
                                       type: "text",
                                       contents: "Some description content",
@@ -4395,7 +4240,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -4516,7 +4361,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -4667,7 +4512,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                     </Connect(Header)>
                     <Connect(Header)
                       color="rgba(38, 143, 214, 1)"
-                      hasContent={true}
+                      hasContent={false}
                       header={
                         Immutable.Map {
                           titleLine: Immutable.Map {
@@ -4689,14 +4534,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                             tags: Immutable.List [
                             ],
                           },
-                          rawDescription: "
-                          ",
+                          rawDescription: "",
                           description: Immutable.List [
-                            Immutable.Map {
-                              type: "text",
-                              contents: "
-                              ",
-                            },
                           ],
                           opened: false,
                           id: 22,
@@ -4710,7 +4549,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       <Header
                         color="rgba(38, 143, 214, 1)"
                         focusedHeader={null}
-                        hasContent={true}
+                        hasContent={false}
                         header={
                           Immutable.Map {
                             titleLine: Immutable.Map {
@@ -4732,14 +4571,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               tags: Immutable.List [
                               ],
                             },
-                            rawDescription: "
-                            ",
+                            rawDescription: "",
                             description: Immutable.List [
-                              Immutable.Map {
-                                type: "text",
-                                contents: "
-                                ",
-                              },
                             ],
                             opened: false,
                             id: 22,
@@ -4750,7 +4583,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -4769,7 +4602,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                           </div>
                           <Connect(TitleLine)
                             color="rgba(38, 143, 214, 1)"
-                            hasContent={true}
+                            hasContent={false}
                             header={
                               Immutable.Map {
                                 titleLine: Immutable.Map {
@@ -4791,14 +4624,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                ",
+                                rawDescription: "",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                 ],
                                 opened: false,
                                 id: 22,
@@ -4809,7 +4636,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                           >
                             <TitleLine
                               color="rgba(38, 143, 214, 1)"
-                              hasContent={true}
+                              hasContent={false}
                               header={
                                 Immutable.Map {
                                   titleLine: Immutable.Map {
@@ -4831,14 +4658,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  ",
+                                  rawDescription: "",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                   ],
                                   opened: false,
                                   id: 22,
@@ -4893,7 +4714,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -4932,7 +4753,6 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                         </a>
                                       </span>
                                     </AttributedString>
-                                    ...
                                   </span>
                                 </div>
                               </div>
@@ -4960,14 +4780,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                ",
+                                rawDescription: "",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                 ],
                                 opened: false,
                                 id: 22,
@@ -4997,14 +4811,8 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  ",
+                                  rawDescription: "",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                   ],
                                   opened: false,
                                   id: 22,
@@ -5156,7 +4964,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-check btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-check"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5166,7 +4974,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-pencil-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-pencil-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5176,7 +4984,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-edit btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-edit"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5186,7 +4994,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-plus btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5196,7 +5004,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-times btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-times"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5206,7 +5014,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-up btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-up"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5216,7 +5024,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-down btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-down"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5226,7 +5034,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-left btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-left"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5236,7 +5044,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-right btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-right"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5246,7 +5054,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-chevron-left btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-chevron-left"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5256,7 +5064,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-chevron-right btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-chevron-right"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5266,7 +5074,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-compress btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-compress"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5276,7 +5084,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-undo btn btn--circle action-drawer__btn btn--disabled"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-undo btn--disabled"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5285,7 +5093,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-cloud-upload-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-cloud-upload-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5294,7 +5102,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-cloud-download-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-cloud-download-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -5365,7 +5173,7 @@ exports[`Can select a header in an org file 1`] = `
             Object {
               "hideLoadingMessage": [Function],
               "loadStaticFile": [Function],
-              "restoreSettings": [Function],
+              "restoreBaseSettings": [Function],
               "setActiveModalPage": [Function],
               "setBulletStyle": [Function],
               "setCustomKeybinding": [Function],
@@ -5490,14 +5298,8 @@ exports[`Can select a header in an org file 1`] = `
                   tags: Immutable.List [
                   ],
                 },
-                rawDescription: "
-                Some description content",
+                rawDescription: "Some description content",
                 description: Immutable.List [
-                  Immutable.Map {
-                    type: "text",
-                    contents: "
-                    ",
-                  },
                   Immutable.Map {
                     type: "text",
                     contents: "Some description content",
@@ -5549,14 +5351,8 @@ exports[`Can select a header in an org file 1`] = `
                   tags: Immutable.List [
                   ],
                 },
-                rawDescription: "
-                ",
+                rawDescription: "",
                 description: Immutable.List [
-                  Immutable.Map {
-                    type: "text",
-                    contents: "
-                    ",
-                  },
                 ],
                 opened: false,
                 id: 14,
@@ -5762,14 +5558,8 @@ exports[`Can select a header in an org file 1`] = `
                           tags: Immutable.List [
                           ],
                         },
-                        rawDescription: "
-                        Some description content",
+                        rawDescription: "Some description content",
                         description: Immutable.List [
-                          Immutable.Map {
-                            type: "text",
-                            contents: "
-                            ",
-                          },
                           Immutable.Map {
                             type: "text",
                             contents: "Some description content",
@@ -5821,14 +5611,8 @@ exports[`Can select a header in an org file 1`] = `
                           tags: Immutable.List [
                           ],
                         },
-                        rawDescription: "
-                        ",
+                        rawDescription: "",
                         description: Immutable.List [
-                          Immutable.Map {
-                            type: "text",
-                            contents: "
-                            ",
-                          },
                         ],
                         opened: false,
                         id: 14,
@@ -5900,7 +5684,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll header--selected"
+                          className="header header--selected"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -6017,7 +5801,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -6142,7 +5926,9 @@ exports[`Can select a header in an org file 1`] = `
                               }
                               selectedTableCellId={null}
                             >
-                              <div>
+                              <div
+                                className="header-content-container nice-scroll"
+                              >
                                 <AttributedString
                                   onExitTableEditMode={[Function]}
                                   onTableCellSelect={[Function]}
@@ -6222,7 +6008,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -6339,7 +6125,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -6529,7 +6315,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -6646,7 +6432,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <span
@@ -6842,7 +6628,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 40,
@@ -6959,7 +6745,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <span
@@ -7113,14 +6899,8 @@ exports[`Can select a header in an org file 1`] = `
                             tags: Immutable.List [
                             ],
                           },
-                          rawDescription: "
-                          Some description content",
+                          rawDescription: "Some description content",
                           description: Immutable.List [
-                            Immutable.Map {
-                              type: "text",
-                              contents: "
-                              ",
-                            },
                             Immutable.Map {
                               type: "text",
                               contents: "Some description content",
@@ -7153,14 +6933,8 @@ exports[`Can select a header in an org file 1`] = `
                               tags: Immutable.List [
                               ],
                             },
-                            rawDescription: "
-                            Some description content",
+                            rawDescription: "Some description content",
                             description: Immutable.List [
-                              Immutable.Map {
-                                type: "text",
-                                contents: "
-                                ",
-                              },
                               Immutable.Map {
                                 type: "text",
                                 contents: "Some description content",
@@ -7175,7 +6949,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -7209,14 +6983,8 @@ exports[`Can select a header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                Some description content",
+                                rawDescription: "Some description content",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                   Immutable.Map {
                                     type: "text",
                                     contents: "Some description content",
@@ -7246,14 +7014,8 @@ exports[`Can select a header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  Some description content",
+                                  rawDescription: "Some description content",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                     Immutable.Map {
                                       type: "text",
                                       contents: "Some description content",
@@ -7312,7 +7074,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -7359,14 +7121,8 @@ exports[`Can select a header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                Some description content",
+                                rawDescription: "Some description content",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                   Immutable.Map {
                                     type: "text",
                                     contents: "Some description content",
@@ -7393,14 +7149,8 @@ exports[`Can select a header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  Some description content",
+                                  rawDescription: "Some description content",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                     Immutable.Map {
                                       type: "text",
                                       contents: "Some description content",
@@ -7527,7 +7277,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -7648,7 +7398,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -7799,7 +7549,7 @@ exports[`Can select a header in an org file 1`] = `
                     </Connect(Header)>
                     <Connect(Header)
                       color="rgba(38, 143, 214, 1)"
-                      hasContent={true}
+                      hasContent={false}
                       header={
                         Immutable.Map {
                           titleLine: Immutable.Map {
@@ -7821,14 +7571,8 @@ exports[`Can select a header in an org file 1`] = `
                             tags: Immutable.List [
                             ],
                           },
-                          rawDescription: "
-                          ",
+                          rawDescription: "",
                           description: Immutable.List [
-                            Immutable.Map {
-                              type: "text",
-                              contents: "
-                              ",
-                            },
                           ],
                           opened: false,
                           id: 14,
@@ -7842,7 +7586,7 @@ exports[`Can select a header in an org file 1`] = `
                       <Header
                         color="rgba(38, 143, 214, 1)"
                         focusedHeader={null}
-                        hasContent={true}
+                        hasContent={false}
                         header={
                           Immutable.Map {
                             titleLine: Immutable.Map {
@@ -7864,14 +7608,8 @@ exports[`Can select a header in an org file 1`] = `
                               tags: Immutable.List [
                               ],
                             },
-                            rawDescription: "
-                            ",
+                            rawDescription: "",
                             description: Immutable.List [
-                              Immutable.Map {
-                                type: "text",
-                                contents: "
-                                ",
-                              },
                             ],
                             opened: false,
                             id: 14,
@@ -7882,7 +7620,7 @@ exports[`Can select a header in an org file 1`] = `
                         onRef={[Function]}
                       >
                         <div
-                          className="header nice-scroll"
+                          className="header"
                           style={
                             Object {
                               "paddingLeft": 20,
@@ -7901,7 +7639,7 @@ exports[`Can select a header in an org file 1`] = `
                           </div>
                           <Connect(TitleLine)
                             color="rgba(38, 143, 214, 1)"
-                            hasContent={true}
+                            hasContent={false}
                             header={
                               Immutable.Map {
                                 titleLine: Immutable.Map {
@@ -7923,14 +7661,8 @@ exports[`Can select a header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                ",
+                                rawDescription: "",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                 ],
                                 opened: false,
                                 id: 14,
@@ -7941,7 +7673,7 @@ exports[`Can select a header in an org file 1`] = `
                           >
                             <TitleLine
                               color="rgba(38, 143, 214, 1)"
-                              hasContent={true}
+                              hasContent={false}
                               header={
                                 Immutable.Map {
                                   titleLine: Immutable.Map {
@@ -7963,14 +7695,8 @@ exports[`Can select a header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  ",
+                                  rawDescription: "",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                   ],
                                   opened: false,
                                   id: 14,
@@ -8025,7 +7751,7 @@ exports[`Can select a header in an org file 1`] = `
                               }
                             >
                               <div
-                                className="title-line"
+                                className="title-line nice-scroll"
                                 onClick={[Function]}
                               >
                                 <div>
@@ -8064,7 +7790,6 @@ exports[`Can select a header in an org file 1`] = `
                                         </a>
                                       </span>
                                     </AttributedString>
-                                    ...
                                   </span>
                                 </div>
                               </div>
@@ -8092,14 +7817,8 @@ exports[`Can select a header in an org file 1`] = `
                                   tags: Immutable.List [
                                   ],
                                 },
-                                rawDescription: "
-                                ",
+                                rawDescription: "",
                                 description: Immutable.List [
-                                  Immutable.Map {
-                                    type: "text",
-                                    contents: "
-                                    ",
-                                  },
                                 ],
                                 opened: false,
                                 id: 14,
@@ -8129,14 +7848,8 @@ exports[`Can select a header in an org file 1`] = `
                                     tags: Immutable.List [
                                     ],
                                   },
-                                  rawDescription: "
-                                  ",
+                                  rawDescription: "",
                                   description: Immutable.List [
-                                    Immutable.Map {
-                                      type: "text",
-                                      contents: "
-                                      ",
-                                    },
                                   ],
                                   opened: false,
                                   id: 14,
@@ -8282,7 +7995,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-check btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-check"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8292,7 +8005,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-pencil-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-pencil-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8302,7 +8015,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-edit btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-edit"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8312,7 +8025,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-plus btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8322,7 +8035,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-times btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-times"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8332,7 +8045,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-up btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-up"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8342,7 +8055,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-down btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-down"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8352,7 +8065,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-left btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-left"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8362,7 +8075,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-arrow-right btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-arrow-right"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8372,7 +8085,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-chevron-left btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-chevron-left"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8382,7 +8095,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-chevron-right btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-chevron-right"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8392,7 +8105,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-compress btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-compress"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8402,7 +8115,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-undo btn btn--circle action-drawer__btn btn--disabled"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-undo btn--disabled"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8411,7 +8124,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-cloud-upload-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-cloud-upload-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>
@@ -8420,7 +8133,7 @@ exports[`Can select a header in an org file 1`] = `
                       onClick={[Function]}
                     >
                       <button
-                        className="fas fa-lg fa-cloud-download-alt btn btn--circle action-drawer__btn"
+                        className="btn btn--circle action-drawer__btn fas fa-lg fa-cloud-download-alt"
                         onClick={[Function]}
                       />
                     </ActionButton>

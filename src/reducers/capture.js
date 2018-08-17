@@ -1,6 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 
 import { getNextId } from '../lib/parse_org';
+import { applyCategorySettingsFromConfig } from '../util/settings_persister';
 
 const indexOfTemplateWithId = (templates, templateId) => (
   templates.findIndex(template => template.get('id') === templateId)
@@ -70,6 +71,14 @@ const deleteTemplate = (state, action) => {
   return state.update('captureTemplates', templates => templates.delete(templateIndex));
 };
 
+const restoreCaptureSettings = (state, action) => {
+  if (!action.newSettings) {
+    return state;
+  }
+
+  return applyCategorySettingsFromConfig(state, action.newSettings, 'capture');
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE':
@@ -86,6 +95,8 @@ export default (state = new Map(), action) => {
     return removeTemplateHeaderPath(state, action);
   case 'DELETE_TEMPLATE':
     return deleteTemplate(state, action);
+  case 'RESTORE_CAPTURE_SETTINGS':
+    return restoreCaptureSettings(state, action);
   default:
     return state;
   }

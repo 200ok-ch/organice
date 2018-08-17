@@ -17,10 +17,6 @@ class App extends PureComponent {
     const initialState = readInitialState();
     initialState.base = initialState.base.set('activeModalPage', 'capture_templates_editor');
     this.store = Store(initialState);
-    // TODO: kill these too.
-    this.store.dispatch({type: 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE'});
-    this.store.dispatch({type: 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE'});
-    this.store.dispatch({type: 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE'});
     this.store.subscribe(subscribeToChanges(this.store));
 
     loadSettingsFromConfigFile(this.store);

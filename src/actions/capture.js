@@ -25,3 +25,7 @@ export const removeTemplateHeaderPath = (templateId, headerPathIndex) => ({
 export const deleteTemplate = templateId => ({
   type: 'DELETE_TEMPLATE', templateId,
 });
+
+export const restoreCaptureSettings = newSettings => ({
+  type: 'RESTORE_CAPTURE_SETTINGS', newSettings,
+});

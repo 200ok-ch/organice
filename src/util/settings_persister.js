@@ -1,10 +1,11 @@
 import { Dropbox } from 'dropbox';
 
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
-import { restoreSettings } from '../actions/base';
+import { restoreBaseSettings } from '../actions/base';
+import { restoreCaptureSettings } from '../actions/capture';
 
 const isLocalStorageAvailable = () => {
   try {
@@ -15,7 +16,7 @@ const isLocalStorageAvailable = () => {
   }
 };
 
-const pushFileToDropbox = (accessToken, path, contents) => {
+const pushFileToDropbox = _.debounce((accessToken, path, contents) => {
   const dropbox = new Dropbox({ accessToken });
   dropbox.filesUpload({
     path, contents,
@@ -26,7 +27,7 @@ const pushFileToDropbox = (accessToken, path, contents) => {
   }).catch(error => {
     alert(`There was an error trying to push settings to your Dropbox account: ${error}`);
   });
-};
+}, 200, {maxWait: 5000});
 
 const pullFileFromDropbox = (accessToken, path) => {
   const dropbox = new Dropbox({ accessToken });
@@ -86,7 +87,14 @@ export const persistableFields = [
     name: 'accessToken',
     type: 'nullable',
     shouldStoreInConfig: false,
-  }
+  },
+  {
+    category: 'capture',
+    name: 'captureTemplates',
+    type: 'json',
+    shouldStoreInConfig: true,
+    default: new List(),
+  },
 ];
 
 export const readOpennessState = () => {
@@ -99,7 +107,7 @@ const getFieldsToPersist = (state, fields) => (
     [field, state.org.present.get(field)]
   )).concat(persistableFields.filter(field => field.category !== 'org').map(field => {
     if (field.type === 'json') {
-      return [field.name, JSON.stringify(state[field.category].get(field.name) || {})];
+      return [field.name, JSON.stringify(state[field.category].get(field.name) || field.default || {})];
     } else {
       return [field.name, state[field.category].get(field.name)];
     }
@@ -112,8 +120,10 @@ const getConfigFileContents = fieldsToPersist => (
   ))))
 );
 
-export const applyBaseSettingsFromConfig = (state, config) => {
+export const applyCategorySettingsFromConfig = (state, config, category) => {
   persistableFields.filter(field => (
+    field.category === category
+  )).filter(field => (
     field.shouldStoreInConfig
   )).filter(field => (
     // I accidentally included this field in some config files, so I need to forever
@@ -121,7 +131,7 @@ export const applyBaseSettingsFromConfig = (state, config) => {
     field.name !== 'lastSeenWhatsNewHeader'
   )).forEach(field => {
     if (field.type === 'json') {
-      state = state.set(field.name, Map(JSON.parse(config[field.name])));
+      state = state.set(field.name, fromJS(JSON.parse(config[field.name])));
     } else {
       state = state.set(field.name, config[field.name]);
     }
@@ -156,7 +166,7 @@ export const readInitialState = () => {
       value = value === 'true';
     } else if (field.type === 'json') {
       if (!value) {
-        value = new Map();
+        value = field.default || new Map();
       } else {
         value = fromJS(JSON.parse(value));
       }
@@ -189,7 +199,8 @@ export const loadSettingsFromConfigFile = store => {
   pullFileFromDropbox(accessToken, '/.org-web-config.json').then(configFileContents => {
     try {
       const config = JSON.parse(configFileContents);
-      store.dispatch(restoreSettings(config));
+      store.dispatch(restoreBaseSettings(config));
+      store.dispatch(restoreCaptureSettings(config));
     } catch(_error) {
       // Something went wrong parsing the config file, but we don't care, we'll just
       // overwrite it with a good local copy.

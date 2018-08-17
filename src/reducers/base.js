@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-import { applyBaseSettingsFromConfig } from '../util/settings_persister';
+import { applyCategorySettingsFromConfig } from '../util/settings_persister';
 
 const setLoadingMessage = (state, action) => (
   state.set('loadingMessage', action.loadingMessage)
@@ -48,12 +48,12 @@ const setCustomKeybinding = (state, action) => {
   return state.setIn(['customKeybindings', action.keybindingName], action.keybinding);
 };
 
-const restoreSettings = (state, action) => {
+const restoreBaseSettings = (state, action) => {
   if (!action.newSettings) {
     return state;
   }
 
-  return applyBaseSettingsFromConfig(state, action.newSettings);
+  return applyCategorySettingsFromConfig(state, action.newSettings, 'base');
 };
 
 const setActiveModalPage = (state, action) => (
@@ -82,8 +82,8 @@ export default (state = new Map(), action) => {
     return setLastViewedFile(state, action);
   case 'SET_CUSTOM_KEYBINDING':
     return setCustomKeybinding(state, action);
-  case 'RESTORE_SETTINGS':
-    return restoreSettings(state, action);
+  case 'RESTORE_BASE_SETTINGS':
+    return restoreBaseSettings(state, action);
   case 'SET_ACTIVE_MODAL_PAGE':
     return setActiveModalPage(state, action);
   default:
