@@ -21,6 +21,7 @@ const addNewEmptyCaptureTemplate = state => {
       orgFilesWhereAvailable: [''],
       headerPaths: [''],
       shouldPrepend: false,
+      template: '',
     }))
   ));
 };

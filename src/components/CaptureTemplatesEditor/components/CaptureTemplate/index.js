@@ -218,7 +218,9 @@ export default class CaptureTemplate extends PureComponent {
         </div>
 
         <textarea className="textarea template-textarea"
-                  rows="3" />
+                  rows="3"
+                  value={template.get('template')}
+                  onChange={this.updateField('template')} />
 
         <div className="capture-template__help-text">
           The template for creating the capture item.
