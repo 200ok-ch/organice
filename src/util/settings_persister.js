@@ -147,7 +147,7 @@ export const applyCaptureSettingsFromConfig = (state, config) => {
     template.set('id', getNextId())
   ));
 
-  return state.set('captureTempaltes', captureTemplates);
+  return state.set('captureTemplates', captureTemplates);
 };
 
 export const readInitialState = () => {
