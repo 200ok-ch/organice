@@ -21,3 +21,7 @@ export const addNewTemplateHeaderPath = templateId => ({
 export const removeTemplateHeaderPath = (templateId, headerPathIndex) => ({
   type: 'REMOVE_TEMPLATE_HEADER_PATH', templateId, headerPathIndex,
 });
+
+export const deleteTemplate = templateId => ({
+  type: 'DELETE_TEMPLATE', templateId,
+});

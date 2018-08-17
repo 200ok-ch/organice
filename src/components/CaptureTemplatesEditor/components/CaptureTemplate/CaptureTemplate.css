@@ -95,3 +95,15 @@
 
     margin-top: 5px;
 }
+
+.capture-template__delete-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.capture-template__delete-button {
+    background-color: #B90000;
+
+    margin-top: 15px;
+    margin-bottom: 0;
+}

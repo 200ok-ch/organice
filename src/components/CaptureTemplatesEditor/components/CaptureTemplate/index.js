@@ -16,6 +16,7 @@ export default class CaptureTemplate extends PureComponent {
       'handleAddNewOrgFileAvailability',
       'handleAddNewHeaderPath',
       'togglePrepend',
+      'handleDeleteClick',
     ]);
   }
 
@@ -59,6 +60,14 @@ export default class CaptureTemplate extends PureComponent {
     return event => this.props.onFieldPathUpdate(this.props.template.get('id'),
                                                  ['headerPaths', headerPathIndex],
                                                  event.target.value);
+  }
+
+  handleDeleteClick() {
+    const { template, onDeleteTemplate } = this.props;
+
+    if (window.confirm(`Are you sure you want to delete the "${template.get('description')}" template?`)) {
+      onDeleteTemplate(template.get('id'));
+    }
   }
 
   renderDescriptionField(template) {
@@ -237,6 +246,17 @@ export default class CaptureTemplate extends PureComponent {
     );
   }
 
+  renderDeleteButton(template) {
+    return (
+      <div className="capture-template__field-container capture-template__delete-button-container">
+        <button className="btn settings-btn capture-template__delete-button"
+                onClick={this.handleDeleteClick}>
+          Delete template
+        </button>
+      </div>
+    );
+  }
+
   render() {
     const { template } = this.props;
 
@@ -248,6 +268,7 @@ export default class CaptureTemplate extends PureComponent {
         {this.renderHeaderPaths(template)}
         {this.renderPrependField(template)}
         {this.renderTemplateField(template)}
+        {this.renderDeleteButton(template)}
       </div>
     );
   }

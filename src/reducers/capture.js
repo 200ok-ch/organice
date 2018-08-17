@@ -64,6 +64,12 @@ const removeTemplateHeaderPath = (state, action) => {
   ));
 };
 
+const deleteTemplate = (state, action) => {
+  const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
+
+  return state.update('captureTemplates', templates => templates.delete(templateIndex));
+};
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE':
@@ -78,6 +84,8 @@ export default (state = new Map(), action) => {
     return addNewTemplateHeaderPath(state, action);
   case 'REMOVE_TEMPLATE_HEADER_PATH':
     return removeTemplateHeaderPath(state, action);
+  case 'DELETE_TEMPLATE':
+    return deleteTemplate(state, action);
   default:
     return state;
   }
