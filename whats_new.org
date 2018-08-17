@@ -4,7 +4,7 @@
 |----+----|
 | 🎉 | 🎊 |
 *** Tables will now be rendered as HTML tables
-*** When a table cell is selected, the action drawer will populate with additional actions to maniupulate tables (more details on this in the sample file)
+*** When a table cell is selected, the action drawer will populate with additional actions to manipulate tables (more details on this in the sample file)
 *** Format specifiers (like <r> and <10>) aren't yet natively supported
 * August 9th, 2018
 ** Improved navigation with back buttons a la an iOS UINavigationController
