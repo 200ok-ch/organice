@@ -189,6 +189,13 @@ export const readInitialState = () => {
     }
   });
 
+  // Assign new ids to the capture templates.
+  if (initialState.capture.get('captureTemplates')) {
+    initialState.capture = initialState.capture.update('captureTemplates', templates => (
+      templates.map(template => template.set('id', getNextId()))
+    ));
+  }
+
   const opennessState = readOpennessState();
   if (!!opennessState) {
     initialState.org.present = initialState.org.present.set('opennessState', fromJS(opennessState));
