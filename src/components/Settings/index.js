@@ -105,11 +105,11 @@ class Settings extends PureComponent {
         </div>
 
         <div className="settings-buttons-container">
-          <button className="btn settings-btn" onClick={this.handleKeyboardShortcutsClick}>
-            Keyboard shortcuts
-          </button>
           <button className="btn settings-btn" onClick={this.handleCaptureTemplatesClick}>
             Capture templates
+          </button>
+          <button className="btn settings-btn" onClick={this.handleKeyboardShortcutsClick}>
+            Keyboard shortcuts
           </button>
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
         </div>
