@@ -10,10 +10,12 @@ import './OrgFile.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
+import CaptureModal from './components/CaptureModal';
 
 import * as baseActions from '../../actions/base';
 import * as dropboxActions from '../../actions/dropbox';
 import * as orgActions from '../../actions/org';
+import * as captureActions from '../../actions/capture';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import { calculateActionedKeybindings } from '../../lib/keybindings';
@@ -40,6 +42,7 @@ class OrgFile extends PureComponent {
       'handleMoveHeaderRightHotKey',
       'handleUndoHotKey',
       'handleContainerRef',
+      'handleCapture',
     ]);
 
     this.state = {
@@ -148,6 +151,10 @@ class OrgFile extends PureComponent {
     }
   }
 
+  handleCapture(templateId, content) {
+    console.log('captured!', templateId, content);
+  }
+
   render() {
     const {
       headers,
@@ -160,6 +167,7 @@ class OrgFile extends PureComponent {
       staticFile,
       customKeybindings,
       inEditMode,
+      activeCaptureTemplate,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -239,6 +247,8 @@ class OrgFile extends PureComponent {
 
           {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 
+          {!!activeCaptureTemplate && <CaptureModal template={activeCaptureTemplate} onCapture={this.handleCapture} />}
+
           {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
         </div>
       </HotKeys>
@@ -254,6 +264,9 @@ const mapStateToProps = (state, props) => {
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     customKeybindings: state.base.get('customKeybindings'),
     inEditMode: state.org.present.get('inTitleEditMode') || state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTableEditMode'),
+    activeCaptureTemplate: state.capture.get('captureTemplates').find(template => (
+      template.get('id') === state.capture.get('activeCaptureTemplateId')
+    )),
   };
 };
 
@@ -263,6 +276,7 @@ const mapDispatchToProps = dispatch => {
     dropbox: bindActionCreators(dropboxActions, dispatch),
     org: bindActionCreators(orgActions, dispatch),
     undo: bindActionCreators(undoActions, dispatch),
+    capture: bindActionCreators(captureActions, dispatch),
   };
 };
 

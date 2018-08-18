@@ -79,6 +79,10 @@ const restoreCaptureSettings = (state, action) => {
   return applyCaptureSettingsFromConfig(state, action.newSettings);
 };
 
+const activateCaptureModalForTemplateId = (state, action) => (
+  state.set('activeCaptureTemplateId', action.templateId)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE':
@@ -97,6 +101,8 @@ export default (state = new Map(), action) => {
     return deleteTemplate(state, action);
   case 'RESTORE_CAPTURE_SETTINGS':
     return restoreCaptureSettings(state, action);
+  case 'ACTIVATE_CAPTURE_MODAL_FOR_TEMPLATE_ID':
+    return activateCaptureModalForTemplateId(state, action);
   default:
     return state;
   }

@@ -29,3 +29,7 @@ export const deleteTemplate = templateId => ({
 export const restoreCaptureSettings = newSettings => ({
   type: 'RESTORE_CAPTURE_SETTINGS', newSettings,
 });
+
+export const activateCaptureModalForTemplateId = templateId => ({
+  type: 'ACTIVATE_CAPTURE_MODAL_FOR_TEMPLATE_ID', templateId,
+});

@@ -1,0 +1,45 @@
+.capture-modal-container {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    top: 60px;
+
+    border: 2px solid #5E348C;
+    background-color: white;
+    box-shadow: 2px 2px 5px 0px rgba(148, 148, 148, 0.75);
+
+    padding: 10px;
+}
+
+.capture-modal-header {
+    display: flex;
+    align-items: center;
+}
+
+.capture-modal-header-path {
+    font-family: Courier;
+    color: gray;
+
+    margin-top: 5px;
+}
+
+.capture-modal-textarea {
+    border: 1px solid lightgray;
+    font-family: Courier;
+
+    margin-top: 10px;
+
+    width: calc(100% - 5px);
+
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+.capture-modal-button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.capture-modal-button {
+    font-size: 16px;
+}

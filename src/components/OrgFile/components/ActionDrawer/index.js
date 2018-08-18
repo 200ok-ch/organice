@@ -9,6 +9,7 @@ import { List } from 'immutable';
 
 import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
+import * as captureActions from '../../../../actions/capture';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import ActionButton from './components/ActionButton/';
@@ -178,7 +179,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handleCaptureButtonClick(templateId) {
-    return () => console.log(`clickity on ${templateId}`);
+    return () => this.props.capture.activateCaptureModalForTemplateId(templateId);
   }
 
   renderCaptureButtons() {
@@ -289,6 +290,7 @@ const mapDispatchToProps = dispatch => {
     org: bindActionCreators(orgActions, dispatch),
     dropbox: bindActionCreators(dropboxActions, dispatch),
     undo: bindActionCreators(undoActions, dispatch),
+    capture: bindActionCreators(captureActions, dispatch),
   };
 };
 
