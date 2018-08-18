@@ -13,10 +13,6 @@ class App extends PureComponent {
   constructor(props) {
     super(props);
 
-    // TODO: remove this commented junk.
-    // const initialState = readInitialState();
-    // initialState.capture = initialState.capture.set('activeCaptureTemplateId', 60);
-    // this.store = Store(initialState);
     this.store = Store(readInitialState());
     this.store.subscribe(subscribeToChanges(this.store));
 
