@@ -10,6 +10,7 @@ export const stopDisplayingFile = () => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
     dispatch({ type: ActionTypes.CLEAR_HISTORY });
     dispatch(unfocusHeader());
+    dispatch(disableCaptureModal());
   };
 };
 

@@ -43,6 +43,7 @@ class OrgFile extends PureComponent {
       'handleUndoHotKey',
       'handleContainerRef',
       'handleCapture',
+      'handleCaptureClose',
     ]);
 
     this.state = {
@@ -155,6 +156,10 @@ class OrgFile extends PureComponent {
     this.props.org.insertCapture(templateId, content);
   }
 
+  handleCaptureClose() {
+    this.props.capture.disableCaptureModal();
+  }
+
   render() {
     const {
       headers,
@@ -247,7 +252,12 @@ class OrgFile extends PureComponent {
 
           {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 
-          {!!activeCaptureTemplate && <CaptureModal template={activeCaptureTemplate} onCapture={this.handleCapture} />}
+          {!!activeCaptureTemplate && (
+            <CaptureModal template={activeCaptureTemplate}
+                          headers={headers}
+                          onCapture={this.handleCapture}
+                          onClose={this.handleCaptureClose} />
+          )}
 
           {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
         </div>

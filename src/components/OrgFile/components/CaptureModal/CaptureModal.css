@@ -11,6 +11,18 @@
     padding: 10px;
 }
 
+.capture-modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    color: #5E348C;
+
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+}
+
 .capture-modal-header {
     display: flex;
     align-items: center;
@@ -42,4 +54,12 @@
 
 .capture-modal-button {
     font-size: 16px;
+}
+
+.capture-modal-error-message {
+    color: red;
+
+    text-align: center;
+
+    margin-top: 10px;
 }

@@ -1,8 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 
 import './CaptureModal.css';
 
 import ActionButton from '../ActionDrawer/components/ActionButton/';
+
+import { headerWithPath } from '../../../../lib/org_utils';
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -11,7 +13,7 @@ export default class CaptureModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleCaptureClick', 'handleTextareaChange']);
+    _.bindAll(this, ['handleCaptureClick', 'handleTextareaChange', 'handleCloseClick']);
 
     const [substitutedTemplate, initialCursorIndex] = this.substituteTemplateVariables(props.template.get('template'));
 
@@ -24,10 +26,12 @@ export default class CaptureModal extends PureComponent {
   componentDidMount() {
     const { initialCursorIndex } = this.state;
 
-    this.textarea.focus();
-    if (initialCursorIndex !== null) {
-      this.textarea.selectionStart = initialCursorIndex;
-      this.textarea.selectionEnd = initialCursorIndex;
+    if (this.textarea) {
+      this.textarea.focus();
+      if (initialCursorIndex !== null) {
+        this.textarea.selectionStart = initialCursorIndex;
+        this.textarea.selectionEnd = initialCursorIndex;
+      }
     }
   }
 
@@ -40,6 +44,10 @@ export default class CaptureModal extends PureComponent {
 
   handleTextareaChange(event) {
     this.setState({ textareaValue: event.target.value });
+  }
+
+  handleCloseClick() {
+    this.props.onClose();
   }
 
   substituteTemplateVariables(templateString) {
@@ -66,11 +74,16 @@ export default class CaptureModal extends PureComponent {
   }
 
   render() {
-    const { template } = this.props;
+    const { template, headers } = this.props;
     const { textareaValue } = this.state;
+
+    const targetHeader = headerWithPath(headers, template.get('headerPaths'));
 
     return (
       <div className="capture-modal-container">
+        <button className="fas fa-times fa-lg capture-modal-close-button"
+                onClick={this.handleCloseClick} />
+
         <div className="capture-modal-header">
           <ActionButton letter={template.get('letter')}
                         iconName={template.get('iconName')}
@@ -84,17 +97,25 @@ export default class CaptureModal extends PureComponent {
           {template.get('headerPaths').join(' > ')}
         </div>
 
-        <textarea className="textarea capture-modal-textarea"
-                  rows="4"
-                  value={textareaValue}
-                  onChange={this.handleTextareaChange}
-                  ref={textarea => this.textarea = textarea} />
+        {!!targetHeader ? (
+          <Fragment>
+            <textarea className="textarea capture-modal-textarea"
+                      rows="4"
+                      value={textareaValue}
+                      onChange={this.handleTextareaChange}
+                      ref={textarea => this.textarea = textarea} />
 
-        <div className="capture-modal-button-container">
-          <button className="btn capture-modal-button" onClick={this.handleCaptureClick}>
-            Capture
-          </button>
-        </div>
+            <div className="capture-modal-button-container">
+              <button className="btn capture-modal-button" onClick={this.handleCaptureClick}>
+                Capture
+              </button>
+            </div>
+          </Fragment>
+        ) : (
+          <div className="capture-modal-error-message">
+            The specified header path doesn't exist in this org file!
+          </div>
+        )}
       </div>
     );
   }
