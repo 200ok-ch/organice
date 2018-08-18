@@ -185,6 +185,10 @@ class ActionDrawer extends PureComponent {
   renderCaptureButtons() {
     const { captureTemplates, path } = this.props;
 
+    if (!path) {
+      return null;
+    }
+
     const availableCaptureTemplates = captureTemplates.filter(template => (
       template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
         availablePath.trim()

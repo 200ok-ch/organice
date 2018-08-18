@@ -1,3 +1,6 @@
+* August 18th, 2018
+** Added capture templates
+*** Now under Settings > Capture Templates you can specify capture templates which show up as custom buttons in the action drawer for easily capturing items in your org file
 * August 12th, 2018
 ** Native support for tables!
 | ta | da |

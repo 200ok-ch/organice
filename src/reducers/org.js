@@ -581,6 +581,7 @@ export default (state = new Map(), action) => {
     'MOVE_SUBTREE_LEFT', 'MOVE_SUBTREE_RIGHT', 'ADD_NEW_TABLE_ROW', 'REMOVE_TABLE_ROW',
     'ADD_NEW_TABLE_COLUMN', 'REMOVE_TABLE_COLUMN', 'MOVE_TABLE_ROW_DOWN', 'MOVE_TABLE_ROW_UP',
     'MOVE_TABLE_COLUMN_LEFT', 'MOVE_TABLE_COLUMN_RIGHT', 'UPDATE_TABLE_CELL_VALUE',
+    'INSERT_CAPTURE',
   ];
 
   if (dirtyingActions.includes(action.type)) {

@@ -66,6 +66,10 @@ When a table cell is selected, new action drawer items appear. From left to righ
 *** Move column left
 *** Move column right
 ** Format specifiers (like <r> and <10>) aren't yet supported, but they're on the list!
+* Capture
+** org-web supports a form of org-capture, in the form of custom action drawer buttons
+** Once signed in, you can set up capture templates that specify header paths (and various other configurations) and then easily add new items to your org file
+*** These capture templates can also sync between your devices if you enable storage of settings in Dropbox
 * Syncing with Dropbox
 org-web pulls down your org files from Dropbox. Click the "Sign in" button in the upper right hand corner to sign in with Dropbox and authenticate org-web.
 ** Symlink your org files to Dropbox
