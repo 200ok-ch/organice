@@ -60,7 +60,7 @@ export default class CaptureModal extends PureComponent {
     ));
 
     const cursorIndex = substitutedString.includes('%?') ? substitutedString.indexOf('%?') : null;
-    substitutedString = substitutedString.replace(/\%\?/, '');
+    substitutedString = substitutedString.replace(/%\?/, '');
 
     return [substitutedString, cursorIndex];
   }

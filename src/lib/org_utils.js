@@ -140,6 +140,26 @@ export const getOpenHeaderPaths = headers => {
   return openedHeaders;
 };
 
+export const headerWithPath = (headers, headerPath) => {
+  if (headerPath.size === 0) {
+    return null;
+  }
+
+  const firstHeader = headers.find(header => (
+    header.getIn(['titleLine', 'rawTitle']) === headerPath.first()
+  ));
+  if (!firstHeader) {
+    return null;
+  }
+
+  if (headerPath.size === 1) {
+    return firstHeader;
+  }
+
+  const subheaders = subheadersOfHeaderWithId(headers, firstHeader.get('id'));
+  return headerWithPath(subheaders, headerPath.skip(1));
+};
+
 export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => {
   if (headerPath.size === 0) {
     return headers;

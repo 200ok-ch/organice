@@ -1,4 +1,5 @@
 import { ActionTypes } from 'redux-linear-undo';
+import { disableCaptureModal } from './capture';
 
 export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE', path, contents,
@@ -183,3 +184,14 @@ export const moveTableColumnRight = () => ({
 export const updateTableCellValue = (cellId, newValue) => ({
   type: 'UPDATE_TABLE_CELL_VALUE', cellId, newValue,
 });
+
+export const insertCapture = (templateId, content) => (
+  (dispatch, getState) => {
+    dispatch(disableCaptureModal());
+
+    const template = getState().capture.get('captureTemplates').find(template => (
+      template.get('id') === templateId
+    ));
+    dispatch({ type: 'INSERT_CAPTURE', template, content });
+  }
+);

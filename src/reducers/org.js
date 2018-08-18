@@ -7,6 +7,7 @@ import {
   parseRawText,
   parseLinks,
   newHeaderWithTitle,
+  newHeaderFromText,
 } from '../lib/parse_org';
 import {
   attributedStringToRawText,
@@ -15,6 +16,7 @@ import {
   indexOfHeaderWithId,
   headerWithId,
   subheadersOfHeaderWithId,
+  numSubheadersOfHeaderWithId,
   indexOfPreviousSibling,
   openDirectParent,
   openHeaderWithPath,
@@ -24,6 +26,7 @@ import {
   newEmptyTableRowLikeRows,
   newEmptyTableCell,
   headerThatContainsTableCellId,
+  headerWithPath,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -549,6 +552,27 @@ const updateTableCellValue = (state, action) => {
   return updateDescriptionOfHeaderContainingTableCell(state, action.cellId);
 };
 
+const insertCapture = (state, action) => {
+  const headers = state.get('headers');
+  const { template, content } = action;
+
+  const parentHeader = headerWithPath(headers, template.get('headerPaths'));
+  if (!parentHeader) {
+    return state;
+  }
+
+  const newHeader = newHeaderFromText(content, state.get('todoKeywordSets'))
+      .set('nestingLevel', parentHeader.get('nestingLevel') + 1);
+
+  const parentHeaderIndex = indexOfHeaderWithId(headers, parentHeader.get('id'));
+  const numSubheaders = numSubheadersOfHeaderWithId(headers, parentHeader.get('id'));
+  const newIndex = parentHeaderIndex + 1 + (template.get('shouldPrepend') ? 0 : numSubheaders);
+
+  return state.update('headers', headers => (
+    headers.insert(newIndex, newHeader)
+  ));
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -644,6 +668,8 @@ export default (state = new Map(), action) => {
     return moveTableColumnRight(state, action);
   case 'UPDATE_TABLE_CELL_VALUE':
     return updateTableCellValue(state, action);
+  case 'INSERT_CAPTURE':
+    return insertCapture(state, action);
   default:
     return state;
   }

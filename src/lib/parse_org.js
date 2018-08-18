@@ -203,6 +203,15 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
   });
 };
 
+export const newHeaderFromText = (rawText, todoKeywordSets) => {
+  const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
+  const description = rawText.split('\n').slice(1).join('\n');
+
+  return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
+    .set('rawDescription', description)
+    .set('description', parseRawText(description));
+};
+
 export const parseOrg = (fileContents) => {
   let headers = new List();
   const lines = fileContents.split('\n');

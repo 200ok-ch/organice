@@ -33,3 +33,7 @@ export const restoreCaptureSettings = newSettings => ({
 export const activateCaptureModalForTemplateId = templateId => ({
   type: 'ACTIVATE_CAPTURE_MODAL_FOR_TEMPLATE_ID', templateId,
 });
+
+export const disableCaptureModal = () => ({
+  type: 'DISABLE_CAPTURE_MODAL',
+});
