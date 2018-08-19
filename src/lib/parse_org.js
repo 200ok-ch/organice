@@ -166,10 +166,6 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
       partIndex += tableLines.length - 1;
     } else if (linePart.type === 'raw-list-header') {
       const numLeadingSpaces = linePart.line.match(/^( *)/)[0].length;
-
-      // Remove the leading -, +, or * character.
-      const line = linePart.line.match(/^ *[-+*] *(.*)/)[1];
-
       const contentLines = _.takeWhile(rawLineParts.slice(partIndex + 1), part => (
         part.type === 'raw-list-content'
       )).map(part => part.line).map(line => (
@@ -183,17 +179,24 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
       partIndex += contentLines.length;
 
-      processedLineParts.push({
+      // Remove the leading -, +, or * character.
+      const line = linePart.line.match(/^ *[-+*] *(.*)/)[1];
+      const newListItem = {
         id: generateId(),
-        type: 'list',
-        items: [
-          {
-            id: generateId(),
-            titleLine: parseLinks(line),
-            contents,
-          }
-        ],
-      });
+        titleLine: parseLinks(line),
+        contents,
+      };
+
+      const lastIndex = processedLineParts.length - 1;
+      if (lastIndex >= 0 && processedLineParts[lastIndex].type === 'list') {
+        processedLineParts[lastIndex].items.push(newListItem);
+      } else {
+        processedLineParts.push({
+          type: 'list',
+          id: generateId(),
+          items: [newListItem],
+        });
+      }
     } else {
       processedLineParts.push(linePart);
     }

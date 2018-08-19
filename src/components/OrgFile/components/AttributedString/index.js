@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 
+import './AttributedString.css';
+
 import generateId from '../../../../lib/id_generator';
 
 import TablePart from './components/TablePart';
@@ -38,7 +40,7 @@ export default class AttributedString extends PureComponent {
             );
           case 'list':
             return (
-              <ul key={part.get('id')}>
+              <ul key={part.get('id')} className="attributed-string__list-part">
                 {part.get('items').map(item => (
                   <li key={item.get('id')}>
                     <AttributedString parts={item.get('titleLine')} />
