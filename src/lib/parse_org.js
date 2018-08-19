@@ -122,15 +122,34 @@ const parseTable = tableLines => {
   return table;
 };
 
-export const parseRawText = (rawText, { excludeTables = false } = {}) => {
+export const parseRawText = (rawText, { excludeContentElements = false } = {}) => {
   const lines = rawText.split('\n');
+
+  let currentListHeaderNestingLevel = null;
   const rawLineParts = _.flatten(lines.map((line, lineIndex) => {
-    if (line.trim().startsWith('|')) {
+    const numLeadingSpaces = line.match(/^( *)/)[0].length;
+
+    if (currentListHeaderNestingLevel !== null && (numLeadingSpaces > currentListHeaderNestingLevel || !line.trim())) {
       return [{
-        type: 'raw-table', line,
+        type: 'raw-list-content', line,
       }];
     } else {
-      return parseLinks(line, { shouldAppendNewline: lineIndex !== lines.length - 1 });
+      currentListHeaderNestingLevel = null;
+
+      if (['-', '+', '*'].includes(line.trim()[0]) && !excludeContentElements) {
+        currentListHeaderNestingLevel = numLeadingSpaces;
+
+        return [{
+          type: 'raw-list-header', line,
+        }];
+      } else if (line.trim().startsWith('|') && !excludeContentElements) {
+        return [{
+          type: 'raw-table', line,
+        }];
+      } else {
+        return parseLinks(line, { shouldAppendNewline: lineIndex !== lines.length - 1 });
+      }
+
     }
   }));
 
@@ -145,6 +164,36 @@ export const parseRawText = (rawText, { excludeTables = false } = {}) => {
       processedLineParts.push(parseTable(tableLines));
 
       partIndex += tableLines.length - 1;
+    } else if (linePart.type === 'raw-list-header') {
+      const numLeadingSpaces = linePart.line.match(/^( *)/)[0].length;
+
+      // Remove the leading -, +, or * character.
+      const line = linePart.line.match(/^ *[-+*] *(.*)/)[1];
+
+      const contentLines = _.takeWhile(rawLineParts.slice(partIndex + 1), part => (
+        part.type === 'raw-list-content'
+      )).map(part => part.line).map(line => (
+        line.startsWith(' '.repeat(numLeadingSpaces) + '  ') ? (
+          line.substr(numLeadingSpaces + 2)
+        ) : (
+          line.substr(numLeadingSpaces + 1)
+        )
+      ));
+      const contents = parseRawText(contentLines.join('\n')).toJS();
+
+      partIndex += contentLines.length;
+
+      processedLineParts.push({
+        id: generateId(),
+        type: 'list',
+        items: [
+          {
+            id: generateId(),
+            titleLine: parseLinks(line),
+            contents,
+          }
+        ],
+      });
     } else {
       processedLineParts.push(linePart);
     }
@@ -179,7 +228,7 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
     }
   }
 
-  const title = parseRawText(rawTitle, { excludeTables: true });
+  const title = parseRawText(rawTitle, { excludeContentElements: true });
 
   return fromJS({ title, rawTitle, todoKeyword, tags });
 };
@@ -196,6 +245,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     description: [],
     opened: false,
     id: generateId(),
+
     nestingLevel
   });
 };
@@ -257,6 +307,13 @@ export const parseOrg = (fileContents) => {
 
   headers = headers.map(header => {
     return header.set('description', parseRawText(header.get('rawDescription')));
+  });
+
+  // TODO: kill this.
+  headers.forEach(header => {
+    if (header.getIn(['titleLine', 'rawTitle']).includes('!!!!!')) {
+      console.log(header.toJS());
+    }
   });
 
   return fromJS({

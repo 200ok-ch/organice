@@ -36,6 +36,19 @@ export default class AttributedString extends PureComponent {
                          onExitEditMode={onExitTableEditMode}
                          onCellValueUpdate={onTableCellValueUpdate} />
             );
+          case 'list':
+            return (
+              <ul key={part.get('id')}>
+                {part.get('items').map(item => (
+                  <li key={item.get('id')}>
+                    <AttributedString parts={item.get('titleLine')} />
+                    <br />
+                    {/* TODO: add in table handler props */}
+                    <AttributedString parts={item.get('contents')} />
+                  </li>
+                ))}
+              </ul>
+            );
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);
             return '';
