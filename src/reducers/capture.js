@@ -1,6 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 
-import getNextId from '../lib/get_next_id';
+import generateId from '../lib/id_generator';
 import { applyCaptureSettingsFromConfig } from '../util/settings_persister';
 
 const indexOfTemplateWithId = (templates, templateId) => (
@@ -14,7 +14,7 @@ const addNewEmptyCaptureTemplate = state => {
 
   return state.update('captureTemplates', templates => (
     templates.push(fromJS({
-      id: getNextId(),
+      id: generateId(),
       description: '',
       letter: '',
       iconName: '',

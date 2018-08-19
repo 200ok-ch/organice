@@ -1,4 +1,4 @@
-import getNextId from './get_next_id';
+import generateId from './id_generator';
 
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
@@ -65,7 +65,7 @@ export const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
 
 const parseTable = tableLines => {
   const table = {
-    id: getNextId(),
+    id: generateId(),
     type: 'table',
     contents: [
       []
@@ -92,9 +92,9 @@ const parseTable = tableLines => {
 
   // Parse the contents of each cell.
   table.contents = table.contents.map(row => ({
-    id: getNextId(),
+    id: generateId(),
     contents: row.map(rawContents => ({
-      id: getNextId(),
+      id: generateId(),
       contents: parseLinks(rawContents),
       rawContents,
     }))
@@ -111,7 +111,7 @@ const parseTable = tableLines => {
     if (row.contents.length < maxNumColumns) {
       _.times(maxNumColumns - row.contents.length, () => {
         row.contents.push({
-          id: getNextId(),
+          id: generateId(),
           contents: [],
           rawContents: '',
         });
@@ -195,7 +195,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     rawDescription: '',
     description: [],
     opened: false,
-    id: getNextId(),
+    id: generateId(),
     nestingLevel
   });
 };

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import getNextId from '../../../../lib/get_next_id';
+import generateId from '../../../../lib/id_generator';
 
 import TablePart from './components/TablePart';
 
@@ -25,7 +25,7 @@ export default class AttributedString extends PureComponent {
             const uri = part.getIn(['contents', 'uri']);
             const title = part.getIn(['contents', 'title']) || uri;
 
-            return <a key={getNextId()} href={uri}>{title}</a>;
+            return <a key={generateId()} href={uri}>{title}</a>;
           case 'table':
             return (
               <TablePart key={part.get('id')}

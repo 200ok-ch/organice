@@ -7,7 +7,7 @@ import { getOpenHeaderPaths } from '../lib/org_utils';
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
 
-import getNextId from '../lib/get_next_id';
+import generateId from '../lib/id_generator';
 
 const isLocalStorageAvailable = () => {
   try {
@@ -144,7 +144,7 @@ export const applyCategorySettingsFromConfig = (state, config, category) => {
 
 export const applyCaptureSettingsFromConfig = (state, config) => {
   const captureTemplates = fromJS(JSON.parse(config.captureTemplates)).map(template => (
-    template.set('id', getNextId())
+    template.set('id', generateId())
   ));
 
   return state.set('captureTemplates', captureTemplates);
@@ -192,7 +192,7 @@ export const readInitialState = () => {
   // Assign new ids to the capture templates.
   if (initialState.capture.get('captureTemplates')) {
     initialState.capture = initialState.capture.update('captureTemplates', templates => (
-      templates.map(template => template.set('id', getNextId()))
+      templates.map(template => template.set('id', generateId()))
     ));
   }
 

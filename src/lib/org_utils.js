@@ -1,4 +1,4 @@
-import getNextId from './get_next_id';
+import generateId from './id_generator';
 
 import { List, fromJS } from 'immutable';
 
@@ -226,11 +226,11 @@ export const updateTableContainingCellId = (headers, cellId, updaterCallbackGene
 export const newEmptyTableRowLikeRows = rows => (
   rows
     .get(0)
-    .set('id', getNextId())
+    .set('id', generateId())
     .update('contents', contents => (
       contents.map(cell => (
         cell
-          .set('id', getNextId())
+          .set('id', generateId())
           .set('contents', new List())
           .set('rawContents', '')
       ))
@@ -238,7 +238,7 @@ export const newEmptyTableRowLikeRows = rows => (
 );
 
 export const newEmptyTableCell = () => (fromJS({
-  id: getNextId(),
+  id: generateId(),
   contents: [],
   rawContents: '',
 }));
