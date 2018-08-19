@@ -208,6 +208,10 @@ class OrgFile extends PureComponent {
         return;
       }
 
+      if (ignoreInEditMode && ['TEXTAREA', 'INPUT'].includes(document.activeElement.nodeName)) {
+        return;
+      }
+
       event.preventDefault();
       callback(event);
     };
