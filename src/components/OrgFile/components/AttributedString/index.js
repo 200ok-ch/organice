@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { getNextId } from '../../../../lib/parse_org';
+import getNextId from '../../../../lib/get_next_id';
 
 import TablePart from './components/TablePart';
 

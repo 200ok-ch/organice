@@ -1,10 +1,7 @@
+import getNextId from './get_next_id';
+
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
-
-export const getNextId = (() => {
-  let nextId = 0;
-  return () => nextId++;
-})();
 
 export const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
   const linkRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])/g;

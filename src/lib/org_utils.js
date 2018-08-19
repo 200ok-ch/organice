@@ -1,4 +1,4 @@
-import { getNextId } from './parse_org';
+import getNextId from './get_next_id';
 
 import { List, fromJS } from 'immutable';
 

@@ -7,7 +7,7 @@ import { getOpenHeaderPaths } from '../lib/org_utils';
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
 
-import { getNextId } from '../lib/parse_org';
+import getNextId from '../lib/get_next_id';
 
 const isLocalStorageAvailable = () => {
   try {

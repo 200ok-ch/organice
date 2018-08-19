@@ -1,6 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 
-import { getNextId } from '../lib/parse_org';
+import getNextId from '../lib/get_next_id';
 import { applyCaptureSettingsFromConfig } from '../util/settings_persister';
 
 const indexOfTemplateWithId = (templates, templateId) => (
