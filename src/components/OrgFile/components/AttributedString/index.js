@@ -45,7 +45,6 @@ export default class AttributedString extends PureComponent {
                   <li key={item.get('id')}>
                     <AttributedString parts={item.get('titleLine')} />
                     <br />
-                    {/* TODO: add in table handler props */}
                     <AttributedString parts={item.get('contents')}
                                       onTableCellSelect={onTableCellSelect}
                                       selectedTableCellId={selectedTableCellId}
