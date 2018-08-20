@@ -9,7 +9,7 @@ export default class ListPart extends PureComponent {
     const { part } = this.props;
 
     return part.get('items').map(item => (
-      <li key={item.get('id')}>
+      <li key={item.get('id')} value={item.get('forceNumber')}>
         <AttributedString parts={item.get('titleLine')} />
         <br />
         <AttributedString parts={item.get('contents')}

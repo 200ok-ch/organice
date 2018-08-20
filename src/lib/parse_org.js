@@ -183,15 +183,23 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
       partIndex += contentLines.length;
 
+      const isOrdered = !!linePart.line.match(/\s*\d+[.)]/);
+
       // Remove the leading -, +, *, or number characters.
-      const line = linePart.line.match(LIST_HEADER_REGEX)[4];
+      let line = linePart.line.match(LIST_HEADER_REGEX)[4];
+
+      let forceNumber = null;
+      if (line.match(/^\s*\[@\d+\]/)) {
+        forceNumber = line.match(/^\s*\[@(\d+)\]/)[1];
+        line = line.replace(/^\s*\[@\d+\]\s*/, '');
+      }
+
       const newListItem = {
         id: generateId(),
         titleLine: parseLinks(line),
         contents,
+        forceNumber,
       };
-
-      const isOrdered = !!linePart.line.match(/\s*\d+[.)]/);
 
       const lastIndex = processedLineParts.length - 1;
       if (lastIndex >= 0 && processedLineParts[lastIndex].type === 'list') {
