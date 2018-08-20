@@ -312,13 +312,6 @@ export const parseOrg = (fileContents) => {
     return header.set('description', parseRawText(header.get('rawDescription')));
   });
 
-  // TODO: kill this.
-  headers.forEach(header => {
-    if (header.getIn(['titleLine', 'rawTitle']).includes('!!!!!')) {
-      console.log(header.toJS());
-    }
-  });
-
   return fromJS({
     headers, todoKeywordSets
   });
