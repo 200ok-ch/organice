@@ -210,6 +210,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
           id: generateId(),
           items: [newListItem],
           bulletCharacter: linePart.line.trim()[0],
+          numberTerminatorCharacter: isOrdered ? linePart.line.match(/\s*\d+([.)])/)[1] : null,
           isOrdered,
         });
       }

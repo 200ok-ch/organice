@@ -71,8 +71,9 @@ const tablePartToRawText = tablePart => {
 const listPartToRawText = listPart => {
   const bulletCharacter = listPart.get('bulletCharacter');
 
+  let previousNumber = 0;
   return listPart.get('items').map(item => {
-    const optionalLeadingSpace = bulletCharacter === '*' ? ' ' : '';
+    const optionalLeadingSpace = (!listPart.get('isOrdered') && bulletCharacter === '*') ? ' ' : '';
 
     const titleText = attributedStringToRawText(item.get('titleLine'));
 
@@ -85,7 +86,26 @@ const listPartToRawText = listPart => {
       )
     )).join('\n');
 
-    let listItemText = `${optionalLeadingSpace}${bulletCharacter} ${titleText}`;
+    let listItemText = null;
+    if (listPart.get('isOrdered')) {
+      let number = ++previousNumber;
+      let forceNumber = item.get('forceNumber');
+      if (!!forceNumber) {
+        number = forceNumber;
+        previousNumber = number;
+      }
+
+      listItemText = `${number}${listPart.get('numberTerminatorCharacter')}`;
+
+      if (!!forceNumber) {
+        listItemText += ` [@${forceNumber}]`;
+      }
+
+      listItemText += ` ${titleText}`;
+    } else {
+      listItemText = `${optionalLeadingSpace}${bulletCharacter} ${titleText}`;
+    }
+
     if (!!contentText) {
       listItemText += `\n${indentedContentText}`;
     }
