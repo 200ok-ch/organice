@@ -194,23 +194,70 @@ const tablePartContainsCellId = (tablePart, cellId) => (
   ))
 );
 
-export const headerThatContainsTableCellId = (headers, cellId) => (
-  headers.find(header => (
-    header.get('description').filter(descriptionPart => (
-      descriptionPart.get('type') === 'table'
-    )).some(tablePart => (
-      tablePartContainsCellId(tablePart, cellId)
-    ))
+const doesAttributedStringContainTableCellId = (parts, cellId) => (
+  parts.filter(part => (
+    ['table', 'list'].includes(part.get('type'))
+  )).some(part => (
+    part.get('type') === 'table' ? (
+      tablePartContainsCellId(part, cellId)
+    ) : (
+      part.get('items').some(item => (
+        doesAttributedStringContainTableCellId(item.get('contents'), cellId)
+      ))
+    )
   ))
 );
 
+export const headerThatContainsTableCellId = (headers, cellId) => (
+  headers.find(header => (
+    doesAttributedStringContainTableCellId(header.get('description'), cellId)
+  ))
+);
+
+export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cellId) => (
+  parts.map((part, partIndex) => {
+    if (part.get('type') === 'table') {
+      if (tablePartContainsCellId(part, cellId)) {
+        return { path: [partIndex], tablePart: part };
+      } else {
+        return null;
+      }
+    } else if (part.get('type') === 'list') {
+      return part.get('items').map((item, itemIndex) => {
+        const pathAndPart = pathAndPartOfTableContainingCellIdInAttributedString(item.get('contents'), cellId);
+        if (!!pathAndPart) {
+          const { path, tablePart } = pathAndPart;
+          return {
+            path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
+            tablePart,
+          };
+        } else {
+          return null;
+        }
+      }).filter(result => !!result).first();
+    } else {
+      return null;
+    }
+  }).filter(result => !!result).first()
+);
+
+export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) => (
+  headers.map((header, headerIndex) => {
+    const pathAndPart = pathAndPartOfTableContainingCellIdInAttributedString(header.get('description'), cellId);
+    if (!pathAndPart) {
+      return null;
+    }
+
+    const { path, tablePart } = pathAndPart;
+    return {
+      path: [headerIndex, 'description'].concat(path), tablePart,
+    };
+  }).filter(result => !!result).first()
+);
+
 export const updateTableContainingCellId = (headers, cellId, updaterCallbackGenerator) => {
-  const containingHeader = headerThatContainsTableCellId(headers, cellId);
-  const containingHeaderIndex = indexOfHeaderWithId(headers, containingHeader.get('id'));
-  const tablePartIndex = containingHeader.get('description').findIndex(descriptionPart => (
-    descriptionPart.get('type') === 'table' && tablePartContainsCellId(descriptionPart, cellId)
-  ));
-  const tablePart = containingHeader.getIn(['description', tablePartIndex]);
+  const { path, tablePart } = pathAndPartOfTableContainingCellIdInHeaders(headers, cellId);
+
   const rowIndexContainingCellId = tablePart.get('contents').findIndex(row => (
     row.get('contents').some(cell => cell.get('id') === cellId)
   ));
@@ -218,9 +265,7 @@ export const updateTableContainingCellId = (headers, cellId, updaterCallbackGene
     'contents', rowIndexContainingCellId, 'contents',
   ]).findIndex(cell => cell.get('id') === cellId);
 
-  return headers.updateIn([
-    containingHeaderIndex, 'description', tablePartIndex, 'contents'
-  ], updaterCallbackGenerator(rowIndexContainingCellId, columnIndexContainingCellId));
+  return headers.updateIn(path.concat(['contents']), updaterCallbackGenerator(rowIndexContainingCellId, columnIndexContainingCellId));
 };
 
 export const newEmptyTableRowLikeRows = rows => (

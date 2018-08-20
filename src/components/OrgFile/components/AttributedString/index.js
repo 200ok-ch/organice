@@ -46,7 +46,12 @@ export default class AttributedString extends PureComponent {
                     <AttributedString parts={item.get('titleLine')} />
                     <br />
                     {/* TODO: add in table handler props */}
-                    <AttributedString parts={item.get('contents')} />
+                    <AttributedString parts={item.get('contents')}
+                                      onTableCellSelect={onTableCellSelect}
+                                      selectedTableCellId={selectedTableCellId}
+                                      inTableEditMode={inTableEditMode}
+                                      onExitTableEditMode={onExitTableEditMode}
+                                      onTableCellValueUpdate={onTableCellValueUpdate} />
                   </li>
                 ))}
               </ul>
