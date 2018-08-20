@@ -149,7 +149,6 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
       } else {
         return parseLinks(line, { shouldAppendNewline: lineIndex !== lines.length - 1 });
       }
-
     }
   }));
 
@@ -169,12 +168,15 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
       const contentLines = _.takeWhile(rawLineParts.slice(partIndex + 1), part => (
         part.type === 'raw-list-content'
       )).map(part => part.line).map(line => (
-        line.startsWith(' '.repeat(numLeadingSpaces) + '  ') ? (
+        line.startsWith(' '.repeat(numLeadingSpaces + 2)) ? (
           line.substr(numLeadingSpaces + 2)
         ) : (
           line.substr(numLeadingSpaces + 1)
         )
       ));
+      if (contentLines[contentLines.length - 1] === '') {
+        contentLines[contentLines.length - 1] = ' ';
+      }
       const contents = parseRawText(contentLines.join('\n')).toJS();
 
       partIndex += contentLines.length;
@@ -195,6 +197,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
           type: 'list',
           id: generateId(),
           items: [newListItem],
+          bulletCharacter: linePart.line.trim()[0],
         });
       }
     } else {

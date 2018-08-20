@@ -68,18 +68,56 @@ const tablePartToRawText = tablePart => {
   return rowStrings.join('\n');
 };
 
+const listPartToRawText = listPart => {
+  const bulletCharacter = listPart.get('bulletCharacter');
+
+  return listPart.get('items').map(item => {
+    const optionalLeadingSpace = bulletCharacter === '*' ? ' ' : '';
+
+    const titleText = attributedStringToRawText(item.get('titleLine'));
+
+    const contentText = attributedStringToRawText(item.get('contents'));
+    const indentedContentText = contentText.split('\n').map(line => (
+      !!line.trim() ? (
+        `${optionalLeadingSpace}  ${line}`
+      ) : (
+        ''
+      )
+    )).join('\n');
+
+    let listItemText = `${optionalLeadingSpace}${bulletCharacter} ${titleText}`;
+    if (!!contentText) {
+      listItemText += `\n${indentedContentText}`;
+    }
+
+    return listItemText;
+  }).join('\n');
+};
+
 export const attributedStringToRawText = parts => {
-  return parts.map(part => {
+  const prevPartTypes = parts.map(part => part.get('type')).unshift(null);
+
+  return parts.zip(prevPartTypes).map(([part, prevPartType]) => {
+    let text = '';
     switch (part.get('type')) {
     case 'text':
-      return part.get('contents');
+      text = part.get('contents');
+      break;
     case 'link':
-      return linkPartToRawText(part);
+      text = linkPartToRawText(part);
+      break;
     case 'table':
-      return tablePartToRawText(part);
+      text = tablePartToRawText(part);
+      break;
+    case 'list':
+      text = listPartToRawText(part);
+      break;
     default:
-      return '';
+      console.error(`Unknown attributed string part type in attribuedStringToRawText: ${part.get('type')}`);
     }
+
+    const optionalNewlinePrefix = ['list', 'table'].includes(prevPartType) ? '\n' : '';
+    return optionalNewlinePrefix + text;
   }).join('');
 };
 
