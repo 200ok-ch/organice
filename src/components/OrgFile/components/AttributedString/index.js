@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 
-import './AttributedString.css';
-
 import generateId from '../../../../lib/id_generator';
 
 import TablePart from './components/TablePart';
+import ListPart from './components/ListPart';
 
 export default class AttributedString extends PureComponent {
   render() {
@@ -40,20 +39,13 @@ export default class AttributedString extends PureComponent {
             );
           case 'list':
             return (
-              <ul key={part.get('id')} className="attributed-string__list-part">
-                {part.get('items').map(item => (
-                  <li key={item.get('id')}>
-                    <AttributedString parts={item.get('titleLine')} />
-                    <br />
-                    <AttributedString parts={item.get('contents')}
-                                      onTableCellSelect={onTableCellSelect}
-                                      selectedTableCellId={selectedTableCellId}
-                                      inTableEditMode={inTableEditMode}
-                                      onExitTableEditMode={onExitTableEditMode}
-                                      onTableCellValueUpdate={onTableCellValueUpdate} />
-                  </li>
-                ))}
-              </ul>
+              <ListPart key={part.get('id')}
+                        part={part}
+                        onTableCellSelect={onTableCellSelect}
+                        selectedTableCellId={selectedTableCellId}
+                        inTableEditMode={inTableEditMode}
+                        onExitTableEditMode={onExitTableEditMode}
+                        onTableCellValueUpdate={onTableCellValueUpdate} />
             );
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);

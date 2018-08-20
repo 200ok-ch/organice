@@ -1,0 +1,11 @@
+.attributed-string__list-part {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.attributed-string__list-part--ordered {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 40px;
+}

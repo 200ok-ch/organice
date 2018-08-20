@@ -125,6 +125,8 @@ const parseTable = tableLines => {
 export const parseRawText = (rawText, { excludeContentElements = false } = {}) => {
   const lines = rawText.split('\n');
 
+  const LIST_HEADER_REGEX = /^\s*([-+*]|(\d+(\.|\)))) (.*)/;
+
   let currentListHeaderNestingLevel = null;
   const rawLineParts = _.flatten(lines.map((line, lineIndex) => {
     const numLeadingSpaces = line.match(/^( *)/)[0].length;
@@ -136,7 +138,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
     } else {
       currentListHeaderNestingLevel = null;
 
-      if (['-', '+', '*'].includes(line.trim()[0]) && !excludeContentElements) {
+      if (!!line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
         currentListHeaderNestingLevel = numLeadingSpaces;
 
         return [{
@@ -181,13 +183,15 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
       partIndex += contentLines.length;
 
-      // Remove the leading -, +, or * character.
-      const line = linePart.line.match(/^ *[-+*] *(.*)/)[1];
+      // Remove the leading -, +, *, or number characters.
+      const line = linePart.line.match(LIST_HEADER_REGEX)[4];
       const newListItem = {
         id: generateId(),
         titleLine: parseLinks(line),
         contents,
       };
+
+      const isOrdered = !!linePart.line.match(/\s*\d+[.)]/);
 
       const lastIndex = processedLineParts.length - 1;
       if (lastIndex >= 0 && processedLineParts[lastIndex].type === 'list') {
@@ -198,6 +202,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
           id: generateId(),
           items: [newListItem],
           bulletCharacter: linePart.line.trim()[0],
+          isOrdered,
         });
       }
     } else {
