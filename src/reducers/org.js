@@ -580,18 +580,56 @@ const insertCapture = (state, action) => {
   ));
 };
 
+const updateParentListCheckboxes = (state, itemPath) => {
+  const parentListItemPath = itemPath.slice(0, itemPath.length - 4);
+  const parentListItem = state.getIn(parentListItemPath);
+  if (!parentListItem.get('isCheckbox')) {
+    return state;
+  }
+
+  const childrenCheckedStates = parentListItem.get('contents').filter(part => (
+    part.get('type') === 'list'
+  )).flatMap(listPart => (
+    listPart.get('items').filter(item => (
+      item.get('isCheckbox')
+    )).map(checkboxItem => checkboxItem.get('checkboxState'))
+  ));
+
+  if (childrenCheckedStates.every(state => state === 'checked')) {
+    state = state.setIn(parentListItemPath.concat(['checkboxState']), 'checked');
+  } else if (childrenCheckedStates.every(state => state === 'unchecked')) {
+    state = state.setIn(parentListItemPath.concat(['checkboxState']), 'unchecked');
+  } else {
+    state = state.setIn(parentListItemPath.concat(['checkboxState']), 'partial');
+  }
+
+  return updateParentListCheckboxes(state, parentListItemPath);
+};
+
 const advanceCheckboxState = (state, action) => {
   const pathAndPart = pathAndPartOfListItemWithIdInHeaders(state.get('headers'), action.listItemId);
   const { path, listItemPart } = pathAndPart;
 
-  // TODO: update this to handle more complicated logic.
+  const hasDirectCheckboxChildren = listItemPart.get('contents').filter(part => (
+    part.get('type') === 'list'
+  )).some(listPart => (
+    listPart.get('items').some(item => (
+      item.get('isCheckbox')
+    ))
+  ));
+  if (hasDirectCheckboxChildren) {
+    return state;
+  }
+
   const newCheckboxState = {
     'checked': 'unchecked',
     'unchecked': 'checked',
-    'partial': 'partial',
+    'partial': 'unchecked',
   }[listItemPart.get('checkboxState')];
 
-  return state.setIn(['headers'].concat(path).concat(['checkboxState']), newCheckboxState);
+  state = state.setIn(['headers'].concat(path).concat(['checkboxState']), newCheckboxState);
+
+  return updateParentListCheckboxes(state, ['headers'].concat(path));
 };
 
 export default (state = new Map(), action) => {
