@@ -17,12 +17,3 @@
     display: flex;
     justify-content: center;
 }
-
-.checkbox--checked {
-    background-color: #5E348C;
-}
-
-.checkbox--partial {
-    background-color: rgba(94, 52, 140, 0.75);
-    border-color: transparent;
-}
