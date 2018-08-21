@@ -6,8 +6,19 @@ import AttributedString from '../../../AttributedString/';
 import Checkbox from '../../../../../UI/Checkbox/';
 
 import classNames from 'classnames';
+import _ from 'lodash';
 
 export default class ListPart extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, ['handleCheckboxClick']);
+  }
+
+  handleCheckboxClick(itemId) {
+    return () => this.props.subPartDataAndHandlers.onCheckboxClick(itemId);
+  }
+
   renderContent() {
     const { part, subPartDataAndHandlers } = this.props;
 
@@ -19,7 +30,10 @@ export default class ListPart extends PureComponent {
       return (
         <li key={item.get('id')} value={item.get('forceNumber')}>
           <span className={lineContainerClass}>
-            {item.get('isCheckbox') && <Checkbox state={item.get('checkboxState')} />}
+            {item.get('isCheckbox') && (
+              <Checkbox state={item.get('checkboxState')}
+                        onClick={this.handleCheckboxClick(item.get('id'))} />
+            )}
             <AttributedString parts={item.get('titleLine')} />
           </span>
           <br />

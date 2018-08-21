@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 export default class Checkbox extends PureComponent {
   render() {
-    const { state } = this.props;
+    const { state, onClick } = this.props;
 
     const className = classNames('checkbox', {
       'checkbox--checked': state === 'checked',
@@ -14,7 +14,7 @@ export default class Checkbox extends PureComponent {
     });
 
     return (
-      <div className={className}>
+      <div className={className} onClick={onClick}>
         <div className="checkbox__inner-container">
           {state === 'checked' && <i className="fas fa-check" />}
           {state === 'partial' && <i className="fas fa-minus" />}

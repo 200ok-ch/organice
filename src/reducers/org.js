@@ -27,6 +27,7 @@ import {
   newEmptyTableCell,
   headerThatContainsTableCellId,
   headerWithPath,
+  pathAndPartOfListItemWithIdInHeaders,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -579,13 +580,27 @@ const insertCapture = (state, action) => {
   ));
 };
 
+const advanceCheckboxState = (state, action) => {
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(state.get('headers'), action.listItemId);
+  const { path, listItemPart } = pathAndPart;
+
+  // TODO: update this to handle more complicated logic.
+  const newCheckboxState = {
+    'checked': 'unchecked',
+    'unchecked': 'checked',
+    'partial': 'partial',
+  }[listItemPart.get('checkboxState')];
+
+  return state.setIn(['headers'].concat(path).concat(['checkboxState']), newCheckboxState);
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
     'ADD_HEADER', 'REMOVE_HEADER', 'MOVE_HEADER_UP',
     'MOVE_HEADER_DOWN', 'MOVE_HEADER_LEFT', 'MOVE_HEADER_RIGHT',
     'MOVE_SUBTREE_LEFT', 'MOVE_SUBTREE_RIGHT', 'ADD_NEW_TABLE_ROW', 'REMOVE_TABLE_ROW',
-    'ADD_NEW_TABLE_COLUMN', 'REMOVE_TABLE_COLUMN', 'MOVE_TABLE_ROW_DOWN', 'MOVE_TABLE_ROW_UP',
+    'ADD_NEW_TABLE_COLUMN', 'Rif (EMOVE_TABLE_COLUMN', 'MOVE_TABLE_ROW_DOWN', 'MOVE_TABLE_ROW_UP',
     'MOVE_TABLE_COLUMN_LEFT', 'MOVE_TABLE_COLUMN_RIGHT', 'UPDATE_TABLE_CELL_VALUE',
     'INSERT_CAPTURE',
   ];
@@ -677,6 +692,8 @@ export default (state = new Map(), action) => {
     return updateTableCellValue(state, action);
   case 'INSERT_CAPTURE':
     return insertCapture(state, action);
+  case 'ADVANCE_CHECKBOX_STATE':
+    return advanceCheckboxState(state, action);
   default:
     return state;
   }

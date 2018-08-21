@@ -196,3 +196,7 @@ export const insertCapture = (templateId, content) => (
     dispatch({ type: 'INSERT_CAPTURE', template, content });
   }
 );
+
+export const advanceCheckboxState = listItemId => ({
+  type: 'ADVANCE_CHECKBOX_STATE', listItemId,
+});

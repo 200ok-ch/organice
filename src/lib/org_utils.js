@@ -214,6 +214,34 @@ export const headerThatContainsTableCellId = (headers, cellId) => (
   ))
 );
 
+export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId) => (
+  parts.map((part, partIndex) => {
+    if (part.get('type') === 'list') {
+      return part.get('items').map((item, itemIndex) => {
+        if (item.get('id') === listItemId) {
+          return {
+            path: [partIndex, 'items', itemIndex],
+            listItemPart: item,
+          };
+        } else {
+          const pathAndPart = pathAndPartOfListItemWithIdInAttributedString(item.get('contents'), listItemId);
+          if (!!pathAndPart) {
+            const { path, listItemPart } = pathAndPart;
+            return {
+              path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
+              listItemPart,
+            };
+          } else {
+            return null;
+          }
+        }
+      }).filter(result => !!result).first();
+    } else {
+      return null;
+    }
+  }).filter(result => !!result).first()
+);
+
 export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cellId) => (
   parts.map((part, partIndex) => {
     if (part.get('type') === 'table') {
@@ -238,6 +266,21 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
     } else {
       return null;
     }
+  }).filter(result => !!result).first()
+);
+
+export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) => (
+  headers.map((header, headerIndex) => {
+    const pathAndPart = pathAndPartOfListItemWithIdInAttributedString(header.get('description'), listItemId);
+    if (!pathAndPart) {
+      return null;
+    }
+
+    const { path, listItemPart } = pathAndPart;
+    return {
+      path: [headerIndex, 'description'].concat(path),
+      listItemPart,
+    };
   }).filter(result => !!result).first()
 );
 

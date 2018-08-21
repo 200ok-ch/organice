@@ -20,6 +20,7 @@ class HeaderContent extends PureComponent {
       'handleTableCellSelect',
       'handleExitTableEditMode',
       'handleTableCellValueUpdate',
+      'handleCheckboxClick',
     ]);
 
     this.state = {
@@ -57,6 +58,10 @@ class HeaderContent extends PureComponent {
     this.props.org.updateTableCellValue(cellId, newValue);
   }
 
+  handleCheckboxClick(listItemId) {
+    this.props.org.advanceCheckboxState(listItemId);
+  }
+
   render() {
     const { header, inEditMode, selectedTableCellId, inTableEditMode } = this.props;
 
@@ -81,6 +86,7 @@ class HeaderContent extends PureComponent {
                               inTableEditMode: inTableEditMode,
                               onExitTableEditMode: this.handleExitTableEditMode,
                               onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                              onCheckboxClick: this.handleCheckboxClick,
                             }} />
         )}
       </div>
