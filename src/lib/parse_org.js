@@ -39,6 +39,7 @@ export const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
     }
 
     const linkPart = {
+      id: generateId(),
       type: 'link',
       contents: {
         uri: match.uri,
