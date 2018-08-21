@@ -360,9 +360,11 @@ const exitTableEditMode = (state, action) => {
   return state.set('inTableEditMode', false);
 };
 
-const updateDescriptionOfHeaderContainingTableCell = (state, cellId) => {
+const updateDescriptionOfHeaderContainingTableCell = (state, cellId, header = null) => {
   const headers = state.get('headers');
-  const header = headerThatContainsTableCellId(headers, cellId);
+  if (!header) {
+    header = headerThatContainsTableCellId(headers, cellId);
+  }
   const headerIndex = indexOfHeaderWithId(headers, header.get('id'));
 
   return state.updateIn(['headers', headerIndex], header => (
@@ -391,13 +393,15 @@ const removeTableRow = (state, action) => {
     return state;
   }
 
+  const containingHeader = headerThatContainsTableCellId(state.get('headers'), selectedTableCellId);
+
   state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows => (
       rows.delete(rowIndex)
     ))
   ));
 
-  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
 
 const addNewTableColumn = (state, action) => {
@@ -425,6 +429,8 @@ const removeTableColumn = (state, action) => {
     return state;
   }
 
+  const containingHeader = headerThatContainsTableCellId(state.get('headers'), selectedTableCellId);
+
   state = state.update('headers', headers => (
     updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows => (
       rows.map(row => (
@@ -435,7 +441,7 @@ const removeTableColumn = (state, action) => {
     ))
   ));
 
-  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
+  return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
 
 const moveTableRowDown = state => {
