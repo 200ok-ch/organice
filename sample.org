@@ -82,13 +82,11 @@ The first time you push changes from org-web back up to Dropbox, org-web will ma
 You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
 org-web is currently pretty usable for simple tasks, but there's a lot more to do. Here are a few of the things on the list:
-** More first-class support for org features like tags, timestamps, cookies, checklists, and tables
-** Routing and back/forward button support
+** More first-class support for org features like tags, timestamps, and cookies
 ** Search
 ** Support for other sync backends in addition to Dropbox
 ** Ability to create new files
 ** Archiving
 ** A backend API for use in your own apps/scripts/IFTTT/Alexa Skills/etc.
-** A new color scheme, because the current one is kinda bumming me out
 ** Offline support (Safari on iOS finally supports service workers!)
 ** Ability to Tweet a header directly from org-web (just kidding)
