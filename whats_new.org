@@ -1,3 +1,22 @@
+* August 21st, 2018
+** Added native support for plain lists and checkboxes
+Plain lists:
+
+- Example 1
+- Example 2
+
+Ordered lists:
+
+1. Example 1
+2. Example 2
+20. [@20] Example 20
+
+And checkboxes:
+
+- [ ] checkbox 1
+  - [ ] checkbox 2
+    - [ ] checkbox 3
+  - [X] checkbox 4
 * August 18th, 2018
 ** Added capture templates
 *** Now under Settings > Capture Templates you can specify capture templates which show up as custom buttons in the action drawer for easily capturing items in your org file

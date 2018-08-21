@@ -66,6 +66,30 @@ When a table cell is selected, new action drawer items appear. From left to righ
 *** Move column left
 *** Move column right
 ** Format specifiers (like <r> and <10>) aren't yet supported, but they're on the list!
+* Lists and checkboxes
+org-web has native support for dislpaying plain lists and checkboxes
+
+Plain:
+
+- plain list item 1
+- plain list item 2
+  - sub item 1
+- plain list item 3
+
+Ordered:
+
+1. Item 1
+2. Item 2
+20. [@20] Item 20
+21. Item 21
+
+Checkboxes:
+
+- [ ] 1
+  - [ ] 1.1
+    - [ ] 1.1.1
+  - [ ] 1. 2
+- [X] 2
 * Capture
 ** org-web supports a form of org-capture, in the form of custom action drawer buttons
 ** Once signed in, you can set up capture templates that specify header paths (and various other configurations) and then easily add new items to your org file
