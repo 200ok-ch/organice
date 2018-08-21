@@ -1,6 +1,8 @@
 * org-web - org mode on the web
 org-web lets you directly edit your org files online. It syncs with Dropbox and is optimized for mobile use.
 
+[[./screenshots/overview.png]]
+
 It was born out of my desire to be able to easily view and edit my org files from my phone. It's available for use [[https://org-web.org][here]].
 
 If you don't already keep your org files in Dropbox, I recommend symlinking them in:
