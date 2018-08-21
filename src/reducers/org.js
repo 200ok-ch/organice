@@ -628,8 +628,14 @@ const advanceCheckboxState = (state, action) => {
   }[listItemPart.get('checkboxState')];
 
   state = state.setIn(['headers'].concat(path).concat(['checkboxState']), newCheckboxState);
+  state = updateParentListCheckboxes(state, ['headers'].concat(path));
 
-  return updateParentListCheckboxes(state, ['headers'].concat(path));
+  const headerIndex = path[0];
+  state = state.updateIn(['headers', headerIndex], header => (
+    header.set('rawDescription', attributedStringToRawText(header.get('description')))
+  ));
+
+  return state;
 };
 
 export default (state = new Map(), action) => {
