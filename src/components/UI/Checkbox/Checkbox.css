@@ -1,0 +1,28 @@
+.checkbox {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+
+    border: 2px solid #5E348C;
+    border-radius: 2px;
+    box-sizing: border-box;
+
+    display: inline-block;
+
+    color: white;
+}
+
+.checkbox__inner-container {
+    display: flex;
+    justify-content: center;
+}
+
+.checkbox--checked {
+    background-color: #5E348C;
+}
+
+.checkbox--partial {
+    background-color: rgba(94, 52, 140, 0.75);
+    border-color: transparent;
+}

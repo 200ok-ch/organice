@@ -183,7 +183,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
       partIndex += contentLines.length;
 
-      const isOrdered = !!linePart.line.match(/\s*\d+[.)]/);
+      const isOrdered = !!linePart.line.match(/^\s*\d+[.)]/);
 
       // Remove the leading -, +, *, or number characters.
       let line = linePart.line.match(LIST_HEADER_REGEX)[4];
@@ -194,11 +194,26 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
         line = line.replace(/^\s*\[@\d+\]\s*/, '');
       }
 
+      let checkboxState = null;
+      const isCheckbox = !!line.match(/^\s*\[[ X-]\]/);
+      if (isCheckbox) {
+        const stateCharacter = line.match(/^\s*\[([ X-])\]/)[1];
+        checkboxState = {
+          ' ': 'unchecked',
+          'X': 'checked',
+          '-': 'partial',
+        }[stateCharacter];
+
+        line = line.replace(/^\s*\[[ X-]\]\s*/, '');
+      }
+
       const newListItem = {
         id: generateId(),
         titleLine: parseLinks(line),
         contents,
         forceNumber,
+        isCheckbox,
+        checkboxState
       };
 
       const lastIndex = processedLineParts.length - 1;

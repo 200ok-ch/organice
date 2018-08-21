@@ -9,3 +9,7 @@
     margin-bottom: 0;
     padding-left: 40px;
 }
+
+.list-part__checkbox-container {
+    line-height: 22px;
+}
