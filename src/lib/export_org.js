@@ -101,9 +101,31 @@ const listPartToRawText = listPart => {
         listItemText += ` [@${forceNumber}]`;
       }
 
+      if (item.get('isCheckbox')) {
+        const stateCharacter = {
+          'checked': 'X',
+          'unchecked': ' ',
+          'partial': '-',
+        }[item.get('checkboxState')];
+
+        listItemText += ` [${stateCharacter}]`;
+      }
+
       listItemText += ` ${titleText}`;
     } else {
-      listItemText = `${optionalLeadingSpace}${bulletCharacter} ${titleText}`;
+      listItemText = `${optionalLeadingSpace}${bulletCharacter}`;
+
+      if (item.get('isCheckbox')) {
+        const stateCharacter = {
+          'checked': 'X',
+          'unchecked': ' ',
+          'partial': '-',
+        }[item.get('checkboxState')];
+
+        listItemText += ` [${stateCharacter}]`;
+      }
+
+      listItemText += ` ${titleText}`;
     }
 
     if (!!contentText) {
