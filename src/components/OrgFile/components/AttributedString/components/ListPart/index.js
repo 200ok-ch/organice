@@ -9,7 +9,7 @@ import classNames from 'classnames';
 
 export default class ListPart extends PureComponent {
   renderContent() {
-    const { part } = this.props;
+    const { part, subPartDataAndHandlers } = this.props;
 
     return part.get('items').map(item => {
       const lineContainerClass = classNames({
@@ -23,12 +23,7 @@ export default class ListPart extends PureComponent {
             <AttributedString parts={item.get('titleLine')} />
           </span>
           <br />
-          <AttributedString parts={item.get('contents')}
-                            onTableCellSelect={this.props.onTableCellSelect}
-                            selectedTableCellId={this.props.selectedTableCellId}
-                            inTableEditMode={this.props.inTableEditMode}
-                            onExitTableEditMode={this.props.onExitTableEditMode}
-                            onTableCellValueUpdate={this.props.onTableCellValueUpdate} />
+          <AttributedString parts={item.get('contents')} subPartDataAndHandlers={subPartDataAndHandlers} />
         </li>
       );
     });

@@ -75,11 +75,13 @@ class HeaderContent extends PureComponent {
                     onChange={this.handleDescriptionChange} />
         ) : (
           <AttributedString parts={header.get('description')}
-                            onTableCellSelect={this.handleTableCellSelect}
-                            selectedTableCellId={selectedTableCellId}
-                            inTableEditMode={inTableEditMode}
-                            onExitTableEditMode={this.handleExitTableEditMode}
-                            onTableCellValueUpdate={this.handleTableCellValueUpdate} />
+                            subPartDataAndHandlers={{
+                              onTableCellSelect: this.handleTableCellSelect,
+                              selectedTableCellId: selectedTableCellId,
+                              inTableEditMode: inTableEditMode,
+                              onExitTableEditMode: this.handleExitTableEditMode,
+                              onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                            }} />
         )}
       </div>
     );

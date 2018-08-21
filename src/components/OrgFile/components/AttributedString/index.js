@@ -9,11 +9,7 @@ export default class AttributedString extends PureComponent {
   render() {
     const {
       parts,
-      onTableCellSelect,
-      selectedTableCellId,
-      inTableEditMode,
-      onExitTableEditMode,
-      onTableCellValueUpdate,
+      subPartDataAndHandlers,
     } = this.props;
 
     return (
@@ -31,21 +27,13 @@ export default class AttributedString extends PureComponent {
             return (
               <TablePart key={part.get('id')}
                          table={part}
-                         onCellSelect={onTableCellSelect}
-                         selectedTableCellId={selectedTableCellId}
-                         inTableEditMode={inTableEditMode}
-                         onExitEditMode={onExitTableEditMode}
-                         onCellValueUpdate={onTableCellValueUpdate} />
+                         subPartDataAndHandlers={subPartDataAndHandlers} />
             );
           case 'list':
             return (
               <ListPart key={part.get('id')}
                         part={part}
-                        onTableCellSelect={onTableCellSelect}
-                        selectedTableCellId={selectedTableCellId}
-                        inTableEditMode={inTableEditMode}
-                        onExitTableEditMode={onExitTableEditMode}
-                        onTableCellValueUpdate={onTableCellValueUpdate} />
+                        subPartDataAndHandlers={subPartDataAndHandlers} />
             );
           default:
             console.error(`Unrecognized attributed string part type ${part.get('type')}`);

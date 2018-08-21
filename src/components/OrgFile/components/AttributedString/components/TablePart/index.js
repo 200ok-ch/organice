@@ -20,12 +20,12 @@ export default class TablePart extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { selectedTableCellId, onCellValueUpdate } = this.props;
+    const { subPartDataAndHandlers: { onTableCellValueUpdate, selectedTableCellId } } = this.props;
     const { rawCellValues } = this.state;
 
     if (this.props.inTableEditMode && !nextProps.inTableEditMode) {
       if (rawCellValues.has(selectedTableCellId)) {
-        onCellValueUpdate(selectedTableCellId, rawCellValues.get(selectedTableCellId));
+        onTableCellValueUpdate(selectedTableCellId, rawCellValues.get(selectedTableCellId));
       }
     }
 
@@ -41,16 +41,16 @@ export default class TablePart extends PureComponent {
   }
 
   handleCellSelect(cellId) {
-    return () => this.props.onCellSelect(cellId);
+    return () => this.props.subPartDataAndHandlers.onTableCellSelect(cellId);
   }
 
   handleTextareaBlur() {
-    this.props.onExitEditMode();
+    this.props.subPartDataAndHandlers.onExitTableEditMode();
   }
 
   handleCellChange(event) {
     const { rawCellValues } = this.state;
-    const { selectedTableCellId } = this.props;
+    const { subPartDataAndHandlers: { selectedTableCellId } } = this.props;
 
     this.setState({
       rawCellValues: rawCellValues.set(selectedTableCellId, event.target.value),
@@ -58,7 +58,13 @@ export default class TablePart extends PureComponent {
   }
 
   render() {
-    const { table, selectedTableCellId, inTableEditMode } = this.props;
+    const {
+      table,
+      subPartDataAndHandlers: {
+        selectedTableCellId,
+        inTableEditMode,
+      },
+    } = this.props;
     const { rawCellValues } = this.state;
 
     return (
