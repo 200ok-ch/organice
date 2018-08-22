@@ -402,6 +402,8 @@ const removeTableRow = (state, action) => {
     ))
   ));
 
+  state = state.set('selectedTableCellId', null);
+
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
 
@@ -441,6 +443,8 @@ const removeTableColumn = (state, action) => {
       ))
     ))
   ));
+
+  state = state.set('selectedTableCellId', null);
 
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
