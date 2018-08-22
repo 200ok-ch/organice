@@ -3,26 +3,44 @@ import generateId from './id_generator';
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
 
-export const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
-  const linkRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])/g;
+export const parseLinksAndCookies = (rawText, { shouldAppendNewline = false, excludeCookies = true } = {}) => {
+  const linkAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])/g;
   const matches = [];
-  let match = linkRegex.exec(rawText);
+  let match = linkAndCookieRegex.exec(rawText);
   while (match) {
-    if (match[2]) {
+    if (!!match[2]) {
       matches.push({
+        type: 'link',
         rawText: match[0],
         uri: match[2],
         index: match.index,
       });
-    } else {
+    } else if (!!match[3] && !!match[4]) {
       matches.push({
+        type: 'link',
         rawText: match[0],
         uri: match[3],
         title: match[4],
         index: match.index,
       });
+    } else if (!!match[7]) {
+      const percentCookieMatch = match[7].match(/(\d*)%/);
+      matches.push({
+        type: 'percentage-cookie',
+        rawText: match[0],
+        percentage: percentCookieMatch[1],
+        index: match.index,
+      });
+    } else if (!!match[8]) {
+      const fractionCookieMatch = match[8].match(/(\d*)\/(\d*)/);
+      matches.push({
+        type: 'fraction-cookie',
+        rawText: match[0],
+        fraction: [fractionCookieMatch[1], fractionCookieMatch[2]],
+        index: match.index,
+      });
     }
-    match = linkRegex.exec(rawText);
+    match = linkAndCookieRegex.exec(rawText);
   }
 
   const lineParts = [];
@@ -38,17 +56,31 @@ export const parseLinks = (rawText, { shouldAppendNewline = false } = {}) => {
       });
     }
 
-    const linkPart = {
-      id: generateId(),
-      type: 'link',
-      contents: {
-        uri: match.uri,
-      },
-    };
-    if (match.title) {
-      linkPart.contents.title = match.title;
+    if (match.type === 'link') {
+      const linkPart = {
+        id: generateId(),
+        type: 'link',
+        contents: {
+          uri: match.uri,
+        },
+      };
+      if (match.title) {
+        linkPart.contents.title = match.title;
+      }
+      lineParts.push(linkPart);
+    } else if (match.type === 'percentage-cookie') {
+      lineParts.push({
+        id: generateId(),
+        type: 'percentage-cookie',
+        percentage: match.percentage,
+      });
+    } else if (match.type === 'fraction-cookie') {
+      lineParts.push({
+        id: generateId(),
+        type: 'fraction-cookie',
+        fraction: match.fraction,
+      });
     }
-    lineParts.push(linkPart);
 
     startIndex = match.index + match.rawText.length;
   });
@@ -96,7 +128,7 @@ const parseTable = tableLines => {
     id: generateId(),
     contents: row.map(rawContents => ({
       id: generateId(),
-      contents: parseLinks(rawContents),
+      contents: parseLinksAndCookies(rawContents, { excludeCookies: true }),
       rawContents,
     }))
   }));
@@ -150,7 +182,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
           type: 'raw-table', line,
         }];
       } else {
-        return parseLinks(line, { shouldAppendNewline: lineIndex !== lines.length - 1 });
+        return parseLinksAndCookies(line, { shouldAppendNewline: lineIndex !== lines.length - 1, excludeCookies: true });
       }
     }
   }));
@@ -210,7 +242,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
       const newListItem = {
         id: generateId(),
-        titleLine: parseLinks(line),
+        titleLine: parseLinksAndCookies(line),
         contents,
         forceNumber,
         isCheckbox,
@@ -264,7 +296,7 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
     }
   }
 
-  const title = parseRawText(rawTitle, { excludeContentElements: true });
+  const title = parseLinksAndCookies(rawTitle);
 
   return fromJS({ title, rawTitle, todoKeyword, tags });
 };

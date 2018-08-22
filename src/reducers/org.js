@@ -5,7 +5,7 @@ import {
   parseOrg,
   parseTitleLine,
   parseRawText,
-  parseLinks,
+  parseLinksAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
 } from '../lib/parse_org';
@@ -551,7 +551,7 @@ const updateTableCellValue = (state, action) => {
       rows.updateIn([rowIndex, 'contents', colIndex], cell => (
         cell
           .set('rawContents', action.newValue)
-          .set('contents', fromJS(parseLinks(action.newValue)))
+          .set('contents', fromJS(parseLinksAndCookies(action.newValue, { excludeCookies: true })))
       ))
     ))
   ));

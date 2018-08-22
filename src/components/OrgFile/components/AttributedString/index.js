@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 
+import './AttributedString.css';
+
 import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';
 
@@ -21,6 +23,18 @@ export default class AttributedString extends PureComponent {
             const title = part.getIn(['contents', 'title']) || uri;
 
             return <a key={part.get('id')} href={uri} target="_blank">{title}</a>;
+          case 'percentage-cookie':
+            return (
+              <span key={part.get('id')} className="attributed-string__cookie-part">
+                [{part.get('percentage')}%]
+              </span>
+            );
+          case 'fraction-cookie':
+            return (
+              <span key={part.get('id')} className="attributed-string__cookie-part">
+                [{part.getIn(['fraction', 0])}/{part.getIn(['fraction', 1])}]
+              </span>
+            );
           case 'table':
             return (
               <TablePart key={part.get('id')}
