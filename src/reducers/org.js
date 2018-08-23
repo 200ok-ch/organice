@@ -117,7 +117,10 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 
   const doneCount = directChildrenCompletionStates.filter(done => done).length;
   const totalCount = directChildrenCompletionStates.length;
-  const newParentHeader = parentHeader.updateIn(['titleLine', 'title'], title => (
+
+  // TODO: update the raw title too.
+
+  return state.updateIn(['headers', parentHeaderIndex, 'titleLine', 'title'], title => (
     title.map(titlePart => {
       switch (titlePart.get('type')) {
       case 'fraction-cookie':
@@ -129,11 +132,6 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
       }
     })
   ));
-  console.log("newParentHeader = ", newParentHeader.toJS());
-
-  // TODO: update the raw title too.
-
-  return state.setIn(['headers', parentHeaderIndex], newParentHeader);
 };
 
 const advanceTodoState = (state, action) => {
