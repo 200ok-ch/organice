@@ -112,8 +112,6 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
   const doneCount = directChildrenCompletionStates.filter(done => done).length;
   const totalCount = directChildrenCompletionStates.length;
 
-  // TODO: update the raw title too.
-
   return state.updateIn(['headers', headerIndex, 'titleLine', 'title'], title => (
     title.map(titlePart => {
       switch (titlePart.get('type')) {
@@ -125,6 +123,8 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
         return titlePart;
       }
     })
+  )).updateIn(['headers', headerIndex, 'titleLine'], titleLine => (
+    titleLine.set('rawTitle', attributedStringToRawText(titleLine.get('title')))
   ));
 };
 
