@@ -1,3 +1,7 @@
+.action-drawer__btn--letter {
+    font-size: 24px;
+}
+
 .action-drawer__btn--with-sub-icon {
     padding-right: 3px;
     padding-bottom: 3px;

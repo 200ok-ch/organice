@@ -31,6 +31,7 @@ export default class ActionButton extends PureComponent {
       [`fa-${iconName}`]: !letter,
       'action-drawer__btn--with-sub-icon': !!subIconName,
       'btn--disabled': isDisabled,
+      'action-drawer__btn--letter': !!letter,
     });
 
     const subIconClassName = classNames('fas', 'fa-xs', `fa-${subIconName}`, 'action-drawer__btn__sub-icon', {
