@@ -1,3 +1,11 @@
+* August 23rd, 2018
+** Added native support for cookies like [1/2] and [50%]
+*** TODO Sample todo
+*** DONE Another sample todo
+*** They're also supported in plain checkbox lists [3/3] [100%]
+- [X] item 1
+- [X] item 2
+- [X] item 3
 * August 21st, 2018
 ** Added native support for plain lists and checkboxes
 Plain lists:

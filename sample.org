@@ -8,7 +8,7 @@ This header has some description text and a couple subheaders. Look through the 
 ** This is a subheader too!
 * Actions
 The long row of buttons at the bottom is called the "action drawer".
-** Todos
+** Todos [1/3] [33%]
 This header has a few TODO items as subheaders.
 *** TODO Learn how to use TODOs in org-web
 With this header selected, tap the checkmark button in the action drawer. Tap it again, and then again again!
@@ -85,10 +85,10 @@ Ordered:
 
 Checkboxes:
 
-- [ ] 1
-  - [ ] 1.1
+- [-] 1 [1/2]
+  - [ ] 1.1 [0%]
     - [ ] 1.1.1
-  - [ ] 1. 2
+  - [X] 1. 2
 - [X] 2
 * Capture
 ** org-web supports a form of org-capture, in the form of custom action drawer buttons
@@ -106,7 +106,7 @@ The first time you push changes from org-web back up to Dropbox, org-web will ma
 You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
 org-web is currently pretty usable for simple tasks, but there's a lot more to do. Here are a few of the things on the list:
-** More first-class support for org features like tags, timestamps, and cookies
+** More first-class support for org features like tags and timestamps
 ** Search
 ** Support for other sync backends in addition to Dropbox
 ** Ability to create new files
