@@ -272,6 +272,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
 const defaultKeywordSets = fromJS([{
   keywords: ['TODO', 'DONE'],
+  completedKeywords: ['DONE'],
   default: true
 }]);
 
@@ -345,18 +346,15 @@ export const parseOrg = (fileContents) => {
       if (headers.size === 0) {
         if (line.startsWith('#+TODO: ') || line.startsWith('#+TYP_TODO: ')) {
           const keywordsString = line.substr(line.indexOf(':') + 2);
-          const keywordStrings = keywordsString.split(/\s/).filter(keyword => {
-            return keyword !== '|';
-          });
-          const keywords = keywordStrings.map(keywordString => {
-            const todoRegex = /([^(]*)(\(.*\))?/g;
-            const match = todoRegex.exec(keywordString);
-            const keyword = match[1];
+          const keywordTokens = keywordsString.split(/\s/);
+          const keywords = keywordTokens.filter(keyword => keyword !== '|');
 
-            return keyword;
-          });
+          const pipeIndex = keywordTokens.indexOf('|');
+          const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
+
           todoKeywordSets = todoKeywordSets.push(fromJS({
             keywords,
+            completedKeywords,
             configLine: line,
             default: false
           }));
