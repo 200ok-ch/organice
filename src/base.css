@@ -25,6 +25,9 @@
     width: 95%;
     font-size: 16px;
     font-family: Courier;
+
+    -webkit-appearance: none;
+    border-radius: 0;
 }
 
 .textfield {

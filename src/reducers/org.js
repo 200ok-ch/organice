@@ -1,11 +1,11 @@
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import {
   parseOrg,
   parseTitleLine,
   parseRawText,
-  parseLinks,
+  parseLinksAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
 } from '../lib/parse_org';
@@ -15,6 +15,7 @@ import {
 import {
   indexOfHeaderWithId,
   headerWithId,
+  parentIdOfHeaderWithId,
   subheadersOfHeaderWithId,
   numSubheadersOfHeaderWithId,
   indexOfPreviousSibling,
@@ -79,6 +80,67 @@ const selectHeader = (state, action) => {
   return state.set('selectedHeaderId', action.headerId);
 };
 
+const todoKeywordSetForKeyword = (todoKeywordSets, keyword) => (
+  todoKeywordSets.find(keywordSet => (
+    keywordSet.get('keywords').contains(keyword)
+  )) || todoKeywordSets.first()
+);
+
+const updateCookiesInAttributedStringWithChildCompletionStates = (parts, completionStates) => {
+  const doneCount = completionStates.filter(isDone => isDone).length;
+  const totalCount = completionStates.length;
+
+  return parts.map(part => {
+    switch (part.get('type')) {
+    case 'fraction-cookie':
+      return part.set('fraction', List([doneCount, totalCount]));
+    case 'percentage-cookie':
+      return part.set('percentage', Math.floor(doneCount / totalCount * 100));
+    default:
+      return part;
+    }
+  });
+};
+
+const updateCookiesOfHeaderWithId = (state, headerId) => {
+  const headers = state.get('headers');
+  const subheaders = subheadersOfHeaderWithId(headers, headerId);
+
+  const directChildren = [];
+  for (let i = 0; i < subheaders.size; ++i) {
+    const subheader = subheaders.get(i);
+    directChildren.push(subheader);
+
+    const subheaderSubheaders = subheadersOfHeaderWithId(headers, subheader.get('id'));
+    i += subheaderSubheaders.size;
+  }
+
+  const directChildrenCompletionStates = directChildren.map(header => (
+    header.getIn(['titleLine', 'todoKeyword'])
+  )).filter(todoKeyword => !!todoKeyword).map(todoKeyword => (
+    todoKeywordSetForKeyword(state.get('todoKeywordSets'), todoKeyword)
+      .get('completedKeywords')
+      .contains(todoKeyword)
+  ));
+
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+
+  return state.updateIn(['headers', headerIndex, 'titleLine', 'title'], title => (
+    updateCookiesInAttributedStringWithChildCompletionStates(title, directChildrenCompletionStates)
+  )).updateIn(['headers', headerIndex, 'titleLine'], titleLine => (
+    titleLine.set('rawTitle', attributedStringToRawText(titleLine.get('title')))
+  ));
+};
+
+const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
+  const parentHeaderId = parentIdOfHeaderWithId(state.get('headers'), headerId);
+  if (!parentHeaderId) {
+    return state;
+  }
+
+  return updateCookiesOfHeaderWithId(state, parentHeaderId);
+};
+
 const advanceTodoState = (state, action) => {
   const headerId = state.get('selectedHeaderId');
   if (!headerId) {
@@ -90,15 +152,16 @@ const advanceTodoState = (state, action) => {
   const headerIndex = indexOfHeaderWithId(headers, headerId);
 
   const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
-  const currentTodoSet = state.get('todoKeywordSets').find(todoKeywordSet => (
-    todoKeywordSet.get('keywords').contains(currentTodoState)
-  )) || state.get('todoKeywordSets').first();
+  const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
 
   const currentStateIndex = currentTodoSet.get('keywords').indexOf(currentTodoState);
   const newStateIndex = currentStateIndex + 1;
   const newTodoState = currentTodoSet.get('keywords').get(newStateIndex) || '';
 
-  return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  state = updateCookiesOfParentOfHeaderWithId(state, headerId);
+
+  return state;
 };
 
 const updateHeaderTitle = (state, action) => {
@@ -107,7 +170,9 @@ const updateHeaderTitle = (state, action) => {
 
   const newTitleLine = parseTitleLine(action.newRawTitle, state.get('todoKeywordSets'));
 
-  return state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
+  state = state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
+
+  return updateCookiesOfParentOfHeaderWithId(state, action.headerId);
 };
 
 const updateHeaderDescription = (state, action) => {
@@ -194,6 +259,8 @@ const removeHeader = (state, action) => {
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
   const numHeadersToRemove = 1 + subheaders.size;
 
+  const parentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
+
   _.times(numHeadersToRemove).forEach(() => {
     headers = headers.delete(headerIndex);
   });
@@ -202,7 +269,13 @@ const removeHeader = (state, action) => {
     state = state.set('focusedHeaderId', null);
   }
 
-  return state.set('headers', headers);
+  state = state.set('headers', headers);
+
+  if (parentHeaderId) {
+    state = updateCookiesOfHeaderWithId(state, parentHeaderId);
+  }
+
+  return state;
 };
 
 const moveHeaderUp = (state, action) => {
@@ -248,26 +321,41 @@ const moveHeaderLeft = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
-  return state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
+  const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
+
+  state = state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
     Math.max(nestingLevel - 1, 1)
   ));
+
+  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
+  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+
+  return state;
 };
 
 const moveHeaderRight = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
+  const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
+
   state = state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel => (
     nestingLevel + 1
   ));
 
-  return openDirectParent(state, action.headerId);
+  state = openDirectParent(state, action.headerId);
+  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
+  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+
+  return state;
 };
 
 const moveSubtreeLeft = (state, action) => {
   const headers = state.get('headers');
   const header = headerWithId(headers, action.headerId);
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
 
   if (header.get('nestingLevel') === 1) {
     return state;
@@ -285,12 +373,17 @@ const moveSubtreeLeft = (state, action) => {
     ));
   });
 
+  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
+  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+
   return state;
 };
 
 const moveSubtreeRight = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+
+  const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
 
@@ -302,6 +395,9 @@ const moveSubtreeRight = (state, action) => {
       nestingLevel + 1
     ));
   });
+
+  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
+  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
 
   return openDirectParent(state, action.headerId);
 };
@@ -555,7 +651,7 @@ const updateTableCellValue = (state, action) => {
       rows.updateIn([rowIndex, 'contents', colIndex], cell => (
         cell
           .set('rawContents', action.newValue)
-          .set('contents', fromJS(parseLinks(action.newValue)))
+          .set('contents', fromJS(parseLinksAndCookies(action.newValue, { excludeCookies: true })))
       ))
     ))
   ));
@@ -579,15 +675,19 @@ const insertCapture = (state, action) => {
   const numSubheaders = numSubheadersOfHeaderWithId(headers, parentHeader.get('id'));
   const newIndex = parentHeaderIndex + 1 + (template.get('shouldPrepend') ? 0 : numSubheaders);
 
-  return state.update('headers', headers => (
+  state = state.update('headers', headers => (
     headers.insert(newIndex, newHeader)
   ));
+
+  state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+
+  return state;
 };
 
 const updateParentListCheckboxes = (state, itemPath) => {
   const parentListItemPath = itemPath.slice(0, itemPath.length - 4);
   const parentListItem = state.getIn(parentListItemPath);
-  if (!parentListItem.get('isCheckbox')) {
+  if (!parentListItem.has('checkboxState')) {
     return state;
   }
 
@@ -607,7 +707,28 @@ const updateParentListCheckboxes = (state, itemPath) => {
     state = state.setIn(parentListItemPath.concat(['checkboxState']), 'partial');
   }
 
-  return updateParentListCheckboxes(state, parentListItemPath);
+  const childCompletionStates = childrenCheckedStates.map(state => {
+    switch (state) {
+    case 'checked':
+      return true;
+    case 'unchecked':
+      return false;
+    case 'partial':
+      return false;
+    default:
+      return false;
+    }
+  }).toJS();
+
+  state = state.updateIn(parentListItemPath.concat('titleLine'), titleLine => (
+    updateCookiesInAttributedStringWithChildCompletionStates(titleLine, childCompletionStates)
+  ));
+
+  if (parentListItem.get('isCheckbox')) {
+    return updateParentListCheckboxes(state, parentListItemPath);
+  } else {
+    return state;
+  }
 };
 
 const advanceCheckboxState = (state, action) => {

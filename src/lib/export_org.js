@@ -148,6 +148,12 @@ export const attributedStringToRawText = parts => {
     case 'link':
       text = linkPartToRawText(part);
       break;
+    case 'fraction-cookie':
+      text = `[${part.getIn(['fraction', 0]) || ''}/${part.getIn(['fraction', 1]) || ''}]`;
+      break;
+    case 'percentage-cookie':
+      text = `[${part.get('percentage') || ''}%]`;
+      break;
     case 'table':
       text = tablePartToRawText(part);
       break;
