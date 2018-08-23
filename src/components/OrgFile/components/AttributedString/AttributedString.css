@@ -2,3 +2,7 @@
     font-weight: bold;
     color: red;
 }
+
+.attributed-string__cookie-part--complete {
+    color: green;
+}
