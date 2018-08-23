@@ -86,6 +86,22 @@ const todoKeywordSetForKeyword = (todoKeywordSets, keyword) => (
   )) || todoKeywordSets.first()
 );
 
+const updateCookiesInAttributedStringWithChildCompletionStates = (parts, completionStates) => {
+  const doneCount = completionStates.filter(isDone => isDone).length;
+  const totalCount = completionStates.length;
+
+  return parts.map(part => {
+    switch (part.get('type')) {
+    case 'fraction-cookie':
+      return part.set('fraction', List([doneCount, totalCount]));
+    case 'percentage-cookie':
+      return part.set('percentage', Math.floor(doneCount / totalCount * 100));
+    default:
+      return part;
+    }
+  });
+};
+
 const updateCookiesOfHeaderWithId = (state, headerId) => {
   const headers = state.get('headers');
   const subheaders = subheadersOfHeaderWithId(headers, headerId);
@@ -109,20 +125,8 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
 
   const headerIndex = indexOfHeaderWithId(headers, headerId);
 
-  const doneCount = directChildrenCompletionStates.filter(done => done).length;
-  const totalCount = directChildrenCompletionStates.length;
-
   return state.updateIn(['headers', headerIndex, 'titleLine', 'title'], title => (
-    title.map(titlePart => {
-      switch (titlePart.get('type')) {
-      case 'fraction-cookie':
-        return titlePart.set('fraction', List([doneCount, totalCount]));
-      case 'percentage-cookie':
-        return titlePart.set('percentage', Math.floor(doneCount / totalCount * 100));
-      default:
-        return titlePart;
-      }
-    })
+    updateCookiesInAttributedStringWithChildCompletionStates(title, directChildrenCompletionStates)
   )).updateIn(['headers', headerIndex, 'titleLine'], titleLine => (
     titleLine.set('rawTitle', attributedStringToRawText(titleLine.get('title')))
   ));
@@ -679,7 +683,7 @@ const insertCapture = (state, action) => {
 const updateParentListCheckboxes = (state, itemPath) => {
   const parentListItemPath = itemPath.slice(0, itemPath.length - 4);
   const parentListItem = state.getIn(parentListItemPath);
-  if (!parentListItem.get('isCheckbox')) {
+  if (!parentListItem.has('checkboxState')) {
     return state;
   }
 
@@ -699,7 +703,28 @@ const updateParentListCheckboxes = (state, itemPath) => {
     state = state.setIn(parentListItemPath.concat(['checkboxState']), 'partial');
   }
 
-  return updateParentListCheckboxes(state, parentListItemPath);
+  const childCompletionStates = childrenCheckedStates.map(state => {
+    switch (state) {
+    case 'checked':
+      return true;
+    case 'unchecked':
+      return false;
+    case 'partial':
+      return false;
+    default:
+      return false;
+    }
+  }).toJS();
+
+  state = state.updateIn(parentListItemPath.concat('titleLine'), titleLine => (
+    updateCookiesInAttributedStringWithChildCompletionStates(titleLine, childCompletionStates)
+  ));
+
+  if (parentListItem.get('isCheckbox')) {
+    return updateParentListCheckboxes(state, parentListItemPath);
+  } else {
+    return state;
+  }
 };
 
 const advanceCheckboxState = (state, action) => {
