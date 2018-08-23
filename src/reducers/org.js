@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import {
@@ -15,6 +15,7 @@ import {
 import {
   indexOfHeaderWithId,
   headerWithId,
+  parentIdOfHeaderWithId,
   subheadersOfHeaderWithId,
   numSubheadersOfHeaderWithId,
   indexOfPreviousSibling,
@@ -79,6 +80,62 @@ const selectHeader = (state, action) => {
   return state.set('selectedHeaderId', action.headerId);
 };
 
+const todoKeywordSetForKeyword = (todoKeywordSets, keyword) => (
+  todoKeywordSets.find(keywordSet => (
+    keywordSet.get('keywords').contains(keyword)
+  )) || todoKeywordSets.first()
+);
+
+const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
+  const headers = state.get('headers');
+  const parentHeaderId = parentIdOfHeaderWithId(headers, headerId);
+  if (!parentHeaderId) {
+    return state;
+  }
+
+  const subheaders = subheadersOfHeaderWithId(headers, parentHeaderId);
+
+  const directChildren = [];
+  for (let i = 0; i < subheaders.size; ++i) {
+    const subheader = subheaders.get(i);
+    directChildren.push(subheader);
+
+    const subheaderSubheaders = subheadersOfHeaderWithId(headers, subheader.get('id'));
+    i += subheaderSubheaders.size;
+  }
+
+  const directChildrenCompletionStates = directChildren.map(header => (
+    header.getIn(['titleLine', 'todoKeyword'])
+  )).filter(todoKeyword => !!todoKeyword).map(todoKeyword => (
+    todoKeywordSetForKeyword(state.get('todoKeywordSets'), todoKeyword)
+      .get('completedKeywords')
+      .contains(todoKeyword)
+  ));
+
+  const parentHeaderIndex = indexOfHeaderWithId(headers, parentHeaderId);
+  const parentHeader = headers.get(parentHeaderIndex);
+
+  const doneCount = directChildrenCompletionStates.filter(done => done).length;
+  const totalCount = directChildrenCompletionStates.length;
+  const newParentHeader = parentHeader.updateIn(['titleLine', 'title'], title => (
+    title.map(titlePart => {
+      switch (titlePart.get('type')) {
+      case 'fraction-cookie':
+        return titlePart.set('fraction', List([doneCount, totalCount]));
+      case 'percentage-cookie':
+        return titlePart.set('percentage', Math.floor(doneCount / totalCount * 100));
+      default:
+        return titlePart;
+      }
+    })
+  ));
+  console.log("newParentHeader = ", newParentHeader.toJS());
+
+  // TODO: update the raw title too.
+
+  return state.setIn(['headers', parentHeaderIndex], newParentHeader);
+};
+
 const advanceTodoState = (state, action) => {
   const headerId = state.get('selectedHeaderId');
   if (!headerId) {
@@ -90,15 +147,16 @@ const advanceTodoState = (state, action) => {
   const headerIndex = indexOfHeaderWithId(headers, headerId);
 
   const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
-  const currentTodoSet = state.get('todoKeywordSets').find(todoKeywordSet => (
-    todoKeywordSet.get('keywords').contains(currentTodoState)
-  )) || state.get('todoKeywordSets').first();
+  const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
 
   const currentStateIndex = currentTodoSet.get('keywords').indexOf(currentTodoState);
   const newStateIndex = currentStateIndex + 1;
   const newTodoState = currentTodoSet.get('keywords').get(newStateIndex) || '';
 
-  return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  state = updateCookiesOfParentOfHeaderWithId(state, headerId);
+
+  return state;
 };
 
 const updateHeaderTitle = (state, action) => {
