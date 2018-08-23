@@ -104,6 +104,7 @@ const updateCookiesInAttributedStringWithChildCompletionStates = (parts, complet
 
 const updateCookiesOfHeaderWithId = (state, headerId) => {
   const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
   const subheaders = subheadersOfHeaderWithId(headers, headerId);
 
   const directChildren = [];
@@ -115,7 +116,7 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
     i += subheaderSubheaders.size;
   }
 
-  const directChildrenCompletionStates = directChildren.map(header => (
+  let completionStates = directChildren.map(header => (
     header.getIn(['titleLine', 'todoKeyword'])
   )).filter(todoKeyword => !!todoKeyword).map(todoKeyword => (
     todoKeywordSetForKeyword(state.get('todoKeywordSets'), todoKeyword)
@@ -123,10 +124,21 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
       .contains(todoKeyword)
   ));
 
-  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  // If there are no headers with possible completion states, check for plain lists instead.
+  if (completionStates.length === 0) {
+    completionStates = headers.get(headerIndex).get('description').filter(part => (
+      part.get('type') === 'list'
+    )).flatMap(listPart => (
+      listPart.get('items')
+    )).filter(item => (
+      item.get('isCheckbox')
+    )).map(item => (
+      item.get('checkboxState') === 'checked'
+    )).toJS();
+  }
 
   return state.updateIn(['headers', headerIndex, 'titleLine', 'title'], title => (
-    updateCookiesInAttributedStringWithChildCompletionStates(title, directChildrenCompletionStates)
+    updateCookiesInAttributedStringWithChildCompletionStates(title, completionStates)
   )).updateIn(['headers', headerIndex, 'titleLine'], titleLine => (
     titleLine.set('rawTitle', attributedStringToRawText(titleLine.get('title')))
   ));
@@ -756,6 +768,7 @@ const advanceCheckboxState = (state, action) => {
   state = updateParentListCheckboxes(state, ['headers'].concat(path));
 
   const headerIndex = path[0];
+  state = updateCookiesOfHeaderWithId(state, state.getIn(['headers', headerIndex, 'id']));
   state = state.updateIn(['headers', headerIndex], header => (
     header.set('rawDescription', attributedStringToRawText(header.get('description')))
   ));
