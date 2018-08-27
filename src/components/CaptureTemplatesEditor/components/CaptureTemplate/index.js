@@ -6,6 +6,7 @@ import ActionButton from '../../../OrgFile/components/ActionDrawer/components/Ac
 import Switch from '../../../UI/Switch/';
 
 import _ from 'lodash';
+import classNames from 'classnames';
 
 export default class CaptureTemplate extends PureComponent {
   constructor(props) {
@@ -17,7 +18,12 @@ export default class CaptureTemplate extends PureComponent {
       'handleAddNewHeaderPath',
       'togglePrepend',
       'handleDeleteClick',
+      'handleHeaderBarClick',
     ]);
+
+    this.state = {
+      isCollapsed: false,
+    };
   }
 
   updateField(fieldName) {
@@ -257,18 +263,34 @@ export default class CaptureTemplate extends PureComponent {
     );
   }
 
+  handleHeaderBarClick() {
+    this.setState({ isCollapsed: !this.state.isCollapsed });
+  }
+
   render() {
     const { template } = this.props;
+    const { isCollapsed } = this.state;
+
+    const caretClassName = classNames('fas fa-2x fa-caret-right capture-template-container__header__caret', {
+      'capture-template-container__header__caret--rotated': !isCollapsed,
+    });
 
     return (
       <div className="capture-template-container">
-        {this.renderDescriptionField(template)}
-        {this.renderIconField(template)}
-        {this.renderOrgFileAvailability(template)}
-        {this.renderHeaderPaths(template)}
-        {this.renderPrependField(template)}
-        {this.renderTemplateField(template)}
-        {this.renderDeleteButton(template)}
+        <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
+          <i className={caretClassName} />
+          <span className="capture-template-container__header__title">{template.get('description')}</span>
+        </div>
+
+        <div>
+          {this.renderDescriptionField(template)}
+          {this.renderIconField(template)}
+          {this.renderOrgFileAvailability(template)}
+          {this.renderHeaderPaths(template)}
+          {this.renderPrependField(template)}
+          {this.renderTemplateField(template)}
+          {this.renderDeleteButton(template)}
+        </div>
       </div>
     );
   }

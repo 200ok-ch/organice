@@ -5,6 +5,29 @@
     margin-bottom: 15px;
 }
 
+.capture-template-container__header {
+    display: flex;
+    align-items: center;
+
+    color: #5E348C;
+}
+
+.capture-template-container__header__title {
+    font-size: 20px;
+}
+
+.capture-template-container__header__caret {
+    margin-right: 10px;
+    margin-left: 5px;
+
+    transition-property: transform;
+    transition-duration: 0.15s;
+}
+
+.capture-template-container__header__caret--rotated {
+    transform: rotate(90deg);
+}
+
 .capture-template__field-container {
     margin-bottom: 5px;
     border-bottom: 1px solid #D8D8D8;
@@ -60,7 +83,7 @@
 .multi-textfield-container {
     width: 75%;
     margin-top: 5px;
-
+p
     display: flex;
 }
 
