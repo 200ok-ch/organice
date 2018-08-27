@@ -91,9 +91,9 @@ Checkboxes:
   - [X] 1. 2
 - [X] 2
 * Capture
-** org-web supports a form of org-capture, in the form of custom action drawer buttons
+** org-web supports something like org-capture, in the form of custom action drawer buttons
 ** Once signed in, you can set up capture templates that specify header paths (and various other configurations) and then easily add new items to your org file
-*** These capture templates can also sync between your devices if you enable storage of settings in Dropbox
+*** These capture templates can also sync between your devices (if you enable settings sync via Dropbox)
 * Syncing with Dropbox
 org-web pulls down your org files from Dropbox. Click the "Sign in" button in the upper right hand corner to sign in with Dropbox and authenticate org-web.
 ** Symlink your org files to Dropbox
@@ -101,11 +101,12 @@ If you don't already keep your org files in Dropbox, I recommend symlinking them
 
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 ** Backups
-The first time you push changes from org-web back up to Dropbox, org-web will make a backup of the original file first. It'll be named your-file-name.org.org-web-bak. Dropbox also keeps a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up to Dropbox :)
+The first time you push changes from org-web back up to Dropbox, org-web will make a backup of the original file first. It'll be named {your-file-name}.org-web-bak. Dropbox also keeps a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up to Dropbox :)
 * org-web operates completely client side
 You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
 org-web is currently pretty usable for simple tasks, but there's a lot more to do. Here are a few of the things on the list:
+** UI overhaul - the action drawer is getting cumbersome!
 ** More first-class support for org features like tags and timestamps
 ** Search
 ** Support for other sync backends in addition to Dropbox
