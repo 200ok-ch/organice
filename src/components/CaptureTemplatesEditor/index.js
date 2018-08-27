@@ -67,7 +67,7 @@ class CaptureTemplatesEditor extends PureComponent {
               <br />
               <br />
 
-              Capture templates show up in the action drawer and give you quick access to creating new headers (kinda like org-capture).
+              Capture templates show up in the action drawer and give you quick access to creating new headers (like org-capture).
             </div>
           ) : (
             captureTemplates.map(template => (

@@ -119,7 +119,7 @@ const getFieldsToPersist = (state, fields) => (
 const getConfigFileContents = fieldsToPersist => (
   JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
     !['accessToken', 'lastSeenWhatsNewHeader'].includes(name)
-  ))))
+  ))), null, 2)
 );
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
