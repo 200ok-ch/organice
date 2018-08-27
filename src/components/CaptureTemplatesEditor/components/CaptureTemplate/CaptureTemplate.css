@@ -5,6 +5,10 @@
     margin-bottom: 15px;
 }
 
+.capture-template-container:first-of-type {
+    margin-top: 10px;
+}
+
 .capture-template-container__header {
     display: flex;
     align-items: center;
@@ -14,10 +18,13 @@
 
 .capture-template-container__header__title {
     font-size: 20px;
+    margin-left: -10px;
+
+    max-width: calc(100% - 120px);
 }
 
 .capture-template-container__header__caret {
-    margin-right: 10px;
+    margin-right: 15px;
     margin-left: 5px;
 
     transition-property: transform;
@@ -26,6 +33,10 @@
 
 .capture-template-container__header__caret--rotated {
     transform: rotate(90deg);
+}
+
+.capture-template-container__content {
+    margin-top: 10px;
 }
 
 .capture-template__field-container {
@@ -49,6 +60,7 @@
     color: gray;
     font-size: 14px;
     margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .capture-template__letter-textfield {

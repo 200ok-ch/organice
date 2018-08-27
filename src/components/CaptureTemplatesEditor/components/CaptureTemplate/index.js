@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import { Collapse } from 'react-collapse';
 
 import './CaptureTemplate.css';
 
@@ -22,7 +23,7 @@ export default class CaptureTemplate extends PureComponent {
     ]);
 
     this.state = {
-      isCollapsed: false,
+      isCollapsed: !!props.template.get('description'),
     };
   }
 
@@ -122,11 +123,6 @@ export default class CaptureTemplate extends PureComponent {
         <div className="capture-template__help-text">
           Instead of a letter, you can specify the name of any free Font Awesome icon (like lemon or calendar-plus) to use as the capture icon.
           {' '}You can search the available icons <a href="https://fontawesome.com/icons?d=gallery&s=solid&m=free" target="_blank" rel="noopener noreferrer">here</a>.
-        </div>
-
-        <div className="capture-template__field" style={{marginTop: 10}}>
-          <div>Preview:</div>
-          <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
         </div>
       </div>
     );
@@ -279,18 +275,21 @@ export default class CaptureTemplate extends PureComponent {
       <div className="capture-template-container">
         <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
           <i className={caretClassName} />
+          <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
           <span className="capture-template-container__header__title">{template.get('description')}</span>
         </div>
 
-        <div>
-          {this.renderDescriptionField(template)}
-          {this.renderIconField(template)}
-          {this.renderOrgFileAvailability(template)}
-          {this.renderHeaderPaths(template)}
-          {this.renderPrependField(template)}
-          {this.renderTemplateField(template)}
-          {this.renderDeleteButton(template)}
-        </div>
+        <Collapse isOpened={!isCollapsed} springConfig={{stiffness: 300}}>
+          <div className="capture-template-container__content">
+            {this.renderDescriptionField(template)}
+            {this.renderIconField(template)}
+            {this.renderOrgFileAvailability(template)}
+            {this.renderHeaderPaths(template)}
+            {this.renderPrependField(template)}
+            {this.renderTemplateField(template)}
+            {this.renderDeleteButton(template)}
+          </div>
+        </Collapse>
       </div>
     );
   }
