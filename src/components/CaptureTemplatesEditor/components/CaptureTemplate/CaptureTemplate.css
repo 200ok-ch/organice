@@ -35,6 +35,11 @@
     transform: rotate(90deg);
 }
 
+.capture-template-container__header__drag-handle {
+    margin-left: auto;
+    margin-right: 20px;
+}
+
 .capture-template-container__content {
     margin-top: 10px;
 }

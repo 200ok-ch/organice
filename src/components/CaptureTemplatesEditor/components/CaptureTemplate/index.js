@@ -267,19 +267,26 @@ class CaptureTemplate extends PureComponent {
   }
 
   render() {
-    const { template, isDragging, connectDragSource, connectDropTarget } = this.props;
+    const {
+      template,
+      isDragging,
+      connectDragSource,
+      connectDropTarget,
+      connectDragPreview
+    } = this.props;
     const { isCollapsed } = this.state;
 
     const caretClassName = classNames('fas fa-2x fa-caret-right capture-template-container__header__caret', {
       'capture-template-container__header__caret--rotated': !isCollapsed,
     });
 
-    return connectDragSource(connectDropTarget(
+    return connectDragSource(connectDropTarget(connectDragPreview(
       <div className="capture-template-container" style={{opacity: isDragging ? 0 : 1}}>
         <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
           <i className={caretClassName} />
           <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
           <span className="capture-template-container__header__title">{template.get('description')}</span>
+          <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" />
         </div>
 
         <Collapse isOpened={!isCollapsed} springConfig={{stiffness: 300}}>
@@ -294,7 +301,7 @@ class CaptureTemplate extends PureComponent {
           </div>
         </Collapse>
       </div>
-    ));
+    )));
   }
 }
 
@@ -346,6 +353,7 @@ export default _.flow(
   DragSource(
     'capture-template', templateSource, (connect, monitor) => ({
       connectDragSource: connect.dragSource(),
+      connectDragPreview: connect.dragPreview(),
       isDragging: monitor.isDragging(),
     }),
   ),
