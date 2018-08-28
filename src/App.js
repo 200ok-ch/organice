@@ -36,4 +36,7 @@ class App extends PureComponent {
   }
 }
 
-export default DragDropContext(TouchBackend)(App);
+window.deviceHasTouchSupport = 'ontouchstart' in document.documentElement;
+const dndBackend = window.deviceHasTouchSupport ? TouchBackend : HTML5Backend;
+
+export default DragDropContext(dndBackend)(App);

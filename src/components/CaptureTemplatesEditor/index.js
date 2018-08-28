@@ -90,7 +90,7 @@ class CaptureTemplatesEditor extends PureComponent {
                                  onReorder={this.handleReorderTemplate} />
               ))}
 
-              <CaptureTemplateDragPreview />
+              {window.deviceHasTouchSupport && <CaptureTemplateDragPreview />}
             </Fragment>
           )}
         </div>
