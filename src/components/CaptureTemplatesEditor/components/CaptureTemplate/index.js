@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Collapse } from 'react-collapse';
+import { UnmountClosed as Collapse } from 'react-collapse';
 
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';

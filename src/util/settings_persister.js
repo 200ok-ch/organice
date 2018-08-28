@@ -29,7 +29,7 @@ const pushFileToDropbox = _.debounce((accessToken, path, contents) => {
   }).catch(error => {
     alert(`There was an error trying to push settings to your Dropbox account: ${error}`);
   });
-}, 200, {maxWait: 5000});
+}, 1000, {maxWait: 3000});
 
 const pullFileFromDropbox = (accessToken, path) => {
   const dropbox = new Dropbox({ accessToken });
