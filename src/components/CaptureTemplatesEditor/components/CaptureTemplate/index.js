@@ -280,16 +280,16 @@ class CaptureTemplate extends PureComponent {
       'capture-template-container__header__caret--rotated': !isCollapsed,
     });
 
-    return connectDragSource(connectDropTarget(connectDragPreview(
+    return connectDropTarget(connectDragPreview(
       <div className="capture-template-container" style={{opacity: isDragging ? 0 : 1}}>
         <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
           <i className={caretClassName} />
           <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
           <span className="capture-template-container__header__title">{template.get('description')}</span>
-          <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" />
+          {connectDragSource(<i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" />)}
         </div>
 
-        <Collapse isOpened={!isCollapsed} springConfig={{stiffness: 300}}>
+        <Collapse isOpened={!isCollapsed && !isDragging} springConfig={{stiffness: 300}}>
           <div className="capture-template-container__content">
             {this.renderDescriptionField(template)}
             {this.renderIconField(template)}
@@ -301,7 +301,7 @@ class CaptureTemplate extends PureComponent {
           </div>
         </Collapse>
       </div>
-    )));
+    ));
   }
 }
 

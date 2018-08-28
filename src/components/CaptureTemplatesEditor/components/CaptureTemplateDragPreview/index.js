@@ -13,7 +13,9 @@ class CaptureTemplateDragPreview extends PureComponent {
       };
     }
 
-    const transform = `translate(${currentOffset.x}px, ${currentOffset.y - 50}px)`;
+    const verticalFudge = 85;
+    const transform = `translate(0, ${currentOffset.y - verticalFudge}px)`;
+
     return {
       pointerEvents: 'none',
       transform,
