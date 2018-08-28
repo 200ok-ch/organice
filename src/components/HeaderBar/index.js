@@ -18,7 +18,7 @@ class HeaderBar extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleWhatsNewClick',
+      'handleChangelogClick',
       'handleSettingsClick',
       'handleModalPageDoneClick',
       'handleSettingsSubPageBackClick',
@@ -108,7 +108,7 @@ class HeaderBar extends PureComponent {
     const { activeModalPage } = this.props;
 
     switch (activeModalPage) {
-    case 'whats_new':
+    case 'changelog':
       return <div />;
     case 'keyboard_shortcuts_editor':
       return this.renderSettingsSubPageBackButton();
@@ -137,7 +137,7 @@ class HeaderBar extends PureComponent {
     const titleContainerWithText = text => <div className="header-bar__title">{text}</div>;
 
     switch (this.props.activeModalPage) {
-    case 'whats_new':
+    case 'changelog':
       return titleContainerWithText('Changelog');
     case 'settings':
       return titleContainerWithText('Settings');
@@ -157,8 +157,8 @@ class HeaderBar extends PureComponent {
     return titleContainerWithText('');
   }
 
-  handleWhatsNewClick() {
-    this.props.base.setActiveModalPage('whats_new');
+  handleChangelogClick() {
+    this.props.base.setActiveModalPage('changelog');
   }
 
   handleSettingsClick() {
@@ -173,7 +173,7 @@ class HeaderBar extends PureComponent {
     const {
       isAuthenticated,
       onSignInClick,
-      hasUnseenWhatsNew,
+      hasUnseenChangelog,
       activeModalPage,
     } = this.props;
 
@@ -184,8 +184,8 @@ class HeaderBar extends PureComponent {
         </div>
       );
     } else {
-      const whatsNewClassName = classNames('fas fa-gift header-bar__actions__item', {
-        'whats-new-icon--has-unseen': hasUnseenWhatsNew,
+      const changelogClassName = classNames('fas fa-gift header-bar__actions__item', {
+        'changelog-icon--has-unseen': hasUnseenChangelog,
       });
 
       switch (this.getPathRoot()) {
@@ -194,7 +194,7 @@ class HeaderBar extends PureComponent {
           <div className="header-bar__actions">
             {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
-            {isAuthenticated && <i className={whatsNewClassName} onClick={this.handleWhatsNewClick} />}
+            {isAuthenticated && <i className={changelogClassName} onClick={this.handleChangelogClick} />}
 
             <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
               <i className="fab fa-github header-bar__actions__item" />
@@ -223,7 +223,7 @@ class HeaderBar extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
-    hasUnseenWhatsNew: state.base.get('hasUnseenWhatsNew'),
+    hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     activeModalPage: state.base.get('activeModalPage'),
   };
 };

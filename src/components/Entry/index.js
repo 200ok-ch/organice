@@ -15,7 +15,7 @@ import classNames from 'classnames';
 
 import parseQueryString from '../../util/parse_query_string';
 import { parseOrg } from '../../lib/parse_org';
-import { whatsNewFileContents } from '../../lib/static_file_contents';
+import { changelogFileContents } from '../../lib/static_file_contents';
 
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -36,7 +36,7 @@ class Entry extends PureComponent {
 
     _.bindAll(this, [
       'handleSignIn',
-      'renderWhatsNewFile',
+      'renderChangelogFile',
       'renderSampleFile',
       'renderLanding',
       'renderFileBrowser',
@@ -45,7 +45,7 @@ class Entry extends PureComponent {
   }
 
   componentDidMount() {
-    const { lastSeenWhatsNewHeader, isAuthenticated } = this.props;
+    const { lastSeenChangelogHeader, isAuthenticated } = this.props;
 
     const accessToken = parseQueryString(window.location.hash).access_token;
     if (accessToken) {
@@ -53,12 +53,12 @@ class Entry extends PureComponent {
       window.location.hash = '';
     }
 
-    const whatsNewFile = parseOrg(whatsNewFileContents);
-    const firstHeaderTitle = whatsNewFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
-    if (isAuthenticated && !!lastSeenWhatsNewHeader && firstHeaderTitle !== lastSeenWhatsNewHeader) {
-      this.props.base.setHasUnseenWhatsNew(true);
+    const changelogFile = parseOrg(changelogFileContents);
+    const firstHeaderTitle = changelogFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
+    if (isAuthenticated && !!lastSeenChangelogHeader && firstHeaderTitle !== lastSeenChangelogHeader) {
+      this.props.base.setHasUnseenChangelog(true);
     }
-    this.props.base.setLastSeenWhatsNewHeader(firstHeaderTitle);
+    this.props.base.setLastSeenChangelogHeader(firstHeaderTitle);
   }
 
   handleSignIn() {
@@ -69,13 +69,13 @@ class Entry extends PureComponent {
     window.location = authURL;
   }
 
-  renderWhatsNewFile() {
+  renderChangelogFile() {
     return (
-      <OrgFile staticFile="whats_new"
+      <OrgFile staticFile="changelog"
                shouldDisableDirtyIndicator={true}
                shouldDisableActionDrawer={true}
                shouldDisableSyncButtons={false}
-               parsingErrorMessage={"The contents of whats_new.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
+               parsingErrorMessage={"The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
     );
   }
 
@@ -134,8 +134,8 @@ class Entry extends PureComponent {
 
         {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
 
-        {activeModalPage === 'whats_new' ? (
-          this.renderWhatsNewFile()
+        {activeModalPage === 'changelog' ? (
+          this.renderChangelogFile()
         ) : (
           isAuthenticated ? (
             ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor'].includes(activeModalPage) ? (
@@ -169,7 +169,7 @@ const mapStateToProps = (state, props) => {
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: !!state.dropbox.get('accessToken'),
     fontSize: state.base.get('fontSize'),
-    lastSeenWhatsNewHeader: state.base.get('lastSeenWhatsNewHeader'),
+    lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
     activeModalPage: state.base.get('activeModalPage'),
   };
 };

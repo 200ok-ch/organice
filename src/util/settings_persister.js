@@ -74,7 +74,7 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'lastSeenWhatsNewHeader',
+    name: 'lastSeenChangelogHeader',
     type: 'nullable',
     shouldStoreInConfig: true,
   },
@@ -118,7 +118,7 @@ const getFieldsToPersist = (state, fields) => (
 
 const getConfigFileContents = fieldsToPersist => (
   JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
-    !['accessToken', 'lastSeenWhatsNewHeader'].includes(name)
+    !['accessToken', 'lastSeenChangelogHeader'].includes(name)
   ))), null, 2)
 );
 
@@ -130,7 +130,7 @@ export const applyCategorySettingsFromConfig = (state, config, category) => {
   )).filter(field => (
     // I accidentally included this field in some config files, so I need to forever
     // filter it out here. Whoops...
-    field.name !== 'lastSeenWhatsNewHeader'
+    field.name !== 'lastSeenChangelogHeader'
   )).forEach(field => {
     if (field.type === 'json') {
       state = state.set(field.name, fromJS(JSON.parse(config[field.name])));

@@ -1,5 +1,5 @@
 import { displayFile, stopDisplayingFile } from './org';
-import { sampleFileContents, whatsNewFileContents } from '../lib/static_file_contents';
+import { sampleFileContents, changelogFileContents } from '../lib/static_file_contents';
 
 import { Dropbox } from 'dropbox';
 
@@ -22,8 +22,8 @@ export const loadStaticFile = staticFile => {
                                getState().org.present.get('contents')));
 
     const fileContents = {
-      'whats_new': whatsNewFileContents,
-      'sample': sampleFileContents,
+      changelog: changelogFileContents,
+      sample: sampleFileContents,
     }[staticFile];
 
     dispatch(displayFile(null, fileContents));
@@ -72,12 +72,12 @@ export const setShouldStoreSettingsInDropbox = newShouldStoreSettingsInDropbox =
   };
 };
 
-export const setHasUnseenWhatsNew = newHasUnseenWhatsNew => ({
-  type: 'SET_HAS_UNSEEN_WHATS_NEW', newHasUnseenWhatsNew,
+export const setHasUnseenChangelog = newHasUnseenChangelog => ({
+  type: 'SET_HAS_UNSEEN_CHANGELOG', newHasUnseenChangelog,
 });
 
-export const setLastSeenWhatsNewHeader = newLastSeenWhatsNewHeader => ({
-  type: 'SET_LAST_SEEN_WHATS_NEW_HEADER', newLastSeenWhatsNewHeader,
+export const setLastSeenChangelogHeader = newLastSeenChangelogHeader => ({
+  type: 'SET_LAST_SEEN_CHANGELOG_HEADER', newLastSeenChangelogHeader,
 });
 
 export const setCustomKeybinding = (keybindingName, keybinding) => ({

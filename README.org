@@ -27,16 +27,16 @@ To run the app, run:
 yarn start
 #+END_SRC
 
-Getting the "Sample" and "What's New" files to load requires this complicated looking command to set a couple environment variables appropriately (this is a hack until Create React App [[https://github.com/facebook/create-react-app/issues/3722][has nicer support for loading raw files]]). This is the command for the [[https://fishshell.com/][Fish shell]]:
+Getting the "Sample" and "Changelog" files to load requires this complicated looking command to set a couple environment variables appropriately (this is a hack until Create React App [[https://github.com/facebook/create-react-app/issues/3722][has nicer support for loading raw files]]). This is the command for the [[https://fishshell.com/][Fish shell]]:
 
 #+BEGIN_SRC
-env SAMPLE_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") WHATS_NEW_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./whats_new.org', 'r').read()))") yarn start
+env SAMPLE_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") CHANGELOG_FILE_CONTENTS=(python -c "import json; print(json.dumps(open('./changelog.org', 'r').read()))") yarn start
 #+END_SRC
 
 And here it is for bash:
 
 #+BEGIN_SRC
-SAMPLE_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") WHATS_NEW_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./whats_new.org', 'r').read()))") yarn start
+SAMPLE_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") CHANGELOG_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./changelog.org', 'r').read()))") yarn start
 #+END_SRC
 
 To test against your actual Dropbox, you'll need to create a ~.env~ file by copying ~.env.sample~ to just ~.env~.

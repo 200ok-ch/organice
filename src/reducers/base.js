@@ -26,12 +26,12 @@ const setShouldStoreSettingsInDropbox = (state, action) => (
   state.set('shouldStoreSettingsInDropbox', action.newShouldStoreSettingsInDropbox)
 );
 
-const setHasUnseenWhatsNew = (state, action) => (
-  state.set('hasUnseenWhatsNew', action.newHasUnseenWhatsNew)
+const setHasUnseenChangelog = (state, action) => (
+  state.set('hasUnseenChangelog', action.newHasUnseenChangelog)
 );
 
-const setLastSeenWhatsNewHeader = (state, action) => (
-  state.set('lastSeenWhatsNewHeader', action.newLastSeenWhatsNewHeader)
+const setLastSeenChangelogHeader = (state, action) => (
+  state.set('lastSeenChangelogHeader', action.newLastSeenChangelogHeader)
 );
 
 const setLastViewedFile = (state, action) => (
@@ -74,10 +74,10 @@ export default (state = new Map(), action) => {
     return setShouldTapTodoToAdvance(state, action);
   case 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX':
     return setShouldStoreSettingsInDropbox(state, action);
-  case 'SET_HAS_UNSEEN_WHATS_NEW':
-    return setHasUnseenWhatsNew(state, action);
-  case 'SET_LAST_SEEN_WHATS_NEW_HEADER':
-    return setLastSeenWhatsNewHeader(state, action);
+  case 'SET_HAS_UNSEEN_CHANGELOG':
+    return setHasUnseenChangelog(state, action);
+  case 'SET_LAST_SEEN_CHANGELOG_HEADER':
+    return setLastSeenChangelogHeader(state, action);
   case 'SET_LAST_VIEWED_FILE':
     return setLastViewedFile(state, action);
   case 'SET_CUSTOM_KEYBINDING':
