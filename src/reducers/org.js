@@ -673,7 +673,7 @@ const updateTableCellValue = (state, action) => {
 
 const insertCapture = (state, action) => {
   const headers = state.get('headers');
-  const { template, content } = action;
+  const { template, content, shouldPrepend } = action;
 
   const parentHeader = headerWithPath(headers, template.get('headerPaths'));
   if (!parentHeader) {
@@ -685,7 +685,7 @@ const insertCapture = (state, action) => {
 
   const parentHeaderIndex = indexOfHeaderWithId(headers, parentHeader.get('id'));
   const numSubheaders = numSubheadersOfHeaderWithId(headers, parentHeader.get('id'));
-  const newIndex = parentHeaderIndex + 1 + (template.get('shouldPrepend') ? 0 : numSubheaders);
+  const newIndex = parentHeaderIndex + 1 + (shouldPrepend ? 0 : numSubheaders);
 
   state = state.update('headers', headers => (
     headers.insert(newIndex, newHeader)

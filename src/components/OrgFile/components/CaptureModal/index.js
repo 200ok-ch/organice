@@ -3,6 +3,7 @@ import React, { PureComponent, Fragment } from 'react';
 import './CaptureModal.css';
 
 import ActionButton from '../ActionDrawer/components/ActionButton/';
+import Switch from '../../../UI/Switch/';
 
 import { headerWithPath } from '../../../../lib/org_utils';
 
@@ -13,13 +14,19 @@ export default class CaptureModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleCaptureClick', 'handleTextareaChange', 'handleCloseClick']);
+    _.bindAll(this, [
+      'handleCaptureClick',
+      'handleTextareaChange',
+      'handleCloseClick',
+      'handlePrependSwitchToggle',
+    ]);
 
     const [substitutedTemplate, initialCursorIndex] = this.substituteTemplateVariables(props.template.get('template'));
 
     this.state = {
       textareaValue: substitutedTemplate,
       initialCursorIndex,
+      shouldPrepend: props.template.get('shouldPrepend'),
     };
   }
 
@@ -36,10 +43,10 @@ export default class CaptureModal extends PureComponent {
   }
 
   handleCaptureClick() {
-    const { textareaValue } = this.state;
+    const { textareaValue, shouldPrepend } = this.state;
     const { template, onCapture } = this.props;
 
-    onCapture(template.get('id'), textareaValue);
+    onCapture(template.get('id'), textareaValue, shouldPrepend);
   }
 
   handleTextareaChange(event) {
@@ -48,6 +55,10 @@ export default class CaptureModal extends PureComponent {
 
   handleCloseClick() {
     this.props.onClose();
+  }
+
+  handlePrependSwitchToggle() {
+    this.setState({ shouldPrepend: !this.state.shouldPrepend });
   }
 
   substituteTemplateVariables(templateString) {
@@ -75,7 +86,7 @@ export default class CaptureModal extends PureComponent {
 
   render() {
     const { template, headers } = this.props;
-    const { textareaValue } = this.state;
+    const { textareaValue, shouldPrepend } = this.state;
 
     const targetHeader = headerWithPath(headers, template.get('headerPaths'));
 
@@ -106,6 +117,11 @@ export default class CaptureModal extends PureComponent {
                       ref={textarea => this.textarea = textarea} />
 
             <div className="capture-modal-button-container">
+              <div className="capture-modal-prepend-container">
+                <span className="capture-modal-prepend-label">Prepend:</span>
+                <Switch isEnabled={shouldPrepend} onToggle={this.handlePrependSwitchToggle} />
+              </div>
+
               <button className="btn capture-modal-button" onClick={this.handleCaptureClick}>
                 Capture
               </button>

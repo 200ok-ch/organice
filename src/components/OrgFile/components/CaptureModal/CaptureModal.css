@@ -49,7 +49,18 @@
 
 .capture-modal-button-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    margin-top: 10px;
+}
+
+.capture-modal-prepend-container {
+    display: flex;
+    align-items: center;
+}
+
+.capture-modal-prepend-label {
+    margin-right: 10px;
 }
 
 .capture-modal-button {

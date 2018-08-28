@@ -186,14 +186,14 @@ export const updateTableCellValue = (cellId, newValue) => ({
   type: 'UPDATE_TABLE_CELL_VALUE', cellId, newValue,
 });
 
-export const insertCapture = (templateId, content) => (
+export const insertCapture = (templateId, content, shouldPrepend) => (
   (dispatch, getState) => {
     dispatch(disableCaptureModal());
 
     const template = getState().capture.get('captureTemplates').find(template => (
       template.get('id') === templateId
     ));
-    dispatch({ type: 'INSERT_CAPTURE', template, content });
+    dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend });
   }
 );
 
