@@ -5,6 +5,7 @@ import { readInitialState, loadSettingsFromConfigFile, subscribeToChanges } from
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import HTML5Backend from 'react-dnd-html5-backend';
+import { default as TouchBackend } from 'react-dnd-touch-backend';
 import { DragDropContext } from 'react-dnd';
 
 import './App.css';
@@ -35,4 +36,4 @@ class App extends PureComponent {
   }
 }
 
-export default DragDropContext(HTML5Backend)(App);
+export default DragDropContext(TouchBackend)(App);

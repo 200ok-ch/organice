@@ -301,6 +301,7 @@ class CaptureTemplate extends PureComponent {
 const templateSource = {
   beginDrag: props => ({
     id: props.template.get('id'),
+    template: props.template,
     index: props.index,
   }),
 };

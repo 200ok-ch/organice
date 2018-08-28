@@ -1,3 +1,7 @@
+.capture-templates-container {
+    position: relative;
+}
+
 .new-capture-template-button-container {
     display: flex;
     justify-content: flex-end;
