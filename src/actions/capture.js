@@ -37,3 +37,7 @@ export const activateCaptureModalForTemplateId = templateId => ({
 export const disableCaptureModal = () => ({
   type: 'DISABLE_CAPTURE_MODAL',
 });
+
+export const reorderCaptureTemplate = (fromIndex, toIndex) => ({
+  type: 'REORDER_CAPTURE_TEMPLATE', fromIndex, toIndex,
+});

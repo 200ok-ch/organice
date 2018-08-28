@@ -87,6 +87,14 @@ const disableCaptureModal = state => (
   state.set('activeCaptureTemplateId', null)
 );
 
+const reorderCaptureTemplate = (state, action) => (
+  state.update('captureTemplates', templates => (
+    templates
+      .splice(action.fromIndex, 1)
+      .splice(action.toIndex, 0, templates.get(action.fromIndex))
+  ))
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE':
@@ -109,6 +117,8 @@ export default (state = new Map(), action) => {
     return activateCaptureModalForTemplateId(state, action);
   case 'DISABLE_CAPTURE_MODAL':
     return disableCaptureModal(state, action);
+  case 'REORDER_CAPTURE_TEMPLATE':
+    return reorderCaptureTemplate(state, action);
   default:
     return state;
   }
