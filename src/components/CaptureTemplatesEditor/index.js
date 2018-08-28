@@ -23,6 +23,7 @@ class CaptureTemplatesEditor extends PureComponent {
       'handleAddNewTemplateHeaderPath',
       'handleRemoveTemplateHeaderPath',
       'handleDeleteTemplate',
+      'handleReorderTemplate',
     ]);
   }
 
@@ -54,6 +55,10 @@ class CaptureTemplatesEditor extends PureComponent {
     this.props.capture.deleteTemplate(templateId);
   }
 
+  handleReorderTemplate(fromIndex, toIndex) {
+    this.props.capture.reorderCaptureTemplate(fromIndex, toIndex);
+  }
+
   render() {
     const { captureTemplates } = this.props;
 
@@ -70,15 +75,17 @@ class CaptureTemplatesEditor extends PureComponent {
               Capture templates show up in the action drawer and give you quick access to creating new headers (like org-capture).
             </div>
           ) : (
-            captureTemplates.map(template => (
+            captureTemplates.map((template, index) => (
               <CaptureTemplate key={template.get('id')}
+                               index={index}
                                template={template}
                                onFieldPathUpdate={this.handleFieldPathUpdate}
                                onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
                                onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
                                onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
                                onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
-                               onDeleteTemplate={this.handleDeleteTemplate} />
+                               onDeleteTemplate={this.handleDeleteTemplate}
+                               onReorder={this.handleReorderTemplate} />
             ))
           )}
         </div>

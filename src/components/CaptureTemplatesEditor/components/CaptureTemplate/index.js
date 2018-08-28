@@ -1,6 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Collapse } from 'react-collapse';
 
+import { findDOMNode } from 'react-dom';
+import { DragSource, DropTarget } from 'react-dnd';
+
 import './CaptureTemplate.css';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
@@ -9,7 +12,7 @@ import Switch from '../../../UI/Switch/';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-export default class CaptureTemplate extends PureComponent {
+class CaptureTemplate extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -264,15 +267,15 @@ export default class CaptureTemplate extends PureComponent {
   }
 
   render() {
-    const { template } = this.props;
+    const { template, isDragging, connectDragSource, connectDropTarget } = this.props;
     const { isCollapsed } = this.state;
 
     const caretClassName = classNames('fas fa-2x fa-caret-right capture-template-container__header__caret', {
       'capture-template-container__header__caret--rotated': !isCollapsed,
     });
 
-    return (
-      <div className="capture-template-container">
+    return connectDragSource(connectDropTarget(
+      <div className="capture-template-container" style={{opacity: isDragging ? 0 : 1}}>
         <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
           <i className={caretClassName} />
           <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
@@ -291,6 +294,58 @@ export default class CaptureTemplate extends PureComponent {
           </div>
         </Collapse>
       </div>
-    );
+    ));
   }
 }
+
+const templateSource = {
+  beginDrag: props => ({
+    id: props.template.get('id'),
+    index: props.index,
+  }),
+};
+
+const templateTarget = {
+  hover(props, monitor, component) {
+    if (!component) {
+      return;
+    }
+
+    const dragIndex = monitor.getItem().index;
+    const hoverIndex = props.index;
+    if (dragIndex === hoverIndex) {
+      return;
+    }
+
+    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+    const clientOffset = monitor.getClientOffset();
+    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+      return;
+    }
+    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+      return;
+    }
+
+    props.onReorder(dragIndex, hoverIndex);
+
+    monitor.getItem().index = hoverIndex;
+  }
+};
+
+export default _.flow(
+  DropTarget(
+    'capture-template', templateTarget, connect => ({
+      connectDropTarget: connect.dropTarget(),
+    })
+  ),
+  DragSource(
+    'capture-template', templateSource, (connect, monitor) => ({
+      connectDragSource: connect.dragSource(),
+      isDragging: monitor.isDragging(),
+    }),
+  ),
+)(CaptureTemplate);
