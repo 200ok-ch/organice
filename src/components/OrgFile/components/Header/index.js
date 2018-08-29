@@ -60,7 +60,9 @@ class Header extends PureComponent {
     const { touchStartX, currentTouchX } = this.state;
     const marginLeft = (!!touchStartX && !!currentTouchX) ? (
       currentTouchX - touchStartX
-    ) : spring(0);
+    ) : (
+      spring(0)
+    );
 
     const style = {
       paddingLeft: 20 * indentLevel,
@@ -73,22 +75,33 @@ class Header extends PureComponent {
 
     return (
       <Motion style={style}>
-        {interpolatedStyle => (
-          <div className={className}
-               style={interpolatedStyle}
-               ref={onRef}
-               onTouchStart={this.handleTouchStart}
-               onTouchMove={this.handleTouchMove}
-               onTouchEnd={this.handleTouchEndOrCanceled}
-               onTouchCancel={this.handleTouchEndOrCanceled}>
-            <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
-            <TitleLine header={header}
-                       color={color}
-                       hasContent={hasContent}
-                       isSelected={isSelected} />
-            <HeaderContent header={header} />
-          </div>
-        )}
+        {interpolatedStyle => {
+          const minSwipeDistance = 100;
+          const swipeActionContainerStyle = {
+            width: interpolatedStyle.marginLeft,
+            backgroundColor: interpolatedStyle.marginLeft >= minSwipeDistance ? 'green' : 'lightgray',
+          };
+
+          return (
+            <div className={className}
+                 style={interpolatedStyle}
+                 ref={onRef}
+                 onTouchStart={this.handleTouchStart}
+                 onTouchMove={this.handleTouchMove}
+                 onTouchEnd={this.handleTouchEndOrCanceled}
+                 onTouchCancel={this.handleTouchEndOrCanceled}>
+              <div className="left-swipe-action-container" style={swipeActionContainerStyle}>
+                <i className="fas fa-check left-swipe-action-container__icon" />
+              </div>
+              <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
+              <TitleLine header={header}
+                         color={color}
+                         hasContent={hasContent}
+                         isSelected={isSelected} />
+              <HeaderContent header={header} />
+            </div>
+          );
+        }}
       </Motion>
     );
   }

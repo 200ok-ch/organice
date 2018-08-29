@@ -99,6 +99,7 @@ class TitleLine extends PureComponent {
     const titleStyle = {
       color,
       fontWeight: 'bold',
+      wordBreak: 'break-word'
     };
 
     return (

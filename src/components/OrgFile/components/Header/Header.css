@@ -3,11 +3,30 @@
     margin-top: 5px;
     padding-top: 5px;
     position: relative;
-    overflow-y: hidden;
-    overflow-x: hidden;
+    overflow-y: visible;
+    overflow-x: visible;
     min-height: 23px;
 }
 
 .header--selected {
     background-color: rgba(239, 255, 0, 0.28);
+}
+
+.left-swipe-action-container {
+    background-color: green;
+
+    top: 0;
+    right: 100%;
+    height: 100%;
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+}
+
+.left-swipe-action-container__icon {
+    position: absolute;
+
+    right: 10px;
+    color: white;
 }
