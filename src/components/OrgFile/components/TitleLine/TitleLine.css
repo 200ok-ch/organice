@@ -1,8 +1,6 @@
 .title-line {
     margin-top: -18px;
     display: flex;
-
-    overflow-x: auto;
 }
 
 .entry-container--large-font .title-line {
