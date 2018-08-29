@@ -146,7 +146,8 @@ export const headerWithPath = (headers, headerPath) => {
   }
 
   const firstHeader = headers.find(header => (
-    header.getIn(['titleLine', 'rawTitle']) === headerPath.first()
+    parentIdOfHeaderWithId(headers, header.get('id')) === null &&
+      header.getIn(['titleLine', 'rawTitle']) === headerPath.first()
   ));
   if (!firstHeader) {
     return null;
