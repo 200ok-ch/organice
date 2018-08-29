@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { Motion, spring } from 'react-motion';
+
+import * as orgActions from '../../../../actions/org';
 
 import './Header.css';
 
@@ -14,11 +17,13 @@ import HeaderContent from '../HeaderContent';
 import { headerWithId } from '../../../../lib/org_utils';
 
 class Header extends PureComponent {
+  MIN_SWIPE_ACTIVATION_DISTANCE = 80;
+
   constructor(props) {
     super(props);
 
     _.bindAll(this, [
-      'handleTouchMove', 'handleTouchStart', 'handleTouchEndOrCanceled',
+      'handleTouchMove', 'handleTouchStart', 'handleTouchEnd', 'handleTouchCancel',
     ]);
 
     this.state = {
@@ -35,7 +40,20 @@ class Header extends PureComponent {
     this.setState({ currentTouchX: event.changedTouches[0].clientX });
   }
 
-  handleTouchEndOrCanceled(event) {
+  handleTouchEnd(event) {
+    const { touchStartX, currentTouchX } = this.state;
+
+    if (currentTouchX - touchStartX >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
+      this.props.org.advanceTodoState(this.props.header.get('id'));
+    }
+
+    this.setState({
+      touchStartX: null,
+      currentTouchX: null,
+    });
+  }
+
+  handleTouchCancel() {
     this.setState({
       touchStartX: null,
       currentTouchX: null,
@@ -76,10 +94,9 @@ class Header extends PureComponent {
     return (
       <Motion style={style}>
         {interpolatedStyle => {
-          const minSwipeDistance = 100;
           const swipeActionContainerStyle = {
             width: interpolatedStyle.marginLeft,
-            backgroundColor: interpolatedStyle.marginLeft >= minSwipeDistance ? 'green' : 'lightgray',
+            backgroundColor: interpolatedStyle.marginLeft >= this.MIN_SWIPE_ACTIVATION_DISTANCE ? 'green' : 'lightgray',
           };
 
           return (
@@ -88,8 +105,8 @@ class Header extends PureComponent {
                  ref={onRef}
                  onTouchStart={this.handleTouchStart}
                  onTouchMove={this.handleTouchMove}
-                 onTouchEnd={this.handleTouchEndOrCanceled}
-                 onTouchCancel={this.handleTouchEndOrCanceled}>
+                 onTouchEnd={this.handleTouchEnd}
+                 onTouchCancel={this.handleTouchCancel}>
               <div className="left-swipe-action-container" style={swipeActionContainerStyle}>
                 <i className="fas fa-check left-swipe-action-container__icon" />
               </div>
@@ -118,6 +135,8 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = dispatch => ({
+  org: bindActionCreators(orgActions, dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

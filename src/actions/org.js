@@ -32,8 +32,8 @@ export const selectHeader = headerId => (
   }
 );
 
-export const advanceTodoState = () => ({
-  type: 'ADVANCE_TODO_STATE',
+export const advanceTodoState = (headerId = null) => ({
+  type: 'ADVANCE_TODO_STATE', headerId,
 });
 
 export const enterTitleEditMode = () => ({

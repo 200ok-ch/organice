@@ -154,7 +154,7 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
-  const headerId = state.get('selectedHeaderId');
+  const headerId = action.headerId || state.get('selectedHeaderId');
   if (!headerId) {
     return state;
   }
