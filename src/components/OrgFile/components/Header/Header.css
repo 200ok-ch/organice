@@ -13,8 +13,6 @@
 }
 
 .left-swipe-action-container {
-    background-color: green;
-
     top: 0;
     right: 100%;
     height: 100%;
@@ -24,9 +22,24 @@
     align-items: center;
 }
 
-.left-swipe-action-container__icon {
+.right-swipe-action-container {
+    top: 0;
+    height: 100%;
     position: absolute;
 
-    right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.swipe-action-container__icon {
+    position: absolute;
     color: white;
+}
+
+.swipe-action-container__icon--left {
+    right: 10px;
+}
+
+.swipe-action-container__icon--right {
+    left: 10px;
 }

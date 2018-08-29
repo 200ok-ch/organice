@@ -33,6 +33,7 @@ class Header extends PureComponent {
   }
 
   handleTouchStart(event) {
+    console.log('start', event.changedTouches[0].clientX);
     this.setState({ touchStartX: event.changedTouches[0].clientX });
   }
 
@@ -43,8 +44,16 @@ class Header extends PureComponent {
   handleTouchEnd(event) {
     const { touchStartX, currentTouchX } = this.state;
 
-    if (currentTouchX - touchStartX >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
-      this.props.org.advanceTodoState(this.props.header.get('id'));
+    if (!!touchStartX && !!currentTouchX) {
+      const swipeDistance = currentTouchX - touchStartX;
+
+      if (swipeDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
+        this.props.org.advanceTodoState(this.props.header.get('id'));
+      }
+
+      if (-1 * swipeDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
+        this.props.org.removeHeader(this.props.header.get('id'));
+      }
     }
 
     this.setState({
@@ -94,9 +103,27 @@ class Header extends PureComponent {
     return (
       <Motion style={style}>
         {interpolatedStyle => {
-          const swipeActionContainerStyle = {
+          const swipedDistance = interpolatedStyle.marginLeft;
+          const isLeftActionActivated = swipedDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE;
+          const isRightActionActivated = -1 * swipedDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE;
+
+          const leftSwipeActionContainerStyle = {
             width: interpolatedStyle.marginLeft,
-            backgroundColor: interpolatedStyle.marginLeft >= this.MIN_SWIPE_ACTIVATION_DISTANCE ? 'green' : 'lightgray',
+            backgroundColor: isLeftActionActivated ? 'green' : 'lightgray',
+          };
+
+          const rightSwipeActionContainerStyle = {
+            width: -1 * interpolatedStyle.marginLeft,
+            right: 0,
+            backgroundColor: isRightActionActivated ? 'red' : 'lightgray',
+          };
+
+          const leftIconStyle = {
+            display: swipedDistance > 30 ? '' : 'none',
+          };
+
+          const rightIconStyle = {
+            display: -1 * swipedDistance > 30 ? '' : 'none',
           };
 
           return (
@@ -107,8 +134,11 @@ class Header extends PureComponent {
                  onTouchMove={this.handleTouchMove}
                  onTouchEnd={this.handleTouchEnd}
                  onTouchCancel={this.handleTouchCancel}>
-              <div className="left-swipe-action-container" style={swipeActionContainerStyle}>
-                <i className="fas fa-check left-swipe-action-container__icon" />
+              <div className="left-swipe-action-container" style={leftSwipeActionContainerStyle}>
+                <i className="fas fa-check swipe-action-container__icon swipe-action-container__icon--left" style={leftIconStyle} />
+              </div>
+              <div className="right-swipe-action-container" style={rightSwipeActionContainerStyle}>
+                <i className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right" style={rightIconStyle} />
               </div>
               <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
               <TitleLine header={header}
