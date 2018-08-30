@@ -23,17 +23,37 @@ class Header extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleTouchMove', 'handleTouchStart', 'handleTouchEnd', 'handleTouchCancel',
+      'handleRef',
+      'handleTouchMove',
+      'handleTouchStart',
+      'handleTouchEnd',
+      'handleTouchCancel',
     ]);
 
     this.state = {
       touchStartX: null,
       touchStartY: null,
       currentTouchX: null,
+      containerWidth: null,
     };
   }
 
+  componentDidMount() {
+    if (this.containerDiv) {
+      this.setState({ containerWidth: this.containerDiv.offsetWidth });
+    }
+  }
+
+  handleRef(containerDiv) {
+    this.containerDiv = containerDiv;
+    this.props.onRef(containerDiv);
+  }
+
   handleTouchStart(event) {
+    if (this.props.inEditMode) {
+      return;
+    }
+
     if (!!event.target.closest('.table-part')) {
       return;
     }
@@ -94,7 +114,6 @@ class Header extends PureComponent {
       isSelected,
       bulletStyle,
       focusedHeader,
-      onRef,
     } = this.props;
 
     const indentLevel = !!focusedHeader ? (
@@ -145,7 +164,7 @@ class Header extends PureComponent {
           return (
             <div className={className}
                  style={interpolatedStyle}
-                 ref={onRef}
+                 ref={this.handleRef}
                  onTouchStart={this.handleTouchStart}
                  onTouchMove={this.handleTouchMove}
                  onTouchEnd={this.handleTouchEnd}
@@ -179,6 +198,7 @@ const mapStateToProps = (state, props) => {
   return {
     bulletStyle: state.base.get('bulletStyle'),
     focusedHeader,
+    inEditMode: state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTitleEditMode'),
   };
 };
 

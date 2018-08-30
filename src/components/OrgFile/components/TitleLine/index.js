@@ -16,6 +16,7 @@ class TitleLine extends PureComponent {
     super(props);
 
     _.bindAll(this, [
+      'handleRef',
       'handleTitleClick',
       'handleTextareaBlur',
       'handleTitleChange',
@@ -25,7 +26,18 @@ class TitleLine extends PureComponent {
 
     this.state = {
       titleValue: this.calculateRawTitle(props.header),
+      containerWidth: null,
     };
+  }
+
+  storeContainerWidth() {
+    if (this.containerDiv) {
+      this.setState({ containerWidth: this.containerDiv.offsetWidth });
+    }
+  }
+
+  componentDidMount() {
+    this.storeContainerWidth();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,7 +47,13 @@ class TitleLine extends PureComponent {
       this.props.org.updateHeaderTitle(header.get('id'), this.state.titleValue);
     }
 
-    this.setState({ titleValue: this.calculateRawTitle(nextProps.header) });
+    this.setState({
+      titleValue: this.calculateRawTitle(nextProps.header)
+    }, () => this.storeContainerWidth());
+  }
+
+  handleRef(div) {
+    this.containerDiv = div;
   }
 
   calculateRawTitle(header) {
@@ -94,6 +112,7 @@ class TitleLine extends PureComponent {
       hasContent,
       inEditMode,
     } = this.props;
+    const { containerWidth } = this.state;
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
@@ -103,7 +122,10 @@ class TitleLine extends PureComponent {
     };
 
     return (
-      <div className="title-line" onClick={this.handleTitleClick}>
+      <div className="title-line"
+           onClick={this.handleTitleClick}
+           ref={this.handleRef}
+           style={{width: containerWidth}}>
         {!inEditMode && !!todoKeyword ? (
           <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
                 onClick={this.handleTodoClick}>

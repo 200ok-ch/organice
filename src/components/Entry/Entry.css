@@ -1,5 +1,7 @@
 .entry-container {
     font-size: 16px;
+
+    overflow-x: hidden;
 }
 
 .entry-container--large-font {

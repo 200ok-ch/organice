@@ -15,6 +15,7 @@ class HeaderContent extends PureComponent {
     super(props);
 
     _.bindAll(this, [
+      'handleRef',
       'handleDescriptionChange',
       'handleTextareaBlur',
       'handleTableCellSelect',
@@ -25,7 +26,18 @@ class HeaderContent extends PureComponent {
 
     this.state = {
       descriptionValue: props.header.get('rawDescription'),
+      containerWidth: null,
     };
+  }
+
+  storeContainerWidth() {
+    if (this.containerDiv) {
+      this.setState({ containerWidth: this.containerDiv.offsetWidth });
+    }
+  }
+
+  componentDidMount() {
+    this.storeContainerWidth();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,7 +47,13 @@ class HeaderContent extends PureComponent {
       this.props.org.updateHeaderDescription(header.get('id'), this.state.descriptionValue);
     }
 
-    this.setState({ descriptionValue: nextProps.header.get('rawDescription') });
+    this.setState({
+      descriptionValue: nextProps.header.get('rawDescription')
+    }, () => this.storeContainerWidth());
+  }
+
+  handleRef(div) {
+    this.containerDiv = div;
   }
 
   handleDescriptionChange(event) {
@@ -64,13 +82,16 @@ class HeaderContent extends PureComponent {
 
   render() {
     const { header, inEditMode, selectedTableCellId, inTableEditMode } = this.props;
+    const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
       return <div></div>;
     }
 
     return (
-      <div className="header-content-container nice-scroll">
+      <div className="header-content-container nice-scroll"
+           ref={this.handleRef}
+           style={{width: containerWidth}}>
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"
