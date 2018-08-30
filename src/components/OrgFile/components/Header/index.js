@@ -28,6 +28,7 @@ class Header extends PureComponent {
       'handleTouchStart',
       'handleTouchEnd',
       'handleTouchCancel',
+      'handleHeaderClick',
     ]);
 
     this.state = {
@@ -106,6 +107,19 @@ class Header extends PureComponent {
     });
   }
 
+  handleHeaderClick(event) {
+    const classList = event.target.classList;
+    if (classList.contains('header') || classList.contains('header__bullet')) {
+      const { header, hasContent, isSelected } = this.props;
+
+      if (hasContent && (!header.get('opened') || isSelected)) {
+        this.props.org.toggleHeaderOpened(header.get('id'));
+      }
+
+      this.props.org.selectHeader(header.get('id'));
+    }
+  }
+
   render() {
     const {
       header,
@@ -165,6 +179,7 @@ class Header extends PureComponent {
             <div className={className}
                  style={interpolatedStyle}
                  ref={this.handleRef}
+                 onClick={this.handleHeaderClick}
                  onTouchStart={this.handleTouchStart}
                  onTouchMove={this.handleTouchMove}
                  onTouchEnd={this.handleTouchEnd}
@@ -176,7 +191,9 @@ class Header extends PureComponent {
                 <i className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right" style={rightIconStyle} />
               </div>
 
-              <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
+              <div style={{marginLeft: -16, color}} className="header__bullet">
+                {bulletStyle === 'Fancy' ? '●' : '*'}
+              </div>
               <TitleLine header={header}
                          color={color}
                          hasContent={hasContent}
