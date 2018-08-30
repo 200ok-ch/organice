@@ -36,8 +36,8 @@ export const advanceTodoState = (headerId = null) => ({
   type: 'ADVANCE_TODO_STATE', headerId,
 });
 
-export const enterTitleEditMode = () => ({
-  type: 'ENTER_TITLE_EDIT_MODE',
+export const enterTitleEditMode = (cursorPosition = null) => ({
+  type: 'ENTER_TITLE_EDIT_MODE', cursorPosition,
 });
 
 export const exitTitleEditMode = () => ({

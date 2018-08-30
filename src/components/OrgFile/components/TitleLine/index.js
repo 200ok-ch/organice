@@ -17,6 +17,8 @@ class TitleLine extends PureComponent {
 
     _.bindAll(this, [
       'handleRef',
+      'handleTitleSpanRef',
+      'handleTextareaRef',
       'handleTitleClick',
       'handleTextareaBlur',
       'handleTitleChange',
@@ -40,20 +42,35 @@ class TitleLine extends PureComponent {
     this.storeContainerWidth();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { header } = this.props;
+  componentDidUpdate(prevProps) {
+    const { header, cursorPosition } = this.props;
 
-    if (this.props.inEditMode && !nextProps.inEditMode) {
+    if (prevProps.inEditMode && !this.props.inEditMode) {
       this.props.org.updateHeaderTitle(header.get('id'), this.state.titleValue);
+    } else if (!prevProps.inEditMode && this.props.inEditMode) {
+      if (cursorPosition !== null && !!this.textarea) {
+        this.textarea.selectionStart = cursorPosition;
+        this.textarea.selectionEnd = cursorPosition;
+      }
     }
 
-    this.setState({
-      titleValue: this.calculateRawTitle(nextProps.header)
-    }, () => this.storeContainerWidth());
+    if (prevProps.header !== this.props.header) {
+      this.setState({
+        titleValue: this.calculateRawTitle(this.props.header),
+      }, () => this.storeContainerWidth());
+    }
   }
 
   handleRef(div) {
     this.containerDiv = div;
+  }
+
+  handleTitleSpanRef(span) {
+    this.titleSpan = span;
+  }
+
+  handleTextareaRef(textarea) {
+    this.textarea = textarea;
   }
 
   calculateRawTitle(header) {
@@ -73,14 +90,15 @@ class TitleLine extends PureComponent {
     return titleValue;
   }
 
-  handleTitleClick() {
-    const { header, hasContent, isSelected } = this.props;
+  handleTitleClick(event) {
+    const { header, hasContent } = this.props;
 
-    if (hasContent && (!header.get('opened') || isSelected)) {
+    if (hasContent && !header.get('opened')) {
       this.props.org.toggleHeaderOpened(header.get('id'));
     }
 
     this.props.org.selectHeader(header.get('id'));
+    this.props.org.enterTitleEditMode(window.getSelection().focusOffset);
   }
 
   handleTodoClick() {
@@ -137,13 +155,14 @@ class TitleLine extends PureComponent {
           <textarea autoFocus
                     className="textarea"
                     rows="3"
+                    ref={this.handleTextareaRef}
                     value={this.state.titleValue}
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleTitleChange}
                     onClick={this.handleTitleFieldClick} />
         ) : (
           <div>
-            <span style={titleStyle}>
+            <span style={titleStyle} ref={this.handleTitleSpanRef}>
               <AttributedString parts={header.getIn(['titleLine', 'title'])} />
               {!header.get('opened') && hasContent ? '...' : ''}
             </span>
@@ -168,6 +187,7 @@ const mapStateToProps = (state, props) => {
       state.org.present.get('inTitleEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    cursorPosition: state.org.present.get('cursorPosition'),
   };
 };
 

@@ -176,6 +176,12 @@ const advanceTodoState = (state, action) => {
   return state;
 };
 
+const enterTitleEditMode = (state, action) => (
+  state
+    .set('inTitleEditMode', true)
+    .set('cursorPosition', action.cursorPosition)
+);
+
 const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
@@ -805,7 +811,7 @@ export default (state = new Map(), action) => {
   case 'ADVANCE_TODO_STATE':
     return advanceTodoState(state, action);
   case 'ENTER_TITLE_EDIT_MODE':
-    return state.set('inTitleEditMode', true);
+    return enterTitleEditMode(state, action);
   case 'EXIT_TITLE_EDIT_MODE':
     return state.set('inTitleEditMode', false);
   case 'UPDATE_HEADER_TITLE':
