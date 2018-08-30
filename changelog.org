@@ -1,3 +1,7 @@
+* August 30th, 2018
+** Moved undo button into the header
+*** This is one step in a major UI overhaul
+** Moved links to Github and Changelog into the settings page
 * August 29th, 2018
 ** You can now swipe on headers to trigger common actions:
 *** Swipe right to advance the todo state
