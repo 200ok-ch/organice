@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
 import { findDOMNode } from 'react-dom';
@@ -145,29 +145,27 @@ class CaptureTemplate extends PureComponent {
           Specify full paths starting from the root of your Dropbox, like <code>/org/todo.org</code>
         </div>
 
-        {!template.get('isAvailableInAllOrgFiles') && (
-          <Fragment>
-            <div className="multi-textfields-container">
-              {template.get('orgFilesWhereAvailable').map((orgFilePath, index) => (
-                <div key={`org-file-availability-${index}`}
-                     className="multi-textfield-container">
-                  <input type="text"
-                         placeholder="e.g., /org/todo.org"
-                         className="textfield multi-textfield-field"
-                         value={orgFilePath}
-                         onChange={this.handleOrgFileAvailabilityChange(index)} />
-                    <button className="fas fa-times fa-lg remove-multi-textfield-button"
-                            onClick={this.handleRemoveOrgFileAvailability(index)} />
-                </div>
-              ))}
-            </div>
+        <Collapse isOpened={!template.get('isAvailableInAllOrgFiles')} springConfig={{stiffness: 300}}>
+          <div className="multi-textfields-container">
+            {template.get('orgFilesWhereAvailable').map((orgFilePath, index) => (
+              <div key={`org-file-availability-${index}`}
+                   className="multi-textfield-container">
+                <input type="text"
+                       placeholder="e.g., /org/todo.org"
+                       className="textfield multi-textfield-field"
+                       value={orgFilePath}
+                       onChange={this.handleOrgFileAvailabilityChange(index)} />
+                  <button className="fas fa-times fa-lg remove-multi-textfield-button"
+                          onClick={this.handleRemoveOrgFileAvailability(index)} />
+              </div>
+            ))}
+          </div>
 
-            <div className="add-new-multi-textfield-button-container">
-              <button className="fas fa-plus add-new-multi-textfield-button"
-                      onClick={this.handleAddNewOrgFileAvailability} />
-            </div>
-          </Fragment>
-        )}
+          <div className="add-new-multi-textfield-button-container">
+            <button className="fas fa-plus add-new-multi-textfield-button"
+                    onClick={this.handleAddNewOrgFileAvailability} />
+          </div>
+        </Collapse>
       </div>
     );
   }
