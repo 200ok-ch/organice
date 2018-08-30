@@ -8,11 +8,14 @@ This header has some description text and a couple subheaders. Look through the 
 ** This is a subheader too!
 * Actions
 The long row of buttons at the bottom is called the "action drawer".
-** Todos [1/3] [33%]
+** Todos [1/4] [25%]
 This header has a few TODO items as subheaders.
 *** TODO Learn how to use TODOs in org-web
 With this header selected, tap the checkmark button in the action drawer. Tap it again, and then again again!
 **** There's also a setting once you're signed in to enable tapping on the TODO label itself to advance the todo state. Its off by default because I thought the behavior would be confusing unless explained, but I recommend turning it on!
+*** TODO Learn how to swipe on headers
+**** You can also advance the todo state by swiping right on the header (until you see the background turn green!)
+**** You can remove a header by swiping left on it
 *** DONE Check out org-web
 *** START Investigate custom TODO states
 org-web also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Tap the checkmark button a few times with this header selected.

@@ -1,3 +1,7 @@
+* August 29th, 2018
+** You can now swipe on headers to trigger common actions:
+*** Swipe right to advance the todo state
+*** Swipe left to remove the header
 * August 28th, 2018
 ** Capture templates are now reorderable (just drag and drop!)
 * August 23rd, 2018
