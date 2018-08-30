@@ -34,6 +34,10 @@ class Header extends PureComponent {
   }
 
   handleTouchStart(event) {
+    if (!!event.target.closest('.table-part')) {
+      return;
+    }
+
     this.setState({
       touchStartX: event.changedTouches[0].clientX,
       touchStartY: event.changedTouches[0].clientY,
