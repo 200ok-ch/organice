@@ -28,17 +28,30 @@ class Header extends PureComponent {
 
     this.state = {
       touchStartX: null,
+      touchStartY: null,
       currentTouchX: null,
     };
   }
 
   handleTouchStart(event) {
-    console.log('start', event.changedTouches[0].clientX);
-    this.setState({ touchStartX: event.changedTouches[0].clientX });
+    this.setState({
+      touchStartX: event.changedTouches[0].clientX,
+      touchStartY: event.changedTouches[0].clientY,
+    });
   }
 
   handleTouchMove(event) {
-    this.setState({ currentTouchX: event.changedTouches[0].clientX });
+    const { touchStartX, touchStartY } = this.state;
+    if (touchStartX === null) {
+      return;
+    }
+
+    const currentTouchY = event.changedTouches[0].clientY;
+    if (Math.abs(currentTouchY - touchStartY) >= this.MIN_SWIPE_ACTIVATION_DISTANCE / 2) {
+      this.setState({ touchStartX: null });
+    } else {
+      this.setState({ currentTouchX: event.changedTouches[0].clientX });
+    }
   }
 
   handleTouchEnd(event) {
@@ -114,7 +127,6 @@ class Header extends PureComponent {
 
           const rightSwipeActionContainerStyle = {
             width: -1 * interpolatedStyle.marginLeft,
-            right: 0,
             backgroundColor: isRightActionActivated ? 'red' : 'lightgray',
           };
 
@@ -140,6 +152,7 @@ class Header extends PureComponent {
               <div className="right-swipe-action-container" style={rightSwipeActionContainerStyle}>
                 <i className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right" style={rightIconStyle} />
               </div>
+
               <div style={{marginLeft: -16, color}}>{bulletStyle === 'Fancy' ? '●' : '*'}</div>
               <TitleLine header={header}
                          color={color}
