@@ -10,7 +10,6 @@ import { List } from 'immutable';
 import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
 import * as captureActions from '../../../../actions/capture';
-import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import ActionButton from './components/ActionButton/';
 
@@ -32,7 +31,6 @@ class ActionDrawer extends PureComponent {
       'handleMoveSubtreeRightClick',
       'handleFocus',
       'handleUnfocus',
-      'handleUndoClick',
       'handlePushClick',
       'handlePullClick',
       'handleDoneClick',
@@ -112,10 +110,6 @@ class ActionDrawer extends PureComponent {
 
   handleUnfocus() {
     this.props.org.unfocusHeader();
-  }
-
-  handleUndoClick() {
-    this.props.undo.undo();
   }
 
   handlePushClick() {
@@ -217,7 +211,6 @@ class ActionDrawer extends PureComponent {
     const {
       inTitleEditMode,
       inDescriptionEditMode,
-      historyCount,
       shouldDisableSyncButtons,
       isFocusedHeaderActive,
       selectedTableCellId,
@@ -264,7 +257,6 @@ class ActionDrawer extends PureComponent {
             ) : (
               <ActionButton iconName="compress" isDisabled={false} onClick={this.handleFocus} />
             )}
-            <ActionButton iconName="undo" isDisabled={historyCount <= 1} onClick={this.handleUndoClick} />
             <ActionButton iconName="cloud-upload-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePushClick} />
             <ActionButton iconName="cloud-download-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePullClick} />
           </Fragment>
@@ -280,7 +272,6 @@ const mapStateToProps = (state, props) => {
     inDescriptionEditMode: state.org.present.get('inDescriptionEditMode'),
     inTableEditMode: state.org.present.get('inTableEditMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
-    historyCount: state.org.past.length,
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
@@ -293,7 +284,6 @@ const mapDispatchToProps = dispatch => {
   return {
     org: bindActionCreators(orgActions, dispatch),
     dropbox: bindActionCreators(dropboxActions, dispatch),
-    undo: bindActionCreators(undoActions, dispatch),
     capture: bindActionCreators(captureActions, dispatch),
   };
 };

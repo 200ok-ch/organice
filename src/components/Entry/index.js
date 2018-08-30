@@ -10,6 +10,7 @@ import './Entry.css';
 
 import { Dropbox } from 'dropbox';
 
+import { List } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -170,7 +171,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     fontSize: state.base.get('fontSize'),
     lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
-    activeModalPage: state.base.get('activeModalPage'),
+    activeModalPage: state.base.get('modalPageStack', List()).last(),
   };
 };
 

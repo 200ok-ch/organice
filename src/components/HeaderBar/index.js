@@ -9,7 +9,9 @@ import logo from './org-web.svg';
 import './HeaderBar.css';
 
 import * as baseActions from '../../actions/base';
+import { ActionCreators as undoActions } from 'redux-linear-undo';
 
+import { List } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -22,6 +24,7 @@ class HeaderBar extends PureComponent {
       'handleSettingsClick',
       'handleModalPageDoneClick',
       'handleSettingsSubPageBackClick',
+      'handleUndoClick',
     ]);
   }
 
@@ -92,7 +95,7 @@ class HeaderBar extends PureComponent {
   }
 
   handleSettingsSubPageBackClick() {
-    this.props.base.setActiveModalPage('settings');
+    this.props.base.pushModalPage('settings');
   }
 
   renderSettingsSubPageBackButton() {
@@ -158,15 +161,21 @@ class HeaderBar extends PureComponent {
   }
 
   handleChangelogClick() {
-    this.props.base.setActiveModalPage('changelog');
+    this.props.base.pushModalPage('changelog');
   }
 
   handleSettingsClick() {
-    this.props.base.setActiveModalPage('settings');
+    this.props.base.pushModalPage('settings');
   }
 
   handleModalPageDoneClick() {
-    this.props.base.setActiveModalPage(null);
+    this.props.base.popModalPage();
+  }
+
+  handleUndoClick() {
+    if (this.props.isUndoEnabled) {
+      this.props.undo.undo();
+    }
   }
 
   renderActions() {
@@ -175,6 +184,8 @@ class HeaderBar extends PureComponent {
       onSignInClick,
       hasUnseenChangelog,
       activeModalPage,
+      path,
+      isUndoEnabled,
     } = this.props;
 
     if (!!activeModalPage) {
@@ -184,7 +195,11 @@ class HeaderBar extends PureComponent {
         </div>
       );
     } else {
-      const settingsClassName = classNames('fas fa-cogs header-bar__actions__item', {
+      const undoIconClassName = classNames('fas fa-undo header-bar__actions__item', {
+        'header-bar__actions__item--disabled': !isUndoEnabled
+      });
+
+      const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item', {
         'settings-icon--has-unseen-changelog': hasUnseenChangelog,
       });
 
@@ -200,8 +215,12 @@ class HeaderBar extends PureComponent {
               </a>
             )}
 
+            {(isAuthenticated && !activeModalPage && !!path) && (
+              <i className={undoIconClassName} onClick={this.handleUndoClick} />
+            )}
+
             {isAuthenticated && (
-              <i className={settingsClassName} onClick={this.handleSettingsClick} />
+              <i className={settingsIconClassName} onClick={this.handleSettingsClick} />
             )}
           </div>
         );
@@ -224,13 +243,16 @@ const mapStateToProps = (state, props) => {
   return {
     isAuthenticated: !!state.dropbox.get('accessToken'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
-    activeModalPage: state.base.get('activeModalPage'),
+    activeModalPage: state.base.get('modalPageStack', List()).last(),
+    path: state.org.present.get('path'),
+    isUndoEnabled: state.org.past.length > 1,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     base: bindActionCreators(baseActions, dispatch),
+    undo: bindActionCreators(undoActions, dispatch),
   };
 };
 

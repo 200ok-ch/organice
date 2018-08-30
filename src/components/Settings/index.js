@@ -37,11 +37,11 @@ class Settings extends PureComponent {
   }
 
   handleKeyboardShortcutsClick() {
-    this.props.base.setActiveModalPage('keyboard_shortcuts_editor');
+    this.props.base.pushModalPage('keyboard_shortcuts_editor');
   }
 
   handleCaptureTemplatesClick() {
-    this.props.base.setActiveModalPage('capture_templates_editor');
+    this.props.base.pushModalPage('capture_templates_editor');
   }
 
   handleFontSizeChange(newFontSize) {
@@ -65,7 +65,7 @@ class Settings extends PureComponent {
   }
 
   handleChangelogClick() {
-    this.props.base.setActiveModalPage('changelog');
+    this.props.base.pushModalPage('changelog');
   }
 
   render() {

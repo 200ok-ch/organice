@@ -2,7 +2,7 @@ import { Dropbox } from 'dropbox';
 
 import { fromJS } from 'immutable';
 
-import { setLoadingMessage, hideLoadingMessage, setActiveModalPage } from './base';
+import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
 import { displayFile, applyOpennessState, setDirty, unfocusHeader } from './org';
 
 import exportOrg from '../lib/export_org';
@@ -19,7 +19,7 @@ export const authenticate = accessToken => ({
 export const signOut = () => (
   (dispatch, getState) => {
     dispatch({ type: 'SIGN_OUT' });
-    dispatch(setActiveModalPage(null));
+    dispatch(popModalPage());
   }
 );
 

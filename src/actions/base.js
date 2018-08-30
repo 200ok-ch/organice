@@ -88,6 +88,10 @@ export const restoreBaseSettings = newSettings => ({
   type: 'RESTORE_BASE_SETTINGS', newSettings,
 });
 
-export const setActiveModalPage = activeModalPage => ({
-  type: 'SET_ACTIVE_MODAL_PAGE', activeModalPage,
+export const pushModalPage = modalPage => ({
+  type: 'PUSH_MODAL_PAGE', modalPage,
+});
+
+export const popModalPage = () => ({
+  type: 'POP_MODAL_PAGE',
 });

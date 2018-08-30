@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 
 import { applyCategorySettingsFromConfig } from '../util/settings_persister';
 
@@ -56,8 +56,20 @@ const restoreBaseSettings = (state, action) => {
   return applyCategorySettingsFromConfig(state, action.newSettings, 'base');
 };
 
-const setActiveModalPage = (state, action) => (
-  state.set('activeModalPage', action.activeModalPage)
+const pushModalPage = (state, action) => (
+  state.update('modalPageStack', stack => (
+    !!stack ? (
+      stack.push(action.modalPage)
+    ) : (
+      List([action.modalPage])
+    )
+  ))
+);
+
+const popModalPage = state => (
+  state.update('modalPageStack', stack => (
+    !!stack ? stack.pop() : stack
+  ))
 );
 
 export default (state = new Map(), action) => {
@@ -84,8 +96,10 @@ export default (state = new Map(), action) => {
     return setCustomKeybinding(state, action);
   case 'RESTORE_BASE_SETTINGS':
     return restoreBaseSettings(state, action);
-  case 'SET_ACTIVE_MODAL_PAGE':
-    return setActiveModalPage(state, action);
+  case 'PUSH_MODAL_PAGE':
+    return pushModalPage(state, action);
+  case 'POP_MODAL_PAGE':
+    return popModalPage(state, action);
   default:
     return state;
   }

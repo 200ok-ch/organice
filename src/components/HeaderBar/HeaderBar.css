@@ -59,3 +59,7 @@
 .settings-icon--has-unseen-changelog {
     color: #ff5b5b;
 }
+
+.header-bar__actions__item--disabled {
+    opacity: 0.5;
+}
