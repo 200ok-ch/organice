@@ -26,6 +26,7 @@ class Settings extends PureComponent {
       'handleBulletStyleChange',
       'handleShouldTapTodoToAdvanceChange',
       'handleShouldStoreSettingsInDropbox',
+      'handleChangelogClick',
     ]);
   }
 
@@ -63,12 +64,17 @@ class Settings extends PureComponent {
     this.props.base.setShouldStoreSettingsInDropbox(!shouldStoreSettingsInDropbox);
   }
 
+  handleChangelogClick() {
+    this.props.base.setActiveModalPage('changelog');
+  }
+
   render() {
     const {
       fontSize,
       bulletStyle,
       shouldTapTodoToAdvance,
       shouldStoreSettingsInDropbox,
+      hasUnseenChangelog,
     } = this.props;
 
     return (
@@ -111,6 +117,25 @@ class Settings extends PureComponent {
           <button className="btn settings-btn" onClick={this.handleKeyboardShortcutsClick}>
             Keyboard shortcuts
           </button>
+
+          <hr className="settings-button-separator" />
+
+          <button className="btn settings-btn" onClick={this.handleChangelogClick}>
+            Changelog
+            {hasUnseenChangelog && (
+              <div className="changelog-badge-container">
+                <i className="fas fa-gift" />
+              </div>
+            )}
+          </button>
+          <button className="btn settings-btn">
+            <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer" style={{color: 'white'}}>
+              Github repo <i className="fas fa-external-link-alt fa-sm" />
+            </a>
+          </button>
+
+          <hr className="settings-button-separator" />
+
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
         </div>
       </div>
@@ -124,6 +149,7 @@ const mapStateToProps = (state, props) => {
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     shouldStoreSettingsInDropbox: state.base.get('shouldStoreSettingsInDropbox'),
+    hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };
 

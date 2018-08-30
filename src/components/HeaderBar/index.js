@@ -184,8 +184,8 @@ class HeaderBar extends PureComponent {
         </div>
       );
     } else {
-      const changelogClassName = classNames('fas fa-gift header-bar__actions__item', {
-        'changelog-icon--has-unseen': hasUnseenChangelog,
+      const settingsClassName = classNames('fas fa-cogs header-bar__actions__item', {
+        'settings-icon--has-unseen-changelog': hasUnseenChangelog,
       });
 
       switch (this.getPathRoot()) {
@@ -194,14 +194,14 @@ class HeaderBar extends PureComponent {
           <div className="header-bar__actions">
             {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
 
-            {isAuthenticated && <i className={changelogClassName} onClick={this.handleChangelogClick} />}
-
-            <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-github header-bar__actions__item" />
-            </a>
+            {!isAuthenticated && (
+              <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-github header-bar__actions__item" />
+              </a>
+            )}
 
             {isAuthenticated && (
-              <i className="fas fa-cogs header-bar__actions__item" onClick={this.handleSettingsClick} />
+              <i className={settingsClassName} onClick={this.handleSettingsClick} />
             )}
           </div>
         );
