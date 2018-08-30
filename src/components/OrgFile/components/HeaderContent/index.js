@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import './HeaderContent.css';
 
 import _ from 'lodash';
+import classNames from 'classnames';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -22,6 +23,7 @@ class HeaderContent extends PureComponent {
       'handleExitTableEditMode',
       'handleTableCellValueUpdate',
       'handleCheckboxClick',
+      'handleEditDescriptionClick',
     ]);
 
     this.state = {
@@ -80,16 +82,24 @@ class HeaderContent extends PureComponent {
     this.props.org.advanceCheckboxState(listItemId);
   }
 
+  handleEditDescriptionClick() {
+    this.props.org.enterDescriptionEditMode();
+  }
+
   render() {
-    const { header, inEditMode, selectedTableCellId, inTableEditMode } = this.props;
+    const { header, inEditMode, selectedTableCellId, inTableEditMode, isSelected } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
       return <div></div>;
     }
 
+    const className = classNames('header-content-container', 'nice-scroll', {
+      'header-content-container--selected': isSelected
+    });
+
     return (
-      <div className="header-content-container nice-scroll"
+      <div className={className}
            ref={this.handleRef}
            style={{width: containerWidth}}>
         {inEditMode ? (
@@ -100,15 +110,21 @@ class HeaderContent extends PureComponent {
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleDescriptionChange} />
         ) : (
-          <AttributedString parts={header.get('description')}
-                            subPartDataAndHandlers={{
-                              onTableCellSelect: this.handleTableCellSelect,
-                              selectedTableCellId: selectedTableCellId,
-                              inTableEditMode: inTableEditMode,
-                              onExitTableEditMode: this.handleExitTableEditMode,
-                              onTableCellValueUpdate: this.handleTableCellValueUpdate,
-                              onCheckboxClick: this.handleCheckboxClick,
-                            }} />
+          <Fragment>
+            {(header.get('description').isEmpty() && isSelected) && (
+              <i className="fas fa-edit fa-lg header-content__edit-icon"
+                 onClick={this.handleEditDescriptionClick} />
+            )}
+            <AttributedString parts={header.get('description')}
+                              subPartDataAndHandlers={{
+                                onTableCellSelect: this.handleTableCellSelect,
+                                selectedTableCellId: selectedTableCellId,
+                                inTableEditMode: inTableEditMode,
+                                onExitTableEditMode: this.handleExitTableEditMode,
+                                onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                                onCheckboxClick: this.handleCheckboxClick,
+                              }} />
+          </Fragment>
         )}
       </div>
     );
@@ -120,6 +136,7 @@ const mapStateToProps = (state, props) => {
     inEditMode: (
       state.org.present.get('inDescriptionEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
+    isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     inTableEditMode: state.org.present.get('inTableEditMode'),
   };

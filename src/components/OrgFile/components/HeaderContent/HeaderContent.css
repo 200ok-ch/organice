@@ -2,3 +2,15 @@
     white-space: pre-wrap;
     overflow-x: auto;
 }
+
+.header-content-container--selected {
+    min-height: 35px;
+}
+
+.header-content__edit-icon {
+    color: #5E348C;
+
+    margin-top: 10px;
+    margin-right: 5px;
+    float: left;
+}
