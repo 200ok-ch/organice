@@ -19,8 +19,8 @@ class HeaderList extends PureComponent {
     _.bindAll(this, ['handleHeaderRef']);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const selectedHeaderDiv = this.headerRefs[nextProps.selectedHeaderId];
+  componentDidUpdate() {
+    const selectedHeaderDiv = this.headerRefs[this.props.selectedHeaderId];
     if (!!selectedHeaderDiv) {
       const boundingRectangle = selectedHeaderDiv.getBoundingClientRect();
       const viewportHeight = document.documentElement.clientHeight;
