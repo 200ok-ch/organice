@@ -36,6 +36,7 @@ class Header extends PureComponent {
       'handleEnterDescriptionEditMode',
       'handleFocus',
       'handleUnfocus',
+      'handleAddNewHeader',
     ]);
 
     this.state = {
@@ -141,6 +142,10 @@ class Header extends PureComponent {
 
   handleUnfocus() {
     this.props.org.unfocusHeader();
+  }
+
+  handleAddNewHeader() {
+    this.props.org.addHeaderAndEdit(this.props.header.get('id'));
   }
 
   render() {
@@ -262,7 +267,8 @@ class Header extends PureComponent {
                                     onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
                                     isFocused={isFocused}
                                     onFocus={this.handleFocus}
-                                    onUnfocus={this.handleUnfocus} />
+                                    onUnfocus={this.handleUnfocus}
+                                    onAddNewHeader={this.handleAddNewHeader} />
               </Collapse>
 
               <HeaderContent header={header} />

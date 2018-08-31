@@ -10,6 +10,7 @@ export default class HeaderActionDrawer extends PureComponent {
       isFocused,
       onFocus,
       onUnfocus,
+      onAddNewHeader,
     } = this.props;
 
     return (
@@ -27,6 +28,10 @@ export default class HeaderActionDrawer extends PureComponent {
         ) : (
           <i className="fas fa-compress fa-lg" onClick={onFocus} />
         )}
+
+        <span className="header-action-drawer__separator" />
+
+        <i className="fas fa-plus fa-lg" onClick={onAddNewHeader} />
       </div>
     );
   }
