@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Motion, spring } from 'react-motion';
+import { UnmountClosed as Collapse } from 'react-collapse';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -13,6 +14,7 @@ import _ from 'lodash';
 
 import TitleLine from '../TitleLine';
 import HeaderContent from '../HeaderContent';
+import HeaderActionDrawer from './components/HeaderActionDrawer';
 
 import { headerWithId } from '../../../../lib/org_utils';
 
@@ -198,6 +200,11 @@ class Header extends PureComponent {
                          color={color}
                          hasContent={hasContent}
                          isSelected={isSelected} />
+
+              <Collapse isOpened={isSelected} springConfig={{stiffness: 300}}>
+                <HeaderActionDrawer />
+              </Collapse>
+
               <HeaderContent header={header} />
             </div>
           );
