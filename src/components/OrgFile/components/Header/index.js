@@ -17,6 +17,7 @@ import HeaderContent from '../HeaderContent';
 import HeaderActionDrawer from './components/HeaderActionDrawer';
 
 import { headerWithId } from '../../../../lib/org_utils';
+import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
 
 class Header extends PureComponent {
   MIN_SWIPE_ACTIVATION_DISTANCE = 80;
@@ -161,7 +162,7 @@ class Header extends PureComponent {
     const marginLeft = (!!touchStartX && !!currentTouchX) ? (
       currentTouchX - touchStartX
     ) : (
-      spring(0)
+      spring(0, { stiffness: 300 })
     );
 
     const style = {
@@ -180,20 +181,22 @@ class Header extends PureComponent {
           const isLeftActionActivated = swipedDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE;
           const isRightActionActivated = -1 * swipedDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE;
 
+          const disabledColor = rgbaObject(211, 211, 211, 1);
+          const leftActivatedColor = rgbaObject(0, 128, 0, 1);
+          const rightActivatedColor = rgbaObject(255, 0, 0, 1);
+
           const leftSwipeActionContainerStyle = {
             width: interpolatedStyle.marginLeft,
-            backgroundColor: isLeftActionActivated ? 'green' : 'lightgray',
+            backgroundColorFactor: spring(isLeftActionActivated ? 1 : 0, { stiffness: 300 }),
           };
-
           const rightSwipeActionContainerStyle = {
             width: -1 * interpolatedStyle.marginLeft,
-            backgroundColor: isRightActionActivated ? 'red' : 'lightgray',
+            backgroundColorFactor: spring(isRightActionActivated ? 1 : 0, { stiffness: 300 }),
           };
 
           const leftIconStyle = {
             display: swipedDistance > 30 ? '' : 'none',
           };
-
           const rightIconStyle = {
             display: -1 * swipedDistance > 30 ? '' : 'none',
           };
@@ -207,12 +210,44 @@ class Header extends PureComponent {
                  onTouchMove={this.handleTouchMove}
                  onTouchEnd={this.handleTouchEnd}
                  onTouchCancel={this.handleTouchCancel}>
-              <div className="left-swipe-action-container" style={leftSwipeActionContainerStyle}>
-                <i className="fas fa-check swipe-action-container__icon swipe-action-container__icon--left" style={leftIconStyle} />
-              </div>
-              <div className="right-swipe-action-container" style={rightSwipeActionContainerStyle}>
-                <i className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right" style={rightIconStyle} />
-              </div>
+              <Motion style={leftSwipeActionContainerStyle}>
+                {leftInterpolatedStyle => {
+                  const leftStyle = {
+                    width: leftInterpolatedStyle.width,
+                    backgroundColor: rgbaString(
+                      interpolateColors(disabledColor,
+                                        leftActivatedColor,
+                                        leftInterpolatedStyle.backgroundColorFactor)
+                    ),
+                  };
+
+                  return (
+                    <div className="left-swipe-action-container" style={leftStyle}>
+                      <i className="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+                         style={leftIconStyle} />
+                    </div>
+                  );
+                }}
+              </Motion>
+              <Motion style={rightSwipeActionContainerStyle}>
+                {rightInterpolatedStyle => {
+                  const rightStyle = {
+                    width: rightInterpolatedStyle.width,
+                    backgroundColor: rgbaString(
+                      interpolateColors(disabledColor,
+                                        rightActivatedColor,
+                                        rightInterpolatedStyle.backgroundColorFactor)
+                    ),
+                  };
+
+                  return (
+                    <div className="right-swipe-action-container" style={rightStyle}>
+                      <i className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+                         style={rightIconStyle} />
+                    </div>
+                  );
+                }}
+              </Motion>
 
               <div style={{marginLeft: -16, color}} className="header__bullet">
                 {bulletStyle === 'Fancy' ? '●' : '*'}
