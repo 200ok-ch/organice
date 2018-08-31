@@ -2,7 +2,7 @@
 #+TODO: START INPROGRESS STALLED | FINISHED
 
 * This is an actual org file - feel free to play around with it! (Don't worry about messing it up - your changes won't be saved, so just refresh the page to reset it)
-* For starters, tap on this header to open it
+* For starters, tap on the bullet next to this header to open it
 This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about org-web.
 ** This is a subheader
 ** This is a subheader too!
