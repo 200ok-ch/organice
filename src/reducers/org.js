@@ -182,6 +182,12 @@ const enterTitleEditMode = (state, action) => (
     .set('cursorPosition', action.cursorPosition)
 );
 
+const enterDescriptionEditMode = (state, action) => (
+  state
+    .set('inDescriptionEditMode', true)
+    .set('cursorPosition', action.cursorPosition)
+);
+
 const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
@@ -817,7 +823,7 @@ export default (state = new Map(), action) => {
   case 'UPDATE_HEADER_TITLE':
     return updateHeaderTitle(state, action);
   case 'ENTER_DESCRIPTION_EDIT_MODE':
-    return state.set('inDescriptionEditMode', true);
+    return enterDescriptionEditMode(state, action);
   case 'EXIT_DESCRIPTION_EDIT_MODE':
     return state.set('inDescriptionEditMode', false);
   case 'UPDATE_HEADER_DESCRIPTION':

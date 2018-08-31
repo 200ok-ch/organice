@@ -48,8 +48,8 @@ export const updateHeaderTitle = (headerId, newRawTitle) => ({
   type: 'UPDATE_HEADER_TITLE', headerId, newRawTitle,
 });
 
-export const enterDescriptionEditMode = () => ({
-  type: 'ENTER_DESCRIPTION_EDIT_MODE',
+export const enterDescriptionEditMode = (cursorPosition = null) => ({
+  type: 'ENTER_DESCRIPTION_EDIT_MODE', cursorPosition,
 });
 
 export const exitDescriptionEditMode = () => ({

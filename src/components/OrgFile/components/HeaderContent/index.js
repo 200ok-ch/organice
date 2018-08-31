@@ -17,6 +17,7 @@ class HeaderContent extends PureComponent {
 
     _.bindAll(this, [
       'handleRef',
+      'handleTextareaRef',
       'handleDescriptionChange',
       'handleTextareaBlur',
       'handleTableCellSelect',
@@ -24,6 +25,7 @@ class HeaderContent extends PureComponent {
       'handleTableCellValueUpdate',
       'handleCheckboxClick',
       'handleEditDescriptionClick',
+      'handleContentClick',
     ]);
 
     this.state = {
@@ -42,16 +44,27 @@ class HeaderContent extends PureComponent {
     this.storeContainerWidth();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { header } = this.props;
+  componentDidUpdate(prevProps) {
+    const { header, cursorPosition } = this.props;
 
-    if (this.props.inEditMode && !nextProps.inEditMode) {
+    if (prevProps.inEditMode && !this.props.inEditMode) {
       this.props.org.updateHeaderDescription(header.get('id'), this.state.descriptionValue);
+    } else if (!prevProps.inEditMode && this.props.inEditMode) {
+      if (cursorPosition !== null && !!this.textarea) {
+        this.textarea.selectionStart = cursorPosition;
+        this.textarea.selectionEnd = cursorPosition;
+      }
     }
 
-    this.setState({
-      descriptionValue: nextProps.header.get('rawDescription')
-    }, () => this.storeContainerWidth());
+    if (prevProps.header !== this.props.header) {
+      this.setState({
+        descriptionValue: this.props.header.get('rawDescription'),
+      }, () => this.storeContainerWidth());
+    }
+  }
+
+  handleTextareaRef(textarea) {
+    this.textarea = textarea;
   }
 
   handleRef(div) {
@@ -86,6 +99,13 @@ class HeaderContent extends PureComponent {
     this.props.org.enterDescriptionEditMode();
   }
 
+  handleContentClick() {
+    const { header } = this.props;
+
+    this.props.org.selectHeader(header.get('id'));
+    this.props.org.enterDescriptionEditMode(window.getSelection().focusOffset);
+  }
+
   render() {
     const { header, inEditMode, selectedTableCellId, inTableEditMode, isSelected } = this.props;
     const { containerWidth } = this.state;
@@ -101,11 +121,13 @@ class HeaderContent extends PureComponent {
     return (
       <div className={className}
            ref={this.handleRef}
-           style={{width: containerWidth}}>
+           style={{width: containerWidth}}
+           onClick={this.handleContentClick}>
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"
                     rows="8"
+                    ref={this.handleTextareaRef}
                     value={this.state.descriptionValue}
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleDescriptionChange} />
@@ -139,6 +161,7 @@ const mapStateToProps = (state, props) => {
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     inTableEditMode: state.org.present.get('inTableEditMode'),
+    cursorPosition: state.org.present.get('cursorPosition'),
   };
 };
 
