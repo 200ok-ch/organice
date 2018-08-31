@@ -2,7 +2,7 @@
 #+TODO: START INPROGRESS STALLED | FINISHED
 
 * This is an actual org file - feel free to play around with it! (Don't worry about messing it up - your changes won't be saved, so just refresh the page to reset it)
-* For starters, tap on the bullet next to this header to open it
+* For starters, tap on the next header to open it
 This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about org-web.
 ** This is a subheader
 ** This is a subheader too!
@@ -22,7 +22,7 @@ org-web also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-
 
 Note that when the cycle restarts, it defaults to the first set of todo states. Manually edit the header to get back to a different todo state cycle (more on editing headers below!)
 ** Editing headers
-The next two buttons in the action drawer edit the header and description respectively. Try editing this header.
+The next two buttons in the action drawer edit the header and description respectively. You can also use the buttons in the drawer that popped up below the header when you select it. Try editing this header.
 ** Adding and removing headers
 *** To add a new header, click the + button in the action drawer.
 *** To remove a header, click the x.

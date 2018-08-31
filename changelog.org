@@ -1,3 +1,5 @@
+* August 31st, 2018
+** Added mini action drawer to selected headers for easier access to edit and focus buttons
 * August 30th, 2018
 ** Moved undo button into the header
 *** This is one step in a major UI overhaul
