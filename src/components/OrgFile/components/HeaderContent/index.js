@@ -25,7 +25,6 @@ class HeaderContent extends PureComponent {
       'handleTableCellValueUpdate',
       'handleCheckboxClick',
       'handleEditDescriptionClick',
-      'handleContentClick',
     ]);
 
     this.state = {
@@ -99,13 +98,6 @@ class HeaderContent extends PureComponent {
     this.props.org.enterDescriptionEditMode();
   }
 
-  handleContentClick() {
-    const { header } = this.props;
-
-    this.props.org.selectHeader(header.get('id'));
-    this.props.org.enterDescriptionEditMode(window.getSelection().focusOffset);
-  }
-
   render() {
     const { header, inEditMode, selectedTableCellId, inTableEditMode, isSelected } = this.props;
     const { containerWidth } = this.state;
@@ -121,8 +113,7 @@ class HeaderContent extends PureComponent {
     return (
       <div className={className}
            ref={this.handleRef}
-           style={{width: containerWidth}}
-           onClick={this.handleContentClick}>
+           style={{width: containerWidth}}>
         {inEditMode ? (
           <textarea autoFocus
                     className="textarea"
@@ -133,7 +124,8 @@ class HeaderContent extends PureComponent {
                     onChange={this.handleDescriptionChange} />
         ) : (
           <Fragment>
-            {(header.get('description').isEmpty() && isSelected) && (
+            {/* TODO: update this */}
+            {(header.get('description').isEmpty() && isSelected) && false && (
               <i className="fas fa-edit fa-lg header-content__edit-icon"
                  onClick={this.handleEditDescriptionClick} />
             )}
