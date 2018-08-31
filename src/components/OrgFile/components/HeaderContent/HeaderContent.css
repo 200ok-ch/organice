@@ -3,10 +3,6 @@
     overflow-x: auto;
 }
 
-.header-content-container--selected {
-    /* min-height: 35px; */
-}
-
 .header-content__edit-icon {
     color: #5E348C;
 

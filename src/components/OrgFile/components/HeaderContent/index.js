@@ -1,11 +1,10 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import './HeaderContent.css';
 
 import _ from 'lodash';
-import classNames from 'classnames';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -99,19 +98,15 @@ class HeaderContent extends PureComponent {
   }
 
   render() {
-    const { header, inEditMode, selectedTableCellId, inTableEditMode, isSelected } = this.props;
+    const { header, inEditMode, selectedTableCellId, inTableEditMode } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
       return <div></div>;
     }
 
-    const className = classNames('header-content-container', 'nice-scroll', {
-      'header-content-container--selected': isSelected
-    });
-
     return (
-      <div className={className}
+      <div className="header-content-container nice-scroll"
            ref={this.handleRef}
            style={{width: containerWidth}}>
         {inEditMode ? (
@@ -123,22 +118,15 @@ class HeaderContent extends PureComponent {
                     onBlur={this.handleTextareaBlur}
                     onChange={this.handleDescriptionChange} />
         ) : (
-          <Fragment>
-            {/* TODO: update this */}
-            {(header.get('description').isEmpty() && isSelected) && false && (
-              <i className="fas fa-edit fa-lg header-content__edit-icon"
-                 onClick={this.handleEditDescriptionClick} />
-            )}
-            <AttributedString parts={header.get('description')}
-                              subPartDataAndHandlers={{
-                                onTableCellSelect: this.handleTableCellSelect,
-                                selectedTableCellId: selectedTableCellId,
-                                inTableEditMode: inTableEditMode,
-                                onExitTableEditMode: this.handleExitTableEditMode,
-                                onTableCellValueUpdate: this.handleTableCellValueUpdate,
-                                onCheckboxClick: this.handleCheckboxClick,
-                              }} />
-          </Fragment>
+          <AttributedString parts={header.get('description')}
+                            subPartDataAndHandlers={{
+                              onTableCellSelect: this.handleTableCellSelect,
+                              selectedTableCellId: selectedTableCellId,
+                              inTableEditMode: inTableEditMode,
+                              onExitTableEditMode: this.handleExitTableEditMode,
+                              onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                              onCheckboxClick: this.handleCheckboxClick,
+                            }} />
         )}
       </div>
     );
