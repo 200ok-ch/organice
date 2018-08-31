@@ -60,6 +60,8 @@ class OrgFile extends PureComponent {
       if (staticFile === 'changelog') {
         this.props.base.setHasUnseenChangelog(false);
       }
+
+      setTimeout(() => document.querySelector('html').scrollTop = 0, 0);
     } else if (!!path && path !== loadedPath) {
       this.props.dropbox.downloadFile(path);
     }
