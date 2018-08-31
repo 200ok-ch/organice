@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Motion, spring } from 'react-motion';
+import { UnmountClosed as Collapse } from 'react-collapse';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -13,6 +14,7 @@ import _ from 'lodash';
 
 import TitleLine from '../TitleLine';
 import HeaderContent from '../HeaderContent';
+import HeaderActionDrawer from './components/HeaderActionDrawer';
 
 import { headerWithId } from '../../../../lib/org_utils';
 
@@ -29,6 +31,10 @@ class Header extends PureComponent {
       'handleTouchEnd',
       'handleTouchCancel',
       'handleHeaderClick',
+      'handleEnterTitleEditMode',
+      'handleEnterDescriptionEditMode',
+      'handleFocus',
+      'handleUnfocus',
     ]);
 
     this.state = {
@@ -120,6 +126,22 @@ class Header extends PureComponent {
     }
   }
 
+  handleEnterTitleEditMode() {
+    this.props.org.enterTitleEditMode();
+  }
+
+  handleEnterDescriptionEditMode() {
+    this.props.org.enterDescriptionEditMode();
+  }
+
+  handleFocus() {
+    this.props.org.focusHeader(this.props.header.get('id'));
+  }
+
+  handleUnfocus() {
+    this.props.org.unfocusHeader();
+  }
+
   render() {
     const {
       header,
@@ -128,6 +150,7 @@ class Header extends PureComponent {
       isSelected,
       bulletStyle,
       focusedHeader,
+      isFocused,
     } = this.props;
 
     const indentLevel = !!focusedHeader ? (
@@ -198,6 +221,15 @@ class Header extends PureComponent {
                          color={color}
                          hasContent={hasContent}
                          isSelected={isSelected} />
+
+              <Collapse isOpened={isSelected} springConfig={{stiffness: 300}}>
+                <HeaderActionDrawer onEnterTitleEditMode={this.handleEnterTitleEditMode}
+                                    onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
+                                    isFocused={isFocused}
+                                    onFocus={this.handleFocus}
+                                    onUnfocus={this.handleUnfocus} />
+              </Collapse>
+
               <HeaderContent header={header} />
             </div>
           );
@@ -215,6 +247,7 @@ const mapStateToProps = (state, props) => {
   return {
     bulletStyle: state.base.get('bulletStyle'),
     focusedHeader,
+    isFocused: !!focusedHeader && focusedHeader.get('id') === props.header.get('id'),
     inEditMode: state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTitleEditMode'),
   };
 };
