@@ -19,17 +19,25 @@ export default class TablePart extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { subPartDataAndHandlers: { onTableCellValueUpdate, selectedTableCellId } } = this.props;
+  componentDidUpdate(prevProps) {
+    const {
+      subPartDataAndHandlers: {
+        onTableCellValueUpdate,
+        selectedTableCellId,
+        inTableEditMode
+      }
+    } = this.props;
     const { rawCellValues } = this.state;
 
-    if (this.props.inTableEditMode && !nextProps.inTableEditMode) {
+    if (prevProps.subPartDataAndHandlers.inTableEditMode && !inTableEditMode) {
       if (rawCellValues.has(selectedTableCellId)) {
         onTableCellValueUpdate(selectedTableCellId, rawCellValues.get(selectedTableCellId));
       }
     }
 
-    this.setState({ rawCellValues: this.generateCellValueMap(nextProps.table) });
+    if (this.props.table !== prevProps.table) {
+      this.setState({ rawCellValues: this.generateCellValueMap(this.props.table) });
+    }
   }
 
   generateCellValueMap(table) {
