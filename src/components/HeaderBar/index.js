@@ -95,7 +95,7 @@ class HeaderBar extends PureComponent {
   }
 
   handleSettingsSubPageBackClick() {
-    this.props.base.pushModalPage('settings');
+    this.props.base.popModalPage();
   }
 
   renderSettingsSubPageBackButton() {
@@ -112,7 +112,7 @@ class HeaderBar extends PureComponent {
 
     switch (activeModalPage) {
     case 'changelog':
-      return <div />;
+      return this.renderSettingsSubPageBackButton();
     case 'keyboard_shortcuts_editor':
       return this.renderSettingsSubPageBackButton();
     case 'capture_templates_editor':
@@ -169,7 +169,7 @@ class HeaderBar extends PureComponent {
   }
 
   handleModalPageDoneClick() {
-    this.props.base.popModalPage();
+    this.props.base.clearModalStack();
   }
 
   handleUndoClick() {

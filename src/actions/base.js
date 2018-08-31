@@ -95,3 +95,7 @@ export const pushModalPage = modalPage => ({
 export const popModalPage = () => ({
   type: 'POP_MODAL_PAGE',
 });
+
+export const clearModalStack = () => ({
+  type: 'CLEAR_MODAL_STACK',
+});

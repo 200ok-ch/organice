@@ -72,6 +72,10 @@ const popModalPage = state => (
   ))
 );
 
+const clearModalStack = state => (
+  state.set('modalPageStack', List())
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -100,6 +104,8 @@ export default (state = new Map(), action) => {
     return pushModalPage(state, action);
   case 'POP_MODAL_PAGE':
     return popModalPage(state, action);
+  case 'CLEAR_MODAL_STACK':
+    return clearModalStack(state, action);
   default:
     return state;
   }
