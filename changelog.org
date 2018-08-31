@@ -1,3 +1,6 @@
+* August 30th, 2018 (afternoon)
+** Tap on a title or description to enter edit mode
+** To fold a header, tap on the bullet (or anywhere in the region to the left)
 * August 30th, 2018
 ** Moved undo button into the header
 *** This is one step in a major UI overhaul
