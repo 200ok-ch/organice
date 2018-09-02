@@ -3,9 +3,11 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
-import { displayFile, applyOpennessState, setDirty, unfocusHeader } from './org';
+import { displayFile, applyOpennessState, setDirty, unfocusHeader, setLastPullTime } from './org';
 
 import exportOrg from '../lib/export_org';
+
+import moment from 'moment';
 
 const getDropboxClient = getState => (
   new Dropbox({ accessToken: getState().dropbox.get('accessToken') })
@@ -82,6 +84,7 @@ export const downloadFile = path => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, reader.result));
         dispatch(setDirty(false));
+        dispatch(setLastPullTime(moment()));
       });
       reader.readAsText(response.fileBlob);
     });

@@ -788,6 +788,10 @@ const advanceCheckboxState = (state, action) => {
   return state;
 };
 
+const setLastPullTime = (state, action) => (
+  state.set('lastPullTime', action.lastPullTime)
+);
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -888,6 +892,8 @@ export default (state = new Map(), action) => {
     return insertCapture(state, action);
   case 'ADVANCE_CHECKBOX_STATE':
     return advanceCheckboxState(state, action);
+  case 'SET_LAST_PULL_TIME':
+    return setLastPullTime(state, action);
   default:
     return state;
   }

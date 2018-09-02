@@ -5,12 +5,17 @@ export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE', path, contents,
 });
 
+export const setLastPullTime = lastPullTime => ({
+  type: 'SET_LAST_PULL_TIME', lastPullTime,
+});
+
 export const stopDisplayingFile = () => {
   return (dispatch, getState) => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
     dispatch({ type: ActionTypes.CLEAR_HISTORY });
     dispatch(unfocusHeader());
     dispatch(disableCaptureModal());
+    dispatch(setLastPullTime(null));
   };
 };
 
