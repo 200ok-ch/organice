@@ -20,8 +20,6 @@ export default class App extends PureComponent {
     super(props);
 
     this.store = Store(readInitialState());
-    // TODO: kill this
-    this.store.dispatch({ type: 'PUSH_MODAL_PAGE', modalPage: 'capture_templates_editor' });
     this.store.subscribe(subscribeToChanges(this.store));
 
     loadSettingsFromConfigFile(this.store);
