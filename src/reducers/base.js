@@ -112,7 +112,7 @@ export default (state = new Map(), action) => {
     return popModalPage(state, action);
   case 'CLEAR_MODAL_STACK':
     return clearModalStack(state, action);
-  case 'DISPLAY_SYNC_CONFIRMATION_MODAL':
+  case 'SET_DISPLAY_SYNC_CONFIRMATION_MODAL':
     return setDisplayingSyncConfirmationModal(state, action);
   default:
     return state;

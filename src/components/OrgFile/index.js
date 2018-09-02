@@ -45,6 +45,9 @@ class OrgFile extends PureComponent {
       'handleContainerRef',
       'handleCapture',
       'handleCaptureClose',
+      'handleSyncConfirmationPull',
+      'handleSyncConfirmationPush',
+      'handleSyncConfirmationCancel',
     ]);
 
     this.state = {
@@ -163,6 +166,20 @@ class OrgFile extends PureComponent {
     this.props.capture.disableCaptureModal();
   }
 
+  handleSyncConfirmationPull() {
+    this.props.org.sync({ forceAction: 'pull' });
+    this.props.base.setDisplayingSyncConfirmationModal(false);
+  }
+
+  handleSyncConfirmationPush() {
+    this.props.org.sync({ forceAction: 'push' });
+    this.props.base.setDisplayingSyncConfirmationModal(false);
+  }
+
+  handleSyncConfirmationCancel() {
+    this.props.base.setDisplayingSyncConfirmationModal(false);
+  }
+
   render() {
     const {
       headers,
@@ -269,7 +286,10 @@ class OrgFile extends PureComponent {
           )}
 
           {isDisplayingSyncConfirmationModal && (
-            <SyncConfirmationModal lastServerModifiedAt={lastServerModifiedAt} />
+            <SyncConfirmationModal lastServerModifiedAt={lastServerModifiedAt}
+                                   onPull={this.handleSyncConfirmationPull}
+                                   onPush={this.handleSyncConfirmationPush}
+                                   onCancel={this.handleSyncConfirmationCancel} />
           )}
 
           {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}

@@ -4,7 +4,7 @@ import './SyncConfirmationModal.css';
 
 export default class SyncConfirmationModal extends PureComponent {
   render() {
-    const { lastServerModifiedAt } = this.props;
+    const { lastServerModifiedAt, onPull, onPush, onCancel } = this.props;
 
     return (
       <div className="modal-container">
@@ -22,13 +22,13 @@ export default class SyncConfirmationModal extends PureComponent {
         </div>
 
         <div className="sync-confirmation-modal__buttons-container">
-          <button className="btn sync-confirmation-modal__button">
+          <button className="btn sync-confirmation-modal__button" onClick={onPull}>
             Pull latest version from server
           </button>
-          <button className="btn sync-confirmation-modal__button">
-            Overwrite server versionn
+          <button className="btn sync-confirmation-modal__button" onClick={onPush}>
+            Overwrite server version
           </button>
-          <button className="btn sync-confirmation-modal__button">
+          <button className="btn sync-confirmation-modal__button" onClick={onCancel}>
             Cancel sync
           </button>
         </div>

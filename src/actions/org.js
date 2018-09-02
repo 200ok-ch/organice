@@ -29,7 +29,7 @@ export const stopDisplayingFile = () => {
   };
 };
 
-export const sync = () => (
+export const sync = ({ forceAction = null } = {}) => (
   (dispatch, getState) => {
     dispatch(setLoadingMessage('Syncing...'));
 
@@ -40,12 +40,7 @@ export const sync = () => (
       const lastServerModifiedAt = moment(response.server_modified);
       const lastPulledAt = getState().org.present.get('lastPulledAt');
 
-      // TODO: kill this
-      dispatch(setDisplayingSyncConfirmationModal(true, lastServerModifiedAt));
-      dispatch(hideLoadingMessage());
-      return;
-
-      if (lastPulledAt.isAfter(lastServerModifiedAt, 'second')) {
+      if (lastPulledAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
         if (isDirty) {
           pushOrgFile(
             getState().org.present.get('headers'),
@@ -62,7 +57,8 @@ export const sync = () => (
           dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
         }
       } else {
-        if (isDirty) {
+        if (isDirty && forceAction !== 'pull') {
+          dispatch(hideLoadingMessage());
           dispatch(setDisplayingSyncConfirmationModal(true, lastServerModifiedAt));
         } else {
           const reader = new FileReader();

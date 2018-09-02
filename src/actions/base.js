@@ -110,7 +110,7 @@ export const clearModalStack = () => ({
 
 export const setDisplayingSyncConfirmationModal = (isDisplaying, lastServerModifiedAt = null) => (
   dispatch => {
-    dispatch({ type: 'DISPLAY_SYNC_CONFIRMATION_MODAL', isDisplaying, lastServerModifiedAt });
+    dispatch({ type: 'SET_DISPLAY_SYNC_CONFIRMATION_MODAL', isDisplaying, lastServerModifiedAt });
     if (isDisplaying) {
       dispatch(disableCaptureModal());
     }
