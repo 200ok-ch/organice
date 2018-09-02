@@ -76,6 +76,12 @@ const clearModalStack = state => (
   state.set('modalPageStack', List())
 );
 
+const setDisplayingSyncConfirmationModal = (state, action) => (
+  state
+    .set('isDisplayingSyncConfirmationModal', action.isDisplaying)
+    .set('lastServerModifiedAt', action.lastServerModifiedAt)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -106,6 +112,8 @@ export default (state = new Map(), action) => {
     return popModalPage(state, action);
   case 'CLEAR_MODAL_STACK':
     return clearModalStack(state, action);
+  case 'DISPLAY_SYNC_CONFIRMATION_MODAL':
+    return setDisplayingSyncConfirmationModal(state, action);
   default:
     return state;
   }

@@ -11,6 +11,7 @@ import './OrgFile.css';
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
 import CaptureModal from './components/CaptureModal';
+import SyncConfirmationModal from './components/SyncConfirmationModal';
 
 import * as baseActions from '../../actions/base';
 import * as dropboxActions from '../../actions/dropbox';
@@ -175,6 +176,8 @@ class OrgFile extends PureComponent {
       customKeybindings,
       inEditMode,
       activeCaptureTemplate,
+      isDisplayingSyncConfirmationModal,
+      lastServerModifiedAt,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -265,6 +268,10 @@ class OrgFile extends PureComponent {
                           onClose={this.handleCaptureClose} />
           )}
 
+          {isDisplayingSyncConfirmationModal && (
+            <SyncConfirmationModal lastServerModifiedAt={lastServerModifiedAt} />
+          )}
+
           {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
         </div>
       </HotKeys>
@@ -283,6 +290,8 @@ const mapStateToProps = (state, props) => {
     activeCaptureTemplate: state.capture.get('captureTemplates').find(template => (
       template.get('id') === state.capture.get('activeCaptureTemplateId')
     )),
+    isDisplayingSyncConfirmationModal: state.base.get('isDisplayingSyncConfirmationModal'),
+    lastServerModifiedAt: state.base.get('lastServerModifiedAt'),
   };
 };
 

@@ -1,3 +1,5 @@
+import { setDisplayingSyncConfirmationModal } from './base';
+
 export const addNewEmptyCaptureTemplate = () => ({
   type: 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE',
 });
@@ -30,9 +32,12 @@ export const restoreCaptureSettings = newSettings => ({
   type: 'RESTORE_CAPTURE_SETTINGS', newSettings,
 });
 
-export const activateCaptureModalForTemplateId = templateId => ({
-  type: 'ACTIVATE_CAPTURE_MODAL_FOR_TEMPLATE_ID', templateId,
-});
+export const activateCaptureModalForTemplateId = templateId => (
+  dispatch => {
+    dispatch({ type: 'ACTIVATE_CAPTURE_MODAL_FOR_TEMPLATE_ID', templateId });
+    dispatch(setDisplayingSyncConfirmationModal(false));
+  }
+);
 
 export const disableCaptureModal = () => ({
   type: 'DISABLE_CAPTURE_MODAL',

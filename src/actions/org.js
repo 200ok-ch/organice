@@ -1,6 +1,11 @@
 import { ActionTypes } from 'redux-linear-undo';
 import { disableCaptureModal } from './capture';
-import { setLoadingMessage, hideLoadingMessage, setDisappearingLoadingMessage } from './base';
+import {
+  setLoadingMessage,
+  hideLoadingMessage,
+  setDisappearingLoadingMessage,
+  setDisplayingSyncConfirmationModal,
+} from './base';
 import { pushOrgFile } from '../lib/dropbox';
 
 import { Dropbox } from 'dropbox';
@@ -31,13 +36,16 @@ export const sync = () => (
     const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
     const path = getState().org.present.get('path');
     dropbox.filesDownload({ path }).then(response => {
-      console.log("response = ", response);
-
       const isDirty = getState().org.present.get('isDirty');
-      const lastModifiedAt = moment(response.server_modified);
+      const lastServerModifiedAt = moment(response.server_modified);
       const lastPulledAt = getState().org.present.get('lastPulledAt');
 
-      if (lastPulledAt.isAfter(lastModifiedAt, 'second')) {
+      // TODO: kill this
+      dispatch(setDisplayingSyncConfirmationModal(true, lastServerModifiedAt));
+      dispatch(hideLoadingMessage());
+      return;
+
+      if (lastPulledAt.isAfter(lastServerModifiedAt, 'second')) {
         if (isDirty) {
           pushOrgFile(
             getState().org.present.get('headers'),
@@ -55,7 +63,7 @@ export const sync = () => (
         }
       } else {
         if (isDirty) {
-          // TODO: prompt user.
+          dispatch(setDisplayingSyncConfirmationModal(true, lastServerModifiedAt));
         } else {
           const reader = new FileReader();
           reader.addEventListener('loadend', () => {

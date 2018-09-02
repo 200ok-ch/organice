@@ -91,7 +91,7 @@ export default class CaptureModal extends PureComponent {
     const targetHeader = headerWithPath(headers, template.get('headerPaths'));
 
     return (
-      <div className="capture-modal-container">
+      <div className="modal-container">
         <button className="fas fa-times fa-lg capture-modal-close-button"
                 onClick={this.handleCloseClick} />
 

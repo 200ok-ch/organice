@@ -1,4 +1,5 @@
 import { displayFile, stopDisplayingFile } from './org';
+import { disableCaptureModal } from './capture';
 import { sampleFileContents, changelogFileContents } from '../lib/static_file_contents';
 
 import { Dropbox } from 'dropbox';
@@ -106,3 +107,12 @@ export const popModalPage = () => ({
 export const clearModalStack = () => ({
   type: 'CLEAR_MODAL_STACK',
 });
+
+export const setDisplayingSyncConfirmationModal = (isDisplaying, lastServerModifiedAt = null) => (
+  dispatch => {
+    dispatch({ type: 'DISPLAY_SYNC_CONFIRMATION_MODAL', isDisplaying, lastServerModifiedAt });
+    if (isDisplaying) {
+      dispatch(disableCaptureModal());
+    }
+  }
+);

@@ -41,3 +41,16 @@
 div[tabindex="-1"]:focus {
     outline: 0;
 }
+
+.modal-container {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    top: 60px;
+
+    border: 2px solid #5E348C;
+    background-color: white;
+    box-shadow: 2px 2px 5px 0px rgba(148, 148, 148, 0.75);
+
+    padding: 10px;
+}

@@ -1,0 +1,27 @@
+.sync-confirmation-modal__header {
+    color: #5E348C;
+
+    margin-top: 0;
+}
+
+.sync-confirmation-modal__last-sync-time {
+    color: #5E348C;
+
+    text-align: center;
+    font-weight: bold;
+}
+
+.sync-confirmation-modal__buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.sync-confirmation-modal__button {
+    font-size: 18px;
+
+    margin-top: 15px;
+}
