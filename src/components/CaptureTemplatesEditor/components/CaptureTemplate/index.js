@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
+import { Draggable } from 'react-beautiful-dnd';
+
 import './CaptureTemplate.css';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
@@ -262,7 +264,7 @@ export default class CaptureTemplate extends PureComponent {
   }
 
   render() {
-    const { template } = this.props;
+    const { template, index } = this.props;
     const { isCollapsed } = this.state;
 
     const caretClassName = classNames('fas fa-2x fa-caret-right capture-template-container__header__caret', {
@@ -270,26 +272,32 @@ export default class CaptureTemplate extends PureComponent {
     });
 
     return (
-      <div className="capture-template-container">
-        <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
-          <i className={caretClassName} />
-          <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
-          <span className="capture-template-container__header__title">{template.get('description')}</span>
-          <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" />
-        </div>
+      <Draggable draggableId={`capture-template--${template.get('id')}`} index={index}>
+        {(provided, snapshot) => (
+          <div className={classNames("capture-template-container", { 'capture-template-container--dragging': snapshot.isDragging })}
+               ref={provided.innerRef}
+               {...provided.draggableProps}>
+            <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
+              <i className={caretClassName} />
+              <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
+              <span className="capture-template-container__header__title">{template.get('description')}</span>
+              <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" {...provided.dragHandleProps} />
+            </div>
 
-        <Collapse isOpened={!isCollapsed} springConfig={{stiffness: 300}}>
-          <div className="capture-template-container__content">
-            {this.renderDescriptionField(template)}
-            {this.renderIconField(template)}
-            {this.renderOrgFileAvailability(template)}
-            {this.renderHeaderPaths(template)}
-            {this.renderPrependField(template)}
-            {this.renderTemplateField(template)}
-            {this.renderDeleteButton(template)}
+            <Collapse isOpened={!isCollapsed && !snapshot.isDragging} springConfig={{stiffness: 300}}>
+              <div className="capture-template-container__content">
+                {this.renderDescriptionField(template)}
+                {this.renderIconField(template)}
+                {this.renderOrgFileAvailability(template)}
+                {this.renderHeaderPaths(template)}
+                {this.renderPrependField(template)}
+                {this.renderTemplateField(template)}
+                {this.renderDeleteButton(template)}
+              </div>
+            </Collapse>
           </div>
-        </Collapse>
-      </div>
+        )}
+      </Draggable>
     );
   }
 }

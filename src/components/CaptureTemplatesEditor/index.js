@@ -2,6 +2,8 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Droppable } from 'react-beautiful-dnd';
+
 import './CaptureTemplatesEditor.css';
 
 import * as captureActions from '../../actions/capture';
@@ -64,33 +66,41 @@ class CaptureTemplatesEditor extends PureComponent {
 
     return (
       <div>
-        <div className="capture-templates-container">
-          {captureTemplates.size === 0 ? (
-            <div className="no-capture-templates-message">
-              You don't currently have any capture templates - add one by pressing the <i className="fas fa-plus" /> button.
+        <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
+          {(provided, snapshot) => (
+            <div className="capture-templates-container"
+                 ref={provided.innerRef}
+                 {...provided.droppableProps}>
+              {captureTemplates.size === 0 ? (
+                <div className="no-capture-templates-message">
+                  You don't currently have any capture templates - add one by pressing the <i className="fas fa-plus" /> button.
 
-              <br />
-              <br />
+                  <br />
+                  <br />
 
-              Capture templates show up in the action drawer and give you quick access to creating new headers (like org-capture).
+                  Capture templates show up in the action drawer and give you quick access to creating new headers (like org-capture).
+                </div>
+              ) : (
+                <Fragment>
+                  {captureTemplates.map((template, index) => (
+                    <CaptureTemplate key={template.get('id')}
+                                     index={index}
+                                     template={template}
+                                     onFieldPathUpdate={this.handleFieldPathUpdate}
+                                     onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
+                                     onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
+                                     onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
+                                     onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
+                                     onDeleteTemplate={this.handleDeleteTemplate}
+                                     onReorder={this.handleReorderTemplate} />
+                  ))}
+
+                  {provided.placeholder}
+                </Fragment>
+              )}
             </div>
-          ) : (
-            <Fragment>
-              {captureTemplates.map((template, index) => (
-                <CaptureTemplate key={template.get('id')}
-                                 index={index}
-                                 template={template}
-                                 onFieldPathUpdate={this.handleFieldPathUpdate}
-                                 onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
-                                 onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
-                                 onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
-                                 onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
-                                 onDeleteTemplate={this.handleDeleteTemplate}
-                                 onReorder={this.handleReorderTemplate} />
-              ))}
-            </Fragment>
           )}
-        </div>
+        </Droppable>
 
         <div className="new-capture-template-button-container">
           <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewTemplateClick} />

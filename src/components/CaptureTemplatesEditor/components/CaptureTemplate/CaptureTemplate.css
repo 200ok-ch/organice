@@ -1,14 +1,14 @@
 .capture-template-container {
     border-bottom: 2px solid #5E348C;
-    padding: 5px;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
+    padding: 15px 5px;
+
+    background-color: white;
 
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-.capture-template-container:first-of-type {
-    margin-top: 10px;
+.capture-template-container--dragging {
+    background-color: #E6E6E6;
 }
 
 .capture-template-container__header {
@@ -40,6 +40,8 @@
 .capture-template-container__header__drag-handle {
     margin-left: auto;
     margin-right: 20px;
+
+    user-select: none;
 }
 
 .capture-template-container__content {
