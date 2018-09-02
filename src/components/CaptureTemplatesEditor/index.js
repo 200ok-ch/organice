@@ -7,7 +7,6 @@ import './CaptureTemplatesEditor.css';
 import * as captureActions from '../../actions/capture';
 
 import CaptureTemplate from './components/CaptureTemplate';
-import CaptureTemplateDragPreview from './components/CaptureTemplateDragPreview';
 
 import { List } from 'immutable';
 import _ from 'lodash';
@@ -89,8 +88,6 @@ class CaptureTemplatesEditor extends PureComponent {
                                  onDeleteTemplate={this.handleDeleteTemplate}
                                  onReorder={this.handleReorderTemplate} />
               ))}
-
-              {window.deviceHasTouchSupport && <CaptureTemplateDragPreview />}
             </Fragment>
           )}
         </div>

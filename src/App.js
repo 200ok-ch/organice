@@ -4,20 +4,18 @@ import Store from './store';
 import { readInitialState, loadSettingsFromConfigFile, subscribeToChanges } from './util/settings_persister';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import { default as TouchBackend } from 'react-dnd-touch-backend';
-import { DragDropContext } from 'react-dnd';
-
 import './App.css';
 import './base.css';
 
 import Entry from './components/Entry';
 
-class App extends PureComponent {
+export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
     this.store = Store(readInitialState());
+    // TODO: kill this
+    this.store.dispatch({ type: 'PUSH_MODAL_PAGE', modalPage: 'capture_templates_editor' });
     this.store.subscribe(subscribeToChanges(this.store));
 
     loadSettingsFromConfigFile(this.store);
@@ -35,8 +33,3 @@ class App extends PureComponent {
     );
   }
 }
-
-window.deviceHasTouchSupport = 'ontouchstart' in document.documentElement;
-const dndBackend = window.deviceHasTouchSupport ? TouchBackend : HTML5Backend;
-
-export default DragDropContext(dndBackend)(App);

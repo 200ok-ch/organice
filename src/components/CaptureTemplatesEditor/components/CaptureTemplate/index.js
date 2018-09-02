@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
-import { findDOMNode } from 'react-dom';
-import { DragSource, DropTarget } from 'react-dnd';
-
 import './CaptureTemplate.css';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
@@ -12,7 +9,7 @@ import Switch from '../../../UI/Switch/';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-class CaptureTemplate extends PureComponent {
+export default class CaptureTemplate extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -265,29 +262,23 @@ class CaptureTemplate extends PureComponent {
   }
 
   render() {
-    const {
-      template,
-      isDragging,
-      connectDragSource,
-      connectDropTarget,
-      connectDragPreview
-    } = this.props;
+    const { template } = this.props;
     const { isCollapsed } = this.state;
 
     const caretClassName = classNames('fas fa-2x fa-caret-right capture-template-container__header__caret', {
       'capture-template-container__header__caret--rotated': !isCollapsed,
     });
 
-    return connectDropTarget(connectDragPreview(
-      <div className="capture-template-container" style={{opacity: isDragging ? 0 : 1}}>
+    return (
+      <div className="capture-template-container">
         <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
           <i className={caretClassName} />
           <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
           <span className="capture-template-container__header__title">{template.get('description')}</span>
-          {connectDragSource(<i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" />)}
+          <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" />
         </div>
 
-        <Collapse isOpened={!isCollapsed && !isDragging} springConfig={{stiffness: 300}}>
+        <Collapse isOpened={!isCollapsed} springConfig={{stiffness: 300}}>
           <div className="capture-template-container__content">
             {this.renderDescriptionField(template)}
             {this.renderIconField(template)}
@@ -299,60 +290,6 @@ class CaptureTemplate extends PureComponent {
           </div>
         </Collapse>
       </div>
-    ));
+    );
   }
 }
-
-const templateSource = {
-  beginDrag: props => ({
-    id: props.template.get('id'),
-    template: props.template,
-    index: props.index,
-  }),
-};
-
-const templateTarget = {
-  hover(props, monitor, component) {
-    if (!component) {
-      return;
-    }
-
-    const dragIndex = monitor.getItem().index;
-    const hoverIndex = props.index;
-    if (dragIndex === hoverIndex) {
-      return;
-    }
-
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-    const clientOffset = monitor.getClientOffset();
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return;
-    }
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return;
-    }
-
-    props.onReorder(dragIndex, hoverIndex);
-
-    monitor.getItem().index = hoverIndex;
-  }
-};
-
-export default _.flow(
-  DropTarget(
-    'capture-template', templateTarget, connect => ({
-      connectDropTarget: connect.dropTarget(),
-    })
-  ),
-  DragSource(
-    'capture-template', templateSource, (connect, monitor) => ({
-      connectDragSource: connect.dragSource(),
-      connectDragPreview: connect.dragPreview(),
-      isDragging: monitor.isDragging(),
-    }),
-  ),
-)(CaptureTemplate);
