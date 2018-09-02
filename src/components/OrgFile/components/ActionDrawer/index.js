@@ -43,6 +43,7 @@ class ActionDrawer extends PureComponent {
       'handleMoveTableRowUpClick',
       'handleMoveTableColumnLeftClick',
       'handleMoveTableColumnRightClick',
+      'handleSync',
     ]);
   }
 
@@ -207,6 +208,10 @@ class ActionDrawer extends PureComponent {
     );
   }
 
+  handleSync() {
+    this.props.org.sync();
+  }
+
   render() {
     const {
       inTitleEditMode,
@@ -240,6 +245,9 @@ class ActionDrawer extends PureComponent {
             )}
 
             {this.renderCaptureButtons()}
+
+            {/* TODO: move this to the proper location in the end */}
+            <ActionButton iconName="cloud" subIconName="sync-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handleSync} />
 
             <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
             <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />

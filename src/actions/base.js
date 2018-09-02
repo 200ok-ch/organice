@@ -12,6 +12,13 @@ export const hideLoadingMessage = () => ({
   type: 'HIDE_LOADING_MESSAGE',
 });
 
+export const setDisappearingLoadingMessage = (loadingMessage, delay) => (
+  dispatch => {
+    dispatch(setLoadingMessage(loadingMessage));
+    setTimeout(() => dispatch(hideLoadingMessage()), delay);
+  }
+);
+
 export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
   type: 'SET_LAST_VIEWED_FILE', lastViewedPath, lastViewedContents,
 });

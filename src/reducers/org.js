@@ -788,8 +788,8 @@ const advanceCheckboxState = (state, action) => {
   return state;
 };
 
-const setLastPullTime = (state, action) => (
-  state.set('lastPullTime', action.lastPullTime)
+const setLastPulledAt = (state, action) => (
+  state.set('lastPulledAt', action.lastPulledAt)
 );
 
 export default (state = new Map(), action) => {
@@ -892,8 +892,8 @@ export default (state = new Map(), action) => {
     return insertCapture(state, action);
   case 'ADVANCE_CHECKBOX_STATE':
     return advanceCheckboxState(state, action);
-  case 'SET_LAST_PULL_TIME':
-    return setLastPullTime(state, action);
+  case 'SET_LAST_PULLED_AT':
+    return setLastPulledAt(state, action);
   default:
     return state;
   }

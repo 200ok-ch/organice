@@ -1,12 +1,17 @@
 import { ActionTypes } from 'redux-linear-undo';
 import { disableCaptureModal } from './capture';
+import { setLoadingMessage, hideLoadingMessage, setDisappearingLoadingMessage } from './base';
+import { pushOrgFile } from '../lib/dropbox';
+
+import { Dropbox } from 'dropbox';
+import moment from 'moment';
 
 export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE', path, contents,
 });
 
-export const setLastPullTime = lastPullTime => ({
-  type: 'SET_LAST_PULL_TIME', lastPullTime,
+export const setLastPulledAt = lastPulledAt => ({
+  type: 'SET_LAST_PULLED_AT', lastPulledAt,
 });
 
 export const stopDisplayingFile = () => {
@@ -15,9 +20,57 @@ export const stopDisplayingFile = () => {
     dispatch({ type: ActionTypes.CLEAR_HISTORY });
     dispatch(unfocusHeader());
     dispatch(disableCaptureModal());
-    dispatch(setLastPullTime(null));
+    dispatch(setLastPulledAt(null));
   };
 };
+
+export const sync = () => (
+  (dispatch, getState) => {
+    dispatch(setLoadingMessage('Syncing...'));
+
+    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+    const path = getState().org.present.get('path');
+    dropbox.filesDownload({ path }).then(response => {
+      console.log("response = ", response);
+
+      const isDirty = getState().org.present.get('isDirty');
+      const lastModifiedAt = moment(response.server_modified);
+      const lastPulledAt = getState().org.present.get('lastPulledAt');
+
+      if (lastPulledAt.isAfter(lastModifiedAt, 'second')) {
+        if (isDirty) {
+          pushOrgFile(
+            getState().org.present.get('headers'),
+            getState().org.present.get('todoKeywordSets'),
+            path, dropbox,
+          ).then(() => {
+            dispatch(setDisappearingLoadingMessage('Changes pushed', 2000));
+            dispatch(setDirty(false));
+          }).catch(error => {
+            alert(`There was an error pushing the file: ${error.toString()}`);
+            dispatch(hideLoadingMessage());
+          });
+        } else {
+          dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+        }
+      } else {
+        if (isDirty) {
+          // TODO: prompt user.
+        } else {
+          const reader = new FileReader();
+          reader.addEventListener('loadend', () => {
+            dispatch(displayFile(path, reader.result));
+            dispatch(applyOpennessState());
+            dispatch(setDirty(false));
+            dispatch(setLastPulledAt(moment()));
+            dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+          });
+          reader.readAsText(response.fileBlob);
+        }
+      }
+    });
+  }
+);
 
 export const openHeader = headerId => ({
   type: 'OPEN_HEADER', headerId,

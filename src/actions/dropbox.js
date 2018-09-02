@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
-import { displayFile, applyOpennessState, setDirty, unfocusHeader, setLastPullTime } from './org';
+import { displayFile, applyOpennessState, setDirty, unfocusHeader, setLastPulledAt } from './org';
 
 import exportOrg from '../lib/export_org';
 
@@ -84,13 +84,14 @@ export const downloadFile = path => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, reader.result));
         dispatch(setDirty(false));
-        dispatch(setLastPullTime(moment()));
+        dispatch(setLastPulledAt(moment()));
       });
       reader.readAsText(response.fileBlob);
     });
   };
 };
 
+// TODO: maybe kill this?
 export const pushCurrentFile = () => {
   return (dispatch, getState) => {
     const contents = exportOrg(getState().org.present.get('headers'),
@@ -115,6 +116,7 @@ export const pushCurrentFile = () => {
   };
 };
 
+// TODO: maybe kill this?
 export const redownloadCurrentFile = () => {
   return (dispatch, getState) => {
     const path = getState().org.present.get('path');
