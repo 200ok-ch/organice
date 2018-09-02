@@ -31,8 +31,6 @@ class ActionDrawer extends PureComponent {
       'handleMoveSubtreeRightClick',
       'handleFocus',
       'handleUnfocus',
-      'handlePushClick',
-      'handlePullClick',
       'handleDoneClick',
       'handleEnterTableEditModeClick',
       'handleAddNewTableRowClick',
@@ -111,24 +109,6 @@ class ActionDrawer extends PureComponent {
 
   handleUnfocus() {
     this.props.org.unfocusHeader();
-  }
-
-  handlePushClick() {
-    this.props.dropbox.pushCurrentFile();
-  }
-
-  handlePullClick() {
-    const { isDirty } = this.props;
-
-    const pull = () => this.props.dropbox.redownloadCurrentFile();
-
-    if (isDirty) {
-      if (window.confirm('You have unpushed changes. Are you sure you want to overwrite them?')) {
-        pull();
-      }
-    } else {
-      pull();
-    }
   }
 
   handleDoneClick() {
@@ -246,9 +226,6 @@ class ActionDrawer extends PureComponent {
 
             {this.renderCaptureButtons()}
 
-            {/* TODO: move this to the proper location in the end */}
-            <ActionButton iconName="cloud" subIconName="sync-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handleSync} />
-
             <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
             <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />
             <ActionButton iconName="edit" isDisabled={false} onClick={this.handleEditDescriptionClick} />
@@ -265,8 +242,7 @@ class ActionDrawer extends PureComponent {
             ) : (
               <ActionButton iconName="compress" isDisabled={false} onClick={this.handleFocus} />
             )}
-            <ActionButton iconName="cloud-upload-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePushClick} />
-            <ActionButton iconName="cloud-download-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handlePullClick} />
+            <ActionButton iconName="cloud" subIconName="sync-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handleSync} />
           </Fragment>
         )}
       </div>

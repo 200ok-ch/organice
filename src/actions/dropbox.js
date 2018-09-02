@@ -3,15 +3,9 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
-import { displayFile, applyOpennessState, setDirty, unfocusHeader, setLastPulledAt } from './org';
-
-import exportOrg from '../lib/export_org';
+import { displayFile, applyOpennessState, setDirty, setLastPulledAt } from './org';
 
 import moment from 'moment';
-
-const getDropboxClient = getState => (
-  new Dropbox({ accessToken: getState().dropbox.get('accessToken') })
-);
 
 export const authenticate = accessToken => ({
   type: 'AUTHENTICATE',
@@ -88,39 +82,5 @@ export const downloadFile = path => {
       });
       reader.readAsText(response.fileBlob);
     });
-  };
-};
-
-// TODO: maybe kill this?
-export const pushCurrentFile = () => {
-  return (dispatch, getState) => {
-    const contents = exportOrg(getState().org.present.get('headers'),
-                               getState().org.present.get('todoKeywordSets'));
-    const path = getState().org.present.get('path');
-
-    dispatch(setLoadingMessage('Pushing...'));
-    const dropbox = getDropboxClient(getState);
-    dropbox.filesUpload({
-      path, contents,
-      mode: {
-        '.tag': 'overwrite',
-      },
-      autorename: true,
-    }).then(response => {
-      dispatch(hideLoadingMessage());
-      dispatch(setDirty(false));
-    }).catch(error => {
-      alert(`There was an error pushing the file: ${error}`);
-      dispatch(hideLoadingMessage());
-    });
-  };
-};
-
-// TODO: maybe kill this?
-export const redownloadCurrentFile = () => {
-  return (dispatch, getState) => {
-    const path = getState().org.present.get('path');
-    dispatch(downloadFile(path));
-    dispatch(unfocusHeader());
   };
 };
