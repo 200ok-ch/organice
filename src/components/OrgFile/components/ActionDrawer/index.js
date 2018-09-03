@@ -111,6 +111,27 @@ class ActionDrawer extends PureComponent {
     ));
   }
 
+  handleSync() {
+    this.props.org.sync();
+  }
+
+  handleMainArrowButtonClick() {
+    this.setState({
+      isDisplayingArrowButtons: !this.state.isDisplayingArrowButtons,
+    });
+  }
+
+  handleMainCaptureButtonClick() {
+    if (!this.state.isDisplayingCaptureButtons && this.getAvailableCaptureTemplates().size === 0) {
+      alert(`You don't have any capture templates set up for this file! Add some in Settings > Capture Templates`);
+      return;
+    }
+
+    this.setState({
+      isDisplayingCaptureButtons: !this.state.isDisplayingCaptureButtons,
+    });
+  }
+
   renderCaptureButtons() {
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
@@ -157,23 +178,6 @@ class ActionDrawer extends PureComponent {
         )}
       </Motion>
     );
-  }
-
-  handleMainArrowButtonClick() {
-    this.setState({
-      isDisplayingArrowButtons: !this.state.isDisplayingArrowButtons,
-    });
-  }
-
-  handleMainCaptureButtonClick() {
-    if (!this.state.isDisplayingCaptureButtons && this.getAvailableCaptureTemplates().size === 0) {
-      alert(`You don't have any capture templates set up for this file! Add some in Settings > Capture Templates`);
-      return;
-    }
-
-    this.setState({
-      isDisplayingCaptureButtons: !this.state.isDisplayingCaptureButtons,
-    });
   }
 
   renderMovementButtons() {
@@ -249,23 +253,13 @@ class ActionDrawer extends PureComponent {
     );
   }
 
-  handleSync() {
-    this.props.org.sync();
-  }
-
   render() {
-    const {
-      inTitleEditMode,
-      inDescriptionEditMode,
-      shouldDisableSyncButtons,
-      selectedTableCellId,
-      inTableEditMode,
-    } = this.props;
+    const { inEditMode, shouldDisableSyncButtons } = this.props;
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     return (
       <div className="action-drawer-container nice-scroll">
-        {(inTitleEditMode || inDescriptionEditMode || inTableEditMode) ? (
+        {inEditMode ? (
           <button className="btn action-drawer__done-btn"
                   onClick={this.handleDoneClick}>Done</button>
         ) : (
@@ -288,9 +282,9 @@ class ActionDrawer extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    inTitleEditMode: state.org.present.get('inTitleEditMode'),
-    inDescriptionEditMode: state.org.present.get('inDescriptionEditMode'),
-    inTableEditMode: state.org.present.get('inTableEditMode'),
+    inEditMode: (
+      state.org.present.get('inTitleEditMode') || state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTableEditMode')
+    ),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
