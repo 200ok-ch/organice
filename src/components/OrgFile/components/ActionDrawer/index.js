@@ -169,15 +169,19 @@ class ActionDrawer extends PureComponent {
     };
   }
 
+  getAvailableCaptureTemplates() {
+    return this.props.captureTemplates.filter(template => (
+      template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
+        availablePath.trim()
+      )).includes((this.props.path || '').trim())
+    ));
+  }
+
   renderCaptureButtons() {
     const { captureTemplates, path } = this.props;
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
-    const availableCaptureTemplates = captureTemplates.filter(template => (
-      template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
-        availablePath.trim()
-      )).includes((path || '').trim())
-    ));
+    const availableCaptureTemplates = this.getAvailableCaptureTemplates();
 
     const baseCaptureButtonStyle = {
       position: 'absolute',
@@ -229,6 +233,11 @@ class ActionDrawer extends PureComponent {
   }
 
   handleMainCaptureButtonClick() {
+    if (!this.state.isDisplayingCaptureButtons && this.getAvailableCaptureTemplates().size === 0) {
+      alert(`You don't have any capture templates set up for this file! Add some in Settings > Capture Templates`);
+      return;
+    }
+
     this.setState({
       isDisplayingCaptureButtons: !this.state.isDisplayingCaptureButtons,
     });
