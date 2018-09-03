@@ -1,22 +1,20 @@
 .action-drawer-container {
     position: fixed;
-    bottom: 10px;
+    bottom: 20px;
     left: 10px;
     right: 10px;
-    border: 1px solid lightgray;
-    background-color: white;
-    box-shadow: 2px 2px 5px 0px rgba(148, 148, 148, 0.75);
-    padding-bottom: 6px;
-    padding-top: 6px;
-    padding-left: 20px;
-    box-sizing: border-box;
-    overflow-x: auto;
     white-space: nowrap;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .action-drawer__btn {
-    margin-right: 20px;
-    position: relative;
+    box-shadow: 2px 2px 5px 0px rgba(148, 148, 148, 0.75);
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
 }
 
 .action-drawer__done-btn {
@@ -27,11 +25,6 @@
     margin-left: -10px;
 }
 
-.action-drawer__separator {
-    background-color: lightgray;
-    width: 2px;
-    height: 35px;
-    display: inline-block;
-    margin-right: 20px;
-    transform: translateY(12px);
+.action-drawer__arrow-buttons-container {
+    position: relative;
 }

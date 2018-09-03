@@ -2,6 +2,8 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Motion, spring } from 'react-motion';
+
 import './ActionDrawer.css';
 
 import _ from 'lodash';
@@ -42,7 +44,12 @@ class ActionDrawer extends PureComponent {
       'handleMoveTableColumnLeftClick',
       'handleMoveTableColumnRightClick',
       'handleSync',
+      'handleArrowButtonClick',
     ]);
+
+    this.state = {
+      isDisplayingArrowButtons: false,
+    };
   }
 
   componentDidMount() {
@@ -183,8 +190,49 @@ class ActionDrawer extends PureComponent {
                         isDisabled={false}
                         onClick={this.handleCaptureButtonClick(template.get('id'))} />
         ))}
-        <div className="action-drawer__separator" />
       </Fragment>
+    );
+  }
+
+  handleArrowButtonClick() {
+    this.setState({
+      isDisplayingArrowButtons: !this.state.isDisplayingArrowButtons,
+    });
+  }
+
+  renderArrowButtons() {
+    const { isDisplayingArrowButtons } = this.state;
+
+    const baseArrowButtonStyle = {
+      position: 'absolute',
+      zIndex: 0,
+    };
+    if (!isDisplayingArrowButtons) {
+      baseArrowButtonStyle.boxShadow = 'none';
+    }
+
+    const animatedStyles = {
+      topRowYOffset: spring(isDisplayingArrowButtons ? 150 : 0, { stiffness: 300 }),
+      bottomRowYOffset:spring(isDisplayingArrowButtons ?  80 : 0, { stiffness: 300 }),
+      firstColumnXOffset:spring(isDisplayingArrowButtons ?  70 : 0, { stiffness: 300 }),
+      secondColumnXOffset: spring(isDisplayingArrowButtons ? 140 : 0, { stiffness: 300 }),
+    };
+
+    return (
+      <Motion style={animatedStyles}>
+        {style => (
+          <div className="action-drawer__arrow-buttons-container">
+            <ActionButton iconName="arrow-up" isDisabled={false} onClick={this.handleMoveHeaderUpClick} style={{...baseArrowButtonStyle, bottom: style.topRowYOffset}} />
+            <ActionButton iconName="arrow-down" isDisabled={false} onClick={this.handleMoveHeaderDownClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset}} />
+            <ActionButton iconName="arrow-left" isDisabled={false} onClick={this.handleMoveHeaderLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.firstColumnXOffset}} />
+            <ActionButton iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.firstColumnXOffset}} />
+            <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.secondColumnXOffset}} />
+            <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.secondColumnXOffset}} />
+
+            <ActionButton iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'} isDisabled={false} onClick={this.handleArrowButtonClick} style={{position: 'relative', zIndex: 1}} />
+          </div>
+        )}
+      </Motion>
     );
   }
 
@@ -197,10 +245,10 @@ class ActionDrawer extends PureComponent {
       inTitleEditMode,
       inDescriptionEditMode,
       shouldDisableSyncButtons,
-      isFocusedHeaderActive,
       selectedTableCellId,
       inTableEditMode,
     } = this.props;
+    const { isDisplayingArrowButtons } = this.state;
 
     return (
       <div className="action-drawer-container nice-scroll">
@@ -211,38 +259,26 @@ class ActionDrawer extends PureComponent {
           <Fragment>
             {!!selectedTableCellId && (
               <Fragment>
-                <ActionButton iconName="pencil-alt" subIconName="table" isDisabled={false} onClick={this.handleEnterTableEditModeClick} />
-                <ActionButton iconName="plus" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleAddNewTableRowClick} />
-                <ActionButton iconName="times" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleRemoveTableRowClick} />
-                <ActionButton iconName="plus" subIconName="columns" isDisabled={false} onClick={this.handleAddNewTableColumnClick} />
-                <ActionButton iconName="times" subIconName="columns" isDisabled={false} onClick={this.handleRemoveTableColumnClick} />
                 <ActionButton iconName="arrow-up" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
                 <ActionButton iconName="arrow-down" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowDownClick} />
                 <ActionButton iconName="arrow-left" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnLeftClick} />
                 <ActionButton iconName="arrow-right" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnRightClick} />
-                <div className="action-drawer__separator" />
               </Fragment>
             )}
 
-            {this.renderCaptureButtons()}
+            {/* this.renderCaptureButtons() */}
+            <ActionButton iconName="list-ul"
+                          isDisabled={false}
+                          onClick={this.handleSync}
+                          style={{opacity: isDisplayingArrowButtons ? 0 : 1}} />
 
-            <ActionButton iconName="check" isDisabled={false} onClick={this.handleAdvanceTodoClick} />
-            <ActionButton iconName="pencil-alt" isDisabled={false} onClick={this.handleEditTitleClick} />
-            <ActionButton iconName="edit" isDisabled={false} onClick={this.handleEditDescriptionClick} />
-            <ActionButton iconName="plus" isDisabled={false} onClick={this.handleAddHeaderClick} />
-            <ActionButton iconName="times" isDisabled={false} onClick={this.handleRemoveHeaderClick} />
-            <ActionButton iconName="arrow-up" isDisabled={false} onClick={this.handleMoveHeaderUpClick} />
-            <ActionButton iconName="arrow-down" isDisabled={false} onClick={this.handleMoveHeaderDownClick} />
-            <ActionButton iconName="arrow-left" isDisabled={false} onClick={this.handleMoveHeaderLeftClick} />
-            <ActionButton iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} />
-            <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} />
-            <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} />
-            {isFocusedHeaderActive ? (
-              <ActionButton iconName="expand" isDisabled={false} onClick={this.handleUnfocus} />
-            ) : (
-              <ActionButton iconName="compress" isDisabled={false} onClick={this.handleFocus} />
-            )}
-            <ActionButton iconName="cloud" subIconName="sync-alt" isDisabled={shouldDisableSyncButtons} onClick={this.handleSync} />
+            {this.renderArrowButtons()}
+
+            <ActionButton iconName="cloud"
+                          subIconName="sync-alt"
+                          isDisabled={shouldDisableSyncButtons}
+                          onClick={this.handleSync}
+                          style={{opacity: isDisplayingArrowButtons ? 0 : 1}} />
           </Fragment>
         )}
       </div>
