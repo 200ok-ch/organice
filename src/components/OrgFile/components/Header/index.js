@@ -27,6 +27,10 @@ class Header extends PureComponent {
 
     _.bindAll(this, [
       'handleRef',
+      'handleMouseDown',
+      'handleMouseMove',
+      'handleMouseUp',
+      'handleMouseOut',
       'handleTouchMove',
       'handleTouchStart',
       'handleTouchEnd',
@@ -40,9 +44,9 @@ class Header extends PureComponent {
     ]);
 
     this.state = {
-      touchStartX: null,
-      touchStartY: null,
-      currentTouchX: null,
+      dragStartX: null,
+      dragStartY: null,
+      currentDragX: null,
       containerWidth: null,
     };
   }
@@ -58,11 +62,10 @@ class Header extends PureComponent {
     this.props.onRef(containerDiv);
   }
 
-  handleTouchStart(event) {
+  handleDragStart(event, dragX, dragY) {
     if (this.props.shouldDisableActions) {
       return;
     }
-
     if (this.props.inEditMode) {
       return;
     }
@@ -72,30 +75,30 @@ class Header extends PureComponent {
     }
 
     this.setState({
-      touchStartX: event.changedTouches[0].clientX,
-      touchStartY: event.changedTouches[0].clientY,
+      dragStartX: dragX,
+      dragStartY: dragY,
     });
   }
 
-  handleTouchMove(event) {
-    const { touchStartX, touchStartY } = this.state;
-    if (touchStartX === null) {
+  handleDragMove(dragX, dragY) {
+    const { dragStartX, dragStartY } = this.state;
+    if (dragStartX === null) {
       return;
     }
 
-    const currentTouchY = event.changedTouches[0].clientY;
-    if (Math.abs(currentTouchY - touchStartY) >= this.MIN_SWIPE_ACTIVATION_DISTANCE / 2) {
-      this.setState({ touchStartX: null });
+    const currentDragY = dragY;
+    if (Math.abs(currentDragY - dragStartY) >= this.MIN_SWIPE_ACTIVATION_DISTANCE / 2) {
+      this.setState({ dragStartX: null });
     } else {
-      this.setState({ currentTouchX: event.changedTouches[0].clientX });
+      this.setState({ currentDragX: dragX });
     }
   }
 
-  handleTouchEnd(event) {
-    const { touchStartX, currentTouchX } = this.state;
+  handleDragEnd() {
+    const { dragStartX, currentDragX } = this.state;
 
-    if (!!touchStartX && !!currentTouchX) {
-      const swipeDistance = currentTouchX - touchStartX;
+    if (!!dragStartX && !!currentDragX) {
+      const swipeDistance = currentDragX - dragStartX;
 
       if (swipeDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
         this.props.org.advanceTodoState(this.props.header.get('id'));
@@ -107,16 +110,48 @@ class Header extends PureComponent {
     }
 
     this.setState({
-      touchStartX: null,
-      currentTouchX: null,
+      dragStartX: null,
+      currentDragX: null,
     });
   }
 
-  handleTouchCancel() {
+  handleDragCancel() {
     this.setState({
-      touchStartX: null,
-      currentTouchX: null,
+      dragStartX: null,
+      currentDragX: null,
     });
+  }
+
+  handleMouseDown(event) {
+    this.handleDragStart(event, event.clientX, event.clientY);
+  }
+
+  handleMouseMove(event) {
+    this.handleDragMove(event.clientX, event.clientY);
+  }
+
+  handleMouseUp() {
+    this.handleDragEnd();
+  }
+
+  handleMouseOut() {
+    this.handleDragCancel();
+  }
+
+  handleTouchStart(event) {
+    this.handleDragStart(event, event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+  }
+
+  handleTouchMove(event) {
+    this.handleDragMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+  }
+
+  handleTouchEnd() {
+    this.handleDragEnd();
+  }
+
+  handleTouchCancel() {
+    this.handleDragCancel();
   }
 
   handleHeaderClick(event) {
@@ -169,9 +204,9 @@ class Header extends PureComponent {
       header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
     ) : header.get('nestingLevel');
 
-    const { touchStartX, currentTouchX } = this.state;
-    const marginLeft = (!!touchStartX && !!currentTouchX) ? (
-      currentTouchX - touchStartX
+    const { dragStartX, currentDragX } = this.state;
+    const marginLeft = (!!dragStartX && !!currentDragX) ? (
+      currentDragX - dragStartX
     ) : (
       spring(0, { stiffness: 300 })
     );
@@ -217,6 +252,10 @@ class Header extends PureComponent {
                  style={interpolatedStyle}
                  ref={this.handleRef}
                  onClick={this.handleHeaderClick}
+                 onMouseDown={this.handleMouseDown}
+                 onMouseMove={this.handleMouseMove}
+                 onMouseUp={this.handleMouseUp}
+                 onMouseOut={this.handleMouseOut}
                  onTouchStart={this.handleTouchStart}
                  onTouchMove={this.handleTouchMove}
                  onTouchEnd={this.handleTouchEnd}
