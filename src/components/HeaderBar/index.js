@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -25,6 +25,7 @@ class HeaderBar extends PureComponent {
       'handleModalPageDoneClick',
       'handleSettingsSubPageBackClick',
       'handleUndoClick',
+      'handleHelpClick',
     ]);
   }
 
@@ -117,6 +118,8 @@ class HeaderBar extends PureComponent {
       return this.renderSettingsSubPageBackButton();
     case 'capture_templates_editor':
       return this.renderSettingsSubPageBackButton();
+    case 'sample':
+      return this.renderSettingsSubPageBackButton();
     case 'settings':
       return <div />;
     default:
@@ -148,6 +151,8 @@ class HeaderBar extends PureComponent {
       return titleContainerWithText('Shortcuts');
     case 'capture_templates_editor':
       return titleContainerWithText('Capture');
+    case 'sample':
+      return titleContainerWithText('Sample');
     default:
     }
 
@@ -162,7 +167,7 @@ class HeaderBar extends PureComponent {
 
   handleChangelogClick() {
     this.props.base.pushModalPage('changelog');
-  }
+  }p
 
   handleSettingsClick() {
     this.props.base.pushModalPage('settings');
@@ -176,6 +181,11 @@ class HeaderBar extends PureComponent {
     if (this.props.isUndoEnabled) {
       this.props.undo.undo();
     }
+  }
+
+  handleHelpClick() {
+    this.props.base.pushModalPage('settings');
+    this.props.base.pushModalPage('sample');
   }
 
   renderActions() {
@@ -216,7 +226,10 @@ class HeaderBar extends PureComponent {
             )}
 
             {(isAuthenticated && !activeModalPage && !!path) && (
-              <i className={undoIconClassName} onClick={this.handleUndoClick} />
+              <Fragment>
+                <i className={undoIconClassName} onClick={this.handleUndoClick} />
+                <i className="fas fa-question-circle header-bar__actions__item" onClick={this.handleHelpClick} />
+              </Fragment>
             )}
 
             {isAuthenticated && (

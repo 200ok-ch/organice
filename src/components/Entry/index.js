@@ -139,11 +139,12 @@ class Entry extends PureComponent {
           this.renderChangelogFile()
         ) : (
           isAuthenticated ? (
-            ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor'].includes(activeModalPage) ? (
+            ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(activeModalPage) ? (
               <Fragment>
                 {activeModalPage === 'settings' && <Settings />}
                 {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
                 {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+                {activeModalPage === 'sample' && this.renderSampleFile()}
               </Fragment>
             ) : (
               <Switch>

@@ -27,6 +27,7 @@ class Settings extends PureComponent {
       'handleShouldTapTodoToAdvanceChange',
       'handleShouldStoreSettingsInDropbox',
       'handleChangelogClick',
+      'handleHelpClick',
     ]);
   }
 
@@ -66,6 +67,10 @@ class Settings extends PureComponent {
 
   handleChangelogClick() {
     this.props.base.pushModalPage('changelog');
+  }
+
+  handleHelpClick() {
+    this.props.base.pushModalPage('sample');
   }
 
   render() {
@@ -127,6 +132,9 @@ class Settings extends PureComponent {
                 <i className="fas fa-gift" />
               </div>
             )}
+          </button>
+          <button className="btn settings-btn" onClick={this.handleHelpClick}>
+            Help
           </button>
           <button className="btn settings-btn">
             <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer" style={{color: 'white'}}>
