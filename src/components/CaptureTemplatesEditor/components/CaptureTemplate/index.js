@@ -284,7 +284,7 @@ export default class CaptureTemplate extends PureComponent {
               <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" {...provided.dragHandleProps} />
             </div>
 
-            <Collapse isOpened={!isCollapsed && !snapshot.isDragging} springConfig={{stiffness: 300}}>
+            <Collapse isOpened={!isCollapsed} springConfig={{stiffness: 300}}>
               <div className="capture-template-container__content">
                 {this.renderDescriptionField(template)}
                 {this.renderIconField(template)}
