@@ -8,6 +8,8 @@ import {
 } from './base';
 import { pushOrgFile } from '../lib/dropbox';
 
+import sampleCaptureTemplates from '../lib/sample_capture_templates';
+
 import { Dropbox } from 'dropbox';
 import moment from 'moment';
 
@@ -252,7 +254,7 @@ export const insertCapture = (templateId, content, shouldPrepend) => (
   (dispatch, getState) => {
     dispatch(disableCaptureModal());
 
-    const template = getState().capture.get('captureTemplates').find(template => (
+    const template = getState().capture.get('captureTemplates').concat(sampleCaptureTemplates).find(template => (
       template.get('id') === templateId
     ));
     dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend });

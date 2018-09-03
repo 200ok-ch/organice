@@ -19,6 +19,8 @@ import * as orgActions from '../../actions/org';
 import * as captureActions from '../../actions/capture';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
+import sampleCaptureTemplates from '../../lib/sample_capture_templates';
+
 import { calculateActionedKeybindings } from '../../lib/keybindings';
 
 import _ from 'lodash';
@@ -292,7 +294,10 @@ class OrgFile extends PureComponent {
                                    onCancel={this.handleSyncConfirmationCancel} />
           )}
 
-          {!shouldDisableActions && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
+      {!shouldDisableActions && (
+        <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons}
+                      staticFile={staticFile} />
+      )}
         </div>
       </HotKeys>
     );
@@ -307,7 +312,7 @@ const mapStateToProps = (state, props) => {
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     customKeybindings: state.base.get('customKeybindings'),
     inEditMode: state.org.present.get('inTitleEditMode') || state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTableEditMode'),
-    activeCaptureTemplate: state.capture.get('captureTemplates').find(template => (
+    activeCaptureTemplate: state.capture.get('captureTemplates').concat(sampleCaptureTemplates).find(template => (
       template.get('id') === state.capture.get('activeCaptureTemplateId')
     )),
     isDisplayingSyncConfirmationModal: state.base.get('isDisplayingSyncConfirmationModal'),

@@ -7,40 +7,74 @@ This header has some description text and a couple subheaders. Look through the 
 ** This is a subheader
 ** This is a subheader too!
 * Actions
-The long row of buttons at the bottom is called the "action drawer".
 ** Todos [1/4] [25%]
 This header has a few TODO items as subheaders.
 *** TODO Learn how to use TODOs in org-web
-With this header selected, tap the checkmark button in the action drawer. Tap it again, and then again again!
+To advance the todo state of a header, swipe right on it until the background turns green.
+
+Try advancing the todo state of this header a few times!
 **** There's also a setting once you're signed in to enable tapping on the TODO label itself to advance the todo state. Its off by default because I thought the behavior would be confusing unless explained, but I recommend turning it on!
-*** TODO Learn how to swipe on headers (touchscreen devices only)
-**** You can also advance the todo state by swiping right on the header (until you see the background turn green!)
-**** You can remove a header by swiping left on it
 *** DONE Check out org-web
 *** START Investigate custom TODO states
-org-web also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Tap the checkmark button a few times with this header selected.
+org-web also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Swipe right on this header a few times.
 
 Note that when the cycle restarts, it defaults to the first set of todo states. Manually edit the header to get back to a different todo state cycle (more on editing headers below!)
 ** Editing headers
-The next two buttons in the action drawer edit the header and description respectively. You can also use the buttons in the drawer that popped up below the header when you select it. Try editing this header.
-** Adding and removing headers
-*** To add a new header, click the + button in the action drawer.
-*** To remove a header, click the x.
-** Moving headers
-*** The next 4 buttons in the action drawer (the up, down, left, and right arrows) move the selected header.
-*** The left and right chevrons move the selected header and its entire nested subtree. Give them a try!
+When you select a header the "header action drawer" appears. The first two buttons in this drawer edit the header and description respectively. Try editing this header.
 ** Focusing
-*** The next button "focuses" on a header, hiding all others and promoting it to the top level.
-*** This is purely visual - your org file isn't affected under the hood. Press the button again to "unfocus".
+The next button in the header action drawer "focused" on a header, hiding all others and promoting it to the top level. Press the button again to "unfocus".
+
+This is purely visual - your org file isn't affected under the hood.
+
+I find this useful for focusing on my "Groceries" list when I go to the grocery store. Give it a shot on this grocery list:
+*** Groceries
+- [ ] Mangoes
+- [ ] Dark chocolate
+- [ ] Carrots
+** Adding and removing headers
+To add a new header, press the + button in the header action drawer
+
+To remove a header, swipe left on the header until the background turns red.
+** Moving headers
+To move a header, click on the four-way arrows button at the bottom of the screen with a header selected. 6 buttons will appear for moving headers.
+
+The center 4 move the header up, down, left, and right. The 2 outermost buttons move the header and its entire nested subtree.
+
+Give them a try on these nested headers to get a feel for how they operate:
+*** A few of my favorite things:
+**** Food
+***** Chocolate
+****** Dark chocolate
+****** Milk chocolate
+****** Crispy chocolate
+***** Mangoes
+**** Text editors
+***** Emacs
+**** Mountain bikes
+***** Santa Cruz
+***** Trek
+***** Giant
+***** Specialized
+**** Dogs
+***** Eloise
+***** Maz
+***** Starla
+***** Rex
+***** Clooney
 ** Syncing
-*** The "cloud" button syncs changes to Dropbox
-*** If there's a newer version on the server and no local changes, it'll pull
-*** If there's no newer version on the server and there are local changes, it'll push
-*** Otherwise, it'll ask what you want to do
-*** This button isn't enabled in this demo :)
+The "cloud" button in the lower left hand corner syncs changes to Dropbox.
+
+If there's a newer version on the server and no local changes, it'll pull.
+
+If there's no newer version on the server and there are local changes, it'll push.
+
+Otherwise, it'll ask what you want to do.
+
+This button isn't enabled in this demo :)
 ** Undoing
-*** The undo button will appear up in the header bar when you're signed in (it's not enabled in this sample).
-*** This works just like Emacs-style undo: your history is completely linear and you can "undo undos".
+The undo button will appear up in the header bar when you're signed in
+
+This works just like Emacs-style undo: your history is completely linear and you can "undo undos".
 * Tables
 org-web has native support for viewing and editing tables.
 
@@ -59,18 +93,20 @@ Try playing around with this one by first clicking on a cell:
 | Clooney  | 0.1 |             4.8 | Sarah R  |           15 |
 |----------+-----+-----------------+----------+--------------|
 | Murphy   | 0.5 |              25 | Jordan   |           15 |
+
 ** New action drawer items
-When a table cell is selected, new action drawer items appear. From left to right, they are:
-*** Edit cell
-*** Add new row
-*** Remove row
-*** Add new column
-*** Remove column
-*** Move row up
-*** Move row down
-*** Move column left
-*** Move column right
-** Format specifiers (like <r> and <10>) aren't yet supported, but they're on the list!
+When a table cell is selected, a table-specific action drawer appears.
+
+The leftmost icon allows you to edit a cell.
+
+On the right side, the top two icons let you add and remove rows. The bottom two icons let you add and remove columns.
+
+** Moving rows and columns
+When a table cell is selected, the four-way arrow button at the bottom of the screen changes to manipulate tables.
+
+Press up and down to move rows, and left and right to move columns.
+** Format specifiers (like <r> and <10>) aren't yet supported, but they're on my list!
+If this is an important feature to you, please let me know by upvoting [[https://github.com/DanielDe/org-web/issues/25][the issue]] on GitHub
 * Lists and checkboxes
 org-web has native support for dislpaying plain lists and checkboxes
 
@@ -95,10 +131,20 @@ Checkboxes:
     - [ ] 1.1.1
   - [X] 1. 2
 - [X] 2
+
+Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/DanielDe/org-web/issues/26][the issue]] on Github
 * Capture
-** org-web supports something like org-capture, in the form of custom action drawer buttons
-** Once signed in, you can set up capture templates that specify header paths (and various other configurations) and then easily add new items to your org file
-*** These capture templates can also sync between your devices (if you enable settings sync via Dropbox)
+org-web supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
+
+Click the button in the bottom right corner of the screen to see some examples. The first button, the lemon, will create a new entry in the "Groceries" list below this. The second button adds an entry to a more deeply nested header.
+
+Once signed in, you can set up capture templates that specify header paths (and various other configurations). These capture templates can also sync between your devices (if you enable settings sync via Dropbox).
+** Groceries
+** Deeply
+*** Nested
+**** Headers
+***** Work
+****** Too!
 * Syncing with Dropbox
 org-web pulls down your org files from Dropbox. Click the "Sign in" button in the upper right hand corner to sign in with Dropbox and authenticate org-web.
 ** Symlink your org files to Dropbox
@@ -110,13 +156,17 @@ The first time you push changes from org-web back up to Dropbox, org-web will ma
 * org-web operates completely client side
 You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
-org-web is currently pretty usable for simple tasks, but there's a lot more to do. Here are a few of the things on the list:
-** UI overhaul - the action drawer is getting cumbersome!
+org-web is currently pretty usable for simple tasks, but there's a lot more to do.
+
+If you have an idea or feature request, or if you want to contribute to org-web, check out the [[https://github.com/DanielDe/org-web][GitHub page]]
+
+Here are a few of the things already on the todo list:
+** org-agenda view
+** Support for other sync backends in addition to Dropbox
 ** More first-class support for org features like tags and timestamps
 ** Search
-** Support for other sync backends in addition to Dropbox
 ** Ability to create new files
 ** Archiving
 ** A backend API for use in your own apps/scripts/IFTTT/Alexa Skills/etc.
 ** Offline support (Safari on iOS finally supports service workers!)
-** Ability to Tweet a header directly from org-web (just kidding)
+** Ability to Tweet a header directly from org-web                    :joke:

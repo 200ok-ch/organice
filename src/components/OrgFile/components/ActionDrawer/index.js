@@ -13,6 +13,8 @@ import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
 import * as captureActions from '../../../../actions/capture';
 
+import sampleCaptureTemplates from '../../../../lib/sample_capture_templates';
+
 import ActionButton from './components/ActionButton/';
 
 class ActionDrawer extends PureComponent {
@@ -103,7 +105,15 @@ class ActionDrawer extends PureComponent {
     };
   }
 
+  getSampleCaptureTemplates() {
+    return sampleCaptureTemplates;
+  }
+
   getAvailableCaptureTemplates() {
+    if (this.props.staticFile === 'sample') {
+      return this.getSampleCaptureTemplates();
+    }
+
     return this.props.captureTemplates.filter(template => (
       template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
         availablePath.trim()
