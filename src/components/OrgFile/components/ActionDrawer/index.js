@@ -243,10 +243,10 @@ class ActionDrawer extends PureComponent {
 
             <ActionButton iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'}
                           subIconName={!!selectedTableCellId ? 'table' : null}
+                          additionalClassName="action-drawer__main-arrow-button"
                           isDisabled={false}
                           onClick={this.handleMainArrowButtonClick}
-                          style={{opacity: isDisplayingCaptureButtons ? 0 : 1}}
-                          additionalClassName="action-drawer__main-arrow-button" />
+                          style={{opacity: isDisplayingCaptureButtons ? 0 : 1}} />
           </div>
         )}
       </Motion>
