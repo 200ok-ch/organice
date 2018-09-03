@@ -20,25 +20,13 @@ class ActionDrawer extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleAdvanceTodoClick',
-      'handleEditTitleClick',
-      'handleEditDescriptionClick',
-      'handleAddHeaderClick',
-      'handleRemoveHeaderClick',
       'handleMoveHeaderUpClick',
       'handleMoveHeaderDownClick',
       'handleMoveHeaderLeftClick',
       'handleMoveHeaderRightClick',
       'handleMoveSubtreeLeftClick',
       'handleMoveSubtreeRightClick',
-      'handleFocus',
-      'handleUnfocus',
       'handleDoneClick',
-      'handleEnterTableEditModeClick',
-      'handleAddNewTableRowClick',
-      'handleRemoveTableRowClick',
-      'handleAddNewTableColumnClick',
-      'handleRemoveTableColumnClick',
       'handleMoveTableRowDownClick',
       'handleMoveTableRowUpClick',
       'handleMoveTableColumnLeftClick',
@@ -66,28 +54,6 @@ class ActionDrawer extends PureComponent {
     document.querySelector('html').style.paddingBottom = '0px';
   }
 
-  handleAdvanceTodoClick() {
-    this.props.org.advanceTodoState();
-  }
-
-  handleEditTitleClick() {
-    this.props.org.enterTitleEditMode();
-  }
-
-  handleEditDescriptionClick() {
-    this.props.org.openHeader(this.props.selectedHeaderId);
-    this.props.org.enterDescriptionEditMode();
-  }
-
-  handleAddHeaderClick() {
-    this.props.org.addHeaderAndEdit(this.props.selectedHeaderId);
-  }
-
-  handleRemoveHeaderClick() {
-    this.props.org.selectNextSiblingHeader(this.props.selectedHeaderId);
-    this.props.org.removeHeader(this.props.selectedHeaderId);
-  }
-
   handleMoveHeaderUpClick() {
     this.props.org.moveHeaderUp(this.props.selectedHeaderId);
   }
@@ -112,38 +78,10 @@ class ActionDrawer extends PureComponent {
     this.props.org.moveSubtreeRight(this.props.selectedHeaderId);
   }
 
-  handleFocus() {
-    this.props.org.focusHeader(this.props.selectedHeaderId);
-  }
-
-  handleUnfocus() {
-    this.props.org.unfocusHeader();
-  }
-
   handleDoneClick() {
     this.props.org.exitTitleEditMode();
     this.props.org.exitDescriptionEditMode();
     this.props.org.exitTableEditMode();
-  }
-
-  handleEnterTableEditModeClick() {
-    this.props.org.enterTableEditMode();
-  }
-
-  handleAddNewTableRowClick() {
-    this.props.org.addNewTableRow();
-  }
-
-  handleRemoveTableRowClick() {
-    this.props.org.removeTableRow();
-  }
-
-  handleAddNewTableColumnClick() {
-    this.props.org.addNewTableColumn();
-  }
-
-  handleRemoveTableColumnClick() {
-    this.props.org.removeTableColumn();
   }
 
   handleMoveTableRowDownClick() {
@@ -178,7 +116,6 @@ class ActionDrawer extends PureComponent {
   }
 
   renderCaptureButtons() {
-    const { captureTemplates, path } = this.props;
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     const availableCaptureTemplates = this.getAvailableCaptureTemplates();
@@ -244,11 +181,10 @@ class ActionDrawer extends PureComponent {
   }
 
   renderArrowButtons() {
+    const { selectedTableCellId } = this.props;
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     const baseArrowButtonStyle = {
-      position: 'absolute',
-      zIndex: 0,
       opacity: isDisplayingCaptureButtons ? 0 : 1,
     };
     if (!isDisplayingArrowButtons) {
@@ -262,24 +198,28 @@ class ActionDrawer extends PureComponent {
       secondColumnXOffset: spring(isDisplayingArrowButtons ? 140 : 0, { stiffness: 300 }),
     };
 
-    const mainButtonStyle = {
-      position: 'relative',
-      zIndex: 1,
-      opacity: isDisplayingCaptureButtons ? 0 : 1
-    };
+    // <ActionButton iconName="arrow-up" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
+    // <ActionButton iconName="arrow-down" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowDownClick} />
+    // <ActionButton iconName="arrow-left" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnLeftClick} />
+    // <ActionButton iconName="arrow-right" subIconName="columns" isDisabled={false} onClick={this.handleMoveTableColumnRightClick} />
 
     return (
       <Motion style={animatedStyles}>
         {style => (
           <div className="action-drawer__arrow-buttons-container">
-            <ActionButton iconName="arrow-up" isDisabled={false} onClick={this.handleMoveHeaderUpClick} style={{...baseArrowButtonStyle, bottom: style.topRowYOffset}} />
-            <ActionButton iconName="arrow-down" isDisabled={false} onClick={this.handleMoveHeaderDownClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset}} />
-            <ActionButton iconName="arrow-left" isDisabled={false} onClick={this.handleMoveHeaderLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.firstColumnXOffset}} />
-            <ActionButton iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.firstColumnXOffset}} />
-            <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.secondColumnXOffset}} />
-            <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.secondColumnXOffset}} />
+            <ActionButton additionalClassName="action-drawer__arrow-button" iconName="arrow-up" isDisabled={false} onClick={this.handleMoveHeaderUpClick} style={{...baseArrowButtonStyle, bottom: style.topRowYOffset}} />
+            <ActionButton additionalClassName="action-drawer__arrow-button" iconName="arrow-down" isDisabled={false} onClick={this.handleMoveHeaderDownClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset}} />
+            <ActionButton additionalClassName="action-drawer__arrow-button" iconName="arrow-left" isDisabled={false} onClick={this.handleMoveHeaderLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.firstColumnXOffset}} />
+            <ActionButton additionalClassName="action-drawer__arrow-button" iconName="arrow-right" isDisabled={false} onClick={this.handleMoveHeaderRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.firstColumnXOffset}} />
+            <ActionButton additionalClassName="action-drawer__arrow-button" iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.secondColumnXOffset}} />
+            <ActionButton additionalClassName="action-drawer__arrow-button" iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.secondColumnXOffset}} />
 
-            <ActionButton iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'} isDisabled={false} onClick={this.handleMainArrowButtonClick} style={mainButtonStyle} />
+            <ActionButton iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'}
+                          subIconName={!!selectedTableCellId ? 'table' : null}
+                          isDisabled={false}
+                          onClick={this.handleMainArrowButtonClick}
+                          style={{opacity: isDisplayingCaptureButtons ? 0 : 1}}
+                          additionalClassName="action-drawer__main-arrow-button" />
           </div>
         )}
       </Motion>
@@ -307,7 +247,7 @@ class ActionDrawer extends PureComponent {
                   onClick={this.handleDoneClick}>Done</button>
         ) : (
           <Fragment>
-            {!!selectedTableCellId && (
+            {false && !!selectedTableCellId && (
               <Fragment>
                 <ActionButton iconName="arrow-up" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowUpClick} />
                 <ActionButton iconName="arrow-down" subIconName="columns" shouldRotateSubIcon isDisabled={false} onClick={this.handleMoveTableRowDownClick} />

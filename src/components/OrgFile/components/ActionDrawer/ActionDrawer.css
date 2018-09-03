@@ -31,6 +31,16 @@
     position: relative;
 }
 
+.action-drawer__arrow-button {
+    position: absolute;
+    z-index: 0;
+}
+
+.action-drawer__main-arrow-button {
+    position: relative;
+    z-index: 1;
+}
+
 .action-drawer__capture-buttons-container {
     position: relative;
 }
