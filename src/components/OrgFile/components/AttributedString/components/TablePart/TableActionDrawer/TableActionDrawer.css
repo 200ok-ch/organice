@@ -1,0 +1,47 @@
+.table-action-drawer-row {
+    color: lightgray;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    padding-right: 20px;
+}
+
+.table-action-drawer-row--lower {
+    width: 66%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table-action-drawer__separator {
+    background-color: lightgray;
+
+    height: 15px;
+    width: 1px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.table-action-drawer__sub-icon-container {
+    position: relative;
+}
+
+.table-action-drawer__main-icon {
+    padding-right: 3px;
+    padding-bottom: 3px;
+}
+
+.table-action-drawer__sub-icon {
+    position: absolute;
+    right: -12px;
+    bottom: -6px;
+}
+
+.table-action-drawer__sub-icon--rotated {
+    transform: rotate(270deg);
+}

@@ -1,6 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
+import { UnmountClosed as Collapse } from 'react-collapse';
 
 import AttributedString from '../../../AttributedString';
+import TableActionDrawer from './TableActionDrawer';
 
 import './TablePart.css';
 
@@ -75,43 +77,55 @@ export default class TablePart extends PureComponent {
     } = this.props;
     const { rawCellValues } = this.state;
 
+    const isTableSelected = table.get('contents').some(row => (
+      row.get('contents').some(cell => (
+        cell.get('id') === selectedTableCellId
+      ))
+    ));
+
     return (
-      <table className="table-part">
-        <tbody>
-          {table.get('contents').map(row => (
-            <tr key={row.get('id')}>
-              {row.get('contents').map(cell => {
-                const isCellSelected = cell.get('id') === selectedTableCellId;
+      <Fragment>
+        <table className="table-part">
+          <tbody>
+            {table.get('contents').map(row => (
+              <tr key={row.get('id')}>
+                {row.get('contents').map(cell => {
+                  const isCellSelected = cell.get('id') === selectedTableCellId;
 
-                const className = classNames('table-part__cell', {
-                  'table-part__cell--selected': isCellSelected,
-                });
+                  const className = classNames('table-part__cell', {
+                    'table-part__cell--selected': isCellSelected,
+                  });
 
-                return (
-                  <td className={className}
-                      key={cell.get('id')}
-                      onClick={this.handleCellSelect(cell.get('id'))}>
-                    {(isCellSelected && inTableEditMode) ? (
-                      <textarea autoFocus
-                                className="textarea"
-                                rows="3"
-                                value={rawCellValues.get(cell.get('id'))}
-                                onBlur={this.handleTextareaBlur}
-                                onChange={this.handleCellChange} />
-                    ) : (
-                      cell.get('contents').size > 0 ? (
-                        <AttributedString parts={cell.get('contents')} />
+                  return (
+                    <td className={className}
+                        key={cell.get('id')}
+                        onClick={this.handleCellSelect(cell.get('id'))}>
+                      {(isCellSelected && inTableEditMode) ? (
+                        <textarea autoFocus
+                                  className="textarea"
+                                  rows="3"
+                                  value={rawCellValues.get(cell.get('id'))}
+                                  onBlur={this.handleTextareaBlur}
+                                  onChange={this.handleCellChange} />
                       ) : (
-                        '   '
-                      )
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                        cell.get('contents').size > 0 ? (
+                          <AttributedString parts={cell.get('contents')} />
+                        ) : (
+                          '   '
+                        )
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <Collapse isOpened={isTableSelected}>
+          <TableActionDrawer />
+        </Collapse>
+      </Fragment>
     );
   }
 }
