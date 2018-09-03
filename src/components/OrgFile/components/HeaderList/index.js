@@ -36,7 +36,7 @@ class HeaderList extends PureComponent {
   }
 
   render() {
-    const { headers, selectedHeaderId, focusedHeaderId } = this.props;
+    const { headers, selectedHeaderId, focusedHeaderId, shouldDisableActions } = this.props;
 
     const headerRenderData = headers.map(header => {
       return {
@@ -110,7 +110,8 @@ class HeaderList extends PureComponent {
                     color={color}
                     hasContent={headerRenderDatum.hasContent}
                     isSelected={header.get('id') === selectedHeaderId}
-                    onRef={this.handleHeaderRef(header.get('id'))} />
+                    onRef={this.handleHeaderRef(header.get('id'))}
+                    shouldDisableActions={shouldDisableActions} />
           );
         })}
       </div>

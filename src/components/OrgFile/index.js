@@ -185,7 +185,7 @@ class OrgFile extends PureComponent {
       headers,
       shouldDisableDirtyIndicator,
       shouldDisableSyncButtons,
-      shouldDisableActionDrawer,
+      shouldDisableActions,
       isDirty,
       parsingErrorMessage,
       path,
@@ -273,7 +273,7 @@ class OrgFile extends PureComponent {
               )}
             </div>
           ) : (
-            <HeaderList />
+            <HeaderList shouldDisableActions={shouldDisableActions} />
           )}
 
           {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
@@ -292,7 +292,7 @@ class OrgFile extends PureComponent {
                                    onCancel={this.handleSyncConfirmationCancel} />
           )}
 
-          {!shouldDisableActionDrawer && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
+          {!shouldDisableActions && <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons} />}
         </div>
       </HotKeys>
     );

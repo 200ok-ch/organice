@@ -74,7 +74,7 @@ class Entry extends PureComponent {
     return (
       <OrgFile staticFile="changelog"
                shouldDisableDirtyIndicator={true}
-               shouldDisableActionDrawer={true}
+               shouldDisableActions={true}
                shouldDisableSyncButtons={false}
                parsingErrorMessage={"The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
     );

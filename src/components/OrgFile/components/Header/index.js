@@ -59,6 +59,10 @@ class Header extends PureComponent {
   }
 
   handleTouchStart(event) {
+    if (this.props.shouldDisableActions) {
+      return;
+    }
+
     if (this.props.inEditMode) {
       return;
     }
@@ -158,6 +162,7 @@ class Header extends PureComponent {
       bulletStyle,
       focusedHeader,
       isFocused,
+      shouldDisableActions,
     } = this.props;
 
     const indentLevel = !!focusedHeader ? (
@@ -263,7 +268,7 @@ class Header extends PureComponent {
                          hasContent={hasContent}
                          isSelected={isSelected} />
 
-              <Collapse isOpened={isSelected} springConfig={{stiffness: 300}}>
+              <Collapse isOpened={isSelected && !shouldDisableActions} springConfig={{stiffness: 300}}>
                 <HeaderActionDrawer onEnterTitleEditMode={this.handleEnterTitleEditMode}
                                     onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
                                     isFocused={isFocused}
