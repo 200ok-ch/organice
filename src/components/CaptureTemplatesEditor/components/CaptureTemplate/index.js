@@ -279,7 +279,7 @@ export default class CaptureTemplate extends PureComponent {
                {...provided.draggableProps}>
             <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
               <i className={caretClassName} />
-              <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} />
+              <ActionButton iconName={template.get('iconName')} letter={template.get('letter')} onClick={() => {}} style={{marginRight: 20}} />
               <span className="capture-template-container__header__title">{template.get('description')}</span>
               <i className="fas fa-bars fa-lg capture-template-container__header__drag-handle" {...provided.dragHandleProps} />
             </div>

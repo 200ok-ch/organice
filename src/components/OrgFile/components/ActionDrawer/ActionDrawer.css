@@ -13,6 +13,8 @@
 .action-drawer__btn {
     box-shadow: 2px 2px 5px 0px rgba(148, 148, 148, 0.75);
 
+    position: relative;
+
     transition-property: opacity;
     transition-duration: 0.2s;
 }
@@ -26,5 +28,9 @@
 }
 
 .action-drawer__arrow-buttons-container {
+    position: relative;
+}
+
+.action-drawer__capture-buttons-container {
     position: relative;
 }

@@ -44,11 +44,13 @@ class ActionDrawer extends PureComponent {
       'handleMoveTableColumnLeftClick',
       'handleMoveTableColumnRightClick',
       'handleSync',
-      'handleArrowButtonClick',
+      'handleMainArrowButtonClick',
+      'handleMainCaptureButtonClick',
     ]);
 
     this.state = {
       isDisplayingArrowButtons: false,
+      isDisplayingCaptureButtons: false,
     };
   }
 
@@ -161,51 +163,84 @@ class ActionDrawer extends PureComponent {
   }
 
   handleCaptureButtonClick(templateId) {
-    return () => this.props.capture.activateCaptureModalForTemplateId(templateId);
+    return () => {
+      this.setState({ isDisplayingCaptureButtons: false });
+      this.props.capture.activateCaptureModalForTemplateId(templateId);
+    };
   }
 
   renderCaptureButtons() {
     const { captureTemplates, path } = this.props;
-
-    if (!path) {
-      return null;
-    }
+    const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     const availableCaptureTemplates = captureTemplates.filter(template => (
       template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
         availablePath.trim()
-      )).includes(path.trim())
+      )).includes((path || '').trim())
     ));
 
-    if (availableCaptureTemplates.size === 0) {
-      return null;
+    const baseCaptureButtonStyle = {
+      position: 'absolute',
+      zIndex: 0,
+      left: 0,
+      opacity: isDisplayingArrowButtons ? 0 : 1,
+    };
+    if (!isDisplayingCaptureButtons) {
+      baseCaptureButtonStyle.boxShadow = 'none';
     }
 
+    const mainButtonStyle = {
+      opacity: isDisplayingArrowButtons ? 0 : 1,
+      position: 'relative',
+      zIndex: 1,
+    };
+
+    const animatedStyle = {
+      bottom: spring(isDisplayingCaptureButtons ? 70 : 0, { stiffness: 300 }),
+    };
+
     return (
-      <Fragment>
-        {availableCaptureTemplates.map(template => (
-          <ActionButton key={template.get('id')}
-                        letter={template.get('letter')}
-                        iconName={template.get('iconName')}
-                        isDisabled={false}
-                        onClick={this.handleCaptureButtonClick(template.get('id'))} />
-        ))}
-      </Fragment>
+      <Motion style={animatedStyle}>
+        {style => (
+          <div className="action-drawer__capture-buttons-container">
+            <ActionButton iconName={isDisplayingCaptureButtons ? 'times' : 'list-ul'}
+                          isDisabled={false}
+                          onClick={this.handleMainCaptureButtonClick}
+                          style={mainButtonStyle} />
+
+            {availableCaptureTemplates.map((template, index) => (
+              <ActionButton key={template.get('id')}
+                            letter={template.get('letter')}
+                            iconName={template.get('iconName')}
+                            isDisabled={false}
+                            onClick={this.handleCaptureButtonClick(template.get('id'))}
+                            style={{...baseCaptureButtonStyle, bottom: style.bottom * (index + 1)}} />
+            ))}
+          </div>
+        )}
+      </Motion>
     );
   }
 
-  handleArrowButtonClick() {
+  handleMainArrowButtonClick() {
     this.setState({
       isDisplayingArrowButtons: !this.state.isDisplayingArrowButtons,
     });
   }
 
+  handleMainCaptureButtonClick() {
+    this.setState({
+      isDisplayingCaptureButtons: !this.state.isDisplayingCaptureButtons,
+    });
+  }
+
   renderArrowButtons() {
-    const { isDisplayingArrowButtons } = this.state;
+    const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     const baseArrowButtonStyle = {
       position: 'absolute',
       zIndex: 0,
+      opacity: isDisplayingCaptureButtons ? 0 : 1,
     };
     if (!isDisplayingArrowButtons) {
       baseArrowButtonStyle.boxShadow = 'none';
@@ -216,6 +251,12 @@ class ActionDrawer extends PureComponent {
       bottomRowYOffset:spring(isDisplayingArrowButtons ?  80 : 0, { stiffness: 300 }),
       firstColumnXOffset:spring(isDisplayingArrowButtons ?  70 : 0, { stiffness: 300 }),
       secondColumnXOffset: spring(isDisplayingArrowButtons ? 140 : 0, { stiffness: 300 }),
+    };
+
+    const mainButtonStyle = {
+      position: 'relative',
+      zIndex: 1,
+      opacity: isDisplayingCaptureButtons ? 0 : 1
     };
 
     return (
@@ -229,7 +270,7 @@ class ActionDrawer extends PureComponent {
             <ActionButton iconName="chevron-left" isDisabled={false} onClick={this.handleMoveSubtreeLeftClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.secondColumnXOffset}} />
             <ActionButton iconName="chevron-right" isDisabled={false} onClick={this.handleMoveSubtreeRightClick} style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.secondColumnXOffset}} />
 
-            <ActionButton iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'} isDisabled={false} onClick={this.handleArrowButtonClick} style={{position: 'relative', zIndex: 1}} />
+            <ActionButton iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'} isDisabled={false} onClick={this.handleMainArrowButtonClick} style={mainButtonStyle} />
           </div>
         )}
       </Motion>
@@ -248,7 +289,7 @@ class ActionDrawer extends PureComponent {
       selectedTableCellId,
       inTableEditMode,
     } = this.props;
-    const { isDisplayingArrowButtons } = this.state;
+    const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     return (
       <div className="action-drawer-container nice-scroll">
@@ -266,19 +307,15 @@ class ActionDrawer extends PureComponent {
               </Fragment>
             )}
 
-            {/* this.renderCaptureButtons() */}
-            <ActionButton iconName="list-ul"
-                          isDisabled={false}
-                          onClick={this.handleSync}
-                          style={{opacity: isDisplayingArrowButtons ? 0 : 1}} />
-
-            {this.renderArrowButtons()}
-
             <ActionButton iconName="cloud"
                           subIconName="sync-alt"
                           isDisabled={shouldDisableSyncButtons}
                           onClick={this.handleSync}
-                          style={{opacity: isDisplayingArrowButtons ? 0 : 1}} />
+                          style={{opacity: (isDisplayingArrowButtons || isDisplayingCaptureButtons) ? 0 : 1}} />
+
+            {this.renderArrowButtons()}
+
+            {this.renderCaptureButtons()}
           </Fragment>
         )}
       </div>

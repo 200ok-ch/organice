@@ -99,7 +99,8 @@ export default class CaptureModal extends PureComponent {
           <ActionButton letter={template.get('letter')}
                         iconName={template.get('iconName')}
                         isDisabled={false}
-                        onClick={() => {}} />
+                        onClick={() => {}}
+                        style={{marginRight: 20}} />
 
           <span>{template.get('description')}</span>
         </div>
