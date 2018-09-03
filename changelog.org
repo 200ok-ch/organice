@@ -1,3 +1,8 @@
+* September 3rd, 2018
+** Huge UI overhaul!
+*** Removed the action drawer, replaced with just three buttons: Sync, Movement, and Capture Templates
+*** All other actions now available via header action drawer, table action drawer, or swipe actions
+*** See the Help/Sample file in Settings for more details!
 * September 2nd, 2018
 ** Replaced "push" and "pull" buttons with a single "sync" button
 * August 31st, 2018
