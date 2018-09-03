@@ -123,7 +123,7 @@ export default class TablePart extends PureComponent {
         </table>
 
         <Collapse isOpened={isTableSelected}>
-          <TableActionDrawer />
+          <TableActionDrawer subPartDataAndHandlers={this.props.subPartDataAndHandlers} />
         </Collapse>
       </Fragment>
     );

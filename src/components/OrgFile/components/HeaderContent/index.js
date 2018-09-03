@@ -22,6 +22,11 @@ class HeaderContent extends PureComponent {
       'handleTableCellSelect',
       'handleExitTableEditMode',
       'handleTableCellValueUpdate',
+      'handleEnterTableEditMode',
+      'handleAddNewTableRow',
+      'handleRemoveTableRow',
+      'handleAddNewTableColumn',
+      'handleRemoveTableColumn',
       'handleCheckboxClick',
     ]);
 
@@ -88,6 +93,26 @@ class HeaderContent extends PureComponent {
     this.props.org.updateTableCellValue(cellId, newValue);
   }
 
+  handleEnterTableEditMode() {
+    this.props.org.enterTableEditMode();
+  }
+
+  handleAddNewTableRow() {
+    this.props.org.addNewTableRow();
+  }
+
+  handleRemoveTableRow() {
+    this.props.org.removeTableRow();
+  }
+
+  handleAddNewTableColumn() {
+    this.props.org.addNewTableColumn();
+  }
+
+  handleRemoveTableColumn() {
+    this.props.org.removeTableColumn();
+  }
+
   handleCheckboxClick(listItemId) {
     this.props.org.advanceCheckboxState(listItemId);
   }
@@ -120,6 +145,11 @@ class HeaderContent extends PureComponent {
                               inTableEditMode: inTableEditMode,
                               onExitTableEditMode: this.handleExitTableEditMode,
                               onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                              onEnterTableEditMode: this.handleEnterTableEditMode,
+                              onAddNewTableRow: this.handleAddNewTableRow,
+                              onRemoveTableRow: this.handleRemoveTableRow,
+                              onAddNewTableColumn: this.handleAddNewTableColumn,
+                              onRemoveTableColumn: this.handleRemoveTableColumn,
                               onCheckboxClick: this.handleCheckboxClick,
                             }} />
         )}
