@@ -172,7 +172,8 @@ class ActionDrawer extends PureComponent {
             <ActionButton iconName={isDisplayingCaptureButtons ? 'times' : 'list-ul'}
                           isDisabled={false}
                           onClick={this.handleMainCaptureButtonClick}
-                          style={mainButtonStyle} />
+                          style={mainButtonStyle}
+                          tooltip={isDisplayingCaptureButtons ? "Hide capture templates" : "Show capture templates"} />
 
             {availableCaptureTemplates.map((template, index) => (
               <ActionButton key={template.get('id')}
@@ -180,7 +181,8 @@ class ActionDrawer extends PureComponent {
                             iconName={template.get('iconName')}
                             isDisabled={false}
                             onClick={this.handleCaptureButtonClick(template.get('id'))}
-                            style={{...baseCaptureButtonStyle, bottom: style.bottom * (index + 1)}} />
+                            style={{...baseCaptureButtonStyle, bottom: style.bottom * (index + 1)}}
+                            tooltip={`Activate "${template.get('description')}" capture template`} />
             ))}
           </div>
         )}
@@ -215,37 +217,43 @@ class ActionDrawer extends PureComponent {
                           subIconName={!!selectedTableCellId ? 'table' : null}
                           isDisabled={false}
                           onClick={this.handleUpClick}
-                          style={{...baseArrowButtonStyle, bottom: style.topRowYOffset}} />
+                          style={{...baseArrowButtonStyle, bottom: style.topRowYOffset}}
+                          tooltip={!!selectedTableCellId ? "Move row up" : "Move header up"} />
             <ActionButton additionalClassName="action-drawer__arrow-button"
                           iconName="arrow-down"
                           subIconName={!!selectedTableCellId ? 'table' : null}
                           isDisabled={false}
                           onClick={this.handleDownClick}
-                          style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset}} />
+                          style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset}}
+                          tooltip={!!selectedTableCellId ? "Move row down" : "Move header down"} />
             <ActionButton additionalClassName="action-drawer__arrow-button"
                           iconName="arrow-left"
                           subIconName={!!selectedTableCellId ? 'table' : null}
                           isDisabled={false}
                           onClick={this.handleLeftClick}
-                          style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.firstColumnXOffset}} />
+                          style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.firstColumnXOffset}}
+                          tooltip={!!selectedTableCellId ? "Move column left" : "Move header left"} />
             <ActionButton additionalClassName="action-drawer__arrow-button"
                           iconName="arrow-right"
                           subIconName={!!selectedTableCellId ? 'table' : null}
                           isDisabled={false}
                           onClick={this.handleRightClick}
-                          style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.firstColumnXOffset}} />
+                          style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.firstColumnXOffset}}
+                          tooltip={!!selectedTableCellId ? "Move column right" : "Move header right"} />
             {!selectedTableCellId &&(
               <Fragment>
                 <ActionButton additionalClassName="action-drawer__arrow-button"
                               iconName="chevron-left"
                               isDisabled={false}
                               onClick={this.handleMoveSubtreeLeftClick}
-                              style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.secondColumnXOffset}} />
+                              style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, right: style.secondColumnXOffset}}
+                              tooltip="Move entire subtree left" />
                 <ActionButton additionalClassName="action-drawer__arrow-button"
                               iconName="chevron-right"
                               isDisabled={false}
                               onClick={this.handleMoveSubtreeRightClick}
-                              style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.secondColumnXOffset}} />
+                              style={{...baseArrowButtonStyle, bottom: style.bottomRowYOffset, left: style.secondColumnXOffset}}
+                              tooltip="Move entire subtree right" />
               </Fragment>
             )}
 
@@ -254,7 +262,8 @@ class ActionDrawer extends PureComponent {
                           additionalClassName="action-drawer__main-arrow-button"
                           isDisabled={false}
                           onClick={this.handleMainArrowButtonClick}
-                          style={{opacity: isDisplayingCaptureButtons ? 0 : 1}} />
+                          style={{opacity: isDisplayingCaptureButtons ? 0 : 1}}
+                          tooltip={isDisplayingArrowButtons ? "Hide movement buttons" : "Show movement buttons"} />
           </div>
         )}
       </Motion>
@@ -276,7 +285,8 @@ class ActionDrawer extends PureComponent {
                           subIconName="sync-alt"
                           isDisabled={shouldDisableSyncButtons}
                           onClick={this.handleSync}
-                          style={{opacity: (isDisplayingArrowButtons || isDisplayingCaptureButtons) ? 0 : 1}} />
+                          style={{opacity: (isDisplayingArrowButtons || isDisplayingCaptureButtons) ? 0 : 1}}
+                          tooltip="Sync changes" />
 
             {this.renderMovementButtons()}
 

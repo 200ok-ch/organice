@@ -31,6 +31,7 @@ export default class ActionButton extends PureComponent {
       letter,
       additionalClassName,
       style,
+      tooltip,
     } = this.props;
 
     const className = classNames('btn', 'btn--circle', 'action-drawer__btn', additionalClassName || '', {
@@ -47,7 +48,7 @@ export default class ActionButton extends PureComponent {
     });
 
     return (
-      <button className={className} onClick={this.handleClick} style={style}>
+      <button className={className} onClick={this.handleClick} style={style} title={tooltip}>
         {!!letter && letter}
         {!!subIconName && <i className={subIconClassName} />}
       </button>

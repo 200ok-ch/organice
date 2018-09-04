@@ -217,7 +217,9 @@ class HeaderBar extends PureComponent {
       default:
         return (
           <div className="header-bar__actions">
-            {!isAuthenticated && <div className="header-bar__actions__item" onClick={onSignInClick}>Sign in</div>}
+            {!isAuthenticated && (
+              <div className="header-bar__actions__item" onClick={onSignInClick} title="Sign in">Sign in</div>
+            )}
 
             {!isAuthenticated && (
               <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
@@ -227,13 +229,17 @@ class HeaderBar extends PureComponent {
 
             {(isAuthenticated && !activeModalPage && !!path) && (
               <Fragment>
-                <i className={undoIconClassName} onClick={this.handleUndoClick} />
-                <i className="fas fa-question-circle header-bar__actions__item" onClick={this.handleHelpClick} />
+                <i className={undoIconClassName}
+                   onClick={this.handleUndoClick}
+                   title="Undo" />
+                <i className="fas fa-question-circle header-bar__actions__item"
+                   onClick={this.handleHelpClick}
+                   title="Help" />
               </Fragment>
             )}
 
             {isAuthenticated && (
-              <i className={settingsIconClassName} onClick={this.handleSettingsClick} />
+              <i className={settingsIconClassName} onClick={this.handleSettingsClick} title="Settings" />
             )}
           </div>
         );
