@@ -264,7 +264,7 @@ const mapStateToProps = (state, props) => {
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     path: state.org.present.get('path'),
-    isUndoEnabled: state.org.past.length > 1,
+    isUndoEnabled: state.org.past.length > 0,
   };
 };
 
