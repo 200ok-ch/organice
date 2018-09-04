@@ -63,7 +63,7 @@ export default class AttributedString extends PureComponent {
                         subPartDataAndHandlers={subPartDataAndHandlers} />
             );
           default:
-            console.error(`Unrecognized attributed string part type ${part.get('type')}`);
+            console.error(`Unrecognized attributed string part type! ${part.get('type')}`);
             return '';
           }
         })}
