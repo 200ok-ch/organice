@@ -22,7 +22,7 @@ Note that when the cycle restarts, it defaults to the first set of todo states. 
 ** Editing headers
 When you select a header the "header action drawer" appears. The first two buttons in this drawer edit the header and description respectively. Try editing this header.
 ** Focusing
-The next button in the header action drawer "focused" on a header, hiding all others and promoting it to the top level. Press the button again to "unfocus".
+The next button in the header action drawer "focuses" on a header, hiding all others and promoting it to the top level. Press the button again to "unfocus".
 
 This is purely visual - your org file isn't affected under the hood.
 
@@ -163,6 +163,7 @@ If you have an idea or feature request, or if you want to contribute to org-web,
 Here are a few of the things already on the todo list:
 ** org-agenda view
 ** Support for other sync backends in addition to Dropbox
+** Support for symmetric encryption
 ** More first-class support for org features like tags and timestamps
 ** Search
 ** Ability to create new files
