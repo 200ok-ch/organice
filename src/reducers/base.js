@@ -82,6 +82,10 @@ const setDisplayingSyncConfirmationModal = (state, action) => (
     .set('lastServerModifiedAt', action.lastServerModifiedAt)
 );
 
+const setDisplayingTagsEditorModal = (state, action) => (
+  state.set('isDisplayingTagsEditorModal', action.isDisplaying)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -114,6 +118,8 @@ export default (state = new Map(), action) => {
     return clearModalStack(state, action);
   case 'SET_DISPLAY_SYNC_CONFIRMATION_MODAL':
     return setDisplayingSyncConfirmationModal(state, action);
+  case 'SET_DISPLAYING_TAGS_EDITOR_MODAL':
+    return setDisplayingTagsEditorModal(state, action);
   default:
     return state;
   }

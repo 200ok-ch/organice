@@ -6,6 +6,7 @@ import { Motion, spring } from 'react-motion';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
 import * as orgActions from '../../../../actions/org';
+import * as baseActions from '../../../../actions/base';
 
 import './Header.css';
 
@@ -38,6 +39,7 @@ class Header extends PureComponent {
       'handleHeaderClick',
       'handleEnterTitleEditMode',
       'handleEnterDescriptionEditMode',
+      'handleShowTagsModal',
       'handleFocus',
       'handleUnfocus',
       'handleAddNewHeader',
@@ -176,6 +178,10 @@ class Header extends PureComponent {
     this.props.org.enterEditMode('description');
   }
 
+  handleShowTagsModal() {
+    this.props.base.setDisplayingTagsEditorModal(true);
+  }
+
   handleFocus() {
     this.props.org.focusHeader(this.props.header.get('id'));
   }
@@ -311,6 +317,7 @@ class Header extends PureComponent {
                 <HeaderActionDrawer onEnterTitleEditMode={this.handleEnterTitleEditMode}
                                     onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
                                     isFocused={isFocused}
+                                    onTagsClick={this.handleShowTagsModal}
                                     onFocus={this.handleFocus}
                                     onUnfocus={this.handleUnfocus}
                                     onAddNewHeader={this.handleAddNewHeader} />
@@ -340,6 +347,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
+  base: bindActionCreators(baseActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -7,6 +7,7 @@ export default class HeaderActionDrawer extends PureComponent {
     const {
       onEnterTitleEditMode,
       onEnterDescriptionEditMode,
+      onTagsClick,
       isFocused,
       onFocus,
       onUnfocus,
@@ -20,6 +21,10 @@ export default class HeaderActionDrawer extends PureComponent {
         <span className="header-action-drawer__separator" />
 
         <i className="fas fa-edit fa-lg" onClick={onEnterDescriptionEditMode} />
+
+        <span className="header-action-drawer__separator" />
+
+        <i className="fas fa-tags fa-lg" onClick={onTagsClick} />
 
         <span className="header-action-drawer__separator" />
 

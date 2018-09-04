@@ -116,3 +116,7 @@ export const setDisplayingSyncConfirmationModal = (isDisplaying, lastServerModif
     }
   }
 );
+
+export const setDisplayingTagsEditorModal = isDisplaying => ({
+  type: 'SET_DISPLAYING_TAGS_EDITOR_MODAL', isDisplaying,
+});

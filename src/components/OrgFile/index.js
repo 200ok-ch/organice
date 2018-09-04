@@ -14,6 +14,7 @@ import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
 import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
+import TagsEditorModal from './components/TagsEditorModal';
 
 import * as baseActions from '../../actions/base';
 import * as dropboxActions from '../../actions/dropbox';
@@ -200,6 +201,7 @@ class OrgFile extends PureComponent {
       activeCaptureTemplate,
       isDisplayingSyncConfirmationModal,
       lastServerModifiedAt,
+      isDisplayingTagsEditorModal,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -297,6 +299,10 @@ class OrgFile extends PureComponent {
                                    onCancel={this.handleSyncConfirmationCancel} />
           )}
 
+          {isDisplayingTagsEditorModal && (
+            <TagsEditorModal />
+          )}
+
       {!shouldDisableActions && (
         <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons}
                       staticFile={staticFile} />
@@ -320,6 +326,7 @@ const mapStateToProps = (state, props) => {
     )),
     isDisplayingSyncConfirmationModal: state.base.get('isDisplayingSyncConfirmationModal'),
     lastServerModifiedAt: state.base.get('lastServerModifiedAt'),
+    isDisplayingTagsEditorModal: state.base.get('isDisplayingTagsEditorModal'),
   };
 };
 
