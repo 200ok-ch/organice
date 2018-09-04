@@ -54,3 +54,7 @@ div[tabindex="-1"]:focus {
 
     padding: 10px;
 }
+
+button {
+    touch-action: manipulation;
+}
