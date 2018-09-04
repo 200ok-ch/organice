@@ -100,24 +100,16 @@ export const advanceTodoState = (headerId = null) => ({
   type: 'ADVANCE_TODO_STATE', headerId,
 });
 
-export const enterTitleEditMode = (cursorPosition = null) => ({
-  type: 'ENTER_TITLE_EDIT_MODE', cursorPosition,
+export const enterEditMode = editModeType => ({
+  type: 'ENTER_EDIT_MODE', editModeType,
 });
 
-export const exitTitleEditMode = () => ({
-  type: 'EXIT_TITLE_EDIT_MODE',
+export const exitEditMode = () => ({
+  type: 'EXIT_EDIT_MODE',
 });
 
 export const updateHeaderTitle = (headerId, newRawTitle) => ({
   type: 'UPDATE_HEADER_TITLE', headerId, newRawTitle,
-});
-
-export const enterDescriptionEditMode = (cursorPosition = null) => ({
-  type: 'ENTER_DESCRIPTION_EDIT_MODE', cursorPosition,
-});
-
-export const exitDescriptionEditMode = () => ({
-  type: 'EXIT_DESCRIPTION_EDIT_MODE',
 });
 
 export const updateHeaderDescription = (headerId, newRawDescription) => ({
@@ -136,7 +128,7 @@ export const addHeaderAndEdit = headerId => (
   dispatch => {
     dispatch(addHeader(headerId));
     dispatch(selectNextSiblingHeader(headerId));
-    dispatch(enterTitleEditMode());
+    dispatch(enterEditMode('title'));
   }
 );
 
@@ -205,14 +197,6 @@ export const setSelectedTableCellId = cellId => (
     }
   }
 );
-
-export const enterTableEditMode = () => ({
-  type: 'ENTER_TABLE_EDIT_MODE',
-});
-
-export const exitTableEditMode = () => ({
-  type: 'EXIT_TABLE_EDIT_MODE',
-});
 
 export const addNewTableRow = () => ({
   type: 'ADD_NEW_TABLE_ROW',

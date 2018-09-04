@@ -112,17 +112,16 @@ class OrgFile extends PureComponent {
   }
 
   handleEditTitleHotKey() {
-    this.props.org.enterTitleEditMode();
+    this.props.org.enterEditMode('title');
   }
 
   handleEditDescriptionHotKey() {
     this.props.org.openHeader(this.props.selectedHeaderId);
-    this.props.org.enterDescriptionEditMode();
+    this.props.org.enterEditMode('description');
   }
 
   handleExitEditModeHotKey() {
-    this.props.org.exitTitleEditMode();
-    this.props.org.exitDescriptionEditMode();
+    this.props.org.exitEditMode();
     this.container.focus();
   }
 

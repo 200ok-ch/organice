@@ -168,12 +168,12 @@ class Header extends PureComponent {
   }
 
   handleEnterTitleEditMode() {
-    this.props.org.enterTitleEditMode();
+    this.props.org.enterEditMode('title');
   }
 
   handleEnterDescriptionEditMode() {
     this.props.org.openHeader(this.props.header.get('id'));
-    this.props.org.enterDescriptionEditMode();
+    this.props.org.enterEditMode('description');
   }
 
   handleFocus() {

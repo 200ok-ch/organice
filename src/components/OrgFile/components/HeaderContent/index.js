@@ -78,7 +78,7 @@ class HeaderContent extends PureComponent {
   }
 
   handleTextareaBlur() {
-    this.props.org.exitDescriptionEditMode();
+    this.props.org.exitEditMode();
   }
 
   handleTableCellSelect(cellId) {
@@ -86,7 +86,7 @@ class HeaderContent extends PureComponent {
   }
 
   handleExitTableEditMode() {
-    this.props.org.exitTableEditMode();
+    this.props.org.exitEditMode();
   }
 
   handleTableCellValueUpdate(cellId, newValue) {
@@ -94,7 +94,7 @@ class HeaderContent extends PureComponent {
   }
 
   handleEnterTableEditMode() {
-    this.props.org.enterTableEditMode();
+    this.props.org.enterEditMode('table');
   }
 
   handleAddNewTableRow() {

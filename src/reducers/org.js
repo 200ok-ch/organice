@@ -176,16 +176,12 @@ const advanceTodoState = (state, action) => {
   return state;
 };
 
-const enterTitleEditMode = (state, action) => (
-  state
-    .set('inTitleEditMode', true)
-    .set('cursorPosition', action.cursorPosition)
+const enterEditMode = (state, action) => (
+  state.set('editMode', action.editModeType)
 );
 
-const enterDescriptionEditMode = (state, action) => (
-  state
-    .set('inDescriptionEditMode', true)
-    .set('cursorPosition', action.cursorPosition)
+const exitEditMode = (state, action) => (
+  state.set('editMode', null)
 );
 
 const updateHeaderTitle = (state, action) => {
@@ -464,22 +460,6 @@ const setDirty = (state, action) => (
 const setSelectedTableCellId = (state, action) => (
   state.set('selectedTableCellId', action.cellId)
 );
-
-const enterTableEditMode = (state, action) => {
-  if (!state.get('selectedTableCellId')) {
-    return state;
-  }
-
-  return state.set('inTableEditMode', true);
-};
-
-const exitTableEditMode = (state, action) => {
-  if (!state.get('selectedTableCellId')) {
-    return state;
-  }
-
-  return state.set('inTableEditMode', false);
-};
 
 const updateDescriptionOfHeaderContainingTableCell = (state, cellId, header = null) => {
   const headers = state.get('headers');
@@ -820,16 +800,12 @@ export default (state = new Map(), action) => {
     return selectHeader(state, action);
   case 'ADVANCE_TODO_STATE':
     return advanceTodoState(state, action);
-  case 'ENTER_TITLE_EDIT_MODE':
-    return enterTitleEditMode(state, action);
-  case 'EXIT_TITLE_EDIT_MODE':
-    return state.set('inTitleEditMode', false);
+  case 'ENTER_EDIT_MODE':
+    return enterEditMode(state, action);
+  case 'EXIT_EDIT_MODE':
+    return exitEditMode(state, action);
   case 'UPDATE_HEADER_TITLE':
     return updateHeaderTitle(state, action);
-  case 'ENTER_DESCRIPTION_EDIT_MODE':
-    return enterDescriptionEditMode(state, action);
-  case 'EXIT_DESCRIPTION_EDIT_MODE':
-    return state.set('inDescriptionEditMode', false);
   case 'UPDATE_HEADER_DESCRIPTION':
     return updateHeaderDescription(state, action);
   case 'ADD_HEADER':
@@ -866,10 +842,6 @@ export default (state = new Map(), action) => {
     return unfocusHeader(state, action);
   case 'SET_SELECTED_TABLE_CELL_ID':
     return setSelectedTableCellId(state, action);
-  case 'ENTER_TABLE_EDIT_MODE':
-    return enterTableEditMode(state, action);
-  case 'EXIT_TABLE_EDIT_MODE':
-    return exitTableEditMode(state, action);
   case 'ADD_NEW_TABLE_ROW':
     return addNewTableRow(state, action);
   case 'REMOVE_TABLE_ROW':

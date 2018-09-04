@@ -93,9 +93,7 @@ class ActionDrawer extends PureComponent {
   }
 
   handleDoneClick() {
-    this.props.org.exitTitleEditMode();
-    this.props.org.exitDescriptionEditMode();
-    this.props.org.exitTableEditMode();
+    this.props.org.exitEditMode();
   }
 
   handleCaptureButtonClick(templateId) {

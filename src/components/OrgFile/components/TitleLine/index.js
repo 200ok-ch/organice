@@ -111,7 +111,7 @@ class TitleLine extends PureComponent {
   }
 
   handleTextareaBlur() {
-    this.props.org.exitTitleEditMode();
+    this.props.org.exitEditMode();
   }
 
   handleTitleChange(event) {
@@ -119,7 +119,7 @@ class TitleLine extends PureComponent {
     const newTitle = event.target.value;
     const lastCharacter = newTitle[newTitle.length - 1];
     if (this.state.titleValue === newTitle.substring(0, newTitle.length - 1) && lastCharacter === '\n') {
-      this.props.org.exitTitleEditMode();
+      this.props.org.exitEditMode();
       return;
     }
 
