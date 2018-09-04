@@ -115,7 +115,15 @@ class TitleLine extends PureComponent {
   }
 
   handleTitleChange(event) {
-    this.setState({ titleValue: event.target.value });
+    // If the last character typed was a newline at the end, exit edit mode.
+    const newTitle = event.target.value;
+    const lastCharacter = newTitle[newTitle.length - 1];
+    if (this.state.titleValue === newTitle.substring(0, newTitle.length - 1) && lastCharacter === '\n') {
+      this.props.org.exitTitleEditMode();
+      return;
+    }
+
+    this.setState({ titleValue: newTitle });
   }
 
   handleTitleFieldClick(event) {
