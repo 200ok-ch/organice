@@ -133,7 +133,7 @@ class Entry extends PureComponent {
       <div className={className}>
         <HeaderBar onSignInClick={this.handleSignIn} />
 
-        {!!loadingMessage && <LoadingIndicator message={loadingMessage} />}
+        <LoadingIndicator message={loadingMessage} />
 
         {activeModalPage === 'changelog' ? (
           this.renderChangelogFile()
