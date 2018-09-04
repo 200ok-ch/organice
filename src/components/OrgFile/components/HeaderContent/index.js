@@ -47,15 +47,10 @@ class HeaderContent extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { header, cursorPosition } = this.props;
+    const { header } = this.props;
 
     if (prevProps.inEditMode && !this.props.inEditMode) {
       this.props.org.updateHeaderDescription(header.get('id'), this.state.descriptionValue);
-    } else if (!prevProps.inEditMode && this.props.inEditMode) {
-      if (cursorPosition !== null && !!this.textarea) {
-        this.textarea.selectionStart = cursorPosition;
-        this.textarea.selectionEnd = cursorPosition;
-      }
     }
 
     if (prevProps.header !== this.props.header) {
@@ -166,7 +161,6 @@ const mapStateToProps = (state, props) => {
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     inTableEditMode: state.org.present.get('editMode') === 'table',
-    cursorPosition: state.org.present.get('cursorPosition'),
   };
 };
 

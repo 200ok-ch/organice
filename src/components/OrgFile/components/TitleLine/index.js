@@ -43,15 +43,10 @@ class TitleLine extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { header, cursorPosition } = this.props;
+    const { header } = this.props;
 
     if (prevProps.inEditMode && !this.props.inEditMode) {
       this.props.org.updateHeaderTitle(header.get('id'), this.state.titleValue);
-    } else if (!prevProps.inEditMode && this.props.inEditMode) {
-      if (cursorPosition !== null && !!this.textarea) {
-        this.textarea.selectionStart = cursorPosition;
-        this.textarea.selectionEnd = cursorPosition;
-      }
     }
 
     if (prevProps.header !== this.props.header) {
@@ -194,7 +189,6 @@ const mapStateToProps = (state, props) => {
       state.org.present.get('editMode') === 'title' && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
-    cursorPosition: state.org.present.get('cursorPosition'),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
   };
 };
