@@ -1,3 +1,5 @@
+/* global ga */
+
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -83,7 +85,9 @@ class OrgFile extends PureComponent {
     }
   }
 
-  componentDidCatch() {
+  componentDidCatch(error) {
+    ga('send', 'event', 'error', 'OrgFile componentDidCatch', error);
+
     this.setState({ hasError: true });
   }
 
