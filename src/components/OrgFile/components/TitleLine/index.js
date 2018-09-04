@@ -191,7 +191,7 @@ class TitleLine extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     inEditMode: (
-      state.org.present.get('inTitleEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
+      state.org.present.get('editMode') === 'title' && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     cursorPosition: state.org.present.get('cursorPosition'),

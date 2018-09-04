@@ -161,11 +161,11 @@ class HeaderContent extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     inEditMode: (
-      state.org.present.get('inDescriptionEditMode') && state.org.present.get('selectedHeaderId') === props.header.get('id')
+      state.org.present.get('editMode') === 'description' && state.org.present.get('selectedHeaderId') === props.header.get('id')
     ),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
-    inTableEditMode: state.org.present.get('inTableEditMode'),
+    inTableEditMode: state.org.present.get('editMode') === 'table',
     cursorPosition: state.org.present.get('cursorPosition'),
   };
 };

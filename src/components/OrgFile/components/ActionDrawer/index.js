@@ -290,9 +290,7 @@ class ActionDrawer extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    inEditMode: (
-      state.org.present.get('inTitleEditMode') || state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTableEditMode')
-    ),
+    inEditMode: !!state.org.present.get('editMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),

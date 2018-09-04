@@ -314,7 +314,7 @@ const mapStateToProps = (state, props) => {
     loadedPath: state.org.present.get('path'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     customKeybindings: state.base.get('customKeybindings'),
-    inEditMode: state.org.present.get('inTitleEditMode') || state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTableEditMode'),
+    inEditMode: !!state.org.present.get('editMode'),
     activeCaptureTemplate: state.capture.get('captureTemplates').concat(sampleCaptureTemplates).find(template => (
       template.get('id') === state.capture.get('activeCaptureTemplateId')
     )),

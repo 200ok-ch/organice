@@ -334,7 +334,7 @@ const mapStateToProps = (state, props) => {
     bulletStyle: state.base.get('bulletStyle'),
     focusedHeader,
     isFocused: !!focusedHeader && focusedHeader.get('id') === props.header.get('id'),
-    inEditMode: state.org.present.get('inDescriptionEditMode') || state.org.present.get('inTitleEditMode'),
+    inEditMode: !!state.org.present.get('editMode'),
   };
 };
 
