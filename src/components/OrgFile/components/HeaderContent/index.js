@@ -113,7 +113,13 @@ class HeaderContent extends PureComponent {
   }
 
   render() {
-    const { header, inEditMode, selectedTableCellId, inTableEditMode } = this.props;
+    const {
+      header,
+      inEditMode,
+      selectedTableCellId,
+      inTableEditMode,
+      shouldDisableActions,
+    } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
@@ -146,6 +152,7 @@ class HeaderContent extends PureComponent {
                               onAddNewTableColumn: this.handleAddNewTableColumn,
                               onRemoveTableColumn: this.handleRemoveTableColumn,
                               onCheckboxClick: this.handleCheckboxClick,
+                              shouldDisableActions,
                             }} />
         )}
       </div>

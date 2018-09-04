@@ -316,7 +316,7 @@ class Header extends PureComponent {
                                     onAddNewHeader={this.handleAddNewHeader} />
               </Collapse>
 
-              <HeaderContent header={header} />
+              <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
             </div>
           );
         }}

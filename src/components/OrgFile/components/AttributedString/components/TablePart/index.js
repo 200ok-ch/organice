@@ -73,6 +73,7 @@ export default class TablePart extends PureComponent {
       subPartDataAndHandlers: {
         selectedTableCellId,
         inTableEditMode,
+        shouldDisableActions,
       },
     } = this.props;
     const { rawCellValues } = this.state;
@@ -122,7 +123,7 @@ export default class TablePart extends PureComponent {
           </tbody>
         </table>
 
-        <Collapse isOpened={isTableSelected}>
+        <Collapse isOpened={isTableSelected && !shouldDisableActions}>
           <TableActionDrawer subPartDataAndHandlers={this.props.subPartDataAndHandlers} />
         </Collapse>
       </Fragment>
