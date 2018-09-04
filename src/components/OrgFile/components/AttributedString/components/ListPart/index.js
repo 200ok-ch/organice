@@ -29,10 +29,10 @@ export default class ListPart extends PureComponent {
 
       return (
         <li key={item.get('id')} value={item.get('forceNumber')}>
-          <span className={lineContainerClass}>
+          <span className={lineContainerClass}
+                onClick={item.get('isCheckbox') ? this.handleCheckboxClick(item.get('id')) : null}>
             {item.get('isCheckbox') && (
-              <Checkbox state={item.get('checkboxState')}
-                        onClick={this.handleCheckboxClick(item.get('id'))} />
+              <Checkbox state={item.get('checkboxState')} />
             )}
             <AttributedString parts={item.get('titleLine')} />
           </span>
