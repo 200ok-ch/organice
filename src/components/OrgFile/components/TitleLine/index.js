@@ -171,7 +171,7 @@ class TitleLine extends PureComponent {
 
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
-                {header.getIn(['titleLine', 'tags']).toSet().toList().map(tag => (
+                {header.getIn(['titleLine', 'tags']).toSet().toList().filter(tag => !!tag).map(tag => (
                   <div className="header-tag" key={tag}>{tag}</div>
                 ))}
               </div>
