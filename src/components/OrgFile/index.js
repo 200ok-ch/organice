@@ -54,6 +54,7 @@ class OrgFile extends PureComponent {
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
+      'handleTagsChange',
     ]);
 
     this.state = {
@@ -191,6 +192,10 @@ class OrgFile extends PureComponent {
     this.props.base.setDisplayingSyncConfirmationModal(false);
   }
 
+  handleTagsChange(newTags) {
+    this.props.org.setHeaderTags(this.props.selectedHeaderId, newTags);
+  }
+
   render() {
     const {
       headers,
@@ -307,7 +312,8 @@ class OrgFile extends PureComponent {
 
           {isDisplayingTagsEditorModal && (
             <TagsEditorModal header={selectedHeader}
-                             onClose={this.handleTagsEditorModalClose} />
+                             onClose={this.handleTagsEditorModalClose}
+                             onChange={this.handleTagsChange} />
           )}
 
       {!shouldDisableActions && (

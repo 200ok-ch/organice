@@ -11,15 +11,27 @@ export default class TagsEditorModal extends PureComponent {
     _.bindAll(this, [
       'handleRemoveTag',
       'handleAddNewTag',
+      'handleTagChange',
     ]);
   }
 
-  handleRemoveTag() {
-    console.log('remove');
+  handleTagChange(tagIndex) {
+    return event => {
+      const tags = this.props.header.getIn(['titleLine', 'tags']);
+      this.props.onChange(tags.set(tagIndex, event.target.value));
+    };
+  }
+
+  handleRemoveTag(tagIndex) {
+    return () => {
+      const tags = this.props.header.getIn(['titleLine', 'tags']);
+      this.props.onChange(tags.delete(tagIndex));
+    };
   }
 
   handleAddNewTag() {
-    console.log('add');
+    const tags = this.props.header.getIn(['titleLine', 'tags']);
+    this.props.onChange(tags.push(''));
   }
 
   render() {
@@ -27,9 +39,6 @@ export default class TagsEditorModal extends PureComponent {
       header,
       onClose,
     } = this.props;
-
-    // TODO: kill this.
-    console.log("header = ", header.toJS().titleLine.tags);
 
     return (
       <div className="modal-container">
@@ -45,9 +54,10 @@ export default class TagsEditorModal extends PureComponent {
             <div className="tag-container" key={index}>
               <input type="text"
                      className="textfield tag-container__textfield"
-                     value={tag} />
+                     value={tag}
+                     onChange={this.handleTagChange(index)} />
               <div className="tag-container__actions-container">
-                <i className="fas fa-times fa-lg" />
+                <i className="fas fa-times fa-lg" onClick={this.handleRemoveTag(index)} />
                 <i className="fas fa-bars fa-lg" />
               </div>
             </div>

@@ -772,6 +772,16 @@ const setLastPulledAt = (state, action) => (
   state.set('lastPulledAt', action.lastPulledAt)
 );
 
+const setHeaderTags = (state, action) => {
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  if (headerIndex === -1) {
+    return state;
+  }
+
+  return state.setIn(['headers', headerIndex, 'titleLine', 'tags'], action.tags);
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -866,6 +876,8 @@ export default (state = new Map(), action) => {
     return advanceCheckboxState(state, action);
   case 'SET_LAST_PULLED_AT':
     return setLastPulledAt(state, action);
+  case 'SET_HEADER_TAGS':
+    return setHeaderTags(state, action);
   default:
     return state;
   }

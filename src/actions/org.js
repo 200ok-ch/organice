@@ -248,3 +248,7 @@ export const insertCapture = (templateId, content, shouldPrepend) => (
 export const advanceCheckboxState = listItemId => ({
   type: 'ADVANCE_CHECKBOX_STATE', listItemId,
 });
+
+export const setHeaderTags = (headerId, tags) => ({
+  type: 'SET_HEADER_TAGS', headerId, tags,
+});
