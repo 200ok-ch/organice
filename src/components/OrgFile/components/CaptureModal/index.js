@@ -4,6 +4,7 @@ import './CaptureModal.css';
 
 import ActionButton from '../ActionDrawer/components/ActionButton/';
 import Switch from '../../../UI/Switch/';
+import Popup from '../../../UI/Popup/';
 
 import { headerWithPath } from '../../../../lib/org_utils';
 
@@ -91,10 +92,7 @@ export default class CaptureModal extends PureComponent {
     const targetHeader = headerWithPath(headers, template.get('headerPaths'));
 
     return (
-      <div className="modal-container">
-        <button className="fas fa-times fa-lg modal-container__close-button"
-                onClick={this.handleCloseClick} />
-
+      <Popup shouldIncludeCloseButton onClose={this.handleCloseClick}>
         <div className="capture-modal-header">
           <ActionButton letter={template.get('letter')}
                         iconName={template.get('iconName')}
@@ -133,7 +131,7 @@ export default class CaptureModal extends PureComponent {
             The specified header path doesn't exist in this org file!
           </div>
         )}
-      </div>
+      </Popup>
     );
   }
 }

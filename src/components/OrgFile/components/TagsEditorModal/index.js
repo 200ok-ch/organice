@@ -4,6 +4,8 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import './TagsEditorModal.css';
 
+import Popup from '../../../UI/Popup/';
+
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -67,10 +69,7 @@ export default class TagsEditorModal extends PureComponent {
     const headerTags = header.getIn(['titleLine', 'tags']);
 
     return (
-      <div className="modal-container">
-        <button className="fas fa-times fa-lg modal-container__close-button"
-                onClick={onClose} />
-
+      <Popup shouldIncludeCloseButton onClose={onClose}>
         <h2 className="tags-editor__title">
           Edit tags
         </h2>
@@ -141,7 +140,7 @@ export default class TagsEditorModal extends PureComponent {
             );
           })}
         </div>
-      </div>
+      </Popup>
     );
   }
 }
