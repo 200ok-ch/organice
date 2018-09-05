@@ -4,6 +4,11 @@
     margin-top: 0;
 }
 
+.no-tags-message {
+    color: gray;
+    text-align: center;
+}
+
 .tag-container {
     display: flex;
 
