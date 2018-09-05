@@ -37,10 +37,21 @@ export default class TagsEditorModal extends PureComponent {
     this.props.onChange(tags.push(''));
   }
 
+  handleAddExistingTag(newTag) {
+    return () => {
+      const tags = this.props.header.getIn(['titleLine', 'tags']);
+      if (tags.includes(newTag)) {
+        return;
+      }
+      this.props.onChange(tags.push(newTag));
+    };
+  }
+
   render() {
     const {
       header,
       onClose,
+      allTags,
     } = this.props;
 
     return (
@@ -85,6 +96,26 @@ export default class TagsEditorModal extends PureComponent {
 
         <div className="tags-editor__add-new-container">
           <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewTag} />
+        </div>
+
+        <hr className="tags-editor__separator" />
+
+        <h2 className="tags-editor__title">
+          All tags
+        </h2>
+
+        <div className="all-tags-container">
+          {allTags.filter(tag => !!tag).map(tag => {
+            const className = classNames('all-tags__tag', {
+              'all-tags__tag--in-use': header.getIn(['titleLine', 'tags']).includes(tag),
+            });
+
+            return (
+              <div className={className} key={tag} onClick={this.handleAddExistingTag(tag)}>
+                {tag}
+              </div>
+            );
+          })}
         </div>
       </div>
     );

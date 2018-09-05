@@ -40,3 +40,29 @@
 
     margin-top: 10px;
 }
+
+.tags-editor__separator {
+    width: calc(100% - 20px);
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    border: none;
+    border-bottom: 1px solid #D8D8D8;
+}
+
+.all-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.all-tags__tag {
+    color: white;
+    background-color: #5E348C;
+
+    padding: 8px;
+    margin: 5px;
+}
+
+.all-tags__tag--in-use {
+    background-color: lightgray;
+}

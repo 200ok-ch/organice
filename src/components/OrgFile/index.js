@@ -27,6 +27,7 @@ import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
 
 import _ from 'lodash';
+import { OrderedSet } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -312,6 +313,7 @@ class OrgFile extends PureComponent {
 
           {isDisplayingTagsEditorModal && (
             <TagsEditorModal header={selectedHeader}
+                             allTags={OrderedSet(headers.flatMap(header => header.getIn(['titleLine', 'tags']))).sort()}
                              onClose={this.handleTagsEditorModalClose}
                              onChange={this.handleTagsChange} />
           )}
