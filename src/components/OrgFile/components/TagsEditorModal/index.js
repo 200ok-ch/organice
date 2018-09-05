@@ -21,7 +21,7 @@ export default class TagsEditorModal extends PureComponent {
   handleTagChange(tagIndex) {
     return event => {
       const tags = this.props.header.getIn(['titleLine', 'tags']);
-      this.props.onChange(tags.set(tagIndex, event.target.value));
+      this.props.onChange(tags.set(tagIndex, event.target.value.replace(/\s+/g, '')));
     };
   }
 
