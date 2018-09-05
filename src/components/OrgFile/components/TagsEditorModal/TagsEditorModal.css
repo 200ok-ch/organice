@@ -14,6 +14,10 @@
     background-color: #E6E6E6;
 }
 
+.tag-container__drag-handle {
+    user-select: none;
+}
+
 .tag-container__textfield {
     flex: 3;
 }

@@ -29,6 +29,10 @@ export default class App extends PureComponent {
   }
 
   handleDragEnd(result) {
+    if (!result.destination) {
+      return;
+    }
+
     if (result.type === 'CAPTURE-TEMPLATE') {
       this.store.dispatch(reorderCaptureTemplate(result.source.index, result.destination.index));
     } else if (result.type === 'TAG') {
