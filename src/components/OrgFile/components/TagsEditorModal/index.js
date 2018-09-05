@@ -18,6 +18,16 @@ export default class TagsEditorModal extends PureComponent {
     ]);
   }
 
+  componentDidUpdate(prevProps) {
+    const prevTags = prevProps.header.getIn(['titleLine', 'tags']);
+    const currentTags = this.props.header.getIn(['titleLine', 'tags']);
+    if ((prevTags.size === currentTags.size - 1) && currentTags.last() === '') {
+      if (this.lastTextfield) {
+        this.lastTextfield.focus();
+      }
+    }
+  }
+
   handleTagChange(tagIndex) {
     return event => {
       const tags = this.props.header.getIn(['titleLine', 'tags']);
@@ -90,7 +100,8 @@ export default class TagsEditorModal extends PureComponent {
                           <input type="text"
                                  className="textfield tag-container__textfield"
                                  value={tag}
-                                 onChange={this.handleTagChange(index)} />
+                                 onChange={this.handleTagChange(index)}
+                                 ref={textfield => this.lastTextfield = textfield} />
                           <div className="tag-container__actions-container">
                             <i className="fas fa-times fa-lg" onClick={this.handleRemoveTag(index)} />
                             <i className="fas fa-bars fa-lg tag-container__drag-handle" {...provided.dragHandleProps} />
