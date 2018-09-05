@@ -252,3 +252,7 @@ export const advanceCheckboxState = listItemId => ({
 export const setHeaderTags = (headerId, tags) => ({
   type: 'SET_HEADER_TAGS', headerId, tags,
 });
+
+export const reorderTags = (fromIndex, toIndex) => ({
+  type: 'REORDER_TAGS', fromIndex, toIndex,
+});

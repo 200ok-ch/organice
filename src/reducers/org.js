@@ -782,6 +782,20 @@ const setHeaderTags = (state, action) => {
   return state.setIn(['headers', headerIndex, 'titleLine', 'tags'], action.tags);
 };
 
+const reorderTags = (state, action) => {
+  const selectedHeaderId = state.get('selectedHeaderId');
+  if (!selectedHeaderId) {
+    return state;
+  }
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), selectedHeaderId);
+
+  return state.updateIn(['headers', headerIndex, 'titleLine', 'tags'], tags => (
+    tags
+      .splice(action.fromIndex, 1)
+      .splice(action.toIndex, 0, tags.get(action.fromIndex))
+  ));
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -878,6 +892,8 @@ export default (state = new Map(), action) => {
     return setLastPulledAt(state, action);
   case 'SET_HEADER_TAGS':
     return setHeaderTags(state, action);
+  case 'REORDER_TAGS':
+    return reorderTags(state, action);
   default:
     return state;
   }

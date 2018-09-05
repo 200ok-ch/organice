@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { reorderCaptureTemplate } from './actions/capture';
+import { reorderTags } from './actions/org';
 
 import './App.css';
 import './base.css';
@@ -30,6 +31,8 @@ export default class App extends PureComponent {
   handleDragEnd(result) {
     if (result.type === 'CAPTURE-TEMPLATE') {
       this.store.dispatch(reorderCaptureTemplate(result.source.index, result.destination.index));
+    } else if (result.type === 'TAG') {
+      this.store.dispatch(reorderTags(result.source.index, result.destination.index));
     }
   }
 

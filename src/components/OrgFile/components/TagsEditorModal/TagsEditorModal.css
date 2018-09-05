@@ -1,6 +1,5 @@
 .tags-editor__title {
     color: #5E348C;
-    font-size: 20px;
 
     margin-top: 0;
 }
@@ -8,7 +7,11 @@
 .tag-container {
     display: flex;
 
-    margin-top: 5px;
+    padding: 3px 5px;
+}
+
+.tag-container--dragging {
+    background-color: #E6E6E6;
 }
 
 .tag-container__textfield {

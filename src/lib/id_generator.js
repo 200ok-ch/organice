@@ -1,4 +1,4 @@
 export default (() => {
-  let nextId = 0;
+  let nextId = 1;
   return () => nextId++;
 })();
