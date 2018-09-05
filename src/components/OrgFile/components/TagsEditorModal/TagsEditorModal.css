@@ -1,0 +1,35 @@
+.tags-editor__title {
+    color: #5E348C;
+    font-size: 20px;
+
+    margin-top: 0;
+}
+
+.tag-container {
+    display: flex;
+
+    margin-top: 5px;
+}
+
+.tag-container__textfield {
+    flex: 3;
+}
+
+.tag-container__actions-container {
+    flex: 1;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-left: 10px;
+
+    color: #5E348C;
+}
+
+.tags-editor__add-new-container {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 10px;
+}

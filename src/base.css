@@ -55,6 +55,19 @@ div[tabindex="-1"]:focus {
     padding: 10px;
 }
 
+.modal-container__close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    color: #5E348C;
+
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+}
+
+
 button {
     touch-action: manipulation;
 }

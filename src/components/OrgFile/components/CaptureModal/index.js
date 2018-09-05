@@ -92,7 +92,7 @@ export default class CaptureModal extends PureComponent {
 
     return (
       <div className="modal-container">
-        <button className="fas fa-times fa-lg capture-modal-close-button"
+        <button className="fas fa-times fa-lg modal-container__close-button"
                 onClick={this.handleCloseClick} />
 
         <div className="capture-modal-header">

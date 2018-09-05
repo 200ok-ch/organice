@@ -50,6 +50,7 @@ class OrgFile extends PureComponent {
       'handleContainerRef',
       'handleCapture',
       'handleCaptureClose',
+      'handleTagsEditorModalClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
@@ -172,6 +173,10 @@ class OrgFile extends PureComponent {
     this.props.capture.disableCaptureModal();
   }
 
+  handleTagsEditorModalClose() {
+    this.props.base.setDisplayingTagsEditorModal(false);
+  }
+
   handleSyncConfirmationPull() {
     this.props.org.sync({ forceAction: 'pull' });
     this.props.base.setDisplayingSyncConfirmationModal(false);
@@ -202,6 +207,7 @@ class OrgFile extends PureComponent {
       isDisplayingSyncConfirmationModal,
       lastServerModifiedAt,
       isDisplayingTagsEditorModal,
+      selectedHeader,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -300,7 +306,8 @@ class OrgFile extends PureComponent {
           )}
 
           {isDisplayingTagsEditorModal && (
-            <TagsEditorModal />
+            <TagsEditorModal header={selectedHeader}
+                             onClose={this.handleTagsEditorModalClose} />
           )}
 
       {!shouldDisableActions && (
@@ -314,11 +321,15 @@ class OrgFile extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
+  const headers = state.org.present.get('headers');
+  const selectedHeaderId = state.org.present.get('selectedHeaderId');
+
   return {
-    headers: state.org.present.get('headers'),
+    headers,
+    selectedHeaderId,
     isDirty: state.org.present.get('isDirty'),
     loadedPath: state.org.present.get('path'),
-    selectedHeaderId: state.org.present.get('selectedHeaderId'),
+    selectedHeader: headers && headers.find(header => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     inEditMode: !!state.org.present.get('editMode'),
     activeCaptureTemplate: state.capture.get('captureTemplates').concat(sampleCaptureTemplates).find(template => (
@@ -326,7 +337,7 @@ const mapStateToProps = (state, props) => {
     )),
     isDisplayingSyncConfirmationModal: state.base.get('isDisplayingSyncConfirmationModal'),
     lastServerModifiedAt: state.base.get('lastServerModifiedAt'),
-    isDisplayingTagsEditorModal: state.base.get('isDisplayingTagsEditorModal'),
+    isDisplayingTagsEditorModal: state.base.get('isDisplayingTagsEditorModal') && !!state.org.present.get('selectedHeaderId'),
   };
 };
 
