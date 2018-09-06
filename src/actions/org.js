@@ -54,6 +54,7 @@ export const sync = ({ forceAction = null } = {}) => (
             dispatch(setDisappearingLoadingMessage('Changes pushed', 2000));
             dispatch(setIsLoading(false));
             dispatch(setDirty(false));
+            dispatch(setLastSyncAt(moment()));
           }).catch(error => {
             alert(`There was an error pushing the file: ${error.toString()}`);
             dispatch(hideLoadingMessage());
