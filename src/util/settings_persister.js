@@ -9,7 +9,7 @@ import { restoreCaptureSettings } from '../actions/capture';
 
 import generateId from '../lib/id_generator';
 
-const isLocalStorageAvailable = () => {
+export const isLocalStorageAvailable = () => {
   try {
     localStorage.setItem('test', 'test');
     return localStorage.getItem('test') === 'test';
@@ -86,7 +86,7 @@ export const persistableFields = [
   },
   {
     category: 'dropbox',
-    name: 'accessToken',
+    name: 'dropboxAccessToken',
     type: 'nullable',
     shouldStoreInConfig: false,
   },
@@ -105,7 +105,9 @@ export const readOpennessState = () => {
 };
 
 const getFieldsToPersist = (state, fields) => (
-  fields.filter(field => field.category === 'org').map(field => field.name).map(field => (
+  fields.filter(field => (
+    !field.depreacted
+  )).filter(field => field.category === 'org').map(field => field.name).map(field => (
     [field, state.org.present.get(field)]
   )).concat(persistableFields.filter(field => field.category !== 'org').map(field => {
     if (field.type === 'json') {
@@ -118,7 +120,7 @@ const getFieldsToPersist = (state, fields) => (
 
 const getConfigFileContents = fieldsToPersist => (
   JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
-    !['accessToken', 'lastSeenChangelogHeader'].includes(name)
+    !['dropboxAccessToken', 'lastSeenChangelogHeader'].includes(name)
   ))), null, 2)
 );
 
@@ -168,6 +170,7 @@ export const readInitialState = () => {
 
   persistableFields.forEach(field => {
     let value = localStorage.getItem(field.name);
+
     if (field.type === 'nullable') {
       if (value === 'null') {
         value = null;
@@ -208,12 +211,12 @@ export const readInitialState = () => {
 };
 
 export const loadSettingsFromConfigFile = store => {
-  const accessToken = store.getState().dropbox.get('accessToken');
-  if (!accessToken) {
+  const dropboxAccessToken = store.getState().dropbox.get('dropboxAccessToken');
+  if (!dropboxAccessToken) {
     return;
   }
 
-  pullFileFromDropbox(accessToken, '/.org-web-config.json').then(configFileContents => {
+  pullFileFromDropbox(dropboxAccessToken, '/.org-web-config.json').then(configFileContents => {
     try {
       const config = JSON.parse(configFileContents);
       store.dispatch(restoreBaseSettings(config));
@@ -242,7 +245,7 @@ export const subscribeToChanges = store => {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {
-          pushFileToDropbox(state.dropbox.get('accessToken'),
+          pushFileToDropbox(state.dropbox.get('dropboxAccessToken'),
                             '/.org-web-config.json',
                             settingsFileContents);
         }

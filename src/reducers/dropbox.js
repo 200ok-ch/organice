@@ -1,11 +1,11 @@
 import { Map } from 'immutable';
 
 const authenticate = (state, action) => (
-  state.set('accessToken', action.accessToken)
+  state.set('dropboxAccessToken', action.dropboxAccessToken)
 );
 
 const signOut = (state, action) => (
-  state.set('accessToken', null)
+  state.set('dropboxAccessToken', null)
 );
 
 const setCurrentFileBrowserDirectoryListing = (state, action) => (

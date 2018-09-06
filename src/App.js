@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
 import { readInitialState, loadSettingsFromConfigFile, subscribeToChanges } from './util/settings_persister';
+import runAllMigrations from './migrations';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -19,6 +20,8 @@ import _ from 'lodash';
 export default class App extends PureComponent {
   constructor(props) {
     super(props);
+
+    runAllMigrations();
 
     this.store = Store(readInitialState());
     this.store.subscribe(subscribeToChanges(this.store));

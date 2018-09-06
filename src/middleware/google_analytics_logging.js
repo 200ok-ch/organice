@@ -5,7 +5,7 @@ export default store => next => action => {
 
   const eventFieldsToRedact = {
     'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING': ['directoryListing'],
-    'AUTHENTICATE': ['accessToken'],
+    'AUTHENTICATE': ['dropboxAccessToken'],
     'DISPLAY_FILE': ['contents'],
   };
 

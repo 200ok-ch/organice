@@ -48,9 +48,9 @@ class Entry extends PureComponent {
   componentDidMount() {
     const { lastSeenChangelogHeader, isAuthenticated } = this.props;
 
-    const accessToken = parseQueryString(window.location.hash).access_token;
-    if (accessToken) {
-      this.props.dropbox.authenticate(accessToken);
+    const dropboxAccessToken = parseQueryString(window.location.hash).access_token;
+    if (dropboxAccessToken) {
+      this.props.dropbox.authenticate(dropboxAccessToken);
       window.location.hash = '';
     }
 
@@ -167,7 +167,7 @@ class Entry extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
-    isAuthenticated: !!state.dropbox.get('accessToken'),
+    isAuthenticated: !!state.dropbox.get('dropboxAccessToken'),
     fontSize: state.base.get('fontSize'),
     lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),

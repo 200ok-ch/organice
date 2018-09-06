@@ -69,7 +69,7 @@ export const setShouldStoreSettingsInDropbox = newShouldStoreSettingsInDropbox =
     dispatch({ type: 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX', newShouldStoreSettingsInDropbox });
 
     if (!newShouldStoreSettingsInDropbox) {
-      const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
+      const dropbox = new Dropbox({ accessToken: getState().dropbox.get('dropboxAccessToken') });
       dropbox.filesDelete({
         path: '/.org-web-config.json',
       }).catch(error => {
