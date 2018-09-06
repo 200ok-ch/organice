@@ -21,7 +21,8 @@ import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
 
 class Header extends PureComponent {
-  MIN_SWIPE_ACTIVATION_DISTANCE = 80;
+  SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
+  FREE_DRAG_ACTIVATION_DISTANCE = 10;
 
   constructor(props) {
     super(props);
@@ -46,6 +47,7 @@ class Header extends PureComponent {
     ]);
 
     this.state = {
+      isDraggingFreely: false,
       dragStartX: null,
       dragStartY: null,
       currentDragX: null,
@@ -88,8 +90,13 @@ class Header extends PureComponent {
       return;
     }
 
-    const currentDragY = dragY;
-    if (Math.abs(currentDragY - dragStartY) >= this.MIN_SWIPE_ACTIVATION_DISTANCE / 2) {
+    if (!this.state.isDraggingFreely) {
+      if (Math.abs(dragX - dragStartX) >= this.FREE_DRAG_ACTIVATION_DISTANCE) {
+        this.setState({ isDraggingFreely: true });
+      }
+    }
+
+    if (Math.abs(dragY - dragStartY) >= this.SWIPE_ACTION_ACTIVATION_DISTANCE / 2) {
       this.setState({ dragStartX: null });
     } else {
       this.setState({ currentDragX: dragX });
@@ -102,11 +109,11 @@ class Header extends PureComponent {
     if (!!dragStartX && !!currentDragX) {
       const swipeDistance = currentDragX - dragStartX;
 
-      if (swipeDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
+      if (swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
         this.props.org.advanceTodoState(this.props.header.get('id'));
       }
 
-      if (-1 * swipeDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE) {
+      if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
         this.props.org.removeHeader(this.props.header.get('id'));
       }
     }
@@ -114,6 +121,7 @@ class Header extends PureComponent {
     this.setState({
       dragStartX: null,
       currentDragX: null,
+      isDraggingFreely: false,
     });
   }
 
@@ -121,6 +129,7 @@ class Header extends PureComponent {
     this.setState({
       dragStartX: null,
       currentDragX: null,
+      isDraggingFreely: false,
     });
   }
 
@@ -210,8 +219,8 @@ class Header extends PureComponent {
       header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
     ) : header.get('nestingLevel');
 
-    const { dragStartX, currentDragX } = this.state;
-    const marginLeft = (!!dragStartX && !!currentDragX) ? (
+    const { dragStartX, currentDragX, isDraggingFreely } = this.state;
+    const marginLeft = (!!dragStartX && !!currentDragX && isDraggingFreely) ? (
       currentDragX - dragStartX
     ) : (
       spring(0, { stiffness: 300 })
@@ -230,8 +239,8 @@ class Header extends PureComponent {
       <Motion style={style}>
         {interpolatedStyle => {
           const swipedDistance = interpolatedStyle.marginLeft;
-          const isLeftActionActivated = swipedDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE;
-          const isRightActionActivated = -1 * swipedDistance >= this.MIN_SWIPE_ACTIVATION_DISTANCE;
+          const isLeftActionActivated = swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
+          const isRightActionActivated = -1 * swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
 
           const disabledColor = rgbaObject(211, 211, 211, 1);
           const leftActivatedColor = rgbaObject(0, 128, 0, 1);
