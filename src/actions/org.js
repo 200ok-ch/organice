@@ -1,10 +1,10 @@
 import { ActionTypes } from 'redux-linear-undo';
-import { disableCaptureModal } from './capture';
 import {
   setLoadingMessage,
   hideLoadingMessage,
   setDisappearingLoadingMessage,
-  setDisplayingSyncConfirmationModal,
+  activatePopup,
+  closePopup,
 } from './base';
 import { pushOrgFile } from '../lib/dropbox';
 
@@ -26,7 +26,7 @@ export const stopDisplayingFile = () => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
     dispatch({ type: ActionTypes.CLEAR_HISTORY });
     dispatch(unfocusHeader());
-    dispatch(disableCaptureModal());
+    dispatch(closePopup());
     dispatch(setLastPulledAt(null));
   };
 };
@@ -61,7 +61,7 @@ export const sync = ({ forceAction = null } = {}) => (
       } else {
         if (isDirty && forceAction !== 'pull') {
           dispatch(hideLoadingMessage());
-          dispatch(setDisplayingSyncConfirmationModal(true, lastServerModifiedAt));
+          dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
         } else {
           const reader = new FileReader();
           reader.addEventListener('loadend', () => {
@@ -236,7 +236,7 @@ export const updateTableCellValue = (cellId, newValue) => ({
 
 export const insertCapture = (templateId, content, shouldPrepend) => (
   (dispatch, getState) => {
-    dispatch(disableCaptureModal());
+    dispatch(closePopup());
 
     const template = getState().capture.get('captureTemplates').concat(sampleCaptureTemplates).find(template => (
       template.get('id') === templateId

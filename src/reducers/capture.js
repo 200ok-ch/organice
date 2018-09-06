@@ -79,14 +79,6 @@ const restoreCaptureSettings = (state, action) => {
   return applyCaptureSettingsFromConfig(state, action.newSettings);
 };
 
-const activateCaptureModalForTemplateId = (state, action) => (
-  state.set('activeCaptureTemplateId', action.templateId)
-);
-
-const disableCaptureModal = state => (
-  state.set('activeCaptureTemplateId', null)
-);
-
 const reorderCaptureTemplate = (state, action) => (
   state.update('captureTemplates', templates => (
     templates
@@ -113,10 +105,6 @@ export default (state = new Map(), action) => {
     return deleteTemplate(state, action);
   case 'RESTORE_CAPTURE_SETTINGS':
     return restoreCaptureSettings(state, action);
-  case 'ACTIVATE_CAPTURE_MODAL_FOR_TEMPLATE_ID':
-    return activateCaptureModalForTemplateId(state, action);
-  case 'DISABLE_CAPTURE_MODAL':
-    return disableCaptureModal(state, action);
   case 'REORDER_CAPTURE_TEMPLATE':
     return reorderCaptureTemplate(state, action);
   default:

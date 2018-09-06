@@ -12,6 +12,7 @@ import { List } from 'immutable';
 import * as orgActions from '../../../../actions/org';
 import * as dropboxActions from '../../../../actions/dropbox';
 import * as captureActions from '../../../../actions/capture';
+import * as baseActions from '../../../../actions/base';
 
 import sampleCaptureTemplates from '../../../../lib/sample_capture_templates';
 
@@ -99,7 +100,7 @@ class ActionDrawer extends PureComponent {
   handleCaptureButtonClick(templateId) {
     return () => {
       this.setState({ isDisplayingCaptureButtons: false });
-      this.props.capture.activateCaptureModalForTemplateId(templateId);
+      this.props.base.activatePopup('capture', { templateId });
     };
   }
 
@@ -315,6 +316,7 @@ const mapDispatchToProps = dispatch => {
     org: bindActionCreators(orgActions, dispatch),
     dropbox: bindActionCreators(dropboxActions, dispatch),
     capture: bindActionCreators(captureActions, dispatch),
+    base: bindActionCreators(baseActions, dispatch),
   };
 };
 

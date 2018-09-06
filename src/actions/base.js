@@ -1,5 +1,4 @@
 import { displayFile, stopDisplayingFile } from './org';
-import { disableCaptureModal } from './capture';
 import { sampleFileContents, changelogFileContents } from '../lib/static_file_contents';
 
 import { Dropbox } from 'dropbox';
@@ -108,15 +107,10 @@ export const clearModalStack = () => ({
   type: 'CLEAR_MODAL_STACK',
 });
 
-export const setDisplayingSyncConfirmationModal = (isDisplaying, lastServerModifiedAt = null) => (
-  dispatch => {
-    dispatch({ type: 'SET_DISPLAY_SYNC_CONFIRMATION_MODAL', isDisplaying, lastServerModifiedAt });
-    if (isDisplaying) {
-      dispatch(disableCaptureModal());
-    }
-  }
-);
+export const activatePopup = (popupType, data) => ({
+  type: 'ACTIVATE_POPUP', popupType, data,
+});
 
-export const setDisplayingTagsEditorModal = isDisplaying => ({
-  type: 'SET_DISPLAYING_TAGS_EDITOR_MODAL', isDisplaying,
+export const closePopup = () => ({
+  type: 'CLOSE_POPUP',
 });

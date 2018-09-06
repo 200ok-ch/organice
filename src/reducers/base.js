@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 
 import { applyCategorySettingsFromConfig } from '../util/settings_persister';
 
@@ -76,14 +76,15 @@ const clearModalStack = state => (
   state.set('modalPageStack', List())
 );
 
-const setDisplayingSyncConfirmationModal = (state, action) => (
-  state
-    .set('isDisplayingSyncConfirmationModal', action.isDisplaying)
-    .set('lastServerModifiedAt', action.lastServerModifiedAt)
+const activatePopup = (state, action) => (
+  state.set('activePopup', fromJS({
+    type: action.popupType,
+    data: action.data,
+  }))
 );
 
-const setDisplayingTagsEditorModal = (state, action) => (
-  state.set('isDisplayingTagsEditorModal', action.isDisplaying)
+const closePopup = state => (
+  state.set('activePopup', null)
 );
 
 export default (state = new Map(), action) => {
@@ -116,10 +117,10 @@ export default (state = new Map(), action) => {
     return popModalPage(state, action);
   case 'CLEAR_MODAL_STACK':
     return clearModalStack(state, action);
-  case 'SET_DISPLAY_SYNC_CONFIRMATION_MODAL':
-    return setDisplayingSyncConfirmationModal(state, action);
-  case 'SET_DISPLAYING_TAGS_EDITOR_MODAL':
-    return setDisplayingTagsEditorModal(state, action);
+  case 'ACTIVATE_POPUP':
+    return activatePopup(state, action);
+  case 'CLOSE_POPUP':
+    return closePopup(state, action);
   default:
     return state;
   }

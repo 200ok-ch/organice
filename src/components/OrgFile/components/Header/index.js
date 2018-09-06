@@ -179,7 +179,7 @@ class Header extends PureComponent {
   }
 
   handleShowTagsModal() {
-    this.props.base.setDisplayingTagsEditorModal(true);
+    this.props.base.activatePopup('tags-editor');
   }
 
   handleFocus() {

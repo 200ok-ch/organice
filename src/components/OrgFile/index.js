@@ -50,8 +50,7 @@ class OrgFile extends PureComponent {
       'handleUndoHotKey',
       'handleContainerRef',
       'handleCapture',
-      'handleCaptureClose',
-      'handleTagsEditorModalClose',
+      'handlePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
@@ -171,26 +170,22 @@ class OrgFile extends PureComponent {
     this.props.org.insertCapture(templateId, content, shouldPrepend);
   }
 
-  handleCaptureClose() {
-    this.props.capture.disableCaptureModal();
-  }
-
-  handleTagsEditorModalClose() {
-    this.props.base.setDisplayingTagsEditorModal(false);
+  handlePopupClose() {
+    this.props.base.closePopup();
   }
 
   handleSyncConfirmationPull() {
     this.props.org.sync({ forceAction: 'pull' });
-    this.props.base.setDisplayingSyncConfirmationModal(false);
+    this.props.base.closePopup();
   }
 
   handleSyncConfirmationPush() {
     this.props.org.sync({ forceAction: 'push' });
-    this.props.base.setDisplayingSyncConfirmationModal(false);
+    this.props.base.closePopup();
   }
 
   handleSyncConfirmationCancel() {
-    this.props.base.setDisplayingSyncConfirmationModal(false);
+    this.props.base.closePopup();
   }
 
   handleTagsChange(newTags) {
@@ -209,11 +204,10 @@ class OrgFile extends PureComponent {
       staticFile,
       customKeybindings,
       inEditMode,
-      activeCaptureTemplate,
-      isDisplayingSyncConfirmationModal,
-      lastServerModifiedAt,
-      isDisplayingTagsEditorModal,
       selectedHeader,
+      activePopupType,
+      activePopupData,
+      captureTemplates,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -297,31 +291,31 @@ class OrgFile extends PureComponent {
 
           {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 
-          {!!activeCaptureTemplate && (
-            <CaptureModal template={activeCaptureTemplate}
+          {activePopupType === 'capture' && (
+            <CaptureModal template={captureTemplates.find(template => template.get('id') === activePopupData.get('templateId'))}
                           headers={headers}
                           onCapture={this.handleCapture}
-                          onClose={this.handleCaptureClose} />
+                          onClose={this.handlePopupClose} />
           )}
 
-          {isDisplayingSyncConfirmationModal && (
-            <SyncConfirmationModal lastServerModifiedAt={lastServerModifiedAt}
+          {activePopupType === 'sync-confirmation' && (
+            <SyncConfirmationModal lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
                                    onPull={this.handleSyncConfirmationPull}
                                    onPush={this.handleSyncConfirmationPush}
                                    onCancel={this.handleSyncConfirmationCancel} />
           )}
 
-          {isDisplayingTagsEditorModal && (
+          {activePopupType === 'tags-editor' && !!selectedHeader && (
             <TagsEditorModal header={selectedHeader}
                              allTags={OrderedSet(headers.flatMap(header => header.getIn(['titleLine', 'tags']))).sort()}
-                             onClose={this.handleTagsEditorModalClose}
+                             onClose={this.handlePopupClose}
                              onChange={this.handleTagsChange} />
           )}
 
-      {!shouldDisableActions && (
-        <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons}
-                      staticFile={staticFile} />
-      )}
+          {!shouldDisableActions && (
+            <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons}
+                          staticFile={staticFile} />
+          )}
         </div>
       </HotKeys>
     );
@@ -331,6 +325,7 @@ class OrgFile extends PureComponent {
 const mapStateToProps = (state, props) => {
   const headers = state.org.present.get('headers');
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  const activePopup = state.base.get('activePopup');
 
   return {
     headers,
@@ -340,12 +335,9 @@ const mapStateToProps = (state, props) => {
     selectedHeader: headers && headers.find(header => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     inEditMode: !!state.org.present.get('editMode'),
-    activeCaptureTemplate: state.capture.get('captureTemplates').concat(sampleCaptureTemplates).find(template => (
-      template.get('id') === state.capture.get('activeCaptureTemplateId')
-    )),
-    isDisplayingSyncConfirmationModal: state.base.get('isDisplayingSyncConfirmationModal'),
-    lastServerModifiedAt: state.base.get('lastServerModifiedAt'),
-    isDisplayingTagsEditorModal: state.base.get('isDisplayingTagsEditorModal') && !!state.org.present.get('selectedHeaderId'),
+    activePopupType: !!activePopup ? activePopup.get('type') : null,
+    activePopupData: !!activePopup ? activePopup.get('data') : null,
+    captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
   };
 };
 
