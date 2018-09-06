@@ -18,6 +18,10 @@ export default class TagsEditorModal extends PureComponent {
       'handleAddNewTag',
       'handleTagChange',
     ]);
+
+    this.state = {
+      allTags: props.allTags,
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -49,13 +53,14 @@ export default class TagsEditorModal extends PureComponent {
     this.props.onChange(tags.push(''));
   }
 
-  handleAddExistingTag(newTag) {
+  handleExistingTagClick(newTag) {
     return () => {
       const tags = this.props.header.getIn(['titleLine', 'tags']);
       if (tags.includes(newTag)) {
-        return;
+        this.props.onChange(tags.filter(tag => tag !== newTag));
+      } else {
+        this.props.onChange(tags.push(newTag));
       }
-      this.props.onChange(tags.push(newTag));
     };
   }
 
@@ -63,8 +68,8 @@ export default class TagsEditorModal extends PureComponent {
     const {
       header,
       onClose,
-      allTags,
     } = this.props;
+    const { allTags } = this.state;
 
     const headerTags = header.getIn(['titleLine', 'tags']);
 
@@ -134,7 +139,7 @@ export default class TagsEditorModal extends PureComponent {
             });
 
             return (
-              <div className={className} key={tag} onClick={this.handleAddExistingTag(tag)}>
+              <div className={className} key={tag} onClick={this.handleExistingTagClick(tag)}>
                 {tag}
               </div>
             );

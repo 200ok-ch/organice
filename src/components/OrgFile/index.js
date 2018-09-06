@@ -208,6 +208,7 @@ class OrgFile extends PureComponent {
       activePopupType,
       activePopupData,
       captureTemplates,
+      activePopup,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -312,7 +313,7 @@ class OrgFile extends PureComponent {
                              onChange={this.handleTagsChange} />
           )}
 
-          {!shouldDisableActions && (
+          {!shouldDisableActions && !activePopup && (
             <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons}
                           staticFile={staticFile} />
           )}
@@ -338,6 +339,7 @@ const mapStateToProps = (state, props) => {
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
+    activePopup: state.base.get('activePopup'),
   };
 };
 
