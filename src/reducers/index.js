@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import undoable, { includeAction } from 'redux-linear-undo';
 
 import baseReducer from './base';
-import dropboxReducer from './dropbox';
+import syncBackendReducer from './syncBackend';
 import orgReducer from './org';
 import captureReducer from './capture';
 
@@ -18,7 +18,7 @@ const UNDOABLE_ACTIONS = [
 
 export default combineReducers({
   base: baseReducer,
-  dropbox: dropboxReducer,
+  syncBackend: syncBackendReducer,
   org: undoable(orgReducer, {
     filter: includeAction(UNDOABLE_ACTIONS),
     linearizeHistory: true,

@@ -17,7 +17,7 @@ import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
 
 import * as baseActions from '../../actions/base';
-import * as dropboxActions from '../../actions/dropbox';
+import * as syncBackendActions from '../../actions/syncBackend';
 import * as orgActions from '../../actions/org';
 import * as captureActions from '../../actions/capture';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
@@ -74,7 +74,7 @@ class OrgFile extends PureComponent {
 
       setTimeout(() => document.querySelector('html').scrollTop = 0, 0);
     } else if (!!path && path !== loadedPath) {
-      this.props.dropbox.downloadFile(path);
+      this.props.syncBackend.downloadFile(path);
     }
   }
 
@@ -346,7 +346,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     base: bindActionCreators(baseActions, dispatch),
-    dropbox: bindActionCreators(dropboxActions, dispatch),
+    syncBackend: bindActionCreators(syncBackendActions, dispatch),
     org: bindActionCreators(orgActions, dispatch),
     undo: bindActionCreators(undoActions, dispatch),
     capture: bindActionCreators(captureActions, dispatch),

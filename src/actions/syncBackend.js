@@ -29,7 +29,7 @@ export const setCurrentFileBrowserDirectoryListing = (directoryPath, directoryLi
 
 export const getDirectoryListing = path => {
   return (dispatch, getState) => {
-    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('dropboxAccessToken') });
+    const dropbox = new Dropbox({ accessToken: getState().syncBackend.get('dropboxAccessToken') });
 
     dispatch(setLoadingMessage('Getting listing...'));
     dropbox.filesListFolder({ path }).then(response => {
@@ -51,7 +51,7 @@ export const getDirectoryListing = path => {
 
 export const pushBackup = (path, contents) => {
   return (dispatch, getState) => {
-    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('dropboxAccessToken') });
+    const dropbox = new Dropbox({ accessToken: getState().syncBackend.get('dropboxAccessToken') });
 
     dropbox.filesUpload({
       path: `${path}.org-web-bak`,
@@ -66,7 +66,7 @@ export const pushBackup = (path, contents) => {
 
 export const downloadFile = path => {
   return (dispatch, getState) => {
-    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('dropboxAccessToken') });
+    const dropbox = new Dropbox({ accessToken: getState().syncBackend.get('dropboxAccessToken') });
 
     dispatch(setLoadingMessage('Downloading file...'));
 

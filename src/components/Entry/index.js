@@ -27,7 +27,7 @@ import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
 
-import * as dropboxActions from '../../actions/dropbox';
+import * as syncBackendActions from '../../actions/syncBackend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
 
@@ -50,7 +50,7 @@ class Entry extends PureComponent {
 
     const dropboxAccessToken = parseQueryString(window.location.hash).access_token;
     if (dropboxAccessToken) {
-      this.props.dropbox.authenticate(dropboxAccessToken);
+      this.props.syncBackend.authenticate(dropboxAccessToken);
       window.location.hash = '';
     }
 
@@ -167,7 +167,7 @@ class Entry extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
-    isAuthenticated: !!state.dropbox.get('dropboxAccessToken'),
+    isAuthenticated: !!state.syncBackend.get('dropboxAccessToken'),
     fontSize: state.base.get('fontSize'),
     lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
@@ -176,7 +176,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    dropbox: bindActionCreators(dropboxActions, dispatch),
+    syncBackend: bindActionCreators(syncBackendActions, dispatch),
     org: bindActionCreators(orgActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),
   };

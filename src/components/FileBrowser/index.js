@@ -8,18 +8,18 @@ import './FileBrowser.css';
 
 import classNames from 'classnames';
 
-import * as dropboxActions from '../../actions/dropbox';
+import * as syncBackendActions from '../../actions/syncBackend';
 
 class FileBrowser extends PureComponent {
   componentDidMount() {
-    this.props.dropbox.getDirectoryListing(this.props.path);
+    this.props.syncBackend.getDirectoryListing(this.props.path);
   }
 
   componentDidUpdate(prevProps) {
     const { path } = this.props;
 
     if (prevProps.path !== path) {
-      this.props.dropbox.getDirectoryListing(path);
+      this.props.syncBackend.getDirectoryListing(path);
     }
   }
 
@@ -92,13 +92,13 @@ class FileBrowser extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    currentFileBrowserDirectoryListing: state.dropbox.get('currentFileBrowserDirectoryListing'),
+    currentFileBrowserDirectoryListing: state.syncBackend.get('currentFileBrowserDirectoryListing'),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    dropbox: bindActionCreators(dropboxActions, dispatch),
+    syncBackend: bindActionCreators(syncBackendActions, dispatch),
   };
 };
 

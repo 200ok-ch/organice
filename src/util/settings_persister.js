@@ -85,7 +85,7 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
-    category: 'dropbox',
+    category: 'syncBackend',
     name: 'dropboxAccessToken',
     type: 'nullable',
     shouldStoreInConfig: false,
@@ -158,7 +158,7 @@ export const readInitialState = () => {
   }
 
   let initialState = {
-    dropbox: Map(),
+    syncBackend: Map(),
     org: {
       past: [],
       present: Map(),
@@ -211,7 +211,7 @@ export const readInitialState = () => {
 };
 
 export const loadSettingsFromConfigFile = store => {
-  const dropboxAccessToken = store.getState().dropbox.get('dropboxAccessToken');
+  const dropboxAccessToken = store.getState().syncBackend.get('dropboxAccessToken');
   if (!dropboxAccessToken) {
     return;
   }
@@ -245,7 +245,7 @@ export const subscribeToChanges = store => {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {
-          pushFileToDropbox(state.dropbox.get('dropboxAccessToken'),
+          pushFileToDropbox(state.syncBackend.get('dropboxAccessToken'),
                             '/.org-web-config.json',
                             settingsFileContents);
         }

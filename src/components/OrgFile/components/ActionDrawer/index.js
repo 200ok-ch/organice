@@ -10,7 +10,6 @@ import _ from 'lodash';
 import { List } from 'immutable';
 
 import * as orgActions from '../../../../actions/org';
-import * as dropboxActions from '../../../../actions/dropbox';
 import * as captureActions from '../../../../actions/capture';
 import * as baseActions from '../../../../actions/base';
 
@@ -316,7 +315,6 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     org: bindActionCreators(orgActions, dispatch),
-    dropbox: bindActionCreators(dropboxActions, dispatch),
     capture: bindActionCreators(captureActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),
   };

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { withRouter } from 'react-router-dom';
 
-import * as dropboxActions from '../../actions/dropbox';
+import * as syncBackendActions from '../../actions/syncBackend';
 import * as baseActions from '../../actions/base';
 
 import './Settings.css';
@@ -33,7 +33,7 @@ class Settings extends PureComponent {
 
   handleSignOutClick() {
     if (window.confirm('Are you sure you want to sign out?')) {
-      this.props.dropbox.signOut();
+      this.props.syncBackend.signOut();
     }
   }
 
@@ -59,7 +59,9 @@ class Settings extends PureComponent {
     this.props.base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
   }
 
+  // TODO: update the name of this method.
   handleShouldStoreSettingsInDropbox() {
+    // TODO: update this variable name.
     const { shouldStoreSettingsInDropbox } = this.props;
 
     this.props.base.setShouldStoreSettingsInDropbox(!shouldStoreSettingsInDropbox);
@@ -156,6 +158,7 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    // TODO: update the name of this.
     shouldStoreSettingsInDropbox: state.base.get('shouldStoreSettingsInDropbox'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
@@ -163,7 +166,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    dropbox: bindActionCreators(dropboxActions, dispatch),
+    syncBackend: bindActionCreators(syncBackendActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),
   };
 };

@@ -37,7 +37,7 @@ export const sync = ({ forceAction = null } = {}) => (
     dispatch(setLoadingMessage('Syncing...'));
     dispatch(setIsLoading(true));
 
-    const dropbox = new Dropbox({ accessToken: getState().dropbox.get('dropboxAccessToken') });
+    const dropbox = new Dropbox({ accessToken: getState().syncBackend.get('dropboxAccessToken') });
     const path = getState().org.present.get('path');
     dropbox.filesDownload({ path }).then(response => {
       const isDirty = getState().org.present.get('isDirty');
