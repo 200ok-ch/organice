@@ -768,8 +768,8 @@ const advanceCheckboxState = (state, action) => {
   return state;
 };
 
-const setLastPulledAt = (state, action) => (
-  state.set('lastPulledAt', action.lastPulledAt)
+const setLastSyncAt = (state, action) => (
+  state.set('lastSyncAt', action.lastSyncAt)
 );
 
 const setHeaderTags = (state, action) => {
@@ -888,8 +888,8 @@ export default (state = new Map(), action) => {
     return insertCapture(state, action);
   case 'ADVANCE_CHECKBOX_STATE':
     return advanceCheckboxState(state, action);
-  case 'SET_LAST_PULLED_AT':
-    return setLastPulledAt(state, action);
+  case 'SET_LAST_SYNC_AT':
+    return setLastSyncAt(state, action);
   case 'SET_HEADER_TAGS':
     return setHeaderTags(state, action);
   case 'REORDER_TAGS':

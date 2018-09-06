@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS } from 'immutable';
 
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
-import { displayFile, applyOpennessState, setDirty, setLastPulledAt } from './org';
+import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
 
 import moment from 'moment';
 
@@ -78,7 +78,7 @@ export const downloadFile = path => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, reader.result));
         dispatch(setDirty(false));
-        dispatch(setLastPulledAt(moment()));
+        dispatch(setLastSyncAt(moment()));
       });
       reader.readAsText(response.fileBlob);
     });

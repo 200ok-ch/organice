@@ -18,8 +18,8 @@ export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE', path, contents,
 });
 
-export const setLastPulledAt = lastPulledAt => ({
-  type: 'SET_LAST_PULLED_AT', lastPulledAt,
+export const setLastSyncAt = lastSyncAt => ({
+  type: 'SET_LAST_SYNC_AT', lastSyncAt,
 });
 
 export const stopDisplayingFile = () => {
@@ -28,7 +28,7 @@ export const stopDisplayingFile = () => {
     dispatch({ type: ActionTypes.CLEAR_HISTORY });
     dispatch(unfocusHeader());
     dispatch(closePopup());
-    dispatch(setLastPulledAt(null));
+    dispatch(setLastSyncAt(null));
   };
 };
 
@@ -42,9 +42,9 @@ export const sync = ({ forceAction = null } = {}) => (
     dropbox.filesDownload({ path }).then(response => {
       const isDirty = getState().org.present.get('isDirty');
       const lastServerModifiedAt = moment(response.server_modified);
-      const lastPulledAt = getState().org.present.get('lastPulledAt');
+      const lastSyncAt = getState().org.present.get('lastSyncAt');
 
-      if (lastPulledAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
+      if (lastSyncAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
         if (isDirty) {
           pushOrgFile(
             getState().org.present.get('headers'),
@@ -74,7 +74,7 @@ export const sync = ({ forceAction = null } = {}) => (
             dispatch(displayFile(path, reader.result));
             dispatch(applyOpennessState());
             dispatch(setDirty(false));
-            dispatch(setLastPulledAt(moment()));
+            dispatch(setLastSyncAt(moment()));
             dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
             dispatch(setIsLoading(false));
           });
