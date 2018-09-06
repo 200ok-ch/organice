@@ -68,7 +68,7 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'shouldStoreSettingsInDropbox',
+    name: 'shouldStoreSettingsInSyncBackend',
     type: 'boolean',
     shouldStoreInConfig: true,
   },
@@ -241,7 +241,7 @@ export const subscribeToChanges = store => {
         localStorage.setItem(name, value)
       ));
 
-      if (state.base.get('shouldStoreSettingsInDropbox')) {
+      if (state.base.get('shouldStoreSettingsInSyncBackend')) {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {

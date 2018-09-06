@@ -25,7 +25,7 @@ class Settings extends PureComponent {
       'handleFontSizeChange',
       'handleBulletStyleChange',
       'handleShouldTapTodoToAdvanceChange',
-      'handleShouldStoreSettingsInDropbox',
+      'handleShouldStoreSettingsInSyncBackend',
       'handleChangelogClick',
       'handleHelpClick',
     ]);
@@ -60,11 +60,11 @@ class Settings extends PureComponent {
   }
 
   // TODO: update the name of this method.
-  handleShouldStoreSettingsInDropbox() {
+  handleShouldStoreSettingsInSyncBackend() {
     // TODO: update this variable name.
-    const { shouldStoreSettingsInDropbox } = this.props;
+    const { shouldStoreSettingsInSyncBackend } = this.props;
 
-    this.props.base.setShouldStoreSettingsInDropbox(!shouldStoreSettingsInDropbox);
+    this.props.base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
   }
 
   handleChangelogClick() {
@@ -80,7 +80,7 @@ class Settings extends PureComponent {
       fontSize,
       bulletStyle,
       shouldTapTodoToAdvance,
-      shouldStoreSettingsInDropbox,
+      shouldStoreSettingsInSyncBackend,
       hasUnseenChangelog,
     } = this.props;
 
@@ -108,13 +108,13 @@ class Settings extends PureComponent {
 
         <div className="setting-container">
           <div className="setting-label">
-            Store settings in Dropbox
+            Store settings in sync backend
             <div className="setting-label__description">
-              Store settings and keyboard shortcuts in a .org-web-config.json file in your Dropbox to sync betweeen multiple devices.
+              Store settings and keyboard shortcuts in a .org-web-config.json file in your sync backend to sync betweeen multiple devices.
             </div>
           </div>
-          <Switch isEnabled={shouldStoreSettingsInDropbox}
-                  onToggle={this.handleShouldStoreSettingsInDropbox} />
+          <Switch isEnabled={shouldStoreSettingsInSyncBackend}
+                  onToggle={this.handleShouldStoreSettingsInSyncBackend} />
         </div>
 
         <div className="settings-buttons-container">
@@ -159,7 +159,7 @@ const mapStateToProps = (state, props) => {
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     // TODO: update the name of this.
-    shouldStoreSettingsInDropbox: state.base.get('shouldStoreSettingsInDropbox'),
+    shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };

@@ -64,11 +64,11 @@ export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE', newShouldTapTodoToAdvance,
 });
 
-export const setShouldStoreSettingsInDropbox = newShouldStoreSettingsInDropbox => {
+export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
-    dispatch({ type: 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX', newShouldStoreSettingsInDropbox });
+    dispatch({ type: 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND', newShouldStoreSettingsInSyncBackend });
 
-    if (!newShouldStoreSettingsInDropbox) {
+    if (!newShouldStoreSettingsInSyncBackend) {
       const dropbox = new Dropbox({ accessToken: getState().syncBackend.get('dropboxAccessToken') });
       dropbox.filesDelete({
         path: '/.org-web-config.json',

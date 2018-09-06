@@ -2312,7 +2312,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                       }
                                     >
                                       <span>
-                                        A header with tags                                              
+                                        A header with tags
                                       </span>
                                     </AttributedString>
                                   </span>
@@ -2672,7 +2672,7 @@ exports[`Can advance todo state for selected header in an org file 1`] = `
                                       }
                                     >
                                       <span>
-                                        A header with 
+                                        A header with
                                         <a
                                           href="https://google.com"
                                           key="23"
@@ -5354,7 +5354,7 @@ exports[`Can select a header in an org file 1`] = `
                                       }
                                     >
                                       <span>
-                                        A header with tags                                              
+                                        A header with tags
                                       </span>
                                     </AttributedString>
                                   </span>
@@ -5714,7 +5714,7 @@ exports[`Can select a header in an org file 1`] = `
                                       }
                                     >
                                       <span>
-                                        A header with 
+                                        A header with
                                         <a
                                           href="https://google.com"
                                           key="15"

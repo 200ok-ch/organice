@@ -22,8 +22,8 @@ const setShouldTapTodoToAdvance = (state, action) => (
   state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance)
 );
 
-const setShouldStoreSettingsInDropbox = (state, action) => (
-  state.set('shouldStoreSettingsInDropbox', action.newShouldStoreSettingsInDropbox)
+const setShouldStoreSettingsInSyncBackend = (state, action) => (
+  state.set('shouldStoreSettingsInSyncBackend', action.newShouldStoreSettingsInSyncBackend)
 );
 
 const setHasUnseenChangelog = (state, action) => (
@@ -103,8 +103,8 @@ export default (state = new Map(), action) => {
     return setBulletStyle(state, action);
   case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
     return setShouldTapTodoToAdvance(state, action);
-  case 'SET_SHOULD_STORE_SETTINGS_IN_DROPBOX':
-    return setShouldStoreSettingsInDropbox(state, action);
+  case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
+    return setShouldStoreSettingsInSyncBackend(state, action);
   case 'SET_HAS_UNSEEN_CHANGELOG':
     return setHasUnseenChangelog(state, action);
   case 'SET_LAST_SEEN_CHANGELOG_HEADER':
