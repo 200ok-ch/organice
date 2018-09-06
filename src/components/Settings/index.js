@@ -59,9 +59,7 @@ class Settings extends PureComponent {
     this.props.base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
   }
 
-  // TODO: update the name of this method.
   handleShouldStoreSettingsInSyncBackend() {
-    // TODO: update this variable name.
     const { shouldStoreSettingsInSyncBackend } = this.props;
 
     this.props.base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
@@ -158,7 +156,6 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
-    // TODO: update the name of this.
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
