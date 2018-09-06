@@ -32,6 +32,7 @@ export default class ActionButton extends PureComponent {
       additionalClassName,
       style,
       tooltip,
+      shouldSpinSubIcon,
     } = this.props;
 
     const className = classNames('btn', 'btn--circle', 'action-drawer__btn', additionalClassName || '', {
@@ -45,6 +46,7 @@ export default class ActionButton extends PureComponent {
 
     const subIconClassName = classNames('fas', 'fa-xs', `fa-${subIconName}`, 'action-drawer__btn__sub-icon', {
       'action-drawer__btn__sub-icon--rotated': shouldRotateSubIcon,
+      'fa-spin': shouldSpinSubIcon,
     });
 
     return (

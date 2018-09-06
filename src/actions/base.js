@@ -12,6 +12,10 @@ export const hideLoadingMessage = () => ({
   type: 'HIDE_LOADING_MESSAGE',
 });
 
+export const setIsLoading = isLoading => ({
+  type: 'SET_IS_LOADING', isLoading,
+});
+
 export const setDisappearingLoadingMessage = (loadingMessage, delay) => (
   dispatch => {
     dispatch(setLoadingMessage(loadingMessage));

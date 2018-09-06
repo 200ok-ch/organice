@@ -272,7 +272,7 @@ class ActionDrawer extends PureComponent {
   }
 
   render() {
-    const { inEditMode, shouldDisableSyncButtons } = this.props;
+    const { inEditMode, shouldDisableSyncButtons, isLoading } = this.props;
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
 
     return (
@@ -284,6 +284,7 @@ class ActionDrawer extends PureComponent {
           <Fragment>
             <ActionButton iconName="cloud"
                           subIconName="sync-alt"
+                          shouldSpinSubIcon={isLoading}
                           isDisabled={shouldDisableSyncButtons}
                           onClick={this.handleSync}
                           style={{opacity: (isDisplayingArrowButtons || isDisplayingCaptureButtons) ? 0 : 1}}
@@ -308,6 +309,7 @@ const mapStateToProps = (state, props) => {
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     captureTemplates: state.capture.get('captureTemplates', new List()),
     path: state.org.present.get('path'),
+    isLoading: state.base.get('isLoading'),
   };
 };
 

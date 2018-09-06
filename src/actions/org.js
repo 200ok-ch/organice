@@ -2,6 +2,7 @@ import { ActionTypes } from 'redux-linear-undo';
 import {
   setLoadingMessage,
   hideLoadingMessage,
+  setIsLoading,
   setDisappearingLoadingMessage,
   activatePopup,
   closePopup,
@@ -34,6 +35,7 @@ export const stopDisplayingFile = () => {
 export const sync = ({ forceAction = null } = {}) => (
   (dispatch, getState) => {
     dispatch(setLoadingMessage('Syncing...'));
+    dispatch(setIsLoading(true));
 
     const dropbox = new Dropbox({ accessToken: getState().dropbox.get('accessToken') });
     const path = getState().org.present.get('path');
@@ -50,17 +52,21 @@ export const sync = ({ forceAction = null } = {}) => (
             path, dropbox,
           ).then(() => {
             dispatch(setDisappearingLoadingMessage('Changes pushed', 2000));
+            dispatch(setIsLoading(false));
             dispatch(setDirty(false));
           }).catch(error => {
             alert(`There was an error pushing the file: ${error.toString()}`);
             dispatch(hideLoadingMessage());
+            dispatch(setIsLoading(false));
           });
         } else {
           dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+          dispatch(setIsLoading(false));
         }
       } else {
         if (isDirty && forceAction !== 'pull') {
           dispatch(hideLoadingMessage());
+          dispatch(setIsLoading(false));
           dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
         } else {
           const reader = new FileReader();
@@ -70,6 +76,7 @@ export const sync = ({ forceAction = null } = {}) => (
             dispatch(setDirty(false));
             dispatch(setLastPulledAt(moment()));
             dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+            dispatch(setIsLoading(false));
           });
           reader.readAsText(response.fileBlob);
         }

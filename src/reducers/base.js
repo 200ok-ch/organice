@@ -87,6 +87,10 @@ const closePopup = state => (
   state.set('activePopup', null)
 );
 
+const setIsLoading = (state, action) => (
+  state.set('isLoading', action.isLoading)
+);
+
 export default (state = new Map(), action) => {
   switch (action.type) {
   case 'SET_LOADING_MESSAGE':
@@ -121,6 +125,8 @@ export default (state = new Map(), action) => {
     return activatePopup(state, action);
   case 'CLOSE_POPUP':
     return closePopup(state, action);
+  case 'SET_IS_LOADING':
+    return setIsLoading(state, action);
   default:
     return state;
   }
