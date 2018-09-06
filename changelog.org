@@ -1,3 +1,7 @@
+* September 5th, 2018
+** Native tag support and editor
+*** A new button in the header action drawer brings up the tag editor
+*** From here you can modify, add, and reorder tags
 * September 3rd, 2018
 ** Huge UI overhaul!
 *** Removed the action drawer, replaced with just three buttons: Sync, Movement, and Capture Templates
