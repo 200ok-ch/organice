@@ -5,8 +5,6 @@ import './Landing.css';
 
 export default class Landing extends PureComponent {
   render() {
-    const { onSignInClick } = this.props;
-
     return (
       <div className="landing-container">
         <h1 className="landing-app-name">org-web</h1>
@@ -17,7 +15,9 @@ export default class Landing extends PureComponent {
         <Link to="/sample">
           <div className="btn landing-button view-sample-button">View sample</div>
         </Link>
-        <div className="btn landing-button" onClick={onSignInClick}>Sign in</div>
+        <Link to="/sign_in">
+          <div className="btn landing-button">Sign in</div>
+        </Link>
       </div>
     );
   }

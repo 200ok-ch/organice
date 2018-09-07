@@ -27,6 +27,7 @@ import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
+import SyncServiceSignIn from '../SyncServiceSignIn';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
@@ -40,7 +41,6 @@ class Entry extends PureComponent {
       'handleSignIn',
       'renderChangelogFile',
       'renderSampleFile',
-      'renderLanding',
       'renderFileBrowser',
       'renderFile',
     ]);
@@ -86,12 +86,6 @@ class Entry extends PureComponent {
                shouldDisableActionDrawer={false}
                shouldDisableSyncButtons={true}
                parsingErrorMessage={"The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
-    );
-  }
-
-  renderLanding() {
-    return (
-      <Landing onSignInClick={this.handleSignIn} />
     );
   }
 
@@ -155,7 +149,8 @@ class Entry extends PureComponent {
           ) : (
             <Switch>
               <Route path="/sample" exact={true} render={this.renderSampleFile} />
-              <Route path="/" exact={true} render={this.renderLanding} />
+              <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
+              <Route path="/" exact={true} component={Landing} />
               <Redirect to="/" />
             </Switch>
           )
