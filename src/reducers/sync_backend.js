@@ -13,7 +13,17 @@ const signOut = (state, action) => (
 );
 
 const setCurrentFileBrowserDirectoryListing = (state, action) => (
-  state.set('currentFileBrowserDirectoryListing', action.directoryListing)
+  state.set('currentFileBrowserDirectoryListing', Map({
+    listing: action.directoryListing,
+    hasMore: action.hasMore,
+    cursor: action.cursor,
+  }))
+);
+
+const setIsLoadingMoreDirectoryListing = (state, action) => (
+  state.update('currentFileBrowserDirectoryListing', currentFileBrowserDirectoryListing => (
+    !!currentFileBrowserDirectoryListing ? currentFileBrowserDirectoryListing : Map()
+  )).setIn(['currentFileBrowserDirectoryListing', 'isLoadingMore'], action.isLoadingMore)
 );
 
 export default (state = new Map(), action) => {
@@ -24,6 +34,8 @@ export default (state = new Map(), action) => {
     return signOut(state, action);
   case 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING':
     return setCurrentFileBrowserDirectoryListing(state, action);
+  case 'SET_IS_LOADING_MORE_DIRECTORY_LISTING':
+    return setIsLoadingMoreDirectoryListing(state, action);
   default:
     return state;
   }

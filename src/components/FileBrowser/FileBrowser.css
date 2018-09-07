@@ -26,6 +26,22 @@
     border-bottom: 1px solid #D8D8D8;
 }
 
+.file-browser__file-list__element--load-more-row:last-of-type {
+    border-bottom: none;
+    text-align: center;
+    color: #5E348C;
+    font-weight: bold;
+}
+
+.file-browser__file-list__loading-more-container {
+    display: flex;
+    justify-content: center;
+
+    color: #5E348C;
+
+    margin-top: 10px;
+}
+
 .file-browser__file-list__icon--not-org {
     color: lightgray;
 }

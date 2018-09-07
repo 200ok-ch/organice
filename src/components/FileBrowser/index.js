@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import './FileBrowser.css';
 
+import _ from 'lodash';
 import classNames from 'classnames';
 
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -13,6 +14,8 @@ import * as syncBackendActions from '../../actions/sync_backend';
 class FileBrowser extends PureComponent {
   componentDidMount() {
     this.props.syncBackend.getDirectoryListing(this.props.path);
+
+    _.bindAll(this, ['handleLoadMoreClick']);
   }
 
   componentDidUpdate(prevProps) {
@@ -23,6 +26,10 @@ class FileBrowser extends PureComponent {
     }
   }
 
+  handleLoadMoreClick() {
+    this.props.syncBackend.loadMoreDirectoryListing();
+  }
+
   getParentDirectoryPath() {
     const pathParts = this.props.path.split('/');
     return pathParts.slice(0, pathParts.length - 1).join('/');
@@ -31,7 +38,9 @@ class FileBrowser extends PureComponent {
   render() {
     const {
       path,
-      currentFileBrowserDirectoryListing,
+      listing,
+      hasMore,
+      isLoadingMore,
     } = this.props;
 
     const isTopLevelDirectory = path === '';
@@ -51,7 +60,7 @@ class FileBrowser extends PureComponent {
             </Link>
           )}
 
-          {(currentFileBrowserDirectoryListing || []).map(file => {
+          {(listing || []).map(file => {
             const isDirectory = file.get('isDirectory');
             const isBackupFile = file.get('name').endsWith('.org-web-bak');
             const isOrgFile = file.get('name').endsWith('.org');
@@ -84,6 +93,19 @@ class FileBrowser extends PureComponent {
               );
             }
           })}
+
+          {hasMore && (
+            isLoadingMore ? (
+              <li className="file-browser__file-list__loading-more-container">
+                <i className="fas fa-spinner fa-lg fa-spin" />
+              </li>
+            ) : (
+              <li className="file-browser__file-list__element file-browser__file-list__element--load-more-row"
+                  onClick={this.handleLoadMoreClick}>
+                Load more...
+              </li>
+            )
+          )}
         </ul>
       </div>
     );
@@ -91,8 +113,11 @@ class FileBrowser extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
+  const currentFileBrowserDirectoryListing = state.syncBackend.get('currentFileBrowserDirectoryListing');
   return {
-    currentFileBrowserDirectoryListing: state.syncBackend.get('currentFileBrowserDirectoryListing'),
+    listing: !!currentFileBrowserDirectoryListing ? currentFileBrowserDirectoryListing.get('listing') : null,
+    hasMore: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('hasMore'),
+    isLoadingMore: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('isLoadingMore'),
   };
 };
 

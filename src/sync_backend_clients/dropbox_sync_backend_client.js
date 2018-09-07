@@ -5,17 +5,37 @@ import { fromJS } from 'immutable';
 export default accessToken => {
   const dropboxClient = new Dropbox({ accessToken });
 
+  const transformDirectoryListing = listing => (
+    fromJS(listing.map(entry => ({
+      id: entry.id,
+      name: entry.name,
+      isDirectory: entry['.tag'] === 'folder',
+      path: entry.path_display,
+    })))
+  );
+
   const getDirectoryListing = path => (
     new Promise((resolve, reject) => {
       dropboxClient.filesListFolder({ path }).then(response => (
-        resolve(fromJS(response.entries.map(entry => ({
-          id: entry.id,
-          name: entry.name,
-          isDirectory: entry['.tag'] === 'folder',
-          path: entry.path_display,
-        }))))
+        resolve({
+          listing: transformDirectoryListing(response.entries),
+          hasMore: response.has_more,
+          cursor: response.cursor,
+        })
       )).catch(reject);
     })
+  );
+
+  const getMoreDirectoryListing = cursor => (
+    new Promise((resolve, reject) => (
+      dropboxClient.filesListFolderContinue({ cursor }).then(response => (
+        resolve({
+          listing: transformDirectoryListing(response.entries),
+          hasMore: response.has_more,
+          cursor: response.cursor,
+        })
+      ))
+    ))
   );
 
   const uploadFile = (path, contents) => (
@@ -59,6 +79,7 @@ export default accessToken => {
 
   return {
     getDirectoryListing,
+    getMoreDirectoryListing,
     uploadFile,
     getFileContentsAndMetadata,
     getFileContents,

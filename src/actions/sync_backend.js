@@ -15,28 +15,46 @@ export const signOut = () => (
   }
 );
 
-export const setCurrentFileBrowserDirectoryListing = (directoryPath, directoryListing) => {
+export const setCurrentFileBrowserDirectoryListing = (directoryListing, hasMore, cursor) => {
   return {
     type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
-    directoryPath,
-    directoryListing
+    directoryListing, hasMore, cursor,
   };
 };
 
-export const getDirectoryListing = path => {
-  return (dispatch, getState) => {
+export const setIsLoadingMoreDirectoryListing = isLoadingMore => ({
+  type: 'SET_IS_LOADING_MORE_DIRECTORY_LISTING', isLoadingMore,
+});
+
+export const getDirectoryListing = path => (
+  (dispatch, getState) => {
     dispatch(setLoadingMessage('Getting listing...'));
 
-    getState().syncBackend.get('client').getDirectoryListing(path).then(listing => {
-      dispatch(setCurrentFileBrowserDirectoryListing(path, listing));
+    const client = getState().syncBackend.get('client');
+    client.getDirectoryListing(path).then(({ listing, hasMore, cursor }) => {
+      dispatch(setCurrentFileBrowserDirectoryListing(listing, hasMore, cursor));
       dispatch(hideLoadingMessage());
     }).catch(error => {
       alert('There was an error retrieving files!');
       console.error(error);
       dispatch(hideLoadingMessage());
     });
-  };
-};
+  }
+);
+
+export const loadMoreDirectoryListing = () => (
+  (dispatch, getState) => {
+    dispatch(setIsLoadingMoreDirectoryListing(true));
+
+    const client = getState().syncBackend.get('client');
+    const currentFileBrowserDirectoryListing = getState().syncBackend.get('currentFileBrowserDirectoryListing');
+    client.getMoreDirectoryListing(currentFileBrowserDirectoryListing.get('cursor')).then(({ listing, hasMore, cursor }) => {
+      const extendedListing = currentFileBrowserDirectoryListing.get('listing').concat(listing);
+      dispatch(setCurrentFileBrowserDirectoryListing(extendedListing, hasMore, cursor));
+      dispatch(setIsLoadingMoreDirectoryListing(false));
+    });
+  }
+);
 
 export const pushBackup = (path, contents) => {
   return (dispatch, getState) => (
