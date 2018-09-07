@@ -8,7 +8,7 @@ import './FileBrowser.css';
 
 import classNames from 'classnames';
 
-import * as syncBackendActions from '../../actions/syncBackend';
+import * as syncBackendActions from '../../actions/sync_backend';
 
 class FileBrowser extends PureComponent {
   componentDidMount() {

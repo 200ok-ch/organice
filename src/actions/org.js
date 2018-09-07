@@ -7,11 +7,10 @@ import {
   activatePopup,
   closePopup,
 } from './base';
-import { pushOrgFile } from '../lib/dropbox';
+import  exportOrg from '../lib/export_org';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
-import { Dropbox } from 'dropbox';
 import moment from 'moment';
 
 export const displayFile = (path, contents) => ({
@@ -37,20 +36,18 @@ export const sync = ({ forceAction = null } = {}) => (
     dispatch(setLoadingMessage('Syncing...'));
     dispatch(setIsLoading(true));
 
-    const dropbox = new Dropbox({ accessToken: getState().syncBackend.get('dropboxAccessToken') });
+    const client = getState().syncBackend.get('client');
     const path = getState().org.present.get('path');
-    dropbox.filesDownload({ path }).then(response => {
+    client.getFileContentsAndMetadata(path).then(({ contents, lastModifiedAt }) => {
       const isDirty = getState().org.present.get('isDirty');
-      const lastServerModifiedAt = moment(response.server_modified);
+      const lastServerModifiedAt = moment(lastModifiedAt);
       const lastSyncAt = getState().org.present.get('lastSyncAt');
 
       if (lastSyncAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
         if (isDirty) {
-          pushOrgFile(
-            getState().org.present.get('headers'),
-            getState().org.present.get('todoKeywordSets'),
-            path, dropbox,
-          ).then(() => {
+          client.uploadFile(path, exportOrg(
+            getState().org.present.get('headers'), getState().org.present.get('todoKeywordSets')
+          )).then(() => {
             dispatch(setDisappearingLoadingMessage('Changes pushed', 2000));
             dispatch(setIsLoading(false));
             dispatch(setDirty(false));
@@ -70,16 +67,12 @@ export const sync = ({ forceAction = null } = {}) => (
           dispatch(setIsLoading(false));
           dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
         } else {
-          const reader = new FileReader();
-          reader.addEventListener('loadend', () => {
-            dispatch(displayFile(path, reader.result));
-            dispatch(applyOpennessState());
-            dispatch(setDirty(false));
-            dispatch(setLastSyncAt(moment()));
-            dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
-            dispatch(setIsLoading(false));
-          });
-          reader.readAsText(response.fileBlob);
+          dispatch(displayFile(path, contents));
+          dispatch(applyOpennessState());
+          dispatch(setDirty(false));
+          dispatch(setLastSyncAt(moment()));
+          dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+          dispatch(setIsLoading(false));
         }
       }
     });

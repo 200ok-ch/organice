@@ -8,6 +8,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import './Entry.css';
 
+// TODO: kill this
 import { Dropbox } from 'dropbox';
 
 import { List } from 'immutable';
@@ -27,7 +28,7 @@ import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
 
-import * as syncBackendActions from '../../actions/syncBackend';
+import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
 

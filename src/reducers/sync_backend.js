@@ -1,7 +1,11 @@
+import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
+
 import { Map } from 'immutable';
 
 const authenticate = (state, action) => (
-  state.set('dropboxAccessToken', action.dropboxAccessToken)
+  state
+    .set('dropboxAccessToken', action.dropboxAccessToken)
+    .set('client', createDropboxSyncBackendClient(action.dropboxAccessToken))
 );
 
 const signOut = (state, action) => (

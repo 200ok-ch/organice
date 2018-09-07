@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { withRouter } from 'react-router-dom';
 
-import * as syncBackendActions from '../../actions/syncBackend';
+import * as syncBackendActions from '../../actions/sync_backend';
 import * as baseActions from '../../actions/base';
 
 import './Settings.css';

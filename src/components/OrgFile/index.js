@@ -17,7 +17,7 @@ import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
 
 import * as baseActions from '../../actions/base';
-import * as syncBackendActions from '../../actions/syncBackend';
+import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as captureActions from '../../actions/capture';
 import { ActionCreators as undoActions } from 'redux-linear-undo';

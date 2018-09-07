@@ -1,9 +1,9 @@
-import { Dropbox } from 'dropbox';
-
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
+import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
+
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
 
@@ -18,34 +18,11 @@ export const isLocalStorageAvailable = () => {
   }
 };
 
-const pushFileToDropbox = _.debounce((accessToken, path, contents) => {
-  const dropbox = new Dropbox({ accessToken });
-  dropbox.filesUpload({
-    path, contents,
-    mode: {
-      '.tag': 'overwrite',
-    },
-    autorename: true,
-  }).catch(error => {
-    alert(`There was an error trying to push settings to your Dropbox account: ${error}`);
-  });
-}, 1000, {maxWait: 3000});
-
-const pullFileFromDropbox = (accessToken, path) => {
-  const dropbox = new Dropbox({ accessToken });
-
-  return new Promise((resolve, reject) => {
-    dropbox.filesDownload({ path }).then(response => {
-      const reader = new FileReader();
-      reader.addEventListener('loadend', () => {
-        resolve(reader.result);
-      });
-      reader.readAsText(response.fileBlob);
-    }).catch(error => {
-      reject(error);
-    });
-  });
-};
+const debouncedPushFileToSyncBackend = _.debounce((syncBackendClient, path, contents) => (
+  syncBackendClient.uploadFile(path, contents).catch(error => (
+    alert(`There was an error trying to push settings to your sync backend: ${error}`)
+  ))
+), 1000, { maxWait: 3000 });
 
 export const persistableFields = [
   {
@@ -192,6 +169,11 @@ export const readInitialState = () => {
     }
   });
 
+  const dropboxAccessToken = initialState.syncBackend.get('dropboxAccessToken');
+  if (!!dropboxAccessToken) {
+    initialState.syncBackend = initialState.syncBackend.set('client', createDropboxSyncBackendClient(dropboxAccessToken));
+  }
+
   // Assign new ids to the capture templates.
   if (initialState.capture.get('captureTemplates')) {
     initialState.capture = initialState.capture.update('captureTemplates', templates => (
@@ -211,12 +193,12 @@ export const readInitialState = () => {
 };
 
 export const loadSettingsFromConfigFile = store => {
-  const dropboxAccessToken = store.getState().syncBackend.get('dropboxAccessToken');
-  if (!dropboxAccessToken) {
+  const syncBackendClient = store.getState().syncBackend.get('client');
+  if (!syncBackendClient) {
     return;
   }
 
-  pullFileFromDropbox(dropboxAccessToken, '/.org-web-config.json').then(configFileContents => {
+  syncBackendClient.getFileContents('/.org-web-config.json').then(configFileContents => {
     try {
       const config = JSON.parse(configFileContents);
       store.dispatch(restoreBaseSettings(config));
@@ -245,9 +227,9 @@ export const subscribeToChanges = store => {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {
-          pushFileToDropbox(state.syncBackend.get('dropboxAccessToken'),
-                            '/.org-web-config.json',
-                            settingsFileContents);
+          debouncedPushFileToSyncBackend(state.syncBackend.get('client'),
+                                         '/.org-web-config.json',
+                                         settingsFileContents);
         }
 
         window.previousSettingsFileContents = settingsFileContents;

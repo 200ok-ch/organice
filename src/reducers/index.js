@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import undoable, { includeAction } from 'redux-linear-undo';
 
 import baseReducer from './base';
-import syncBackendReducer from './syncBackend';
+import syncBackendReducer from './sync_backend';
 import orgReducer from './org';
 import captureReducer from './capture';
 
