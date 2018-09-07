@@ -4,7 +4,7 @@
     padding: 10px;
 
     display: grid;
-    grid-template-columns: 5fr 1fr 5fr;
+    grid-template-columns: 5fr 3fr 5fr;
     align-items: center;
 }
 

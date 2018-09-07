@@ -95,6 +95,15 @@ class HeaderBar extends PureComponent {
     );
   }
 
+  renderSignInBackButton() {
+    return (
+      <Link to={`/`} className="header-bar__back-button">
+        <i className="fas fa-chevron-left" />
+        <span className="header-bar__back-button__directory-path">Home</span>
+      </Link>
+    );
+  }
+
   handleSettingsSubPageBackClick() {
     this.props.base.popModalPage();
   }
@@ -134,6 +143,8 @@ class HeaderBar extends PureComponent {
       return this.renderOrgFileBackButton();
     case 'sample':
       return this.renderSampleFileBackButton();
+    case 'sign_in':
+      return this.renderSignInBackButton();
     default:
       return <div />;
     }
@@ -159,6 +170,8 @@ class HeaderBar extends PureComponent {
     switch (this.getPathRoot()) {
     case 'sample':
       return titleContainerWithText('Sample');
+    case 'sign_in':
+      return titleContainerWithText('Sign in');
     default:
     }
 
@@ -167,7 +180,7 @@ class HeaderBar extends PureComponent {
 
   handleChangelogClick() {
     this.props.base.pushModalPage('changelog');
-  }p
+  }
 
   handleSettingsClick() {
     this.props.base.pushModalPage('settings');
@@ -191,7 +204,6 @@ class HeaderBar extends PureComponent {
   renderActions() {
     const {
       isAuthenticated,
-      onSignInClick,
       hasUnseenChangelog,
       activeModalPage,
       path,
@@ -213,37 +225,36 @@ class HeaderBar extends PureComponent {
         'settings-icon--has-unseen-changelog': hasUnseenChangelog,
       });
 
-      switch (this.getPathRoot()) {
-      default:
-        return (
-          <div className="header-bar__actions">
-            {!isAuthenticated && (
-              <div className="header-bar__actions__item" onClick={onSignInClick} title="Sign in">Sign in</div>
-            )}
+      return (
+        <div className="header-bar__actions">
+          {!isAuthenticated && this.getPathRoot() !== 'sign_in' && (
+            <Link to="/sign_in">
+              <div className="header-bar__actions__item" title="Sign in">Sign in</div>
+            </Link>
+          )}
 
-            {!isAuthenticated && (
-              <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-github header-bar__actions__item" />
-              </a>
-            )}
+        {!isAuthenticated && (
+          <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-github header-bar__actions__item" />
+          </a>
+        )}
 
-            {(isAuthenticated && !activeModalPage && !!path) && (
-              <Fragment>
-                <i className={undoIconClassName}
-                   onClick={this.handleUndoClick}
-                   title="Undo" />
-                <i className="fas fa-question-circle header-bar__actions__item"
-                   onClick={this.handleHelpClick}
-                   title="Help" />
-              </Fragment>
-            )}
+        {(isAuthenticated && !activeModalPage && !!path) && (
+          <Fragment>
+            <i className={undoIconClassName}
+               onClick={this.handleUndoClick}
+               title="Undo" />
+            <i className="fas fa-question-circle header-bar__actions__item"
+               onClick={this.handleHelpClick}
+               title="Help" />
+          </Fragment>
+        )}
 
-            {isAuthenticated && (
-              <i className={settingsIconClassName} onClick={this.handleSettingsClick} title="Settings" />
-            )}
-          </div>
-        );
-      }
+        {isAuthenticated && (
+          <i className={settingsIconClassName} onClick={this.handleSettingsClick} title="Settings" />
+        )}
+        </div>
+      );
     }
   }
 

@@ -1,5 +1,3 @@
-/* global process */
-
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -7,9 +5,6 @@ import { bindActionCreators } from 'redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import './Entry.css';
-
-// TODO: kill this
-import { Dropbox } from 'dropbox';
 
 import { List } from 'immutable';
 import _ from 'lodash';
@@ -38,7 +33,6 @@ class Entry extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleSignIn',
       'renderChangelogFile',
       'renderSampleFile',
       'renderFileBrowser',
@@ -61,12 +55,6 @@ class Entry extends PureComponent {
       this.props.base.setHasUnseenChangelog(true);
     }
     this.props.base.setLastSeenChangelogHeader(firstHeaderTitle);
-  }
-
-  handleSignIn() {
-    const dropbox = new Dropbox({ clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID });
-    const authURL = dropbox.getAuthenticationUrl(window.location.origin + '/');
-    window.location = authURL;
   }
 
   renderChangelogFile() {
@@ -124,7 +112,7 @@ class Entry extends PureComponent {
 
     return (
       <div className={className}>
-        <HeaderBar onSignInClick={this.handleSignIn} />
+        <HeaderBar />
 
         <LoadingIndicator message={loadingMessage} />
 

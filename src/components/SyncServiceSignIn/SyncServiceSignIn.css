@@ -1,0 +1,13 @@
+.sync-service-container {
+    border-bottom: 1px solid lightgray;
+
+    padding: 20px 10px;
+}
+
+.dropbox-logo {
+    width: 80%;
+}
+
+.google-drive-logo {
+    width: 100%;
+}
