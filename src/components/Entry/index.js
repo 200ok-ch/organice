@@ -10,7 +10,6 @@ import { List } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-import parseQueryString from '../../util/parse_query_string';
 import { parseOrg } from '../../lib/parse_org';
 import { changelogFileContents } from '../../lib/static_file_contents';
 
@@ -42,12 +41,6 @@ class Entry extends PureComponent {
 
   componentDidMount() {
     const { lastSeenChangelogHeader, isAuthenticated } = this.props;
-
-    const dropboxAccessToken = parseQueryString(window.location.hash).access_token;
-    if (dropboxAccessToken) {
-      this.props.syncBackend.authenticate(dropboxAccessToken);
-      window.location.hash = '';
-    }
 
     const changelogFile = parseOrg(changelogFileContents);
     const firstHeaderTitle = changelogFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
