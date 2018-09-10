@@ -1,6 +1,6 @@
 import { Dropbox } from 'dropbox';
 
-import { fromJS } from 'immutable';
+import { fromJS, Map } from 'immutable';
 
 export default accessToken => {
   const dropboxClient = new Dropbox({ accessToken });
@@ -20,23 +20,28 @@ export default accessToken => {
         resolve({
           listing: transformDirectoryListing(response.entries),
           hasMore: response.has_more,
-          cursor: response.cursor,
+          additionalSyncBackendState: Map({
+            cursor: response.cursor,
+          }),
         })
       )).catch(reject);
     })
   );
 
-  const getMoreDirectoryListing = cursor => (
-    new Promise((resolve, reject) => (
+  const getMoreDirectoryListing = additionalSyncBackendState => {
+    const cursor = additionalSyncBackendState.get('cursor');
+    return new Promise((resolve, reject) => (
       dropboxClient.filesListFolderContinue({ cursor }).then(response => (
         resolve({
           listing: transformDirectoryListing(response.entries),
           hasMore: response.has_more,
-          cursor: response.cursor,
+          additionalSyncBackendState: Map({
+            cursor: response.cursor,
+          }),
         })
       ))
-    ))
-  );
+    ));
+  };
 
   const uploadFile = (path, contents) => (
     new Promise((resolve, reject) => (

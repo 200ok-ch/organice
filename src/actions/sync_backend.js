@@ -29,10 +29,10 @@ export const signOut = () => (
   }
 );
 
-export const setCurrentFileBrowserDirectoryListing = (directoryListing, hasMore, cursor) => {
+export const setCurrentFileBrowserDirectoryListing = (directoryListing, hasMore, additionalSyncBackendState) => {
   return {
     type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
-    directoryListing, hasMore, cursor,
+    directoryListing, hasMore, additionalSyncBackendState,
   };
 };
 
@@ -45,8 +45,8 @@ export const getDirectoryListing = path => (
     dispatch(setLoadingMessage('Getting listing...'));
 
     const client = getState().syncBackend.get('client');
-    client.getDirectoryListing(path).then(({ listing, hasMore, cursor }) => {
-      dispatch(setCurrentFileBrowserDirectoryListing(listing, hasMore, cursor));
+    client.getDirectoryListing(path).then(({ listing, hasMore, additionalSyncBackendState }) => {
+      dispatch(setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState));
       dispatch(hideLoadingMessage());
     }).catch(error => {
       alert('There was an error retrieving files!');
@@ -62,9 +62,9 @@ export const loadMoreDirectoryListing = () => (
 
     const client = getState().syncBackend.get('client');
     const currentFileBrowserDirectoryListing = getState().syncBackend.get('currentFileBrowserDirectoryListing');
-    client.getMoreDirectoryListing(currentFileBrowserDirectoryListing.get('cursor')).then(({ listing, hasMore, cursor }) => {
+    client.getMoreDirectoryListing(currentFileBrowserDirectoryListing.get('additionalSyncBackendState')).then(({ listing, hasMore, additionalSyncBackendState }) => {
       const extendedListing = currentFileBrowserDirectoryListing.get('listing').concat(listing);
-      dispatch(setCurrentFileBrowserDirectoryListing(extendedListing, hasMore, cursor));
+      dispatch(setCurrentFileBrowserDirectoryListing(extendedListing, hasMore, additionalSyncBackendState));
       dispatch(setIsLoadingMoreDirectoryListing(false));
     });
   }

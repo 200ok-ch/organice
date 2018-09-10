@@ -31,8 +31,17 @@ class FileBrowser extends PureComponent {
   }
 
   getParentDirectoryPath() {
-    const pathParts = this.props.path.split('/');
-    return pathParts.slice(0, pathParts.length - 1).join('/');
+    const { syncBackendType, additionalSyncBackendState } = this.props;
+
+    switch (syncBackendType) {
+    case 'Dropbox':
+      const pathParts = this.props.path.split('/');
+      return pathParts.slice(0, pathParts.length - 1).join('/');
+    case 'Google Drive':
+      return !!additionalSyncBackendState.get('parentId') ? '/' + additionalSyncBackendState.get('parentId') : null;
+    default:
+      return null;
+    }
   }
 
   render() {
@@ -41,15 +50,18 @@ class FileBrowser extends PureComponent {
       listing,
       hasMore,
       isLoadingMore,
+      syncBackendType,
     } = this.props;
 
     const isTopLevelDirectory = path === '';
 
     return (
       <div className="file-browser-container">
-        <h3 className="file-browser__header">
-          Directory: {isTopLevelDirectory ? '/' : path}
-        </h3>
+        {syncBackendType === 'Dropbox' && (
+          <h3 className="file-browser__header">
+            Directory: {isTopLevelDirectory ? '/' : path}
+          </h3>
+        )}
 
         <ul className="file-browser__file-list">
           {!isTopLevelDirectory && (
@@ -115,9 +127,11 @@ class FileBrowser extends PureComponent {
 const mapStateToProps = (state, props) => {
   const currentFileBrowserDirectoryListing = state.syncBackend.get('currentFileBrowserDirectoryListing');
   return {
+    syncBackendType: state.syncBackend.get('client').type,
     listing: !!currentFileBrowserDirectoryListing ? currentFileBrowserDirectoryListing.get('listing') : null,
     hasMore: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('hasMore'),
     isLoadingMore: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('isLoadingMore'),
+    additionalSyncBackendState: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('additionalSyncBackendState'),
   };
 };
 

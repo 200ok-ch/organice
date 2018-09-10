@@ -35,7 +35,10 @@ class HeaderBar extends PureComponent {
   }
 
   renderFileBrowserBackButton() {
-    const { location: { pathname } } = this.props;
+    const { location: { pathname }, syncBackendType } = this.props;
+    if (syncBackendType === 'Google Drive') {
+      return <div />;
+    }
 
     let directoryPath = pathname.substr('/files'.length);
     if (directoryPath.endsWith('/')) {
@@ -276,6 +279,7 @@ const mapStateToProps = (state, props) => {
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     path: state.org.present.get('path'),
     isUndoEnabled: state.org.past.length > 0,
+    syncBackendType: state.syncBackend.get('client') && state.syncBackend.get('client').type,
   };
 };
 

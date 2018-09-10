@@ -32,7 +32,7 @@ const setCurrentFileBrowserDirectoryListing = (state, action) => (
   state.set('currentFileBrowserDirectoryListing', Map({
     listing: action.directoryListing,
     hasMore: action.hasMore,
-    cursor: action.cursor,
+    additionalSyncBackendState: action.additionalSyncBackendState,
   }))
 );
 
