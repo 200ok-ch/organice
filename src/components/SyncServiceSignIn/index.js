@@ -33,10 +33,11 @@ export default class SyncServiceSignIn extends PureComponent {
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
           // TODO: use proper scope here
           scope: 'https://www.googleapis.com/auth/drive.metadata.readonly',
-          // TODO: maybe move this into the call to signIn below?
-          redirect_uri: window.location.origin,
         }).then(() => {
-          gapi.auth2.getAuthInstance().signIn({ ux_mode: 'redirect' });
+          gapi.auth2.getAuthInstance().signIn({
+            ux_mode: 'redirect',
+            redirect_uri: window.location.origin,
+          });
         });
       });
     } catch(error) {

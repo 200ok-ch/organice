@@ -64,7 +64,9 @@ export default class App extends PureComponent {
           // TODO: use proper scope here.
           scope: 'https://www.googleapis.com/auth/drive.metadata.readonly',
         }).then(() => {
-          console.log('Is signed in to Google?', gapi.auth2.getAuthInstance().isSignedIn.get());
+          if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+            this.store.dispatch(authenticate('Google Drive'));
+          }
         });
       });
     };

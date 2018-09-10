@@ -78,6 +78,7 @@ export default accessToken => {
   );
 
   return {
+    type: 'Dropbox',
     getDirectoryListing,
     getMoreDirectoryListing,
     uploadFile,

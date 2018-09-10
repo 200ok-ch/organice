@@ -1,3 +1,5 @@
+/* global gapi */
+
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
 import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
 import { persistField } from '../util/settings_persister';
@@ -12,7 +14,16 @@ export const authenticate = (syncBackendType, dropboxAccessToken = null) => ({
 
 export const signOut = () => (
   (dispatch, getState) => {
-    persistField('dropboxAccessToken', null);
+    switch (getState().syncBackend.get('client').type) {
+    case 'Dropbox':
+      persistField('dropboxAccessToken', null);
+      break;
+    case 'Google Drive':
+      gapi.auth2.getAuthInstance().signOut();
+      break;
+    default:
+    }
+
     dispatch({ type: 'SIGN_OUT' });
     dispatch(popModalPage());
   }

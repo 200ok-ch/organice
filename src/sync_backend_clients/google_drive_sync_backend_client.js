@@ -90,6 +90,7 @@ export default () => {
   );
 
   return {
+    type: 'Google Drive',
     getDirectoryListing,
     getMoreDirectoryListing,
     uploadFile,
