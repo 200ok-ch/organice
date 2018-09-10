@@ -144,7 +144,7 @@ class Entry extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     loadingMessage: state.base.get('loadingMessage'),
-    isAuthenticated: !!state.syncBackend.get('dropboxAccessToken'),
+    isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
     lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),

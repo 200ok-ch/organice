@@ -3,7 +3,13 @@
 import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
-import { readInitialState, loadSettingsFromConfigFile, subscribeToChanges } from './util/settings_persister';
+import {
+  readInitialState,
+  loadSettingsFromConfigFile,
+  subscribeToChanges,
+  persistField,
+  getPersistedField,
+} from './util/settings_persister';
 import runAllMigrations from './migrations';
 import parseQueryString from './util/parse_query_string';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -40,8 +46,14 @@ export default class App extends PureComponent {
 
     const dropboxAccessToken = queryStringContents.access_token;
     if (dropboxAccessToken) {
-      this.store.dispatch(authenticate(dropboxAccessToken));
+      this.store.dispatch(authenticate('Dropbox', dropboxAccessToken));
+      persistField('dropboxAccessToken', dropboxAccessToken);
       window.location.hash = '';
+    } else {
+      const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken');
+      if (!!persistedDropboxAccessToken && persistedDropboxAccessToken !== 'null') {
+        this.store.dispatch(authenticate('Dropbox', persistedDropboxAccessToken));
+      }
     }
 
     const checkForGoogleDriveLogin = () => {
@@ -57,7 +69,7 @@ export default class App extends PureComponent {
       });
     };
 
-    if (gapi) {
+    if (window.gapi) {
       checkForGoogleDriveLogin();
     } else {
       window.handleGoogleDriveClick = checkForGoogleDriveLogin();

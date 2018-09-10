@@ -2,7 +2,6 @@ import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
-import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
 
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
@@ -62,12 +61,6 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
-    category: 'syncBackend',
-    name: 'dropboxAccessToken',
-    type: 'nullable',
-    shouldStoreInConfig: false,
-  },
-  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',
@@ -97,7 +90,7 @@ const getFieldsToPersist = (state, fields) => (
 
 const getConfigFileContents = fieldsToPersist => (
   JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
-    !['dropboxAccessToken', 'lastSeenChangelogHeader'].includes(name)
+    !['lastSeenChangelogHeader'].includes(name)
   ))), null, 2)
 );
 
@@ -168,11 +161,6 @@ export const readInitialState = () => {
       initialState[field.category] = initialState[field.category].set(field.name, value);
     }
   });
-
-  const dropboxAccessToken = initialState.syncBackend.get('dropboxAccessToken');
-  if (!!dropboxAccessToken) {
-    initialState.syncBackend = initialState.syncBackend.set('client', createDropboxSyncBackendClient(dropboxAccessToken));
-  }
 
   // Assign new ids to the capture templates.
   if (initialState.capture.get('captureTemplates')) {
@@ -249,5 +237,21 @@ export const subscribeToChanges = store => {
         localStorage.setItem('headerOpenness', JSON.stringify(opennessState));
       }
     };
+  }
+};
+
+export const persistField = (field, value) => {
+  if (!isLocalStorageAvailable()) {
+    return;
+  } else {
+    localStorage.setItem(field, value);
+  }
+};
+
+export const getPersistedField = field => {
+  if (!isLocalStorageAvailable()) {
+    return null;
+  } else {
+    return localStorage.getItem(field);
   }
 };

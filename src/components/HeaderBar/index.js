@@ -271,7 +271,7 @@ class HeaderBar extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    isAuthenticated: !!state.syncBackend.get('dropboxAccessToken'),
+    isAuthenticated: state.syncBackend.get('isAuthenticated'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     path: state.org.present.get('path'),

@@ -1,15 +1,18 @@
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
 import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
+import { persistField } from '../util/settings_persister';
 
 import moment from 'moment';
 
-export const authenticate = dropboxAccessToken => ({
+export const authenticate = (syncBackendType, dropboxAccessToken = null) => ({
   type: 'AUTHENTICATE',
+  syncBackendType,
   dropboxAccessToken,
 });
 
 export const signOut = () => (
   (dispatch, getState) => {
+    persistField('dropboxAccessToken', null);
     dispatch({ type: 'SIGN_OUT' });
     dispatch(popModalPage());
   }
