@@ -31,7 +31,7 @@ export default class SyncServiceSignIn extends PureComponent {
           apiKey: process.env.REACT_APP_GOOGLE_DRIVE_API_KEY,
           clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-          scope: 'https://www.googleapis.com/auth/drive.file',
+          scope: 'https://www.googleapis.com/auth/drive',
         }).then(() => {
           gapi.auth2.getAuthInstance().signIn({
             ux_mode: 'redirect',

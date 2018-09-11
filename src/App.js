@@ -61,7 +61,7 @@ export default class App extends PureComponent {
         gapi.client.init({
           client_id: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-          scope: 'https://www.googleapis.com/auth/drive.file',
+          scope: 'https://www.googleapis.com/auth/drive',
         }).then(() => {
           if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
             this.store.dispatch(authenticate('Google Drive'));

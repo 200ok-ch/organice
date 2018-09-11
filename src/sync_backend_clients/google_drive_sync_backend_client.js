@@ -82,27 +82,50 @@ export default () => {
     return getFiles(directoryId, nextPageToken);
   };
 
+  // TODO:
   const uploadFile = (path, contents) => (
     new Promise((resolve, reject) => (
       resolve()
     ))
   );
 
-  const getFileContentsAndMetadata = path => (
+  const getFileContentsAndMetadata = fileId => (
+    new Promise((resolve, reject) => {
+      fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
+
+      const fileContentsPromise = new Promise(resolve => {
+        gapi.client.drive.files.get({
+          fileId,
+          alt: 'media',
+        }).then(response => {
+          resolve(response.body);
+        });
+      });
+
+      const fileModifiedTimePromise = new Promise(resolve => {
+        gapi.client.drive.files.get({
+          fileId,
+          fields: 'modifiedTime'
+        }).then(response => {
+          resolve(response.result.modifiedTime);
+        });
+      });
+
+      Promise.all([fileContentsPromise, fileModifiedTimePromise]).then(([contents, lastModifiedAt]) => {
+        resolve({
+          contents, lastModifiedAt,
+        });
+      });
+    })
+  );
+
+  const getFileContents = fileId => (
     new Promise((resolve, reject) => (
-      resolve({
-        contents: '* test file contents',
-        lastModifiedAt: 'some date',
-      })
+      getFileContentsAndMetadata(fileId).then(({ contents }) => resolve(contents)).catch(reject)
     ))
   );
 
-  const getFileContents = path => (
-    new Promise((resolve, reject) => (
-      getFileContentsAndMetadata(path).then(({ contents }) => resolve(contents)).catch(reject)
-    ))
-  );
-
+  // TODO:
   const deleteFile = path => (
     new Promise((resolve, reject) => (
       resolve()
