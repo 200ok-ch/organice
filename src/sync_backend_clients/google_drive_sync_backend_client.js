@@ -17,7 +17,7 @@ export default () => {
       gapi.client.drive.files.list({
         pageSize: 30,
         fields: 'nextPageToken, files(id, name, mimeType, parents)',
-        q: `'${directoryId === '' ? 'root' : directoryId}' in parents`,
+        q: `'${directoryId === '' ? 'root' : directoryId}' in parents and trashed = false`,
         pageToken: nextPageToken,
       }).then(response => {
         resolve({
@@ -82,7 +82,7 @@ export default () => {
     return getFiles(directoryId, nextPageToken);
   };
 
-  const uploadFile = (fileId, contents) => {
+  const updateFile = (fileId, contents) => {
     fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
 
     return new Promise((resolve, reject) => {
@@ -97,6 +97,62 @@ export default () => {
       xhr.open('PATCH', `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`);
       xhr.setRequestHeader('Authorization', `Bearer ${gapi.auth.getToken().access_token}`);
       xhr.send(contents);
+    });
+  };
+
+  const createFile = (name, parentId, contents) => {
+    return new Promise((resolve, reject) => {
+      gapi.client.drive.files.list({
+        pageSize: 1,
+        fields: 'files(id)',
+        q: `'${parentId}' in parents and trashed = false and name = '${name}'`,
+      }).then(response => {
+        if (response.result.files.length > 0) {
+          updateFile(response.result.files[0].id, contents).then(resolve).catch(reject);
+        } else {
+          gapi.client.drive.files.create({
+            name, parents: parentId,
+          }).then(response => {
+            updateFile(response.result.id, contents).then(resolve).catch(reject);
+          });
+        }
+      });
+    });
+  };
+
+  const duplicateFile = (fileId, fileNameCallback) => {
+    return new Promise((resolve, reject) => {
+      gapi.client.drive.files.get({
+        fileId, fields: 'name, parents',
+      }).then(getResponse => {
+        if (!getResponse.result.name) {
+          reject();
+        } else {
+          const newFileName = fileNameCallback(getResponse.result.name);
+          const parents = getResponse.result.parents[0];
+          gapi.client.drive.files.list({
+            pageSize: 1,
+            fields: 'files(id)',
+            q: `'${parents}' in parents and trashed = false and name = '${newFileName}'`,
+          }).then(listResponse => {
+            const makeCopy = () => {
+              gapi.client.drive.files.copy({
+                fileId, parents, name: newFileName,
+              }).then(copyResponse => {
+                resolve();
+              }).catch(reject);
+            };
+
+            if (listResponse.result.files.length > 0) {
+              gapi.client.drive.files.delete({
+                fileId: listResponse.result.files[0].id
+              }).then(makeCopy).catch(reject);
+            } else {
+              makeCopy();
+            }
+          }).catch(reject);
+        }
+      });
     });
   };
 
@@ -147,7 +203,9 @@ export default () => {
     type: 'Google Drive',
     getDirectoryListing,
     getMoreDirectoryListing,
-    uploadFile,
+    updateFile,
+    createFile,
+    duplicateFile,
     getFileContentsAndMetadata,
     getFileContents,
     deleteFile,

@@ -17,11 +17,21 @@ export const isLocalStorageAvailable = () => {
   }
 };
 
-const debouncedPushFileToSyncBackend = _.debounce((syncBackendClient, path, contents) => (
-  syncBackendClient.uploadFile(path, contents).catch(error => (
-    alert(`There was an error trying to push settings to your sync backend: ${error}`)
-  ))
-), 1000, { maxWait: 3000 });
+const debouncedPushConfigToSyncBackend = _.debounce((syncBackendClient, contents) => {
+  switch (syncBackendClient.type) {
+  case 'Dropbox':
+    syncBackendClient.createFile('/.org-web-config.json', contents).catch(error => (
+      alert(`There was an error trying to push settings to your sync backend: ${error}`)
+    ));
+    break;
+  case 'Google Drive':
+    syncBackendClient.createFile('.org-web-config.json', 'root', contents).catch(error => (
+      alert(`There was an error trying to push settings to your sync backend: ${error}`)
+    ));
+    break;
+  default:
+  }
+}, 1000, { maxWait: 3000 });
 
 export const persistableFields = [
   {
@@ -186,6 +196,7 @@ export const loadSettingsFromConfigFile = store => {
     return;
   }
 
+  // TODO: update this to handle the GDrive backend too
   syncBackendClient.getFileContents('/.org-web-config.json').then(configFileContents => {
     try {
       const config = JSON.parse(configFileContents);
@@ -215,9 +226,7 @@ export const subscribeToChanges = store => {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);
 
         if (window.previousSettingsFileContents !== settingsFileContents) {
-          debouncedPushFileToSyncBackend(state.syncBackend.get('client'),
-                                         '/.org-web-config.json',
-                                         settingsFileContents);
+          debouncedPushConfigToSyncBackend(state.syncBackend.get('client'), settingsFileContents);
         }
 
         window.previousSettingsFileContents = settingsFileContents;

@@ -55,6 +55,9 @@ export default accessToken => {
     ))
   );
 
+  const updateFile = uploadFile;
+  const createFile = uploadFile;
+
   const getFileContentsAndMetadata = path => (
     new Promise((resolve, reject) => (
       dropboxClient.filesDownload({ path }).then(response => {
@@ -86,7 +89,8 @@ export default accessToken => {
     type: 'Dropbox',
     getDirectoryListing,
     getMoreDirectoryListing,
-    uploadFile,
+    updateFile,
+    createFile,
     getFileContentsAndMetadata,
     getFileContents,
     deleteFile,

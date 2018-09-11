@@ -70,10 +70,20 @@ export const loadMoreDirectoryListing = () => (
   }
 );
 
-export const pushBackup = (path, contents) => {
-  return (dispatch, getState) => (
-    getState().syncBackend.get('client').uploadFile(`${path}.org-web-bak`, contents)
-  );
+export const pushBackup = (pathOrFileId, contents) => {
+  return (dispatch, getState) => {
+    const client = getState().syncBackend.get('client');
+    switch (client.type) {
+    case 'Dropbox':
+      client.createFile(`${pathOrFileId}.org-web-bak`, contents);
+      break;
+    case 'Google Drive':
+      pathOrFileId = pathOrFileId.startsWith('/') ? pathOrFileId.substr(1) : pathOrFileId;
+      client.duplicateFile(pathOrFileId, fileName => `${fileName}.org-web-bak`);
+      break;
+    default:
+    }
+  };
 };
 
 export const downloadFile = path => {

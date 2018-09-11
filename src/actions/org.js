@@ -45,7 +45,7 @@ export const sync = ({ forceAction = null } = {}) => (
 
       if (lastSyncAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
         if (isDirty) {
-          client.uploadFile(path, exportOrg(
+          client.updateFile(path, exportOrg(
             getState().org.present.get('headers'), getState().org.present.get('todoKeywordSets')
           )).then(() => {
             dispatch(setDisappearingLoadingMessage('Changes pushed', 2000));
