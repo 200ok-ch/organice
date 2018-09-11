@@ -36,8 +36,6 @@ export default class App extends PureComponent {
     this.store = Store(readInitialState());
     this.store.subscribe(subscribeToChanges(this.store));
 
-    loadSettingsFromConfigFile(this.store);
-
     _.bindAll(this, ['handleDragEnd']);
   }
 
@@ -53,6 +51,7 @@ export default class App extends PureComponent {
       const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken');
       if (!!persistedDropboxAccessToken && persistedDropboxAccessToken !== 'null') {
         this.store.dispatch(authenticate('Dropbox', persistedDropboxAccessToken));
+        loadSettingsFromConfigFile(this.store);
       }
     }
 
@@ -65,6 +64,7 @@ export default class App extends PureComponent {
         }).then(() => {
           if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
             this.store.dispatch(authenticate('Google Drive'));
+            loadSettingsFromConfigFile(this.store);
           }
         });
       });

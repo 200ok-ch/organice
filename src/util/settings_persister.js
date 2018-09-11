@@ -196,8 +196,18 @@ export const loadSettingsFromConfigFile = store => {
     return;
   }
 
-  // TODO: update this to handle the GDrive backend too
-  syncBackendClient.getFileContents('/.org-web-config.json').then(configFileContents => {
+  let fileContentsPromise = null;
+  switch (syncBackendClient.type) {
+  case 'Dropbox':
+    fileContentsPromise = syncBackendClient.getFileContents('/.org-web-config.json');
+    break;
+  case 'Google Drive':
+    fileContentsPromise = syncBackendClient.getFileContentsByNameAndParent('.org-web-config.json', 'root');
+    break;
+  default:
+  }
+
+  fileContentsPromise.then(configFileContents => {
     try {
       const config = JSON.parse(configFileContents);
       store.dispatch(restoreBaseSettings(config));
