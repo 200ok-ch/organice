@@ -67,9 +67,18 @@ export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncB
     dispatch({ type: 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND', newShouldStoreSettingsInSyncBackend });
 
     if (!newShouldStoreSettingsInSyncBackend) {
-      getState().syncBackend.get('client').deleteFile('/.org-web-config.json').catch((doesFileNotExist, error) => (
-        doesFileNotExist ? null : alert(`There was an error trying to delete the .org-web-config.json file: ${error}`)
-      ));
+      const client = getState().syncBackend.get('client');
+      switch (client.type) {
+      case 'Dropbox':
+        client.deleteFile('/.org-web-config.json').catch((doesFileNotExist, error) => (
+          doesFileNotExist ? null : alert(`There was an error trying to delete the .org-web-config.json file: ${error}`)
+        ));
+        break;
+      case 'Google Drive':
+        client.deleteFileByNameAndParent('.org-web-config.json', 'root');
+        break;
+      default:
+      }
 
       window.previousSettingsFileContents = null;
     }

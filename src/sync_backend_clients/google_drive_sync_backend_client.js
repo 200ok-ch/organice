@@ -192,11 +192,22 @@ export default () => {
     ))
   );
 
-  // TODO:
-  const deleteFile = path => (
-    new Promise((resolve, reject) => (
-      resolve()
-    ))
+  const deleteFileByNameAndParent = (name, parentId) => (
+    new Promise((resolve, reject) => {
+      gapi.client.drive.files.list({
+        pageSize: 1,
+        fields: 'files(id)',
+        q: `'${parentId}' in parents and trashed = false and name = '${name}'`,
+      }).then(listResponse => {
+        if (listResponse.result.files.length > 0) {
+          gapi.client.drive.files.delete({
+            fileId: listResponse.result.files[0].id,
+          }).then(resolve).catch(reject);
+        } else {
+          resolve();
+        }
+      });
+    })
   );
 
   return {
@@ -208,6 +219,6 @@ export default () => {
     duplicateFile,
     getFileContentsAndMetadata,
     getFileContents,
-    deleteFile,
+    deleteFileByNameAndParent,
   };
 };
