@@ -82,12 +82,23 @@ export default () => {
     return getFiles(directoryId, nextPageToken);
   };
 
-  // TODO:
-  const uploadFile = (path, contents) => (
-    new Promise((resolve, reject) => (
-      resolve()
-    ))
-  );
+  const uploadFile = (fileId, contents) => {
+    fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.onreadystatechange = () => {
+        // TODO: handle errors here.
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          resolve();
+        }
+      };
+      xhr.open('PATCH', `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`);
+      xhr.setRequestHeader('Authorization', `Bearer ${gapi.auth.getToken().access_token}`);
+      xhr.send(contents);
+    });
+  };
 
   const getFileContentsAndMetadata = fileId => (
     new Promise((resolve, reject) => {
