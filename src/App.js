@@ -73,7 +73,7 @@ export default class App extends PureComponent {
     if (window.gapi) {
       checkForGoogleDriveLogin();
     } else {
-      window.handleGoogleDriveClick = checkForGoogleDriveLogin();
+      window.handleGoogleDriveClick = checkForGoogleDriveLogin;
     }
   }
 
