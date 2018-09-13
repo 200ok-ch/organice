@@ -38,9 +38,9 @@ export default class App extends PureComponent {
   }
 
   componentDidMount() {
+    window.initialHash = window.location.hash.substring(0);
     const queryStringContents = parseQueryString(window.location.hash);
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
-    console.log("authenticatedSyncService = ", authenticatedSyncService);
 
     if (!!authenticatedSyncService) {
       switch (authenticatedSyncService) {

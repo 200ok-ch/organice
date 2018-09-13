@@ -5,6 +5,7 @@ import { fromJS, Map } from 'immutable';
 export default () => {
   const initGoogleDriveAPIClient = () => {
     return new Promise((resolve, reject) => {
+      window.location.hash = window.initialHash;
       window.gapi.load('client:auth2', () => {
         window.gapi.client.init({
           client_id: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
@@ -80,7 +81,7 @@ export default () => {
               nextPageToken: response.result.nextPageToken,
             }),
           });
-        });
+        }).catch(reject);
       });
     });
 
@@ -98,12 +99,12 @@ export default () => {
             } else {
               resolve(response.result.parents[0]);
             }
-          });
+          }).catch(reject);
         });
       }
     });
 
-    const rootFolderIdPromise = new Promise(resolve => {
+    const rootFolderIdPromise = new Promise((resolve, reject) => {
       if (!!window.rootFolderId) {
         resolve(window.rootFolderId);
       } else {
@@ -114,7 +115,7 @@ export default () => {
           }).then(response => {
             window.rootFolderId = response.result.id;
             resolve(response.result.id);
-          });
+          }).catch(reject);
         });
       }
     });

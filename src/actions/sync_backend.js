@@ -1,6 +1,6 @@
 /* global gapi */
 
-import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
+import { setLoadingMessage, hideLoadingMessage, clearModalStack } from './base';
 import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
 import { persistField, loadSettingsFromConfigFile } from '../util/settings_persister';
 import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
@@ -22,6 +22,7 @@ export const authenticate = (syncBackendType, dropboxAccessToken = null) => (
         if (isSignedIn) {
           loadSettingsFromConfigFile(dispatch, getState);
         } else {
+          console.log('signing out');
           dispatch(signOut());
         }
       });
@@ -49,8 +50,7 @@ export const signOut = () => (
     persistField('authenticatedSyncService', null);
 
     dispatch({ type: 'SIGN_OUT' });
-    // TODO: probably want to clear the whole modal stack here.
-    dispatch(popModalPage());
+    dispatch(clearModalStack());
   }
 );
 
