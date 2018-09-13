@@ -190,8 +190,8 @@ export const readInitialState = () => {
   return initialState;
 };
 
-export const loadSettingsFromConfigFile = store => {
-  const syncBackendClient = store.getState().syncBackend.get('client');
+export const loadSettingsFromConfigFile = (dispatch, getState) => {
+  const syncBackendClient = getState().syncBackend.get('client');
   if (!syncBackendClient) {
     return;
   }
@@ -210,8 +210,8 @@ export const loadSettingsFromConfigFile = store => {
   fileContentsPromise.then(configFileContents => {
     try {
       const config = JSON.parse(configFileContents);
-      store.dispatch(restoreBaseSettings(config));
-      store.dispatch(restoreCaptureSettings(config));
+      dispatch(restoreBaseSettings(config));
+      dispatch(restoreCaptureSettings(config));
     } catch(_error) {
       // Something went wrong parsing the config file, but we don't care, we'll just
       // overwrite it with a good local copy.
@@ -267,10 +267,15 @@ export const persistField = (field, value) => {
   }
 };
 
-export const getPersistedField = field => {
+export const getPersistedField = (field, nullable = false) => {
   if (!isLocalStorageAvailable()) {
     return null;
   } else {
-    return localStorage.getItem(field);
+    const value = localStorage.getItem(field);
+    if (nullable) {
+      return value === 'null' ? null : value;
+    } else {
+      return value;
+    }
   }
 };

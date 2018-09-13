@@ -1,26 +1,10 @@
-import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
-import createGoogleDriveSyncBackendClient from '../sync_backend_clients/google_drive_sync_backend_client';
-
 import { Map } from 'immutable';
 
-const authenticate = (state, action) => {
-  let client = null;
-  switch (action.syncBackendType) {
-  case 'Dropbox':
-    client = createDropboxSyncBackendClient(action.dropboxAccessToken);
-    break;
-  case 'Google Drive':
-    client = createGoogleDriveSyncBackendClient();
-    break;
-  default:
-    console.error(`Unrecognized sync backend type in authenticate "${action.syncBackendType}"`);
-    return state;
-  }
-
-  return state
+const authenticate = (state, action) => (
+  state
     .set('isAuthenticated', true)
-    .set('client', client);
-};
+    .set('client', action.client)
+);
 
 const signOut = (state, action) => (
   state

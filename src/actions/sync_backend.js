@@ -2,19 +2,41 @@
 
 import { setLoadingMessage, hideLoadingMessage, popModalPage } from './base';
 import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
-import { persistField } from '../util/settings_persister';
+import { persistField, loadSettingsFromConfigFile } from '../util/settings_persister';
+import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
+import createGoogleDriveSyncBackendClient from '../sync_backend_clients/google_drive_sync_backend_client';
 
 import moment from 'moment';
 
-export const authenticate = (syncBackendType, dropboxAccessToken = null) => ({
-  type: 'AUTHENTICATE',
-  syncBackendType,
-  dropboxAccessToken,
-});
+export const authenticate = (syncBackendType, dropboxAccessToken = null) => (
+  (dispatch, getState) => {
+    let client = null;
+    switch (syncBackendType) {
+    case 'Dropbox':
+      client = createDropboxSyncBackendClient(dropboxAccessToken);
+      break;
+    case 'Google Drive':
+      client = createGoogleDriveSyncBackendClient();
+      client.isSignedIn().then(isSignedIn => {
+        console.log("isSignedIn = ", isSignedIn);
+        if (isSignedIn) {
+          loadSettingsFromConfigFile(dispatch, getState);
+        } else {
+          dispatch(signOut());
+        }
+      });
+      break;
+    default:
+      console.error(`Unrecognized sync backend type in authenticate "${syncBackendType}"`);
+    }
+
+    dispatch({ type: 'AUTHENTICATE', client });
+  }
+);
 
 export const signOut = () => (
   (dispatch, getState) => {
-    switch (getState().syncBackend.get('client').type) {
+    switch (getState().syncBackend.get('client', {}).type) {
     case 'Dropbox':
       persistField('dropboxAccessToken', null);
       break;
@@ -24,17 +46,18 @@ export const signOut = () => (
     default:
     }
 
+    persistField('authenticatedSyncService', null);
+
     dispatch({ type: 'SIGN_OUT' });
+    // TODO: probably want to clear the whole modal stack here.
     dispatch(popModalPage());
   }
 );
 
-export const setCurrentFileBrowserDirectoryListing = (directoryListing, hasMore, additionalSyncBackendState) => {
-  return {
-    type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
-    directoryListing, hasMore, additionalSyncBackendState,
-  };
-};
+export const setCurrentFileBrowserDirectoryListing = (directoryListing, hasMore, additionalSyncBackendState) => ({
+  type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
+  directoryListing, hasMore, additionalSyncBackendState,
+});
 
 export const setIsLoadingMoreDirectoryListing = isLoadingMore => ({
   type: 'SET_IS_LOADING_MORE_DIRECTORY_LISTING', isLoadingMore,

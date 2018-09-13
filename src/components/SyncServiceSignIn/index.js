@@ -7,6 +7,8 @@ import './SyncServiceSignIn.css';
 import DropboxLogo from './dropbox.svg';
 import GoogleDriveLogo from './google_drive.png';
 
+import { persistField } from '../../util/settings_persister';
+
 import { Dropbox } from 'dropbox';
 
 import _ from 'lodash';
@@ -19,6 +21,8 @@ export default class SyncServiceSignIn extends PureComponent {
   }
 
   handleDropboxClick() {
+    persistField('authenticatedSyncService', 'Dropbox');
+
     const dropbox = new Dropbox({ clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID });
     const authURL = dropbox.getAuthenticationUrl(window.location.origin + '/');
     window.location = authURL;
@@ -33,6 +37,8 @@ export default class SyncServiceSignIn extends PureComponent {
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
           scope: 'https://www.googleapis.com/auth/drive',
         }).then(() => {
+          persistField('authenticatedSyncService', 'Google Drive');
+
           gapi.auth2.getAuthInstance().signIn({
             ux_mode: 'redirect',
             redirect_uri: window.location.origin,
@@ -40,7 +46,7 @@ export default class SyncServiceSignIn extends PureComponent {
         });
       });
     } catch(error) {
-      alert(`The Google Drive client isn't available - you might be blocking it with an ad blocker`);
+      alert(`The Google Drive API client isn't available - you might be blocking it with an ad blocker`);
       return;
     }
   }

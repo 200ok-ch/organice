@@ -1,5 +1,3 @@
-/* global gapi, process */
-
 import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
@@ -41,39 +39,32 @@ export default class App extends PureComponent {
 
   componentDidMount() {
     const queryStringContents = parseQueryString(window.location.hash);
+    const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
+    console.log("authenticatedSyncService = ", authenticatedSyncService);
 
-    const dropboxAccessToken = queryStringContents.access_token;
-    if (dropboxAccessToken) {
-      this.store.dispatch(authenticate('Dropbox', dropboxAccessToken));
-      persistField('dropboxAccessToken', dropboxAccessToken);
-      window.location.hash = '';
-    } else {
-      const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken');
-      if (!!persistedDropboxAccessToken && persistedDropboxAccessToken !== 'null') {
-        this.store.dispatch(authenticate('Dropbox', persistedDropboxAccessToken));
-        loadSettingsFromConfigFile(this.store);
-      }
-    }
-
-    const checkForGoogleDriveLogin = () => {
-      gapi.load('client:auth2', () => {
-        gapi.client.init({
-          client_id: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-          scope: 'https://www.googleapis.com/auth/drive',
-        }).then(() => {
-          if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-            this.store.dispatch(authenticate('Google Drive'));
-            loadSettingsFromConfigFile(this.store);
+    if (!!authenticatedSyncService) {
+      switch (authenticatedSyncService) {
+      case 'Dropbox':
+        const dropboxAccessToken = queryStringContents.access_token;
+        if (dropboxAccessToken) {
+          this.store.dispatch(authenticate('Dropbox', dropboxAccessToken));
+          persistField('dropboxAccessToken', dropboxAccessToken);
+          window.location.hash = '';
+        } else {
+          const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
+          if (!!persistedDropboxAccessToken) {
+            this.store.dispatch(authenticate('Dropbox', persistedDropboxAccessToken));
+            loadSettingsFromConfigFile(this.store.dispatch, this.store.getState);
           }
-        });
-      });
-    };
-
-    if (window.gapi) {
-      checkForGoogleDriveLogin();
+        }
+        break;
+      case 'Google Drive':
+        this.store.dispatch(authenticate('Google Drive'));
+        break;
+      default:
+      }
     } else {
-      window.handleGoogleDriveClick = checkForGoogleDriveLogin;
+
     }
   }
 
