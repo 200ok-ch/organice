@@ -5,8 +5,8 @@ import { fromJS, Map } from 'immutable';
 export default () => {
   const initGoogleDriveAPIClient = () => {
     return new Promise((resolve, reject) => {
-      window.location.hash = window.initialHash;
       window.gapi.load('client:auth2', () => {
+        window.location.hash = window.initialHash;
         window.gapi.client.init({
           client_id: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
