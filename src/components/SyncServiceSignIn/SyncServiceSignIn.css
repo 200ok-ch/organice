@@ -1,7 +1,17 @@
+.sync-service-sign-in-container {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .sync-service-container {
     border-bottom: 1px solid lightgray;
 
     padding: 20px 10px;
+}
+
+.sync-service-container:last-of-type {
+    border-bottom: none;
 }
 
 .dropbox-logo {
