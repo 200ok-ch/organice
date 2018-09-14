@@ -2,38 +2,9 @@
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack } from './base';
 import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
-import { persistField, loadSettingsFromConfigFile } from '../util/settings_persister';
-import createDropboxSyncBackendClient from '../sync_backend_clients/dropbox_sync_backend_client';
-import createGoogleDriveSyncBackendClient from '../sync_backend_clients/google_drive_sync_backend_client';
+import { persistField } from '../util/settings_persister';
 
 import moment from 'moment';
-
-export const authenticate = (syncBackendType, dropboxAccessToken = null) => (
-  (dispatch, getState) => {
-    let client = null;
-    switch (syncBackendType) {
-    case 'Dropbox':
-      client = createDropboxSyncBackendClient(dropboxAccessToken);
-      break;
-    case 'Google Drive':
-      client = createGoogleDriveSyncBackendClient();
-      client.isSignedIn().then(isSignedIn => {
-        console.log("isSignedIn = ", isSignedIn);
-        if (isSignedIn) {
-          loadSettingsFromConfigFile(dispatch, getState);
-        } else {
-          console.log('signing out');
-          dispatch(signOut());
-        }
-      });
-      break;
-    default:
-      console.error(`Unrecognized sync backend type in authenticate "${syncBackendType}"`);
-    }
-
-    dispatch({ type: 'AUTHENTICATE', client });
-  }
-);
 
 export const signOut = () => (
   (dispatch, getState) => {

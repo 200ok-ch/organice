@@ -51,7 +51,7 @@ export default () => {
 
   const isSignedIn = () => (
     new Promise((resolve, reject) => (
-      getAPIClient().then(gapi => gapi.auth2.getAuthInstance().isSignedIn.get())
+      getAPIClient().then(gapi => resolve(gapi.auth2.getAuthInstance().isSignedIn.get()))
     ))
   );
 

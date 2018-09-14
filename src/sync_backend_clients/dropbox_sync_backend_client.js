@@ -5,6 +5,10 @@ import { fromJS, Map } from 'immutable';
 export default accessToken => {
   const dropboxClient = new Dropbox({ accessToken });
 
+  const isSignedIn = () => (
+    new Promise(resolve => resolve(true))
+  );
+
   const transformDirectoryListing = listing => (
     fromJS(listing.map(entry => ({
       id: entry.id,
@@ -87,6 +91,7 @@ export default accessToken => {
 
   return {
     type: 'Dropbox',
+    isSignedIn,
     getDirectoryListing,
     getMoreDirectoryListing,
     updateFile,
