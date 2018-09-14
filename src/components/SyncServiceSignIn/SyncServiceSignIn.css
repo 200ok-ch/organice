@@ -4,6 +4,16 @@
     margin-right: auto;
 }
 
+.sync-service-sign-in__help-text {
+    padding-left: 5px;
+    padding-right: 5px;
+
+    font-size: 18px;
+    color: gray;
+
+    text-align: center;
+}
+
 .sync-service-container {
     border-bottom: 1px solid lightgray;
 
