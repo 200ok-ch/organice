@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -131,6 +131,8 @@ export default class CaptureTemplate extends PureComponent {
   }
 
   renderOrgFileAvailability(template) {
+    const { syncBackendType } = this.props;
+
     return (
       <div className="capture-template__field-container">
         <div className="capture-template__field">
@@ -141,7 +143,16 @@ export default class CaptureTemplate extends PureComponent {
 
         <div className="capture-template__help-text">
           You can make this capture template available in all org files, or just the ones you specify.
-          Specify full paths starting from the root of your Dropbox, like <code>/org/todo.org</code>
+          {syncBackendType === 'Dropbox' && (
+            <Fragment>
+              {' '}Specify full paths starting from the root of your Dropbox, like <code>/org/todo.org</code>
+            </Fragment>
+          )}
+          {syncBackendType === 'Google Drive' && (
+            <Fragment>
+              {' '}Specify the file id of each file. You can find the file id in the URL of the file in org-web (e.g., <code>/file/{'<file id>'}</code>).
+            </Fragment>
+          )}
         </div>
 
         <Collapse isOpened={!template.get('isAvailableInAllOrgFiles')} springConfig={{stiffness: 300}}>

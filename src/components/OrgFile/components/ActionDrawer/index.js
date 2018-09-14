@@ -114,7 +114,11 @@ class ActionDrawer extends PureComponent {
 
     return this.props.captureTemplates.filter(template => (
       template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').map(availablePath => (
-        availablePath.trim()
+        availablePath.trim().startsWith('/') ? (
+          availablePath.trim()
+        ) : (
+          '/' + availablePath.trim()
+        )
       )).includes((this.props.path || '').trim())
     ));
   }

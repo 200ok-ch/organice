@@ -62,7 +62,7 @@ class CaptureTemplatesEditor extends PureComponent {
   }
 
   render() {
-    const { captureTemplates } = this.props;
+    const { captureTemplates, syncBackendType } = this.props;
 
     return (
       <div>
@@ -86,6 +86,7 @@ class CaptureTemplatesEditor extends PureComponent {
                     <CaptureTemplate key={template.get('id')}
                                      index={index}
                                      template={template}
+                                     syncBackendType={syncBackendType}
                                      onFieldPathUpdate={this.handleFieldPathUpdate}
                                      onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
                                      onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
@@ -113,6 +114,7 @@ class CaptureTemplatesEditor extends PureComponent {
 const mapStateToProps = (state, props) => {
   return {
     captureTemplates: state.capture.get('captureTemplates', new List()),
+    syncBackendType: state.syncBackend.get('client').type,
   };
 };
 

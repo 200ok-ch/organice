@@ -82,7 +82,6 @@ export default class App extends PureComponent {
     if (!!client) {
       client.isSignedIn().then(isSignedIn => {
         if (isSignedIn) {
-          console.log('loading settings');
           loadSettingsFromConfigFile(this.store.dispatch, this.store.getState);
         } else {
           this.store.dispatch(signOut());

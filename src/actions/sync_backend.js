@@ -22,6 +22,7 @@ export const signOut = () => (
 
     dispatch({ type: 'SIGN_OUT' });
     dispatch(clearModalStack());
+    dispatch(hideLoadingMessage());
   }
 );
 
