@@ -262,8 +262,12 @@ class HeaderBar extends PureComponent {
   }
 
   render() {
+    const className = classNames('header-bar', {
+      'header-bar--with-logo': this.getPathRoot() === '',
+    });
+
     return (
-      <div className="header-bar">
+      <div className={className}>
         {this.renderBackButton()}
         {this.renderTitle()}
         {this.renderActions()}

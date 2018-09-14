@@ -8,6 +8,10 @@
     align-items: center;
 }
 
+.header-bar--with-logo {
+    grid-template-columns: 5fr 1fr 5fr;
+}
+
 .header-bar__logo-container {
     display: flex;
     align-items: center;
