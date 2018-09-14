@@ -1,3 +1,7 @@
+* September 13th, 2018
+** Added support for Google Drive!
+*** You can now use Google Drive as a sync backend. Just choose it as an option when you click "Sign in".
+*** Please let me know if you run into any issues with Google Drive by [[https://github.com/DanielDe/org-web/issues/new][creating an issue]]!
 * September 5th, 2018
 ** Native tag support and editor
 *** A new button in the header action drawer brings up the tag editor
