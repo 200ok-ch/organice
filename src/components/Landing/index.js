@@ -10,7 +10,7 @@ export default class Landing extends PureComponent {
         <h1 className="landing-app-name">org-web</h1>
         <h2 className="landing-tagline">Edit your org files online.</h2>
         <h2 className="landing-tagline">Optimized for mobile.</h2>
-        <h2 className="landing-tagline">Syncs with Dropbox.</h2>
+        <h2 className="landing-tagline">Syncs with Dropbox<br />and Google Drive.</h2>
 
         <Link to="/sample">
           <div className="btn landing-button view-sample-button">View sample</div>

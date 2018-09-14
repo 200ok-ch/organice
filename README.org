@@ -1,11 +1,11 @@
 * org-web - org mode on the web
-org-web lets you directly edit your org files online. It syncs with Dropbox and is optimized for mobile use.
+org-web lets you directly edit your org files online. It syncs with Dropbox and Google Drive and is optimized for mobile use.
 
 [[./screenshots/overview.png]]
 
 It was born out of my desire to be able to easily view and edit my org files from my phone. It's available for use [[https://org-web.org][here]].
 
-If you don't already keep your org files in Dropbox, I recommend symlinking them in:
+If you don't already keep your org files in Dropbox or Google Drive, I recommend symlinking them in:
 
 #+BEGIN_SRC
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
@@ -39,7 +39,7 @@ And here it is for bash:
 SAMPLE_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./sample.org', 'r').read()))") CHANGELOG_FILE_CONTENTS=$(python -c "import json; print(json.dumps(open('./changelog.org', 'r').read()))") yarn start
 #+END_SRC
 
-To test against your actual Dropbox, you'll need to create a ~.env~ file by copying ~.env.sample~ to just ~.env~.
+To test against your actual Dropbox, you'll need to create a ~.env~ file by copying ~.env.sample~ to just ~.env~. To test against your Google Drive you'll need to generate an API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
 
 Note that this will only work if you're running the app on ~http://localhost:3000~.
 ** Thanks

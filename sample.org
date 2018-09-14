@@ -75,7 +75,7 @@ Give them a try on these nested headers to get a feel for how they operate:
 ***** Rex
 ***** Clooney
 ** Syncing
-The "cloud" button in the lower left hand corner syncs changes to Dropbox.
+The "cloud" button in the lower left hand corner syncs changes to your chosen sync service (Dropbox or Google Drive).
 
 If there's a newer version on the server and no local changes, it'll pull.
 
@@ -151,21 +151,21 @@ org-web supports something like org-capture in the form of customizable, quickly
 
 Click the button in the bottom right corner of the screen to see some examples. The first button, the lemon, will create a new entry in the "Groceries" list below this. The second button adds an entry to a more deeply nested header.
 
-Once signed in, you can set up capture templates that specify header paths (and various other configurations). These capture templates can also sync between your devices (if you enable settings sync via Dropbox).
+Once signed in, you can set up capture templates that specify header paths (and various other configurations). These capture templates can also sync between your devices (if you enable settings sync).
 ** Groceries
 ** Deeply
 *** Nested
 **** Headers
 ***** Work
 ****** Too!
-* Syncing with Dropbox
-org-web pulls down your org files from Dropbox. Click the "Sign in" button in the upper right hand corner to sign in with Dropbox and authenticate org-web.
-** Symlink your org files to Dropbox
-If you don't already keep your org files in Dropbox, I recommend symlinking them in:
+* Syncing
+org-web pulls down your org files from Dropbox or Google Drive. Click the "Sign in" button in the upper right hand corner to sign in with either Dropbox or Google Drive and authenticate org-web.
+** Symlink your org files
+If you don't already keep your org files in Dropbox or Google Drive, I recommend symlinking them in:
 
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 ** Backups
-The first time you push changes from org-web back up to Dropbox, org-web will make a backup of the original file first. It'll be named {your-file-name}.org-web-bak. Dropbox also keeps a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up to Dropbox :)
+The first time you push changes from org-web back up to your chosen sync service, org-web will make a backup of the original file first. It'll be named {your-file-name}.org-web-bak. Dropbox and Google Drive also both keep a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up :)
 * org-web operates completely client side
 You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
@@ -175,7 +175,11 @@ If you have an idea or feature request, or if you want to contribute to org-web,
 
 Here are a few of the things already on the todo list:
 ** org-agenda view
-** Support for other sync backends in addition to Dropbox
+** Support for other sync backends in addition to Dropbox and Google Drive
+*** SyncThing
+*** GitHub
+*** Mega
+*** Others? If there's one you'd like, [[https://github.com/DanielDe/org-web/issues/new][create an issue]]!
 ** Support for symmetric encryption
 ** More first-class support for org features like tags and timestamps
 ** Search
