@@ -44,6 +44,7 @@ class Header extends PureComponent {
       'handleFocus',
       'handleUnfocus',
       'handleAddNewHeader',
+      'handleRest',
     ]);
 
     this.state = {
@@ -52,6 +53,8 @@ class Header extends PureComponent {
       dragStartY: null,
       currentDragX: null,
       containerWidth: null,
+      isPlayingRemoveAnimation: false,
+      heightBeforeRemove: null,
     };
   }
 
@@ -114,7 +117,10 @@ class Header extends PureComponent {
       }
 
       if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
-        this.props.org.removeHeader(this.props.header.get('id'));
+        this.setState({
+          isPlayingRemoveAnimation: true,
+          heightBeforeRemove: this.containerDiv.offsetHeight,
+        });
       }
     }
 
@@ -203,6 +209,12 @@ class Header extends PureComponent {
     this.props.org.addHeaderAndEdit(this.props.header.get('id'));
   }
 
+  handleRest() {
+    if (this.state.isPlayingRemoveAnimation) {
+      this.props.org.removeHeader(this.props.header.get('id'));
+    }
+  }
+
   render() {
     const {
       header,
@@ -219,24 +231,36 @@ class Header extends PureComponent {
       header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
     ) : header.get('nestingLevel');
 
-    const { dragStartX, currentDragX, isDraggingFreely } = this.state;
+    const {
+      dragStartX,
+      currentDragX,
+      isDraggingFreely,
+      isPlayingRemoveAnimation,
+      containerWidth,
+    } = this.state;
     const marginLeft = (!!dragStartX && !!currentDragX && isDraggingFreely) ? (
       currentDragX - dragStartX
     ) : (
-      spring(0, { stiffness: 300 })
+      isPlayingRemoveAnimation ? (
+        spring(-1 * containerWidth, { stiffness: 300 })
+      ) : (
+        spring(0, { stiffness: 300 })
+      )
     );
 
     const style = {
       paddingLeft: 20 * indentLevel,
       marginLeft,
+      heightFactor: isPlayingRemoveAnimation ? spring(0, { stiffness: 300 }) : 1,
     };
 
     const className = classNames('header', {
       'header--selected': isSelected,
+      'header--removing': isPlayingRemoveAnimation,
     });
 
     return (
-      <Motion style={style}>
+      <Motion style={style} onRest={this.handleRest}>
         {interpolatedStyle => {
           const swipedDistance = interpolatedStyle.marginLeft;
           const isLeftActionActivated = swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
@@ -262,9 +286,15 @@ class Header extends PureComponent {
             display: -1 * swipedDistance > 30 ? '' : 'none',
           };
 
+          const { heightFactor, ...headerStyle } = interpolatedStyle;
+
+          if (isPlayingRemoveAnimation) {
+            headerStyle.height = this.state.heightBeforeRemove * heightFactor;
+          }
+
           return (
             <div className={className}
-                 style={interpolatedStyle}
+                 style={headerStyle}
                  ref={this.handleRef}
                  onClick={this.handleHeaderClick}
                  onMouseDown={this.handleMouseDown}

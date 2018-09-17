@@ -12,6 +12,14 @@
     background-color: rgba(239, 255, 0, 0.28);
 }
 
+.header--removing {
+    overflow-y: hidden;
+    min-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    margin-top: -2px;
+}
+
 .left-swipe-action-container {
     top: 0;
     right: 100%;
