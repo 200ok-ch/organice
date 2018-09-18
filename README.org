@@ -17,9 +17,9 @@ You can use [[https://www.icloud.com/shortcuts/8fb4e55d06fd4be1987c2c028b1fbf11]
 
 Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. All three parameters are required and must be URL encoded:
 
-- ~captureTemplateName~ - the name of the capture template to use. This capture template must already exist in Settings > Capture templates.
-- ~captureFile~ - the path (for Dropbox) or id (for Google Drive) of the file in which to execute the capture template.
-- ~captureContent~ - the content you'd like to capture. This content will be placed at the cursor position if specified in the capture template (with ~%?~), or at the end of the template if its not specified.
+- ~captureTemplateName~: the name of the capture template to use. This capture template must already exist in Settings > Capture templates.
+- ~captureFile~: the path (for Dropbox) or id (for Google Drive) of the file in which to execute the capture template.
+- ~captureContent~: the content you'd like to capture. This content will be placed at the cursor position if specified in the capture template (with ~%?~), or at the end of the template if its not specified.
 
 Here's an example URL:
 
