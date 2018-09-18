@@ -12,7 +12,7 @@ export default class LoadingIndicator extends PureComponent {
     _.bindAll(this, ['handleAnimationRest', 'handleClick']);
 
     this.state = {
-      shouldRenderIndicator: false,
+      shouldRenderIndicator: true,
       lastMessage: props.message,
     };
   }
