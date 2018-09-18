@@ -265,7 +265,7 @@ export const insertPendingCapture = () => (
       template.get('description').trim() === templateName.trim()
     ));
     if (!template) {
-      // TODO: show error message.
+      dispatch(setDisappearingLoadingMessage(`Capture failed: "${templateName}" template not found`, 8000));
       return;
     }
 
