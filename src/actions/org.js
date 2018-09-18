@@ -260,12 +260,12 @@ export const insertPendingCapture = () => (
     dispatch(clearPendingCapture());
 
     const template = getState().capture.get('captureTemplates').filter(template => (
-      template.get('orgFilesWhereAvailable').includes(getState().org.present.get('path'))
+      template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').includes(getState().org.present.get('path'))
     )).find(template => (
       template.get('description').trim() === templateName.trim()
     ));
     if (!template) {
-      dispatch(setDisappearingLoadingMessage(`Capture failed: "${templateName}" template not found`, 8000));
+      dispatch(setDisappearingLoadingMessage(`Capture failed: "${templateName}" template not found or not available in this file`, 8000));
       return;
     }
 
