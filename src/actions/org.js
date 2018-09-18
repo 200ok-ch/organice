@@ -257,7 +257,9 @@ export const insertPendingCapture = () => (
     const pendingCapture = getState().org.present.get('pendingCapture');
     const templateName = pendingCapture.get('captureTemplateName');
     const captureContent = pendingCapture.get('captureContent');
+
     dispatch(clearPendingCapture());
+    window.history.pushState({}, '', window.location.pathname);
 
     const template = getState().capture.get('captureTemplates').filter(template => (
       template.get('isAvailableInAllOrgFiles') || template.get('orgFilesWhereAvailable').includes(getState().org.present.get('path'))
