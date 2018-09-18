@@ -9,7 +9,7 @@ export default class LoadingIndicator extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleAnimationRest']);
+    _.bindAll(this, ['handleAnimationRest', 'handleClick']);
 
     this.state = {
       shouldRenderIndicator: false,
@@ -37,6 +37,10 @@ export default class LoadingIndicator extends PureComponent {
     });
   }
 
+  handleClick() {
+    this.setState({ shouldRenderIndicator: false });
+  }
+
   render() {
     const { message } = this.props;
     const { lastMessage, shouldRenderIndicator } = this.state;
@@ -52,7 +56,7 @@ export default class LoadingIndicator extends PureComponent {
     return (
       <Motion style={style} onRest={this.handleAnimationRest}>
         {style => (
-          <div className="loading-indicator" style={style}>
+          <div className="loading-indicator" style={style} onClick={this.handleClick}>
             {lastMessage}
           </div>
         )}
