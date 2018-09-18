@@ -10,9 +10,23 @@ If you don't already keep your org files in Dropbox or Google Drive, I recommend
 #+BEGIN_SRC
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 #+END_SRC
+** Capture params and Siri support
+org-web supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
-*Important note:* On July 31st, 2018 I did a force push to ~master~ with a complete rewrite. The current ~master~ branch shares no history with the previous one, which you should be aware of if you've cloned or forked!
+You can use [[https://www.icloud.com/shortcuts/8fb4e55d06fd4be1987c2c028b1fbf11][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by filling in the name of your capture template and org file and recording a Siri trigger.
+
+Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. All three parameters are required and must be URL encoded:
+
+- ~captureTemplateName~ - the name of the capture template to use. This capture template must already exist in Settings > Capture templates.
+- ~captureFile~ - the path (for Dropbox) or id (for Google Drive) of the file in which to execute the capture template.
+- ~captureContent~ - the content you'd like to capture. This content will be placed at the cursor position if specified in the capture template (with ~%?~), or at the end of the template if its not specified.
+
+Here's an example URL:
+
+https://org-web.org?captureTemplateName=Grocery%20item&captureContent=Lemon&captureFile=/org/todo.org
 ** Development
+*Important note:* On July 31st, 2018 I did a force push to ~master~ with a complete rewrite. The current ~master~ branch shares no history with the previous one, which you should be aware of if you've cloned or forked!
+
 org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
 
 To install the necessary packages, run:
