@@ -88,6 +88,14 @@ class OrgFile extends PureComponent {
     }
   }
 
+  componentDidUpdate() {
+    const { headers, pendingCapture } = this.props;
+    if (!!pendingCapture && !!headers && headers.size > 0) {
+      this.props.org.insertCaptureByTemplateName(pendingCapture.get('captureTemplateName'),
+                                                 pendingCapture.get('captureContent'));
+    }
+  }
+
   componentDidCatch(error) {
     ga('send', 'event', 'error', 'OrgFile componentDidCatch', error);
 
@@ -340,6 +348,7 @@ const mapStateToProps = (state, props) => {
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
     activePopup: state.base.get('activePopup'),
+    pendingCapture: state.org.present.get('pendingCapture'),
   };
 };
 

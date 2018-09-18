@@ -246,6 +246,27 @@ export const insertCapture = (templateId, content, shouldPrepend) => (
   }
 );
 
+export const insertCaptureByTemplateName = (templateName, captureContent) => (
+  (dispatch, getState) => {
+    const template = getState().capture.get('captureTemplates').filter(template => (
+      template.get('orgFilesWhereAvailable').includes(getState().org.present.get('path'))
+    )).find(template => (
+      template.get('description').trim() === templateName.trim()
+    ));
+    if (!template) {
+      // TODO: show error message.
+      return;
+    }
+
+
+    // TODO: generate the content by making the substituations.
+    // TODO: insert the captureContent at the cursor insertion point, or the end.
+    // TODO: insert the capture.
+    // TODO: sync.
+    // TODO: display a message.
+  }
+);
+
 export const advanceCheckboxState = listItemId => ({
   type: 'ADVANCE_CHECKBOX_STATE', listItemId,
 });

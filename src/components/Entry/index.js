@@ -97,7 +97,12 @@ class Entry extends PureComponent {
       loadingMessage,
       fontSize,
       activeModalPage,
+      pendingCapture,
+      location: { pathname },
     } = this.props;
+
+    const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
+    const shouldRedirectToCapturePath = pendingCapturePath && (pendingCapturePath !== pathname);
 
     const className = classNames('entry-container', {
       'entry-container--large-font': fontSize === 'Large',
@@ -122,6 +127,7 @@ class Entry extends PureComponent {
               </Fragment>
             ) : (
               <Switch>
+                {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
                 <Route path="/file/:path+" render={this.renderFile} />
                 <Route path="/files/:path*" render={this.renderFileBrowser} />
                 <Redirect to="/files" />
@@ -148,6 +154,7 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize'),
     lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
+    pendingCapture: state.org.present.get('pendingCapture'),
   };
 };
 

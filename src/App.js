@@ -38,14 +38,14 @@ export default class App extends PureComponent {
     const initialState = readInitialState();
 
     window.initialHash = window.location.hash.substring(0);
-    const queryStringContents = parseQueryString(window.location.hash);
+    const hashContents = parseQueryString(window.location.hash);
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
     let client = null;
 
     if (!!authenticatedSyncService) {
       switch (authenticatedSyncService) {
       case 'Dropbox':
-        const dropboxAccessToken = queryStringContents.access_token;
+        const dropboxAccessToken = hashContents.access_token;
         if (dropboxAccessToken) {
           client = createDropboxSyncBackendClient(dropboxAccessToken);
           initialState.syncBackend = Map({
@@ -74,6 +74,15 @@ export default class App extends PureComponent {
         break;
       default:
       }
+    }
+
+    const queryStringContents = parseQueryString(window.location.search);
+    const { captureFile, captureTemplateName, captureContent } = queryStringContents;
+    if (!!captureFile && !!captureTemplateName) {
+      const capturePath = captureFile.startsWith('/') ? captureFile : `/${captureFile}`;
+      initialState.org.present = initialState.org.present.set('pendingCapture', Map({
+        capturePath, captureTemplateName, captureContent,
+      }));
     }
 
     this.store = Store(initialState);
