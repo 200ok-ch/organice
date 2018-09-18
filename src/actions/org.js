@@ -9,6 +9,7 @@ import {
 } from './base';
 import  exportOrg from '../lib/export_org';
 import substituteTemplateVariables from '../lib/capture_template_substitution';
+import { headerWithPath } from '../lib/org_utils';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
@@ -265,6 +266,12 @@ export const insertPendingCapture = () => (
     ));
     if (!template) {
       // TODO: show error message.
+      return;
+    }
+
+    const targetHeader = headerWithPath(getState().org.present.get('headers'), template.get('headerPaths'));
+    if (!targetHeader) {
+      dispatch(setDisappearingLoadingMessage(`Capture failed: "${template.get('description')}" header path invalid in this file`, 8000));
       return;
     }
 

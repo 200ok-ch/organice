@@ -87,11 +87,11 @@ export const downloadFile = path => {
 
     getState().syncBackend.get('client').getFileContents(path).then(fileContents => {
       dispatch(setDirty(false));
-      dispatch(displayFile(path, fileContents));
-      dispatch(applyOpennessState());
       dispatch(hideLoadingMessage());
       dispatch(pushBackup(path, fileContents));
       dispatch(setLastSyncAt(moment()));
+      dispatch(displayFile(path, fileContents));
+      dispatch(applyOpennessState());
     });
   };
 };
