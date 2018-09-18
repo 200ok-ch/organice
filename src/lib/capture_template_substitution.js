@@ -1,7 +1,8 @@
+import { Map } from 'immutable';
 import moment from 'moment';
 import _ from 'lodash';
 
-export default templateString => {
+export default (templateString, customVariables = Map()) => {
   if (!templateString) {
     return ['', null];
   }
@@ -12,6 +13,10 @@ export default templateString => {
     '%u' : `[${moment().format('YYYY-MM-DD ddd')}]`,
     '%U' : `[${moment().format('YYYY-MM-DD ddd HH:mm')}]`,
   };
+
+  customVariables.entrySeq().forEach(([key, value]) => {
+    substitutions[`%${key}`] = value;
+  });
 
   let substitutedString = templateString;
   _.entries(substitutions).forEach(([formatString, value]) => (

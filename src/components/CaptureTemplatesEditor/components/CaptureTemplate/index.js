@@ -253,6 +253,7 @@ export default class CaptureTemplate extends PureComponent {
             <li><code>%T</code> - Timestamp, with date and time.</li>
             <li><code>%u</code> - Inactive timestamp, date only.</li>
             <li><code>%U</code> - Inactive timestamp, with date and time.</li>
+            <li><code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See <a href="https://github.com/DanielDe/org-web/#capture-params-and-siri-support">the README file</a> for more details.</li>
           </ul>
         </div>
       </div>

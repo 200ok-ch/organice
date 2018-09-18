@@ -81,8 +81,16 @@ export default class App extends PureComponent {
     const { captureFile, captureTemplateName, captureContent } = queryStringContents;
     if (!!captureFile && !!captureTemplateName) {
       const capturePath = captureFile.startsWith('/') ? captureFile : `/${captureFile}`;
+      const customCaptureVariables = Map(Object.entries(queryStringContents).map(([key, value]) => {
+        const CUSTOM_VARIABLE_PREFIX = 'captureVariable_';
+        if (key.startsWith(CUSTOM_VARIABLE_PREFIX)) {
+          return [key.substring(CUSTOM_VARIABLE_PREFIX.length), value];
+        }
+
+        return null;
+      }).filter(item => !!item));
       initialState.org.present = initialState.org.present.set('pendingCapture', Map({
-        capturePath, captureTemplateName, captureContent,
+        capturePath, captureTemplateName, captureContent, customCaptureVariables,
       }));
     }
 

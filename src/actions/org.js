@@ -257,6 +257,7 @@ export const insertPendingCapture = () => (
     const pendingCapture = getState().org.present.get('pendingCapture');
     const templateName = pendingCapture.get('captureTemplateName');
     const captureContent = pendingCapture.get('captureContent');
+    const customCaptureVariables = pendingCapture.get('customCaptureVariables');
 
     dispatch(clearPendingCapture());
     window.history.pushState({}, '', window.location.pathname);
@@ -277,7 +278,7 @@ export const insertPendingCapture = () => (
       return;
     }
 
-    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(template.get('template'));
+    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(template.get('template'), customCaptureVariables);
 
     const content = !!initialCursorIndex ? (
       `${substitutedTemplate.substring(0, initialCursorIndex)}${captureContent}${substitutedTemplate.substring(initialCursorIndex)}`
