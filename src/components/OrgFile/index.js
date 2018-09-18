@@ -91,8 +91,7 @@ class OrgFile extends PureComponent {
   componentDidUpdate() {
     const { headers, pendingCapture } = this.props;
     if (!!pendingCapture && !!headers && headers.size > 0) {
-      this.props.org.insertCaptureByTemplateName(pendingCapture.get('captureTemplateName'),
-                                                 pendingCapture.get('captureContent'));
+      this.props.org.insertPendingCapture();
     }
   }
 

@@ -7,9 +7,9 @@ import Switch from '../../../UI/Switch/';
 import Popup from '../../../UI/Popup/';
 
 import { headerWithPath } from '../../../../lib/org_utils';
+import substituteTemplateVariables from '../../../../lib/capture_template_substitution';
 
 import _ from 'lodash';
-import moment from 'moment';
 
 export default class CaptureModal extends PureComponent {
   constructor(props) {
@@ -22,7 +22,7 @@ export default class CaptureModal extends PureComponent {
       'handlePrependSwitchToggle',
     ]);
 
-    const [substitutedTemplate, initialCursorIndex] = this.substituteTemplateVariables(props.template.get('template'));
+    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(props.template.get('template'));
 
     this.state = {
       textareaValue: substitutedTemplate,
@@ -60,29 +60,6 @@ export default class CaptureModal extends PureComponent {
 
   handlePrependSwitchToggle() {
     this.setState({ shouldPrepend: !this.state.shouldPrepend });
-  }
-
-  substituteTemplateVariables(templateString) {
-    if (!templateString) {
-      return ['', null];
-    }
-
-    const substitutions = {
-      '%t' : `<${moment().format('YYYY-MM-DD ddd')}>`,
-      '%T' : `<${moment().format('YYYY-MM-DD ddd HH:mm')}>`,
-      '%u' : `[${moment().format('YYYY-MM-DD ddd')}]`,
-      '%U' : `[${moment().format('YYYY-MM-DD ddd HH:mm')}]`,
-    };
-
-    let substitutedString = templateString;
-    _.entries(substitutions).forEach(([formatString, value]) => (
-      substitutedString = substitutedString.replace(RegExp(formatString, 'g'), value)
-    ));
-
-    const cursorIndex = substitutedString.includes('%?') ? substitutedString.indexOf('%?') : null;
-    substitutedString = substitutedString.replace(/%\?/, '');
-
-    return [substitutedString, cursorIndex];
   }
 
   render() {

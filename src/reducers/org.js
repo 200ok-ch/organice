@@ -688,6 +688,10 @@ const insertCapture = (state, action) => {
   return state;
 };
 
+const clearPendingCapture = state => (
+  state.set('pendingCapture', null)
+);
+
 const updateParentListCheckboxes = (state, itemPath) => {
   const parentListItemPath = itemPath.slice(0, itemPath.length - 4);
   const parentListItem = state.getIn(parentListItemPath);
@@ -886,6 +890,8 @@ export default (state = new Map(), action) => {
     return updateTableCellValue(state, action);
   case 'INSERT_CAPTURE':
     return insertCapture(state, action);
+  case 'CLEAR_PENDING_CAPTURE':
+    return clearPendingCapture(state, action);
   case 'ADVANCE_CHECKBOX_STATE':
     return advanceCheckboxState(state, action);
   case 'SET_LAST_SYNC_AT':

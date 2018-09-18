@@ -86,11 +86,11 @@ export const downloadFile = path => {
     dispatch(setLoadingMessage('Downloading file...'));
 
     getState().syncBackend.get('client').getFileContents(path).then(fileContents => {
+      dispatch(setDirty(false));
       dispatch(displayFile(path, fileContents));
       dispatch(applyOpennessState());
       dispatch(hideLoadingMessage());
       dispatch(pushBackup(path, fileContents));
-      dispatch(setDirty(false));
       dispatch(setLastSyncAt(moment()));
     });
   };

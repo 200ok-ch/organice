@@ -8,6 +8,7 @@ import {
   closePopup,
 } from './base';
 import  exportOrg from '../lib/export_org';
+import substituteTemplateVariables from '../lib/capture_template_substitution';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
@@ -31,7 +32,7 @@ export const stopDisplayingFile = () => {
   };
 };
 
-export const sync = ({ forceAction = null } = {}) => (
+export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } = {}) => (
   (dispatch, getState) => {
     dispatch(setLoadingMessage('Syncing...'));
     dispatch(setIsLoading(true));
@@ -48,7 +49,7 @@ export const sync = ({ forceAction = null } = {}) => (
           client.updateFile(path, exportOrg(
             getState().org.present.get('headers'), getState().org.present.get('todoKeywordSets')
           )).then(() => {
-            dispatch(setDisappearingLoadingMessage('Changes pushed', 2000));
+            dispatch(setDisappearingLoadingMessage(successMessage, 2000));
             dispatch(setIsLoading(false));
             dispatch(setDirty(false));
             dispatch(setLastSyncAt(moment()));
@@ -246,8 +247,17 @@ export const insertCapture = (templateId, content, shouldPrepend) => (
   }
 );
 
-export const insertCaptureByTemplateName = (templateName, captureContent) => (
+export const clearPendingCapture = () => ({
+  type: 'CLEAR_PENDING_CAPTURE',
+});
+
+export const insertPendingCapture = () => (
   (dispatch, getState) => {
+    const pendingCapture = getState().org.present.get('pendingCapture');
+    const templateName = pendingCapture.get('captureTemplateName');
+    const captureContent = pendingCapture.get('captureContent');
+    dispatch(clearPendingCapture());
+
     const template = getState().capture.get('captureTemplates').filter(template => (
       template.get('orgFilesWhereAvailable').includes(getState().org.present.get('path'))
     )).find(template => (
@@ -258,12 +268,16 @@ export const insertCaptureByTemplateName = (templateName, captureContent) => (
       return;
     }
 
+    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(template.get('template'));
 
-    // TODO: generate the content by making the substituations.
-    // TODO: insert the captureContent at the cursor insertion point, or the end.
-    // TODO: insert the capture.
-    // TODO: sync.
-    // TODO: display a message.
+    const content = !!initialCursorIndex ? (
+      `${substitutedTemplate.substring(0, initialCursorIndex)}${captureContent}${substitutedTemplate.substring(initialCursorIndex)}`
+    ) : (
+      `${substitutedTemplate}${captureContent}`
+    );
+
+    dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend')));
+    dispatch(sync({ successMessage: 'Item captured' }));
   }
 );
 
