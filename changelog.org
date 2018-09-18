@@ -1,6 +1,6 @@
 * September 18th, 2018
 ** Added URL params for capture, specifically for Siri Shortcuts support!
-*** Check out [[https://www.icloud.com/shortcuts/8fb4e55d06fd4be1987c2c028b1fbf11][this sample Siri Shortcut]] or [[https://github.com/DanielDe/org-web/#capture-params-and-siri-support][the README file]] for more information
+*** Check out [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Siri Shortcut]] or [[https://github.com/DanielDe/org-web/#capture-params-and-siri-support][the README file]] for more information
 * September 13th, 2018
 ** Added support for Google Drive!
 *** You can now use Google Drive as a sync backend. Just choose it as an option when you click "Sign in".

@@ -13,17 +13,19 @@ ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 ** Capture params and Siri support
 org-web supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
-You can use [[https://www.icloud.com/shortcuts/8fb4e55d06fd4be1987c2c028b1fbf11][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by filling in the name of your capture template and org file and recording a Siri trigger.
+You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
-Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. All three parameters are required and must be URL encoded:
+Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. All three of the following parameters are required and must be URL encoded:
 
 - ~captureTemplateName~: the name of the capture template to use. This capture template must already exist in Settings > Capture templates.
 - ~captureFile~: the path (for Dropbox) or id (for Google Drive) of the file in which to execute the capture template.
 - ~captureContent~: the content you'd like to capture. This content will be placed at the cursor position if specified in the capture template (with ~%?~), or at the end of the template if its not specified.
 
+You can also specify additional custom variables for use in your templates. They should be in the format ~captureVariable_<your custom variable>~, and should also be URL encoded. In your capture template they'd show up as ~%<your custom variable>~.
+
 Here's an example URL:
 
-https://org-web.org?captureTemplateName=Grocery%20item&captureContent=Lemon&captureFile=/org/todo.org
+https://org-web.org?captureTemplateName=Grocery%20item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home
 ** Development
 *Important note:* On July 31st, 2018 I did a force push to ~master~ with a complete rewrite. The current ~master~ branch shares no history with the previous one, which you should be aware of if you've cloned or forked!
 
