@@ -6,13 +6,10 @@ import _ from 'lodash';
 export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, excludeCookies = true } = {}) => {
   // Yeah, this thing is pretty wild. I use https://www.debuggex.com/ to edit it, then paste the results in here.
   // But fixing this mess is on my todo list...
-  const markupAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:!?'")}]?))|([<[](\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]](?:--[<[](\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]])?)/g;
+  const markupAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]])?)/g;
   const matches = [];
   let match = markupAndCookieRegex.exec(rawText);
   while (match) {
-    if (rawText.includes('!!!!!')) {
-      console.log("match = ", match);
-    }
     if (!!match[2]) {
       matches.push({
         type: 'link',
@@ -66,18 +63,24 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, ex
         markupType,
       });
     } else if (!!match[15]) {
-      const [firstTimestamp, secondTimestamp] = [_.range(16, 22), _.range(22, 28)].map(partIndices => {
+      const [firstTimestamp, secondTimestamp] = [_.range(16, 29), _.range(29, 42)].map(partIndices => { // eslint-disable-line no-loop-func
         const [
+          typeBracket,
           year, month, day, dayName,
           timeStart, timeEnd,
           firstDelayRepeatType, firstDelayRepeatValue, firstDelayRepeatUnit,
           secondDelayRepeatType, secondDelayRepeatValue, secondDelayRepeatUnit,
         ] = partIndices.map(partIndex => match[partIndex]);
 
+        if (!year) {
+          return null;
+        }
+
         const [startHour, startMinute] = !!timeStart ? timeStart.split(':') : [];
         const [endHour, endMinute] = !!timeEnd ? timeEnd.split(':') : [];
 
         return {
+          isActive: typeBracket === '<',
           year, month, day, dayName,
           startHour, startMinute,
           endHour, endMinute,

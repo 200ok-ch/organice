@@ -4,6 +4,7 @@ import './AttributedString.css';
 
 import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';
+import TimestampPart from './components/TimestampPart';
 
 import classNames from 'classnames';
 
@@ -74,9 +75,7 @@ export default class AttributedString extends PureComponent {
               </span>
             );
           case 'timestamp':
-            return (
-              <span key={part.get('id')}>{'<timestamp>'}</span>
-            );
+            return <TimestampPart key={part.get('id')} part={part} />;
           default:
             console.error(`Unrecognized attributed string part type! ${part.get('type')}`);
             return '';
