@@ -9,15 +9,15 @@ export default class TimestampPart extends PureComponent {
       year, month, day, dayName,
       startHour, startMinute,
       endHour, endMinute,
-      firstDelayRepeatType, firstDelayRepeatValue, firstDelayRepeatUnit,
-      secondDelayRepeatType, secondDelayRepeatValue, secondDelayRepeatUnit,
+      repeaterType, repeaterValue, repeaterUnit,
+      delayType, delayValue, delayUnit,
     ] = [
       'isActive',
       'year', 'month', 'day', 'dayName',
       'startHour', 'startMinute',
       'endHour', 'endMinute',
-      'firstDelayRepeatType', 'firstDelayRepeatValue', 'firstDelayRepeatUnit',
-      'secondDelayRepeatType', 'secondDelayRepeatValue', 'secondDelayRepeatUnit',
+      'repeaterType', 'repeaterValue', 'repeaterUnit',
+      'delayType', 'delayValue', 'delayUnit',
     ].map(key => timestamp.get(key));
 
     return (
@@ -27,8 +27,8 @@ export default class TimestampPart extends PureComponent {
         {!!dayName ? ` ${dayName}` : ''}
         {!!startHour ? ` ${startHour}:${startMinute}` : ''}
         {!!endHour ? `-${endHour}:${endMinute}` : ''}
-        {!!firstDelayRepeatType ? ` ${firstDelayRepeatType}${firstDelayRepeatValue}${firstDelayRepeatUnit}` : ''}
-        {!!secondDelayRepeatType ? ` ${secondDelayRepeatType}${secondDelayRepeatValue}${secondDelayRepeatUnit}` : ''}
+        {!!repeaterType ? ` ${repeaterType}${repeaterValue}${repeaterUnit}` : ''}
+        {!!delayType ? ` ${delayType}${delayValue}${delayUnit}` : ''}
         {isActive ? '>' : ']'}
       </Fragment>
     );

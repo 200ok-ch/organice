@@ -79,13 +79,35 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, ex
         const [startHour, startMinute] = !!timeStart ? timeStart.split(':') : [];
         const [endHour, endMinute] = !!timeEnd ? timeEnd.split(':') : [];
 
+        let repeaterType, repeaterValue, repeaterUnit;
+        let delayType, delayValue, delayUnit;
+
+        if (['+', '++', '.+'].includes(firstDelayRepeatType)) {
+          repeaterType = firstDelayRepeatType;
+          repeaterValue = firstDelayRepeatValue;
+          repeaterUnit = firstDelayRepeatUnit;
+        } else if (['-', '--'].includes(firstDelayRepeatType)) {
+          delayType = firstDelayRepeatType;
+          delayValue = firstDelayRepeatValue;
+          delayUnit = firstDelayRepeatUnit;
+        }
+        if (['+', '++', '.+'].includes(secondDelayRepeatType)) {
+          repeaterType = secondDelayRepeatType;
+          repeaterValue = secondDelayRepeatValue;
+          repeaterUnit = secondDelayRepeatUnit;
+        } else if (['-', '--'].includes(secondDelayRepeatType)) {
+          delayType = secondDelayRepeatType;
+          delayValue = secondDelayRepeatValue;
+          delayUnit = secondDelayRepeatUnit;
+        }
+
         return {
           isActive: typeBracket === '<',
           year, month, day, dayName,
           startHour, startMinute,
           endHour, endMinute,
-          firstDelayRepeatType, firstDelayRepeatValue, firstDelayRepeatUnit,
-          secondDelayRepeatType, secondDelayRepeatValue, secondDelayRepeatUnit,
+          repeaterType, repeaterValue, repeaterUnit,
+          delayType, delayValue, delayUnit,
         };
       });
 
