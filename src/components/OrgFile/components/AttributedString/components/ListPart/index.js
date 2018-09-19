@@ -34,7 +34,7 @@ export default class ListPart extends PureComponent {
             {item.get('isCheckbox') && (
               <Checkbox state={item.get('checkboxState')} />
             )}
-            <AttributedString parts={item.get('titleLine')} />
+            <AttributedString parts={item.get('titleLine')} subPartDataAndHandlers={subPartDataAndHandlers} />
           </span>
           <br />
           <AttributedString parts={item.get('contents')} subPartDataAndHandlers={subPartDataAndHandlers} />

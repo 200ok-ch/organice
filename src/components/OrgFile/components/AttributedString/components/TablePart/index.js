@@ -110,7 +110,8 @@ export default class TablePart extends PureComponent {
                                   onChange={this.handleCellChange} />
                       ) : (
                         cell.get('contents').size > 0 ? (
-                          <AttributedString parts={cell.get('contents')} />
+                          <AttributedString parts={cell.get('contents')}
+                                            subPartDataAndHandlers={this.props.subPartDataAndHandlers} />
                         ) : (
                           '   '
                         )

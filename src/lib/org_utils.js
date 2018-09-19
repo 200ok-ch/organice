@@ -215,6 +215,47 @@ export const headerThatContainsTableCellId = (headers, cellId) => (
   ))
 );
 
+export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timestampId) => (
+  parts.map((part, partIndex) => {
+    if (part.get('type') === 'timestamp' && part.get('id') === timestampId) {
+      return {
+        path: [partIndex],
+        timestampPart: part,
+      };
+    } else if (part.get('type') === 'list') {
+      return part.get('items').map((item, itemIndex) => {
+        const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(item.get('contents'), timestampId);
+        if (!!pathAndPart) {
+          const { path, timestampPart } = pathAndPart;
+          return {
+            path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
+            timestampPart,
+          };
+        } else {
+          return null;
+        }
+      }).filter(result => !!result).first();
+    } else if (part.get('type') === 'table') {
+      return part.get('contents').map((row, rowIndex) => {
+        return row.get('contents').map((cell, cellIndex) => {
+          const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(cell.get('contents'), timestampId);
+          if (!!pathAndPart) {
+            const { path, timestampPart } = pathAndPart;
+            return {
+              path: [partIndex, 'contents', rowIndex, 'contents', cellIndex, 'contents'].concat(path),
+              timestampPart,
+            };
+          } else {
+            return null;
+          }
+        }).filter(result => !!result).first();
+      }).filter(result => !!result).first();
+    } else {
+      return null;
+    }
+  }).filter(result => !!result).first()
+);
+
 export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId) => (
   parts.map((part, partIndex) => {
     if (part.get('type') === 'list') {
@@ -331,3 +372,19 @@ export const newEmptyTableCell = () => (fromJS({
   contents: [],
   rawContents: '',
 }));
+
+export const timestampWithIdInAttributedString = (parts, timestampId) => {
+  const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(parts, timestampId);
+  if (!!pathAndPart) {
+    return pathAndPart.timestampPart;
+  } else {
+    return null;
+  }
+};
+
+export const timestampWithId = (headers, timestampId) => (
+  headers.map(header => (
+    timestampWithIdInAttributedString(header.getIn(['titleLine', 'title']), timestampId) ||
+      timestampWithIdInAttributedString(header.get('description'), timestampId)
+  )).find(result => !!result)
+);

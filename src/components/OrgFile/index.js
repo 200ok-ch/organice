@@ -15,6 +15,7 @@ import ActionDrawer from './components/ActionDrawer';
 import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
+import TimestampEditorModal from './components/TimestampEditorModal';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -23,8 +24,8 @@ import * as captureActions from '../../actions/capture';
 import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
-
 import { calculateActionedKeybindings } from '../../lib/keybindings';
+import { timestampWithId } from '../../lib/org_utils';
 
 import _ from 'lodash';
 import { OrderedSet } from 'immutable';
@@ -199,6 +200,10 @@ class OrgFile extends PureComponent {
     this.props.org.setHeaderTags(this.props.selectedHeaderId, newTags);
   }
 
+  handleTimestampChange(timestampId) {
+    return newTimestamp => console.log("newTimestamp = ", newTimestamp);
+  }
+
   render() {
     const {
       headers,
@@ -318,6 +323,12 @@ class OrgFile extends PureComponent {
                              allTags={OrderedSet(headers.flatMap(header => header.getIn(['titleLine', 'tags']))).sort()}
                              onClose={this.handlePopupClose}
                              onChange={this.handleTagsChange} />
+          )}
+
+          {activePopupType === 'timestamp-editor' && (
+            <TimestampEditorModal timestamp={timestampWithId(headers, activePopupData.get('timestampId'))}
+                                  onClose={this.handlePopupClose}
+                                  onChange={this.handleTimestampChange(activePopupData.get('timestampId'))} />
           )}
 
           {!shouldDisableActions && !activePopup && (

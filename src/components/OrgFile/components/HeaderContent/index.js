@@ -7,6 +7,7 @@ import './HeaderContent.css';
 import _ from 'lodash';
 
 import * as orgActions from '../../../../actions/org';
+import * as baseActions from '../../../../actions/base';
 
 import AttributedString from '../AttributedString';
 
@@ -28,6 +29,7 @@ class HeaderContent extends PureComponent {
       'handleAddNewTableColumn',
       'handleRemoveTableColumn',
       'handleCheckboxClick',
+      'handleTimestampClick',
     ]);
 
     this.state = {
@@ -112,6 +114,10 @@ class HeaderContent extends PureComponent {
     this.props.org.advanceCheckboxState(listItemId);
   }
 
+  handleTimestampClick(timestampId) {
+    this.props.base.activatePopup('timestamp-editor', { timestampId });
+  }
+
   render() {
     const {
       header,
@@ -152,6 +158,7 @@ class HeaderContent extends PureComponent {
                               onAddNewTableColumn: this.handleAddNewTableColumn,
                               onRemoveTableColumn: this.handleRemoveTableColumn,
                               onCheckboxClick: this.handleCheckboxClick,
+                              onTimestampClick: this.handleTimestampClick,
                               shouldDisableActions,
                             }} />
         )}
@@ -174,6 +181,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     org: bindActionCreators(orgActions, dispatch),
+    base: bindActionCreators(baseActions, dispatch),
   };
 };
 
