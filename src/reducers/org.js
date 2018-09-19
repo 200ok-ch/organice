@@ -29,6 +29,7 @@ import {
   headerThatContainsTableCellId,
   headerWithPath,
   pathAndPartOfListItemWithIdInHeaders,
+  pathAndPartOfTimestampItemWithIdInHeaders,
 } from '../lib/org_utils';
 
 const displayFile = (state, action) => {
@@ -800,6 +801,17 @@ const reorderTags = (state, action) => {
   ));
 };
 
+const updateTimestampWithId = (state, action) => {
+  const pathAndPart = pathAndPartOfTimestampItemWithIdInHeaders(state.get('headers'), action.timestampId);
+  console.log("pathAndPart = ", pathAndPart);
+  if (!pathAndPart) {
+    return state;
+  }
+
+  const { path } = pathAndPart;
+  return state.setIn(['headers'].concat(path), action.newTimestamp);
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE', 'UPDATE_HEADER_TITLE', 'UPDATE_HEADER_DESCRIPTION',
@@ -808,7 +820,7 @@ export default (state = new Map(), action) => {
     'MOVE_SUBTREE_LEFT', 'MOVE_SUBTREE_RIGHT', 'ADD_NEW_TABLE_ROW', 'REMOVE_TABLE_ROW',
     'ADD_NEW_TABLE_COLUMN', 'Rif (EMOVE_TABLE_COLUMN', 'MOVE_TABLE_ROW_DOWN', 'MOVE_TABLE_ROW_UP',
     'MOVE_TABLE_COLUMN_LEFT', 'MOVE_TABLE_COLUMN_RIGHT', 'UPDATE_TABLE_CELL_VALUE',
-    'INSERT_CAPTURE', 'SET_HEADER_TAGS', 'REORDER_TAGS',
+    'INSERT_CAPTURE', 'SET_HEADER_TAGS', 'REORDER_TAGS', 'UPDATE_TIMESTAMP_WITH_ID',
   ];
 
   if (dirtyingActions.includes(action.type)) {
@@ -900,6 +912,8 @@ export default (state = new Map(), action) => {
     return setHeaderTags(state, action);
   case 'REORDER_TAGS':
     return reorderTags(state, action);
+  case 'UPDATE_TIMESTAMP_WITH_ID':
+    return updateTimestampWithId(state, action);
   default:
     return state;
   }

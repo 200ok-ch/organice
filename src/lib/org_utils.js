@@ -311,6 +311,30 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
   }).filter(result => !!result).first()
 );
 
+export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) => (
+  headers.map((header, headerIndex) => {
+    let pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(header.getIn(['titleLine', 'title']), timestampId);
+    if (!!pathAndPart) {
+      const { path, timestampPart } = pathAndPart;
+      return {
+        path: [headerIndex, 'titleLine', 'title'].concat(path),
+        timestampPart,
+      };
+    }
+
+    pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(header.get('description'), timestampId);
+    if (!pathAndPart) {
+      return null;
+    }
+
+    const { path, timestampPart } = pathAndPart;
+    return {
+      path: [headerIndex, 'description'].concat(path),
+      timestampPart,
+    };
+  }).filter(result => !!result).first()
+);
+
 export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) => (
   headers.map((header, headerIndex) => {
     const pathAndPart = pathAndPartOfListItemWithIdInAttributedString(header.get('description'), listItemId);

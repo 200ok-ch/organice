@@ -302,3 +302,7 @@ export const setHeaderTags = (headerId, tags) => ({
 export const reorderTags = (fromIndex, toIndex) => ({
   type: 'REORDER_TAGS', fromIndex, toIndex,
 });
+
+export const updateTimestampWithId = (timestampId, newTimestamp) => ({
+  type: 'UPDATE_TIMESTAMP_WITH_ID', timestampId, newTimestamp,
+});

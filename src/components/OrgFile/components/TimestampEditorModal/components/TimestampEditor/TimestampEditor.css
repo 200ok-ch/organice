@@ -1,0 +1,22 @@
+.timestamp-editor__render {
+    font-family: Courier;
+
+    text-align: center;
+}
+
+.timestamp-editor__field-container {
+    margin-top: 10px;
+}
+
+.timestamp-editor__icon {
+    color: gray;
+    margin-left: 10px;
+}
+
+.timestamp-editor__field-title {
+    margin-right: 5px;
+}
+
+.timestamp-editor__field {
+    font-family: Courier;
+}

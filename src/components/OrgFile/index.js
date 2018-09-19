@@ -201,7 +201,7 @@ class OrgFile extends PureComponent {
   }
 
   handleTimestampChange(timestampId) {
-    return newTimestamp => console.log("newTimestamp = ", newTimestamp);
+    return newTimestamp => this.props.org.updateTimestampWithId(timestampId, newTimestamp);
   }
 
   render() {
