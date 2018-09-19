@@ -73,6 +73,10 @@ export default class AttributedString extends PureComponent {
                 {part.get('content')}
               </span>
             );
+          case 'timestamp':
+            return (
+              <span key={part.get('id')}>{'<timestamp>'}</span>
+            );
           default:
             console.error(`Unrecognized attributed string part type! ${part.get('type')}`);
             return '';
