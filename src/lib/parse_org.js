@@ -3,8 +3,8 @@ import generateId from './id_generator';
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
 
-export const parseLinksAndCookies = (rawText, { shouldAppendNewline = false, excludeCookies = true } = {}) => {
-  const linkAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])/g;
+export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, excludeCookies = true } = {}) => {
+  const linkAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:!?'")}]?))/g;
   const matches = [];
   let match = linkAndCookieRegex.exec(rawText);
   while (match) {
@@ -38,6 +38,27 @@ export const parseLinksAndCookies = (rawText, { shouldAppendNewline = false, exc
         rawText: match[0],
         fraction: [fractionCookieMatch[1], fractionCookieMatch[2]],
         index: match.index,
+      });
+    } else if (!!match[11]) {
+      const markupType = {
+        '~': 'inline-code',
+        '*': 'bold',
+        '/': 'italic',
+        '+': 'strikethrough',
+        '_': 'underline',
+        '=': 'verbatim',
+      }[match[11]];
+
+      const markupPrefixLength = match[10].length;
+      const markupSuffixLength = match[14].length;
+      const rawText = match[0];
+
+      matches.push({
+        type: 'inline-markup',
+        rawText: rawText.substring(markupPrefixLength, rawText.length - markupPrefixLength - markupSuffixLength + 1),
+        index: match.index + markupPrefixLength,
+        content: match[12],
+        markupType,
       });
     }
     match = linkAndCookieRegex.exec(rawText);
@@ -79,6 +100,13 @@ export const parseLinksAndCookies = (rawText, { shouldAppendNewline = false, exc
         id: generateId(),
         type: 'fraction-cookie',
         fraction: match.fraction,
+      });
+    } else if (match.type === 'inline-markup') {
+      lineParts.push({
+        id: generateId(),
+        type: 'inline-markup',
+        content: match.content,
+        markupType: match.markupType,
       });
     }
 
@@ -128,7 +156,7 @@ const parseTable = tableLines => {
     id: generateId(),
     contents: row.map(rawContents => ({
       id: generateId(),
-      contents: parseLinksAndCookies(rawContents, { excludeCookies: true }),
+      contents: parseMarkupAndCookies(rawContents, { excludeCookies: true }),
       rawContents,
     }))
   }));
@@ -182,7 +210,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
           type: 'raw-table', line,
         }];
       } else {
-        return parseLinksAndCookies(line, { shouldAppendNewline: lineIndex !== lines.length - 1, excludeCookies: true });
+        return parseMarkupAndCookies(line, { shouldAppendNewline: lineIndex !== lines.length - 1, excludeCookies: true });
       }
     }
   }));
@@ -242,7 +270,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 
       const newListItem = {
         id: generateId(),
-        titleLine: parseLinksAndCookies(line),
+        titleLine: parseMarkupAndCookies(line),
         contents,
         forceNumber,
         isCheckbox,
@@ -297,7 +325,7 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
     }
   }
 
-  const title = parseLinksAndCookies(rawTitle);
+  const title = parseMarkupAndCookies(rawTitle);
 
   return fromJS({ title, rawTitle, todoKeyword, tags });
 };

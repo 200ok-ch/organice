@@ -62,6 +62,17 @@ export default class AttributedString extends PureComponent {
                         part={part}
                         subPartDataAndHandlers={subPartDataAndHandlers} />
             );
+          case 'inline-markup':
+            className = classNames(
+              'attributed-string__inline-markup',
+              `attributed-string__inline-markup--${part.get('markupType')}`
+            );
+
+            return (
+              <span key={part.get('id')} className={className}>
+                {part.get('content')}
+              </span>
+            );
           default:
             console.error(`Unrecognized attributed string part type! ${part.get('type')}`);
             return '';

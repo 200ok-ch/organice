@@ -6,3 +6,26 @@
 .attributed-string__cookie-part--complete {
     color: green;
 }
+
+.attributed-string__inline-markup--inline-code {
+    color: black;
+    background-color: #eaeaea;
+    border: 1px solid gray;
+    padding: 2px;
+}
+
+.attributed-string__inline-markup--bold {
+    font-weight: bold;
+}
+
+.attributed-string__inline-markup--italic {
+    font-style: italic;
+}
+
+.attributed-string__inline-markup--strikethrough {
+    text-decoration: line-through;
+}
+
+.attributed-string__inline-markup--underline {
+    text-decoration: underline;
+}
