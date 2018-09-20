@@ -31,12 +31,7 @@ class Entry extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, [
-      'renderChangelogFile',
-      'renderSampleFile',
-      'renderFileBrowser',
-      'renderFile',
-    ]);
+    _.bindAll(this, ['renderChangelogFile', 'renderSampleFile', 'renderFileBrowser', 'renderFile']);
   }
 
   componentDidMount() {
@@ -44,7 +39,11 @@ class Entry extends PureComponent {
 
     const changelogFile = parseOrg(changelogFileContents);
     const firstHeaderTitle = changelogFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
-    if (isAuthenticated && !!lastSeenChangelogHeader && firstHeaderTitle !== lastSeenChangelogHeader) {
+    if (
+      isAuthenticated &&
+      !!lastSeenChangelogHeader &&
+      firstHeaderTitle !== lastSeenChangelogHeader
+    ) {
       this.props.base.setHasUnseenChangelog(true);
     }
     this.props.base.setLastSeenChangelogHeader(firstHeaderTitle);
@@ -52,25 +51,37 @@ class Entry extends PureComponent {
 
   renderChangelogFile() {
     return (
-      <OrgFile staticFile="changelog"
-               shouldDisableDirtyIndicator={true}
-               shouldDisableActions={true}
-               shouldDisableSyncButtons={false}
-               parsingErrorMessage={"The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
+      <OrgFile
+        staticFile="changelog"
+        shouldDisableDirtyIndicator={true}
+        shouldDisableActions={true}
+        shouldDisableSyncButtons={false}
+        parsingErrorMessage={
+          "The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
+        }
+      />
     );
   }
 
   renderSampleFile() {
     return (
-      <OrgFile staticFile="sample"
-               shouldDisableDirtyIndicator={true}
-               shouldDisableActionDrawer={false}
-               shouldDisableSyncButtons={true}
-               parsingErrorMessage={"The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"} />
+      <OrgFile
+        staticFile="sample"
+        shouldDisableDirtyIndicator={true}
+        shouldDisableActionDrawer={false}
+        shouldDisableSyncButtons={true}
+        parsingErrorMessage={
+          "The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
+        }
+      />
     );
   }
 
-  renderFileBrowser({ match: { params: { path = '' } } }) {
+  renderFileBrowser({
+    match: {
+      params: { path = '' },
+    },
+  }) {
     if (!!path) {
       path = '/' + path;
     }
@@ -78,16 +89,22 @@ class Entry extends PureComponent {
     return <FileBrowser path={path} />;
   }
 
-  renderFile({ match: { params: { path } } }) {
+  renderFile({
+    match: {
+      params: { path },
+    },
+  }) {
     if (!!path) {
       path = '/' + path;
     }
 
     return (
-      <OrgFile path={path}
-               shouldDisableDirtyIndicator={false}
-               shouldDisableActionDrawer={false}
-               shouldDisableSyncButtons={false} />
+      <OrgFile
+        path={path}
+        shouldDisableDirtyIndicator={false}
+        shouldDisableActionDrawer={false}
+        shouldDisableSyncButtons={false}
+      />
     );
   }
 
@@ -102,7 +119,7 @@ class Entry extends PureComponent {
     } = this.props;
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
-    const shouldRedirectToCapturePath = pendingCapturePath && (pendingCapturePath !== pathname);
+    const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
 
     const className = classNames('entry-container', {
       'entry-container--large-font': fontSize === 'Large',
@@ -116,31 +133,31 @@ class Entry extends PureComponent {
 
         {activeModalPage === 'changelog' ? (
           this.renderChangelogFile()
-        ) : (
-          isAuthenticated ? (
-            ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(activeModalPage) ? (
-              <Fragment>
-                {activeModalPage === 'settings' && <Settings />}
-                {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
-                {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
-                {activeModalPage === 'sample' && this.renderSampleFile()}
-              </Fragment>
-            ) : (
-              <Switch>
-                {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
-                <Route path="/file/:path+" render={this.renderFile} />
-                <Route path="/files/:path*" render={this.renderFileBrowser} />
-                <Redirect to="/files" />
-              </Switch>
-            )
+        ) : isAuthenticated ? (
+          ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(
+            activeModalPage
+          ) ? (
+            <Fragment>
+              {activeModalPage === 'settings' && <Settings />}
+              {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
+              {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+              {activeModalPage === 'sample' && this.renderSampleFile()}
+            </Fragment>
           ) : (
             <Switch>
-              <Route path="/sample" exact={true} render={this.renderSampleFile} />
-              <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
-              <Route path="/" exact={true} component={Landing} />
-              <Redirect to="/" />
+              {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
+              <Route path="/file/:path+" render={this.renderFile} />
+              <Route path="/files/:path*" render={this.renderFileBrowser} />
+              <Redirect to="/files" />
             </Switch>
           )
+        ) : (
+          <Switch>
+            <Route path="/sample" exact={true} render={this.renderSampleFile} />
+            <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
+            <Route path="/" exact={true} component={Landing} />
+            <Redirect to="/" />
+          </Switch>
         )}
       </div>
     );
@@ -166,4 +183,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entry));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Entry)
+);

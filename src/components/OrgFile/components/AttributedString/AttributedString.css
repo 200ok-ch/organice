@@ -1,31 +1,31 @@
 .attributed-string__cookie-part {
-    font-weight: bold;
-    color: red;
+  font-weight: bold;
+  color: red;
 }
 
 .attributed-string__cookie-part--complete {
-    color: green;
+  color: green;
 }
 
 .attributed-string__inline-markup--inline-code {
-    color: black;
-    background-color: #eaeaea;
-    border: 1px solid gray;
-    padding: 2px;
+  color: black;
+  background-color: #eaeaea;
+  border: 1px solid gray;
+  padding: 2px;
 }
 
 .attributed-string__inline-markup--bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .attributed-string__inline-markup--italic {
-    font-style: italic;
+  font-style: italic;
 }
 
 .attributed-string__inline-markup--strikethrough {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 .attributed-string__inline-markup--underline {
-    text-decoration: underline;
+  text-decoration: underline;
 }

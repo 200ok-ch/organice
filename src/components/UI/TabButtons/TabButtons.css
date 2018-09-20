@@ -1,22 +1,22 @@
 .tab-buttons {
-    border: 1px solid #D8D8D8;
-    height: 34px;
-    box-sizing: border-box;
-    display: inline-flex;
-    align-items: center;
+  border: 1px solid #d8d8d8;
+  height: 34px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
 }
 
 .tab-buttons__btn {
-    box-sizing: border-box;
-    height: 100%;
-    padding: 7px;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 7px;
 }
 
 .entry-container--large-font .tab-buttons__btn {
-    padding: 5px;
+  padding: 5px;
 }
 
 .tab-buttons__btn--selected {
-    background-color: #5E348C;
-    color: white;
+  background-color: #5e348c;
+  color: white;
 }

@@ -50,9 +50,12 @@ class TitleLine extends PureComponent {
     }
 
     if (prevProps.header !== this.props.header) {
-      this.setState({
-        titleValue: this.calculateRawTitle(this.props.header),
-      }, () => this.storeContainerWidth());
+      this.setState(
+        {
+          titleValue: this.calculateRawTitle(this.props.header),
+        },
+        () => this.storeContainerWidth()
+      );
     }
   }
 
@@ -113,7 +116,10 @@ class TitleLine extends PureComponent {
     // If the last character typed was a newline at the end, exit edit mode.
     const newTitle = event.target.value;
     const lastCharacter = newTitle[newTitle.length - 1];
-    if (this.state.titleValue === newTitle.substring(0, newTitle.length - 1) && lastCharacter === '\n') {
+    if (
+      this.state.titleValue === newTitle.substring(0, newTitle.length - 1) &&
+      lastCharacter === '\n'
+    ) {
       this.props.org.exitEditMode();
       return;
     }
@@ -126,41 +132,44 @@ class TitleLine extends PureComponent {
   }
 
   render() {
-    const {
-      header,
-      color,
-      hasContent,
-      inEditMode,
-    } = this.props;
+    const { header, color, hasContent, inEditMode } = this.props;
     const { containerWidth } = this.state;
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
       color,
-      wordBreak: 'break-word'
+      wordBreak: 'break-word',
     };
 
     return (
-      <div className="title-line"
-           onClick={this.handleTitleClick}
-           ref={this.handleRef}
-           style={{width: containerWidth}}>
+      <div
+        className="title-line"
+        onClick={this.handleTitleClick}
+        ref={this.handleRef}
+        style={{ width: containerWidth }}
+      >
         {!inEditMode && !!todoKeyword ? (
-          <span className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
-                onClick={this.handleTodoClick}>
+          <span
+            className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
+            onClick={this.handleTodoClick}
+          >
             {todoKeyword}
           </span>
-        ) : ''}
+        ) : (
+          ''
+        )}
 
         {inEditMode ? (
-          <textarea autoFocus
-                    className="textarea"
-                    rows="3"
-                    ref={this.handleTextareaRef}
-                    value={this.state.titleValue}
-                    onBlur={this.handleTextareaBlur}
-                    onChange={this.handleTitleChange}
-                    onClick={this.handleTitleFieldClick} />
+          <textarea
+            autoFocus
+            className="textarea"
+            rows="3"
+            ref={this.handleTextareaRef}
+            value={this.state.titleValue}
+            onBlur={this.handleTextareaBlur}
+            onChange={this.handleTitleChange}
+            onClick={this.handleTitleFieldClick}
+          />
         ) : (
           <div>
             <span style={titleStyle} ref={this.handleTitleSpanRef}>
@@ -170,9 +179,16 @@ class TitleLine extends PureComponent {
 
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
-                {header.getIn(['titleLine', 'tags']).toSet().toList().filter(tag => !!tag).map(tag => (
-                  <div className="header-tag" key={tag}>{tag}</div>
-                ))}
+                {header
+                  .getIn(['titleLine', 'tags'])
+                  .toSet()
+                  .toList()
+                  .filter(tag => !!tag)
+                  .map(tag => (
+                    <div className="header-tag" key={tag}>
+                      {tag}
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -184,9 +200,9 @@ class TitleLine extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    inEditMode: (
-      state.org.present.get('editMode') === 'title' && state.org.present.get('selectedHeaderId') === props.header.get('id')
-    ),
+    inEditMode:
+      state.org.present.get('editMode') === 'title' &&
+      state.org.present.get('selectedHeaderId') === props.header.get('id'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
   };
@@ -198,4 +214,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TitleLine);

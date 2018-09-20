@@ -34,33 +34,27 @@ class FileBrowser extends PureComponent {
     const { syncBackendType, additionalSyncBackendState } = this.props;
 
     switch (syncBackendType) {
-    case 'Dropbox':
-      const pathParts = this.props.path.split('/');
-      return pathParts.slice(0, pathParts.length - 1).join('/');
-    case 'Google Drive':
-      return !!additionalSyncBackendState.get('parentId') ? '/' + additionalSyncBackendState.get('parentId') : null;
-    default:
-      return null;
+      case 'Dropbox':
+        const pathParts = this.props.path.split('/');
+        return pathParts.slice(0, pathParts.length - 1).join('/');
+      case 'Google Drive':
+        return !!additionalSyncBackendState.get('parentId')
+          ? '/' + additionalSyncBackendState.get('parentId')
+          : null;
+      default:
+        return null;
     }
   }
 
   render() {
-    const {
-      path,
-      listing,
-      hasMore,
-      isLoadingMore,
-      syncBackendType,
-    } = this.props;
+    const { path, listing, hasMore, isLoadingMore, syncBackendType } = this.props;
 
     const isTopLevelDirectory = path === '';
 
     return (
       <div className="file-browser-container">
         {syncBackendType === 'Dropbox' && (
-          <h3 className="file-browser__header">
-            Directory: {isTopLevelDirectory ? '/' : path}
-          </h3>
+          <h3 className="file-browser__header">Directory: {isTopLevelDirectory ? '/' : path}</h3>
         )}
 
         <ul className="file-browser__file-list">
@@ -106,18 +100,19 @@ class FileBrowser extends PureComponent {
             }
           })}
 
-          {hasMore && (
-            isLoadingMore ? (
+          {hasMore &&
+            (isLoadingMore ? (
               <li className="file-browser__file-list__loading-more-container">
                 <i className="fas fa-spinner fa-lg fa-spin" />
               </li>
             ) : (
-              <li className="file-browser__file-list__element file-browser__file-list__element--load-more-row"
-                  onClick={this.handleLoadMoreClick}>
+              <li
+                className="file-browser__file-list__element file-browser__file-list__element--load-more-row"
+                onClick={this.handleLoadMoreClick}
+              >
                 Load more...
               </li>
-            )
-          )}
+            ))}
         </ul>
       </div>
     );
@@ -125,13 +120,22 @@ class FileBrowser extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
-  const currentFileBrowserDirectoryListing = state.syncBackend.get('currentFileBrowserDirectoryListing');
+  const currentFileBrowserDirectoryListing = state.syncBackend.get(
+    'currentFileBrowserDirectoryListing'
+  );
   return {
     syncBackendType: state.syncBackend.get('client').type,
-    listing: !!currentFileBrowserDirectoryListing ? currentFileBrowserDirectoryListing.get('listing') : null,
-    hasMore: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('hasMore'),
-    isLoadingMore: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('isLoadingMore'),
-    additionalSyncBackendState: !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('additionalSyncBackendState'),
+    listing: !!currentFileBrowserDirectoryListing
+      ? currentFileBrowserDirectoryListing.get('listing')
+      : null,
+    hasMore:
+      !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('hasMore'),
+    isLoadingMore:
+      !!currentFileBrowserDirectoryListing &&
+      currentFileBrowserDirectoryListing.get('isLoadingMore'),
+    additionalSyncBackendState:
+      !!currentFileBrowserDirectoryListing &&
+      currentFileBrowserDirectoryListing.get('additionalSyncBackendState'),
   };
 };
 
@@ -141,4 +145,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FileBrowser);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FileBrowser);

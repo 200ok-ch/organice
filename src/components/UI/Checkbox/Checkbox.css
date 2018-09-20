@@ -1,19 +1,19 @@
 .checkbox {
-    height: 20px;
-    width: 20px;
-    vertical-align: middle;
-    margin-right: 5px;
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
 
-    border: 2px solid #5E348C;
-    border-radius: 2px;
-    box-sizing: border-box;
+  border: 2px solid #5e348c;
+  border-radius: 2px;
+  box-sizing: border-box;
 
-    display: inline-block;
+  display: inline-block;
 
-    color: white;
+  color: white;
 }
 
 .checkbox__inner-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }

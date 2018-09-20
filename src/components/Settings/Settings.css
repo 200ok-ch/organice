@@ -1,69 +1,69 @@
 .setting-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 10px;
-    border-bottom: 1px solid #D8D8D8;
-    padding: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px;
+  border-bottom: 1px solid #d8d8d8;
+  padding: 5px 0;
 }
 
 .settings-container a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .setting-container:first-of-type {
-    border-top: 1px solid #D8D8D8;
+  border-top: 1px solid #d8d8d8;
 }
 
 .setting-label {
-    max-width: calc(100% - 90px)
+  max-width: calc(100% - 90px);
 }
 
 .setting-label__description {
-    font-size: 14px;
-    color: gray;
-    max-width: calc(100% - 25px);
-    margin-top: 5px;
+  font-size: 14px;
+  color: gray;
+  max-width: calc(100% - 25px);
+  margin-top: 5px;
 }
 
 .settings-buttons-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .settings-btn {
-    font-size: 20px;
-    width: 90%;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-    text-align: center;
+  font-size: 20px;
+  width: 90%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  text-align: center;
 
-    position: relative;
+  position: relative;
 }
 
 .settings-button-separator {
-    width: calc(100% - 20px);
-    margin-top: 0px;
-    margin-bottom: 20px;
+  width: calc(100% - 20px);
+  margin-top: 0px;
+  margin-bottom: 20px;
 
-    border: none;
-    border-bottom: 1px solid #D8D8D8;
+  border: none;
+  border-bottom: 1px solid #d8d8d8;
 }
 
 .changelog-badge-container {
-    position: absolute;
-    top: -10px;
-    right: -10px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
 
-    border-radius: 50%;
-    background-color: red;
-    width: 35px;
-    height: 35px;
+  border-radius: 50%;
+  background-color: red;
+  width: 35px;
+  height: 35px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

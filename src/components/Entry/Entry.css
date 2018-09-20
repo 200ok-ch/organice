@@ -1,9 +1,9 @@
 .entry-container {
-    font-size: 16px;
+  font-size: 16px;
 
-    overflow-x: hidden;
+  overflow-x: hidden;
 }
 
 .entry-container--large-font {
-    font-size: 20px;
+  font-size: 20px;
 }

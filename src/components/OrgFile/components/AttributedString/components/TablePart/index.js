@@ -23,11 +23,7 @@ export default class TablePart extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
-      subPartDataAndHandlers: {
-        onTableCellValueUpdate,
-        selectedTableCellId,
-        inTableEditMode
-      }
+      subPartDataAndHandlers: { onTableCellValueUpdate, selectedTableCellId, inTableEditMode },
     } = this.props;
     const { rawCellValues } = this.state;
 
@@ -43,11 +39,12 @@ export default class TablePart extends PureComponent {
   }
 
   generateCellValueMap(table) {
-    return Map(table.get('contents').map(row => (
-      row.get('contents').map(cell => (
-        [cell.get('id'), cell.get('rawContents')]
-      ))
-    )).flatten());
+    return Map(
+      table
+        .get('contents')
+        .map(row => row.get('contents').map(cell => [cell.get('id'), cell.get('rawContents')]))
+        .flatten()
+    );
   }
 
   handleCellSelect(cellId) {
@@ -60,7 +57,9 @@ export default class TablePart extends PureComponent {
 
   handleCellChange(event) {
     const { rawCellValues } = this.state;
-    const { subPartDataAndHandlers: { selectedTableCellId } } = this.props;
+    const {
+      subPartDataAndHandlers: { selectedTableCellId },
+    } = this.props;
 
     this.setState({
       rawCellValues: rawCellValues.set(selectedTableCellId, event.target.value),
@@ -70,19 +69,13 @@ export default class TablePart extends PureComponent {
   render() {
     const {
       table,
-      subPartDataAndHandlers: {
-        selectedTableCellId,
-        inTableEditMode,
-        shouldDisableActions,
-      },
+      subPartDataAndHandlers: { selectedTableCellId, inTableEditMode, shouldDisableActions },
     } = this.props;
     const { rawCellValues } = this.state;
 
-    const isTableSelected = table.get('contents').some(row => (
-      row.get('contents').some(cell => (
-        cell.get('id') === selectedTableCellId
-      ))
-    ));
+    const isTableSelected = table
+      .get('contents')
+      .some(row => row.get('contents').some(cell => cell.get('id') === selectedTableCellId));
 
     return (
       <Fragment>
@@ -98,23 +91,27 @@ export default class TablePart extends PureComponent {
                   });
 
                   return (
-                    <td className={className}
-                        key={cell.get('id')}
-                        onClick={this.handleCellSelect(cell.get('id'))}>
-                      {(isCellSelected && inTableEditMode) ? (
-                        <textarea autoFocus
-                                  className="textarea"
-                                  rows="3"
-                                  value={rawCellValues.get(cell.get('id'))}
-                                  onBlur={this.handleTextareaBlur}
-                                  onChange={this.handleCellChange} />
+                    <td
+                      className={className}
+                      key={cell.get('id')}
+                      onClick={this.handleCellSelect(cell.get('id'))}
+                    >
+                      {isCellSelected && inTableEditMode ? (
+                        <textarea
+                          autoFocus
+                          className="textarea"
+                          rows="3"
+                          value={rawCellValues.get(cell.get('id'))}
+                          onBlur={this.handleTextareaBlur}
+                          onChange={this.handleCellChange}
+                        />
+                      ) : cell.get('contents').size > 0 ? (
+                        <AttributedString
+                          parts={cell.get('contents')}
+                          subPartDataAndHandlers={this.props.subPartDataAndHandlers}
+                        />
                       ) : (
-                        cell.get('contents').size > 0 ? (
-                          <AttributedString parts={cell.get('contents')}
-                                            subPartDataAndHandlers={this.props.subPartDataAndHandlers} />
-                        ) : (
-                          '   '
-                        )
+                        '   '
                       )}
                     </td>
                   );

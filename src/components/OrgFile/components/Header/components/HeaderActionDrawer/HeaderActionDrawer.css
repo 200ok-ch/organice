@@ -1,22 +1,22 @@
 .header-action-drawer-container {
-    color: lightgray;
+  color: lightgray;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 
-    padding-top: 10px;
-    padding-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 
-    padding-right: 20px;
+  padding-right: 20px;
 }
 
 .header-action-drawer__separator {
-    background-color: lightgray;
+  background-color: lightgray;
 
-    height: 15px;
-    width: 1px;
+  height: 15px;
+  width: 1px;
 
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }

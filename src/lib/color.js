@@ -8,12 +8,12 @@ export const interpolateColors = (colorA, colorB, interpolationFactor) => {
     r: parseInt((colorB.r - colorA.r) * interpolationFactor + colorA.r, 10),
     g: parseInt((colorB.g - colorA.g) * interpolationFactor + colorA.g, 10),
     b: parseInt((colorB.b - colorA.b) * interpolationFactor + colorA.b, 10),
-    a: (colorB.a - colorA.a) * interpolationFactor + colorA.a
+    a: (colorB.a - colorA.a) * interpolationFactor + colorA.a,
   };
 };
 
 export const rgbaObject = (r, g, b, a) => {
-  return {r, g, b, a};
+  return { r, g, b, a };
 };
 
 export const rgbaString = rgba => {

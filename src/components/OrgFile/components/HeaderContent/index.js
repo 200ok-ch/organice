@@ -56,9 +56,12 @@ class HeaderContent extends PureComponent {
     }
 
     if (prevProps.header !== this.props.header) {
-      this.setState({
-        descriptionValue: this.props.header.get('rawDescription'),
-      }, () => this.storeContainerWidth());
+      this.setState(
+        {
+          descriptionValue: this.props.header.get('rawDescription'),
+        },
+        () => this.storeContainerWidth()
+      );
     }
   }
 
@@ -129,38 +132,44 @@ class HeaderContent extends PureComponent {
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
-      return <div></div>;
+      return <div />;
     }
 
     return (
-      <div className="header-content-container nice-scroll"
-           ref={this.handleRef}
-           style={{width: containerWidth}}>
+      <div
+        className="header-content-container nice-scroll"
+        ref={this.handleRef}
+        style={{ width: containerWidth }}
+      >
         {inEditMode ? (
-          <textarea autoFocus
-                    className="textarea"
-                    rows="8"
-                    ref={this.handleTextareaRef}
-                    value={this.state.descriptionValue}
-                    onBlur={this.handleTextareaBlur}
-                    onChange={this.handleDescriptionChange} />
+          <textarea
+            autoFocus
+            className="textarea"
+            rows="8"
+            ref={this.handleTextareaRef}
+            value={this.state.descriptionValue}
+            onBlur={this.handleTextareaBlur}
+            onChange={this.handleDescriptionChange}
+          />
         ) : (
-          <AttributedString parts={header.get('description')}
-                            subPartDataAndHandlers={{
-                              onTableCellSelect: this.handleTableCellSelect,
-                              selectedTableCellId: selectedTableCellId,
-                              inTableEditMode: inTableEditMode,
-                              onExitTableEditMode: this.handleExitTableEditMode,
-                              onTableCellValueUpdate: this.handleTableCellValueUpdate,
-                              onEnterTableEditMode: this.handleEnterTableEditMode,
-                              onAddNewTableRow: this.handleAddNewTableRow,
-                              onRemoveTableRow: this.handleRemoveTableRow,
-                              onAddNewTableColumn: this.handleAddNewTableColumn,
-                              onRemoveTableColumn: this.handleRemoveTableColumn,
-                              onCheckboxClick: this.handleCheckboxClick,
-                              onTimestampClick: this.handleTimestampClick,
-                              shouldDisableActions,
-                            }} />
+          <AttributedString
+            parts={header.get('description')}
+            subPartDataAndHandlers={{
+              onTableCellSelect: this.handleTableCellSelect,
+              selectedTableCellId: selectedTableCellId,
+              inTableEditMode: inTableEditMode,
+              onExitTableEditMode: this.handleExitTableEditMode,
+              onTableCellValueUpdate: this.handleTableCellValueUpdate,
+              onEnterTableEditMode: this.handleEnterTableEditMode,
+              onAddNewTableRow: this.handleAddNewTableRow,
+              onRemoveTableRow: this.handleRemoveTableRow,
+              onAddNewTableColumn: this.handleAddNewTableColumn,
+              onRemoveTableColumn: this.handleRemoveTableColumn,
+              onCheckboxClick: this.handleCheckboxClick,
+              onTimestampClick: this.handleTimestampClick,
+              shouldDisableActions,
+            }}
+          />
         )}
       </div>
     );
@@ -169,9 +178,9 @@ class HeaderContent extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    inEditMode: (
-      state.org.present.get('editMode') === 'description' && state.org.present.get('selectedHeaderId') === props.header.get('id')
-    ),
+    inEditMode:
+      state.org.present.get('editMode') === 'description' &&
+      state.org.present.get('selectedHeaderId') === props.header.get('id'),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     inTableEditMode: state.org.present.get('editMode') === 'table',
@@ -185,4 +194,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderContent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HeaderContent);

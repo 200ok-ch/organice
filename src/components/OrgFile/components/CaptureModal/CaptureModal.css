@@ -1,51 +1,51 @@
 .capture-modal-header {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .capture-modal-header-path {
-    font-family: Courier;
-    color: gray;
+  font-family: Courier;
+  color: gray;
 
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .capture-modal-textarea {
-    border: 1px solid lightgray;
-    font-family: Courier;
+  border: 1px solid lightgray;
+  font-family: Courier;
 
-    margin-top: 10px;
+  margin-top: 10px;
 
-    width: calc(100% - 5px);
+  width: calc(100% - 5px);
 
-    -webkit-appearance: none;
-    border-radius: 0;
+  -webkit-appearance: none;
+  border-radius: 0;
 }
 
 .capture-modal-button-container {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .capture-modal-prepend-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .capture-modal-prepend-label {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .capture-modal-button {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .capture-modal-error-message {
-    color: red;
+  color: red;
 
-    text-align: center;
+  text-align: center;
 
-    margin-top: 10px;
+  margin-top: 10px;
 }

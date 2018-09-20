@@ -22,7 +22,9 @@ export default class CaptureModal extends PureComponent {
       'handlePrependSwitchToggle',
     ]);
 
-    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(props.template.get('template'));
+    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(
+      props.template.get('template')
+    );
 
     this.state = {
       textareaValue: substitutedTemplate,
@@ -71,26 +73,28 @@ export default class CaptureModal extends PureComponent {
     return (
       <Popup shouldIncludeCloseButton onClose={this.handleCloseClick}>
         <div className="capture-modal-header">
-          <ActionButton letter={template.get('letter')}
-                        iconName={template.get('iconName')}
-                        isDisabled={false}
-                        onClick={() => {}}
-                        style={{marginRight: 20}} />
+          <ActionButton
+            letter={template.get('letter')}
+            iconName={template.get('iconName')}
+            isDisabled={false}
+            onClick={() => {}}
+            style={{ marginRight: 20 }}
+          />
 
           <span>{template.get('description')}</span>
         </div>
 
-        <div className="capture-modal-header-path">
-          {template.get('headerPaths').join(' > ')}
-        </div>
+        <div className="capture-modal-header-path">{template.get('headerPaths').join(' > ')}</div>
 
         {!!targetHeader ? (
           <Fragment>
-            <textarea className="textarea capture-modal-textarea"
-                      rows="4"
-                      value={textareaValue}
-                      onChange={this.handleTextareaChange}
-                      ref={textarea => this.textarea = textarea} />
+            <textarea
+              className="textarea capture-modal-textarea"
+              rows="4"
+              value={textareaValue}
+              onChange={this.handleTextareaChange}
+              ref={textarea => (this.textarea = textarea)}
+            />
 
             <div className="capture-modal-button-container">
               <div className="capture-modal-prepend-container">

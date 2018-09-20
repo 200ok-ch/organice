@@ -29,15 +29,21 @@ export default class ListPart extends PureComponent {
 
       return (
         <li key={item.get('id')} value={item.get('forceNumber')}>
-          <span className={lineContainerClass}
-                onClick={item.get('isCheckbox') ? this.handleCheckboxClick(item.get('id')) : null}>
-            {item.get('isCheckbox') && (
-              <Checkbox state={item.get('checkboxState')} />
-            )}
-            <AttributedString parts={item.get('titleLine')} subPartDataAndHandlers={subPartDataAndHandlers} />
+          <span
+            className={lineContainerClass}
+            onClick={item.get('isCheckbox') ? this.handleCheckboxClick(item.get('id')) : null}
+          >
+            {item.get('isCheckbox') && <Checkbox state={item.get('checkboxState')} />}
+            <AttributedString
+              parts={item.get('titleLine')}
+              subPartDataAndHandlers={subPartDataAndHandlers}
+            />
           </span>
           <br />
-          <AttributedString parts={item.get('contents')} subPartDataAndHandlers={subPartDataAndHandlers} />
+          <AttributedString
+            parts={item.get('contents')}
+            subPartDataAndHandlers={subPartDataAndHandlers}
+          />
         </li>
       );
     });
@@ -51,9 +57,7 @@ export default class ListPart extends PureComponent {
         {this.renderContent()}
       </ol>
     ) : (
-      <ul className="attributed-string__list-part">
-        {this.renderContent()}
-      </ul>
+      <ul className="attributed-string__list-part">{this.renderContent()}</ul>
     );
   }
 }

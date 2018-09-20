@@ -14,7 +14,10 @@ export default class TimestampPart extends PureComponent {
   }
 
   handleClick() {
-    const { part, subPartDataAndHandlers: { onTimestampClick } } = this.props;
+    const {
+      part,
+      subPartDataAndHandlers: { onTimestampClick },
+    } = this.props;
     onTimestampClick(part.get('id'));
   }
 
@@ -28,7 +31,8 @@ export default class TimestampPart extends PureComponent {
         {!!firstTimestamp && renderAsText(firstTimestamp)}
         {!!secondTimestamp && (
           <Fragment>
-            {'--'}{renderAsText(secondTimestamp)}
+            {'--'}
+            {renderAsText(secondTimestamp)}
           </Fragment>
         )}
       </span>

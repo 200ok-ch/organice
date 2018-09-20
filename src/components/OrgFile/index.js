@@ -73,7 +73,7 @@ class OrgFile extends PureComponent {
         this.props.base.setHasUnseenChangelog(false);
       }
 
-      setTimeout(() => document.querySelector('html').scrollTop = 0, 0);
+      setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
     } else if (!!path && path !== loadedPath) {
       this.props.syncBackend.downloadFile(path);
     }
@@ -228,21 +228,25 @@ class OrgFile extends PureComponent {
     }
 
     if (!headers) {
-      return <div></div>;
+      return <div />;
     }
 
     if (this.state.hasError) {
       return (
         <div className="error-message-container">
           Uh oh, you ran into a bug!
-
           <br />
           <br />
-
-          This was probably the result of an error in attempting to parse your org file.
-          It'd be super helpful if you could
-          {' '}<a href="https://github.com/DanielDe/org-web/issues/new" target="_blank" rel="noopener noreferrer">create an issue</a>
-          {' '}(and include the org file if possible!)
+          This was probably the result of an error in attempting to parse your org file. It'd be
+          super helpful if you could{' '}
+          <a
+            href="https://github.com/DanielDe/org-web/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            create an issue
+          </a>{' '}
+          (and include the org file if possible!)
         </div>
       );
     }
@@ -265,9 +269,16 @@ class OrgFile extends PureComponent {
     };
 
     const handlers = {
-      selectNextVisibleHeader: preventDefaultAndHandleEditMode(this.handleSelectNextVisibleHeaderHotKey),
-      selectPreviousVisibleHeader: preventDefaultAndHandleEditMode(this.handleSelectPreviousVisibleHeaderHotKey),
-      toggleHeaderOpened: preventDefaultAndHandleEditMode(this.handleToggleHeaderOpenedHotKey, true),
+      selectNextVisibleHeader: preventDefaultAndHandleEditMode(
+        this.handleSelectNextVisibleHeaderHotKey
+      ),
+      selectPreviousVisibleHeader: preventDefaultAndHandleEditMode(
+        this.handleSelectPreviousVisibleHeaderHotKey
+      ),
+      toggleHeaderOpened: preventDefaultAndHandleEditMode(
+        this.handleToggleHeaderOpenedHotKey,
+        true
+      ),
       advanceTodo: preventDefaultAndHandleEditMode(this.handleAdvanceTodoHotKey),
       editTitle: preventDefaultAndHandleEditMode(this.handleEditTitleHotKey),
       editDescription: preventDefaultAndHandleEditMode(this.handleEditDescriptionHotKey),
@@ -292,9 +303,15 @@ class OrgFile extends PureComponent {
                 <Fragment>{parsingErrorMessage}</Fragment>
               ) : (
                 <Fragment>
-                  If you think this is a bug, please
-                  {' '}<a href="https://github.com/DanielDe/org-web/issues/new" target="_blank" rel="noopener noreferrer">create an issue</a>
-                  {' '}and include the org file if possible!
+                  If you think this is a bug, please{' '}
+                  <a
+                    href="https://github.com/DanielDe/org-web/issues/new"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    create an issue
+                  </a>{' '}
+                  and include the org file if possible!
                 </Fragment>
               )}
             </div>
@@ -302,39 +319,56 @@ class OrgFile extends PureComponent {
             <HeaderList shouldDisableActions={shouldDisableActions} />
           )}
 
-          {isDirty && !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
+          {isDirty &&
+            !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 
           {activePopupType === 'capture' && (
-            <CaptureModal template={captureTemplates.find(template => template.get('id') === activePopupData.get('templateId'))}
-                          headers={headers}
-                          onCapture={this.handleCapture}
-                          onClose={this.handlePopupClose} />
+            <CaptureModal
+              template={captureTemplates.find(
+                template => template.get('id') === activePopupData.get('templateId')
+              )}
+              headers={headers}
+              onCapture={this.handleCapture}
+              onClose={this.handlePopupClose}
+            />
           )}
 
           {activePopupType === 'sync-confirmation' && (
-            <SyncConfirmationModal lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
-                                   onPull={this.handleSyncConfirmationPull}
-                                   onPush={this.handleSyncConfirmationPush}
-                                   onCancel={this.handleSyncConfirmationCancel} />
+            <SyncConfirmationModal
+              lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
+              onPull={this.handleSyncConfirmationPull}
+              onPush={this.handleSyncConfirmationPush}
+              onCancel={this.handleSyncConfirmationCancel}
+            />
           )}
 
-          {activePopupType === 'tags-editor' && !!selectedHeader && (
-            <TagsEditorModal header={selectedHeader}
-                             allTags={OrderedSet(headers.flatMap(header => header.getIn(['titleLine', 'tags']))).sort()}
-                             onClose={this.handlePopupClose}
-                             onChange={this.handleTagsChange} />
-          )}
+          {activePopupType === 'tags-editor' &&
+            !!selectedHeader && (
+              <TagsEditorModal
+                header={selectedHeader}
+                allTags={OrderedSet(
+                  headers.flatMap(header => header.getIn(['titleLine', 'tags']))
+                ).sort()}
+                onClose={this.handlePopupClose}
+                onChange={this.handleTagsChange}
+              />
+            )}
 
           {activePopupType === 'timestamp-editor' && (
-            <TimestampEditorModal timestamp={timestampWithId(headers, activePopupData.get('timestampId'))}
-                                  onClose={this.handlePopupClose}
-                                  onChange={this.handleTimestampChange(activePopupData.get('timestampId'))} />
+            <TimestampEditorModal
+              timestamp={timestampWithId(headers, activePopupData.get('timestampId'))}
+              onClose={this.handlePopupClose}
+              onChange={this.handleTimestampChange(activePopupData.get('timestampId'))}
+            />
           )}
 
-          {!shouldDisableActions && !activePopup && (
-            <ActionDrawer shouldDisableSyncButtons={shouldDisableSyncButtons}
-                          staticFile={staticFile} />
-          )}
+          {!shouldDisableActions &&
+            !activePopup && (
+              <ActionDrawer
+                shouldDisableSyncButtons={shouldDisableSyncButtons}
+                staticFile={staticFile}
+              />
+            )}
         </div>
       </HotKeys>
     );
@@ -372,4 +406,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrgFile);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrgFile);

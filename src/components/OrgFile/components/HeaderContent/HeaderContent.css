@@ -1,12 +1,12 @@
 .header-content-container {
-    white-space: pre-wrap;
-    overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-x: auto;
 }
 
 .header-content__edit-icon {
-    color: #5E348C;
+  color: #5e348c;
 
-    margin-top: 10px;
-    margin-right: 5px;
-    float: left;
+  margin-top: 10px;
+  margin-right: 5px;
+  float: left;
 }

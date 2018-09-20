@@ -32,32 +32,40 @@ class HeaderList extends PureComponent {
   }
 
   handleHeaderRef(headerId) {
-    return div => this.headerRefs[headerId] = div;
+    return div => (this.headerRefs[headerId] = div);
   }
 
   render() {
     const { headers, selectedHeaderId, focusedHeaderId, shouldDisableActions } = this.props;
 
-    const headerRenderData = headers.map(header => {
-      return {
-        header,
-        displayed: false,
-        hasContent: !!header.get('rawDescription'),
-      };
-    }).toArray();
+    const headerRenderData = headers
+      .map(header => {
+        return {
+          header,
+          displayed: false,
+          hasContent: !!header.get('rawDescription'),
+        };
+      })
+      .toArray();
 
     headerRenderData.forEach((headerRenderDatum, index) => {
       const nestingLevel = headerRenderDatum.header.get('nestingLevel');
 
-      const hasNoParents = headerRenderData.slice(0, index).every(previousRenderDatum => (
-        previousRenderDatum.header.get('nestingLevel') >= nestingLevel
-      ));
+      const hasNoParents = headerRenderData
+        .slice(0, index)
+        .every(
+          previousRenderDatum => previousRenderDatum.header.get('nestingLevel') >= nestingLevel
+        );
       if (hasNoParents) {
         headerRenderDatum.displayed = true;
       }
 
       const followingHeaders = headerRenderData.slice(index + 1);
-      for (let followingHeaderIndex = 0; followingHeaderIndex < followingHeaders.length; ++followingHeaderIndex) {
+      for (
+        let followingHeaderIndex = 0;
+        followingHeaderIndex < followingHeaders.length;
+        ++followingHeaderIndex
+      ) {
         const followingHeader = followingHeaders[followingHeaderIndex];
         if (followingHeader.header.get('nestingLevel') <= nestingLevel) {
           break;
@@ -65,35 +73,38 @@ class HeaderList extends PureComponent {
 
         headerRenderDatum.hasContent = true;
 
-        followingHeader.displayed = headerRenderDatum.header.get('opened') && headerRenderDatum.displayed;
+        followingHeader.displayed =
+          headerRenderDatum.header.get('opened') && headerRenderDatum.displayed;
       }
     });
 
     if (!!focusedHeaderId) {
-      const focusedHeaderIndex = headerRenderData.findIndex(headerRenderDatum => (
-        headerRenderDatum.header.get('id') === focusedHeaderId
-      ));
+      const focusedHeaderIndex = headerRenderData.findIndex(
+        headerRenderDatum => headerRenderDatum.header.get('id') === focusedHeaderId
+      );
 
       const previousHeaders = headerRenderData.slice(0, focusedHeaderIndex);
-      previousHeaders.forEach(headerRenderDatum => (
-        headerRenderDatum.displayed = false
-      ));
+      previousHeaders.forEach(headerRenderDatum => (headerRenderDatum.displayed = false));
 
       const numSubheaders = numSubheadersOfHeaderWithId(headers, focusedHeaderId);
       const followingHeaders = headerRenderData.slice(focusedHeaderIndex + numSubheaders + 1);
-      followingHeaders.forEach(headerRenderDatum => (
-        headerRenderDatum.displayed = false
-      ));
+      followingHeaders.forEach(headerRenderDatum => (headerRenderDatum.displayed = false));
     }
 
-    const headerColors = ['rgba(38, 143, 214, 1)', 'rgba(42, 164, 168, 1)',
-                          'rgba(181, 142, 78, 1)', 'rgba(220, 64, 95, 1)',
-                          'rgba(101, 128, 152, 1)', 'rgba(146, 164, 175, 1)',
-                          'rgba(203, 85, 83, 1)', 'rgba(108, 119, 202, 1)'];
+    const headerColors = [
+      'rgba(38, 143, 214, 1)',
+      'rgba(42, 164, 168, 1)',
+      'rgba(181, 142, 78, 1)',
+      'rgba(220, 64, 95, 1)',
+      'rgba(101, 128, 152, 1)',
+      'rgba(146, 164, 175, 1)',
+      'rgba(203, 85, 83, 1)',
+      'rgba(108, 119, 202, 1)',
+    ];
 
-    const displayedHeaderRenderData = headerRenderData.filter(headerRenderDatum => (
-      headerRenderDatum.displayed
-    ));
+    const displayedHeaderRenderData = headerRenderData.filter(
+      headerRenderDatum => headerRenderDatum.displayed
+    );
 
     const className = classNames('header-list-container', {
       'header-list-container--focused': !!focusedHeaderId,
@@ -105,13 +116,15 @@ class HeaderList extends PureComponent {
           const color = headerColors[(header.get('nestingLevel') - 1) % headerColors.length];
 
           return (
-            <Header key={header.get('id')}
-                    header={header}
-                    color={color}
-                    hasContent={headerRenderDatum.hasContent}
-                    isSelected={header.get('id') === selectedHeaderId}
-                    onRef={this.handleHeaderRef(header.get('id'))}
-                    shouldDisableActions={shouldDisableActions} />
+            <Header
+              key={header.get('id')}
+              header={header}
+              color={color}
+              hasContent={headerRenderDatum.hasContent}
+              isSelected={header.get('id') === selectedHeaderId}
+              onRef={this.handleHeaderRef(header.get('id'))}
+              shouldDisableActions={shouldDisableActions}
+            />
           );
         })}
       </div>
@@ -131,4 +144,7 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HeaderList);

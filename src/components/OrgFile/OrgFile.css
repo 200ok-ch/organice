@@ -1,27 +1,27 @@
 .org-file__parsing-error-message {
-    text-align: center;
-    font-size: 16px;
+  text-align: center;
+  font-size: 16px;
 
-    margin: 10px;
+  margin: 10px;
 }
 
 .org-file__btn {
-    margin: 10px;
-    text-align: center;
+  margin: 10px;
+  text-align: center;
 }
 
 .dirty-indicator {
-    padding: 3px;
-    background-color: gray;
-    opacity: 0.5;
-    color: white;
-    position: fixed;
-    bottom: 100px;
-    right: 10px;
-    font-weight: bold;
+  padding: 3px;
+  background-color: gray;
+  opacity: 0.5;
+  color: white;
+  position: fixed;
+  bottom: 100px;
+  right: 10px;
+  font-weight: bold;
 }
 
 .error-message-container {
-    padding: 10px;
-    font-size: 20px;
+  padding: 10px;
+  font-size: 20px;
 }

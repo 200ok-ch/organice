@@ -12,26 +12,34 @@ export const isLocalStorageAvailable = () => {
   try {
     localStorage.setItem('test', 'test');
     return localStorage.getItem('test') === 'test';
-  } catch(e) {
+  } catch (e) {
     return false;
   }
 };
 
-const debouncedPushConfigToSyncBackend = _.debounce((syncBackendClient, contents) => {
-  switch (syncBackendClient.type) {
-  case 'Dropbox':
-    syncBackendClient.createFile('/.org-web-config.json', contents).catch(error => (
-      alert(`There was an error trying to push settings to your sync backend: ${error}`)
-    ));
-    break;
-  case 'Google Drive':
-    syncBackendClient.createFile('.org-web-config.json', 'root', contents).catch(error => (
-      alert(`There was an error trying to push settings to your sync backend: ${error}`)
-    ));
-    break;
-  default:
-  }
-}, 1000, { maxWait: 3000 });
+const debouncedPushConfigToSyncBackend = _.debounce(
+  (syncBackendClient, contents) => {
+    switch (syncBackendClient.type) {
+      case 'Dropbox':
+        syncBackendClient
+          .createFile('/.org-web-config.json', contents)
+          .catch(error =>
+            alert(`There was an error trying to push settings to your sync backend: ${error}`)
+          );
+        break;
+      case 'Google Drive':
+        syncBackendClient
+          .createFile('.org-web-config.json', 'root', contents)
+          .catch(error =>
+            alert(`There was an error trying to push settings to your sync backend: ${error}`)
+          );
+        break;
+      default:
+    }
+  },
+  1000,
+  { maxWait: 3000 }
+);
 
 export const persistableFields = [
   {
@@ -84,50 +92,59 @@ export const readOpennessState = () => {
   return !!opennessStateJSONString ? JSON.parse(opennessStateJSONString) : null;
 };
 
-const getFieldsToPersist = (state, fields) => (
-  fields.filter(field => (
-    !field.depreacted
-  )).filter(field => field.category === 'org').map(field => field.name).map(field => (
-    [field, state.org.present.get(field)]
-  )).concat(persistableFields.filter(field => field.category !== 'org').map(field => {
-    if (field.type === 'json') {
-      return [field.name, JSON.stringify(state[field.category].get(field.name) || field.default || {})];
-    } else {
-      return [field.name, state[field.category].get(field.name)];
-    }
-  }))
-);
+const getFieldsToPersist = (state, fields) =>
+  fields
+    .filter(field => !field.depreacted)
+    .filter(field => field.category === 'org')
+    .map(field => field.name)
+    .map(field => [field, state.org.present.get(field)])
+    .concat(
+      persistableFields.filter(field => field.category !== 'org').map(field => {
+        if (field.type === 'json') {
+          return [
+            field.name,
+            JSON.stringify(state[field.category].get(field.name) || field.default || {}),
+          ];
+        } else {
+          return [field.name, state[field.category].get(field.name)];
+        }
+      })
+    );
 
-const getConfigFileContents = fieldsToPersist => (
-  JSON.stringify(_.fromPairs(fieldsToPersist.filter(([name, _value]) => (
-    !['lastSeenChangelogHeader'].includes(name)
-  ))), null, 2)
-);
+const getConfigFileContents = fieldsToPersist =>
+  JSON.stringify(
+    _.fromPairs(
+      fieldsToPersist.filter(([name, _value]) => !['lastSeenChangelogHeader'].includes(name))
+    ),
+    null,
+    2
+  );
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
-  persistableFields.filter(field => (
-    field.category === category
-  )).filter(field => (
-    field.shouldStoreInConfig
-  )).filter(field => (
-    // I accidentally included this field in some config files, so I need to forever
-    // filter it out here. Whoops...
-    field.name !== 'lastSeenChangelogHeader'
-  )).forEach(field => {
-    if (field.type === 'json') {
-      state = state.set(field.name, fromJS(JSON.parse(config[field.name])));
-    } else {
-      state = state.set(field.name, config[field.name]);
-    }
-  });
+  persistableFields
+    .filter(field => field.category === category)
+    .filter(field => field.shouldStoreInConfig)
+    .filter(
+      field =>
+        // I accidentally included this field in some config files, so I need to forever
+        // filter it out here. Whoops...
+        field.name !== 'lastSeenChangelogHeader'
+    )
+    .forEach(field => {
+      if (field.type === 'json') {
+        state = state.set(field.name, fromJS(JSON.parse(config[field.name])));
+      } else {
+        state = state.set(field.name, config[field.name]);
+      }
+    });
 
   return state;
 };
 
 export const applyCaptureSettingsFromConfig = (state, config) => {
-  const captureTemplates = fromJS(JSON.parse(config.captureTemplates)).map(template => (
+  const captureTemplates = fromJS(JSON.parse(config.captureTemplates)).map(template =>
     template.set('id', generateId())
-  ));
+  );
 
   return state.set('captureTemplates', captureTemplates);
 };
@@ -166,7 +183,10 @@ export const readInitialState = () => {
     }
 
     if (field.category === 'org') {
-      initialState[field.category].present = initialState[field.category].present.set(field.name, value);
+      initialState[field.category].present = initialState[field.category].present.set(
+        field.name,
+        value
+      );
     } else {
       initialState[field.category] = initialState[field.category].set(field.name, value);
     }
@@ -174,9 +194,9 @@ export const readInitialState = () => {
 
   // Assign new ids to the capture templates.
   if (initialState.capture.get('captureTemplates')) {
-    initialState.capture = initialState.capture.update('captureTemplates', templates => (
+    initialState.capture = initialState.capture.update('captureTemplates', templates =>
       templates.map(template => template.set('id', generateId()))
-    ));
+    );
   }
 
   const opennessState = readOpennessState();
@@ -185,7 +205,9 @@ export const readInitialState = () => {
   }
 
   // Cache the config file contents locally so we don't overwrite on initial page load.
-  window.previousSettingsFileContents = getConfigFileContents(getFieldsToPersist(initialState, persistableFields));
+  window.previousSettingsFileContents = getConfigFileContents(
+    getFieldsToPersist(initialState, persistableFields)
+  );
 
   return initialState;
 };
@@ -198,25 +220,30 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
 
   let fileContentsPromise = null;
   switch (syncBackendClient.type) {
-  case 'Dropbox':
-    fileContentsPromise = syncBackendClient.getFileContents('/.org-web-config.json');
-    break;
-  case 'Google Drive':
-    fileContentsPromise = syncBackendClient.getFileContentsByNameAndParent('.org-web-config.json', 'root');
-    break;
-  default:
+    case 'Dropbox':
+      fileContentsPromise = syncBackendClient.getFileContents('/.org-web-config.json');
+      break;
+    case 'Google Drive':
+      fileContentsPromise = syncBackendClient.getFileContentsByNameAndParent(
+        '.org-web-config.json',
+        'root'
+      );
+      break;
+    default:
   }
 
-  fileContentsPromise.then(configFileContents => {
-    try {
-      const config = JSON.parse(configFileContents);
-      dispatch(restoreBaseSettings(config));
-      dispatch(restoreCaptureSettings(config));
-    } catch(_error) {
-      // Something went wrong parsing the config file, but we don't care, we'll just
-      // overwrite it with a good local copy.
-    }
-  }).catch(() => {});
+  fileContentsPromise
+    .then(configFileContents => {
+      try {
+        const config = JSON.parse(configFileContents);
+        dispatch(restoreBaseSettings(config));
+        dispatch(restoreCaptureSettings(config));
+      } catch (_error) {
+        // Something went wrong parsing the config file, but we don't care, we'll just
+        // overwrite it with a good local copy.
+      }
+    })
+    .catch(() => {});
 };
 
 export const subscribeToChanges = store => {
@@ -228,9 +255,7 @@ export const subscribeToChanges = store => {
 
       const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
-      fieldsToPersist.forEach(([name, value]) => (
-        localStorage.setItem(name, value)
-      ));
+      fieldsToPersist.forEach(([name, value]) => localStorage.setItem(name, value));
 
       if (state.base.get('shouldStoreSettingsInSyncBackend')) {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);

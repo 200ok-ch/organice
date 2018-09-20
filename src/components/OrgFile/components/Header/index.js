@@ -227,9 +227,9 @@ class Header extends PureComponent {
       shouldDisableActions,
     } = this.props;
 
-    const indentLevel = !!focusedHeader ? (
-      header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
-    ) : header.get('nestingLevel');
+    const indentLevel = !!focusedHeader
+      ? header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
+      : header.get('nestingLevel');
 
     const {
       dragStartX,
@@ -238,15 +238,12 @@ class Header extends PureComponent {
       isPlayingRemoveAnimation,
       containerWidth,
     } = this.state;
-    const marginLeft = (!!dragStartX && !!currentDragX && isDraggingFreely) ? (
-      currentDragX - dragStartX
-    ) : (
-      isPlayingRemoveAnimation ? (
-        spring(-1 * containerWidth, { stiffness: 300 })
-      ) : (
-        spring(0, { stiffness: 300 })
-      )
-    );
+    const marginLeft =
+      !!dragStartX && !!currentDragX && isDraggingFreely
+        ? currentDragX - dragStartX
+        : isPlayingRemoveAnimation
+          ? spring(-1 * containerWidth, { stiffness: 300 })
+          : spring(0, { stiffness: 300 });
 
     const style = {
       paddingLeft: 20 * indentLevel,
@@ -264,7 +261,8 @@ class Header extends PureComponent {
         {interpolatedStyle => {
           const swipedDistance = interpolatedStyle.marginLeft;
           const isLeftActionActivated = swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
-          const isRightActionActivated = -1 * swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
+          const isRightActionActivated =
+            -1 * swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
 
           const disabledColor = rgbaObject(211, 211, 211, 1);
           const leftActivatedColor = rgbaObject(0, 128, 0, 1);
@@ -293,33 +291,39 @@ class Header extends PureComponent {
           }
 
           return (
-            <div className={className}
-                 style={headerStyle}
-                 ref={this.handleRef}
-                 onClick={this.handleHeaderClick}
-                 onMouseDown={this.handleMouseDown}
-                 onMouseMove={this.handleMouseMove}
-                 onMouseUp={this.handleMouseUp}
-                 onMouseOut={this.handleMouseOut}
-                 onTouchStart={this.handleTouchStart}
-                 onTouchMove={this.handleTouchMove}
-                 onTouchEnd={this.handleTouchEnd}
-                 onTouchCancel={this.handleTouchCancel}>
+            <div
+              className={className}
+              style={headerStyle}
+              ref={this.handleRef}
+              onClick={this.handleHeaderClick}
+              onMouseDown={this.handleMouseDown}
+              onMouseMove={this.handleMouseMove}
+              onMouseUp={this.handleMouseUp}
+              onMouseOut={this.handleMouseOut}
+              onTouchStart={this.handleTouchStart}
+              onTouchMove={this.handleTouchMove}
+              onTouchEnd={this.handleTouchEnd}
+              onTouchCancel={this.handleTouchCancel}
+            >
               <Motion style={leftSwipeActionContainerStyle}>
                 {leftInterpolatedStyle => {
                   const leftStyle = {
                     width: leftInterpolatedStyle.width,
                     backgroundColor: rgbaString(
-                      interpolateColors(disabledColor,
-                                        leftActivatedColor,
-                                        leftInterpolatedStyle.backgroundColorFactor)
+                      interpolateColors(
+                        disabledColor,
+                        leftActivatedColor,
+                        leftInterpolatedStyle.backgroundColorFactor
+                      )
                     ),
                   };
 
                   return (
                     <div className="left-swipe-action-container" style={leftStyle}>
-                      <i className="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-                         style={leftIconStyle} />
+                      <i
+                        className="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+                        style={leftIconStyle}
+                      />
                     </div>
                   );
                 }}
@@ -329,37 +333,48 @@ class Header extends PureComponent {
                   const rightStyle = {
                     width: rightInterpolatedStyle.width,
                     backgroundColor: rgbaString(
-                      interpolateColors(disabledColor,
-                                        rightActivatedColor,
-                                        rightInterpolatedStyle.backgroundColorFactor)
+                      interpolateColors(
+                        disabledColor,
+                        rightActivatedColor,
+                        rightInterpolatedStyle.backgroundColorFactor
+                      )
                     ),
                   };
 
                   return (
                     <div className="right-swipe-action-container" style={rightStyle}>
-                      <i className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-                         style={rightIconStyle} />
+                      <i
+                        className="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+                        style={rightIconStyle}
+                      />
                     </div>
                   );
                 }}
               </Motion>
 
-              <div style={{marginLeft: -16, color}} className="header__bullet">
+              <div style={{ marginLeft: -16, color }} className="header__bullet">
                 {bulletStyle === 'Fancy' ? '●' : '*'}
               </div>
-              <TitleLine header={header}
-                         color={color}
-                         hasContent={hasContent}
-                         isSelected={isSelected} />
+              <TitleLine
+                header={header}
+                color={color}
+                hasContent={hasContent}
+                isSelected={isSelected}
+              />
 
-              <Collapse isOpened={isSelected && !shouldDisableActions} springConfig={{stiffness: 300}}>
-                <HeaderActionDrawer onEnterTitleEditMode={this.handleEnterTitleEditMode}
-                                    onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
-                                    isFocused={isFocused}
-                                    onTagsClick={this.handleShowTagsModal}
-                                    onFocus={this.handleFocus}
-                                    onUnfocus={this.handleUnfocus}
-                                    onAddNewHeader={this.handleAddNewHeader} />
+              <Collapse
+                isOpened={isSelected && !shouldDisableActions}
+                springConfig={{ stiffness: 300 }}
+              >
+                <HeaderActionDrawer
+                  onEnterTitleEditMode={this.handleEnterTitleEditMode}
+                  onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
+                  isFocused={isFocused}
+                  onTagsClick={this.handleShowTagsModal}
+                  onFocus={this.handleFocus}
+                  onUnfocus={this.handleUnfocus}
+                  onAddNewHeader={this.handleAddNewHeader}
+                />
               </Collapse>
 
               <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
@@ -372,9 +387,9 @@ class Header extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
-  const focusedHeader = !!state.org.present.get('focusedHeaderId') ? (
-    headerWithId(state.org.present.get('headers'), state.org.present.get('focusedHeaderId'))
-  ) : null;
+  const focusedHeader = !!state.org.present.get('focusedHeaderId')
+    ? headerWithId(state.org.present.get('headers'), state.org.present.get('focusedHeaderId'))
+    : null;
 
   return {
     bulletStyle: state.base.get('bulletStyle'),
@@ -389,4 +404,7 @@ const mapDispatchToProps = dispatch => ({
   base: bindActionCreators(baseActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Header);

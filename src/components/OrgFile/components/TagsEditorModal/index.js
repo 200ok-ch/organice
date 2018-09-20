@@ -13,11 +13,7 @@ export default class TagsEditorModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, [
-      'handleRemoveTag',
-      'handleAddNewTag',
-      'handleTagChange',
-    ]);
+    _.bindAll(this, ['handleRemoveTag', 'handleAddNewTag', 'handleTagChange']);
 
     this.state = {
       allTags: props.allTags,
@@ -27,7 +23,7 @@ export default class TagsEditorModal extends PureComponent {
   componentDidUpdate(prevProps) {
     const prevTags = prevProps.header.getIn(['titleLine', 'tags']);
     const currentTags = this.props.header.getIn(['titleLine', 'tags']);
-    if ((prevTags.size === currentTags.size - 1) && currentTags.last() === '') {
+    if (prevTags.size === currentTags.size - 1 && currentTags.last() === '') {
       if (this.lastTextfield) {
         this.lastTextfield.focus();
       }
@@ -65,50 +61,54 @@ export default class TagsEditorModal extends PureComponent {
   }
 
   render() {
-    const {
-      header,
-      onClose,
-    } = this.props;
+    const { header, onClose } = this.props;
     const { allTags } = this.state;
 
     const headerTags = header.getIn(['titleLine', 'tags']);
 
     return (
       <Popup shouldIncludeCloseButton onClose={onClose}>
-        <h2 className="tags-editor__title">
-          Edit tags
-        </h2>
+        <h2 className="tags-editor__title">Edit tags</h2>
 
         {headerTags.size === 0 ? (
           <div className="no-tags-message">
             This header doesn't have any tags.
-
             <br />
             <br />
-
-            Click the <i className="fas fa-plus" /> button to add a new one, or choose from the list of all of your tags below.
+            Click the <i className="fas fa-plus" /> button to add a new one, or choose from the list
+            of all of your tags below.
           </div>
         ) : (
           <Droppable droppableId="tags-editor-droppable" type="TAG">
             {(provided, snapshot) => (
-              <div className="tags-container"
-                   ref={provided.innerRef}
-                   {...provided.droppableProps}>
+              <div className="tags-container" ref={provided.innerRef} {...provided.droppableProps}>
                 <Fragment>
                   {headerTags.map((tag, index) => (
                     <Draggable draggableId={`tag--${index}`} index={index} key={index}>
                       {(provided, snapshot) => (
-                        <div className={classNames("tag-container", { 'tag-container--dragging': snapshot.isDragging })}
-                             ref={provided.innerRef}
-                             {...provided.draggableProps}>
-                          <input type="text"
-                                 className="textfield tag-container__textfield"
-                                 value={tag}
-                                 onChange={this.handleTagChange(index)}
-                                 ref={textfield => this.lastTextfield = textfield} />
+                        <div
+                          className={classNames('tag-container', {
+                            'tag-container--dragging': snapshot.isDragging,
+                          })}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                        >
+                          <input
+                            type="text"
+                            className="textfield tag-container__textfield"
+                            value={tag}
+                            onChange={this.handleTagChange(index)}
+                            ref={textfield => (this.lastTextfield = textfield)}
+                          />
                           <div className="tag-container__actions-container">
-                            <i className="fas fa-times fa-lg" onClick={this.handleRemoveTag(index)} />
-                            <i className="fas fa-bars fa-lg tag-container__drag-handle" {...provided.dragHandleProps} />
+                            <i
+                              className="fas fa-times fa-lg"
+                              onClick={this.handleRemoveTag(index)}
+                            />
+                            <i
+                              className="fas fa-bars fa-lg tag-container__drag-handle"
+                              {...provided.dragHandleProps}
+                            />
                           </div>
                         </div>
                       )}
@@ -128,9 +128,7 @@ export default class TagsEditorModal extends PureComponent {
 
         <hr className="tags-editor__separator" />
 
-        <h2 className="tags-editor__title">
-          All tags
-        </h2>
+        <h2 className="tags-editor__title">All tags</h2>
 
         <div className="all-tags-container">
           {allTags.filter(tag => !!tag).map(tag => {

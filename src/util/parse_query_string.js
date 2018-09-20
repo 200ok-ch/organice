@@ -11,7 +11,7 @@ const parseQueryString = str => {
     return ret;
   }
 
-  str.split('&').forEach(function (param) {
+  str.split('&').forEach(function(param) {
     var parts = param.replace(/\+/g, ' ').split('=');
     // Firefox (pre 40) decodes `%3D` to `=`
     // https://github.com/sindresorhus/query-string/pull/37
@@ -34,6 +34,6 @@ const parseQueryString = str => {
   });
 
   return ret;
-}
+};
 
 export default parseQueryString;

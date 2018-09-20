@@ -1,30 +1,30 @@
 .timestamp-editor__title {
-    color: #5E348C;
+  color: #5e348c;
 
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .timestamp-editor__button-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .timestamp-editor__add-new-button {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .timestamp-editor__separator {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    font-size: 35px;
+  font-size: 35px;
 }
 
 .timestamp-editor__separator__margin-line {
-    background-color: black;
-    height: 1px;
-    width: 40%;
+  background-color: black;
+  height: 1px;
+  width: 40%;
 
-    margin-top: 5px;
+  margin-top: 5px;
 }

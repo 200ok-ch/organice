@@ -8,10 +8,10 @@ export default (templateString, customVariables = Map()) => {
   }
 
   const substitutions = {
-    '%t' : `<${moment().format('YYYY-MM-DD ddd')}>`,
-    '%T' : `<${moment().format('YYYY-MM-DD ddd HH:mm')}>`,
-    '%u' : `[${moment().format('YYYY-MM-DD ddd')}]`,
-    '%U' : `[${moment().format('YYYY-MM-DD ddd HH:mm')}]`,
+    '%t': `<${moment().format('YYYY-MM-DD ddd')}>`,
+    '%T': `<${moment().format('YYYY-MM-DD ddd HH:mm')}>`,
+    '%u': `[${moment().format('YYYY-MM-DD ddd')}]`,
+    '%U': `[${moment().format('YYYY-MM-DD ddd HH:mm')}]`,
   };
 
   customVariables.entrySeq().forEach(([key, value]) => {
@@ -19,9 +19,10 @@ export default (templateString, customVariables = Map()) => {
   });
 
   let substitutedString = templateString;
-  _.entries(substitutions).forEach(([formatString, value]) => (
-    substitutedString = substitutedString.replace(RegExp(formatString, 'g'), value)
-  ));
+  _.entries(substitutions).forEach(
+    ([formatString, value]) =>
+      (substitutedString = substitutedString.replace(RegExp(formatString, 'g'), value))
+  );
 
   const cursorIndex = substitutedString.includes('%?') ? substitutedString.indexOf('%?') : null;
   substitutedString = substitutedString.replace(/%\?/, '');

@@ -22,11 +22,21 @@ export default class TimestampEditorModal extends PureComponent {
 
   handleAddEndTimestamp() {
     const { timestamp } = this.props;
-    const [year, month, day, dayName] = moment().format('YYYY MM DD ddd').split(' ');
-    this.props.onChange(timestamp.set('secondTimestamp', Map({
-      year, month, day, dayName,
-      isActive: timestamp.getIn(['firstTimestamp', 'isActive']),
-    })));
+    const [year, month, day, dayName] = moment()
+      .format('YYYY MM DD ddd')
+      .split(' ');
+    this.props.onChange(
+      timestamp.set(
+        'secondTimestamp',
+        Map({
+          year,
+          month,
+          day,
+          dayName,
+          isActive: timestamp.getIn(['firstTimestamp', 'isActive']),
+        })
+      )
+    );
   }
 
   handleRemoveEndTimestamp() {
@@ -35,16 +45,16 @@ export default class TimestampEditorModal extends PureComponent {
 
   render() {
     const { timestamp, onClose } = this.props;
-    console.log("timestamp = ", timestamp.toJS());
+    console.log('timestamp = ', timestamp.toJS());
 
     return (
       <Popup shouldIncludeCloseButton onClose={onClose}>
-        <h2 className="timestamp-editor__title">
-          Edit timestamp
-        </h2>
+        <h2 className="timestamp-editor__title">Edit timestamp</h2>
 
-        <TimestampEditor timestamp={timestamp.get('firstTimestamp')}
-                         onChange={this.handleChange('firstTimestamp')} />
+        <TimestampEditor
+          timestamp={timestamp.get('firstTimestamp')}
+          onChange={this.handleChange('firstTimestamp')}
+        />
 
         {!!timestamp.get('secondTimestamp') ? (
           <Fragment>
@@ -54,18 +64,26 @@ export default class TimestampEditorModal extends PureComponent {
               <div className="timestamp-editor__separator__margin-line" />
             </div>
 
-            <TimestampEditor timestamp={timestamp.get('secondTimestamp')}
-                             onChange={this.handleChange('secondTimestamp')} />
+            <TimestampEditor
+              timestamp={timestamp.get('secondTimestamp')}
+              onChange={this.handleChange('secondTimestamp')}
+            />
 
             <div className="timestamp-editor__button-container">
-              <button className="btn timestamp-editor__add-new-button" onClick={this.handleRemoveEndTimestamp}>
+              <button
+                className="btn timestamp-editor__add-new-button"
+                onClick={this.handleRemoveEndTimestamp}
+              >
                 Remove end timestamp
               </button>
             </div>
           </Fragment>
         ) : (
           <div className="timestamp-editor__button-container">
-            <button className="btn timestamp-editor__add-new-button" onClick={this.handleAddEndTimestamp}>
+            <button
+              className="btn timestamp-editor__add-new-button"
+              onClick={this.handleAddEndTimestamp}
+            >
               Add end timestamp
             </button>
           </div>

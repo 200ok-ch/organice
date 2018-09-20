@@ -1,73 +1,73 @@
 .tags-editor__title {
-    color: #5E348C;
+  color: #5e348c;
 
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .no-tags-message {
-    color: gray;
-    text-align: center;
+  color: gray;
+  text-align: center;
 }
 
 .tag-container {
-    display: flex;
+  display: flex;
 
-    padding: 3px 5px;
+  padding: 3px 5px;
 }
 
 .tag-container--dragging {
-    background-color: #E6E6E6;
+  background-color: #e6e6e6;
 }
 
 .tag-container__drag-handle {
-    user-select: none;
+  user-select: none;
 }
 
 .tag-container__textfield {
-    flex: 3;
+  flex: 3;
 }
 
 .tag-container__actions-container {
-    flex: 1;
+  flex: 1;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    padding-left: 10px;
+  padding-left: 10px;
 
-    color: #5E348C;
+  color: #5e348c;
 }
 
 .tags-editor__add-new-container {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .tags-editor__separator {
-    width: calc(100% - 20px);
-    margin-top: 20px;
-    margin-bottom: 20px;
+  width: calc(100% - 20px);
+  margin-top: 20px;
+  margin-bottom: 20px;
 
-    border: none;
-    border-bottom: 1px solid #D8D8D8;
+  border: none;
+  border-bottom: 1px solid #d8d8d8;
 }
 
 .all-tags-container {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .all-tags__tag {
-    color: white;
-    background-color: #5E348C;
+  color: white;
+  background-color: #5e348c;
 
-    padding: 8px;
-    margin: 5px;
+  padding: 8px;
+  margin: 5px;
 }
 
 .all-tags__tag--in-use {
-    background-color: lightgray;
+  background-color: lightgray;
 }

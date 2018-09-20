@@ -1,69 +1,69 @@
 .header-bar {
-    background-color: #5E348C;
-    height: 30px;
-    padding: 10px;
+  background-color: #5e348c;
+  height: 30px;
+  padding: 10px;
 
-    display: grid;
-    grid-template-columns: 5fr 3fr 5fr;
-    align-items: center;
+  display: grid;
+  grid-template-columns: 5fr 3fr 5fr;
+  align-items: center;
 }
 
 .header-bar--with-logo {
-    grid-template-columns: 5fr 1fr 5fr;
+  grid-template-columns: 5fr 1fr 5fr;
 }
 
 .header-bar__logo-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .header-bar__logo {
-    width: 30px;
+  width: 30px;
 }
 
 .header-bar__app-name {
-    color: white;
-    margin: 0;
-    margin-left: 5px;
+  color: white;
+  margin: 0;
+  margin-left: 5px;
 }
 
 .header-bar__title {
-    color: white;
-    text-align: center;
-    font-size: 20px;
+  color: white;
+  text-align: center;
+  font-size: 20px;
 }
 
 .header-bar__back-button {
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .header-bar__back-button__directory-path {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .header-bar__actions {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 
-    color: white;
+  color: white;
 }
 
 .header-bar__actions__item {
-    color: white;
+  color: white;
 
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .settings-icon--has-unseen-changelog {
-    color: #ff5b5b;
+  color: #ff5b5b;
 }
 
 .header-bar__actions__item--disabled {
-    opacity: 0.5;
+  opacity: 0.5;
 }

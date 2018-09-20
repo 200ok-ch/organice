@@ -1,11 +1,20 @@
 export const renderAsText = timestamp => {
   const {
     isActive,
-    year, month, day, dayName,
-    startHour, startMinute,
-    endHour, endMinute,
-    repeaterType, repeaterValue, repeaterUnit,
-    delayType, delayValue, delayUnit,
+    year,
+    month,
+    day,
+    dayName,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
+    repeaterType,
+    repeaterValue,
+    repeaterUnit,
+    delayType,
+    delayValue,
+    delayUnit,
   } = timestamp.toJS();
 
   let timestampText = '';
