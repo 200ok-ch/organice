@@ -3,6 +3,7 @@ import React, { PureComponent, Fragment } from 'react';
 import './TimestampEditor.css';
 
 import Switch from '../../../../../UI/Switch/';
+import TabButtons from '../../../../../UI/TabButtons/';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 
@@ -17,6 +18,16 @@ export default class TimestampEditor extends PureComponent {
       'handleActiveToggle',
       'handleDateChange',
       'handleDateEditClick',
+      'handleAddRepeater',
+      'handleRemoveRepeater',
+      'handleRepeaterTypeChange',
+      'handleRepeaterValueChange',
+      'handleRepeaterUnitChange',
+      'handleAddDelay',
+      'handleRemoveDelay',
+      'handleDelayTypeChange',
+      'handleDelayValueChange',
+      'handleDelayUnitChange',
     ]);
   }
 
@@ -66,6 +77,56 @@ export default class TimestampEditor extends PureComponent {
     };
   }
 
+  handleAddRepeater() {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterType', '+').set('repeaterValue', 1).set('repeaterUnit', 'h'));
+  }
+
+  handleRemoveRepeater() {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterType', null).set('repeaterValue', null).set('repeaterUnit', null));
+  }
+
+  handleRepeaterTypeChange(newRepeaterType) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterType', newRepeaterType));
+  }
+
+  handleRepeaterValueChange(event) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterValue', event.target.value));
+  }
+
+  handleRepeaterUnitChange(newRepeaterUnit) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterUnit', newRepeaterUnit));
+  }
+
+  handleAddDelay() {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('delayType', '-').set('delayValue', 1).set('delayUnit', 'h'));
+  }
+
+  handleRemoveDelay() {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('delayType', null).set('delayValue', null).set('delayUnit', null));
+  }
+
+  handleDelayTypeChange(newDelayType) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('delayType', newDelayType));
+  }
+
+  handleDelayValueChange(event) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('delayValue', event.target.value));
+  }
+
+  handleDelayUnitChange(newDelayUnit) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('delayUnit', newDelayUnit));
+  }
+
   renderTimeField(label, timeKey, hour, minute, showRemoveButton = true) {
     return (
       <div className="timestamp-editor__field-container">
@@ -78,6 +139,64 @@ export default class TimestampEditor extends PureComponent {
           </Fragment>
         ) : (
           <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddTime(timeKey)} />
+        )}
+      </div>
+    );
+  }
+
+  renderRepeater() {
+    const { repeaterType, repeaterValue, repeaterUnit } = this.props.timestamp.toJS();
+
+    return (
+      <div className="timestamp-editor__field-container">
+        <span className="timestamp-editor__field-title">Repeater:</span>
+        <br />
+        {!!repeaterType ? (
+          <Fragment>
+            <TabButtons buttons={['+', '++', '.+']}
+                        selectedButton={repeaterType || '+'}
+                        onSelect={this.handleRepeaterTypeChange} />
+            <input type="number"
+                   min="1"
+                   className="textfield"
+                   value={repeaterValue || 1}
+                   onChange={this.handleRepeaterValueChange} />
+            <TabButtons buttons={'hdwmy'.split('')}
+                        selectedButton={repeaterUnit || 'h'}
+                        onSelect={this.handleRepeaterUnitChange} />
+            <i className="fas fa-times timestamp-editor__icon" onClick={this.handleRemoveRepeater} />
+          </Fragment>
+        ) : (
+          <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddRepeater} />
+        )}
+      </div>
+    );
+  }
+
+  renderDelay() {
+    const { delayType, delayValue, delayUnit } = this.props.timestamp.toJS();
+
+    return (
+      <div className="timestamp-editor__field-container">
+        <span className="timestamp-editor__field-title">Delay:</span>
+        <br />
+        {!!delayType ? (
+          <Fragment>
+            <TabButtons buttons={['-', '--']}
+                        selectedButton={delayType || '-'}
+                        onSelect={this.handleDelayTypeChange} />
+            <input type="number"
+                   min="1"
+                   className="textfield"
+                   value={delayValue || 1}
+                   onChange={this.handleDelayValueChange} />
+            <TabButtons buttons={'hdwmy'.split('')}
+                        selectedButton={delayUnit || 'h'}
+                        onSelect={this.handleDelayUnitChange} />
+            <i className="fas fa-times timestamp-editor__icon" onClick={this.handleRemoveDelay} />
+          </Fragment>
+        ) : (
+          <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddDelay} />
         )}
       </div>
     );
@@ -116,6 +235,9 @@ export default class TimestampEditor extends PureComponent {
 
         {this.renderTimeField('Start time', 'start', startHour, startMinute, !endHour)}
         {!!startHour && this.renderTimeField('End time', 'end', endHour, endMinute)}
+
+        {this.renderRepeater()}
+        {this.renderDelay()}
       </div>
     );
   }

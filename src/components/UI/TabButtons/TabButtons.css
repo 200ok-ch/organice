@@ -1,9 +1,8 @@
 .tab-buttons {
-    display: inline-block;
     border: 1px solid #D8D8D8;
     height: 34px;
     box-sizing: border-box;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 }
 
