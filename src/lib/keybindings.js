@@ -15,14 +15,14 @@ const DEFAULT_BINDINGS = [
   ['Undo', 'undo', 'ctrl+shift+-'],
 ];
 
-export const calculateNamedKeybindings = customKeybindings => (
-  DEFAULT_BINDINGS.map(([bindingName, _bindingAction, binding]) => (
-    [bindingName, customKeybindings.get(bindingName, binding)]
-  ))
-);
+export const calculateNamedKeybindings = customKeybindings =>
+  DEFAULT_BINDINGS.map(([bindingName, _bindingAction, binding]) => [
+    bindingName,
+    customKeybindings.get(bindingName, binding),
+  ]);
 
-export const calculateActionedKeybindings = customKeybindings => (
-  DEFAULT_BINDINGS.map(([bindingName, bindingAction, binding]) => (
-    [bindingAction, customKeybindings.get(bindingName, binding)]
-  ))
-);
+export const calculateActionedKeybindings = customKeybindings =>
+  DEFAULT_BINDINGS.map(([bindingName, bindingAction, binding]) => [
+    bindingAction,
+    customKeybindings.get(bindingName, binding),
+  ]);

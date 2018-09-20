@@ -43,9 +43,9 @@ class KeyboardShortcutsEditor extends PureComponent {
   handleBindingChange(bindingName, newBinding) {
     const { customKeybindings } = this.props;
 
-    const alreadyInUseBinding = calculateNamedKeybindings(customKeybindings).filter(([_, binding]) => (
-      binding === newBinding
-    ))[0];
+    const alreadyInUseBinding = calculateNamedKeybindings(customKeybindings).filter(
+      ([_, binding]) => binding === newBinding
+    )[0];
 
     if (!!alreadyInUseBinding) {
       alert(`That binding is already in use for "${alreadyInUseBinding[0]}"`);
@@ -61,10 +61,12 @@ class KeyboardShortcutsEditor extends PureComponent {
     return (
       <div className="keyboard-shortcuts-editor-container">
         {calculateNamedKeybindings(customKeybindings).map(([name, binding]) => (
-          <ShortcutRow key={name}
-                       name={name}
-                       binding={binding}
-                       onBindingChange={this.handleBindingChange} />
+          <ShortcutRow
+            key={name}
+            name={name}
+            binding={binding}
+            onBindingChange={this.handleBindingChange}
+          />
         ))}
       </div>
     );
@@ -73,7 +75,7 @@ class KeyboardShortcutsEditor extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   return {
-    customKeybindings: state.base.get('customKeybindings') || Map()
+    customKeybindings: state.base.get('customKeybindings') || Map(),
   };
 };
 
@@ -83,4 +85,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(KeyboardShortcutsEditor));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(KeyboardShortcutsEditor)
+);

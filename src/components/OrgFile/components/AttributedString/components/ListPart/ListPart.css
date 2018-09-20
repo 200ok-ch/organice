@@ -1,15 +1,15 @@
 .attributed-string__list-part {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 20px;
 }
 
 .attributed-string__list-part--ordered {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 40px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 40px;
 }
 
 .list-part__checkbox-container {
-    line-height: 22px;
+  line-height: 22px;
 }

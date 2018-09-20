@@ -3,7 +3,10 @@ import generateId from './id_generator';
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
 
-export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, excludeCookies = true } = {}) => {
+export const parseMarkupAndCookies = (
+  rawText,
+  { shouldAppendNewline = false, excludeCookies = true } = {}
+) => {
   const linkAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:!?'")}]?))/g;
   const matches = [];
   let match = linkAndCookieRegex.exec(rawText);
@@ -45,7 +48,7 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, ex
         '*': 'bold',
         '/': 'italic',
         '+': 'strikethrough',
-        '_': 'underline',
+        _: 'underline',
         '=': 'verbatim',
       }[match[11]];
 
@@ -55,7 +58,10 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, ex
 
       matches.push({
         type: 'inline-markup',
-        rawText: rawText.substring(markupPrefixLength, rawText.length - markupPrefixLength - markupSuffixLength + 1),
+        rawText: rawText.substring(
+          markupPrefixLength,
+          rawText.length - markupPrefixLength - markupSuffixLength + 1
+        ),
         index: match.index + markupPrefixLength,
         content: match[12],
         markupType,
@@ -114,7 +120,8 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false, ex
   });
 
   if (startIndex !== rawText.length || shouldAppendNewline) {
-    const trailingText = rawText.substring(startIndex, rawText.length) + (shouldAppendNewline ? '\n' : '');
+    const trailingText =
+      rawText.substring(startIndex, rawText.length) + (shouldAppendNewline ? '\n' : '');
     lineParts.push({
       type: 'text',
       contents: trailingText,
@@ -128,9 +135,7 @@ const parseTable = tableLines => {
   const table = {
     id: generateId(),
     type: 'table',
-    contents: [
-      []
-    ],
+    contents: [[]],
     columnProperties: [],
   };
 
@@ -158,7 +163,7 @@ const parseTable = tableLines => {
       id: generateId(),
       contents: parseMarkupAndCookies(rawContents, { excludeCookies: true }),
       rawContents,
-    }))
+    })),
   }));
 
   // We sometimes end up with an extra, empty row - remove it if so.
@@ -189,54 +194,74 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   const LIST_HEADER_REGEX = /^\s*([-+*]|(\d+(\.|\)))) (.*)/;
 
   let currentListHeaderNestingLevel = null;
-  const rawLineParts = _.flatten(lines.map((line, lineIndex) => {
-    const numLeadingSpaces = line.match(/^( *)/)[0].length;
+  const rawLineParts = _.flatten(
+    lines.map((line, lineIndex) => {
+      const numLeadingSpaces = line.match(/^( *)/)[0].length;
 
-    if (currentListHeaderNestingLevel !== null && (numLeadingSpaces > currentListHeaderNestingLevel || !line.trim())) {
-      return [{
-        type: 'raw-list-content', line,
-      }];
-    } else {
-      currentListHeaderNestingLevel = null;
-
-      if (!!line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
-        currentListHeaderNestingLevel = numLeadingSpaces;
-
-        return [{
-          type: 'raw-list-header', line,
-        }];
-      } else if (line.trim().startsWith('|') && !excludeContentElements) {
-        return [{
-          type: 'raw-table', line,
-        }];
+      if (
+        currentListHeaderNestingLevel !== null &&
+        (numLeadingSpaces > currentListHeaderNestingLevel || !line.trim())
+      ) {
+        return [
+          {
+            type: 'raw-list-content',
+            line,
+          },
+        ];
       } else {
-        return parseMarkupAndCookies(line, { shouldAppendNewline: lineIndex !== lines.length - 1, excludeCookies: true });
+        currentListHeaderNestingLevel = null;
+
+        if (!!line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
+          currentListHeaderNestingLevel = numLeadingSpaces;
+
+          return [
+            {
+              type: 'raw-list-header',
+              line,
+            },
+          ];
+        } else if (line.trim().startsWith('|') && !excludeContentElements) {
+          return [
+            {
+              type: 'raw-table',
+              line,
+            },
+          ];
+        } else {
+          return parseMarkupAndCookies(line, {
+            shouldAppendNewline: lineIndex !== lines.length - 1,
+            excludeCookies: true,
+          });
+        }
       }
-    }
-  }));
+    })
+  );
 
   const processedLineParts = [];
   for (let partIndex = 0; partIndex < rawLineParts.length; ++partIndex) {
     const linePart = rawLineParts[partIndex];
     if (linePart.type === 'raw-table') {
-      const tableLines = _.takeWhile(rawLineParts.slice(partIndex), part => (
-        part.type === 'raw-table'
-      )).map(part => part.line);
+      const tableLines = _.takeWhile(
+        rawLineParts.slice(partIndex),
+        part => part.type === 'raw-table'
+      ).map(part => part.line);
 
       processedLineParts.push(parseTable(tableLines));
 
       partIndex += tableLines.length - 1;
     } else if (linePart.type === 'raw-list-header') {
       const numLeadingSpaces = linePart.line.match(/^( *)/)[0].length;
-      const contentLines = _.takeWhile(rawLineParts.slice(partIndex + 1), part => (
-        part.type === 'raw-list-content'
-      )).map(part => part.line).map(line => (
-        line.startsWith(' '.repeat(numLeadingSpaces + 2)) ? (
-          line.substr(numLeadingSpaces + 2)
-        ) : (
-          line.substr(numLeadingSpaces + 1)
-        )
-      ));
+      const contentLines = _.takeWhile(
+        rawLineParts.slice(partIndex + 1),
+        part => part.type === 'raw-list-content'
+      )
+        .map(part => part.line)
+        .map(
+          line =>
+            line.startsWith(' '.repeat(numLeadingSpaces + 2))
+              ? line.substr(numLeadingSpaces + 2)
+              : line.substr(numLeadingSpaces + 1)
+        );
       if (contentLines[contentLines.length - 1] === '') {
         contentLines[contentLines.length - 1] = ' ';
       }
@@ -261,7 +286,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
         const stateCharacter = line.match(/^\s*\[([ X-])\]/)[1];
         checkboxState = {
           ' ': 'unchecked',
-          'X': 'checked',
+          X: 'checked',
           '-': 'partial',
         }[stateCharacter];
 
@@ -274,7 +299,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
         contents,
         forceNumber,
         isCheckbox,
-        checkboxState
+        checkboxState,
       };
 
       const lastIndex = processedLineParts.length - 1;
@@ -298,11 +323,13 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
-const defaultKeywordSets = fromJS([{
-  keywords: ['TODO', 'DONE'],
-  completedKeywords: ['DONE'],
-  default: true
-}]);
+const defaultKeywordSets = fromJS([
+  {
+    keywords: ['TODO', 'DONE'],
+    completedKeywords: ['DONE'],
+    default: true,
+  },
+]);
 
 export const parseTitleLine = (titleLine, todoKeywordSets) => {
   const allKeywords = todoKeywordSets.flatMap(todoKeywordSet => {
@@ -343,20 +370,23 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     opened: false,
     id: generateId(),
 
-    nestingLevel
+    nestingLevel,
   });
 };
 
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
-  const description = rawText.split('\n').slice(1).join('\n');
+  const description = rawText
+    .split('\n')
+    .slice(1)
+    .join('\n');
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', description)
     .set('description', parseRawText(description));
 };
 
-export const parseOrg = (fileContents) => {
+export const parseOrg = fileContents => {
   let headers = new List();
   const lines = fileContents.split('\n');
 
@@ -380,17 +410,20 @@ export const parseOrg = (fileContents) => {
           const pipeIndex = keywordTokens.indexOf('|');
           const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
 
-          todoKeywordSets = todoKeywordSets.push(fromJS({
-            keywords,
-            completedKeywords,
-            configLine: line,
-            default: false
-          }));
+          todoKeywordSets = todoKeywordSets.push(
+            fromJS({
+              keywords,
+              completedKeywords,
+              configLine: line,
+              default: false,
+            })
+          );
         }
       } else {
-        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => (
-          rawDescription.length === 0 ? line : rawDescription + '\n' + line
-        ));
+        headers = headers.updateIn(
+          [headers.size - 1, 'rawDescription'],
+          rawDescription => (rawDescription.length === 0 ? line : rawDescription + '\n' + line)
+        );
       }
     }
   });
@@ -404,6 +437,7 @@ export const parseOrg = (fileContents) => {
   });
 
   return fromJS({
-    headers, todoKeywordSets
+    headers,
+    todoKeywordSets,
   });
 };

@@ -30,12 +30,17 @@ class HeaderBar extends PureComponent {
   }
 
   getPathRoot() {
-    const { location: { pathname } } = this.props;
+    const {
+      location: { pathname },
+    } = this.props;
     return pathname.split('/')[1];
   }
 
   renderFileBrowserBackButton() {
-    const { location: { pathname }, syncBackendType } = this.props;
+    const {
+      location: { pathname },
+      syncBackendType,
+    } = this.props;
     if (syncBackendType === 'Google Drive') {
       return <div />;
     }
@@ -62,7 +67,9 @@ class HeaderBar extends PureComponent {
   }
 
   renderOrgFileBackButton() {
-    const { location: { pathname } } = this.props;
+    const {
+      location: { pathname },
+    } = this.props;
 
     let filePath = pathname.substr('/file'.length);
     if (filePath.endsWith('/')) {
@@ -124,32 +131,32 @@ class HeaderBar extends PureComponent {
     const { activeModalPage } = this.props;
 
     switch (activeModalPage) {
-    case 'changelog':
-      return this.renderSettingsSubPageBackButton();
-    case 'keyboard_shortcuts_editor':
-      return this.renderSettingsSubPageBackButton();
-    case 'capture_templates_editor':
-      return this.renderSettingsSubPageBackButton();
-    case 'sample':
-      return this.renderSettingsSubPageBackButton();
-    case 'settings':
-      return <div />;
-    default:
+      case 'changelog':
+        return this.renderSettingsSubPageBackButton();
+      case 'keyboard_shortcuts_editor':
+        return this.renderSettingsSubPageBackButton();
+      case 'capture_templates_editor':
+        return this.renderSettingsSubPageBackButton();
+      case 'sample':
+        return this.renderSettingsSubPageBackButton();
+      case 'settings':
+        return <div />;
+      default:
     }
 
     switch (this.getPathRoot()) {
-    case '':
-      return this.renderLogo();
-    case 'files':
-      return this.renderFileBrowserBackButton();
-    case 'file':
-      return this.renderOrgFileBackButton();
-    case 'sample':
-      return this.renderSampleFileBackButton();
-    case 'sign_in':
-      return this.renderSignInBackButton();
-    default:
-      return <div />;
+      case '':
+        return this.renderLogo();
+      case 'files':
+        return this.renderFileBrowserBackButton();
+      case 'file':
+        return this.renderOrgFileBackButton();
+      case 'sample':
+        return this.renderSampleFileBackButton();
+      case 'sign_in':
+        return this.renderSignInBackButton();
+      default:
+        return <div />;
     }
   }
 
@@ -157,25 +164,25 @@ class HeaderBar extends PureComponent {
     const titleContainerWithText = text => <div className="header-bar__title">{text}</div>;
 
     switch (this.props.activeModalPage) {
-    case 'changelog':
-      return titleContainerWithText('Changelog');
-    case 'settings':
-      return titleContainerWithText('Settings');
-    case 'keyboard_shortcuts_editor':
-      return titleContainerWithText('Shortcuts');
-    case 'capture_templates_editor':
-      return titleContainerWithText('Capture');
-    case 'sample':
-      return titleContainerWithText('Sample');
-    default:
+      case 'changelog':
+        return titleContainerWithText('Changelog');
+      case 'settings':
+        return titleContainerWithText('Settings');
+      case 'keyboard_shortcuts_editor':
+        return titleContainerWithText('Shortcuts');
+      case 'capture_templates_editor':
+        return titleContainerWithText('Capture');
+      case 'sample':
+        return titleContainerWithText('Sample');
+      default:
     }
 
     switch (this.getPathRoot()) {
-    case 'sample':
-      return titleContainerWithText('Sample');
-    case 'sign_in':
-      return titleContainerWithText('Sign in');
-    default:
+      case 'sample':
+        return titleContainerWithText('Sample');
+      case 'sign_in':
+        return titleContainerWithText('Sign in');
+      default:
     }
 
     return titleContainerWithText('');
@@ -221,7 +228,7 @@ class HeaderBar extends PureComponent {
       );
     } else {
       const undoIconClassName = classNames('fas fa-undo header-bar__actions__item', {
-        'header-bar__actions__item--disabled': !isUndoEnabled
+        'header-bar__actions__item--disabled': !isUndoEnabled,
       });
 
       const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item', {
@@ -230,32 +237,41 @@ class HeaderBar extends PureComponent {
 
       return (
         <div className="header-bar__actions">
-          {!isAuthenticated && this.getPathRoot() !== 'sign_in' && (
-            <Link to="/sign_in">
-              <div className="header-bar__actions__item" title="Sign in">Sign in</div>
-            </Link>
+          {!isAuthenticated &&
+            this.getPathRoot() !== 'sign_in' && (
+              <Link to="/sign_in">
+                <div className="header-bar__actions__item" title="Sign in">
+                  Sign in
+                </div>
+              </Link>
+            )}
+
+          {!isAuthenticated && (
+            <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-github header-bar__actions__item" />
+            </a>
           )}
 
-        {!isAuthenticated && (
-          <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-github header-bar__actions__item" />
-          </a>
-        )}
+          {isAuthenticated &&
+            !activeModalPage &&
+            !!path && (
+              <Fragment>
+                <i className={undoIconClassName} onClick={this.handleUndoClick} title="Undo" />
+                <i
+                  className="fas fa-question-circle header-bar__actions__item"
+                  onClick={this.handleHelpClick}
+                  title="Help"
+                />
+              </Fragment>
+            )}
 
-        {(isAuthenticated && !activeModalPage && !!path) && (
-          <Fragment>
-            <i className={undoIconClassName}
-               onClick={this.handleUndoClick}
-               title="Undo" />
-            <i className="fas fa-question-circle header-bar__actions__item"
-               onClick={this.handleHelpClick}
-               title="Help" />
-          </Fragment>
-        )}
-
-        {isAuthenticated && (
-          <i className={settingsIconClassName} onClick={this.handleSettingsClick} title="Settings" />
-        )}
+          {isAuthenticated && (
+            <i
+              className={settingsIconClassName}
+              onClick={this.handleSettingsClick}
+              title="Settings"
+            />
+          )}
         </div>
       );
     }
@@ -294,4 +310,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HeaderBar));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(HeaderBar)
+);

@@ -4,14 +4,14 @@ export default store => next => action => {
   let { type, ...payload } = action;
 
   const eventFieldsToRedact = {
-    'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING': ['directoryListing'],
-    'AUTHENTICATE': ['dropboxAccessToken'],
-    'DISPLAY_FILE': ['contents'],
+    SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING: ['directoryListing'],
+    AUTHENTICATE: ['dropboxAccessToken'],
+    DISPLAY_FILE: ['contents'],
   };
 
   if (!!eventFieldsToRedact[type]) {
     eventFieldsToRedact[type].forEach(field => {
-      payload = {...payload, [field]: '--REDACTED--'};
+      payload = { ...payload, [field]: '--REDACTED--' };
     });
   }
 

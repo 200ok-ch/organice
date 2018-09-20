@@ -17,9 +17,7 @@ export default class ShortcutRow extends PureComponent {
   }
 
   componentDidMount() {
-    this.rebindArea.addEventListener('blur', () => (
-      this.setState({ isEditMode: false })
-    ));
+    this.rebindArea.addEventListener('blur', () => this.setState({ isEditMode: false }));
   }
 
   handleRebindClick() {
@@ -38,20 +36,20 @@ export default class ShortcutRow extends PureComponent {
       key = event.code.substr(5);
     } else {
       key = {
-        'Minus': '-',
-        'Equal': '=',
-        'Backspace': 'backspace',
-        'Enter': 'enter',
-        'Return': 'return',
-        'Tab': 'tab',
-        'BracketLeft': '[',
-        'BracketRight': ']',
-        'Semicolon': ';',
-        'Quote': '"',
-        'Backslash': '\\',
-        'Comma': ',',
-        'Period': '.',
-        'Slash': '/',
+        Minus: '-',
+        Equal: '=',
+        Backspace: 'backspace',
+        Enter: 'enter',
+        Return: 'return',
+        Tab: 'tab',
+        BracketLeft: '[',
+        BracketRight: ']',
+        Semicolon: ';',
+        Quote: '"',
+        Backslash: '\\',
+        Comma: ',',
+        Period: '.',
+        Slash: '/',
       }[event.code];
     }
 
@@ -66,9 +64,10 @@ export default class ShortcutRow extends PureComponent {
       ['shiftKey', 'shift'],
     ];
 
-    const newModifiers = modifiers.filter(([modifier, _]) => (
-      event[modifier]
-    )).map(([_, symbol]) => symbol).join('+');
+    const newModifiers = modifiers
+      .filter(([modifier, _]) => event[modifier])
+      .map(([_, symbol]) => symbol)
+      .join('+');
     const newBinding = `${newModifiers}${!!newModifiers ? '+' : ''}${key}`;
 
     this.props.onBindingChange(this.props.name, newBinding);
@@ -95,9 +94,10 @@ export default class ShortcutRow extends PureComponent {
       ['down', '↓'],
     ];
 
-    return replacements.reduce((currentBinding, [name, symbol]) => (
-      currentBinding.replace(RegExp(`${name}\\+?`), symbol)
-    ), binding);
+    return replacements.reduce(
+      (currentBinding, [name, symbol]) => currentBinding.replace(RegExp(`${name}\\+?`), symbol),
+      binding
+    );
   }
 
   render() {
@@ -111,10 +111,12 @@ export default class ShortcutRow extends PureComponent {
     return (
       <div className="keyboard-shortcut-container">
         <div className="keyboard-shortcut-container__shortcut-name">{name}</div>
-        <div className={rebindAreaClassName}
-             onClick={this.handleRebindClick}
-             tabIndex="-1"
-             ref={div => this.rebindArea = div}>
+        <div
+          className={rebindAreaClassName}
+          onClick={this.handleRebindClick}
+          tabIndex="-1"
+          ref={div => (this.rebindArea = div)}
+        >
           {isEditMode ? '...' : this.symbolizeKeybinding(binding)}
         </div>
       </div>

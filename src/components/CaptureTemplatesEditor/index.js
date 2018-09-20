@@ -68,32 +68,40 @@ class CaptureTemplatesEditor extends PureComponent {
       <div>
         <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
           {(provided, snapshot) => (
-            <div className="capture-templates-container"
-                 ref={provided.innerRef}
-                 {...provided.droppableProps}>
+            <div
+              className="capture-templates-container"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
               {captureTemplates.size === 0 ? (
                 <div className="no-capture-templates-message">
-                  You don't currently have any capture templates - add one by pressing the <i className="fas fa-plus" /> button.
-
+                  You don't currently have any capture templates - add one by pressing the{' '}
+                  <i className="fas fa-plus" /> button.
                   <br />
                   <br />
-
-                  Capture templates show up in the action drawer and give you quick access to creating new headers (like org-capture).
+                  Capture templates show up in the action drawer and give you quick access to
+                  creating new headers (like org-capture).
                 </div>
               ) : (
                 <Fragment>
                   {captureTemplates.map((template, index) => (
-                    <CaptureTemplate key={template.get('id')}
-                                     index={index}
-                                     template={template}
-                                     syncBackendType={syncBackendType}
-                                     onFieldPathUpdate={this.handleFieldPathUpdate}
-                                     onAddNewTemplateOrgFileAvailability={this.handleAddNewTemplateOrgFileAvailability}
-                                     onRemoveTemplateOrgFileAvailability={this.handleRemoveTemplateOrgFileAvailability}
-                                     onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
-                                     onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
-                                     onDeleteTemplate={this.handleDeleteTemplate}
-                                     onReorder={this.handleReorderTemplate} />
+                    <CaptureTemplate
+                      key={template.get('id')}
+                      index={index}
+                      template={template}
+                      syncBackendType={syncBackendType}
+                      onFieldPathUpdate={this.handleFieldPathUpdate}
+                      onAddNewTemplateOrgFileAvailability={
+                        this.handleAddNewTemplateOrgFileAvailability
+                      }
+                      onRemoveTemplateOrgFileAvailability={
+                        this.handleRemoveTemplateOrgFileAvailability
+                      }
+                      onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
+                      onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
+                      onDeleteTemplate={this.handleDeleteTemplate}
+                      onReorder={this.handleReorderTemplate}
+                    />
                   ))}
 
                   {provided.placeholder}
@@ -104,7 +112,10 @@ class CaptureTemplatesEditor extends PureComponent {
         </Droppable>
 
         <div className="new-capture-template-button-container">
-          <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewTemplateClick} />
+          <button
+            className="fas fa-plus fa-lg btn btn--circle"
+            onClick={this.handleAddNewTemplateClick}
+          />
         </div>
       </div>
     );
@@ -124,4 +135,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CaptureTemplatesEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CaptureTemplatesEditor);

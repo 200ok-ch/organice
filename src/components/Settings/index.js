@@ -86,33 +86,42 @@ class Settings extends PureComponent {
       <div className="settings-container">
         <div className="setting-container">
           <div className="setting-label">Font size</div>
-          <TabButtons buttons={['Regular', 'Large']}
-                      selectedButton={fontSize}
-                      onSelect={this.handleFontSizeChange} />
+          <TabButtons
+            buttons={['Regular', 'Large']}
+            selectedButton={fontSize}
+            onSelect={this.handleFontSizeChange}
+          />
         </div>
 
         <div className="setting-container">
           <div className="setting-label">Bullet style</div>
-          <TabButtons buttons={['Classic', 'Fancy']}
-                      selectedButton={bulletStyle}
-                      onSelect={this.handleBulletStyleChange} />
+          <TabButtons
+            buttons={['Classic', 'Fancy']}
+            selectedButton={bulletStyle}
+            onSelect={this.handleBulletStyleChange}
+          />
         </div>
 
         <div className="setting-container">
           <div className="setting-label">Tap TODO to advance state</div>
-          <Switch isEnabled={shouldTapTodoToAdvance}
-                  onToggle={this.handleShouldTapTodoToAdvanceChange} />
+          <Switch
+            isEnabled={shouldTapTodoToAdvance}
+            onToggle={this.handleShouldTapTodoToAdvanceChange}
+          />
         </div>
 
         <div className="setting-container">
           <div className="setting-label">
             Store settings in sync backend
             <div className="setting-label__description">
-              Store settings and keyboard shortcuts in a .org-web-config.json file in your sync backend to sync betweeen multiple devices.
+              Store settings and keyboard shortcuts in a .org-web-config.json file in your sync
+              backend to sync betweeen multiple devices.
             </div>
           </div>
-          <Switch isEnabled={shouldStoreSettingsInSyncBackend}
-                  onToggle={this.handleShouldStoreSettingsInSyncBackend} />
+          <Switch
+            isEnabled={shouldStoreSettingsInSyncBackend}
+            onToggle={this.handleShouldStoreSettingsInSyncBackend}
+          />
         </div>
 
         <div className="settings-buttons-container">
@@ -137,14 +146,21 @@ class Settings extends PureComponent {
             Help
           </button>
           <button className="btn settings-btn">
-            <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer" style={{color: 'white'}}>
+            <a
+              href="https://github.com/DanielDe/org-web"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'white' }}
+            >
               Github repo <i className="fas fa-external-link-alt fa-sm" />
             </a>
           </button>
 
           <hr className="settings-button-separator" />
 
-          <button className="btn settings-btn" onClick={this.handleSignOutClick}>Sign out</button>
+          <button className="btn settings-btn" onClick={this.handleSignOutClick}>
+            Sign out
+          </button>
         </div>
       </div>
     );
@@ -168,4 +184,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Settings));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Settings)
+);

@@ -31,22 +31,26 @@ export default class SyncServiceSignIn extends PureComponent {
   handleGoogleDriveClick() {
     try {
       gapi.load('client:auth2', () => {
-        gapi.client.init({
-          apiKey: process.env.REACT_APP_GOOGLE_DRIVE_API_KEY,
-          clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-          scope: 'https://www.googleapis.com/auth/drive',
-        }).then(() => {
-          persistField('authenticatedSyncService', 'Google Drive');
+        gapi.client
+          .init({
+            apiKey: process.env.REACT_APP_GOOGLE_DRIVE_API_KEY,
+            clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            scope: 'https://www.googleapis.com/auth/drive',
+          })
+          .then(() => {
+            persistField('authenticatedSyncService', 'Google Drive');
 
-          gapi.auth2.getAuthInstance().signIn({
-            ux_mode: 'redirect',
-            redirect_uri: window.location.origin,
+            gapi.auth2.getAuthInstance().signIn({
+              ux_mode: 'redirect',
+              redirect_uri: window.location.origin,
+            });
           });
-        });
       });
-    } catch(error) {
-      alert(`The Google Drive API client isn't available - you might be blocking it with an ad blocker`);
+    } catch (error) {
+      alert(
+        `The Google Drive API client isn't available - you might be blocking it with an ad blocker`
+      );
       return;
     }
   }
@@ -55,8 +59,8 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          org-web syncs your files with Dropbox or Google Drive.
-          Choose your preferred sync backend below to sign in.
+          org-web syncs your files with Dropbox or Google Drive. Choose your preferred sync backend
+          below to sign in.
         </p>
 
         <div className="sync-service-container" onClick={this.handleDropboxClick}>

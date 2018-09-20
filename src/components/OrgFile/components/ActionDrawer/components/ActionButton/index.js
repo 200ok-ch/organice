@@ -35,19 +35,31 @@ export default class ActionButton extends PureComponent {
       shouldSpinSubIcon,
     } = this.props;
 
-    const className = classNames('btn', 'btn--circle', 'action-drawer__btn', additionalClassName || '', {
-      'fas': !letter,
-      'fa-lg': !letter,
-      [`fa-${iconName}`]: !letter,
-      'action-drawer__btn--with-sub-icon': !!subIconName,
-      'btn--disabled': isDisabled,
-      'action-drawer__btn--letter': !!letter,
-    });
+    const className = classNames(
+      'btn',
+      'btn--circle',
+      'action-drawer__btn',
+      additionalClassName || '',
+      {
+        fas: !letter,
+        'fa-lg': !letter,
+        [`fa-${iconName}`]: !letter,
+        'action-drawer__btn--with-sub-icon': !!subIconName,
+        'btn--disabled': isDisabled,
+        'action-drawer__btn--letter': !!letter,
+      }
+    );
 
-    const subIconClassName = classNames('fas', 'fa-xs', `fa-${subIconName}`, 'action-drawer__btn__sub-icon', {
-      'action-drawer__btn__sub-icon--rotated': shouldRotateSubIcon,
-      'fa-spin': shouldSpinSubIcon,
-    });
+    const subIconClassName = classNames(
+      'fas',
+      'fa-xs',
+      `fa-${subIconName}`,
+      'action-drawer__btn__sub-icon',
+      {
+        'action-drawer__btn__sub-icon--rotated': shouldRotateSubIcon,
+        'fa-spin': shouldSpinSubIcon,
+      }
+    );
 
     return (
       <button className={className} onClick={this.handleClick} style={style} title={tooltip}>

@@ -1,36 +1,36 @@
 .keyboard-shortcut-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 10px;
-    border-bottom: 1px solid #D8D8D8;
-    padding: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px;
+  border-bottom: 1px solid #d8d8d8;
+  padding: 5px 0;
 }
 
 .keyboard-shortcut-container:first-of-type {
-    border-top: 1px solid #D8D8D8;
+  border-top: 1px solid #d8d8d8;
 }
 
 .keyboard-shortcut-container__shortcut-name {
-    max-width: calc(90% - 100px);
+  max-width: calc(90% - 100px);
 }
 
 .keyboard-shortcut-container__shortcut-key {
-    height: 34px;
-    width: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 34px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    color: #5E348C;
-    background-color: #F1F1F1;
-    border: 1px solid gray;
-    box-sizing: border-box;
+  color: #5e348c;
+  background-color: #f1f1f1;
+  border: 1px solid gray;
+  box-sizing: border-box;
 
-    font-family: Courier;
+  font-family: Courier;
 }
 
 .keyboard-shortcut-container__shortcut-key--edit-mode {
-    border: 2px solid #5E348C;
-    background-color: white;
+  border: 2px solid #5e348c;
+  background-color: white;
 }

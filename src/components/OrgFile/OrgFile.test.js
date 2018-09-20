@@ -42,17 +42,21 @@ Some description content
 let store, component;
 
 beforeEach(() => {
-  store = createStore(rootReducer, {
-    org: {
-      past: [],
-      present: new Map(),
-      future: [],
+  store = createStore(
+    rootReducer,
+    {
+      org: {
+        past: [],
+        present: new Map(),
+        future: [],
+      },
+      dropbox: new Map(),
+      base: new fromJS({
+        customKeybindings: {},
+      }),
     },
-    dropbox: new Map(),
-    base: new fromJS({
-      customKeybindings: {}
-    }),
-  }, applyMiddleware(thunk));
+    applyMiddleware(thunk)
+  );
   store.dispatch(displayFile('/some/test/file', testOrgFile));
 
   component = mount(
@@ -69,13 +73,19 @@ test('<OrgFile /> renders an org file', () => {
 });
 
 test('Can select a header in an org file', () => {
-  component.find('.title-line').first().simulate('click');
+  component
+    .find('.title-line')
+    .first()
+    .simulate('click');
 
   expect(toJSON(component)).toMatchSnapshot();
 });
 
 test('Can advance todo state for selected header in an org file', () => {
-  component.find('.title-line').first().simulate('click');
+  component
+    .find('.title-line')
+    .first()
+    .simulate('click');
   component.find('.fas.fa-check').simulate('click');
 
   expect(toJSON(component)).toMatchSnapshot();

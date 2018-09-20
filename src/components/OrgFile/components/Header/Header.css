@@ -1,54 +1,54 @@
 .header {
-    margin-bottom: 2px;
-    margin-top: 5px;
-    padding-top: 5px;
-    position: relative;
-    overflow-y: visible;
-    overflow-x: visible;
-    min-height: 23px;
+  margin-bottom: 2px;
+  margin-top: 5px;
+  padding-top: 5px;
+  position: relative;
+  overflow-y: visible;
+  overflow-x: visible;
+  min-height: 23px;
 }
 
 .header--selected {
-    background-color: rgba(239, 255, 0, 0.28);
+  background-color: rgba(239, 255, 0, 0.28);
 }
 
 .header--removing {
-    overflow-y: hidden;
-    min-height: 0;
-    margin-bottom: 0;
-    padding-top: 0;
-    margin-top: -2px;
+  overflow-y: hidden;
+  min-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: -2px;
 }
 
 .left-swipe-action-container {
-    top: 0;
-    right: 100%;
-    height: 100%;
-    position: absolute;
+  top: 0;
+  right: 100%;
+  height: 100%;
+  position: absolute;
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .right-swipe-action-container {
-    top: 0;
-    right: 0;
-    height: 100%;
-    position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  position: absolute;
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .swipe-action-container__icon {
-    position: absolute;
-    color: white;
+  position: absolute;
+  color: white;
 }
 
 .swipe-action-container__icon--left {
-    right: 10px;
+  right: 10px;
 }
 
 .swipe-action-container__icon--right {
-    left: 10px;
+  left: 10px;
 }

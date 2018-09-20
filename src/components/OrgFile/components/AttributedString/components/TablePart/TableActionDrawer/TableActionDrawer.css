@@ -1,35 +1,35 @@
 .table-action-drawer-container {
-    color: lightgray;
+  color: lightgray;
 
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
 }
 
 .table-action-drawer__edit-icon-container {
-    grid-row-start: span 2;
+  grid-row-start: span 2;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .table-action-drawer__sub-icon-container {
-    position: relative;
-    margin: 15px 0;
+  position: relative;
+  margin: 15px 0;
 }
 
 .table-action-drawer__main-icon {
-    padding-right: 3px;
-    padding-bottom: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
 }
 
 .table-action-drawer__sub-icon {
-    position: absolute;
-    top: 10px;
-    left: 15px;
+  position: absolute;
+  top: 10px;
+  left: 15px;
 }
 
 .table-action-drawer__sub-icon--rotated {
-    transform: rotate(270deg);
+  transform: rotate(270deg);
 }

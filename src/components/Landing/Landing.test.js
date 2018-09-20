@@ -28,7 +28,7 @@ test('<Landing /> handles sign in click', () => {
   const signInButton = component.findWhere(node => {
     try {
       return node.text().trim() === 'Sign in';
-    } catch(error) {
+    } catch (error) {
       return false;
     }
   });

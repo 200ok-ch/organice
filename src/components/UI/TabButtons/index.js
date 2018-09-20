@@ -20,9 +20,11 @@ export default class TabButtons extends PureComponent {
           });
 
           return (
-            <div key={buttonName}
-                 className={className}
-                 onClick={this.handleButtonClick(buttonName)}>
+            <div
+              key={buttonName}
+              className={className}
+              onClick={this.handleButtonClick(buttonName)}
+            >
               {buttonName}
             </div>
           );
