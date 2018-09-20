@@ -803,7 +803,6 @@ const reorderTags = (state, action) => {
 
 const updateTimestampWithId = (state, action) => {
   const pathAndPart = pathAndPartOfTimestampItemWithIdInHeaders(state.get('headers'), action.timestampId);
-  console.log("pathAndPart = ", pathAndPart);
   if (!pathAndPart) {
     return state;
   }
