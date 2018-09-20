@@ -11,24 +11,26 @@ export const hideLoadingMessage = () => ({
 });
 
 export const setIsLoading = isLoading => ({
-  type: 'SET_IS_LOADING', isLoading,
+  type: 'SET_IS_LOADING',
+  isLoading,
 });
 
-export const setDisappearingLoadingMessage = (loadingMessage, delay) => (
-  dispatch => {
-    dispatch(setLoadingMessage(loadingMessage));
-    setTimeout(() => dispatch(hideLoadingMessage()), delay);
-  }
-);
+export const setDisappearingLoadingMessage = (loadingMessage, delay) => dispatch => {
+  dispatch(setLoadingMessage(loadingMessage));
+  setTimeout(() => dispatch(hideLoadingMessage()), delay);
+};
 
 export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
-  type: 'SET_LAST_VIEWED_FILE', lastViewedPath, lastViewedContents,
+  type: 'SET_LAST_VIEWED_FILE',
+  lastViewedPath,
+  lastViewedContents,
 });
 
 export const loadStaticFile = staticFile => {
   return (dispatch, getState) => {
-    dispatch(setLastViewedFile(getState().org.present.get('path'),
-                               getState().org.present.get('contents')));
+    dispatch(
+      setLastViewedFile(getState().org.present.get('path'), getState().org.present.get('contents'))
+    );
 
     const fileContents = {
       changelog: changelogFileContents,
@@ -44,40 +46,57 @@ export const unloadStaticFile = () => {
     dispatch(stopDisplayingFile());
 
     if (!!getState().base.get('lastViewedPath')) {
-      dispatch(displayFile(getState().base.get('lastViewedPath'),
-                           getState().base.get('lastViewedContents')));
+      dispatch(
+        displayFile(
+          getState().base.get('lastViewedPath'),
+          getState().base.get('lastViewedContents')
+        )
+      );
     }
   };
 };
 
 export const setFontSize = newFontSize => ({
-  type: 'SET_FONT_SIZE', newFontSize,
+  type: 'SET_FONT_SIZE',
+  newFontSize,
 });
 
 export const setBulletStyle = newBulletStyle => ({
-  type: 'SET_BULLET_STYLE', newBulletStyle,
+  type: 'SET_BULLET_STYLE',
+  newBulletStyle,
 });
 
 export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
-  type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE', newShouldTapTodoToAdvance,
+  type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE',
+  newShouldTapTodoToAdvance,
 });
 
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
-    dispatch({ type: 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND', newShouldStoreSettingsInSyncBackend });
+    dispatch({
+      type: 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND',
+      newShouldStoreSettingsInSyncBackend,
+    });
 
     if (!newShouldStoreSettingsInSyncBackend) {
       const client = getState().syncBackend.get('client');
       switch (client.type) {
-      case 'Dropbox':
-        client.deleteFile('/.org-web-config.json').catch((doesFileNotExist, error) => (
-          doesFileNotExist ? null : alert(`There was an error trying to delete the .org-web-config.json file: ${error}`)
-        ));
-        break;
-      case 'Google Drive':
-        client.deleteFileByNameAndParent('.org-web-config.json', 'root');
-        break;
-      default:
+        case 'Dropbox':
+          client
+            .deleteFile('/.org-web-config.json')
+            .catch(
+              (doesFileNotExist, error) =>
+                doesFileNotExist
+                  ? null
+                  : alert(
+                      `There was an error trying to delete the .org-web-config.json file: ${error}`
+                    )
+            );
+          break;
+        case 'Google Drive':
+          client.deleteFileByNameAndParent('.org-web-config.json', 'root');
+          break;
+        default:
       }
 
       window.previousSettingsFileContents = null;
@@ -86,23 +105,29 @@ export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncB
 };
 
 export const setHasUnseenChangelog = newHasUnseenChangelog => ({
-  type: 'SET_HAS_UNSEEN_CHANGELOG', newHasUnseenChangelog,
+  type: 'SET_HAS_UNSEEN_CHANGELOG',
+  newHasUnseenChangelog,
 });
 
 export const setLastSeenChangelogHeader = newLastSeenChangelogHeader => ({
-  type: 'SET_LAST_SEEN_CHANGELOG_HEADER', newLastSeenChangelogHeader,
+  type: 'SET_LAST_SEEN_CHANGELOG_HEADER',
+  newLastSeenChangelogHeader,
 });
 
 export const setCustomKeybinding = (keybindingName, keybinding) => ({
-  type: 'SET_CUSTOM_KEYBINDING', keybindingName, keybinding,
+  type: 'SET_CUSTOM_KEYBINDING',
+  keybindingName,
+  keybinding,
 });
 
 export const restoreBaseSettings = newSettings => ({
-  type: 'RESTORE_BASE_SETTINGS', newSettings,
+  type: 'RESTORE_BASE_SETTINGS',
+  newSettings,
 });
 
 export const pushModalPage = modalPage => ({
-  type: 'PUSH_MODAL_PAGE', modalPage,
+  type: 'PUSH_MODAL_PAGE',
+  modalPage,
 });
 
 export const popModalPage = () => ({
@@ -114,7 +139,9 @@ export const clearModalStack = () => ({
 });
 
 export const activatePopup = (popupType, data) => ({
-  type: 'ACTIVATE_POPUP', popupType, data,
+  type: 'ACTIVATE_POPUP',
+  popupType,
+  data,
 });
 
 export const closePopup = () => ({
