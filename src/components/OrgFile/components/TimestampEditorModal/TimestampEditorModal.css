@@ -3,3 +3,28 @@
 
     margin-top: 0;
 }
+
+.timestamp-editor__button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.timestamp-editor__add-new-button {
+    font-size: 18px;
+}
+
+.timestamp-editor__separator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 35px;
+}
+
+.timestamp-editor__separator__margin-line {
+    background-color: black;
+    height: 1px;
+    width: 40%;
+
+    margin-top: 5px;
+}

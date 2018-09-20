@@ -72,7 +72,8 @@ export default class TimestampEditor extends PureComponent {
       const { onChange, timestamp } = this.props;
 
       const [hourKey, minuteKey] = startOrEnd === 'start' ? ['startHour', 'startMinute'] : ['endHour', 'endMinute'];
-      const [hour, minute] = event.target.value.split(':');
+      let [hour, minute] = event.target.value.split(':');
+      hour = hour.startsWith('0') ? hour.substring(1) : hour;
       onChange(timestamp.set(hourKey, hour).set(minuteKey, minute));
     };
   }
@@ -133,7 +134,7 @@ export default class TimestampEditor extends PureComponent {
         <span className="timestamp-editor__field-title">{label}:</span>
         {!!hour ? (
           <Fragment>
-            <input type="time" value={`${hour}:${minute}`} onChange={this.handleTimeChange(timeKey)} />
+            <input type="time" value={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`} onChange={this.handleTimeChange(timeKey)} />
             <i className="fas fa-pencil-alt timestamp-editor__icon" />
             {showRemoveButton && <i className="fas fa-times timestamp-editor__icon" onClick={this.handleRemoveTime(timeKey)} />}
           </Fragment>
@@ -215,7 +216,9 @@ export default class TimestampEditor extends PureComponent {
 
     return (
       <div>
-        <div className="timestamp-editor__render">{renderAsText(timestamp)}</div>
+        <div className="timestamp-editor__render">
+          {renderAsText(timestamp)}
+        </div>
 
         <div className="timestamp-editor__field-container">
           <span className="timestamp-editor__field-title">Active:</span>
