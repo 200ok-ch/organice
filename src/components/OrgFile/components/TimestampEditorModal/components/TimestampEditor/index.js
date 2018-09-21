@@ -38,12 +38,14 @@ export default class TimestampEditor extends PureComponent {
   handleDateChange(event) {
     const { onChange, timestamp } = this.props;
 
-    const [newYear, newMonth, newDay] = event.target.value.split('-');
+    const newDate = moment(event.target.value);
+    const [newYear, newMonth, newDay, newDayName] = newDate.format('YYYY MM DD ddd').split(' ');
     onChange(
       timestamp
         .set('year', newYear)
         .set('month', newMonth)
         .set('day', newDay)
+        .set('dayName', newDayName)
     );
   }
 
@@ -60,7 +62,7 @@ export default class TimestampEditor extends PureComponent {
       const [hourKey, minuteKey] =
         startOrEnd === 'start' ? ['startHour', 'startMinute'] : ['endHour', 'endMinute'];
       const [hour, minute] = moment()
-        .format('H:m')
+        .format('HH:mm')
         .split(':');
       onChange(timestamp.set(hourKey, hour).set(minuteKey, minute));
     };
