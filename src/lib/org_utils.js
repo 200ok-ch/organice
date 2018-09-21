@@ -221,7 +221,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
         return part
           .get('items')
           .map((item, itemIndex) => {
-            const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+            let pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
               item.get('contents'),
               timestampId
             );
@@ -232,7 +232,19 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                 timestampPart,
               };
             } else {
-              return null;
+              let pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+                item.get('titleLine'),
+                timestampId
+              );
+              if (!!pathAndPart) {
+                const { path, timestampPart } = pathAndPart;
+                return {
+                  path: [partIndex, 'items', itemIndex, 'titleLine'].concat(path),
+                  timestampPart,
+                };
+              } else {
+                return null;
+              }
             }
           })
           .filter(result => !!result)
