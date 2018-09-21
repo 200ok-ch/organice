@@ -1,5 +1,6 @@
 .timestamp-editor__render {
   font-family: Courier;
+  font-size: 14px;
 
   text-align: center;
 }
@@ -8,15 +9,36 @@
   margin-top: 10px;
 }
 
+.timestamp-editor__field-container--inline {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.timestamp-editor__field-title {
+  margin-right: 5px;
+
+  width: 80px;
+}
+
+.timestamp-editor__field {
+  font-family: Courier;
+
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+}
+
 .timestamp-editor__icon {
   color: gray;
   margin-left: 10px;
 }
 
-.timestamp-editor__field-title {
-  margin-right: 5px;
-}
+.delay-repeater-value-input {
+  width: 30px;
+  height: 22px;
 
-.timestamp-editor__field {
-  font-family: Courier;
+  margin-left: 10px;
+  margin-right: 10px;
 }

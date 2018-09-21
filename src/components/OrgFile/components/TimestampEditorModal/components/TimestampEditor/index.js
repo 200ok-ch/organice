@@ -17,7 +17,6 @@ export default class TimestampEditor extends PureComponent {
     _.bindAll(this, [
       'handleActiveToggle',
       'handleDateChange',
-      'handleDateEditClick',
       'handleAddRepeater',
       'handleRemoveRepeater',
       'handleRepeaterTypeChange',
@@ -47,12 +46,6 @@ export default class TimestampEditor extends PureComponent {
         .set('day', newDay)
         .set('dayName', newDayName)
     );
-  }
-
-  handleDateEditClick() {
-    if (!!this.dateInput) {
-      this.dateInput.focus();
-    }
   }
 
   handleAddTime(startOrEnd) {
@@ -162,26 +155,30 @@ export default class TimestampEditor extends PureComponent {
 
   renderTimeField(label, timeKey, hour, minute, showRemoveButton = true) {
     return (
-      <div className="timestamp-editor__field-container">
-        <span className="timestamp-editor__field-title">{label}:</span>
-        {!!hour ? (
-          <Fragment>
-            <input
-              type="time"
-              value={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`}
-              onChange={this.handleTimeChange(timeKey)}
-            />
-            <i className="fas fa-pencil-alt timestamp-editor__icon" />
-            {showRemoveButton && (
-              <i
-                className="fas fa-times timestamp-editor__icon"
-                onClick={this.handleRemoveTime(timeKey)}
+      <div className="timestamp-editor__field-container timestamp-editor__field-container--inline">
+        <div className="timestamp-editor__field-title">{label}:</div>
+        <div className="timestamp-editor__field">
+          {!!hour ? (
+            <Fragment>
+              <input
+                type="time"
+                value={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`}
+                onChange={this.handleTimeChange(timeKey)}
               />
-            )}
-          </Fragment>
-        ) : (
-          <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddTime(timeKey)} />
-        )}
+              {showRemoveButton && (
+                <i
+                  className="fas fa-times timestamp-editor__icon"
+                  onClick={this.handleRemoveTime(timeKey)}
+                />
+              )}
+            </Fragment>
+          ) : (
+            <i
+              className="fas fa-plus timestamp-editor__icon"
+              onClick={this.handleAddTime(timeKey)}
+            />
+          )}
+        </div>
       </div>
     );
   }
@@ -191,35 +188,40 @@ export default class TimestampEditor extends PureComponent {
 
     return (
       <div className="timestamp-editor__field-container">
-        <span className="timestamp-editor__field-title">Repeater:</span>
-        <br />
-        {!!repeaterType ? (
-          <Fragment>
-            <TabButtons
-              buttons={['+', '++', '.+']}
-              selectedButton={repeaterType || '+'}
-              onSelect={this.handleRepeaterTypeChange}
-            />
-            <input
-              type="number"
-              min="1"
-              className="textfield"
-              value={repeaterValue || 1}
-              onChange={this.handleRepeaterValueChange}
-            />
-            <TabButtons
-              buttons={'hdwmy'.split('')}
-              selectedButton={repeaterUnit || 'h'}
-              onSelect={this.handleRepeaterUnitChange}
-            />
-            <i
-              className="fas fa-times timestamp-editor__icon"
-              onClick={this.handleRemoveRepeater}
-            />
-          </Fragment>
-        ) : (
-          <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddRepeater} />
-        )}
+        <div className="timestamp-editor__field-title">Repeater:</div>
+        <div className="timestamp-editor__field timestamp-editor__field--delay-repeater">
+          {!!repeaterType ? (
+            <Fragment>
+              <div>
+                <TabButtons
+                  buttons={['+', '++', '.+']}
+                  selectedButton={repeaterType || '+'}
+                  onSelect={this.handleRepeaterTypeChange}
+                />
+              </div>
+              <input
+                type="number"
+                min="1"
+                className="textfield delay-repeater-value-input"
+                value={repeaterValue || 1}
+                onChange={this.handleRepeaterValueChange}
+              />
+              <div>
+                <TabButtons
+                  buttons={'hdwmy'.split('')}
+                  selectedButton={repeaterUnit || 'h'}
+                  onSelect={this.handleRepeaterUnitChange}
+                />
+              </div>
+              <i
+                className="fas fa-times timestamp-editor__icon"
+                onClick={this.handleRemoveRepeater}
+              />
+            </Fragment>
+          ) : (
+            <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddRepeater} />
+          )}
+        </div>
       </div>
     );
   }
@@ -229,32 +231,37 @@ export default class TimestampEditor extends PureComponent {
 
     return (
       <div className="timestamp-editor__field-container">
-        <span className="timestamp-editor__field-title">Delay:</span>
-        <br />
-        {!!delayType ? (
-          <Fragment>
-            <TabButtons
-              buttons={['-', '--']}
-              selectedButton={delayType || '-'}
-              onSelect={this.handleDelayTypeChange}
-            />
-            <input
-              type="number"
-              min="1"
-              className="textfield"
-              value={delayValue || 1}
-              onChange={this.handleDelayValueChange}
-            />
-            <TabButtons
-              buttons={'hdwmy'.split('')}
-              selectedButton={delayUnit || 'h'}
-              onSelect={this.handleDelayUnitChange}
-            />
-            <i className="fas fa-times timestamp-editor__icon" onClick={this.handleRemoveDelay} />
-          </Fragment>
-        ) : (
-          <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddDelay} />
-        )}
+        <div className="timestamp-editor__field-title">Delay:</div>
+        <div className="timestamp-editor__field">
+          {!!delayType ? (
+            <Fragment>
+              <div>
+                <TabButtons
+                  buttons={['-', '--']}
+                  selectedButton={delayType || '-'}
+                  onSelect={this.handleDelayTypeChange}
+                />
+              </div>
+              <input
+                type="number"
+                min="1"
+                className="textfield delay-repeater-value-input"
+                value={delayValue || 1}
+                onChange={this.handleDelayValueChange}
+              />
+              <div>
+                <TabButtons
+                  buttons={'hdwmy'.split('')}
+                  selectedButton={delayUnit || 'h'}
+                  onSelect={this.handleDelayUnitChange}
+                />
+              </div>
+              <i className="fas fa-times timestamp-editor__icon" onClick={this.handleRemoveDelay} />
+            </Fragment>
+          ) : (
+            <i className="fas fa-plus timestamp-editor__icon" onClick={this.handleAddDelay} />
+          )}
+        </div>
       </div>
     );
   }
@@ -283,25 +290,23 @@ export default class TimestampEditor extends PureComponent {
       <div>
         <div className="timestamp-editor__render">{renderAsText(timestamp)}</div>
 
-        <div className="timestamp-editor__field-container">
-          <span className="timestamp-editor__field-title">Active:</span>
-          <span className="timestamp-editor__field">
+        <div className="timestamp-editor__field-container timestamp-editor__field-container--inline">
+          <div className="timestamp-editor__field-title">Active:</div>
+          <div className="timestamp-editor__field">
             <Switch isEnabled={isActive} onToggle={this.handleActiveToggle} />
-          </span>
+          </div>
         </div>
 
-        <div className="timestamp-editor__field-container">
-          <span className="timestamp-editor__field-title">Date:</span>
-          <input
-            type="date"
-            ref={input => (this.dateInput = input)}
-            onChange={this.handleDateChange}
-            value={`${timestamp.get('year')}-${timestamp.get('month')}-${timestamp.get('day')}`}
-          />
-          <i
-            className="fas fa-pencil-alt timestamp-editor__icon"
-            onClick={this.handleDateEditClick}
-          />
+        <div className="timestamp-editor__field-container timestamp-editor__field-container--inline">
+          <div className="timestamp-editor__field-title">Date:</div>
+          <div className="timestamp-editor__field">
+            <input
+              type="date"
+              ref={input => (this.dateInput = input)}
+              onChange={this.handleDateChange}
+              value={`${timestamp.get('year')}-${timestamp.get('month')}-${timestamp.get('day')}`}
+            />
+          </div>
         </div>
 
         {this.renderTimeField('Start time', 'start', startHour, startMinute, !endHour)}
