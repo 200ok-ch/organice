@@ -10,6 +10,11 @@
   box-sizing: border-box;
   height: 100%;
   padding: 7px;
+  border-right: 1px solid lightgray;
+}
+
+.tab-buttons__btn:last-of-type {
+  border-right: none;
 }
 
 .entry-container--large-font .tab-buttons__btn {
