@@ -19,7 +19,10 @@
   align-items: center;
   justify-content: space-between;
 
-  font-size: 35px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  font-size: 22px;
 }
 
 .timestamp-editor__separator__margin-line {

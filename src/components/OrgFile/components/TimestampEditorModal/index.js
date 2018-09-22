@@ -60,7 +60,7 @@ export default class TimestampEditorModal extends PureComponent {
           <Fragment>
             <div className="timestamp-editor__separator">
               <div className="timestamp-editor__separator__margin-line" />
-              --
+              to
               <div className="timestamp-editor__separator__margin-line" />
             </div>
 

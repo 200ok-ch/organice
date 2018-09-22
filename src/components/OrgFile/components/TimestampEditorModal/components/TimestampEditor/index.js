@@ -311,11 +311,9 @@ export default class TimestampEditor extends PureComponent {
           <div className="timestamp-editor__field-container timestamp-editor__field-container--inline">
             <div className="timestamp-editor__field-title">Date</div>
             <div className="timestamp-editor__field">
-              {/* TODO: check if I still need this ref... */}
               <input
                 type="date"
                 className="timestamp-editor__date-input"
-                ref={input => (this.dateInput = input)}
                 onChange={this.handleDateChange}
                 value={`${timestamp.get('year')}-${timestamp.get('month')}-${timestamp.get('day')}`}
               />

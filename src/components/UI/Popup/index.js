@@ -7,7 +7,7 @@ export default class Popup extends PureComponent {
     const { children, shouldIncludeCloseButton, onClose } = this.props;
 
     const innerContainerStyle = {
-      maxHeight: window.screen.height - 180,
+      maxHeight: window.screen.height - 240,
     };
 
     return (
