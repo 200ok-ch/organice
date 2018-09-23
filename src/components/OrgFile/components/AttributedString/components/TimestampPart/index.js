@@ -16,8 +16,13 @@ export default class TimestampPart extends PureComponent {
   handleClick() {
     const {
       part,
-      subPartDataAndHandlers: { onTimestampClick },
+      subPartDataAndHandlers: { onTimestampClick, shouldDisableActions },
     } = this.props;
+
+    if (shouldDisableActions) {
+      return;
+    }
+
     onTimestampClick(part.get('id'));
   }
 

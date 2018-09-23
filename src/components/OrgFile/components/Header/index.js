@@ -360,6 +360,7 @@ class Header extends PureComponent {
                 color={color}
                 hasContent={hasContent}
                 isSelected={isSelected}
+                shouldDisableActions={shouldDisableActions}
               />
 
               <Collapse

@@ -8,6 +8,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import * as orgActions from '../../../../actions/org';
+import * as baseActions from '../../../../actions/base';
 
 import AttributedString from '../AttributedString';
 
@@ -24,6 +25,7 @@ class TitleLine extends PureComponent {
       'handleTitleChange',
       'handleTitleFieldClick',
       'handleTodoClick',
+      'handleTimestampClick',
     ]);
 
     this.state = {
@@ -131,8 +133,12 @@ class TitleLine extends PureComponent {
     event.stopPropagation();
   }
 
+  handleTimestampClick(timestampId) {
+    this.props.base.activatePopup('timestamp-editor', { timestampId });
+  }
+
   render() {
-    const { header, color, hasContent, inEditMode } = this.props;
+    const { header, color, hasContent, inEditMode, shouldDisableActions } = this.props;
     const { containerWidth } = this.state;
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
@@ -173,7 +179,13 @@ class TitleLine extends PureComponent {
         ) : (
           <div>
             <span style={titleStyle} ref={this.handleTitleSpanRef}>
-              <AttributedString parts={header.getIn(['titleLine', 'title'])} />
+              <AttributedString
+                parts={header.getIn(['titleLine', 'title'])}
+                subPartDataAndHandlers={{
+                  onTimestampClick: this.handleTimestampClick,
+                  shouldDisableActions,
+                }}
+              />
               {!header.get('opened') && hasContent ? '...' : ''}
             </span>
 
@@ -211,6 +223,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     org: bindActionCreators(orgActions, dispatch),
+    base: bindActionCreators(baseActions, dispatch),
   };
 };
 
