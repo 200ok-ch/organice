@@ -146,6 +146,20 @@ Checkboxes:
 - [X] 2
 
 Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/DanielDe/org-web/issues/26][the issue]] on Github
+* Timestamps
+org-web has native support for displaying and editing timestamps.
+
+Try tapping on the timestamps below to get a feel for the editor:
+
+<2018-09-17 Sun>
+
+[2018-09-17 Sun]
+
+[2018-09-17 Sun +1d]
+
+[2018-09-17 Sun 10:00-11:30]
+
+<2018-09-17 Sun>--<2018-09-25 Tue>
 * Capture
 org-web supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
 

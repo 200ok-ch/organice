@@ -70,8 +70,8 @@ export const parseMarkupAndCookies = (
       });
     } else if (!!match[15]) {
       const [firstTimestamp, secondTimestamp] = [_.range(16, 29), _.range(29, 42)].map(
-        partIndices => {
-          // eslint-disable-line no-loop-func
+        // prettier-ignore
+        partIndices => { // eslint-disable-line no-loop-func
           const [
             typeBracket,
             year,

@@ -1,3 +1,5 @@
+* September 23rd, 2018
+** Added native support for displaying and editing timestamps
 * September 18th, 2018 (afternoon)
 ** Parse and display inline markup like ~this~ and +this+ and *this* and /this/
 * September 18th, 2018

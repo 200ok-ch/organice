@@ -283,17 +283,10 @@ export default class TimestampEditor extends PureComponent {
       year,
       month,
       day,
-      dayName,
       startHour,
       startMinute,
       endHour,
       endMinute,
-      repeaterType,
-      repeaterValue,
-      repeaterUnit,
-      delayType,
-      delayValue,
-      delayUnit,
     } = timestamp.toJS();
 
     return (
@@ -315,7 +308,7 @@ export default class TimestampEditor extends PureComponent {
                 type="date"
                 className="timestamp-editor__date-input"
                 onChange={this.handleDateChange}
-                value={`${timestamp.get('year')}-${timestamp.get('month')}-${timestamp.get('day')}`}
+                value={`${year}-${month}-${day}`}
               />
             </div>
           </div>
