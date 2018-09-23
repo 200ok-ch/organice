@@ -102,7 +102,7 @@ export const downloadFile = path => {
         dispatch(setDirty(false));
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
-        dispatch(setLastSyncAt(moment()));
+        dispatch(setLastSyncAt(moment().add(5, 'seconds')));
         dispatch(displayFile(path, fileContents));
         dispatch(applyOpennessState());
       });

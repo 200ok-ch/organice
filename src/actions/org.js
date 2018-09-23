@@ -64,7 +64,7 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
             dispatch(setDisappearingLoadingMessage(successMessage, 2000));
             dispatch(setIsLoading(false));
             dispatch(setDirty(false));
-            dispatch(setLastSyncAt(moment()));
+            dispatch(setLastSyncAt(moment().add(5, 'seconds')));
           })
           .catch(error => {
             alert(`There was an error pushing the file: ${error.toString()}`);
@@ -77,6 +77,8 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
       }
     } else {
       if (isDirty && forceAction !== 'pull') {
+        console.log(lastSyncAt);
+        console.log(lastServerModifiedAt);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false));
         dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
@@ -84,7 +86,7 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
         dispatch(displayFile(path, contents));
         dispatch(applyOpennessState());
         dispatch(setDirty(false));
-        dispatch(setLastSyncAt(moment()));
+        dispatch(setLastSyncAt(moment().add(5, 'seconds')));
         dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
         dispatch(setIsLoading(false));
       }

@@ -55,15 +55,10 @@ export const parseMarkupAndCookies = (
       }[match[11]];
 
       const markupPrefixLength = match[10].length;
-      const markupSuffixLength = match[14].length;
-      const rawText = match[0];
 
       matches.push({
         type: 'inline-markup',
-        rawText: rawText.substring(
-          markupPrefixLength,
-          rawText.length - markupPrefixLength - markupSuffixLength + 1
-        ),
+        rawText: match[0].substring(markupPrefixLength, match[12].length + 2 + markupPrefixLength),
         index: match.index + markupPrefixLength,
         content: match[12],
         markupType,
