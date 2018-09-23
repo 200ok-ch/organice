@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { renderAsText } from './timestamps';
+
 const linkPartToRawText = linkPart => {
   if (!!linkPart.getIn(['contents', 'title'])) {
     return `[[${linkPart.getIn(['contents', 'uri'])}][${linkPart.getIn(['contents', 'title'])}]]`;
@@ -159,6 +161,15 @@ const listPartToRawText = listPart => {
     .join('\n');
 };
 
+const timestampPartToRawText = part => {
+  let text = renderAsText(part.get('firstTimestamp'));
+  if (part.get('secondTimestamp')) {
+    text += `--${renderAsText(part.get('secondTimestamp'))}`;
+  }
+
+  return text;
+};
+
 export const attributedStringToRawText = parts => {
   const prevPartTypes = parts.map(part => part.get('type')).unshift(null);
 
@@ -185,9 +196,12 @@ export const attributedStringToRawText = parts => {
         case 'list':
           text = listPartToRawText(part);
           break;
+        case 'timestamp':
+          text = timestampPartToRawText(part);
+          break;
         default:
           console.error(
-            `Unknown attributed string part type in attribuedStringToRawText: ${part.get('type')}`
+            `Unknown attributed string part type in attributedStringToRawText: ${part.get('type')}`
           );
       }
 

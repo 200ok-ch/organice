@@ -781,7 +781,19 @@ const updateTimestampWithId = (state, action) => {
   }
 
   const { path } = pathAndPart;
-  return state.setIn(['headers'].concat(path), action.newTimestamp);
+  const headerIndex = path[0];
+
+  return state
+    .setIn(['headers'].concat(path), action.newTimestamp)
+    .updateIn(['headers', headerIndex], header =>
+      header.set('rawDescription', attributedStringToRawText(header.get('description')))
+    )
+    .updateIn(['headers', headerIndex], header =>
+      header.setIn(
+        ['titleLine', 'rawTitle'],
+        attributedStringToRawText(header.getIn(['titleLine', 'title']))
+      )
+    );
 };
 
 export default (state = new Map(), action) => {
