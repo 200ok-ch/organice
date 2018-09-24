@@ -178,6 +178,7 @@ class HeaderContent extends PureComponent {
               onBlur={this.handleTextareaBlur}
               onChange={this.handleDescriptionChange}
             />
+            {/* TODO: style this */}
             <div
               className="title-line__insert-timestamp-button"
               onClick={this.handleInsertTimestamp}

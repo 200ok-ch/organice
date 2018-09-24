@@ -203,6 +203,7 @@ class TitleLine extends PureComponent {
               onChange={this.handleTitleChange}
               onClick={this.handleTitleFieldClick}
             />
+            {/* TODO: style this */}
             <div
               className="title-line__insert-timestamp-button"
               onClick={this.handleInsertTimestamp}
