@@ -9,6 +9,8 @@ import _ from 'lodash';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
+import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+
 import AttributedString from '../AttributedString';
 
 class HeaderContent extends PureComponent {
@@ -30,11 +32,13 @@ class HeaderContent extends PureComponent {
       'handleRemoveTableColumn',
       'handleCheckboxClick',
       'handleTimestampClick',
+      'handleInsertTimestamp',
     ]);
 
     this.state = {
       descriptionValue: props.header.get('rawDescription'),
       containerWidth: null,
+      shouldIgnoreBlur: false,
     };
   }
 
@@ -78,7 +82,14 @@ class HeaderContent extends PureComponent {
   }
 
   handleTextareaBlur() {
-    this.props.org.exitEditMode();
+    // Give the "Insert timestamp" button click a chance to tell us to ignore the blur event.
+    setTimeout(() => {
+      if (!this.state.shouldIgnoreBlur) {
+        this.props.org.exitEditMode();
+      } else {
+        this.setState({ shouldIgnoreBlur: false });
+      }
+    }, 0);
   }
 
   handleTableCellSelect(cellId) {
@@ -121,6 +132,21 @@ class HeaderContent extends PureComponent {
     this.props.base.activatePopup('timestamp-editor', { timestampId });
   }
 
+  handleInsertTimestamp() {
+    // Clicking this button will unfocus the textarea, but we don't want to exit edit mode,
+    // so instruct the blur handler to ignore the event.
+    this.setState({ shouldIgnoreBlur: true });
+
+    const { descriptionValue } = this.state;
+    const insertionIndex = this.textarea.selectionStart;
+    this.setState({
+      descriptionValue:
+        descriptionValue.substring(0, insertionIndex) +
+        getCurrentTimestampAsText() +
+        descriptionValue.substring(this.textarea.selectionEnd || insertionIndex),
+    });
+  }
+
   render() {
     const {
       header,
@@ -142,15 +168,24 @@ class HeaderContent extends PureComponent {
         style={{ width: containerWidth }}
       >
         {inEditMode ? (
-          <textarea
-            autoFocus
-            className="textarea"
-            rows="8"
-            ref={this.handleTextareaRef}
-            value={this.state.descriptionValue}
-            onBlur={this.handleTextareaBlur}
-            onChange={this.handleDescriptionChange}
-          />
+          <div className="header-content__edit-container">
+            <textarea
+              autoFocus
+              className="textarea"
+              rows="8"
+              ref={this.handleTextareaRef}
+              value={this.state.descriptionValue}
+              onBlur={this.handleTextareaBlur}
+              onChange={this.handleDescriptionChange}
+            />
+            <div
+              className="title-line__insert-timestamp-button"
+              onClick={this.handleInsertTimestamp}
+            >
+              <i className="fas fa-plus" />
+              Insert timestamp
+            </div>
+          </div>
         ) : (
           <AttributedString
             parts={header.get('description')}
