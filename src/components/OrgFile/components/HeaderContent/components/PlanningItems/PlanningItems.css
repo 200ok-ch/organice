@@ -1,0 +1,7 @@
+.planning-items__item-container {
+  display: flex;
+}
+
+.planning-item__type {
+  color: gray;
+}

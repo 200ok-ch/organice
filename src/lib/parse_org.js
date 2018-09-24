@@ -417,9 +417,9 @@ export const parsePlanningItems = rawText => {
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
-    /\s+/,
+    /\s*/,
     optionalSinglePlanningItemRegex,
-    /\s+/,
+    /\s*/,
     optionalSinglePlanningItemRegex,
     /\s*/
   );
@@ -441,7 +441,7 @@ export const parsePlanningItems = rawText => {
           _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
         );
 
-        return { type, timestamp };
+        return { type, timestamp, id: generateId() };
       })
       .filter(item => !!item)
   );

@@ -1,8 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import './HeaderContent.css';
+
+import PlanningItems from './components/PlanningItems';
 
 import _ from 'lodash';
 
@@ -203,24 +205,27 @@ class HeaderContent extends PureComponent {
             </div>
           </div>
         ) : (
-          <AttributedString
-            parts={header.get('description')}
-            subPartDataAndHandlers={{
-              onTableCellSelect: this.handleTableCellSelect,
-              selectedTableCellId: selectedTableCellId,
-              inTableEditMode: inTableEditMode,
-              onExitTableEditMode: this.handleExitTableEditMode,
-              onTableCellValueUpdate: this.handleTableCellValueUpdate,
-              onEnterTableEditMode: this.handleEnterTableEditMode,
-              onAddNewTableRow: this.handleAddNewTableRow,
-              onRemoveTableRow: this.handleRemoveTableRow,
-              onAddNewTableColumn: this.handleAddNewTableColumn,
-              onRemoveTableColumn: this.handleRemoveTableColumn,
-              onCheckboxClick: this.handleCheckboxClick,
-              onTimestampClick: this.handleTimestampClick,
-              shouldDisableActions,
-            }}
-          />
+          <Fragment>
+            <PlanningItems planningItems={header.get('planningItems')} />
+            <AttributedString
+              parts={header.get('description')}
+              subPartDataAndHandlers={{
+                onTableCellSelect: this.handleTableCellSelect,
+                selectedTableCellId: selectedTableCellId,
+                inTableEditMode: inTableEditMode,
+                onExitTableEditMode: this.handleExitTableEditMode,
+                onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                onEnterTableEditMode: this.handleEnterTableEditMode,
+                onAddNewTableRow: this.handleAddNewTableRow,
+                onRemoveTableRow: this.handleRemoveTableRow,
+                onAddNewTableColumn: this.handleAddNewTableColumn,
+                onRemoveTableColumn: this.handleRemoveTableColumn,
+                onCheckboxClick: this.handleCheckboxClick,
+                onTimestampClick: this.handleTimestampClick,
+                shouldDisableActions,
+              }}
+            />
+          </Fragment>
         )}
       </div>
     );
