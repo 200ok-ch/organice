@@ -428,21 +428,23 @@ const parsePlanningItems = rawText => {
     return { planningItems: [], strippedDescription: rawText };
   }
 
-  const planningItems = [2, 17, 32]
-    .map(planningTypeIndex => {
-      const type = planningMatch[planningTypeIndex];
-      if (!type) {
-        return null;
-      }
+  const planningItems = fromJS(
+    [2, 17, 32]
+      .map(planningTypeIndex => {
+        const type = planningMatch[planningTypeIndex];
+        if (!type) {
+          return null;
+        }
 
-      const timestamp = timestampFromRegexMatch(
-        planningMatch,
-        _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
-      );
+        const timestamp = timestampFromRegexMatch(
+          planningMatch,
+          _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
+        );
 
-      return { type, timestamp };
-    })
-    .filter(item => !!item);
+        return { type, timestamp };
+      })
+      .filter(item => !!item)
+  );
 
   return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
 };
@@ -513,10 +515,11 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .slice(1)
     .join('\n');
 
-  // TODO: update this with planning parsing.
+  const { planningItems, strippedDescription } = parsePlanningItems(description);
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
-    .set('rawDescription', description)
+    .set('rawDescription', strippedDescription)
+    .set('planningItems', planningItems)
     .set('description', parseRawText(description));
 };
 
@@ -572,7 +575,7 @@ export const parseOrg = fileContents => {
     return header
       .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))
-      .set('planningItems', fromJS(planningItems));
+      .set('planningItems', planningItems);
   });
 
   return fromJS({
