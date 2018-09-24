@@ -45,10 +45,3 @@ div[tabindex="-1"]:focus {
 button {
     touch-action: manipulation;
 }
-
-/* TODO: kill this when I get an internet connection again */
-i.fas {
-  background-color: blue;
-  width: 20px;
-  height: 20px;
-}
