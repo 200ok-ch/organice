@@ -5,6 +5,7 @@ import {
   parseOrg,
   parseTitleLine,
   parseRawText,
+  parsePlanningItems,
   parseMarkupAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
@@ -193,11 +194,14 @@ const updateHeaderDescription = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
-  return state.updateIn(['headers', headerIndex], header =>
-    header
+  return state.updateIn(['headers', headerIndex], header => {
+    const { planningItems, strippedDescription } = parsePlanningItems(action.newRawDescription);
+
+    return header
       .set('rawDescription', action.newRawDescription)
-      .set('description', parseRawText(action.newRawDescription))
-  );
+      .set('description', parseRawText(strippedDescription))
+      .set('planningItems', planningItems);
+  });
 };
 
 const addHeader = (state, action) => {

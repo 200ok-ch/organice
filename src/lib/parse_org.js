@@ -405,7 +405,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
-const parsePlanningItems = rawText => {
+export const parsePlanningItems = rawText => {
   const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
   const optionalSinglePlanningItemRegex = RegExp(
     '(' +
@@ -519,8 +519,8 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
-    .set('planningItems', planningItems)
-    .set('description', parseRawText(description));
+    .set('description', parseRawText(strippedDescription))
+    .set('planningItems', planningItems);
 };
 
 export const parseOrg = fileContents => {

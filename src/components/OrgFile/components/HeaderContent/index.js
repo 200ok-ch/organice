@@ -9,7 +9,7 @@ import _ from 'lodash';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { renderAsText, getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
 import AttributedString from '../AttributedString';
 
@@ -36,7 +36,7 @@ class HeaderContent extends PureComponent {
     ]);
 
     this.state = {
-      descriptionValue: props.header.get('rawDescription'),
+      descriptionValue: this.calculateRawDescription(props.header),
       containerWidth: null,
       shouldIgnoreBlur: false,
     };
@@ -62,11 +62,26 @@ class HeaderContent extends PureComponent {
     if (prevProps.header !== this.props.header) {
       this.setState(
         {
-          descriptionValue: this.props.header.get('rawDescription'),
+          descriptionValue: this.calculateRawDescription(this.props.header),
         },
         () => this.storeContainerWidth()
       );
     }
+  }
+
+  calculateRawDescription(header) {
+    const planningItems = header.get('planningItems');
+
+    return (
+      planningItems
+        .map(
+          planningItem =>
+            `${planningItem.get('type')}: ${renderAsText(planningItem.get('timestamp'))}`
+        )
+        .join(' ') +
+      '\n' +
+      header.get('rawDescription')
+    );
   }
 
   handleTextareaRef(textarea) {
