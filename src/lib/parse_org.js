@@ -3,13 +3,80 @@ import generateId from './id_generator';
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
 
+// Yeah, this thing is pretty wild. I use https://www.debuggex.com/ to edit it, then paste the results in here.
+// But fixing this mess is on my todo list...
+const markupAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]])?)/g;
+const timestampRegex = /([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]]/;
+
+const timestampFromRegexMatch = (match, partIndices) => {
+  const [
+    typeBracket,
+    year,
+    month,
+    day,
+    dayName,
+    timeStart,
+    timeEnd,
+    firstDelayRepeatType,
+    firstDelayRepeatValue,
+    firstDelayRepeatUnit,
+    secondDelayRepeatType,
+    secondDelayRepeatValue,
+    secondDelayRepeatUnit,
+  ] = partIndices.map(partIndex => match[partIndex]);
+
+  if (!year) {
+    return null;
+  }
+
+  const [startHour, startMinute] = !!timeStart ? timeStart.split(':') : [];
+  const [endHour, endMinute] = !!timeEnd ? timeEnd.split(':') : [];
+
+  let repeaterType, repeaterValue, repeaterUnit;
+  let delayType, delayValue, delayUnit;
+
+  if (['+', '++', '.+'].includes(firstDelayRepeatType)) {
+    repeaterType = firstDelayRepeatType;
+    repeaterValue = firstDelayRepeatValue;
+    repeaterUnit = firstDelayRepeatUnit;
+  } else if (['-', '--'].includes(firstDelayRepeatType)) {
+    delayType = firstDelayRepeatType;
+    delayValue = firstDelayRepeatValue;
+    delayUnit = firstDelayRepeatUnit;
+  }
+  if (['+', '++', '.+'].includes(secondDelayRepeatType)) {
+    repeaterType = secondDelayRepeatType;
+    repeaterValue = secondDelayRepeatValue;
+    repeaterUnit = secondDelayRepeatUnit;
+  } else if (['-', '--'].includes(secondDelayRepeatType)) {
+    delayType = secondDelayRepeatType;
+    delayValue = secondDelayRepeatValue;
+    delayUnit = secondDelayRepeatUnit;
+  }
+
+  return {
+    isActive: typeBracket === '<',
+    year,
+    month,
+    day,
+    dayName,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
+    repeaterType,
+    repeaterValue,
+    repeaterUnit,
+    delayType,
+    delayValue,
+    delayUnit,
+  };
+};
+
 export const parseMarkupAndCookies = (
   rawText,
   { shouldAppendNewline = false, excludeCookies = true } = {}
 ) => {
-  // Yeah, this thing is pretty wild. I use https://www.debuggex.com/ to edit it, then paste the results in here.
-  // But fixing this mess is on my todo list...
-  const markupAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: (Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?: ([01]?\d:[0-5]\d))?(?:-([01]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)(h|d|w|m|y))?[>\]])?)/g;
   const matches = [];
   let match = markupAndCookieRegex.exec(rawText);
   while (match) {
@@ -64,73 +131,8 @@ export const parseMarkupAndCookies = (
         markupType,
       });
     } else if (!!match[15]) {
-      const [firstTimestamp, secondTimestamp] = [_.range(16, 29), _.range(29, 42)].map(
-        // prettier-ignore
-        partIndices => { // eslint-disable-line no-loop-func
-          const [
-            typeBracket,
-            year,
-            month,
-            day,
-            dayName,
-            timeStart,
-            timeEnd,
-            firstDelayRepeatType,
-            firstDelayRepeatValue,
-            firstDelayRepeatUnit,
-            secondDelayRepeatType,
-            secondDelayRepeatValue,
-            secondDelayRepeatUnit,
-          ] = partIndices.map(partIndex => match[partIndex]);
-
-          if (!year) {
-            return null;
-          }
-
-          const [startHour, startMinute] = !!timeStart ? timeStart.split(':') : [];
-          const [endHour, endMinute] = !!timeEnd ? timeEnd.split(':') : [];
-
-          let repeaterType, repeaterValue, repeaterUnit;
-          let delayType, delayValue, delayUnit;
-
-          if (['+', '++', '.+'].includes(firstDelayRepeatType)) {
-            repeaterType = firstDelayRepeatType;
-            repeaterValue = firstDelayRepeatValue;
-            repeaterUnit = firstDelayRepeatUnit;
-          } else if (['-', '--'].includes(firstDelayRepeatType)) {
-            delayType = firstDelayRepeatType;
-            delayValue = firstDelayRepeatValue;
-            delayUnit = firstDelayRepeatUnit;
-          }
-          if (['+', '++', '.+'].includes(secondDelayRepeatType)) {
-            repeaterType = secondDelayRepeatType;
-            repeaterValue = secondDelayRepeatValue;
-            repeaterUnit = secondDelayRepeatUnit;
-          } else if (['-', '--'].includes(secondDelayRepeatType)) {
-            delayType = secondDelayRepeatType;
-            delayValue = secondDelayRepeatValue;
-            delayUnit = secondDelayRepeatUnit;
-          }
-
-          return {
-            isActive: typeBracket === '<',
-            year,
-            month,
-            day,
-            dayName,
-            startHour,
-            startMinute,
-            endHour,
-            endMinute,
-            repeaterType,
-            repeaterValue,
-            repeaterUnit,
-            delayType,
-            delayValue,
-            delayUnit,
-          };
-        }
-      );
+      const firstTimestamp = timestampFromRegexMatch(match, _.range(16, 29));
+      const secondTimestamp = timestampFromRegexMatch(match, _.range(29, 42));
 
       matches.push({
         type: 'timestamp',
@@ -403,6 +405,48 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
+const parsePlanningItems = rawText => {
+  const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
+  const optionalSinglePlanningItemRegex = RegExp(
+    '(' +
+      singlePlanningItemRegex
+        .toString()
+        .substring(1, singlePlanningItemRegex.toString().length - 1) +
+      ')?'
+  );
+  const planningRegex = concatRegexes(
+    /^\s*/,
+    optionalSinglePlanningItemRegex,
+    /\s+/,
+    optionalSinglePlanningItemRegex,
+    /\s+/,
+    optionalSinglePlanningItemRegex,
+    /\s*/
+  );
+  const planningMatch = rawText.match(planningRegex);
+  if (!planningMatch) {
+    return { planningItems: [], strippedDescription: rawText };
+  }
+
+  const planningItems = [2, 17, 32]
+    .map(planningTypeIndex => {
+      const type = planningMatch[planningTypeIndex];
+      if (!type) {
+        return null;
+      }
+
+      const timestamp = timestampFromRegexMatch(
+        planningMatch,
+        _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
+      );
+
+      return { type, timestamp };
+    })
+    .filter(item => !!item);
+
+  return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
+};
+
 const defaultKeywordSets = fromJS([
   {
     keywords: ['TODO', 'DONE'],
@@ -454,12 +498,22 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
   });
 };
 
+const concatRegexes = (...regexes) =>
+  regexes.reduce((prev, curr) =>
+    RegExp(
+      prev.toString().substring(1, prev.toString().length - 1) +
+        curr.toString().substring(1, curr.toString().length - 1)
+    )
+  );
+
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
   const description = rawText
     .split('\n')
     .slice(1)
     .join('\n');
+
+  // TODO: update this with planning parsing.
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', description)
@@ -513,7 +567,12 @@ export const parseOrg = fileContents => {
   }
 
   headers = headers.map(header => {
-    return header.set('description', parseRawText(header.get('rawDescription')));
+    const { planningItems, strippedDescription } = parsePlanningItems(header.get('rawDescription'));
+
+    return header
+      .set('rawDescription', strippedDescription)
+      .set('description', parseRawText(strippedDescription))
+      .set('planningItems', fromJS(planningItems));
   });
 
   return fromJS({
