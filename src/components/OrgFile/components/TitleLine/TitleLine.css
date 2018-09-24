@@ -32,3 +32,11 @@
   display: inline-block;
   border-radius: 5px;
 }
+
+.title-line__edit-container {
+  width: 100%;
+}
+
+.title-line__insert-timestamp-button {
+  font-family: sans-serif;
+}

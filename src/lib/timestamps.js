@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const renderAsText = timestamp => {
   const {
     isActive,
@@ -29,3 +31,5 @@ export const renderAsText = timestamp => {
 
   return timestampText;
 };
+
+export const getCurrentTimestampAsText = () => `<${moment().format('YYYY-MM-DD ddd')}>`;
