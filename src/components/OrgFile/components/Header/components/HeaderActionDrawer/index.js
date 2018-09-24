@@ -16,27 +16,36 @@ export default class HeaderActionDrawer extends PureComponent {
 
     return (
       <div className="header-action-drawer-container">
-        <i className="fas fa-pencil-alt fa-lg" onClick={onEnterTitleEditMode} />
+        <div className="header-action-drawer__row">
+          <i className="fas fa-pencil-alt fa-lg" onClick={onEnterTitleEditMode} />
 
-        <span className="header-action-drawer__separator" />
+          <span className="header-action-drawer__separator" />
 
-        <i className="fas fa-edit fa-lg" onClick={onEnterDescriptionEditMode} />
+          <i className="fas fa-edit fa-lg" onClick={onEnterDescriptionEditMode} />
 
-        <span className="header-action-drawer__separator" />
+          <span className="header-action-drawer__separator" />
 
-        <i className="fas fa-tags fa-lg" onClick={onTagsClick} />
+          <i className="fas fa-tags fa-lg" onClick={onTagsClick} />
 
-        <span className="header-action-drawer__separator" />
+          <span className="header-action-drawer__separator" />
 
-        {isFocused ? (
-          <i className="fas fa-expand fa-lg" onClick={onUnfocus} />
-        ) : (
-          <i className="fas fa-compress fa-lg" onClick={onFocus} />
-        )}
+          {isFocused ? (
+            <i className="fas fa-expand fa-lg" onClick={onUnfocus} />
+          ) : (
+            <i className="fas fa-compress fa-lg" onClick={onFocus} />
+          )}
 
-        <span className="header-action-drawer__separator" />
+          <span className="header-action-drawer__separator" />
 
-        <i className="fas fa-plus fa-lg" onClick={onAddNewHeader} />
+          <i className="fas fa-plus fa-lg" onClick={onAddNewHeader} />
+        </div>
+        <div className="header-action-drawer__row">
+          <div className="header-action-drawer__deadline-scheduled-button">Deadline</div>
+
+          <span className="header-action-drawer__separator" />
+
+          <div className="header-action-drawer__deadline-scheduled-button">Scheduled</div>
+        </div>
       </div>
     );
   }
