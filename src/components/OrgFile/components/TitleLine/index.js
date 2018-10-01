@@ -191,7 +191,7 @@ class TitleLine extends PureComponent {
           ''
         )}
 
-        {inEditMode || true ? (
+        {inEditMode ? (
           <div className="title-line__edit-container">
             <textarea
               autoFocus
