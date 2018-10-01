@@ -1,10 +1,12 @@
 import React, { PureComponent, Fragment } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
+import './TablePart.css';
+
 import AttributedString from '../../../AttributedString';
 import TableActionDrawer from './TableActionDrawer';
 
-import './TablePart.css';
+import { getCurrentTimestampAsText } from '../../../../../../lib/timestamps';
 
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -14,10 +16,17 @@ export default class TablePart extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleCellSelect', 'handleTextareaBlur', 'handleCellChange']);
+    _.bindAll(this, [
+      'handleCellSelect',
+      'handleTextareaBlur',
+      'handleCellChange',
+      'handleInsertTimestamp',
+      'handleTextareaRef',
+    ]);
 
     this.state = {
       rawCellValues: this.generateCellValueMap(props.table),
+      shouldIgnoreBlur: false,
     };
   }
 
@@ -52,7 +61,13 @@ export default class TablePart extends PureComponent {
   }
 
   handleTextareaBlur() {
-    this.props.subPartDataAndHandlers.onExitTableEditMode();
+    setTimeout(() => {
+      if (!this.state.shouldIgnoreBlur) {
+        this.props.subPartDataAndHandlers.onExitTableEditMode();
+      } else {
+        this.setState({ shouldIgnoreBlur: false });
+      }
+    }, 0);
   }
 
   handleCellChange(event) {
@@ -64,6 +79,34 @@ export default class TablePart extends PureComponent {
     this.setState({
       rawCellValues: rawCellValues.set(selectedTableCellId, event.target.value),
     });
+  }
+
+  handleInsertTimestamp() {
+    // Clicking this button will unfocus the textarea, but we don't want to exit edit mode,
+    // so instruct the blur handler to ignore the event.
+    this.setState({ shouldIgnoreBlur: true });
+
+    const { rawCellValues } = this.state;
+    const {
+      subPartDataAndHandlers: { selectedTableCellId },
+    } = this.props;
+    const cellValue = rawCellValues.get(selectedTableCellId);
+
+    const insertionIndex = this.textarea.selectionStart;
+    this.setState({
+      rawCellValues: rawCellValues.set(
+        selectedTableCellId,
+        cellValue.substring(0, insertionIndex) +
+          getCurrentTimestampAsText() +
+          cellValue.substring(this.textarea.selectionEnd || insertionIndex)
+      ),
+    });
+
+    this.textarea.focus();
+  }
+
+  handleTextareaRef(textarea) {
+    this.textarea = textarea;
   }
 
   render() {
@@ -97,14 +140,24 @@ export default class TablePart extends PureComponent {
                       onClick={this.handleCellSelect(cell.get('id'))}
                     >
                       {isCellSelected && inTableEditMode ? (
-                        <textarea
-                          autoFocus
-                          className="textarea"
-                          rows="3"
-                          value={rawCellValues.get(cell.get('id'))}
-                          onBlur={this.handleTextareaBlur}
-                          onChange={this.handleCellChange}
-                        />
+                        <div className="table-cell__edit-container">
+                          <textarea
+                            autoFocus
+                            className="textarea"
+                            rows="3"
+                            value={rawCellValues.get(cell.get('id'))}
+                            onBlur={this.handleTextareaBlur}
+                            onChange={this.handleCellChange}
+                            ref={this.handleTextareaRef}
+                          />
+                          <div
+                            className="table-cell__insert-timestamp-button"
+                            onClick={this.handleInsertTimestamp}
+                          >
+                            <i className="fas fa-plus insert-timestamp-icon" />
+                            Insert timestamp
+                          </div>
+                        </div>
                       ) : cell.get('contents').size > 0 ? (
                         <AttributedString
                           parts={cell.get('contents')}

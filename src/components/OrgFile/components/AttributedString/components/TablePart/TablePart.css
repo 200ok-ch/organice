@@ -15,3 +15,20 @@
 .table-part__cell--selected {
   background-color: rgba(239, 255, 0, 0.28);
 }
+
+.table-cell__edit-container {
+  width: 100%;
+}
+
+.table-cell__insert-timestamp-button {
+  color: gray;
+
+  font-family: Courier;
+
+  display: flex;
+  align-items: center;
+}
+
+.insert-timestamp-icon {
+  margin-right: 5px;
+}

@@ -148,7 +148,7 @@ class TitleLine extends PureComponent {
     this.props.base.activatePopup('timestamp-editor', { timestampId });
   }
 
-  handleInsertTimestamp() {
+  handleInsertTimestamp(event) {
     // Clicking this button will unfocus the textarea, but we don't want to exit edit mode,
     // so instruct the blur handler to ignore the event.
     this.setState({ shouldIgnoreBlur: true });
@@ -161,6 +161,10 @@ class TitleLine extends PureComponent {
         getCurrentTimestampAsText() +
         titleValue.substring(this.textarea.selectionEnd || insertionIndex),
     });
+
+    this.textarea.focus();
+
+    event.stopPropagation();
   }
 
   render() {
