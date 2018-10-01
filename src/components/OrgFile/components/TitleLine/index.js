@@ -191,7 +191,7 @@ class TitleLine extends PureComponent {
           ''
         )}
 
-        {inEditMode ? (
+        {inEditMode || true ? (
           <div className="title-line__edit-container">
             <textarea
               autoFocus
@@ -203,12 +203,11 @@ class TitleLine extends PureComponent {
               onChange={this.handleTitleChange}
               onClick={this.handleTitleFieldClick}
             />
-            {/* TODO: style this */}
             <div
               className="title-line__insert-timestamp-button"
               onClick={this.handleInsertTimestamp}
             >
-              <i className="fas fa-plus" />
+              <i className="fas fa-plus insert-timestamp-icon" />
               Insert timestamp
             </div>
           </div>

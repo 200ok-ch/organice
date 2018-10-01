@@ -10,3 +10,14 @@
   margin-right: 5px;
   float: left;
 }
+
+.header-content__insert-timestamp-button {
+  color: gray;
+
+  display: flex;
+  align-items: center;
+}
+
+.insert-timestamp-icon {
+  margin-right: 5px;
+}

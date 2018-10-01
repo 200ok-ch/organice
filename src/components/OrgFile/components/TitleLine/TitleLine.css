@@ -40,3 +40,16 @@
 .title-line__insert-timestamp-button {
   font-family: sans-serif;
 }
+
+.title-line__insert-timestamp-button {
+  color: gray;
+
+  font-family: Courier;
+
+  display: flex;
+  align-items: center;
+}
+
+.insert-timestamp-icon {
+  margin-right: 5px;
+}

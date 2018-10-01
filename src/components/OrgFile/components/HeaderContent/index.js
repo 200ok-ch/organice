@@ -162,6 +162,7 @@ class HeaderContent extends PureComponent {
         getCurrentTimestampAsText() +
         descriptionValue.substring(this.textarea.selectionEnd || insertionIndex),
     });
+    this.textarea.focus();
   }
 
   render() {
@@ -195,12 +196,11 @@ class HeaderContent extends PureComponent {
               onBlur={this.handleTextareaBlur}
               onChange={this.handleDescriptionChange}
             />
-            {/* TODO: style this */}
             <div
-              className="title-line__insert-timestamp-button"
+              className="header-content__insert-timestamp-button"
               onClick={this.handleInsertTimestamp}
             >
-              <i className="fas fa-plus" />
+              <i className="fas fa-plus insert-timestamp-icon" />
               Insert timestamp
             </div>
           </div>
