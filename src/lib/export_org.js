@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { fromJS } from 'immutable';
 
 import { renderAsText } from './timestamps';
 
@@ -235,6 +236,12 @@ export default (headers, todoKeywordSets) => {
 
       if (header.titleLine.tags.length > 0) {
         contents += ` :${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+      }
+
+      if (header.planningItems) {
+        header.planningItems.forEach(planningItem => {
+          contents += `\n${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`;
+        });
       }
 
       if (header.description) {
