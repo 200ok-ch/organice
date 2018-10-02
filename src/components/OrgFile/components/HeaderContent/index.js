@@ -35,6 +35,7 @@ class HeaderContent extends PureComponent {
       'handleCheckboxClick',
       'handleTimestampClick',
       'handleInsertTimestamp',
+      'handlePlanningItemTimestampClick',
     ]);
 
     this.state = {
@@ -165,6 +166,11 @@ class HeaderContent extends PureComponent {
     this.textarea.focus();
   }
 
+  handlePlanningItemTimestampClick(headerId) {
+    return planningItemIndex =>
+      this.props.base.activatePopup('timestamp-editor', { headerId, planningItemIndex });
+  }
+
   render() {
     const {
       header,
@@ -206,7 +212,10 @@ class HeaderContent extends PureComponent {
           </div>
         ) : (
           <Fragment>
-            <PlanningItems planningItems={header.get('planningItems')} />
+            <PlanningItems
+              planningItems={header.get('planningItems')}
+              onClick={this.handlePlanningItemTimestampClick(header.get('id'))}
+            />
             <AttributedString
               parts={header.get('description')}
               subPartDataAndHandlers={{

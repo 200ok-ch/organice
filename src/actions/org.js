@@ -360,3 +360,10 @@ export const updateTimestampWithId = (timestampId, newTimestamp) => ({
   timestampId,
   newTimestamp,
 });
+
+export const updatePlanningItemTimestamp = (headerId, planningItemIndex, newTimestamp) => ({
+  type: 'UPDATE_PLANNING_ITEM_TIMESTAMP',
+  headerId,
+  planningItemIndex,
+  newTimestamp,
+});

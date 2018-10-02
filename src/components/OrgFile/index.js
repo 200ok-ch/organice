@@ -25,10 +25,10 @@ import { ActionCreators as undoActions } from 'redux-linear-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
-import { timestampWithId } from '../../lib/org_utils';
+import { timestampWithId, headerWithId } from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { OrderedSet } from 'immutable';
+import { fromJS, OrderedSet } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -200,8 +200,18 @@ class OrgFile extends PureComponent {
     this.props.org.setHeaderTags(this.props.selectedHeaderId, newTags);
   }
 
-  handleTimestampChange(timestampId) {
-    return newTimestamp => this.props.org.updateTimestampWithId(timestampId, newTimestamp);
+  handleTimestampChange(popupData) {
+    if (!!popupData.get('timestampId')) {
+      return newTimestamp =>
+        this.props.org.updateTimestampWithId(popupData.get('timestampId'), newTimestamp);
+    } else {
+      return newTimestamp =>
+        this.props.org.updatePlanningItemTimestamp(
+          popupData.get('headerId'),
+          popupData.get('planningItemIndex'),
+          newTimestamp.get('firstTimestamp')
+        );
+    }
   }
 
   render() {
@@ -217,10 +227,10 @@ class OrgFile extends PureComponent {
       customKeybindings,
       inEditMode,
       selectedHeader,
+      activePopup,
       activePopupType,
       activePopupData,
       captureTemplates,
-      activePopup,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -249,6 +259,21 @@ class OrgFile extends PureComponent {
           (and include the org file if possible!)
         </div>
       );
+    }
+
+    let editingTimestamp = null;
+    if (activePopupType === 'timestamp-editor') {
+      if (activePopupData.get('timestampId')) {
+        editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
+      } else {
+        editingTimestamp = fromJS({
+          firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
+            'planningItems',
+            activePopupData.get('planningItemIndex'),
+            'timestamp',
+          ]),
+        });
+      }
     }
 
     const keyMap = _.fromPairs(calculateActionedKeybindings(customKeybindings));
@@ -356,9 +381,10 @@ class OrgFile extends PureComponent {
 
           {activePopupType === 'timestamp-editor' && (
             <TimestampEditorModal
-              timestamp={timestampWithId(headers, activePopupData.get('timestampId'))}
+              timestamp={editingTimestamp}
+              singleTimestampOnly={!activePopupData.get('timestampId')}
               onClose={this.handlePopupClose}
-              onChange={this.handleTimestampChange(activePopupData.get('timestampId'))}
+              onChange={this.handleTimestampChange(activePopupData)}
             />
           )}
 

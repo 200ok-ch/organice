@@ -5,3 +5,8 @@
 .planning-item__type {
   color: gray;
 }
+
+.planning-item__timestamp {
+  color: blue;
+  text-decoration: underline;
+}

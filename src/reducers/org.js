@@ -800,6 +800,17 @@ const updateTimestampWithId = (state, action) => {
     );
 };
 
+const updatePlanningItemTimestamp = (state, action) => {
+  console.log('action = ', action);
+  const { headerId, planningItemIndex, newTimestamp } = action;
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), headerId);
+
+  return state.setIn(
+    ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
+    newTimestamp
+  );
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE',
@@ -826,6 +837,7 @@ export default (state = new Map(), action) => {
     'SET_HEADER_TAGS',
     'REORDER_TAGS',
     'UPDATE_TIMESTAMP_WITH_ID',
+    'UPDATE_PLANNING_ITEM_TIMESTAMP',
   ];
 
   if (dirtyingActions.includes(action.type)) {
@@ -919,6 +931,8 @@ export default (state = new Map(), action) => {
       return reorderTags(state, action);
     case 'UPDATE_TIMESTAMP_WITH_ID':
       return updateTimestampWithId(state, action);
+    case 'UPDATE_PLANNING_ITEM_TIMESTAMP':
+      return updatePlanningItemTimestamp(state, action);
     default:
       return state;
   }

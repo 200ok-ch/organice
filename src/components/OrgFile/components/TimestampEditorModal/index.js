@@ -44,7 +44,7 @@ export default class TimestampEditorModal extends PureComponent {
   }
 
   render() {
-    const { timestamp, onClose } = this.props;
+    const { timestamp, onClose, singleTimestampOnly } = this.props;
 
     return (
       <Popup shouldIncludeCloseButton onClose={onClose}>
@@ -55,38 +55,39 @@ export default class TimestampEditorModal extends PureComponent {
           onChange={this.handleChange('firstTimestamp')}
         />
 
-        {!!timestamp.get('secondTimestamp') ? (
-          <Fragment>
-            <div className="timestamp-editor__separator">
-              <div className="timestamp-editor__separator__margin-line" />
-              to
-              <div className="timestamp-editor__separator__margin-line" />
-            </div>
+        {!singleTimestampOnly &&
+          (!!timestamp.get('secondTimestamp') ? (
+            <Fragment>
+              <div className="timestamp-editor__separator">
+                <div className="timestamp-editor__separator__margin-line" />
+                to
+                <div className="timestamp-editor__separator__margin-line" />
+              </div>
 
-            <TimestampEditor
-              timestamp={timestamp.get('secondTimestamp')}
-              onChange={this.handleChange('secondTimestamp')}
-            />
+              <TimestampEditor
+                timestamp={timestamp.get('secondTimestamp')}
+                onChange={this.handleChange('secondTimestamp')}
+              />
 
+              <div className="timestamp-editor__button-container">
+                <button
+                  className="btn timestamp-editor__add-new-button"
+                  onClick={this.handleRemoveEndTimestamp}
+                >
+                  Remove end timestamp
+                </button>
+              </div>
+            </Fragment>
+          ) : (
             <div className="timestamp-editor__button-container">
               <button
                 className="btn timestamp-editor__add-new-button"
-                onClick={this.handleRemoveEndTimestamp}
+                onClick={this.handleAddEndTimestamp}
               >
-                Remove end timestamp
+                Add end timestamp
               </button>
             </div>
-          </Fragment>
-        ) : (
-          <div className="timestamp-editor__button-container">
-            <button
-              className="btn timestamp-editor__add-new-button"
-              onClick={this.handleAddEndTimestamp}
-            >
-              Add end timestamp
-            </button>
-          </div>
-        )}
+          ))}
       </Popup>
     );
   }

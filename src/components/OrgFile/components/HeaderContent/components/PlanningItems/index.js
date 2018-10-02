@@ -4,7 +4,19 @@ import './PlanningItems.css';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 
+import _ from 'lodash';
+
 export default class PlanningItems extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, ['handleTimestampClick']);
+  }
+
+  handleTimestampClick(planningItemIndex) {
+    return () => this.props.onClick(planningItemIndex);
+  }
+
   render() {
     const { planningItems } = this.props;
 
@@ -12,14 +24,12 @@ export default class PlanningItems extends PureComponent {
       return null;
     }
 
-    console.log('planningItems = ', planningItems.toJS());
-
     return (
       <div>
-        {planningItems.map(planningItem => (
+        {planningItems.map((planningItem, index) => (
           <div key={planningItem.get('id')} className="planning-items__item-container">
             <div className="planning-item__type">{planningItem.get('type')}: </div>
-            <div className="planning-item__timestamp">
+            <div className="planning-item__timestamp" onClick={this.handleTimestampClick(index)}>
               {renderAsText(planningItem.get('timestamp'))}
             </div>
           </div>
