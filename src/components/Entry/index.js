@@ -11,7 +11,8 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import { parseOrg } from '../../lib/parse_org';
-import { changelogFileContents } from '../../lib/static_file_contents';
+
+import raw from 'raw.macro';
 
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -37,7 +38,7 @@ class Entry extends PureComponent {
   componentDidMount() {
     const { lastSeenChangelogHeader, isAuthenticated } = this.props;
 
-    const changelogFile = parseOrg(changelogFileContents);
+    const changelogFile = parseOrg(raw('../../../changelog.org'));
     const firstHeaderTitle = changelogFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
     if (
       isAuthenticated &&

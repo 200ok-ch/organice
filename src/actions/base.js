@@ -1,5 +1,6 @@
 import { displayFile, stopDisplayingFile } from './org';
-import { sampleFileContents, changelogFileContents } from '../lib/static_file_contents';
+
+import raw from 'raw.macro';
 
 export const setLoadingMessage = loadingMessage => ({
   type: 'SET_LOADING_MESSAGE',
@@ -33,8 +34,8 @@ export const loadStaticFile = staticFile => {
     );
 
     const fileContents = {
-      changelog: changelogFileContents,
-      sample: sampleFileContents,
+      changelog: raw('../../changelog.org'),
+      sample: raw('../../sample.org'),
     }[staticFile];
 
     dispatch(displayFile(null, fileContents));

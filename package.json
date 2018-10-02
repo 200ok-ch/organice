@@ -32,6 +32,7 @@
     "enzyme": "^3.3.0",
     "enzyme-to-json": "^3.3.4",
     "prettier": "1.14.3",
+    "raw.macro": "^0.2.0",
     "react-test-renderer": "^16.4.2"
   },
   "browserslist": [
