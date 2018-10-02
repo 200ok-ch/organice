@@ -160,6 +160,15 @@ Try tapping on the timestamps below to get a feel for the editor:
 [2018-09-17 Sun 10:00-11:30]
 
 <2018-09-17 Sun>--<2018-09-25 Tue>
+* Planning
+org-web has native support for adding and editing DEADLINE and SCHEDULED items. Check out these examples:
+** An item with a deadline
+DEADLINE: <2018-10-03 Wed>
+** An item that is scheduled
+SCHEDULED: <2018-10-18 Thu>
+** An item with both
+DEADLINE: <2018-10-02 Tue>
+SCHEDULED: <2018-10-02 Tue>
 * Capture
 org-web supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
 

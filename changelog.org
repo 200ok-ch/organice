@@ -1,3 +1,5 @@
+* October 2nd, 2018
+** Added buttons to add/edit deadline and scheduled timestamps
 * September 23rd, 2018
 ** Added native support for displaying and editing timestamps
 * September 18th, 2018 (afternoon)
