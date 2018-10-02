@@ -25,7 +25,7 @@ export default class AttributedString extends PureComponent {
               const title = part.getIn(['contents', 'title']) || uri;
 
               return (
-                <a key={part.get('id')} href={uri} target="_blank">
+                <a key={part.get('id')} href={uri} target="_blank" rel="noopener noreferrer">
                   {title}
                 </a>
               );
