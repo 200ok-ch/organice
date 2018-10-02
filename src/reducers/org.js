@@ -801,7 +801,6 @@ const updateTimestampWithId = (state, action) => {
 };
 
 const updatePlanningItemTimestamp = (state, action) => {
-  console.log('action = ', action);
   const { headerId, planningItemIndex, newTimestamp } = action;
   const headerIndex = indexOfHeaderWithId(state.get('headers'), headerId);
 
