@@ -189,7 +189,7 @@ export default class TimestampEditor extends PureComponent {
 
     return (
       <div className="timestamp-editor__field-container">
-        <div className="timestamp-editor__field-title">Repeater:</div>
+        <div className="timestamp-editor__field-title">Repeater</div>
         <div className="timestamp-editor__field timestamp-editor__field--delay-repeater">
           {!!repeaterType ? (
             <Fragment>
@@ -235,7 +235,7 @@ export default class TimestampEditor extends PureComponent {
 
     return (
       <div className="timestamp-editor__field-container">
-        <div className="timestamp-editor__field-title">Delay:</div>
+        <div className="timestamp-editor__field-title">Delay</div>
         <div className="timestamp-editor__field">
           {!!delayType ? (
             <Fragment>
