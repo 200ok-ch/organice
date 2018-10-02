@@ -45,6 +45,8 @@ class Header extends PureComponent {
       'handleUnfocus',
       'handleAddNewHeader',
       'handleRest',
+      'handleDeadlineClick',
+      'handleScheduledClick',
     ]);
 
     this.state = {
@@ -215,6 +217,35 @@ class Header extends PureComponent {
     }
   }
 
+  handleDeadlineAndScheduledClick(planningType) {
+    const { header } = this.props;
+
+    const existingDeadlinePlanningItemIndex = header
+      .get('planningItems', [])
+      .findIndex(planningItem => planningItem.get('type') === planningType);
+
+    if (existingDeadlinePlanningItemIndex === -1) {
+      this.props.org.addNewPlanningItem(header.get('id'), planningType);
+      this.props.base.activatePopup('timestamp-editor', {
+        headerId: header.get('id'),
+        planningItemIndex: header.get('planningItems').size,
+      });
+    } else {
+      this.props.base.activatePopup('timestamp-editor', {
+        headerId: header.get('id'),
+        planningItemIndex: existingDeadlinePlanningItemIndex,
+      });
+    }
+  }
+
+  handleDeadlineClick() {
+    this.handleDeadlineAndScheduledClick('DEADLINE');
+  }
+
+  handleScheduledClick() {
+    this.handleDeadlineAndScheduledClick('SCHEDULED');
+  }
+
   render() {
     const {
       header,
@@ -375,6 +406,8 @@ class Header extends PureComponent {
                   onFocus={this.handleFocus}
                   onUnfocus={this.handleUnfocus}
                   onAddNewHeader={this.handleAddNewHeader}
+                  onDeadlineClick={this.handleDeadlineClick}
+                  onScheduledClick={this.handleScheduledClick}
                 />
               </Collapse>
 

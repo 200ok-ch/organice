@@ -32,4 +32,26 @@ export const renderAsText = timestamp => {
   return timestampText;
 };
 
+export const getCurrentTimestamp = () => {
+  const time = moment();
+
+  return {
+    isActive: true,
+    year: time.format('YYYY'),
+    month: time.format('MM'),
+    day: time.format('DD'),
+    dayName: time.format('ddd'),
+    startHour: null,
+    startMinute: null,
+    endHour: null,
+    endMinute: null,
+    repeaterType: null,
+    repeaterValue: null,
+    repeaterUnit: null,
+    delayType: null,
+    delayValue: null,
+    delayUnit: null,
+  };
+};
+
 export const getCurrentTimestampAsText = () => `<${moment().format('YYYY-MM-DD ddd')}>`;

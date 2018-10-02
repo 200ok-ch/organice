@@ -12,6 +12,8 @@ export default class HeaderActionDrawer extends PureComponent {
       onFocus,
       onUnfocus,
       onAddNewHeader,
+      onDeadlineClick,
+      onScheduledClick,
     } = this.props;
 
     return (
@@ -40,11 +42,21 @@ export default class HeaderActionDrawer extends PureComponent {
           <i className="fas fa-plus fa-lg" onClick={onAddNewHeader} />
         </div>
         <div className="header-action-drawer__row">
-          <div className="header-action-drawer__deadline-scheduled-button">Deadline</div>
+          <div
+            className="header-action-drawer__deadline-scheduled-button"
+            onClick={onDeadlineClick}
+          >
+            Deadline
+          </div>
 
           <span className="header-action-drawer__separator" />
 
-          <div className="header-action-drawer__deadline-scheduled-button">Scheduled</div>
+          <div
+            className="header-action-drawer__deadline-scheduled-button"
+            onClick={onScheduledClick}
+          >
+            Scheduled
+          </div>
         </div>
       </div>
     );

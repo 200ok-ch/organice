@@ -30,6 +30,8 @@ import {
   pathAndPartOfListItemWithIdInHeaders,
   pathAndPartOfTimestampItemWithIdInHeaders,
 } from '../lib/org_utils';
+import { getCurrentTimestamp } from '../lib/timestamps';
+import generateId from '../lib/id_generator';
 
 const displayFile = (state, action) => {
   const parsedFile = parseOrg(action.contents);
@@ -810,6 +812,22 @@ const updatePlanningItemTimestamp = (state, action) => {
   );
 };
 
+const addNewPlanningItem = (state, action) => {
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
+
+  const newPlanningItem = fromJS({
+    id: generateId(),
+    type: action.planningType,
+    timestamp: getCurrentTimestamp(),
+  });
+
+  return state.updateIn(
+    ['headers', headerIndex, 'planningItems'],
+    planningItems =>
+      !!planningItems ? planningItems.push(newPlanningItem) : List([newPlanningItem])
+  );
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE',
@@ -932,6 +950,8 @@ export default (state = new Map(), action) => {
       return updateTimestampWithId(state, action);
     case 'UPDATE_PLANNING_ITEM_TIMESTAMP':
       return updatePlanningItemTimestamp(state, action);
+    case 'ADD_NEW_PLANNING_ITEM':
+      return addNewPlanningItem(state, action);
     default:
       return state;
   }

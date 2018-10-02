@@ -367,3 +367,9 @@ export const updatePlanningItemTimestamp = (headerId, planningItemIndex, newTime
   planningItemIndex,
   newTimestamp,
 });
+
+export const addNewPlanningItem = (headerId, planningType) => ({
+  type: 'ADD_NEW_PLANNING_ITEM',
+  headerId,
+  planningType,
+});
