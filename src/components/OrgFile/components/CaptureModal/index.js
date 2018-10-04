@@ -26,6 +26,8 @@ export default class CaptureModal extends PureComponent {
       props.template.get('template')
     );
 
+    this.targetHeader = headerWithPath(props.headers, props.template.get('headerPaths'));
+
     this.state = {
       textareaValue: substitutedTemplate,
       initialCursorIndex,
@@ -65,10 +67,8 @@ export default class CaptureModal extends PureComponent {
   }
 
   render() {
-    const { template, headers } = this.props;
+    const { template } = this.props;
     const { textareaValue, shouldPrepend } = this.state;
-
-    const targetHeader = headerWithPath(headers, template.get('headerPaths'));
 
     return (
       <Popup shouldIncludeCloseButton onClose={this.handleCloseClick}>
@@ -86,7 +86,7 @@ export default class CaptureModal extends PureComponent {
 
         <div className="capture-modal-header-path">{template.get('headerPaths').join(' > ')}</div>
 
-        {!!targetHeader ? (
+        {!!this.targetHeader ? (
           <Fragment>
             <textarea
               className="textarea capture-modal-textarea"
