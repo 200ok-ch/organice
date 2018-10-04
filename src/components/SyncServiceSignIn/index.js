@@ -2,7 +2,7 @@
 
 import React, { PureComponent } from 'react';
 
-import './SyncServiceSignIn.css';
+import './stylesheet.css';
 
 import DropboxLogo from './dropbox.svg';
 import GoogleDriveLogo from './google_drive.png';

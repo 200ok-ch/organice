@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import './Entry.css';
+import './stylesheet.css';
 
 import { List } from 'immutable';
 import _ from 'lodash';

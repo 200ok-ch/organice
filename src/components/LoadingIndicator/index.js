@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Motion, spring } from 'react-motion';
 
-import './LoadingIndicator.css';
+import './stylesheet.css';
 
 import _ from 'lodash';
 

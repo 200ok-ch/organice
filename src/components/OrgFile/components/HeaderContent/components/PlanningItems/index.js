@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './PlanningItems.css';
+import './stylesheet.css';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 

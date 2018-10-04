@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './ListPart.css';
+import './stylesheet.css';
 
 import AttributedString from '../../../AttributedString/';
 import Checkbox from '../../../../../UI/Checkbox/';

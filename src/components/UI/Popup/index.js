@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './Popup.css';
+import './stylesheet.css';
 
 export default class Popup extends PureComponent {
   render() {

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './SyncConfirmationModal.css';
+import './stylesheet.css';
 
 import Popup from '../../../UI/Popup/';
 

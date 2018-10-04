@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import './Landing.css';
+import './stylesheet.css';
 
 export default class Landing extends PureComponent {
   render() {

@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import './CaptureModal.css';
+import './stylesheet.css';
 
 import ActionButton from '../ActionDrawer/components/ActionButton/';
 import Switch from '../../../UI/Switch/';

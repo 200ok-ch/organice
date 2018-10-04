@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
-import './TablePart.css';
+import './stylesheet.css';
 
 import AttributedString from '../../../AttributedString';
 import TableActionDrawer from './TableActionDrawer';
