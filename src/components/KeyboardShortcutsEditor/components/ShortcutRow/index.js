@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './ShortcutRow.css';
+import './stylesheet.css';
 
 import _ from 'lodash';
 import classNames from 'classnames';

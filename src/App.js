@@ -45,35 +45,35 @@ export default class App extends PureComponent {
 
     if (!!authenticatedSyncService) {
       switch (authenticatedSyncService) {
-      case 'Dropbox':
-        const dropboxAccessToken = hashContents.access_token;
-        if (dropboxAccessToken) {
-          client = createDropboxSyncBackendClient(dropboxAccessToken);
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client,
-          });
-          persistField('dropboxAccessToken', dropboxAccessToken);
-          window.location.hash = '';
-        } else {
-          const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
-          if (!!persistedDropboxAccessToken) {
-            client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
+        case 'Dropbox':
+          const dropboxAccessToken = hashContents.access_token;
+          if (dropboxAccessToken) {
+            client = createDropboxSyncBackendClient(dropboxAccessToken);
             initialState.syncBackend = Map({
               isAuthenticated: true,
               client,
             });
+            persistField('dropboxAccessToken', dropboxAccessToken);
+            window.location.hash = '';
+          } else {
+            const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
+            if (!!persistedDropboxAccessToken) {
+              client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
+              initialState.syncBackend = Map({
+                isAuthenticated: true,
+                client,
+              });
+            }
           }
-        }
-        break;
-      case 'Google Drive':
-        client = createGoogleDriveSyncBackendClient();
-        initialState.syncBackend = Map({
-          isAuthenticated: true,
-          client,
-        });
-        break;
-      default:
+          break;
+        case 'Google Drive':
+          client = createGoogleDriveSyncBackendClient();
+          initialState.syncBackend = Map({
+            isAuthenticated: true,
+            client,
+          });
+          break;
+        default:
       }
     }
 
@@ -81,17 +81,27 @@ export default class App extends PureComponent {
     const { captureFile, captureTemplateName, captureContent } = queryStringContents;
     if (!!captureFile && !!captureTemplateName) {
       const capturePath = captureFile.startsWith('/') ? captureFile : `/${captureFile}`;
-      const customCaptureVariables = Map(Object.entries(queryStringContents).map(([key, value]) => {
-        const CUSTOM_VARIABLE_PREFIX = 'captureVariable_';
-        if (key.startsWith(CUSTOM_VARIABLE_PREFIX)) {
-          return [key.substring(CUSTOM_VARIABLE_PREFIX.length), value];
-        }
+      const customCaptureVariables = Map(
+        Object.entries(queryStringContents)
+          .map(([key, value]) => {
+            const CUSTOM_VARIABLE_PREFIX = 'captureVariable_';
+            if (key.startsWith(CUSTOM_VARIABLE_PREFIX)) {
+              return [key.substring(CUSTOM_VARIABLE_PREFIX.length), value];
+            }
 
-        return null;
-      }).filter(item => !!item));
-      initialState.org.present = initialState.org.present.set('pendingCapture', Map({
-        capturePath, captureTemplateName, captureContent, customCaptureVariables,
-      }));
+            return null;
+          })
+          .filter(item => !!item)
+      );
+      initialState.org.present = initialState.org.present.set(
+        'pendingCapture',
+        Map({
+          capturePath,
+          captureTemplateName,
+          captureContent,
+          customCaptureVariables,
+        })
+      );
     }
 
     this.store = Store(initialState);
@@ -107,7 +117,12 @@ export default class App extends PureComponent {
       });
     } else {
       if (!!this.store.getState().org.present.get('pendingCapture')) {
-        this.store.dispatch(setDisappearingLoadingMessage(`You need to sign in before you can use capture templates`, 5000));
+        this.store.dispatch(
+          setDisappearingLoadingMessage(
+            `You need to sign in before you can use capture templates`,
+            5000
+          )
+        );
       }
     }
 

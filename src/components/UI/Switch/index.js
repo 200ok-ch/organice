@@ -3,7 +3,7 @@ import { Motion, spring } from 'react-motion';
 
 import { interpolateColors, rgbaObject, rgbaString } from '../../../lib/color';
 
-import './Switch.css';
+import './stylesheet.css';
 
 export default class Switch extends PureComponent {
   render() {

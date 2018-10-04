@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './AttributedString.css';
+import './stylesheet.css';
 
 import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';

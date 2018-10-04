@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as baseActions from '../../actions/base';
 
-import './Settings.css';
+import './stylesheet.css';
 
 import TabButtons from '../UI/TabButtons';
 import Switch from '../UI/Switch';

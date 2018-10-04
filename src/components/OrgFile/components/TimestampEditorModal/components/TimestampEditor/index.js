@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import './TimestampEditor.css';
+import './stylesheet.css';
 
 import Switch from '../../../../../UI/Switch/';
 import TabButtons from '../../../../../UI/TabButtons/';

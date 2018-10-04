@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Droppable } from 'react-beautiful-dnd';
 
-import './CaptureTemplatesEditor.css';
+import './stylesheet.css';
 
 import * as captureActions from '../../actions/capture';
 

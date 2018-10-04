@@ -8,7 +8,7 @@ import { UnmountClosed as Collapse } from 'react-collapse';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import './Header.css';
+import './stylesheet.css';
 
 import classNames from 'classnames';
 import _ from 'lodash';

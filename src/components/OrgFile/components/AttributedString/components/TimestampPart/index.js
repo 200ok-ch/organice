@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import './TimestampPart.css';
+import './stylesheet.css';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 

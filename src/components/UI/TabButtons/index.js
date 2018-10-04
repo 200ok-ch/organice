@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import './TabButtons.css';
+import './stylesheet.css';
 
 import classNames from 'classnames';
 

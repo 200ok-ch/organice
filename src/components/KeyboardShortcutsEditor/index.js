@@ -12,7 +12,7 @@ import * as baseActions from '../../actions/base';
 
 import { calculateNamedKeybindings } from '../../lib/keybindings';
 
-import './KeyboardShortcutsEditor.css';
+import './stylesheet.css';
 
 import _ from 'lodash';
 

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Motion, spring } from 'react-motion';
 
-import './ActionDrawer.css';
+import './stylesheet.css';
 
 import _ from 'lodash';
 import { List } from 'immutable';

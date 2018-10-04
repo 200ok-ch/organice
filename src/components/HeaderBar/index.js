@@ -6,7 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 
 import logo from './org-web.svg';
 
-import './HeaderBar.css';
+import './stylesheet.css';
 
 import * as baseActions from '../../actions/base';
 import { ActionCreators as undoActions } from 'redux-linear-undo';

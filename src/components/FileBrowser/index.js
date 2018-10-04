@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Link } from 'react-router-dom';
 
-import './FileBrowser.css';
+import './stylesheet.css';
 
 import _ from 'lodash';
 import classNames from 'classnames';

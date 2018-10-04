@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import './TimestampEditorModal.css';
+import './stylesheet.css';
 
 import TimestampEditor from './components/TimestampEditor';
 import Popup from '../../../UI/Popup/';

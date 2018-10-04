@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
-import './TagsEditorModal.css';
+import './stylesheet.css';
 
 import Popup from '../../../UI/Popup/';
 

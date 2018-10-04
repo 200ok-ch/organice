@@ -3,7 +3,7 @@ import { UnmountClosed as Collapse } from 'react-collapse';
 
 import { Draggable } from 'react-beautiful-dnd';
 
-import './CaptureTemplate.css';
+import './stylesheet.css';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
 import Switch from '../../../UI/Switch/';
