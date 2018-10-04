@@ -22,7 +22,6 @@ import { setDisappearingLoadingMessage } from './actions/base';
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
 import createGoogleDriveSyncBackendClient from './sync_backend_clients/google_drive_sync_backend_client';
 
-import './App.css';
 import './base.css';
 
 import Entry from './components/Entry';
