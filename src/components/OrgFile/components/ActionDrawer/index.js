@@ -37,6 +37,7 @@ class ActionDrawer extends PureComponent {
     this.state = {
       isDisplayingArrowButtons: false,
       isDisplayingCaptureButtons: false,
+      mainArrowButtonBoundingRect: null,
     };
   }
 
@@ -46,6 +47,10 @@ class ActionDrawer extends PureComponent {
     this.props.org.noOp();
 
     document.querySelector('html').style.paddingBottom = '90px';
+
+    this.setState({
+      mainArrowButtonBoundingRect: this.mainArrowButton.getBoundingClientRect(),
+    });
   }
 
   componentWillUnmount() {
@@ -208,7 +213,11 @@ class ActionDrawer extends PureComponent {
 
   renderMovementButtons() {
     const { selectedTableCellId } = this.props;
-    const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
+    const {
+      isDisplayingArrowButtons,
+      isDisplayingCaptureButtons,
+      mainArrowButtonBoundingRect,
+    } = this.state;
 
     const baseArrowButtonStyle = {
       opacity: isDisplayingCaptureButtons ? 0 : 1,
@@ -217,17 +226,32 @@ class ActionDrawer extends PureComponent {
       baseArrowButtonStyle.boxShadow = 'none';
     }
 
+    let centerXOffset = 0;
+    if (!!mainArrowButtonBoundingRect) {
+      centerXOffset =
+        window.screen.width / 2 -
+        (mainArrowButtonBoundingRect.x + mainArrowButtonBoundingRect.width / 2);
+    }
+
     const animatedStyles = {
+      centerXOffset: spring(isDisplayingArrowButtons ? centerXOffset : 0, { stiffness: 300 }),
       topRowYOffset: spring(isDisplayingArrowButtons ? 150 : 0, { stiffness: 300 }),
       bottomRowYOffset: spring(isDisplayingArrowButtons ? 80 : 0, { stiffness: 300 }),
-      firstColumnXOffset: spring(isDisplayingArrowButtons ? 70 : 0, { stiffness: 300 }),
-      secondColumnXOffset: spring(isDisplayingArrowButtons ? 140 : 0, { stiffness: 300 }),
+      firstColumnXOffset: spring(isDisplayingArrowButtons ? 70 : 0, {
+        stiffness: 300,
+      }),
+      secondColumnXOffset: spring(isDisplayingArrowButtons ? 140 : 0, {
+        stiffness: 300,
+      }),
     };
 
     return (
       <Motion style={animatedStyles}>
         {style => (
-          <div className="action-drawer__arrow-buttons-container">
+          <div
+            className="action-drawer__arrow-buttons-container"
+            style={{ left: style.centerXOffset }}
+          >
             <ActionButton
               additionalClassName="action-drawer__arrow-button"
               iconName="arrow-up"
@@ -309,6 +333,7 @@ class ActionDrawer extends PureComponent {
               onClick={this.handleMainArrowButtonClick}
               style={{ opacity: isDisplayingCaptureButtons ? 0 : 1 }}
               tooltip={isDisplayingArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
+              onRef={button => (this.mainArrowButton = button)}
             />
           </div>
         )}
@@ -339,6 +364,15 @@ class ActionDrawer extends PureComponent {
             />
 
             {this.renderMovementButtons()}
+
+            <ActionButton
+              iconName="calendar-alt"
+              shouldSpinSubIcon={isLoading}
+              isDisabled={false}
+              onClick={() => {}}
+              style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
+              tooltip="Show agenda"
+            />
 
             {this.renderCaptureButtons()}
           </Fragment>

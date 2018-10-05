@@ -33,6 +33,7 @@ export default class ActionButton extends PureComponent {
       style,
       tooltip,
       shouldSpinSubIcon,
+      onRef,
     } = this.props;
 
     const className = classNames(
@@ -62,7 +63,13 @@ export default class ActionButton extends PureComponent {
     );
 
     return (
-      <button className={className} onClick={this.handleClick} style={style} title={tooltip}>
+      <button
+        className={className}
+        onClick={this.handleClick}
+        style={style}
+        title={tooltip}
+        ref={button => (!!onRef ? onRef(button) : null)}
+      >
         {!!letter && letter}
         {!!subIconName && <i className={subIconClassName} />}
       </button>
