@@ -4,8 +4,6 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import './stylesheet.css';
 
-// TODO: kill this import
-import Popup from '../../../UI/Popup/';
 import SlideUp from '../../../UI/SlideUp/';
 
 import _ from 'lodash';

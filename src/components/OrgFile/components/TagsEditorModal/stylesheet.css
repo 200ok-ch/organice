@@ -58,6 +58,8 @@
 .all-tags-container {
   display: flex;
   flex-wrap: wrap;
+
+  margin-bottom: 15px;
 }
 
 .all-tags__tag {

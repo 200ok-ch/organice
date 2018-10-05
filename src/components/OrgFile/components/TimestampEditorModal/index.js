@@ -3,7 +3,7 @@ import React, { PureComponent, Fragment } from 'react';
 import './stylesheet.css';
 
 import TimestampEditor from './components/TimestampEditor';
-import Popup from '../../../UI/Popup/';
+import SlideUp from '../../../UI/SlideUp/';
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -47,7 +47,7 @@ export default class TimestampEditorModal extends PureComponent {
     const { timestamp, onClose, singleTimestampOnly } = this.props;
 
     return (
-      <Popup shouldIncludeCloseButton onClose={onClose}>
+      <SlideUp shouldIncludeCloseButton onClose={onClose}>
         <h2 className="timestamp-editor__title">Edit timestamp</h2>
 
         <TimestampEditor
@@ -88,7 +88,7 @@ export default class TimestampEditorModal extends PureComponent {
               </button>
             </div>
           ))}
-      </Popup>
+      </SlideUp>
     );
   }
 }

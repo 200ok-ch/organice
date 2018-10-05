@@ -4,6 +4,7 @@ import './stylesheet.css';
 
 import { Motion, spring } from 'react-motion';
 import _ from 'lodash';
+import classNames from 'classnames';
 
 export default class SlideUp extends PureComponent {
   constructor(props) {
@@ -35,8 +36,12 @@ export default class SlideUp extends PureComponent {
   }
 
   render() {
-    const { children, shouldIncludeCloseButton, onClose } = this.props;
+    const { children, shouldIncludeCloseButton } = this.props;
     const { isVisible } = this.state;
+
+    const outerClassName = classNames('slide-up-outer-container', {
+      'slide-up-outer-container--visible': isVisible,
+    });
 
     const innerStyle = {
       animationProgress: spring(isVisible ? 100 : 0, { stiffness: 300 }),
@@ -46,17 +51,20 @@ export default class SlideUp extends PureComponent {
       <Motion style={innerStyle} onRest={this.handleAnimationRest}>
         {style => {
           return (
-            <div
-              className="slide-up-outer-container test"
-              onClick={this.handleClose}
-              style={{ opacity: `${style.animationProgress / 100}` }}
-            >
+            <div className={outerClassName} onClick={this.handleClose}>
               <div
                 onClick={this.handleInnerContainerClick}
                 className="slide-up-inner-container"
                 ref={div => (this.innerContainer = div)}
-                style={{ bottom: `${style.animationProgress - 100}%` }}
+                style={{ transform: `translateY(${100 - style.animationProgress}%)` }}
               >
+                {shouldIncludeCloseButton && (
+                  <button
+                    className="fas fa-times fa-lg slide-up__close-button"
+                    onClick={this.handleClose}
+                  />
+                )}
+
                 {children}
               </div>
             </div>

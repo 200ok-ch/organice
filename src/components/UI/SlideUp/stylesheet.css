@@ -4,13 +4,15 @@
   bottom: 0;
   left: 0;
   right: 0;
+}
 
+.slide-up-outer-container--visible {
   background-color: rgba(94, 52, 140, 0.1);
 }
 
 .slide-up-inner-container {
   position: fixed;
-  bottom: -100%;
+  bottom: -1px;
   left: 0;
   right: 0;
 
@@ -22,4 +24,16 @@
   border-top-right-radius: 20px;
 
   background-color: white;
+}
+
+.slide-up__close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  color: #5e348c;
+
+  border: 0;
+  background-color: transparent;
+  padding: 0;
 }
