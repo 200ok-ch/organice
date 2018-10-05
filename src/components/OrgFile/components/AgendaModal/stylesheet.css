@@ -3,3 +3,26 @@
 
   margin-top: 0;
 }
+
+.agenda__tab-container {
+  display: flex;
+  justify-content: center;
+}
+
+.agenda__timeframe-header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 15px;
+
+  color: #5e348c;
+}
+
+.agenda__timeframe-header {
+  font-weight: bold;
+  font-size: 18px;
+
+  margin-left: 15px;
+  margin-right: 15px;
+}

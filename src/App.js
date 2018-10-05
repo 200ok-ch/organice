@@ -125,6 +125,9 @@ export default class App extends PureComponent {
       }
     }
 
+    // TODO: kill this
+    this.store.dispatch({ type: 'ACTIVATE_POPUP', popupType: 'agenda' });
+
     _.bindAll(this, ['handleDragEnd']);
   }
 
