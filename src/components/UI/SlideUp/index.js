@@ -17,6 +17,36 @@ export default class SlideUp extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    this.setState({ isVisible: true });
+
+    // Super annoying logic for disabling scrolling of the body when a slide up is active.
+    // Briefly: if we're already at the top of our SlideUp and trying to scroll up, disable
+    // scrolling. Likewise, if we're already at the bottom of our SlideUp and trying to scroll
+    // down, disable scrolling.
+    this.innerContainer.addEventListener('touchstart', event => {
+      this.initialClientY = event.targetTouches[0].clientY;
+    });
+
+    this.innerContainer.addEventListener('touchmove', event => {
+      const isScrollingDown = this.initialClientY > event.targetTouches[0].clientY;
+
+      if (
+        isScrollingDown &&
+        this.innerContainer.scrollHeight - this.innerContainer.scrollTop <=
+          this.innerContainer.clientHeight
+      ) {
+        event.preventDefault();
+      } else if (!isScrollingDown && this.innerContainer.scrollTop === 0) {
+        event.preventDefault();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    document.querySelector('html').style.overflowY = 'auto';
+  }
+
   handleInnerContainerClick(event) {
     event.stopPropagation();
   }
@@ -29,10 +59,6 @@ export default class SlideUp extends PureComponent {
     if (!this.state.isVisible) {
       this.props.onClose();
     }
-  }
-
-  componentDidMount() {
-    this.setState({ isVisible: true });
   }
 
   render() {
