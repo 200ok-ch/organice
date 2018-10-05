@@ -1,3 +1,5 @@
+* October 4th, 2018
+** Implemented new (kinda slicker?) modal component
 * October 2nd, 2018
 ** Added buttons to add/edit deadline and scheduled timestamps
 * September 23rd, 2018
