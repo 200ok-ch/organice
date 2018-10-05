@@ -112,6 +112,8 @@ export default class CaptureModal extends PureComponent {
             The specified header path doesn't exist in this org file!
           </div>
         )}
+
+        <br />
       </SlideUp>
     );
   }

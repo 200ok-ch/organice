@@ -54,7 +54,7 @@ export default class SlideUp extends PureComponent {
             <div className={outerClassName} onClick={this.handleClose}>
               <div
                 onClick={this.handleInnerContainerClick}
-                className="slide-up-inner-container"
+                className="slide-up-inner-container nice-scroll"
                 ref={div => (this.innerContainer = div)}
                 style={{ transform: `translateY(${100 - style.animationProgress}%)` }}
               >

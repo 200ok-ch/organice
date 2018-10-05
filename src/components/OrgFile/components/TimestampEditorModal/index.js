@@ -88,6 +88,8 @@ export default class TimestampEditorModal extends PureComponent {
               </button>
             </div>
           ))}
+
+        <br />
       </SlideUp>
     );
   }

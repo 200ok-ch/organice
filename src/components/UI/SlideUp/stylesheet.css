@@ -24,6 +24,9 @@
   border-top-right-radius: 20px;
 
   background-color: white;
+
+  max-height: 80%;
+  overflow-y: auto;
 }
 
 .slide-up__close-button {

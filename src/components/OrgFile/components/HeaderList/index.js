@@ -19,14 +19,16 @@ class HeaderList extends PureComponent {
     _.bindAll(this, ['handleHeaderRef']);
   }
 
-  componentDidUpdate() {
-    const selectedHeaderDiv = this.headerRefs[this.props.selectedHeaderId];
-    if (!!selectedHeaderDiv) {
-      const boundingRectangle = selectedHeaderDiv.getBoundingClientRect();
-      const viewportHeight = document.documentElement.clientHeight;
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedHeaderId !== this.props.selectedHeaderId) {
+      const selectedHeaderDiv = this.headerRefs[this.props.selectedHeaderId];
+      if (!!selectedHeaderDiv) {
+        const boundingRectangle = selectedHeaderDiv.getBoundingClientRect();
+        const viewportHeight = document.documentElement.clientHeight;
 
-      if (boundingRectangle.top > viewportHeight * 0.9 || boundingRectangle.bottom < 0) {
-        selectedHeaderDiv.scrollIntoView();
+        if (boundingRectangle.top > viewportHeight * 0.9 || boundingRectangle.bottom < 0) {
+          selectedHeaderDiv.scrollIntoView();
+        }
       }
     }
   }
