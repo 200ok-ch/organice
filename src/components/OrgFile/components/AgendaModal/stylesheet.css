@@ -23,6 +23,10 @@
   font-weight: bold;
   font-size: 18px;
 
+  text-align: center;
+
   margin-left: 15px;
   margin-right: 15px;
+
+  min-width: 230px;
 }
