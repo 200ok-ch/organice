@@ -52,13 +52,13 @@ export default class SlideUp extends PureComponent {
   }
 
   handleAnimationRest() {
-    if (!this.state.isVisible) {
+    if (!this.state.isVisible && !!this.props.onClose) {
       this.props.onClose();
     }
   }
 
   render() {
-    const { children, shouldIncludeCloseButton } = this.props;
+    const { children, shouldIncludeCloseButton, onClose } = this.props;
     const { isVisible } = this.state;
 
     const outerClassName = classNames('slide-up-outer-container', {
@@ -73,7 +73,7 @@ export default class SlideUp extends PureComponent {
       <Motion style={innerStyle} onRest={this.handleAnimationRest}>
         {style => {
           return (
-            <div className={outerClassName} onClick={this.handleClose}>
+            <div className={outerClassName} onClick={!!onClose ? this.handleClose : null}>
               <div
                 onClick={this.handleInnerContainerClick}
                 className="slide-up-inner-container nice-scroll"

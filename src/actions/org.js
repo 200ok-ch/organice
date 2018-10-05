@@ -77,8 +77,6 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
       }
     } else {
       if (isDirty && forceAction !== 'pull') {
-        console.log(lastSyncAt);
-        console.log(lastServerModifiedAt);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false));
         dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));

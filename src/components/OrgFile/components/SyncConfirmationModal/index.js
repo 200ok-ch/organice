@@ -2,14 +2,14 @@ import React, { PureComponent } from 'react';
 
 import './stylesheet.css';
 
-import Popup from '../../../UI/Popup/';
+import SlideUp from '../../../UI/SlideUp/';
 
 export default class SyncConfirmationModal extends PureComponent {
   render() {
     const { lastServerModifiedAt, onPull, onPush, onCancel } = this.props;
 
     return (
-      <Popup>
+      <SlideUp>
         <h2 className="sync-confirmation-modal__header">Sync conflict</h2>
         Since you last pulled, a newer version of the file has been pushed to the server. The newer
         version is from:
@@ -30,7 +30,8 @@ export default class SyncConfirmationModal extends PureComponent {
             Cancel sync
           </button>
         </div>
-      </Popup>
+        <br />
+      </SlideUp>
     );
   }
 }
