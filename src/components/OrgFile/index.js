@@ -227,7 +227,6 @@ class OrgFile extends PureComponent {
       customKeybindings,
       inEditMode,
       selectedHeader,
-      activePopup,
       activePopupType,
       activePopupData,
       captureTemplates,
@@ -347,6 +346,20 @@ class OrgFile extends PureComponent {
           {isDirty &&
             !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 
+          <ActionDrawer
+            shouldDisableSyncButtons={shouldDisableSyncButtons}
+            staticFile={staticFile}
+          />
+
+          {activePopupType === 'sync-confirmation' && (
+            <SyncConfirmationModal
+              lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
+              onPull={this.handleSyncConfirmationPull}
+              onPush={this.handleSyncConfirmationPush}
+              onCancel={this.handleSyncConfirmationCancel}
+            />
+          )}
+
           {activePopupType === 'capture' && (
             <CaptureModal
               template={captureTemplates.find(
@@ -355,15 +368,6 @@ class OrgFile extends PureComponent {
               headers={headers}
               onCapture={this.handleCapture}
               onClose={this.handlePopupClose}
-            />
-          )}
-
-          {activePopupType === 'sync-confirmation' && (
-            <SyncConfirmationModal
-              lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
-              onPull={this.handleSyncConfirmationPull}
-              onPush={this.handleSyncConfirmationPush}
-              onCancel={this.handleSyncConfirmationCancel}
             />
           )}
 
@@ -387,14 +391,6 @@ class OrgFile extends PureComponent {
               onChange={this.handleTimestampChange(activePopupData)}
             />
           )}
-
-          {!shouldDisableActions &&
-            !activePopup && (
-              <ActionDrawer
-                shouldDisableSyncButtons={shouldDisableSyncButtons}
-                staticFile={staticFile}
-              />
-            )}
         </div>
       </HotKeys>
     );
@@ -417,7 +413,6 @@ const mapStateToProps = (state, props) => {
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
-    activePopup: state.base.get('activePopup'),
     pendingCapture: state.org.present.get('pendingCapture'),
   };
 };

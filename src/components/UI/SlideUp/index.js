@@ -43,10 +43,6 @@ export default class SlideUp extends PureComponent {
     });
   }
 
-  componentWillUnmount() {
-    document.querySelector('html').style.overflowY = 'auto';
-  }
-
   handleInnerContainerClick(event) {
     event.stopPropagation();
   }
