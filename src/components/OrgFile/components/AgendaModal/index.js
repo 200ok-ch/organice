@@ -19,7 +19,7 @@ export default class AgendaModal extends PureComponent {
     ]);
 
     this.state = {
-      date: moment(),
+      selectedDate: moment(),
       timeframeType: 'Week',
     };
   }
@@ -29,18 +29,17 @@ export default class AgendaModal extends PureComponent {
   }
 
   handleNextDateClick() {
-    console.log('next');
-    const { date, timeframeType } = this.state;
+    const { selectedDate, timeframeType } = this.state;
 
     switch (timeframeType) {
       case 'Day':
-        this.setState({ date: date.clone().add(1, 'day') });
+        this.setState({ selectedDate: selectedDate.clone().add(1, 'day') });
         break;
       case 'Week':
-        this.setState({ date: date.clone().add(1, 'week') });
+        this.setState({ selectedDate: selectedDate.clone().add(1, 'week') });
         break;
       case 'Month':
-        this.setState({ date: date.clone().add(1, 'month') });
+        this.setState({ selectedDate: selectedDate.clone().add(1, 'month') });
         break;
       default:
         return '';
@@ -48,18 +47,17 @@ export default class AgendaModal extends PureComponent {
   }
 
   handlePreviousDateClick() {
-    console.log('previous');
-    const { date, timeframeType } = this.state;
+    const { selectedDate, timeframeType } = this.state;
 
     switch (timeframeType) {
       case 'Day':
-        this.setState({ date: date.clone().subtract(1, 'day') });
+        this.setState({ selectedDate: selectedDate.clone().subtract(1, 'day') });
         break;
       case 'Week':
-        this.setState({ date: date.clone().subtract(1, 'week') });
+        this.setState({ selectedDate: selectedDate.clone().subtract(1, 'week') });
         break;
       case 'Month':
-        this.setState({ date: date.clone().subtract(1, 'month') });
+        this.setState({ selectedDate: selectedDate.clone().subtract(1, 'month') });
         break;
       default:
         return '';
@@ -67,19 +65,19 @@ export default class AgendaModal extends PureComponent {
   }
 
   calculateTimeframeHeader() {
-    const { date, timeframeType } = this.state;
+    const { selectedDate, timeframeType } = this.state;
 
     switch (timeframeType) {
       case 'Day':
-        return date.format('MMMM Do');
+        return selectedDate.format('MMMM Do');
       case 'Week':
-        const weekStart = date.clone().startOf('week');
+        const weekStart = selectedDate.clone().startOf('week');
         const weekEnd = weekStart.clone().add(1, 'week');
         return `${weekStart.format('MMM Do')} - ${weekEnd.format('MMM Do')} (W${weekStart.format(
           'w'
         )})`;
       case 'Month':
-        return date.format('MMMM');
+        return selectedDate.format('MMMM');
       default:
         return '';
     }
@@ -87,11 +85,30 @@ export default class AgendaModal extends PureComponent {
 
   render() {
     const { onClose } = this.props;
-    const { timeframeType } = this.state;
+    const { timeframeType, selectedDate } = this.state;
+
+    let dates = [];
+    switch (timeframeType) {
+      case 'Day':
+        dates = [selectedDate];
+        break;
+      case 'Week':
+        const startOfWeek = selectedDate.clone().startOf('week');
+        dates = _.range(7).map(daysAfter => startOfWeek.clone().add(daysAfter, 'days'));
+        break;
+      case 'Month':
+        const startOfMonth = selectedDate.clone().startOf('month');
+        dates = _.range(selectedDate.daysInMonth()).map(daysAfter =>
+          startOfMonth.clone().add(daysAfter, 'days')
+        );
+        break;
+      default:
+    }
 
     return (
       <SlideUp shouldIncludeCloseButton onClose={onClose}>
         <h2 className="agenda__title">Agenda</h2>
+
         <div className="agenda__tab-container">
           <TabButtons
             buttons={['Day', 'Week', 'Month']}
@@ -100,30 +117,24 @@ export default class AgendaModal extends PureComponent {
             useEqualWidthTabs
           />
         </div>
+
         <div className="agenda__timeframe-header-container">
           <i className="fas fa-chevron-left fa-lg" onClick={this.handlePreviousDateClick} />
           <div className="agenda__timeframe-header">{this.calculateTimeframeHeader()}</div>
           <i className="fas fa-chevron-right fa-lg" onClick={this.handleNextDateClick} />
         </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
+
+        <div className="agenda__days-container">
+          {dates.map(date => (
+            <div className="agenda__day-container" key={date.format()}>
+              <div className="agenda__day-title">
+                <div className="agenda__day-title__day-name">{date.format('dddd')}</div>
+                <div className="agenda__day-title__date">{date.format('MMMM Do, YYYY')}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <br />
       </SlideUp>
     );

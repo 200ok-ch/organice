@@ -30,3 +30,23 @@
 
   min-width: 230px;
 }
+
+.agenda__days-container {
+  margin-top: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.agenda__day-container {
+  color: #5e348c;
+}
+
+.agenda__day-title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+}
+
+.agenda__day-title__day-name {
+  font-weight: bold;
+}
