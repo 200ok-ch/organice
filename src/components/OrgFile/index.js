@@ -16,6 +16,7 @@ import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
+import AgendaModal from './components/AgendaModal';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -391,6 +392,8 @@ class OrgFile extends PureComponent {
               onChange={this.handleTimestampChange(activePopupData)}
             />
           )}
+
+          {activePopupType === 'agenda' && <AgendaModal onClose={this.handlePopupClose} />}
         </div>
       </HotKeys>
     );

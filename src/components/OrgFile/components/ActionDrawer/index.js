@@ -32,6 +32,7 @@ class ActionDrawer extends PureComponent {
       'handleSync',
       'handleMainArrowButtonClick',
       'handleMainCaptureButtonClick',
+      'handleAgendaClick',
     ]);
 
     this.state = {
@@ -341,6 +342,10 @@ class ActionDrawer extends PureComponent {
     );
   }
 
+  handleAgendaClick() {
+    this.props.base.activatePopup('agenda');
+  }
+
   render() {
     const { inEditMode, shouldDisableSyncButtons, isLoading } = this.props;
     const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
@@ -369,7 +374,7 @@ class ActionDrawer extends PureComponent {
               iconName="calendar-alt"
               shouldSpinSubIcon={isLoading}
               isDisabled={false}
-              onClick={() => {}}
+              onClick={this.handleAgendaClick}
               style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
               tooltip="Show agenda"
             />
