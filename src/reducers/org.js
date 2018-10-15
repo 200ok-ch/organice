@@ -844,7 +844,7 @@ export default (state = new Map(), action) => {
     'ADD_NEW_TABLE_ROW',
     'REMOVE_TABLE_ROW',
     'ADD_NEW_TABLE_COLUMN',
-    'Rif (EMOVE_TABLE_COLUMN',
+    'REMOVE_TABLE_COLUMN',
     'MOVE_TABLE_ROW_DOWN',
     'MOVE_TABLE_ROW_UP',
     'MOVE_TABLE_COLUMN_LEFT',
@@ -855,6 +855,7 @@ export default (state = new Map(), action) => {
     'REORDER_TAGS',
     'UPDATE_TIMESTAMP_WITH_ID',
     'UPDATE_PLANNING_ITEM_TIMESTAMP',
+    'ADVANCE_CHECKBOX_STATE',
   ];
 
   if (dirtyingActions.includes(action.type)) {
