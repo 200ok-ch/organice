@@ -495,8 +495,8 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     description: [],
     opened: false,
     id: generateId(),
-
     nestingLevel,
+    planningItems: [],
   });
 };
 
