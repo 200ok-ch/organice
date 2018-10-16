@@ -61,7 +61,7 @@ export const momentDateForTimestamp = timestamp => {
 
   let timestampString = `${year}-${month}-${day}`;
   if (!!startHour && !!startMinute) {
-    timestampString += ` ${startHour}:${startMinute}`;
+    timestampString += ` ${startHour.padStart(2, '0')}:${startMinute}`;
   }
 
   return moment(timestampString);
