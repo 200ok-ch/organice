@@ -9,6 +9,10 @@ import { momentDateForTimestamp } from '../../../../../../lib/timestamps';
 import moment from 'moment';
 
 export default class AgendaDay extends PureComponent {
+  handleHeaderClick(headerId) {
+    return () => this.props.onHeaderClick(headerId);
+  }
+
   render() {
     const { date, headers } = this.props;
 
@@ -73,8 +77,9 @@ export default class AgendaDay extends PureComponent {
                     color="black"
                     hasContent={false}
                     isSelected={false}
-                    shouldDisableActions={true}
+                    shouldDisableActions
                     shouldDisableExplicitWidth
+                    onClick={this.handleHeaderClick(header.get('id'))}
                   />
                 </div>
               </div>

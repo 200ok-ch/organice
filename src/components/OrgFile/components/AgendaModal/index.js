@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
@@ -6,12 +8,14 @@ import AgendaDay from './components/AgendaDay';
 import SlideUp from '../../../UI/SlideUp';
 import TabButtons from '../../../UI/TabButtons';
 
+import * as orgActions from '../../../../actions/org';
+
 import { momentDateForTimestamp } from '../../../../lib/timestamps';
 
 import _ from 'lodash';
 import moment from 'moment';
 
-export default class AgendaModal extends PureComponent {
+class AgendaModal extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -19,6 +23,7 @@ export default class AgendaModal extends PureComponent {
       'handleTimeframeTypeChange',
       'handleNextDateClick',
       'handlePreviousDateClick',
+      'handleHeaderClick',
     ]);
 
     this.state = {
@@ -47,6 +52,11 @@ export default class AgendaModal extends PureComponent {
       default:
         return '';
     }
+  }
+
+  handleHeaderClick(headerId) {
+    this.props.onClose();
+    this.props.org.selectHeaderAndOpenParents(headerId);
   }
 
   handlePreviousDateClick() {
@@ -146,6 +156,7 @@ export default class AgendaModal extends PureComponent {
               key={date.format()}
               date={date}
               headers={this.headersForDate(date, headers)}
+              onHeaderClick={this.handleHeaderClick}
             />
           ))}
         </div>
@@ -155,3 +166,14 @@ export default class AgendaModal extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({
+  org: bindActionCreators(orgActions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgendaModal);

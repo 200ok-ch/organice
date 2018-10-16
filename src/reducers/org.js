@@ -81,6 +81,20 @@ const selectHeader = (state, action) => {
   return state.set('selectedHeaderId', action.headerId);
 };
 
+const openParentsOfHeader = (state, action) => {
+  let headers = state.get('headers');
+  const { headerId } = action;
+
+  let parentHeaderId = parentIdOfHeaderWithId(headers, headerId);
+  while (!!parentHeaderId) {
+    const parentHeaderIndex = indexOfHeaderWithId(headers, parentHeaderId);
+    headers = headers.setIn([parentHeaderIndex, 'opened'], true);
+    parentHeaderId = parentIdOfHeaderWithId(headers, parentHeaderId);
+  }
+
+  return state.set('headers', headers);
+};
+
 const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
   todoKeywordSets.find(keywordSet => keywordSet.get('keywords').contains(keyword)) ||
   todoKeywordSets.first();
@@ -872,6 +886,8 @@ export default (state = new Map(), action) => {
       return openHeader(state, action);
     case 'SELECT_HEADER':
       return selectHeader(state, action);
+    case 'OPEN_PARENTS_OF_HEADER':
+      return openParentsOfHeader(state, action);
     case 'ADVANCE_TODO_STATE':
       return advanceTodoState(state, action);
     case 'ENTER_EDIT_MODE':
