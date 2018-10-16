@@ -2,8 +2,11 @@ import React, { PureComponent } from 'react';
 
 import './stylesheet.css';
 
+import AgendaDay from './components/AgendaDay';
 import SlideUp from '../../../UI/SlideUp';
 import TabButtons from '../../../UI/TabButtons';
+
+import { momentDateForTimestamp } from '../../../../lib/timestamps';
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -83,8 +86,21 @@ export default class AgendaModal extends PureComponent {
     }
   }
 
+  headersForDate(date, headers) {
+    const dateStart = date.clone().startOf('day');
+    const dateEnd = date.clone().endOf('day');
+
+    return headers.filter(header =>
+      header.get('planningItems').some(planningItem => {
+        const planningItemDate = momentDateForTimestamp(planningItem.get('timestamp'));
+
+        return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
+      })
+    );
+  }
+
   render() {
-    const { onClose } = this.props;
+    const { onClose, headers } = this.props;
     const { timeframeType, selectedDate } = this.state;
 
     let dates = [];
@@ -126,12 +142,11 @@ export default class AgendaModal extends PureComponent {
 
         <div className="agenda__days-container">
           {dates.map(date => (
-            <div className="agenda__day-container" key={date.format()}>
-              <div className="agenda__day-title">
-                <div className="agenda__day-title__day-name">{date.format('dddd')}</div>
-                <div className="agenda__day-title__date">{date.format('MMMM Do, YYYY')}</div>
-              </div>
-            </div>
+            <AgendaDay
+              key={date.format()}
+              date={date}
+              headers={this.headersForDate(date, headers)}
+            />
           ))}
         </div>
 

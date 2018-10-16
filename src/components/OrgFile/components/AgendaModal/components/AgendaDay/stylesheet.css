@@ -1,0 +1,15 @@
+.agenda-day__container {
+
+}
+
+.agenda-day__title {
+  color: #5e348c;
+
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+}
+
+.agenda-day__title__day-name {
+  font-weight: bold;
+}

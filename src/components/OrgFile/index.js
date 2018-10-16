@@ -393,7 +393,9 @@ class OrgFile extends PureComponent {
             />
           )}
 
-          {activePopupType === 'agenda' && <AgendaModal onClose={this.handlePopupClose} />}
+          {activePopupType === 'agenda' && (
+            <AgendaModal onClose={this.handlePopupClose} headers={headers} />
+          )}
         </div>
       </HotKeys>
     );

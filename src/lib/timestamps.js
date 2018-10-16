@@ -55,3 +55,14 @@ export const getCurrentTimestamp = () => {
 };
 
 export const getCurrentTimestampAsText = () => `<${moment().format('YYYY-MM-DD ddd')}>`;
+
+export const momentDateForTimestamp = timestamp => {
+  const { year, month, day, startHour, startMinute } = timestamp.toJS();
+
+  let timestampString = `${year}-${month}-${day}`;
+  if (!!startHour && !!startMinute) {
+    timestampString += ` ${startHour}:${startMinute}`;
+  }
+
+  return moment(timestampString);
+};
