@@ -168,7 +168,14 @@ class TitleLine extends PureComponent {
   }
 
   render() {
-    const { header, color, hasContent, inEditMode, shouldDisableActions } = this.props;
+    const {
+      header,
+      color,
+      hasContent,
+      inEditMode,
+      shouldDisableActions,
+      shouldDisableExplicitWidth,
+    } = this.props;
     const { containerWidth } = this.state;
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
@@ -182,7 +189,7 @@ class TitleLine extends PureComponent {
         className="title-line"
         onClick={this.handleTitleClick}
         ref={this.handleRef}
-        style={{ width: containerWidth }}
+        style={{ width: shouldDisableExplicitWidth ? '' : containerWidth }}
       >
         {!inEditMode && !!todoKeyword ? (
           <span
