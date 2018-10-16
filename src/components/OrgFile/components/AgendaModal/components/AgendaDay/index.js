@@ -6,6 +6,8 @@ import TitleLine from '../../../TitleLine';
 
 import { momentDateForTimestamp } from '../../../../../../lib/timestamps';
 
+import moment from 'moment';
+
 export default class AgendaDay extends PureComponent {
   render() {
     const { date, headers } = this.props;
@@ -36,6 +38,9 @@ export default class AgendaDay extends PureComponent {
     return (
       <div className="agenda-day__container">
         <div className="agenda-day__title">
+          {date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]') && (
+            <div className="agenda-day__today-indicator" />
+          )}
           <div className="agenda-day__title__day-name">{date.format('dddd')}</div>
           <div className="agenda-day__title__date">{date.format('MMMM Do, YYYY')}</div>
         </div>

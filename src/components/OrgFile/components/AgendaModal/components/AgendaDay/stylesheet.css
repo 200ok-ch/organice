@@ -4,6 +4,19 @@
   display: flex;
   justify-content: space-between;
   font-size: 18px;
+
+  position: relative;
+}
+
+.agenda-day__today-indicator {
+  position: absolute;
+  left: -13px;
+  top: 7px;
+
+  width: 7px;
+  height: 7px;
+  background-color: #5e348c;
+  border-radius: 50%;
 }
 
 .agenda-day__title__day-name {
