@@ -22,11 +22,13 @@ class AgendaModal extends PureComponent {
       'handleNextDateClick',
       'handlePreviousDateClick',
       'handleHeaderClick',
+      'handleToggleDateDisplayType',
     ]);
 
     this.state = {
       selectedDate: moment(),
       timeframeType: 'Week',
+      dateDisplayType: 'absolute',
     };
   }
 
@@ -75,6 +77,14 @@ class AgendaModal extends PureComponent {
     }
   }
 
+  handleToggleDateDisplayType() {
+    const { dateDisplayType } = this.state;
+
+    this.setState({
+      dateDisplayType: dateDisplayType === 'absolute' ? 'relative' : 'absolute',
+    });
+  }
+
   calculateTimeframeHeader() {
     const { selectedDate, timeframeType } = this.state;
 
@@ -96,7 +106,7 @@ class AgendaModal extends PureComponent {
 
   render() {
     const { onClose, headers, todoKeywordSets } = this.props;
-    const { timeframeType, selectedDate } = this.state;
+    const { timeframeType, selectedDate, dateDisplayType } = this.state;
 
     let dates = [];
     switch (timeframeType) {
@@ -143,6 +153,8 @@ class AgendaModal extends PureComponent {
               headers={headers}
               onHeaderClick={this.handleHeaderClick}
               todoKeywordSets={todoKeywordSets}
+              dateDisplayType={dateDisplayType}
+              onToggleDateDisplayType={this.handleToggleDateDisplayType}
             />
           ))}
         </div>

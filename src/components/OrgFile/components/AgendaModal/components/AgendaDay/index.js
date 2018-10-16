@@ -19,7 +19,7 @@ export default class AgendaDay extends PureComponent {
   }
 
   render() {
-    const { date, headers, todoKeywordSets } = this.props;
+    const { date, headers, todoKeywordSets, dateDisplayType, onToggleDateDisplayType } = this.props;
 
     const isToday = date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]');
     const dateStart = date.clone().startOf('day');
@@ -98,8 +98,10 @@ export default class AgendaDay extends PureComponent {
               <div key={header.get('id')} className="agenda-day__header-container">
                 <div className="agenda-day__header__planning-item-container">
                   <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
-                  <div className={dateClassName}>
-                    {planningItemDate.format('MM/DD')}
+                  <div className={dateClassName} onClick={onToggleDateDisplayType}>
+                    {dateDisplayType === 'absolute'
+                      ? planningItemDate.format('MM/DD')
+                      : planningItemDate.fromNow()}
 
                     {!!planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>
