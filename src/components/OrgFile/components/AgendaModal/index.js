@@ -10,8 +10,6 @@ import TabButtons from '../../../UI/TabButtons';
 
 import * as orgActions from '../../../../actions/org';
 
-import { momentDateForTimestamp } from '../../../../lib/timestamps';
-
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -96,21 +94,8 @@ class AgendaModal extends PureComponent {
     }
   }
 
-  headersForDate(date, headers) {
-    const dateStart = date.clone().startOf('day');
-    const dateEnd = date.clone().endOf('day');
-
-    return headers.filter(header =>
-      header.get('planningItems').some(planningItem => {
-        const planningItemDate = momentDateForTimestamp(planningItem.get('timestamp'));
-
-        return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
-      })
-    );
-  }
-
   render() {
-    const { onClose, headers } = this.props;
+    const { onClose, headers, todoKeywordSets } = this.props;
     const { timeframeType, selectedDate } = this.state;
 
     let dates = [];
@@ -155,8 +140,9 @@ class AgendaModal extends PureComponent {
             <AgendaDay
               key={date.format()}
               date={date}
-              headers={this.headersForDate(date, headers)}
+              headers={headers}
               onHeaderClick={this.handleHeaderClick}
+              todoKeywordSets={todoKeywordSets}
             />
           ))}
         </div>
@@ -167,7 +153,9 @@ class AgendaModal extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  todoKeywordSets: state.org.present.get('todoKeywordSets'),
+});
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),

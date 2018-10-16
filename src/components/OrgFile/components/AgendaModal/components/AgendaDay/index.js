@@ -4,7 +4,11 @@ import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
 
-import { momentDateForTimestamp } from '../../../../../../lib/timestamps';
+import { isTodoKeywordCompleted } from '../../../../../../lib/org_utils';
+import {
+  momentDateForTimestamp,
+  momentUnitForTimestampUnit,
+} from '../../../../../../lib/timestamps';
 
 import moment from 'moment';
 
@@ -14,37 +18,65 @@ export default class AgendaDay extends PureComponent {
   }
 
   render() {
-    const { date, headers } = this.props;
+    const { date, headers, todoKeywordSets } = this.props;
 
+    const isToday = date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]');
     const dateStart = date.clone().startOf('day');
     const dateEnd = date.clone().endOf('day');
 
     const planningItemsAndHeaders = headers
       .flatMap(header => {
-        const planningItemsOnDate = header.get('planningItems').filter(planningItem => {
-          const planningItemDate = momentDateForTimestamp(planningItem.get('timestamp'));
+        const planningItemsforDate = header.get('planningItems').filter(planningItem => {
+          const timestamp = planningItem.get('timestamp');
+          const planningItemDate = momentDateForTimestamp(timestamp);
+          const isIncompleteTodo =
+            !!header.getIn(['titleLine', 'todoKeyword']) &&
+            !isTodoKeywordCompleted(todoKeywordSets, header.getIn(['titleLine', 'todoKeyword']));
 
-          return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
+          if (planningItem.get('type') === 'DEADLINE') {
+            if (isIncompleteTodo && planningItemDate < moment() && isToday) {
+              return true;
+            }
+
+            if (timestamp.get('delayType') === '-' && isToday) {
+              const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
+              const appearDate = planningItemDate
+                .clone()
+                .subtract(timestamp.get('delayValue'), delayUnit);
+
+              return date > appearDate;
+            }
+
+            return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
+          } else if (planningItem.get('type') === 'SCHEDULED') {
+            let appearDate = planningItemDate;
+            if (!!timestamp.get('delayType')) {
+              const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
+              appearDate = planningItemDate.clone().add(timestamp.get('delayValue'), delayUnit);
+            }
+
+            if (isIncompleteTodo && isToday && date > appearDate) {
+              return true;
+            }
+
+            return appearDate.isBetween(dateStart, dateEnd, null, '[]');
+          } else {
+            return false;
+          }
         });
 
-        return planningItemsOnDate.map(planningItem => [planningItem, header]);
+        return planningItemsforDate.map(planningItem => [planningItem, header]);
       })
       .sortBy(([planningItem, header]) => {
         const { startHour, startMinute, endHour, endMinute } = planningItem.get('timestamp').toJS();
 
-        if (!!startHour && !!startMinute) {
-          return [0, startHour, startMinute, endHour, endMinute];
-        } else {
-          return [1, null, null, null, null];
-        }
+        return [!!startHour ? 0 : 1, startHour, startMinute, endHour, endMinute];
       });
 
     return (
       <div className="agenda-day__container">
         <div className="agenda-day__title">
-          {date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]') && (
-            <div className="agenda-day__today-indicator" />
-          )}
+          {isToday && <div className="agenda-day__today-indicator" />}
           <div className="agenda-day__title__day-name">{date.format('dddd')}</div>
           <div className="agenda-day__title__date">{date.format('MMMM Do, YYYY')}</div>
         </div>

@@ -29,6 +29,7 @@ import {
   headerWithPath,
   pathAndPartOfListItemWithIdInHeaders,
   pathAndPartOfTimestampItemWithIdInHeaders,
+  todoKeywordSetForKeyword,
 } from '../lib/org_utils';
 import { getCurrentTimestamp } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -94,10 +95,6 @@ const openParentsOfHeader = (state, action) => {
 
   return state.set('headers', headers);
 };
-
-const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
-  todoKeywordSets.find(keywordSet => keywordSet.get('keywords').contains(keyword)) ||
-  todoKeywordSets.first();
 
 const updateCookiesInAttributedStringWithChildCompletionStates = (parts, completionStates) => {
   const doneCount = completionStates.filter(isDone => isDone).length;

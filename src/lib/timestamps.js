@@ -66,3 +66,12 @@ export const momentDateForTimestamp = timestamp => {
 
   return moment(timestampString);
 };
+
+export const momentUnitForTimestampUnit = timestampUnit =>
+  ({
+    h: 'hours',
+    d: 'days',
+    w: 'weeks',
+    m: 'months',
+    y: 'years',
+  }[timestampUnit]);
