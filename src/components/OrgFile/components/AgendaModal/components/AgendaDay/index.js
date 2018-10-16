@@ -11,6 +11,7 @@ import {
 } from '../../../../../../lib/timestamps';
 
 import moment from 'moment';
+import classNames from 'classnames';
 
 export default class AgendaDay extends PureComponent {
   handleHeaderClick(headerId) {
@@ -68,9 +69,11 @@ export default class AgendaDay extends PureComponent {
         return planningItemsforDate.map(planningItem => [planningItem, header]);
       })
       .sortBy(([planningItem, header]) => {
-        const { startHour, startMinute, endHour, endMinute } = planningItem.get('timestamp').toJS();
+        const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
+          .get('timestamp')
+          .toJS();
 
-        return [!!startHour ? 0 : 1, startHour, startMinute, endHour, endMinute];
+        return [!!startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
       });
 
     return (
@@ -83,25 +86,28 @@ export default class AgendaDay extends PureComponent {
 
         <div className="agenda-day__headers-container">
           {planningItemsAndHeaders.map(([planningItem, header]) => {
+            const planningItemDate = momentDateForTimestamp(planningItem.get('timestamp'));
+            const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
+
+            const dateClassName = classNames('agenda-day__header-planning-date', {
+              'agenda-day__header-planning-date--overdue':
+                hasTodoKeyword && planningItemDate < moment(),
+            });
+
             return (
               <div key={header.get('id')} className="agenda-day__header-container">
                 <div className="agenda-day__header__planning-item-container">
                   <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
-                  {!!planningItem.getIn(['timestamp', 'startHour']) && (
-                    <div className="agenda-day__header-planning-date">
-                      {planningItem.getIn(['timestamp', 'startHour'])}
-                      {':'}
-                      {planningItem.getIn(['timestamp', 'startMinute'])}
-                      {!!planningItem.getIn(['timestamp', 'endHour']) && (
-                        <Fragment>
-                          {'-'}
-                          {planningItem.getIn(['timestamp', 'endHour'])}
-                          {':'}
-                          {planningItem.getIn(['timestamp', 'endMinute'])}
-                        </Fragment>
-                      )}
-                    </div>
-                  )}
+                  <div className={dateClassName}>
+                    {planningItemDate.format('MM/DD')}
+
+                    {!!planningItem.getIn(['timestamp', 'startHour']) && (
+                      <Fragment>
+                        <br />
+                        {planningItemDate.format('h:mma')}
+                      </Fragment>
+                    )}
+                  </div>
                 </div>
                 <div className="agenda-day__header__header-container">
                   <TitleLine

@@ -19,6 +19,10 @@
   border-radius: 50%;
 }
 
+.agenda-day__header-planning-date--overdue {
+  color: red;
+}
+
 .agenda-day__title__day-name {
   font-weight: bold;
 }
