@@ -95,7 +95,7 @@ export default class AgendaDay extends PureComponent {
             });
 
             return (
-              <div key={header.get('id')} className="agenda-day__header-container">
+              <div key={planningItem.get('id')} className="agenda-day__header-container">
                 <div className="agenda-day__header__planning-item-container">
                   <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
