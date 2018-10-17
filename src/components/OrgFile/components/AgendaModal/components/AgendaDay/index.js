@@ -45,7 +45,7 @@ export default class AgendaDay extends PureComponent {
                 .clone()
                 .subtract(timestamp.get('delayValue'), delayUnit);
 
-              return date > appearDate;
+              return date >= appearDate;
             }
 
             return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
