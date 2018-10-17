@@ -10,8 +10,6 @@ const setFontSize = (state, action) => state.set('fontSize', action.newFontSize)
 
 const setBulletStyle = (state, action) => state.set('bulletStyle', action.newBulletStyle);
 
-const setWeekStart = (state, action) => state.set('weekStart', action.weekStart);
-
 const setShouldTapTodoToAdvance = (state, action) =>
   state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance);
 
@@ -79,8 +77,6 @@ export default (state = new Map(), action) => {
       return setFontSize(state, action);
     case 'SET_BULLET_STYLE':
       return setBulletStyle(state, action);
-    case 'SET_WEEK_START':
-      return setWeekStart(state, action);
     case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
       return setShouldTapTodoToAdvance(state, action);
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':

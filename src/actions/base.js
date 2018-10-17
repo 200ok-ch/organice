@@ -67,11 +67,6 @@ export const setBulletStyle = newBulletStyle => ({
   newBulletStyle,
 });
 
-export const setWeekStart = weekStart => ({
-  type: 'SET_WEEK_START',
-  weekStart,
-});
-
 export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE',
   newShouldTapTodoToAdvance,

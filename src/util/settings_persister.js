@@ -56,12 +56,6 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'weekStart',
-    type: 'nullable',
-    shouldStoreInConfig: true,
-  },
-  {
-    category: 'base',
     name: 'shouldTapTodoToAdvance',
     type: 'boolean',
     shouldStoreInConfig: true,
