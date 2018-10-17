@@ -24,6 +24,7 @@ class Settings extends PureComponent {
       'handleCaptureTemplatesClick',
       'handleFontSizeChange',
       'handleBulletStyleChange',
+      'handleWeekStartChange',
       'handleShouldTapTodoToAdvanceChange',
       'handleShouldStoreSettingsInSyncBackend',
       'handleChangelogClick',
@@ -53,6 +54,10 @@ class Settings extends PureComponent {
     this.props.base.setBulletStyle(newBulletStyle);
   }
 
+  handleWeekStartChange(newWeekStart) {
+    this.props.base.setWeekStart(newWeekStart);
+  }
+
   handleShouldTapTodoToAdvanceChange() {
     const { shouldTapTodoToAdvance } = this.props;
 
@@ -77,6 +82,7 @@ class Settings extends PureComponent {
     const {
       fontSize,
       bulletStyle,
+      weekStart,
       shouldTapTodoToAdvance,
       shouldStoreSettingsInSyncBackend,
       hasUnseenChangelog,
@@ -121,6 +127,16 @@ class Settings extends PureComponent {
           <Switch
             isEnabled={shouldStoreSettingsInSyncBackend}
             onToggle={this.handleShouldStoreSettingsInSyncBackend}
+          />
+        </div>
+
+        <div className="setting-container setting-container--vertical-layout">
+          <div className="setting-label">Start week on</div>
+          <TabButtons
+            buttons={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+            selectedButton={weekStart}
+            onSelect={this.handleWeekStartChange}
+            useEqualWidthTabs
           />
         </div>
 
@@ -171,6 +187,7 @@ const mapStateToProps = (state, props) => {
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
+    weekStart: state.base.get('weekStart') || 'Sun',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
