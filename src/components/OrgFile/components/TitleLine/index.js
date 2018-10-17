@@ -95,22 +95,31 @@ class TitleLine extends PureComponent {
   }
 
   handleTitleClick(event) {
-    const { header, hasContent, isSelected } = this.props;
+    const { header, hasContent, isSelected, onClick } = this.props;
 
-    if (hasContent && (!header.get('opened') || isSelected)) {
-      this.props.org.toggleHeaderOpened(header.get('id'));
+    if (!!onClick) {
+      onClick();
+    } else {
+      if (hasContent && (!header.get('opened') || isSelected)) {
+        this.props.org.toggleHeaderOpened(header.get('id'));
+      }
+
+      this.props.org.selectHeader(header.get('id'));
     }
-
-    this.props.org.selectHeader(header.get('id'));
   }
 
-  handleTodoClick() {
-    const { header, shouldTapTodoToAdvance } = this.props;
+  handleTodoClick(event) {
+    const { header, shouldTapTodoToAdvance, onClick } = this.props;
 
-    this.props.org.selectHeader(header.get('id'));
+    if (!!onClick) {
+      onClick();
+      event.stopPropagation();
+    } else {
+      this.props.org.selectHeader(header.get('id'));
 
-    if (shouldTapTodoToAdvance) {
-      this.props.org.advanceTodoState();
+      if (shouldTapTodoToAdvance) {
+        this.props.org.advanceTodoState();
+      }
     }
   }
 
@@ -168,7 +177,14 @@ class TitleLine extends PureComponent {
   }
 
   render() {
-    const { header, color, hasContent, inEditMode, shouldDisableActions } = this.props;
+    const {
+      header,
+      color,
+      hasContent,
+      inEditMode,
+      shouldDisableActions,
+      shouldDisableExplicitWidth,
+    } = this.props;
     const { containerWidth } = this.state;
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
@@ -182,7 +198,7 @@ class TitleLine extends PureComponent {
         className="title-line"
         onClick={this.handleTitleClick}
         ref={this.handleRef}
-        style={{ width: containerWidth }}
+        style={{ width: shouldDisableExplicitWidth ? '' : containerWidth }}
       >
         {!inEditMode && !!todoKeyword ? (
           <span

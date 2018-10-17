@@ -10,10 +10,18 @@ export default class TabButtons extends PureComponent {
   }
 
   render() {
-    const { buttons, selectedButton } = this.props;
+    const { buttons, selectedButton, useEqualWidthTabs } = this.props;
+
+    const containerClassName = classNames('tab-buttons', {
+      'tab-buttons--equal-width-tabs': useEqualWidthTabs,
+    });
+
+    const style = {
+      gridTemplateColumns: useEqualWidthTabs ? `repeat(${buttons.length}, 1fr)` : null,
+    };
 
     return (
-      <div className="tab-buttons">
+      <div className={containerClassName} style={style}>
         {buttons.map(buttonName => {
           const className = classNames('tab-buttons__btn', {
             'tab-buttons__btn--selected': buttonName === selectedButton,

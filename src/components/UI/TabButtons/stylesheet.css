@@ -6,11 +6,18 @@
   align-items: center;
 }
 
+.tab-buttons--equal-width-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .tab-buttons__btn {
   box-sizing: border-box;
   height: 100%;
   padding: 7px;
   border-right: 1px solid lightgray;
+
+  text-align: center;
 }
 
 .tab-buttons__btn:last-of-type {

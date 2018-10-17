@@ -43,6 +43,17 @@ export default class SlideUp extends PureComponent {
     });
   }
 
+  componentDidUpdate() {
+    // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
+    // Without this, I can't scroll the inner container in the agenda view.
+    setTimeout(() => {
+      this.innerContainer.style.left = '0';
+      setTimeout(() => {
+        this.innerContainer.style.left = '-1px';
+      }, 0);
+    }, 0);
+  }
+
   handleInnerContainerClick(event) {
     event.stopPropagation();
   }

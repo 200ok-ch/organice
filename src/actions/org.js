@@ -110,6 +110,11 @@ export const selectHeader = headerId => dispatch => {
   }
 };
 
+export const selectHeaderAndOpenParents = headerId => dispatch => {
+  dispatch(selectHeader(headerId));
+  dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });
+};
+
 export const advanceTodoState = (headerId = null) => ({
   type: 'ADVANCE_TODO_STATE',
   headerId,

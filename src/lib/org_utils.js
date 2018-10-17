@@ -487,3 +487,12 @@ export const timestampWithId = (headers, timestampId) =>
         timestampWithIdInAttributedString(header.get('description'), timestampId)
     )
     .find(result => !!result);
+
+export const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
+  todoKeywordSets.find(keywordSet => keywordSet.get('keywords').contains(keyword)) ||
+  todoKeywordSets.first();
+
+export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
+  todoKeywordSetForKeyword(todoKeywordSets, keyword)
+    .get('completedKeywords')
+    .includes(keyword);

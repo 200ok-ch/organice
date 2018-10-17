@@ -187,6 +187,16 @@ org-web supports a flexible mechanism for capturing using URL parameters. This m
 You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
 Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/DanielDe/org-web/#capture-params-and-siri-support][the README file]].
+* Agenda
+org-web has a basic agenda view that you can access by tapping the calendar button at the bottom of the page.
+
+Tap a header in this view to jump to it, and tap on the date to switch to a more readable relative date format.
+
+These overdue items with deadlines should show up on today's entry:
+** TODO check out the org-web agenda view
+DEADLINE: <2018-09-10 Mon>
+** TODO sign up for Triplebyte
+SCHEDULED: <2018-09-17 Mon>
 * Syncing
 org-web pulls down your org files from Dropbox or Google Drive. Click the "Sign in" button in the upper right hand corner to sign in with either Dropbox or Google Drive and authenticate org-web.
 ** Symlink your org files

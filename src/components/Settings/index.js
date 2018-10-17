@@ -24,6 +24,7 @@ class Settings extends PureComponent {
       'handleCaptureTemplatesClick',
       'handleFontSizeChange',
       'handleBulletStyleChange',
+      'handleWeekStartChange',
       'handleShouldTapTodoToAdvanceChange',
       'handleShouldStoreSettingsInSyncBackend',
       'handleChangelogClick',
@@ -51,6 +52,10 @@ class Settings extends PureComponent {
 
   handleBulletStyleChange(newBulletStyle) {
     this.props.base.setBulletStyle(newBulletStyle);
+  }
+
+  handleWeekStartChange(newWeekStart) {
+    this.props.base.setWeekStart(newWeekStart);
   }
 
   handleShouldTapTodoToAdvanceChange() {
