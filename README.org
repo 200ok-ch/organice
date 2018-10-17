@@ -10,6 +10,8 @@ If you don't already keep your org files in Dropbox or Google Drive, I recommend
 #+BEGIN_SRC
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 #+END_SRC
+** Gitter chat
+If you're interested in learning more about using or developing org-web, feel free to ask for help in [[https://gitter.im/org-web/Lobby?source=orgpage][this Gitter room]]. It's quiet right now, but I still monitor it closely :)
 ** Capture params and Siri support
 org-web supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
