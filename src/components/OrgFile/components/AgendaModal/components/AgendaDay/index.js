@@ -29,6 +29,10 @@ export default class AgendaDay extends PureComponent {
       .flatMap(header => {
         const planningItemsforDate = header.get('planningItems').filter(planningItem => {
           const timestamp = planningItem.get('timestamp');
+          if (!timestamp.get('isActive')) {
+            return false;
+          }
+
           const planningItemDate = momentDateForTimestamp(timestamp);
           const isIncompleteTodo =
             !!header.getIn(['titleLine', 'todoKeyword']) &&
