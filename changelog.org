@@ -1,3 +1,5 @@
+* October 17th, 2018
+** Added a basic agenda view - try tapping the new calendar button at the bottom of the screen!
 * October 4th, 2018
 ** Implemented new (kinda slicker?) modal component
 * October 2nd, 2018
