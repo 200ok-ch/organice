@@ -99,16 +99,17 @@ const getFieldsToPersist = (state, fields) =>
     .map(field => field.name)
     .map(field => [field, state.org.present.get(field)])
     .concat(
-      persistableFields.filter(field => field.category !== 'org').map(field => {
-        if (field.type === 'json') {
-          return [
-            field.name,
-            JSON.stringify(state[field.category].get(field.name) || field.default || {}),
-          ];
-        } else {
-          return [field.name, state[field.category].get(field.name)];
-        }
-      })
+      persistableFields
+        .filter(field => field.category !== 'org')
+        .map(
+          field =>
+            field.type === 'json'
+              ? [
+                  field.name,
+                  JSON.stringify(state[field.category].get(field.name) || field.default || {}),
+                ]
+              : [field.name, state[field.category].get(field.name)]
+        )
     );
 
 const getConfigFileContents = fieldsToPersist =>
@@ -131,11 +132,9 @@ export const applyCategorySettingsFromConfig = (state, config, category) => {
         field.name !== 'lastSeenChangelogHeader'
     )
     .forEach(field => {
-      if (field.type === 'json') {
-        state = state.set(field.name, fromJS(JSON.parse(config[field.name])));
-      } else {
-        state = state.set(field.name, config[field.name]);
-      }
+      field.type === 'json'
+        ? (state = state.set(field.name, fromJS(JSON.parse(config[field.name]))))
+        : (state = state.set(field.name, config[field.name]));
     });
 
   return state;
