@@ -14,6 +14,7 @@ export default class SlideUp extends PureComponent {
 
     this.state = {
       isVisible: false,
+      dragOffsetY: null,
     };
   }
 
@@ -39,19 +40,45 @@ export default class SlideUp extends PureComponent {
         event.preventDefault();
       } else if (!isScrollingDown && this.innerContainer.scrollTop === 0) {
         event.preventDefault();
+
+        this.setState({ dragOffsetY: event.targetTouches[0].clientY - this.initialClientY });
       }
     });
+
+    this.innerContainer.addEventListener('touchend', event => {
+      this.endInnerContainerDrag(this.state.dragOffsetY);
+    });
+
+    this.innerContainer.addEventListener('touchcancel', event => {
+      this.endInnerContainerDrag(this.state.dragOffsetY);
+    });
+
+    this.updateInnerContainerHeight();
   }
 
-  componentDidUpdate() {
-    // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
-    // Without this, I can't scroll the inner container in the agenda view.
-    setTimeout(() => {
-      this.innerContainer.style.left = '0';
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.dragOffsetY === prevState.dragOffsetY) {
+      // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
+      // Without this, I can't scroll the inner container in the agenda view.
       setTimeout(() => {
-        this.innerContainer.style.left = '-1px';
+        this.innerContainer.style.left = '0';
+        setTimeout(() => {
+          this.innerContainer.style.left = '-1px';
+        }, 0);
       }, 0);
-    }, 0);
+    }
+
+    this.updateInnerContainerHeight();
+  }
+
+  updateInnerContainerHeight() {
+    this.innerContainerHeight = this.innerContainer.offsetHeight;
+  }
+
+  endInnerContainerDrag(endingDragOffset) {
+    const isVisible = endingDragOffset <= this.innerContainerHeight * 0.3;
+
+    this.setState({ dragOffsetY: null, isVisible });
   }
 
   handleInnerContainerClick(event) {
@@ -70,26 +97,34 @@ export default class SlideUp extends PureComponent {
 
   render() {
     const { children, shouldIncludeCloseButton, onClose } = this.props;
-    const { isVisible } = this.state;
+    const { isVisible, dragOffsetY } = this.state;
 
     const outerClassName = classNames('slide-up-outer-container', {
       'slide-up-outer-container--visible': isVisible,
     });
 
     const innerStyle = {
-      animationProgress: spring(isVisible ? 100 : 0, { stiffness: 300 }),
+      offsetY:
+        dragOffsetY ||
+        spring(isVisible ? 0 : this.innerContainerHeight || window.innerHeight, {
+          stiffness: 300,
+        }),
     };
 
     return (
       <Motion style={innerStyle} onRest={this.handleAnimationRest}>
         {style => {
+          const interpolatedStyle = {
+            transform: `translateY(${style.offsetY}px)`,
+          };
+
           return (
             <div className={outerClassName} onClick={!!onClose ? this.handleClose : null}>
               <div
                 onClick={this.handleInnerContainerClick}
                 className="slide-up-inner-container nice-scroll"
                 ref={div => (this.innerContainer = div)}
-                style={{ transform: `translateY(${100 - style.animationProgress}%)` }}
+                style={interpolatedStyle}
               >
                 {shouldIncludeCloseButton && (
                   <button
