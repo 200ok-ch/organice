@@ -219,6 +219,7 @@ class HeaderContent extends PureComponent {
             />
             <PropertyListItems
               propertyListItems={header.get('propertyListItems')}
+              onTimestampClick={this.handleTimestampClick}
               shouldDisableActions={shouldDisableActions}
             />
             <AttributedString

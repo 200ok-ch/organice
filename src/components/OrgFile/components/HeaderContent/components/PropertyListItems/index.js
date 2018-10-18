@@ -13,7 +13,7 @@ export default class PropertyListItems extends PureComponent {
     _.bindAll(this, ['handleCollapseToggle']);
 
     this.state = {
-      isDrawerCollapsed: false,
+      isDrawerCollapsed: true,
     };
   }
 
@@ -22,7 +22,7 @@ export default class PropertyListItems extends PureComponent {
   }
 
   render() {
-    const { propertyListItems, shouldDisableActions } = this.props;
+    const { propertyListItems, shouldDisableActions, onTimestampClick } = this.props;
     const { isDrawerCollapsed } = this.state;
 
     if (propertyListItems.size === 0) {
@@ -45,7 +45,7 @@ export default class PropertyListItems extends PureComponent {
                   <AttributedString
                     parts={propertyListItem.get('value') || []}
                     subPartDataAndHandlers={{
-                      onTimestampClick: () => {},
+                      onTimestampClick,
                       shouldDisableActions,
                     }}
                   />

@@ -381,15 +381,42 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
         header.get('description'),
         timestampId
       );
-      if (!pathAndPart) {
-        return null;
+      if (!!pathAndPart) {
+        const { path, timestampPart } = pathAndPart;
+        return {
+          path: [headerIndex, 'description'].concat(path),
+          timestampPart,
+        };
       }
 
-      const { path, timestampPart } = pathAndPart;
-      return {
-        path: [headerIndex, 'description'].concat(path),
-        timestampPart,
-      };
+      pathAndPart = header
+        .get('propertyListItems')
+        .map((propertyListItem, propertyListItemIndex) => {
+          if (!propertyListItem.get('value')) {
+            return null;
+          }
+
+          const plistPathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+            propertyListItem.get('value'),
+            timestampId
+          );
+          if (!!plistPathAndPart) {
+            const { path, timestampPart } = plistPathAndPart;
+            return {
+              path: [headerIndex, 'propertyListItems', propertyListItemIndex, 'value'].concat(path),
+              timestampPart,
+            };
+          }
+
+          return null;
+        })
+        .filter(result => !!result)
+        .first();
+      if (!!pathAndPart) {
+        return pathAndPart;
+      }
+
+      return null;
     })
     .filter(result => !!result)
     .first();
@@ -471,6 +498,10 @@ export const newEmptyTableCell = () =>
   });
 
 export const timestampWithIdInAttributedString = (parts, timestampId) => {
+  if (!parts) {
+    return null;
+  }
+
   const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(parts, timestampId);
   if (!!pathAndPart) {
     return pathAndPart.timestampPart;
@@ -484,7 +515,14 @@ export const timestampWithId = (headers, timestampId) =>
     .map(
       header =>
         timestampWithIdInAttributedString(header.getIn(['titleLine', 'title']), timestampId) ||
-        timestampWithIdInAttributedString(header.get('description'), timestampId)
+        timestampWithIdInAttributedString(header.get('description'), timestampId) ||
+        header
+          .get('propertyListItems')
+          .map(propertyListItem =>
+            timestampWithIdInAttributedString(propertyListItem.get('value'), timestampId)
+          )
+          .filter(result => !!result)
+          .first()
     )
     .find(result => !!result);
 
