@@ -5,7 +5,7 @@ import {
   parseOrg,
   parseTitleLine,
   parseRawText,
-  parsePlanningItems,
+  parseDescriptionPrefixElements,
   parseMarkupAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
@@ -208,12 +208,17 @@ const updateHeaderDescription = (state, action) => {
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
   return state.updateIn(['headers', headerIndex], header => {
-    const { planningItems, strippedDescription } = parsePlanningItems(action.newRawDescription);
+    const {
+      planningItems,
+      propertyListItems,
+      strippedDescription,
+    } = parseDescriptionPrefixElements(action.newRawDescription);
 
     return header
       .set('rawDescription', action.newRawDescription)
       .set('description', parseRawText(strippedDescription))
-      .set('planningItems', planningItems);
+      .set('planningItems', planningItems)
+      .set('propertyListItems', propertyListItems);
   });
 };
 

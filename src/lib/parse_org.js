@@ -405,7 +405,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
-export const parsePlanningItems = rawText => {
+const parsePlanningItems = rawText => {
   const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
   const optionalSinglePlanningItemRegex = RegExp(
     '(' +
@@ -447,6 +447,58 @@ export const parsePlanningItems = rawText => {
   );
 
   return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
+};
+
+const parsePropertyList = rawText => {
+  if (rawText.includes('!!!!!')) {
+    console.log('rawText = \n' + rawText);
+  }
+
+  const lines = rawText.split('\n');
+  const propertiesLineIndex = lines.findIndex(line => line.trim() === ':PROPERTIES:');
+  const endLineIndex = lines.findIndex(line => line.trim() === ':END:');
+
+  if (
+    propertiesLineIndex === -1 ||
+    endLineIndex === -1 ||
+    !rawText.trim().startsWith(':PROPERTIES:')
+  ) {
+    return {
+      propertyListItems: [],
+      strippedDescription: rawText,
+    };
+  }
+
+  const propertyListItems = lines
+    .slice(propertiesLineIndex + 1, endLineIndex)
+    .map(line => {
+      const match = line.match(/:([^\s]*):(?: (.*))?/);
+      if (!match) {
+        return null;
+      }
+
+      return {
+        property: match[1],
+        value: match[2] || null,
+      };
+    })
+    .filter(result => !!result);
+
+  return {
+    propertyListItems,
+    strippedDescription: lines.slice(endLineIndex + 1).join('\n'),
+  };
+};
+
+export const parseDescriptionPrefixElements = rawText => {
+  const planningItemsParse = parsePlanningItems(rawText);
+  const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
+
+  return {
+    planningItems: planningItemsParse.planningItems,
+    propertyListItems: propertyListParse.propertyListItems,
+    strippedDescription: propertyListParse.strippedDescription,
+  };
 };
 
 const defaultKeywordSets = fromJS([
@@ -515,12 +567,15 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .slice(1)
     .join('\n');
 
-  const { planningItems, strippedDescription } = parsePlanningItems(description);
+  const { planningItems, propertyListItems, strippedDescription } = parseDescriptionPrefixElements(
+    description
+  );
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
     .set('description', parseRawText(strippedDescription))
-    .set('planningItems', planningItems);
+    .set('planningItems', planningItems)
+    .set('propertyListItems', propertyListItems);
 };
 
 export const parseOrg = fileContents => {
@@ -570,12 +625,21 @@ export const parseOrg = fileContents => {
   }
 
   headers = headers.map(header => {
-    const { planningItems, strippedDescription } = parsePlanningItems(header.get('rawDescription'));
+    const {
+      planningItems,
+      propertyListItems,
+      strippedDescription,
+    } = parseDescriptionPrefixElements(header.get('rawDescription'));
+
+    if (propertyListItems.length > 0) {
+      console.log(propertyListItems);
+    }
 
     return header
       .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))
-      .set('planningItems', planningItems);
+      .set('planningItems', planningItems)
+      .set('propertyListItems', propertyListItems);
   });
 
   return fromJS({
