@@ -40,3 +40,9 @@
   background-color: transparent;
   padding: 0;
 }
+
+.slide-up-modal__title {
+  color: #5e348c;
+
+  margin-top: 0;
+}

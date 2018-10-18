@@ -395,7 +395,12 @@ class OrgFile extends PureComponent {
           )}
 
           {activePopupType === 'property-list-editor' && (
-            <PropertyListEditorModal onClose={this.handlePopupClose} />
+            <PropertyListEditorModal
+              onClose={this.handlePopupClose}
+              propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
+                'propertyListItems'
+              )}
+            />
           )}
 
           {activePopupType === 'agenda' && (

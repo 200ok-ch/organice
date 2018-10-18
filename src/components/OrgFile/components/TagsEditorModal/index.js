@@ -68,7 +68,7 @@ export default class TagsEditorModal extends PureComponent {
 
     return (
       <SlideUp shouldIncludeCloseButton onClose={onClose}>
-        <h2 className="tags-editor__title">Edit tags</h2>
+        <h2 className="slide-up-modal__title">Edit tags</h2>
 
         {headerTags.size === 0 ? (
           <div className="no-tags-message">

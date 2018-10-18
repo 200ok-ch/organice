@@ -1,0 +1,45 @@
+.no-items-message {
+  color: gray;
+  text-align: center;
+}
+
+.property-list-editor__item-container {
+  display: flex;
+
+  padding: 3px 5px;
+}
+
+.property-list-editor__item-container--dragging {
+  background-color: #e6e6e6;
+}
+
+item-container__drag-handle {
+  user-select: none;
+}
+
+.item__textfields-container {
+  flex: 4 1;
+  display: flex;
+}
+
+.item-container__textfield {
+  margin-right: 10px;
+  width: 40%;
+}
+
+.item-container__actions-container {
+  flex: 1;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #5e348c;
+}
+
+property-list-editor__add-new-container {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 10px;
+}
