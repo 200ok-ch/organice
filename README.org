@@ -29,8 +29,6 @@ Here's an example URL:
 
 https://org-web.org?captureTemplateName=Grocery%20item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home
 ** Development
-*Important note:* On July 31st, 2018 I did a force push to ~master~ with a complete rewrite. The current ~master~ branch shares no history with the previous one, which you should be aware of if you've cloned or forked!
-
 org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
 
 To install the necessary packages, run:
@@ -47,7 +45,7 @@ yarn start
 
 To test against your actual Dropbox, you'll need to create a ~.env~ file by copying ~.env.sample~ to just ~.env~. To test against your Google Drive you'll need to generate an API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
 
-Note that this will only work if you're running the app on ~http://localhost:3000~.
+Note that this will only work if you're running the app on ~http://localhost:3000~ because all redirect URIs must be specified ahead of time on the Dropbox and Google developer consoles.
 ** Thanks
 org-web is built on the shoulders of giants. These are some packages I rely on that I think are absolutely fantastic:
 
