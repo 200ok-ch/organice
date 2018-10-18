@@ -37,6 +37,7 @@ class HeaderContent extends PureComponent {
       'handleTimestampClick',
       'handleInsertTimestamp',
       'handlePlanningItemTimestampClick',
+      'handlePropertyListEdit',
     ]);
 
     this.state = {
@@ -172,6 +173,11 @@ class HeaderContent extends PureComponent {
       this.props.base.activatePopup('timestamp-editor', { headerId, planningItemIndex });
   }
 
+  handlePropertyListEdit() {
+    const { header } = this.props;
+    this.props.base.activatePopup('property-list-editor', { headerId: header.get('id') });
+  }
+
   render() {
     const {
       header,
@@ -221,6 +227,7 @@ class HeaderContent extends PureComponent {
               propertyListItems={header.get('propertyListItems')}
               onTimestampClick={this.handleTimestampClick}
               shouldDisableActions={shouldDisableActions}
+              onEdit={this.handlePropertyListEdit}
             />
             <AttributedString
               parts={header.get('description')}

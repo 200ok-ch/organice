@@ -22,7 +22,7 @@ export default class PropertyListItems extends PureComponent {
   }
 
   render() {
-    const { propertyListItems, shouldDisableActions, onTimestampClick } = this.props;
+    const { propertyListItems, shouldDisableActions, onTimestampClick, onEdit } = this.props;
     const { isDrawerCollapsed } = this.state;
 
     if (propertyListItems.size === 0) {
@@ -40,7 +40,9 @@ export default class PropertyListItems extends PureComponent {
           <Fragment>
             {propertyListItems.map(propertyListItem => (
               <div className="property-list__item-container" key={propertyListItem.get('id')}>
-                <div className="property-list__property">:{propertyListItem.get('property')}:</div>
+                <div className="property-list__property" onClick={onEdit}>
+                  :{propertyListItem.get('property')}:
+                </div>
                 <div className="property-list__value">
                   <AttributedString
                     parts={propertyListItem.get('value') || []}
@@ -53,7 +55,9 @@ export default class PropertyListItems extends PureComponent {
               </div>
             ))}
 
-            <div className="property-list__property">:END:</div>
+            <div className="property-list__property" onClick={onEdit}>
+              :END:
+            </div>
           </Fragment>
         )}
       </div>

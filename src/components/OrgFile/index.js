@@ -16,6 +16,7 @@ import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
+import PropertyListEditorModal from './components/PropertyListEditorModal';
 import AgendaModal from './components/AgendaModal';
 
 import * as baseActions from '../../actions/base';
@@ -391,6 +392,10 @@ class OrgFile extends PureComponent {
               onClose={this.handlePopupClose}
               onChange={this.handleTimestampChange(activePopupData)}
             />
+          )}
+
+          {activePopupType === 'property-list-editor' && (
+            <PropertyListEditorModal onClose={this.handlePopupClose} />
           )}
 
           {activePopupType === 'agenda' && (
