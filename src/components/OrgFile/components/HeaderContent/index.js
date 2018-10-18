@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import './stylesheet.css';
 
 import PlanningItems from './components/PlanningItems';
+import PropertyListItems from './components/PropertyListItems';
 
 import _ from 'lodash';
 
@@ -215,6 +216,10 @@ class HeaderContent extends PureComponent {
             <PlanningItems
               planningItems={header.get('planningItems')}
               onClick={this.handlePlanningItemTimestampClick(header.get('id'))}
+            />
+            <PropertyListItems
+              propertyListItems={header.get('propertyListItems')}
+              shouldDisableActions={shouldDisableActions}
             />
             <AttributedString
               parts={header.get('description')}

@@ -45,7 +45,10 @@ class HeaderList extends PureComponent {
         return {
           header,
           displayed: false,
-          hasContent: !!header.get('rawDescription') || header.get('planningItems').size !== 0,
+          hasContent:
+            !!header.get('rawDescription') ||
+            header.get('planningItems').size !== 0 ||
+            header.get('propertyListItems').size !== 0,
         };
       })
       .toArray();

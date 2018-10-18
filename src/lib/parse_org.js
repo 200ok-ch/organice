@@ -450,10 +450,6 @@ const parsePlanningItems = rawText => {
 };
 
 const parsePropertyList = rawText => {
-  if (rawText.includes('!!!!!')) {
-    console.log('rawText = \n' + rawText);
-  }
-
   const lines = rawText.split('\n');
   const propertiesLineIndex = lines.findIndex(line => line.trim() === ':PROPERTIES:');
   const endLineIndex = lines.findIndex(line => line.trim() === ':END:');
@@ -464,27 +460,30 @@ const parsePropertyList = rawText => {
     !rawText.trim().startsWith(':PROPERTIES:')
   ) {
     return {
-      propertyListItems: [],
+      propertyListItems: List(),
       strippedDescription: rawText,
     };
   }
 
-  const propertyListItems = lines
-    .slice(propertiesLineIndex + 1, endLineIndex)
-    .map(line => {
-      const match = line.match(/:([^\s]*):(?: (.*))?/);
-      if (!match) {
-        return null;
-      }
+  const propertyListItems = fromJS(
+    lines
+      .slice(propertiesLineIndex + 1, endLineIndex)
+      .map(line => {
+        const match = line.match(/:([^\s]*):(?: (.*))?/);
+        if (!match) {
+          return null;
+        }
 
-      const value = !!match[2] ? parseMarkupAndCookies(match[2]) : null;
+        const value = !!match[2] ? parseMarkupAndCookies(match[2]) : null;
 
-      return {
-        property: match[1],
-        value,
-      };
-    })
-    .filter(result => !!result);
+        return {
+          property: match[1],
+          value,
+          id: generateId(),
+        };
+      })
+      .filter(result => !!result)
+  );
 
   return {
     propertyListItems,
@@ -551,6 +550,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     id: generateId(),
     nestingLevel,
     planningItems: [],
+    propertyListItems: [],
   });
 };
 
@@ -632,10 +632,6 @@ export const parseOrg = fileContents => {
       propertyListItems,
       strippedDescription,
     } = parseDescriptionPrefixElements(header.get('rawDescription'));
-
-    if (propertyListItems.length > 0) {
-      console.log(propertyListItems);
-    }
 
     return header
       .set('rawDescription', strippedDescription)

@@ -1,0 +1,10 @@
+.property-list__property {
+  font-weight: bold;
+  color: rgb(177, 134, 16);
+
+  margin-right: 5px;
+}
+
+.property-list__item-container {
+  display: flex;
+}
