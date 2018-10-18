@@ -477,9 +477,11 @@ const parsePropertyList = rawText => {
         return null;
       }
 
+      const value = !!match[2] ? parseMarkupAndCookies(match[2]) : null;
+
       return {
         property: match[1],
-        value: match[2] || null,
+        value,
       };
     })
     .filter(result => !!result);
