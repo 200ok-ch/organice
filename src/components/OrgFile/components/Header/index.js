@@ -236,6 +236,8 @@ class Header extends PureComponent {
         planningItemIndex: existingDeadlinePlanningItemIndex,
       });
     }
+
+    this.props.org.openHeader(header.get('id'));
   }
 
   handleDeadlineClick() {
