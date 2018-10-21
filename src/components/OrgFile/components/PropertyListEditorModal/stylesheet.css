@@ -37,9 +37,10 @@ item-container__drag-handle {
   color: #5e348c;
 }
 
-property-list-editor__add-new-container {
+.property-list-editor__add-new-container {
   display: flex;
   justify-content: flex-end;
 
   margin-top: 10px;
+  margin-bottom: 10px;
 }

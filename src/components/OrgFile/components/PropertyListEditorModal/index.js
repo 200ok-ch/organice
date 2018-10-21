@@ -67,7 +67,7 @@ export default class PropertyListEditorModal extends PureComponent {
                               onClick={() => {} /* TODO: this.handleRemoveTag(index) */}
                             />
                             <i
-                              className="fas fa-bars fa-lg item-container__drag-handle"
+                              className="fas fa-bars fa-lg item-container__drag-handle drag-handle"
                               {...provided.dragHandleProps}
                             />
                           </div>

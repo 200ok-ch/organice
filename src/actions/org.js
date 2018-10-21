@@ -358,6 +358,17 @@ export const reorderTags = (fromIndex, toIndex) => ({
   toIndex,
 });
 
+export const reorderPropertyList = (fromIndex, toIndex) => (dispatch, getState) => {
+  console.log(fromIndex, toIndex);
+
+  dispatch({
+    type: 'REORDER_PROPERTY_LIST',
+    fromIndex,
+    toIndex,
+    headerId: getState().base.getIn(['activePopup', 'data', 'headerId']),
+  });
+};
+
 export const updateTimestampWithId = (timestampId, newTimestamp) => ({
   type: 'UPDATE_TIMESTAMP_WITH_ID',
   timestampId,

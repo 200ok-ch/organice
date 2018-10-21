@@ -15,7 +15,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { reorderCaptureTemplate } from './actions/capture';
-import { reorderTags } from './actions/org';
+import { reorderTags, reorderPropertyList } from './actions/org';
 import { signOut } from './actions/sync_backend';
 import { setDisappearingLoadingMessage } from './actions/base';
 
@@ -137,6 +137,8 @@ export default class App extends PureComponent {
       this.store.dispatch(reorderCaptureTemplate(result.source.index, result.destination.index));
     } else if (result.type === 'TAG') {
       this.store.dispatch(reorderTags(result.source.index, result.destination.index));
+    } else if (result.type === 'PROPERTY-LIST') {
+      this.store.dispatch(reorderPropertyList(result.source.index, result.destination.index));
     }
   }
 

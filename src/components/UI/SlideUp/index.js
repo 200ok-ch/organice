@@ -30,6 +30,10 @@ export default class SlideUp extends PureComponent {
     });
 
     this.innerContainer.addEventListener('touchmove', event => {
+      if (event.target.classList.contains('drag-handle')) {
+        return;
+      }
+
       const isScrollingDown = this.initialClientY > event.targetTouches[0].clientY;
 
       if (

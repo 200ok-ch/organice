@@ -793,6 +793,20 @@ const reorderTags = (state, action) => {
   );
 };
 
+const reorderPropertyList = (state, action) => {
+  const headerId = action.headerId;
+  if (!headerId) {
+    return state;
+  }
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), headerId);
+
+  return state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
+    propertyListItems
+      .splice(action.fromIndex, 1)
+      .splice(action.toIndex, 0, propertyListItems.get(action.fromIndex))
+  );
+};
+
 const updateTimestampWithId = (state, action) => {
   const pathAndPart = pathAndPartOfTimestampItemWithIdInHeaders(
     state.get('headers'),
@@ -965,6 +979,8 @@ export default (state = new Map(), action) => {
       return setHeaderTags(state, action);
     case 'REORDER_TAGS':
       return reorderTags(state, action);
+    case 'REORDER_PROPERTY_LIST':
+      return reorderPropertyList(state, action);
     case 'UPDATE_TIMESTAMP_WITH_ID':
       return updateTimestampWithId(state, action);
     case 'UPDATE_PLANNING_ITEM_TIMESTAMP':

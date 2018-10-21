@@ -106,7 +106,7 @@ export default class TagsEditorModal extends PureComponent {
                               onClick={this.handleRemoveTag(index)}
                             />
                             <i
-                              className="fas fa-bars fa-lg tag-container__drag-handle"
+                              className="fas fa-bars fa-lg tag-container__drag-handle drag-handle"
                               {...provided.dragHandleProps}
                             />
                           </div>
