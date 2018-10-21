@@ -19,7 +19,14 @@ export default class AgendaDay extends PureComponent {
   }
 
   render() {
-    const { date, headers, todoKeywordSets, dateDisplayType, onToggleDateDisplayType } = this.props;
+    const { date, 
+            headers, 
+            todoKeywordSets, 
+            dateDisplayType, 
+            onToggleDateDisplayType, 
+            agendaDefaultDeadlineDelayValue,
+            agendaDefaultDeadlineDelayUnit } = this.props;
+
 
     const isToday = date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]');
     const dateStart = date.clone().startOf('day');
@@ -42,20 +49,40 @@ export default class AgendaDay extends PureComponent {
           }
 
           if (planningItem.get('type') === 'DEADLINE') {
-            if (planningItemDate < moment() && isToday) {
-              return true;
-            }
 
-            if (timestamp.get('delayType') === '-' && isToday) {
-              const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
-              const appearDate = planningItemDate
-                .clone()
-                .subtract(timestamp.get('delayValue'), delayUnit);
+            //---------------------------
+            // HANDLING THE CURRENT DAY
+            if(isToday){
 
-              return date >= appearDate;
+              // PAST DEADLINES (ALWAYS SHOW)
+              if (planningItemDate < moment()) {
+                return true;
+              }
+
+              if (timestamp.get('delayType') === '-') {
+                // DELAY IS EXPLICITY SET
+                const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
+                const appearDate = planningItemDate
+                  .clone()
+                  .subtract(timestamp.get('delayValue'), delayUnit);
+
+                return date >= appearDate;
+
+              }else{
+                // DELAY DEFAULTS TO VALUES IN SETTINGS
+                const appearDate = planningItemDate
+                  .clone()
+                  .subtract(agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit);
+
+                return date >= appearDate;
+
+              }
             }
+            //---------------------------
 
             return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
+
+
           } else if (planningItem.get('type') === 'SCHEDULED') {
             let appearDate = planningItemDate;
             if (!!timestamp.get('delayType')) {

@@ -13,6 +13,18 @@ const setBulletStyle = (state, action) => state.set('bulletStyle', action.newBul
 const setShouldTapTodoToAdvance = (state, action) =>
   state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance);
 
+//---
+
+const setAgendaDefaultDeadlineDelayUnit = (state, action) =>
+  state.set('agendaDefaultDeadlineDelayUnit', action.newAgendaDefaultDeadlineDelayUnit);
+
+const setAgendaDefaultDeadlineDelayType = (state, action) =>
+  state.set('agendaDefaultDeadlineDelayType', action.newAgendaDefaultDeadlineDelayType);
+
+const setAgendaDefaultDeadlineDelayValue = (state, action) =>
+  state.set('agendaDefaultDeadlineDelayValue', action.newAgendaDefaultDeadlineDelayValue);
+//---
+
 const setShouldStoreSettingsInSyncBackend = (state, action) =>
   state.set('shouldStoreSettingsInSyncBackend', action.newShouldStoreSettingsInSyncBackend);
 
@@ -79,6 +91,14 @@ export default (state = new Map(), action) => {
       return setBulletStyle(state, action);
     case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
       return setShouldTapTodoToAdvance(state, action);
+
+    case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_UNIT':
+      return setAgendaDefaultDeadlineDelayUnit(state, action);
+    case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_TYPE':
+      return setAgendaDefaultDeadlineDelayType(state, action);
+    case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_VALUE':
+      return setAgendaDefaultDeadlineDelayValue(state, action);
+
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
       return setShouldStoreSettingsInSyncBackend(state, action);
     case 'SET_HAS_UNSEEN_CHANGELOG':

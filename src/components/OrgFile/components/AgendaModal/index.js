@@ -105,8 +105,11 @@ class AgendaModal extends PureComponent {
   }
 
   render() {
-    const { onClose, headers, todoKeywordSets } = this.props;
+    const { onClose, headers, todoKeywordSets, agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit } = this.props;
     const { timeframeType, selectedDate, dateDisplayType } = this.state;
+
+
+    console.log('agendaDefaultDeadlineDelayValue' + agendaDefaultDeadlineDelayValue);
 
     let dates = [];
     switch (timeframeType) {
@@ -155,6 +158,8 @@ class AgendaModal extends PureComponent {
               todoKeywordSets={todoKeywordSets}
               dateDisplayType={dateDisplayType}
               onToggleDateDisplayType={this.handleToggleDateDisplayType}
+              agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
+              agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
             />
           ))}
         </div>
@@ -167,6 +172,8 @@ class AgendaModal extends PureComponent {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
+  agendaDefaultDeadlineDelayValue : state.base.get('agendaDefaultDeadlineDelayValue'),
+  agendaDefaultDeadlineDelayUnit : state.base.get('agendaDefaultDeadlineDelayUnit'),
 });
 
 const mapDispatchToProps = dispatch => ({
