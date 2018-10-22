@@ -20,6 +20,16 @@ export default class PropertyListEditorModal extends PureComponent {
     _.bindAll(this, ['handleAddNewItem']);
   }
 
+  componentDidUpdate(prevProps) {
+    const prevItems = prevProps.propertyListItems;
+    const currentItems = this.props.propertyListItems;
+    if (prevItems.size === currentItems.size - 1 && currentItems.last().get('property') === '') {
+      if (this.lastTextfield) {
+        this.lastTextfield.focus();
+      }
+    }
+  }
+
   handlePropertyChange(propertyListItemId) {
     return event => {
       const propertyListItemIndex = this.props.propertyListItems.findIndex(

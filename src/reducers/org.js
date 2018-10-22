@@ -892,6 +892,8 @@ export default (state = new Map(), action) => {
     'UPDATE_TIMESTAMP_WITH_ID',
     'UPDATE_PLANNING_ITEM_TIMESTAMP',
     'ADVANCE_CHECKBOX_STATE',
+    'ADD_NEW_PLANNING_ITEM',
+    'UPDATE_PROPERTY_LIST_ITEMS',
   ];
 
   if (dirtyingActions.includes(action.type)) {

@@ -248,14 +248,14 @@ export default (headers, todoKeywordSets) => {
         });
       }
 
-      if (header.propertyListItems) {
-        contents += ':PROPERTIES:\n';
+      if (header.propertyListItems.length > 0) {
+        contents += '\n:PROPERTIES:';
         header.propertyListItems.forEach(propertyListItem => {
           contents += `\n:${propertyListItem.property}: ${attributedStringToRawText(
-            propertyListItem.value
+            fromJS(propertyListItem.value)
           )}`;
         });
-        contents += '\n:END:';
+        contents += '\n:END:\n';
       }
 
       if (header.description) {
