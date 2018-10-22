@@ -163,6 +163,32 @@ class Settings extends PureComponent {
 
           <hr className="settings-button-separator" />
 
+          <button className="btn settings-btn">
+            <a
+              href="http://eepurl.com/dK5F9w"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'white' }}
+            >
+              Mailing list <i className="fas fa-external-link-alt fa-sm" />
+            </a>
+          </button>
+
+          <div className="settings-button-help-text">
+            Sign up for the mailing list if you're interested in getting occasional ({'<'}1 per
+            week) updates on org-web. Or take a look at some{' '}
+            <a
+              href="https://us19.campaign-archive.com/home/?u=36b9d8082ddb55e6cc7e22339&id=f427625e31"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              past emails
+            </a>{' '}
+            before you sign up. You can unsubscribe at any time!
+          </div>
+
+          <hr className="settings-button-separator" />
+
           <button className="btn settings-btn" onClick={this.handleSignOutClick}>
             Sign out
           </button>

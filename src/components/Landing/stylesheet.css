@@ -37,3 +37,10 @@
 .view-sample-button {
   margin-top: 40px;
 }
+
+.mailing-list-signup-container {
+  margin-top: 40px;
+  font-size: 20px;
+  max-width: 280px;
+  text-align: center;
+}

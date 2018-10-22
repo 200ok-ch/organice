@@ -1,3 +1,6 @@
+* October 22nd, 2018 (afternoon)
+** Added a [[http://eepurl.com/dK5F9w][mailing list]]! You can also find a link to sign up on the settings screen
+I plan on sending less than 1 email per week, and you can easily unsubscribe at any time!
 * October 22nd, 2018
 ** Added first class support for property lists. Tap on any of the properties to bring up an editor (that won't work in this file, but you can try it out in the sample file!).
 :PROPERTIES:
