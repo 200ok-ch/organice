@@ -160,6 +160,14 @@ Try tapping on the timestamps below to get a feel for the editor:
 [2018-09-17 Sun 10:00-11:30]
 
 <2018-09-17 Sun>--<2018-09-25 Tue>
+* Property lists
+org-web has native support for viewing and editing property lists. To bring up an editor, expand the ~PROPERTIES~ drawer below and tap on any of the properties.
+** Example
+:PROPERTIES:
+:callsign: Maverick
+:eyewear: Aviators
+:launch-date: [1986-05-16 Fri]
+:END:
 * Planning
 org-web has native support for adding and editing DEADLINE and SCHEDULED items. Check out these examples:
 ** An item with a deadline

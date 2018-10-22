@@ -889,6 +889,7 @@ export default (state = new Map(), action) => {
     'INSERT_CAPTURE',
     'SET_HEADER_TAGS',
     'REORDER_TAGS',
+    'REORDER_PROPERTY_LIST',
     'UPDATE_TIMESTAMP_WITH_ID',
     'UPDATE_PLANNING_ITEM_TIMESTAMP',
     'ADVANCE_CHECKBOX_STATE',

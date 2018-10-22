@@ -1,3 +1,9 @@
+* October 22nd, 2018
+** Added first class support for property lists. Tap on any of the properties to bring up an editor (that won't work in this file, but you can try it out in the sample file!).
+:PROPERTIES:
+:prop1: value 1
+:prop2: value 2
+:END:
 * October 17th, 2018
 ** Added a basic agenda view - try tapping the new calendar button at the bottom of the screen!
 * October 4th, 2018

@@ -40,7 +40,10 @@ export default class PropertyListItems extends PureComponent {
           <Fragment>
             {propertyListItems.map(propertyListItem => (
               <div className="property-list__item-container" key={propertyListItem.get('id')}>
-                <div className="property-list__property" onClick={onEdit}>
+                <div
+                  className="property-list__property"
+                  onClick={shouldDisableActions ? null : onEdit}
+                >
                   :{propertyListItem.get('property')}:
                 </div>
                 <div className="property-list__value">
