@@ -4,13 +4,72 @@ import './stylesheet.css';
 
 import SlideUp from '../../../UI/SlideUp';
 
+import { attributedStringToRawText } from '../../../../lib/export_org';
+import generateId from '../../../../lib/id_generator';
+import { parseMarkupAndCookies } from '../../../../lib/parse_org';
+
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
+import { fromJS } from 'immutable';
+import _ from 'lodash';
 
 export default class PropertyListEditorModal extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, ['handleAddNewItem']);
+  }
+
+  handlePropertyChange(propertyListItemId) {
+    return event => {
+      const propertyListItemIndex = this.props.propertyListItems.findIndex(
+        propertyListItem => propertyListItem.get('id') === propertyListItemId
+      );
+      this.props.onChange(
+        this.props.propertyListItems.setIn([propertyListItemIndex, 'property'], event.target.value)
+      );
+    };
+  }
+
+  handleValueChange(propertyListItemId) {
+    return event => {
+      const { propertyListItems, onChange } = this.props;
+
+      const propertyListItemIndex = propertyListItems.findIndex(
+        propertyListItem => propertyListItem.get('id') === propertyListItemId
+      );
+      onChange(
+        propertyListItems.setIn(
+          [propertyListItemIndex, 'value'],
+          fromJS(parseMarkupAndCookies(event.target.value))
+        )
+      );
+    };
+  }
+
+  handleRemoveItem(propertyListItemId) {
+    return () =>
+      this.props.onChange(
+        this.props.propertyListItems.filter(
+          propertyListItem => propertyListItem.get('id') !== propertyListItemId
+        )
+      );
+  }
+
+  handleAddNewItem() {
+    this.props.onChange(
+      this.props.propertyListItems.push(
+        fromJS({
+          property: '',
+          value: '',
+          id: generateId(),
+        })
+      )
+    );
+  }
+
   render() {
     const { onClose, propertyListItems } = this.props;
-    console.log('propertyListItems = ', propertyListItems.toJS());
 
     return (
       <SlideUp shouldIncludeCloseButton onClose={onClose}>
@@ -36,7 +95,7 @@ export default class PropertyListEditorModal extends PureComponent {
                     <Draggable
                       draggableId={`property-list-item--${index}`}
                       index={index}
-                      key={index}
+                      key={propertyListItem.get('id')}
                     >
                       {(provided, snapshot) => (
                         <div
@@ -51,20 +110,20 @@ export default class PropertyListEditorModal extends PureComponent {
                               type="text"
                               className="textfield item-container__textfield"
                               value={propertyListItem.get('property')}
-                              onChange={() => {} /* TODO this.handleTagChange(index) */}
+                              onChange={this.handlePropertyChange(propertyListItem.get('id'))}
                               ref={textfield => (this.lastTextfield = textfield)}
                             />
                             <input
                               type="text"
                               className="textfield item-container__textfield"
-                              value={propertyListItem.get('value') || ''}
-                              onChange={() => {} /* TODO this.handleTagChange(index) */}
+                              value={attributedStringToRawText(propertyListItem.get('value'))}
+                              onChange={this.handleValueChange(propertyListItem.get('id'))}
                             />
                           </div>
                           <div className="item-container__actions-container">
                             <i
                               className="fas fa-times fa-lg"
-                              onClick={() => {} /* TODO: this.handleRemoveTag(index) */}
+                              onClick={this.handleRemoveItem(propertyListItem.get('id'))}
                             />
                             <i
                               className="fas fa-bars fa-lg item-container__drag-handle drag-handle"
@@ -84,10 +143,7 @@ export default class PropertyListEditorModal extends PureComponent {
         )}
 
         <div className="property-list-editor__add-new-container">
-          <button
-            className="fas fa-plus fa-lg btn btn--circle"
-            onClick={() => {} /* TODO: this.handleAddNewTag */}
-          />
+          <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewItem} />
         </div>
       </SlideUp>
     );

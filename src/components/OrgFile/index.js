@@ -58,6 +58,7 @@ class OrgFile extends PureComponent {
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
       'handleTagsChange',
+      'handlePropertyListItemsChange',
     ]);
 
     this.state = {
@@ -200,6 +201,13 @@ class OrgFile extends PureComponent {
 
   handleTagsChange(newTags) {
     this.props.org.setHeaderTags(this.props.selectedHeaderId, newTags);
+  }
+
+  handlePropertyListItemsChange(newPropertyListItems) {
+    this.props.org.updatePropertyListItems(
+      this.props.activePopupData.get('headerId'),
+      newPropertyListItems
+    );
   }
 
   handleTimestampChange(popupData) {
@@ -397,6 +405,7 @@ class OrgFile extends PureComponent {
           {activePopupType === 'property-list-editor' && (
             <PropertyListEditorModal
               onClose={this.handlePopupClose}
+              onChange={this.handlePropertyListItemsChange}
               propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
                 'propertyListItems'
               )}

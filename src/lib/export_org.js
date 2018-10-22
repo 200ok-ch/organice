@@ -172,6 +172,10 @@ const timestampPartToRawText = part => {
 };
 
 export const attributedStringToRawText = parts => {
+  if (!parts) {
+    return '';
+  }
+
   const prevPartTypes = parts.map(part => part.get('type')).unshift(null);
 
   return parts

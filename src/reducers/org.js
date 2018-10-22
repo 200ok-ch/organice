@@ -858,6 +858,12 @@ const addNewPlanningItem = (state, action) => {
   );
 };
 
+export const updatePropertyListItems = (state, action) => {
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
+
+  return state.setIn(['headers', headerIndex, 'propertyListItems'], action.newPropertyListItems);
+};
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE',
@@ -987,6 +993,8 @@ export default (state = new Map(), action) => {
       return updatePlanningItemTimestamp(state, action);
     case 'ADD_NEW_PLANNING_ITEM':
       return addNewPlanningItem(state, action);
+    case 'UPDATE_PROPERTY_LIST_ITEMS':
+      return updatePropertyListItems(state, action);
     default:
       return state;
   }
