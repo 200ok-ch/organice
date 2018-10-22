@@ -19,14 +19,15 @@ export default class AgendaDay extends PureComponent {
   }
 
   render() {
-    const { date, 
-            headers, 
-            todoKeywordSets, 
-            dateDisplayType, 
-            onToggleDateDisplayType, 
-            agendaDefaultDeadlineDelayValue,
-            agendaDefaultDeadlineDelayUnit } = this.props;
-
+    const {
+      date,
+      headers,
+      todoKeywordSets,
+      dateDisplayType,
+      onToggleDateDisplayType,
+      agendaDefaultDeadlineDelayValue,
+      agendaDefaultDeadlineDelayUnit,
+    } = this.props;
 
     const isToday = date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]');
     const dateStart = date.clone().startOf('day');
@@ -49,11 +50,9 @@ export default class AgendaDay extends PureComponent {
           }
 
           if (planningItem.get('type') === 'DEADLINE') {
-
             //---------------------------
             // HANDLING THE CURRENT DAY
-            if(isToday){
-
+            if (isToday) {
               // PAST DEADLINES (ALWAYS SHOW)
               if (planningItemDate < moment()) {
                 return true;
@@ -67,22 +66,18 @@ export default class AgendaDay extends PureComponent {
                   .subtract(timestamp.get('delayValue'), delayUnit);
 
                 return date >= appearDate;
-
-              }else{
+              } else {
                 // DELAY DEFAULTS TO VALUES IN SETTINGS
                 const appearDate = planningItemDate
                   .clone()
                   .subtract(agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit);
 
                 return date >= appearDate;
-
               }
             }
             //---------------------------
 
             return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
-
-
           } else if (planningItem.get('type') === 'SCHEDULED') {
             let appearDate = planningItemDate;
             if (!!timestamp.get('delayType')) {

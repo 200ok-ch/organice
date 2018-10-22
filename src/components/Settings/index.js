@@ -86,7 +86,6 @@ class Settings extends PureComponent {
 
   //------------------------
 
-
   handleShouldStoreSettingsInSyncBackend() {
     const { shouldStoreSettingsInSyncBackend } = this.props;
 
@@ -155,7 +154,6 @@ class Settings extends PureComponent {
           />
         </div>
 
-
         <div className="setting-container">
           <div className="setting-label">
             Agenda default deadline delay
@@ -171,8 +169,6 @@ class Settings extends PureComponent {
               onSelect={this.handleAgendaDefaultDeadlineDelayTypeChange}
             />
           </div>
-
-
 
           <input
             type="number"
@@ -190,7 +186,6 @@ class Settings extends PureComponent {
             />
           </div>
         </div>
-
 
         <div className="settings-buttons-container">
           <button className="btn settings-btn" onClick={this.handleCaptureTemplatesClick}>

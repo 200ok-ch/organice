@@ -72,10 +72,8 @@ export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   newShouldTapTodoToAdvance,
 });
 
-
 //-------------
 // AGENDA DEFAULT SETTINGS
-
 
 export const setAgendaDefaultDeadlineDelayUnit = newAgendaDefaultDeadlineDelayUnit => ({
   type: 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_UNIT',
@@ -91,7 +89,6 @@ export const setAgendaDefaultDeadlineDelayValue = newAgendaDefaultDeadlineDelayV
 });
 
 //-------------
-
 
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {

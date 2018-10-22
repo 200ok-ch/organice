@@ -105,9 +105,14 @@ class AgendaModal extends PureComponent {
   }
 
   render() {
-    const { onClose, headers, todoKeywordSets, agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit } = this.props;
+    const {
+      onClose,
+      headers,
+      todoKeywordSets,
+      agendaDefaultDeadlineDelayValue,
+      agendaDefaultDeadlineDelayUnit,
+    } = this.props;
     const { timeframeType, selectedDate, dateDisplayType } = this.state;
-
 
     console.log('agendaDefaultDeadlineDelayValue' + agendaDefaultDeadlineDelayValue);
 
@@ -172,8 +177,8 @@ class AgendaModal extends PureComponent {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  agendaDefaultDeadlineDelayValue : state.base.get('agendaDefaultDeadlineDelayValue'),
-  agendaDefaultDeadlineDelayUnit : state.base.get('agendaDefaultDeadlineDelayUnit'),
+  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue'),
+  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit'),
 });
 
 const mapDispatchToProps = dispatch => ({
