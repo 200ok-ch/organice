@@ -34,12 +34,15 @@ export default class AgendaDay extends PureComponent {
           }
 
           const planningItemDate = momentDateForTimestamp(timestamp);
-          const isIncompleteTodo =
+          const isCompletedTodo =
             !!header.getIn(['titleLine', 'todoKeyword']) &&
-            !isTodoKeywordCompleted(todoKeywordSets, header.getIn(['titleLine', 'todoKeyword']));
+            isTodoKeywordCompleted(todoKeywordSets, header.getIn(['titleLine', 'todoKeyword']));
+          if (isCompletedTodo) {
+            return false;
+          }
 
           if (planningItem.get('type') === 'DEADLINE') {
-            if (isIncompleteTodo && planningItemDate < moment() && isToday) {
+            if (planningItemDate < moment() && isToday) {
               return true;
             }
 
@@ -60,7 +63,7 @@ export default class AgendaDay extends PureComponent {
               appearDate = planningItemDate.clone().add(timestamp.get('delayValue'), delayUnit);
             }
 
-            if (isIncompleteTodo && isToday && date > appearDate) {
+            if (isToday && date > appearDate) {
               return true;
             }
 
