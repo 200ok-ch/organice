@@ -248,6 +248,16 @@ export default (headers, todoKeywordSets) => {
         });
       }
 
+      if (header.propertyListItems) {
+        contents += ':PROPERTIES:\n';
+        header.propertyListItems.forEach(propertyListItem => {
+          contents += `\n:${propertyListItem.property}: ${attributedStringToRawText(
+            propertyListItem.value
+          )}`;
+        });
+        contents += '\n:END:';
+      }
+
       if (header.description) {
         if (!header.rawDescription.startsWith('\n') && header.rawDescription.length !== 0) {
           contents += '\n';

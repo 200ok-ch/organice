@@ -13,6 +13,7 @@ import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
 import { renderAsText, getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { attributedStringToRawText } from '../../../../lib/export_org';
 
 import AttributedString from '../AttributedString';
 
@@ -76,17 +77,30 @@ class HeaderContent extends PureComponent {
 
   calculateRawDescription(header) {
     const planningItems = header.get('planningItems');
+    const propertyListItems = header.get('propertyListItems');
 
-    return (
-      planningItems
+    const planningItemsText = planningItems
+      .map(
+        planningItem =>
+          `${planningItem.get('type')}: ${renderAsText(planningItem.get('timestamp'))}`
+      )
+      .join(' ');
+
+    let propertyListItemsText = '';
+    if (propertyListItems.size > 0) {
+      propertyListItemsText += ':PROPERTIES:\n';
+      propertyListItemsText += propertyListItems
         .map(
-          planningItem =>
-            `${planningItem.get('type')}: ${renderAsText(planningItem.get('timestamp'))}`
+          propertyListItem =>
+            `:${propertyListItem.get('property')}: ${attributedStringToRawText(
+              propertyListItem.get('value')
+            )}`
         )
-        .join(' ') +
-      '\n' +
-      header.get('rawDescription')
-    );
+        .join('\n');
+      propertyListItemsText += '\n:END:';
+    }
+
+    return planningItemsText + '\n' + propertyListItemsText + '\n' + header.get('rawDescription');
   }
 
   handleTextareaRef(textarea) {
