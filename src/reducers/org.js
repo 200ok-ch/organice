@@ -215,7 +215,7 @@ const updateHeaderDescription = (state, action) => {
     } = parseDescriptionPrefixElements(action.newRawDescription);
 
     return header
-      .set('rawDescription', action.newRawDescription)
+      .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))
       .set('planningItems', planningItems)
       .set('propertyListItems', propertyListItems);
