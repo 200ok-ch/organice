@@ -114,7 +114,6 @@ class AgendaModal extends PureComponent {
     } = this.props;
     const { timeframeType, selectedDate, dateDisplayType } = this.state;
 
-
     let dates = [];
     switch (timeframeType) {
       case 'Day':
@@ -176,8 +175,8 @@ class AgendaModal extends PureComponent {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue'),
-  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit'),
+  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
+  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
 });
 
 const mapDispatchToProps = dispatch => ({

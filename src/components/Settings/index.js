@@ -26,7 +26,6 @@ class Settings extends PureComponent {
       'handleBulletStyleChange',
       'handleWeekStartChange',
       'handleShouldTapTodoToAdvanceChange',
-      'handleAgendaDefaultDeadlineDelayTypeChange',
       'handleAgendaDefaultDeadlineDelayValueChange',
       'handleAgendaDefaultDeadlineDelayUnitChange',
       'handleShouldStoreSettingsInSyncBackend',
@@ -67,13 +66,6 @@ class Settings extends PureComponent {
     this.props.base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
   }
 
-  //------------------------
-  // AGENDA DEFAULT SETTINGS
-
-  handleAgendaDefaultDeadlineDelayTypeChange(newDelayType) {
-    this.props.base.setAgendaDefaultDeadlineDelayType(newDelayType);
-  }
-
   handleAgendaDefaultDeadlineDelayValueChange(e) {
     const target = e.target;
     this.props.base.setAgendaDefaultDeadlineDelayValue(target.value);
@@ -82,8 +74,6 @@ class Settings extends PureComponent {
   handleAgendaDefaultDeadlineDelayUnitChange(newDelayUnit) {
     this.props.base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
   }
-
-  //------------------------
 
   handleShouldStoreSettingsInSyncBackend() {
     const { shouldStoreSettingsInSyncBackend } = this.props;
@@ -152,21 +142,21 @@ class Settings extends PureComponent {
           />
         </div>
 
-        <div className="setting-container">
-          <div className="setting-label">Deafult DEADLINE warning period</div>
+        <div className="setting-container setting-container--vertical">
+          <div className="setting-label">Default DEADLINE warning period</div>
 
-          <input
-            type="number"
-            min="0"
-            className="textfield"
-            value={agendaDefaultDeadlineDelayValue || 5}
-            onChange={this.handleAgendaDefaultDeadlineDelayValueChange}
-          />
+          <div className="default-deadline-warning-container">
+            <input
+              type="number"
+              min="0"
+              className="textfield default-deadline-value-textfield"
+              value={agendaDefaultDeadlineDelayValue}
+              onChange={this.handleAgendaDefaultDeadlineDelayValueChange}
+            />
 
-          <div>
             <TabButtons
               buttons={'hdwmy'.split('')}
-              selectedButton={agendaDefaultDeadlineDelayUnit || 'd'}
+              selectedButton={agendaDefaultDeadlineDelayUnit}
               onSelect={this.handleAgendaDefaultDeadlineDelayUnitChange}
             />
           </div>

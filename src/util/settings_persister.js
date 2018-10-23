@@ -69,12 +69,6 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'agendaDefaultDeadlineDelayType',
-    type: 'nullable',
-    shouldStoreInConfig: true,
-  },
-  {
-    category: 'base',
     name: 'agendaDefaultDeadlineDelayValue',
     type: 'nullable',
     shouldStoreInConfig: true,

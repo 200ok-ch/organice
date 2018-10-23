@@ -7,7 +7,7 @@
   padding: 5px 0;
 }
 
-.setting-container--vertical-layout {
+.setting-container--vertical {
   flex-direction: column;
   align-items: flex-start;
 }
@@ -24,8 +24,8 @@
   max-width: calc(100% - 90px);
 }
 
-.setting-container--vertical-layout .setting-label {
-  margin-bottom: 5px;
+.setting-container--vertical .setting-label {
+  margin-bottom: 10px;
 }
 
 .setting-label__description {
@@ -84,4 +84,16 @@
 
   margin-bottom: 10px;
   margin-top: -10px;
+}
+
+.default-deadline-warning-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.default-deadline-value-textfield {
+  width: 50px;
+  margin-right: 10px;
 }
