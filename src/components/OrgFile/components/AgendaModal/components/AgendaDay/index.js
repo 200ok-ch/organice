@@ -50,7 +50,7 @@ export default class AgendaDay extends PureComponent {
           }
 
           if (planningItem.get('type') === 'DEADLINE') {
-            //---------------------------
+            
             // HANDLING THE CURRENT DAY
             if (isToday) {
               // PAST DEADLINES (ALWAYS SHOW)
@@ -75,7 +75,6 @@ export default class AgendaDay extends PureComponent {
                 return date >= appearDate;
               }
             }
-            //---------------------------
 
             return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
           } else if (planningItem.get('type') === 'SCHEDULED') {

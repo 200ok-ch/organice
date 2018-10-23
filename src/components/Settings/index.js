@@ -71,7 +71,6 @@ class Settings extends PureComponent {
   // AGENDA DEFAULT SETTINGS
 
   handleAgendaDefaultDeadlineDelayTypeChange(newDelayType) {
-    console.log('newDelayType' + newDelayType);
     this.props.base.setAgendaDefaultDeadlineDelayType(newDelayType);
   }
 
@@ -106,7 +105,6 @@ class Settings extends PureComponent {
       bulletStyle,
       shouldTapTodoToAdvance,
       shouldStoreSettingsInSyncBackend,
-      agendaDefaultDeadlineDelayType,
       agendaDefaultDeadlineDelayValue,
       agendaDefaultDeadlineDelayUnit,
       hasUnseenChangelog,
@@ -155,25 +153,12 @@ class Settings extends PureComponent {
         </div>
 
         <div className="setting-container">
-          <div className="setting-label">
-            Agenda default deadline delay
-            <div className="setting-label__description">
-              Store settings and keyboard shortcuts in a .org-web-config.json file in your sync
-              backend to sync betweeen multiple devices.
-            </div>
-          </div>
-          <div className="timestamp-editor__delay-repeater-type">
-            <TabButtons
-              buttons={['-', '--']}
-              selectedButton={agendaDefaultDeadlineDelayType || '-'}
-              onSelect={this.handleAgendaDefaultDeadlineDelayTypeChange}
-            />
-          </div>
+          <div className="setting-label">Deafult DEADLINE warning period</div>
 
           <input
             type="number"
-            min="1"
-            className="textfield delay-repeater-value-input"
+            min="0"
+            className="textfield"
             value={agendaDefaultDeadlineDelayValue || 5}
             onChange={this.handleAgendaDefaultDeadlineDelayValueChange}
           />
@@ -181,7 +166,7 @@ class Settings extends PureComponent {
           <div>
             <TabButtons
               buttons={'hdwmy'.split('')}
-              selectedButton={agendaDefaultDeadlineDelayUnit || 'h'}
+              selectedButton={agendaDefaultDeadlineDelayUnit || 'd'}
               onSelect={this.handleAgendaDefaultDeadlineDelayUnitChange}
             />
           </div>
@@ -261,7 +246,6 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
-    agendaDefaultDeadlineDelayType: state.base.get('agendaDefaultDeadlineDelayType') || '-',
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),

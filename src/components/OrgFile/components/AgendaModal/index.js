@@ -114,7 +114,6 @@ class AgendaModal extends PureComponent {
     } = this.props;
     const { timeframeType, selectedDate, dateDisplayType } = this.state;
 
-    console.log('agendaDefaultDeadlineDelayValue' + agendaDefaultDeadlineDelayValue);
 
     let dates = [];
     switch (timeframeType) {
