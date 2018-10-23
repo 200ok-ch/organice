@@ -26,6 +26,9 @@ class Settings extends PureComponent {
       'handleBulletStyleChange',
       'handleWeekStartChange',
       'handleShouldTapTodoToAdvanceChange',
+      'handleAgendaDefaultDeadlineDelayTypeChange',
+      'handleAgendaDefaultDeadlineDelayValueChange',
+      'handleAgendaDefaultDeadlineDelayUnitChange',
       'handleShouldStoreSettingsInSyncBackend',
       'handleChangelogClick',
       'handleHelpClick',
@@ -64,6 +67,24 @@ class Settings extends PureComponent {
     this.props.base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
   }
 
+  //------------------------
+  // AGENDA DEFAULT SETTINGS
+
+  handleAgendaDefaultDeadlineDelayTypeChange(newDelayType) {
+    this.props.base.setAgendaDefaultDeadlineDelayType(newDelayType);
+  }
+
+  handleAgendaDefaultDeadlineDelayValueChange(e) {
+    const target = e.target;
+    this.props.base.setAgendaDefaultDeadlineDelayValue(target.value);
+  }
+
+  handleAgendaDefaultDeadlineDelayUnitChange(newDelayUnit) {
+    this.props.base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
+  }
+
+  //------------------------
+
   handleShouldStoreSettingsInSyncBackend() {
     const { shouldStoreSettingsInSyncBackend } = this.props;
 
@@ -84,6 +105,8 @@ class Settings extends PureComponent {
       bulletStyle,
       shouldTapTodoToAdvance,
       shouldStoreSettingsInSyncBackend,
+      agendaDefaultDeadlineDelayValue,
+      agendaDefaultDeadlineDelayUnit,
       hasUnseenChangelog,
     } = this.props;
 
@@ -127,6 +150,26 @@ class Settings extends PureComponent {
             isEnabled={shouldStoreSettingsInSyncBackend}
             onToggle={this.handleShouldStoreSettingsInSyncBackend}
           />
+        </div>
+
+        <div className="setting-container">
+          <div className="setting-label">Deafult DEADLINE warning period</div>
+
+          <input
+            type="number"
+            min="0"
+            className="textfield"
+            value={agendaDefaultDeadlineDelayValue || 5}
+            onChange={this.handleAgendaDefaultDeadlineDelayValueChange}
+          />
+
+          <div>
+            <TabButtons
+              buttons={'hdwmy'.split('')}
+              selectedButton={agendaDefaultDeadlineDelayUnit || 'd'}
+              onSelect={this.handleAgendaDefaultDeadlineDelayUnitChange}
+            />
+          </div>
         </div>
 
         <div className="settings-buttons-container">
@@ -203,6 +246,8 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
+    agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
