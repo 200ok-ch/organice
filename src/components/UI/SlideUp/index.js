@@ -130,6 +130,8 @@ export default class SlideUp extends PureComponent {
                 ref={div => (this.innerContainer = div)}
                 style={interpolatedStyle}
               >
+                <div className="slide-up__grabber" />
+
                 {shouldIncludeCloseButton && (
                   <button
                     className="fas fa-times fa-lg slide-up__close-button"

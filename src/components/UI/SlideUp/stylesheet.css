@@ -41,6 +41,20 @@
   padding: 0;
 }
 
+.slide-up__grabber {
+  width: 35px;
+  height: 5px;
+  background-color: gray;
+
+  border-radius: 50px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  margin-top: -5px;
+  margin-bottom: 5px;
+}
+
 .slide-up-modal__title {
   color: #5e348c;
 
