@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import './stylesheet.css';
 
-import SlideUp from '../../../UI/SlideUp';
+import Drawer from '../../../UI/Drawer';
 
 import { attributedStringToRawText } from '../../../../lib/export_org';
 import generateId from '../../../../lib/id_generator';
@@ -82,7 +82,7 @@ export default class PropertyListEditorModal extends PureComponent {
     const { onClose, propertyListItems } = this.props;
 
     return (
-      <SlideUp shouldIncludeCloseButton onClose={onClose}>
+      <Drawer shouldIncludeCloseButton onClose={onClose}>
         <h2 className="slide-up-modal__title">Edit property list</h2>
 
         {propertyListItems.size === 0 ? (
@@ -155,7 +155,7 @@ export default class PropertyListEditorModal extends PureComponent {
         <div className="property-list-editor__add-new-container">
           <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewItem} />
         </div>
-      </SlideUp>
+      </Drawer>
     );
   }
 }

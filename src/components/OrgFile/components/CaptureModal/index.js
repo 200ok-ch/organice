@@ -4,7 +4,7 @@ import './stylesheet.css';
 
 import ActionButton from '../ActionDrawer/components/ActionButton/';
 import Switch from '../../../UI/Switch/';
-import SlideUp from '../../../UI/SlideUp/';
+import Drawer from '../../../UI/Drawer/';
 
 import { headerWithPath } from '../../../../lib/org_utils';
 import substituteTemplateVariables from '../../../../lib/capture_template_substitution';
@@ -71,7 +71,7 @@ export default class CaptureModal extends PureComponent {
     const { textareaValue, shouldPrepend } = this.state;
 
     return (
-      <SlideUp shouldIncludeCloseButton onClose={this.handleCloseClick}>
+      <Drawer shouldIncludeCloseButton onClose={this.handleCloseClick}>
         <div className="capture-modal-header">
           <ActionButton
             letter={template.get('letter')}
@@ -114,7 +114,7 @@ export default class CaptureModal extends PureComponent {
         )}
 
         <br />
-      </SlideUp>
+      </Drawer>
     );
   }
 }

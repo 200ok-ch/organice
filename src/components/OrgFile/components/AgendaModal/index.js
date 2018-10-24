@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import './stylesheet.css';
 
 import AgendaDay from './components/AgendaDay';
-import SlideUp from '../../../UI/SlideUp';
+import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
 import * as orgActions from '../../../../actions/org';
@@ -133,7 +133,7 @@ class AgendaModal extends PureComponent {
     }
 
     return (
-      <SlideUp shouldIncludeCloseButton onClose={onClose}>
+      <Drawer shouldIncludeCloseButton onClose={onClose}>
         <h2 className="agenda__title">Agenda</h2>
 
         <div className="agenda__tab-container">
@@ -168,7 +168,7 @@ class AgendaModal extends PureComponent {
         </div>
 
         <br />
-      </SlideUp>
+      </Drawer>
     );
   }
 }

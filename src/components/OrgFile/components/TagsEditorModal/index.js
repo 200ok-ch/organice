@@ -4,7 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import './stylesheet.css';
 
-import SlideUp from '../../../UI/SlideUp/';
+import Drawer from '../../../UI/Drawer/';
 
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -67,7 +67,7 @@ export default class TagsEditorModal extends PureComponent {
     const headerTags = header.getIn(['titleLine', 'tags']);
 
     return (
-      <SlideUp shouldIncludeCloseButton onClose={onClose}>
+      <Drawer shouldIncludeCloseButton onClose={onClose}>
         <h2 className="slide-up-modal__title">Edit tags</h2>
 
         {headerTags.size === 0 ? (
@@ -143,7 +143,7 @@ export default class TagsEditorModal extends PureComponent {
             );
           })}
         </div>
-      </SlideUp>
+      </Drawer>
     );
   }
 }

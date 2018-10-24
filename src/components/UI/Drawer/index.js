@@ -6,7 +6,7 @@ import { Motion, spring } from 'react-motion';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-export default class SlideUp extends PureComponent {
+export default class Drawer extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -22,8 +22,8 @@ export default class SlideUp extends PureComponent {
     this.setState({ isVisible: true });
 
     // Super annoying logic for disabling scrolling of the body when a slide up is active.
-    // Briefly: if we're already at the top of our SlideUp and trying to scroll up, disable
-    // scrolling. Likewise, if we're already at the bottom of our SlideUp and trying to scroll
+    // Briefly: if we're already at the top of our Drawer and trying to scroll up, disable
+    // scrolling. Likewise, if we're already at the bottom of our Drawer and trying to scroll
     // down, disable scrolling.
     this.innerContainer.addEventListener('touchstart', event => {
       this.initialClientY = event.targetTouches[0].clientY;
