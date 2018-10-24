@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS, Map } from 'immutable';
 
 export default accessToken => {
-  const dropboxClient = new Dropbox({ accessToken });
+  const dropboxClient = new Dropbox({ accessToken, fetch });
 
   const isSignedIn = () => new Promise(resolve => resolve(true));
 
