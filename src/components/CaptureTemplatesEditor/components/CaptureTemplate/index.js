@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -8,85 +8,58 @@ import './stylesheet.css';
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
 import Switch from '../../../UI/Switch/';
 
-import _ from 'lodash';
 import classNames from 'classnames';
 
-export default class CaptureTemplate extends PureComponent {
-  constructor(props) {
-    super(props);
+export default ({
+  template,
+  index,
+  onFieldPathUpdate,
+  onAddNewTemplateOrgFileAvailability,
+  onRemoveTemplateOrgFileAvailability,
+  onAddNewTemplateHeaderPath,
+  onRemoveTemplateHeaderPath,
+  onDeleteTemplate,
+  syncBackendType,
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(!!template.get('description'));
+  const handleHeaderBarClick = () => setIsCollapsed(!isCollapsed);
 
-    _.bindAll(this, [
-      'toggleAvailabilityInAllOrgFiles',
-      'handleAddNewOrgFileAvailability',
-      'handleAddNewHeaderPath',
-      'togglePrepend',
-      'handleDeleteClick',
-      'handleHeaderBarClick',
-    ]);
+  const updateField = fieldName => event =>
+    onFieldPathUpdate(template.get('id'), [fieldName], event.target.value);
 
-    this.state = {
-      isCollapsed: !!props.template.get('description'),
-    };
-  }
-
-  updateField(fieldName) {
-    return event =>
-      this.props.onFieldPathUpdate(this.props.template.get('id'), [fieldName], event.target.value);
-  }
-
-  toggleAvailabilityInAllOrgFiles() {
-    const { template, onFieldPathUpdate } = this.props;
+  const toggleAvailabilityInAllOrgFiles = () =>
     onFieldPathUpdate(
       template.get('id'),
       ['isAvailableInAllOrgFiles'],
       !template.get('isAvailableInAllOrgFiles')
     );
-  }
 
-  togglePrepend() {
-    const { template, onFieldPathUpdate } = this.props;
+  const togglePrepend = () =>
     onFieldPathUpdate(template.get('id'), ['shouldPrepend'], !template.get('shouldPrepend'));
-  }
 
-  handleAddNewOrgFileAvailability() {
-    this.props.onAddNewTemplateOrgFileAvailability(this.props.template.get('id'));
-  }
+  const handleAddNewOrgFileAvailability = () => {
+    onAddNewTemplateOrgFileAvailability(template.get('id'));
+  };
 
-  handleRemoveOrgFileAvailability(index) {
-    return () =>
-      this.props.onRemoveTemplateOrgFileAvailability(this.props.template.get('id'), index);
-  }
+  const handleRemoveOrgFileAvailability = index => () =>
+    onRemoveTemplateOrgFileAvailability(template.get('id'), index);
 
-  handleOrgFileAvailabilityChange(orgFileAvailabilityIndex) {
-    return event =>
-      this.props.onFieldPathUpdate(
-        this.props.template.get('id'),
-        ['orgFilesWhereAvailable', orgFileAvailabilityIndex],
-        event.target.value
-      );
-  }
+  const handleOrgFileAvailabilityChange = orgFileAvailabilityIndex => event =>
+    onFieldPathUpdate(
+      template.get('id'),
+      ['orgFilesWhereAvailable', orgFileAvailabilityIndex],
+      event.target.value
+    );
 
-  handleAddNewHeaderPath() {
-    this.props.onAddNewTemplateHeaderPath(this.props.template.get('id'));
-  }
+  const handleAddNewHeaderPath = () => onAddNewTemplateHeaderPath(template.get('id'));
 
-  handleRemoveHeaderPath(headerPathIndex) {
-    return () =>
-      this.props.onRemoveTemplateHeaderPath(this.props.template.get('id'), headerPathIndex);
-  }
+  const handleRemoveHeaderPath = headerPathIndex => () =>
+    onRemoveTemplateHeaderPath(template.get('id'), headerPathIndex);
 
-  handleHeaderPathChange(headerPathIndex) {
-    return event =>
-      this.props.onFieldPathUpdate(
-        this.props.template.get('id'),
-        ['headerPaths', headerPathIndex],
-        event.target.value
-      );
-  }
+  const handleHeaderPathChange = headerPathIndex => event =>
+    onFieldPathUpdate(template.get('id'), ['headerPaths', headerPathIndex], event.target.value);
 
-  handleDeleteClick() {
-    const { template, onDeleteTemplate } = this.props;
-
+  const handleDeleteClick = () => {
     if (
       window.confirm(
         `Are you sure you want to delete the "${template.get('description')}" template?`
@@ -94,168 +67,119 @@ export default class CaptureTemplate extends PureComponent {
     ) {
       onDeleteTemplate(template.get('id'));
     }
-  }
+  };
 
-  renderDescriptionField(template) {
-    return (
-      <div className="capture-template__field-container">
-        <div className="capture-template__field">
-          <div>Description:</div>
-          <input
-            type="text"
-            className="textfield"
-            value={template.get('description', '')}
-            onChange={this.updateField('description')}
-          />
-        </div>
+  const renderDescriptionField = template => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field">
+        <div>Description:</div>
+        <input
+          type="text"
+          className="textfield"
+          value={template.get('description', '')}
+          onChange={updateField('description')}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 
-  renderIconField(template) {
-    return (
-      <div className="capture-template__field-container">
-        <div className="capture-template__field">
-          <div>Letter:</div>
-          <input
-            type="text"
-            className="textfield capture-template__letter-textfield"
-            maxLength="1"
-            value={template.get('letter', '')}
-            onChange={this.updateField('letter')}
-            autoCapitalize="none"
-          />
-        </div>
-
-        <div className="capture-template__field__or-container">
-          <div className="capture-template__field__or-line" />
-          <div className="capture-template__field__or">or</div>
-          <div className="capture-template__field__or-line" />
-        </div>
-
-        <div className="capture-template__field">
-          <div>Icon name:</div>
-          <input
-            type="text"
-            className="textfield"
-            value={template.get('iconName')}
-            onChange={this.updateField('iconName')}
-            autoCapitalize="none"
-            autoCorrect="none"
-          />
-        </div>
-
-        <div className="capture-template__help-text">
-          Instead of a letter, you can specify the name of any free Font Awesome icon (like lemon or
-          calendar-plus) to use as the capture icon. You can search the available icons{' '}
-          <a
-            href="https://fontawesome.com/icons?d=gallery&s=solid&m=free"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-          .
-        </div>
+  const renderIconField = template => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field">
+        <div>Letter:</div>
+        <input
+          type="text"
+          className="textfield capture-template__letter-textfield"
+          maxLength="1"
+          value={template.get('letter', '')}
+          onChange={updateField('letter')}
+          autoCapitalize="none"
+        />
       </div>
-    );
-  }
 
-  renderOrgFileAvailability(template) {
-    const { syncBackendType } = this.props;
+      <div className="capture-template__field__or-container">
+        <div className="capture-template__field__or-line" />
+        <div className="capture-template__field__or">or</div>
+        <div className="capture-template__field__or-line" />
+      </div>
 
-    return (
-      <div className="capture-template__field-container">
-        <div className="capture-template__field">
-          <div>Available in all org files?</div>
-          <Switch
-            isEnabled={template.get('isAvailableInAllOrgFiles')}
-            onToggle={this.toggleAvailabilityInAllOrgFiles}
-          />
-        </div>
+      <div className="capture-template__field">
+        <div>Icon name:</div>
+        <input
+          type="text"
+          className="textfield"
+          value={template.get('iconName')}
+          onChange={updateField('iconName')}
+          autoCapitalize="none"
+          autoCorrect="none"
+        />
+      </div>
 
-        <div className="capture-template__help-text">
-          You can make this capture template available in all org files, or just the ones you
-          specify.
-          {syncBackendType === 'Dropbox' && (
-            <Fragment>
-              {' '}
-              Specify full paths starting from the root of your Dropbox, like{' '}
-              <code>/org/todo.org</code>
-            </Fragment>
-          )}
-          {syncBackendType === 'Google Drive' && (
-            <Fragment>
-              {' '}
-              Specify the file id of each file. You can find the file id in the URL of the file in
-              org-web (e.g.,{' '}
-              <code>
-                /file/
-                {'<file id>'}
-              </code>
-              ).
-            </Fragment>
-          )}
-        </div>
-
-        <Collapse
-          isOpened={!template.get('isAvailableInAllOrgFiles')}
-          springConfig={{ stiffness: 300 }}
+      <div className="capture-template__help-text">
+        Instead of a letter, you can specify the name of any free Font Awesome icon (like lemon or
+        calendar-plus) to use as the capture icon. You can search the available icons{' '}
+        <a
+          href="https://fontawesome.com/icons?d=gallery&s=solid&m=free"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <div className="multi-textfields-container">
-            {template.get('orgFilesWhereAvailable').map((orgFilePath, index) => (
-              <div key={`org-file-availability-${index}`} className="multi-textfield-container">
-                <input
-                  type="text"
-                  placeholder="e.g., /org/todo.org"
-                  className="textfield multi-textfield-field"
-                  value={orgFilePath}
-                  onChange={this.handleOrgFileAvailabilityChange(index)}
-                />
-                <button
-                  className="fas fa-times fa-lg remove-multi-textfield-button"
-                  onClick={this.handleRemoveOrgFileAvailability(index)}
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="add-new-multi-textfield-button-container">
-            <button
-              className="fas fa-plus add-new-multi-textfield-button"
-              onClick={this.handleAddNewOrgFileAvailability}
-            />
-          </div>
-        </Collapse>
+          here
+        </a>
+        .
       </div>
-    );
-  }
+    </div>
+  );
 
-  renderHeaderPaths(template) {
-    return (
-      <div className="capture-template__field-container">
-        <div className="capture-template__field" style={{ marginTop: 7 }}>
-          <div>Header path</div>
-        </div>
+  const renderOrgFileAvailability = template => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field">
+        <div>Available in all org files?</div>
+        <Switch
+          isEnabled={template.get('isAvailableInAllOrgFiles')}
+          onToggle={toggleAvailabilityInAllOrgFiles}
+        />
+      </div>
 
-        <div className="capture-template__help-text">
-          Specify the path to the header under which the new header should be filed. One header per
-          textfield.
-        </div>
+      <div className="capture-template__help-text">
+        You can make this capture template available in all org files, or just the ones you specify.
+        {syncBackendType === 'Dropbox' && (
+          <Fragment>
+            {' '}
+            Specify full paths starting from the root of your Dropbox, like{' '}
+            <code>/org/todo.org</code>
+          </Fragment>
+        )}
+        {syncBackendType === 'Google Drive' && (
+          <Fragment>
+            {' '}
+            Specify the file id of each file. You can find the file id in the URL of the file in
+            org-web (e.g.,{' '}
+            <code>
+              /file/
+              {'<file id>'}
+            </code>
+            ).
+          </Fragment>
+        )}
+      </div>
 
+      <Collapse
+        isOpened={!template.get('isAvailableInAllOrgFiles')}
+        springConfig={{ stiffness: 300 }}
+      >
         <div className="multi-textfields-container">
-          {template.get('headerPaths').map((headerPath, index) => (
-            <div key={`header-path-${index}`} className="multi-textfield-container">
+          {template.get('orgFilesWhereAvailable').map((orgFilePath, index) => (
+            <div key={`org-file-availability-${index}`} className="multi-textfield-container">
               <input
                 type="text"
-                placeholder="e.g., Todos"
+                placeholder="e.g., /org/todo.org"
                 className="textfield multi-textfield-field"
-                value={headerPath}
-                onChange={this.handleHeaderPathChange(index)}
+                value={orgFilePath}
+                onChange={handleOrgFileAvailabilityChange(index)}
               />
               <button
                 className="fas fa-times fa-lg remove-multi-textfield-button"
-                onClick={this.handleRemoveHeaderPath(index)}
+                onClick={handleRemoveOrgFileAvailability(index)}
               />
             </div>
           ))}
@@ -264,144 +188,167 @@ export default class CaptureTemplate extends PureComponent {
         <div className="add-new-multi-textfield-button-container">
           <button
             className="fas fa-plus add-new-multi-textfield-button"
-            onClick={this.handleAddNewHeaderPath}
+            onClick={handleAddNewOrgFileAvailability}
           />
         </div>
+      </Collapse>
+    </div>
+  );
+
+  const renderHeaderPaths = template => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field" style={{ marginTop: 7 }}>
+        <div>Header path</div>
       </div>
-    );
-  }
 
-  renderPrependField(template) {
-    return (
-      <div className="capture-template__field-container">
-        <div className="capture-template__field">
-          <div>Prepend?</div>
-          <Switch isEnabled={template.get('shouldPrepend')} onToggle={this.togglePrepend} />
-        </div>
-
-        <div className="capture-template__help-text">
-          By default, new captured headers are appended to the specified header path. Enable this
-          setting to prepend them instead.
-        </div>
+      <div className="capture-template__help-text">
+        Specify the path to the header under which the new header should be filed. One header per
+        textfield.
       </div>
-    );
-  }
 
-  renderTemplateField(template) {
-    return (
-      <div className="capture-template__field-container">
-        <div className="capture-template__field" style={{ marginTop: 7 }}>
-          <div>Template</div>
-        </div>
-
-        <textarea
-          className="textarea template-textarea"
-          rows="3"
-          value={template.get('template')}
-          onChange={this.updateField('template')}
-        />
-
-        <div className="capture-template__help-text">
-          The template for creating the capture item. You can use the following template variables
-          that will be expanded upon capture:
-          <ul>
-            <li>
-              <code>%?</code> - Place the cursor here.
-            </li>
-            <li>
-              <code>%t</code> - Timestamp, date only.
-            </li>
-            <li>
-              <code>%T</code> - Timestamp, with date and time.
-            </li>
-            <li>
-              <code>%u</code> - Inactive timestamp, date only.
-            </li>
-            <li>
-              <code>%U</code> - Inactive timestamp, with date and time.
-            </li>
-            <li>
-              <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
-              <a href="https://github.com/DanielDe/org-web/#capture-params-and-siri-support">
-                the README file
-              </a>{' '}
-              for more details.
-            </li>
-          </ul>
-        </div>
-      </div>
-    );
-  }
-
-  renderDeleteButton(template) {
-    return (
-      <div className="capture-template__field-container capture-template__delete-button-container">
-        <button
-          className="btn settings-btn capture-template__delete-button"
-          onClick={this.handleDeleteClick}
-        >
-          Delete template
-        </button>
-      </div>
-    );
-  }
-
-  handleHeaderBarClick() {
-    this.setState({ isCollapsed: !this.state.isCollapsed });
-  }
-
-  render() {
-    const { template, index } = this.props;
-    const { isCollapsed } = this.state;
-
-    const caretClassName = classNames(
-      'fas fa-2x fa-caret-right capture-template-container__header__caret',
-      {
-        'capture-template-container__header__caret--rotated': !isCollapsed,
-      }
-    );
-
-    return (
-      <Draggable draggableId={`capture-template--${template.get('id')}`} index={index}>
-        {(provided, snapshot) => (
-          <div
-            className={classNames('capture-template-container', {
-              'capture-template-container--dragging': snapshot.isDragging,
-            })}
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-          >
-            <div className="capture-template-container__header" onClick={this.handleHeaderBarClick}>
-              <i className={caretClassName} />
-              <ActionButton
-                iconName={template.get('iconName')}
-                letter={template.get('letter')}
-                onClick={() => {}}
-                style={{ marginRight: 20 }}
-              />
-              <span className="capture-template-container__header__title">
-                {template.get('description')}
-              </span>
-              <i
-                className="fas fa-bars fa-lg capture-template-container__header__drag-handle"
-                {...provided.dragHandleProps}
-              />
-            </div>
-
-            <Collapse isOpened={!isCollapsed} springConfig={{ stiffness: 300 }}>
-              <div className="capture-template-container__content">
-                {this.renderDescriptionField(template)}
-                {this.renderIconField(template)}
-                {this.renderOrgFileAvailability(template)}
-                {this.renderHeaderPaths(template)}
-                {this.renderPrependField(template)}
-                {this.renderTemplateField(template)}
-                {this.renderDeleteButton(template)}
-              </div>
-            </Collapse>
+      <div className="multi-textfields-container">
+        {template.get('headerPaths').map((headerPath, index) => (
+          <div key={`header-path-${index}`} className="multi-textfield-container">
+            <input
+              type="text"
+              placeholder="e.g., Todos"
+              className="textfield multi-textfield-field"
+              value={headerPath}
+              onChange={handleHeaderPathChange(index)}
+            />
+            <button
+              className="fas fa-times fa-lg remove-multi-textfield-button"
+              onClick={handleRemoveHeaderPath(index)}
+            />
           </div>
-        )}
-      </Draggable>
-    );
-  }
-}
+        ))}
+      </div>
+
+      <div className="add-new-multi-textfield-button-container">
+        <button
+          className="fas fa-plus add-new-multi-textfield-button"
+          onClick={handleAddNewHeaderPath}
+        />
+      </div>
+    </div>
+  );
+
+  const renderPrependField = template => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field">
+        <div>Prepend?</div>
+        <Switch isEnabled={template.get('shouldPrepend')} onToggle={togglePrepend} />
+      </div>
+
+      <div className="capture-template__help-text">
+        By default, new captured headers are appended to the specified header path. Enable this
+        setting to prepend them instead.
+      </div>
+    </div>
+  );
+
+  const renderTemplateField = template => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field" style={{ marginTop: 7 }}>
+        <div>Template</div>
+      </div>
+
+      <textarea
+        className="textarea template-textarea"
+        rows="3"
+        value={template.get('template')}
+        onChange={updateField('template')}
+      />
+
+      <div className="capture-template__help-text">
+        The template for creating the capture item. You can use the following template variables
+        that will be expanded upon capture:
+        <ul>
+          <li>
+            <code>%?</code> - Place the cursor here.
+          </li>
+          <li>
+            <code>%t</code> - Timestamp, date only.
+          </li>
+          <li>
+            <code>%T</code> - Timestamp, with date and time.
+          </li>
+          <li>
+            <code>%u</code> - Inactive timestamp, date only.
+          </li>
+          <li>
+            <code>%U</code> - Inactive timestamp, with date and time.
+          </li>
+          <li>
+            <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
+            <a href="https://github.com/DanielDe/org-web/#capture-params-and-siri-support">
+              the README file
+            </a>{' '}
+            for more details.
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+
+  const renderDeleteButton = template => (
+    <div className="capture-template__field-container capture-template__delete-button-container">
+      <button
+        className="btn settings-btn capture-template__delete-button"
+        onClick={handleDeleteClick}
+      >
+        Delete template
+      </button>
+    </div>
+  );
+
+  const caretClassName = classNames(
+    'fas fa-2x fa-caret-right capture-template-container__header__caret',
+    {
+      'capture-template-container__header__caret--rotated': !isCollapsed,
+    }
+  );
+
+  return (
+    <Draggable draggableId={`capture-template--${template.get('id')}`} index={index}>
+      {(provided, snapshot) => (
+        <div
+          className={classNames('capture-template-container', {
+            'capture-template-container--dragging': snapshot.isDragging,
+          })}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+        >
+          <div className="capture-template-container__header" onClick={handleHeaderBarClick}>
+            <i className={caretClassName} />
+            <ActionButton
+              iconName={template.get('iconName')}
+              letter={template.get('letter')}
+              onClick={() => {}}
+              style={{ marginRight: 20 }}
+            />
+            <span className="capture-template-container__header__title">
+              {template.get('description')}
+            </span>
+            <i
+              className="fas fa-bars fa-lg capture-template-container__header__drag-handle"
+              {...provided.dragHandleProps}
+            />
+          </div>
+
+          <Collapse isOpened={!isCollapsed} springConfig={{ stiffness: 300 }}>
+            <div className="capture-template-container__content">
+              {renderDescriptionField(template)}
+              {renderIconField(template)}
+              {renderOrgFileAvailability(template)}
+              {renderHeaderPaths(template)}
+              {renderPrependField(template)}
+              {renderTemplateField(template)}
+              {renderDeleteButton(template)}
+            </div>
+          </Collapse>
+        </div>
+      )}
+    </Draggable>
+  );
+};
