@@ -8243,14 +8243,15 @@ react-dev-utils@^6.1.0:
     strip-ansi "4.0.0"
     text-table "0.2.0"
 
-react-dom@^16.4.1:
-  version "16.6.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.6.0.tgz#6375b8391e019a632a89a0988bce85f0cc87a92f"
+react-dom@^16.7.0-alpha.0:
+  version "16.7.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.7.0-alpha.0.tgz#8379158d4c76d63c989f325f45dfa5762582584f"
+  integrity sha512-/XUn1ldxmoV2B7ov0rWT5LMZaaHMlF9GGLkUsmPRxmWTJwRDOuAPXidSaSlmR/VOhDSI1s+v3+KzFqhhDFJxYA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.10.0"
+    scheduler "^0.11.0-alpha.0"
 
 react-error-overlay@^5.0.6:
   version "5.0.6"
