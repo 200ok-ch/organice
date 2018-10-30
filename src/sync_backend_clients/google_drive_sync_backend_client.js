@@ -3,8 +3,8 @@
 import { fromJS, Map } from 'immutable';
 
 export default () => {
-  const initGoogleDriveAPIClient = () => {
-    return new Promise((resolve, reject) => {
+  const initGoogleDriveAPIClient = () =>
+    new Promise((resolve, reject) =>
       window.gapi.load('client:auth2', () => {
         window.location.hash = window.initialHash;
         window.gapi.client
@@ -14,9 +14,8 @@ export default () => {
             scope: 'https://www.googleapis.com/auth/drive',
           })
           .then(resolve);
-      });
-    });
-  };
+      })
+    );
 
   const getAPIClient = (() => {
     let isInited = false;
@@ -145,10 +144,8 @@ export default () => {
     });
   };
 
-  const getDirectoryListing = directoryId => {
-    directoryId = directoryId.startsWith('/') ? directoryId.substr(1) : directoryId;
-    return getFiles(directoryId);
-  };
+  const getDirectoryListing = directoryId =>
+    getFiles(directoryId.startsWith('/') ? directoryId.substr(1) : directoryId);
 
   const getMoreDirectoryListing = additionalSyncBackendState => {
     const directoryId = additionalSyncBackendState.get('currentDirectoryId');
