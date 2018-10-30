@@ -14,10 +14,6 @@ export default class TagsEditorModal extends PureComponent {
     super(props);
 
     _.bindAll(this, ['handleRemoveTag', 'handleAddNewTag', 'handleTagChange']);
-
-    this.state = {
-      allTags: props.allTags,
-    };
   }
 
   componentDidUpdate(prevProps) {
@@ -61,8 +57,7 @@ export default class TagsEditorModal extends PureComponent {
   }
 
   render() {
-    const { header, onClose } = this.props;
-    const { allTags } = this.state;
+    const { header, onClose, allTags } = this.props;
 
     const headerTags = header.getIn(['titleLine', 'tags']);
 

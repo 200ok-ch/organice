@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment, useState, useEffect, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -6,7 +6,6 @@ import { Motion, spring } from 'react-motion';
 
 import './stylesheet.css';
 
-import _ from 'lodash';
 import { List } from 'immutable';
 
 import * as orgActions from '../../../../actions/org';
@@ -17,149 +16,97 @@ import sampleCaptureTemplates from '../../../../lib/sample_capture_templates';
 
 import ActionButton from './components/ActionButton/';
 
-class ActionDrawer extends PureComponent {
-  constructor(props) {
-    super(props);
+const ActionDrawer = ({
+  org,
+  selectedHeaderId,
+  base,
+  staticFile,
+  captureTemplates,
+  path,
+  selectedTableCellId,
+  inEditMode,
+  isLoading,
+  shouldDisableSyncButtons,
+}) => {
+  const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
+  const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
 
-    _.bindAll(this, [
-      'handleUpClick',
-      'handleDownClick',
-      'handleLeftClick',
-      'handleRightClick',
-      'handleMoveSubtreeLeftClick',
-      'handleMoveSubtreeRightClick',
-      'handleDoneClick',
-      'handleSync',
-      'handleMainArrowButtonClick',
-      'handleMainCaptureButtonClick',
-      'handleAgendaClick',
-    ]);
+  // Send a no-op action to take care of the bug where redux-undo won't allow the first
+  // action to be undone.
+  useEffect(() => org.noOp(), []);
 
-    this.state = {
-      isDisplayingArrowButtons: false,
-      isDisplayingCaptureButtons: false,
-      mainArrowButtonBoundingRect: null,
-    };
-  }
-
-  componentDidMount() {
-    // Send a no-op action to take care of the bug where redux-undo won't allow the first
-    // action to be undone.
-    this.props.org.noOp();
-
+  useEffect(() => {
     document.querySelector('html').style.paddingBottom = '90px';
 
-    this.setState({
-      mainArrowButtonBoundingRect: this.mainArrowButton.getBoundingClientRect(),
-    });
-  }
+    return () => (document.querySelector('html').style.paddingBottom = '0px');
+  });
 
-  componentWillUnmount() {
-    document.querySelector('html').style.paddingBottom = '0px';
-  }
+  const mainArrowButton = useRef(null);
 
-  handleUpClick() {
-    if (!!this.props.selectedHeaderId) {
-      this.props.org.moveHeaderUp(this.props.selectedHeaderId);
-    } else {
-      this.props.org.moveTableRowUp();
-    }
-  }
+  const mainArrowButtonBoundingRect = useMemo(
+    () => (!!mainArrowButton.current ? mainArrowButton.current.getBoundingClientRect() : null),
+    [mainArrowButton.current]
+  );
 
-  handleDownClick() {
-    if (!!this.props.selectedHeaderId) {
-      this.props.org.moveHeaderDown(this.props.selectedHeaderId);
-    } else {
-      this.props.org.moveTableRowDown();
-    }
-  }
+  const handleUpClick = () =>
+    !!selectedHeaderId ? org.moveHeaderUp(selectedHeaderId) : org.moveTableRowUp();
 
-  handleLeftClick() {
-    if (!!this.props.selectedHeaderId) {
-      this.props.org.moveHeaderLeft(this.props.selectedHeaderId);
-    } else {
-      this.props.org.moveTableColumnLeft();
-    }
-  }
+  const handleDownClick = () =>
+    !!selectedHeaderId ? org.moveHeaderDown(selectedHeaderId) : org.moveTableRowDown();
 
-  handleRightClick() {
-    if (!!this.props.selectedHeaderId) {
-      this.props.org.moveHeaderRight(this.props.selectedHeaderId);
-    } else {
-      this.props.org.moveTableColumnRight();
-    }
-  }
+  const handleLeftClick = () =>
+    !!selectedHeaderId ? org.moveHeaderLeft(selectedHeaderId) : org.moveTableColumnLeft();
 
-  handleMoveSubtreeLeftClick() {
-    this.props.org.moveSubtreeLeft(this.props.selectedHeaderId);
-  }
+  const handleRightClick = () =>
+    !!selectedHeaderId ? org.moveHeaderRight(selectedHeaderId) : org.moveTableColumnRight();
 
-  handleMoveSubtreeRightClick() {
-    this.props.org.moveSubtreeRight(this.props.selectedHeaderId);
-  }
+  const handleMoveSubtreeLeftClick = () => org.moveSubtreeLeft(selectedHeaderId);
 
-  handleDoneClick() {
-    this.props.org.exitEditMode();
-  }
+  const handleMoveSubtreeRightClick = () => org.moveSubtreeRight(selectedHeaderId);
 
-  handleCaptureButtonClick(templateId) {
-    return () => {
-      this.setState({ isDisplayingCaptureButtons: false });
-      this.props.base.activatePopup('capture', { templateId });
-    };
-  }
+  const handleDoneClick = () => org.exitEditMode();
 
-  getSampleCaptureTemplates() {
-    return sampleCaptureTemplates;
-  }
+  const handleCaptureButtonClick = templateId => () => {
+    setIsDisplayingCaptureButtons(false);
+    base.activatePopup('capture', { templateId });
+  };
 
-  getAvailableCaptureTemplates() {
-    if (this.props.staticFile === 'sample') {
-      return this.getSampleCaptureTemplates();
-    }
+  const getSampleCaptureTemplates = () => sampleCaptureTemplates;
 
-    return this.props.captureTemplates.filter(
-      template =>
-        template.get('isAvailableInAllOrgFiles') ||
-        template
-          .get('orgFilesWhereAvailable')
-          .map(
-            availablePath =>
-              availablePath.trim().startsWith('/')
-                ? availablePath.trim()
-                : '/' + availablePath.trim()
-          )
-          .includes((this.props.path || '').trim())
-    );
-  }
+  const getAvailableCaptureTemplates = () =>
+    staticFile === 'sample'
+      ? getSampleCaptureTemplates()
+      : captureTemplates.filter(
+          template =>
+            template.get('isAvailableInAllOrgFiles') ||
+            template
+              .get('orgFilesWhereAvailable')
+              .map(
+                availablePath =>
+                  availablePath.trim().startsWith('/')
+                    ? availablePath.trim()
+                    : '/' + availablePath.trim()
+              )
+              .includes((path || '').trim())
+        );
 
-  handleSync() {
-    this.props.org.sync();
-  }
+  const handleSync = () => org.sync();
 
-  handleMainArrowButtonClick() {
-    this.setState({
-      isDisplayingArrowButtons: !this.state.isDisplayingArrowButtons,
-    });
-  }
+  const handleMainArrowButtonClick = () => setIsDisplayingArrowButtons(!isDisplayingArrowButtons);
 
-  handleMainCaptureButtonClick() {
-    if (!this.state.isDisplayingCaptureButtons && this.getAvailableCaptureTemplates().size === 0) {
+  const handleMainCaptureButtonClick = () => {
+    if (!isDisplayingCaptureButtons && getAvailableCaptureTemplates().size === 0) {
       alert(
         `You don't have any capture templates set up for this file! Add some in Settings > Capture Templates`
       );
       return;
     }
 
-    this.setState({
-      isDisplayingCaptureButtons: !this.state.isDisplayingCaptureButtons,
-    });
-  }
+    setIsDisplayingCaptureButtons(!isDisplayingCaptureButtons);
+  };
 
-  renderCaptureButtons() {
-    const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
-
-    const availableCaptureTemplates = this.getAvailableCaptureTemplates();
+  const renderCaptureButtons = () => {
+    const availableCaptureTemplates = getAvailableCaptureTemplates();
 
     const baseCaptureButtonStyle = {
       position: 'absolute',
@@ -188,7 +135,7 @@ class ActionDrawer extends PureComponent {
             <ActionButton
               iconName={isDisplayingCaptureButtons ? 'times' : 'list-ul'}
               isDisabled={false}
-              onClick={this.handleMainCaptureButtonClick}
+              onClick={handleMainCaptureButtonClick}
               style={mainButtonStyle}
               tooltip={
                 isDisplayingCaptureButtons ? 'Hide capture templates' : 'Show capture templates'
@@ -201,7 +148,7 @@ class ActionDrawer extends PureComponent {
                 letter={template.get('letter')}
                 iconName={template.get('iconName')}
                 isDisabled={false}
-                onClick={this.handleCaptureButtonClick(template.get('id'))}
+                onClick={handleCaptureButtonClick(template.get('id'))}
                 style={{ ...baseCaptureButtonStyle, bottom: style.bottom * (index + 1) }}
                 tooltip={`Activate "${template.get('description')}" capture template`}
               />
@@ -210,16 +157,9 @@ class ActionDrawer extends PureComponent {
         )}
       </Motion>
     );
-  }
+  };
 
-  renderMovementButtons() {
-    const { selectedTableCellId } = this.props;
-    const {
-      isDisplayingArrowButtons,
-      isDisplayingCaptureButtons,
-      mainArrowButtonBoundingRect,
-    } = this.state;
-
+  const renderMovementButtons = () => {
     const baseArrowButtonStyle = {
       opacity: isDisplayingCaptureButtons ? 0 : 1,
     };
@@ -258,7 +198,7 @@ class ActionDrawer extends PureComponent {
               iconName="arrow-up"
               subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
-              onClick={this.handleUpClick}
+              onClick={handleUpClick}
               style={{ ...baseArrowButtonStyle, bottom: style.topRowYOffset }}
               tooltip={!!selectedTableCellId ? 'Move row up' : 'Move header up'}
             />
@@ -267,7 +207,7 @@ class ActionDrawer extends PureComponent {
               iconName="arrow-down"
               subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
-              onClick={this.handleDownClick}
+              onClick={handleDownClick}
               style={{ ...baseArrowButtonStyle, bottom: style.bottomRowYOffset }}
               tooltip={!!selectedTableCellId ? 'Move row down' : 'Move header down'}
             />
@@ -276,7 +216,7 @@ class ActionDrawer extends PureComponent {
               iconName="arrow-left"
               subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
-              onClick={this.handleLeftClick}
+              onClick={handleLeftClick}
               style={{
                 ...baseArrowButtonStyle,
                 bottom: style.bottomRowYOffset,
@@ -289,7 +229,7 @@ class ActionDrawer extends PureComponent {
               iconName="arrow-right"
               subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
-              onClick={this.handleRightClick}
+              onClick={handleRightClick}
               style={{
                 ...baseArrowButtonStyle,
                 bottom: style.bottomRowYOffset,
@@ -303,7 +243,7 @@ class ActionDrawer extends PureComponent {
                   additionalClassName="action-drawer__arrow-button"
                   iconName="chevron-left"
                   isDisabled={false}
-                  onClick={this.handleMoveSubtreeLeftClick}
+                  onClick={handleMoveSubtreeLeftClick}
                   style={{
                     ...baseArrowButtonStyle,
                     bottom: style.bottomRowYOffset,
@@ -315,7 +255,7 @@ class ActionDrawer extends PureComponent {
                   additionalClassName="action-drawer__arrow-button"
                   iconName="chevron-right"
                   isDisabled={false}
-                  onClick={this.handleMoveSubtreeRightClick}
+                  onClick={handleMoveSubtreeRightClick}
                   style={{
                     ...baseArrowButtonStyle,
                     bottom: style.bottomRowYOffset,
@@ -331,61 +271,54 @@ class ActionDrawer extends PureComponent {
               subIconName={!!selectedTableCellId ? 'table' : null}
               additionalClassName="action-drawer__main-arrow-button"
               isDisabled={false}
-              onClick={this.handleMainArrowButtonClick}
+              onClick={handleMainArrowButtonClick}
               style={{ opacity: isDisplayingCaptureButtons ? 0 : 1 }}
               tooltip={isDisplayingArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
-              onRef={button => (this.mainArrowButton = button)}
+              onRef={mainArrowButton}
             />
           </div>
         )}
       </Motion>
     );
-  }
+  };
 
-  handleAgendaClick() {
-    this.props.base.activatePopup('agenda');
-  }
+  const handleAgendaClick = () => base.activatePopup('agenda');
 
-  render() {
-    const { inEditMode, shouldDisableSyncButtons, isLoading } = this.props;
-    const { isDisplayingArrowButtons, isDisplayingCaptureButtons } = this.state;
+  return (
+    <div className="action-drawer-container nice-scroll">
+      {inEditMode ? (
+        <button className="btn action-drawer__done-btn" onClick={handleDoneClick}>
+          Done
+        </button>
+      ) : (
+        <Fragment>
+          <ActionButton
+            iconName="cloud"
+            subIconName="sync-alt"
+            shouldSpinSubIcon={isLoading}
+            isDisabled={shouldDisableSyncButtons}
+            onClick={handleSync}
+            style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
+            tooltip="Sync changes"
+          />
 
-    return (
-      <div className="action-drawer-container nice-scroll">
-        {inEditMode ? (
-          <button className="btn action-drawer__done-btn" onClick={this.handleDoneClick}>
-            Done
-          </button>
-        ) : (
-          <Fragment>
-            <ActionButton
-              iconName="cloud"
-              subIconName="sync-alt"
-              shouldSpinSubIcon={isLoading}
-              isDisabled={shouldDisableSyncButtons}
-              onClick={this.handleSync}
-              style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
-              tooltip="Sync changes"
-            />
+          {renderMovementButtons()}
 
-            {this.renderMovementButtons()}
+          <ActionButton
+            iconName="calendar-alt"
+            shouldSpinSubIcon={isLoading}
+            isDisabled={false}
+            onClick={handleAgendaClick}
+            style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
+            tooltip="Show agenda"
+          />
 
-            <ActionButton
-              iconName="calendar-alt"
-              shouldSpinSubIcon={isLoading}
-              isDisabled={false}
-              onClick={this.handleAgendaClick}
-              style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
-              tooltip="Show agenda"
-            />
-
-            {this.renderCaptureButtons()}
-          </Fragment>
-        )}
-      </div>
-    );
-  }
-}
+          {renderCaptureButtons()}
+        </Fragment>
+      )}
+    </div>
+  );
+};
 
 const mapStateToProps = (state, props) => {
   return {

@@ -68,7 +68,7 @@ export default class ActionButton extends PureComponent {
         onClick={this.handleClick}
         style={style}
         title={tooltip}
-        ref={button => (!!onRef ? onRef(button) : null)}
+        ref={onRef}
       >
         {!!letter && letter}
         {!!subIconName && <i className={subIconClassName} />}
