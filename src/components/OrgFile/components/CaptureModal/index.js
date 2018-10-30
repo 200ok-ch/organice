@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment, useState, useEffect, useRef, useMemo } from 'react';
 
 import './stylesheet.css';
 
@@ -9,112 +9,85 @@ import Drawer from '../../../UI/Drawer/';
 import { headerWithPath } from '../../../../lib/org_utils';
 import substituteTemplateVariables from '../../../../lib/capture_template_substitution';
 
-import _ from 'lodash';
+export default ({ template, onCapture, headers, onClose }) => {
+  const [substitutedTemplate, initialCursorIndex] = useMemo(
+    () => substituteTemplateVariables(template.get('template')),
+    [template.get('template')]
+  );
 
-export default class CaptureModal extends PureComponent {
-  constructor(props) {
-    super(props);
+  const targetHeader = useMemo(() => headerWithPath(headers, template.get('headerPaths')), [
+    headers,
+    template.get('headerPaths'),
+  ]);
 
-    _.bindAll(this, [
-      'handleCaptureClick',
-      'handleTextareaChange',
-      'handleCloseClick',
-      'handlePrependSwitchToggle',
-    ]);
+  const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
+  const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
 
-    const [substitutedTemplate, initialCursorIndex] = substituteTemplateVariables(
-      props.template.get('template')
-    );
+  const textarea = useRef(null);
 
-    this.targetHeader = headerWithPath(props.headers, props.template.get('headerPaths'));
-
-    this.state = {
-      textareaValue: substitutedTemplate,
-      initialCursorIndex,
-      shouldPrepend: props.template.get('shouldPrepend'),
-    };
-  }
-
-  componentDidMount() {
-    const { initialCursorIndex } = this.state;
-
-    if (this.textarea) {
-      this.textarea.focus();
-      if (initialCursorIndex !== null) {
-        this.textarea.selectionStart = initialCursorIndex;
-        this.textarea.selectionEnd = initialCursorIndex;
+  useEffect(
+    () => {
+      if (textarea.current) {
+        textarea.current.focus();
+        if (initialCursorIndex !== null) {
+          textarea.current.selectionStart = initialCursorIndex;
+          textarea.current.selectionEnd = initialCursorIndex;
+        }
       }
-    }
-  }
+    },
+    [textarea]
+  );
 
-  handleCaptureClick() {
-    const { textareaValue, shouldPrepend } = this.state;
-    const { template, onCapture } = this.props;
+  const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend);
 
-    onCapture(template.get('id'), textareaValue, shouldPrepend);
-  }
+  const handleTextareaChange = event => setTextareaValue(event.target.value);
 
-  handleTextareaChange(event) {
-    this.setState({ textareaValue: event.target.value });
-  }
+  const handlePrependSwitchToggle = () => setShouldPrepend(!shouldPrepend);
 
-  handleCloseClick() {
-    this.props.onClose();
-  }
+  return (
+    <Drawer shouldIncludeCloseButton onClose={onClose}>
+      <div className="capture-modal-header">
+        <ActionButton
+          letter={template.get('letter')}
+          iconName={template.get('iconName')}
+          isDisabled={false}
+          onClick={() => {}}
+          style={{ marginRight: 20 }}
+        />
 
-  handlePrependSwitchToggle() {
-    this.setState({ shouldPrepend: !this.state.shouldPrepend });
-  }
+        <span>{template.get('description')}</span>
+      </div>
 
-  render() {
-    const { template } = this.props;
-    const { textareaValue, shouldPrepend } = this.state;
+      <div className="capture-modal-header-path">{template.get('headerPaths').join(' > ')}</div>
 
-    return (
-      <Drawer shouldIncludeCloseButton onClose={this.handleCloseClick}>
-        <div className="capture-modal-header">
-          <ActionButton
-            letter={template.get('letter')}
-            iconName={template.get('iconName')}
-            isDisabled={false}
-            onClick={() => {}}
-            style={{ marginRight: 20 }}
+      {!!targetHeader ? (
+        <Fragment>
+          <textarea
+            className="textarea capture-modal-textarea"
+            rows="4"
+            value={textareaValue}
+            onChange={handleTextareaChange}
+            ref={textarea}
           />
 
-          <span>{template.get('description')}</span>
-        </div>
-
-        <div className="capture-modal-header-path">{template.get('headerPaths').join(' > ')}</div>
-
-        {!!this.targetHeader ? (
-          <Fragment>
-            <textarea
-              className="textarea capture-modal-textarea"
-              rows="4"
-              value={textareaValue}
-              onChange={this.handleTextareaChange}
-              ref={textarea => (this.textarea = textarea)}
-            />
-
-            <div className="capture-modal-button-container">
-              <div className="capture-modal-prepend-container">
-                <span className="capture-modal-prepend-label">Prepend:</span>
-                <Switch isEnabled={shouldPrepend} onToggle={this.handlePrependSwitchToggle} />
-              </div>
-
-              <button className="btn capture-modal-button" onClick={this.handleCaptureClick}>
-                Capture
-              </button>
+          <div className="capture-modal-button-container">
+            <div className="capture-modal-prepend-container">
+              <span className="capture-modal-prepend-label">Prepend:</span>
+              <Switch isEnabled={shouldPrepend} onToggle={handlePrependSwitchToggle} />
             </div>
-          </Fragment>
-        ) : (
-          <div className="capture-modal-error-message">
-            The specified header path doesn't exist in this org file!
-          </div>
-        )}
 
-        <br />
-      </Drawer>
-    );
-  }
-}
+            <button className="btn capture-modal-button" onClick={handleCaptureClick}>
+              Capture
+            </button>
+          </div>
+        </Fragment>
+      ) : (
+        <div className="capture-modal-error-message">
+          The specified header path doesn't exist in this org file!
+        </div>
+      )}
+
+      <br />
+    </Drawer>
+  );
+};
