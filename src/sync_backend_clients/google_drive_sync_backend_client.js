@@ -281,6 +281,11 @@ export default () => {
             })
             .then(response => {
               resolve(response.body);
+            })
+            .catch(error => {
+              if (error.body && JSON.parse(error.body).error.errors[0].reason === 'notFound') {
+                reject();
+              }
             });
         });
 
@@ -292,6 +297,11 @@ export default () => {
             })
             .then(response => {
               resolve(response.result.modifiedTime);
+            })
+            .catch(error => {
+              if (error.body && JSON.parse(error.body).error.errors[0].reason === 'notFound') {
+                reject();
+              }
             });
         });
 
