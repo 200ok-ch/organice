@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -14,35 +14,8 @@ import { calculateNamedKeybindings } from '../../lib/keybindings';
 
 import './stylesheet.css';
 
-import _ from 'lodash';
-
-class KeyboardShortcutsEditor extends PureComponent {
-  DEFAULT_BINDINGS = [
-    ['Select next header', 'ctrl+n'],
-    ['Select previous header', 'ctrl+p'],
-    ['Toggle header opened', 'tab'],
-    ['Advance todo state', 'ctrl+t'],
-    ['Edit title', 'ctrl+h'],
-    ['Edit description', 'ctrl+d'],
-    ['Exit edit mode', 'command+enter'],
-    ['Add header', 'ctrl+enter'],
-    ['Remove header', 'backspace'],
-    ['Move header up', 'ctrl+command+p'],
-    ['Move header down', 'ctrl+command+n'],
-    ['Move header left', 'ctrl+command+b'],
-    ['Move header right', 'ctrl+command+f'],
-    ['Undo', 'ctrl+shift+-'],
-  ];
-
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, ['handleBindingChange']);
-  }
-
-  handleBindingChange(bindingName, newBinding) {
-    const { customKeybindings } = this.props;
-
+const KeyboardShortcutsEditor = ({ customKeybindings, base }) => {
+  const handleBindingChange = (bindingName, newBinding) => {
     const alreadyInUseBinding = calculateNamedKeybindings(customKeybindings).filter(
       ([_, binding]) => binding === newBinding
     )[0];
@@ -52,26 +25,22 @@ class KeyboardShortcutsEditor extends PureComponent {
       return;
     }
 
-    this.props.base.setCustomKeybinding(bindingName, newBinding);
-  }
+    base.setCustomKeybinding(bindingName, newBinding);
+  };
 
-  render() {
-    const { customKeybindings } = this.props;
-
-    return (
-      <div className="keyboard-shortcuts-editor-container">
-        {calculateNamedKeybindings(customKeybindings).map(([name, binding]) => (
-          <ShortcutRow
-            key={name}
-            name={name}
-            binding={binding}
-            onBindingChange={this.handleBindingChange}
-          />
-        ))}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="keyboard-shortcuts-editor-container">
+      {calculateNamedKeybindings(customKeybindings).map(([name, binding]) => (
+        <ShortcutRow
+          key={name}
+          name={name}
+          binding={binding}
+          onBindingChange={handleBindingChange}
+        />
+      ))}
+    </div>
+  );
+};
 
 const mapStateToProps = (state, props) => {
   return {

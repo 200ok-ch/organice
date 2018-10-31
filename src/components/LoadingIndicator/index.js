@@ -1,66 +1,48 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Motion, spring } from 'react-motion';
 
 import './stylesheet.css';
 
-import _ from 'lodash';
+export default ({ message }) => {
+  const [shouldRenderIndicator, setShouldRenderIndicator] = useState(true);
+  const [lastMessage, setLastMessage] = useState(message);
 
-export default class LoadingIndicator extends PureComponent {
-  constructor(props) {
-    super(props);
+  useEffect(
+    () => {
+      if (!!message) {
+        setLastMessage(message);
+        setShouldRenderIndicator(true);
+      }
+    },
+    [message]
+  );
 
-    _.bindAll(this, ['handleAnimationRest', 'handleClick']);
-
-    this.state = {
-      shouldRenderIndicator: true,
-      lastMessage: props.message,
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.message !== this.props.message && !!this.props.message) {
-      this.setState({
-        lastMessage: this.props.message,
-        shouldRenderIndicator: true,
-      });
-    }
-  }
-
-  handleAnimationRest() {
-    if (!!this.props.message) {
+  const handleAnimationRest = () => {
+    if (!!message) {
       return;
     }
 
-    this.setState({
-      shouldRenderIndicator: false,
-      lastMessage: null,
-    });
+    setShouldRenderIndicator(false);
+    setLastMessage(null);
+  };
+
+  const handleClick = () => setShouldRenderIndicator(false);
+
+  if (!shouldRenderIndicator) {
+    return null;
   }
 
-  handleClick() {
-    this.setState({ shouldRenderIndicator: false });
-  }
+  const style = {
+    opacity: spring(!!message ? 0.9 : 0, { stiffness: 300 }),
+  };
 
-  render() {
-    const { message } = this.props;
-    const { lastMessage, shouldRenderIndicator } = this.state;
-
-    if (!shouldRenderIndicator) {
-      return null;
-    }
-
-    const style = {
-      opacity: spring(!!message ? 0.9 : 0, { stiffness: 300 }),
-    };
-
-    return (
-      <Motion style={style} onRest={this.handleAnimationRest}>
-        {style => (
-          <div className="loading-indicator" style={style} onClick={this.handleClick}>
-            {lastMessage}
-          </div>
-        )}
-      </Motion>
-    );
-  }
-}
+  return (
+    <Motion style={style} onRest={handleAnimationRest}>
+      {style => (
+        <div className="loading-indicator" style={style} onClick={handleClick}>
+          {lastMessage}
+        </div>
+      )}
+    </Motion>
+  );
+};

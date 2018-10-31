@@ -1,46 +1,24 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import './stylesheet.css';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 
-import _ from 'lodash';
+export default ({ part, subPartDataAndHandlers: { onTimestampClick, shouldDisableActions } }) => {
+  const handleClick = () => (shouldDisableActions ? void 0 : onTimestampClick(part.get('id')));
 
-export default class TimestampPart extends PureComponent {
-  constructor(props) {
-    super(props);
+  const firstTimestamp = part.get('firstTimestamp');
+  const secondTimestamp = part.get('secondTimestamp');
 
-    _.bindAll(this, ['handleClick']);
-  }
-
-  handleClick() {
-    const {
-      part,
-      subPartDataAndHandlers: { onTimestampClick, shouldDisableActions },
-    } = this.props;
-
-    if (shouldDisableActions) {
-      return;
-    }
-
-    onTimestampClick(part.get('id'));
-  }
-
-  render() {
-    const { part } = this.props;
-    const firstTimestamp = part.get('firstTimestamp');
-    const secondTimestamp = part.get('secondTimestamp');
-
-    return (
-      <span className="attributed-string__timestamp-part" onClick={this.handleClick}>
-        {!!firstTimestamp && renderAsText(firstTimestamp)}
-        {!!secondTimestamp && (
-          <Fragment>
-            {'--'}
-            {renderAsText(secondTimestamp)}
-          </Fragment>
-        )}
-      </span>
-    );
-  }
-}
+  return (
+    <span className="attributed-string__timestamp-part" onClick={handleClick}>
+      {!!firstTimestamp && renderAsText(firstTimestamp)}
+      {!!secondTimestamp && (
+        <Fragment>
+          {'--'}
+          {renderAsText(secondTimestamp)}
+        </Fragment>
+      )}
+    </span>
+  );
+};
