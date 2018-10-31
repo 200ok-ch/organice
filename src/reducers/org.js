@@ -864,6 +864,8 @@ export const updatePropertyListItems = (state, action) => {
   return state.setIn(['headers', headerIndex, 'propertyListItems'], action.newPropertyListItems);
 };
 
+const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
+
 export default (state = new Map(), action) => {
   const dirtyingActions = [
     'ADVANCE_TODO_STATE',
@@ -998,6 +1000,8 @@ export default (state = new Map(), action) => {
       return addNewPlanningItem(state, action);
     case 'UPDATE_PROPERTY_LIST_ITEMS':
       return updatePropertyListItems(state, action);
+    case 'SET_ORG_FILE_ERROR_MESSAGE':
+      return setOrgFileErrorMessage(state, action);
     default:
       return state;
   }

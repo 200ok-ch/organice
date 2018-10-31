@@ -62,7 +62,7 @@ class OrgFile extends PureComponent {
     ]);
 
     this.state = {
-      hasError: false,
+      hasUncaughtError: false,
     };
   }
 
@@ -102,7 +102,7 @@ class OrgFile extends PureComponent {
   componentDidCatch(error) {
     ga('send', 'event', 'error', 'OrgFile componentDidCatch', error);
 
-    this.setState({ hasError: true });
+    this.setState({ hasUncaughtError: true });
   }
 
   handleSelectNextVisibleHeaderHotKey() {
@@ -317,17 +317,14 @@ class OrgFile extends PureComponent {
       staticFile,
       customKeybindings,
       inEditMode,
+      orgFileErrorMessage,
     } = this.props;
 
     if (!path && !staticFile) {
       return <Redirect to="/files" />;
     }
 
-    if (!headers) {
-      return <div />;
-    }
-
-    if (this.state.hasError) {
+    if (this.state.hasUncaughtError) {
       return (
         <div className="error-message-container">
           Uh oh, you ran into a bug!
@@ -345,6 +342,14 @@ class OrgFile extends PureComponent {
           (and include the org file if possible!)
         </div>
       );
+    }
+
+    if (!!orgFileErrorMessage) {
+      return <div className="error-message-container">{orgFileErrorMessage}</div>;
+    }
+
+    if (!headers) {
+      return <div />;
     }
 
     const keyMap = _.fromPairs(calculateActionedKeybindings(customKeybindings));
@@ -447,6 +452,7 @@ const mapStateToProps = (state, props) => {
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
     pendingCapture: state.org.present.get('pendingCapture'),
+    orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
   };
 };
 

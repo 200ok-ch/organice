@@ -1,7 +1,13 @@
 /* global gapi */
 
-import { setLoadingMessage, hideLoadingMessage, clearModalStack } from './base';
-import { displayFile, applyOpennessState, setDirty, setLastSyncAt } from './org';
+import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
+import {
+  displayFile,
+  applyOpennessState,
+  setDirty,
+  setLastSyncAt,
+  setOrgFileErrorMessage,
+} from './org';
 import { persistField } from '../util/settings_persister';
 
 import moment from 'moment';
@@ -105,6 +111,11 @@ export const downloadFile = path => {
         dispatch(setLastSyncAt(moment().add(5, 'seconds')));
         dispatch(displayFile(path, fileContents));
         dispatch(applyOpennessState());
+      })
+      .catch(() => {
+        dispatch(hideLoadingMessage());
+        dispatch(setIsLoading(false));
+        dispatch(setOrgFileErrorMessage('File not found'));
       });
   };
 };

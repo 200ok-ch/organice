@@ -68,16 +68,23 @@ export default accessToken => {
 
   const getFileContentsAndMetadata = path =>
     new Promise((resolve, reject) =>
-      dropboxClient.filesDownload({ path }).then(response => {
-        const reader = new FileReader();
-        reader.addEventListener('loadend', () =>
-          resolve({
-            contents: reader.result,
-            lastModifiedAt: response.server_modified,
-          })
-        );
-        reader.readAsText(response.fileBlob);
-      })
+      dropboxClient
+        .filesDownload({ path })
+        .then(response => {
+          const reader = new FileReader();
+          reader.addEventListener('loadend', () =>
+            resolve({
+              contents: reader.result,
+              lastModifiedAt: response.server_modified,
+            })
+          );
+          reader.readAsText(response.fileBlob);
+        })
+        .catch(error => {
+          if (!!error.error && JSON.parse(error.error).error.path['.tag'] === 'not_found') {
+            reject();
+          }
+        })
     );
 
   const getFileContents = path =>

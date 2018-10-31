@@ -42,54 +42,62 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
 ) => {
   dispatch(setLoadingMessage('Syncing...'));
   dispatch(setIsLoading(true));
+  dispatch(setOrgFileErrorMessage(null));
 
   const client = getState().syncBackend.get('client');
   const path = getState().org.present.get('path');
-  client.getFileContentsAndMetadata(path).then(({ contents, lastModifiedAt }) => {
-    const isDirty = getState().org.present.get('isDirty');
-    const lastServerModifiedAt = moment(lastModifiedAt);
-    const lastSyncAt = getState().org.present.get('lastSyncAt');
+  client
+    .getFileContentsAndMetadata(path)
+    .then(({ contents, lastModifiedAt }) => {
+      const isDirty = getState().org.present.get('isDirty');
+      const lastServerModifiedAt = moment(lastModifiedAt);
+      const lastSyncAt = getState().org.present.get('lastSyncAt');
 
-    if (lastSyncAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
-      if (isDirty) {
-        client
-          .updateFile(
-            path,
-            exportOrg(
-              getState().org.present.get('headers'),
-              getState().org.present.get('todoKeywordSets')
+      if (lastSyncAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
+        if (isDirty) {
+          client
+            .updateFile(
+              path,
+              exportOrg(
+                getState().org.present.get('headers'),
+                getState().org.present.get('todoKeywordSets')
+              )
             )
-          )
-          .then(() => {
-            dispatch(setDisappearingLoadingMessage(successMessage, 2000));
-            dispatch(setIsLoading(false));
-            dispatch(setDirty(false));
-            dispatch(setLastSyncAt(moment().add(5, 'seconds')));
-          })
-          .catch(error => {
-            alert(`There was an error pushing the file: ${error.toString()}`);
-            dispatch(hideLoadingMessage());
-            dispatch(setIsLoading(false));
-          });
+            .then(() => {
+              dispatch(setDisappearingLoadingMessage(successMessage, 2000));
+              dispatch(setIsLoading(false));
+              dispatch(setDirty(false));
+              dispatch(setLastSyncAt(moment().add(5, 'seconds')));
+            })
+            .catch(error => {
+              alert(`There was an error pushing the file: ${error.toString()}`);
+              dispatch(hideLoadingMessage());
+              dispatch(setIsLoading(false));
+            });
+        } else {
+          dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+          dispatch(setIsLoading(false));
+        }
       } else {
-        dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
-        dispatch(setIsLoading(false));
+        if (isDirty && forceAction !== 'pull') {
+          dispatch(hideLoadingMessage());
+          dispatch(setIsLoading(false));
+          dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
+        } else {
+          dispatch(displayFile(path, contents));
+          dispatch(applyOpennessState());
+          dispatch(setDirty(false));
+          dispatch(setLastSyncAt(moment().add(5, 'seconds')));
+          dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+          dispatch(setIsLoading(false));
+        }
       }
-    } else {
-      if (isDirty && forceAction !== 'pull') {
-        dispatch(hideLoadingMessage());
-        dispatch(setIsLoading(false));
-        dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
-      } else {
-        dispatch(displayFile(path, contents));
-        dispatch(applyOpennessState());
-        dispatch(setDirty(false));
-        dispatch(setLastSyncAt(moment().add(5, 'seconds')));
-        dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
-        dispatch(setIsLoading(false));
-      }
-    }
-  });
+    })
+    .catch(() => {
+      dispatch(hideLoadingMessage());
+      dispatch(setIsLoading(false));
+      dispatch(setOrgFileErrorMessage('File not found'));
+    });
 };
 
 export const openHeader = headerId => ({
@@ -389,4 +397,9 @@ export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   type: 'UPDATE_PROPERTY_LIST_ITEMS',
   headerId,
   newPropertyListItems,
+});
+
+export const setOrgFileErrorMessage = message => ({
+  type: 'SET_ORG_FILE_ERROR_MESSAGE',
+  message,
 });
