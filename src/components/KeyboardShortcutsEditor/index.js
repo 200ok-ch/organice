@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom';
 
 import { Map } from 'immutable';
 
-import Modal from '../UI/Modal';
 import ShortcutRow from './components/ShortcutRow';
 
 import * as baseActions from '../../actions/base';
@@ -30,18 +29,16 @@ const KeyboardShortcutsEditor = ({ customKeybindings, base }) => {
   };
 
   return (
-    <Modal>
-      <div className="keyboard-shortcuts-editor-container">
-        {calculateNamedKeybindings(customKeybindings).map(([name, binding]) => (
-          <ShortcutRow
-            key={name}
-            name={name}
-            binding={binding}
-            onBindingChange={handleBindingChange}
-          />
-        ))}
-      </div>
-    </Modal>
+    <div className="keyboard-shortcuts-editor-container">
+      {calculateNamedKeybindings(customKeybindings).map(([name, binding]) => (
+        <ShortcutRow
+          key={name}
+          name={name}
+          binding={binding}
+          onBindingChange={handleBindingChange}
+        />
+      ))}
+    </div>
   );
 };
 
