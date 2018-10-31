@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -11,116 +11,78 @@ import * as captureActions from '../../actions/capture';
 import CaptureTemplate from './components/CaptureTemplate';
 
 import { List } from 'immutable';
-import _ from 'lodash';
 
-class CaptureTemplatesEditor extends PureComponent {
-  constructor(props) {
-    super(props);
+const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) => {
+  const handleAddNewTemplateClick = () => capture.addNewEmptyCaptureTemplate();
 
-    _.bindAll(this, [
-      'handleAddNewTemplateClick',
-      'handleFieldPathUpdate',
-      'handleAddNewTemplateOrgFileAvailability',
-      'handleRemoveTemplateOrgFileAvailability',
-      'handleAddNewTemplateHeaderPath',
-      'handleRemoveTemplateHeaderPath',
-      'handleDeleteTemplate',
-      'handleReorderTemplate',
-    ]);
-  }
+  const handleFieldPathUpdate = (templateId, fieldPath, newValue) =>
+    capture.updateTemplateFieldPathValue(templateId, fieldPath, newValue);
 
-  handleAddNewTemplateClick() {
-    this.props.capture.addNewEmptyCaptureTemplate();
-  }
+  const handleAddNewTemplateOrgFileAvailability = templateId =>
+    capture.addNewTemplateOrgFileAvailability(templateId);
 
-  handleFieldPathUpdate(templateId, fieldPath, newValue) {
-    this.props.capture.updateTemplateFieldPathValue(templateId, fieldPath, newValue);
-  }
+  const handleRemoveTemplateOrgFileAvailability = (templateId, orgFileAvailabilityIndex) =>
+    capture.removeTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex);
 
-  handleAddNewTemplateOrgFileAvailability(templateId) {
-    this.props.capture.addNewTemplateOrgFileAvailability(templateId);
-  }
+  const handleAddNewTemplateHeaderPath = templateId => capture.addNewTemplateHeaderPath(templateId);
 
-  handleRemoveTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex) {
-    this.props.capture.removeTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex);
-  }
+  const handleRemoveTemplateHeaderPath = (templateId, headerPathIndex) =>
+    capture.removeTemplateHeaderPath(templateId, headerPathIndex);
 
-  handleAddNewTemplateHeaderPath(templateId) {
-    this.props.capture.addNewTemplateHeaderPath(templateId);
-  }
+  const handleDeleteTemplate = templateId => capture.deleteTemplate(templateId);
 
-  handleRemoveTemplateHeaderPath(templateId, headerPathIndex) {
-    this.props.capture.removeTemplateHeaderPath(templateId, headerPathIndex);
-  }
+  const handleReorderTemplate = (fromIndex, toIndex) =>
+    capture.reorderCaptureTemplate(fromIndex, toIndex);
 
-  handleDeleteTemplate(templateId) {
-    this.props.capture.deleteTemplate(templateId);
-  }
+  return (
+    <div>
+      <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
+        {(provided, snapshot) => (
+          <div
+            className="capture-templates-container"
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {captureTemplates.size === 0 ? (
+              <div className="no-capture-templates-message">
+                You don't currently have any capture templates - add one by pressing the{' '}
+                <i className="fas fa-plus" /> button.
+                <br />
+                <br />
+                Capture templates show up in the action drawer and give you quick access to creating
+                new headers (like org-capture).
+              </div>
+            ) : (
+              <Fragment>
+                {captureTemplates.map((template, index) => (
+                  <CaptureTemplate
+                    key={template.get('id')}
+                    index={index}
+                    template={template}
+                    syncBackendType={syncBackendType}
+                    onFieldPathUpdate={handleFieldPathUpdate}
+                    onAddNewTemplateOrgFileAvailability={handleAddNewTemplateOrgFileAvailability}
+                    onRemoveTemplateOrgFileAvailability={handleRemoveTemplateOrgFileAvailability}
+                    onAddNewTemplateHeaderPath={handleAddNewTemplateHeaderPath}
+                    onRemoveTemplateHeaderPath={handleRemoveTemplateHeaderPath}
+                    onDeleteTemplate={handleDeleteTemplate}
+                    onReorder={handleReorderTemplate}
+                  />
+                ))}
 
-  handleReorderTemplate(fromIndex, toIndex) {
-    this.props.capture.reorderCaptureTemplate(fromIndex, toIndex);
-  }
+                {provided.placeholder}
+              </Fragment>
+            )}
+          </div>
+        )}
+      </Droppable>
 
-  render() {
-    const { captureTemplates, syncBackendType } = this.props;
-
-    return (
-      <div>
-        <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
-          {(provided, snapshot) => (
-            <div
-              className="capture-templates-container"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {captureTemplates.size === 0 ? (
-                <div className="no-capture-templates-message">
-                  You don't currently have any capture templates - add one by pressing the{' '}
-                  <i className="fas fa-plus" /> button.
-                  <br />
-                  <br />
-                  Capture templates show up in the action drawer and give you quick access to
-                  creating new headers (like org-capture).
-                </div>
-              ) : (
-                <Fragment>
-                  {captureTemplates.map((template, index) => (
-                    <CaptureTemplate
-                      key={template.get('id')}
-                      index={index}
-                      template={template}
-                      syncBackendType={syncBackendType}
-                      onFieldPathUpdate={this.handleFieldPathUpdate}
-                      onAddNewTemplateOrgFileAvailability={
-                        this.handleAddNewTemplateOrgFileAvailability
-                      }
-                      onRemoveTemplateOrgFileAvailability={
-                        this.handleRemoveTemplateOrgFileAvailability
-                      }
-                      onAddNewTemplateHeaderPath={this.handleAddNewTemplateHeaderPath}
-                      onRemoveTemplateHeaderPath={this.handleRemoveTemplateHeaderPath}
-                      onDeleteTemplate={this.handleDeleteTemplate}
-                      onReorder={this.handleReorderTemplate}
-                    />
-                  ))}
-
-                  {provided.placeholder}
-                </Fragment>
-              )}
-            </div>
-          )}
-        </Droppable>
-
-        <div className="new-capture-template-button-container">
-          <button
-            className="fas fa-plus fa-lg btn btn--circle"
-            onClick={this.handleAddNewTemplateClick}
-          />
-        </div>
+      <div className="new-capture-template-button-container">
+        <button className="fas fa-plus fa-lg btn btn--circle" onClick={handleAddNewTemplateClick} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 const mapStateToProps = (state, props) => {
   return {

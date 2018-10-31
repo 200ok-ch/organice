@@ -1,150 +1,137 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 import './stylesheet.css';
 
 import { Motion, spring } from 'react-motion';
-import _ from 'lodash';
 import classNames from 'classnames';
 
-export default class Drawer extends PureComponent {
-  constructor(props) {
-    super(props);
+export default ({ children, shouldIncludeCloseButton, onClose }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [dragOffsetY, setDragOffsetY] = useState(null);
 
-    _.bindAll(this, ['handleClose', 'handleAnimationRest']);
+  let initialClientY = null;
 
-    this.state = {
-      isVisible: false,
-      dragOffsetY: null,
-    };
-  }
+  const innerContainer = useRef();
 
-  componentDidMount() {
-    this.setState({ isVisible: true });
+  useLayoutEffect(() => setIsVisible(true), []);
 
-    // Super annoying logic for disabling scrolling of the body when a slide up is active.
-    // Briefly: if we're already at the top of our Drawer and trying to scroll up, disable
-    // scrolling. Likewise, if we're already at the bottom of our Drawer and trying to scroll
-    // down, disable scrolling.
-    this.innerContainer.addEventListener('touchstart', event => {
-      this.initialClientY = event.targetTouches[0].clientY;
-    });
+  let innerContainerHeight = null;
+  useLayoutEffect(() => (innerContainerHeight = innerContainer.current.offsetHeight));
+  const endInnerContainerDrag = endingDragOffset => {
+    setIsVisible(endingDragOffset <= innerContainerHeight * 0.3);
+    setDragOffsetY(null);
+  };
 
-    this.innerContainer.addEventListener('touchmove', event => {
-      if (event.target.classList.contains('drag-handle')) {
-        return;
+  const handleInnerContainerClick = event => event.stopPropagation();
+
+  const handleClose = () => setIsVisible(false);
+
+  const handleAnimationRest = () => (!isVisible && !!onClose ? onClose() : void 0);
+
+  const handleTouchStart = event => (initialClientY = event.targetTouches[0].clientY);
+
+  const handleTouchMove = event => {
+    if (event.target.classList.contains('drag-handle')) {
+      return;
+    }
+
+    const isScrollingDown = initialClientY > event.targetTouches[0].clientY;
+
+    if (
+      isScrollingDown &&
+      innerContainer.current.scrollHeight - innerContainer.current.scrollTop <=
+        innerContainer.current.clientHeight
+    ) {
+      event.preventDefault();
+    } else if (!isScrollingDown && innerContainer.current.scrollTop === 0) {
+      event.preventDefault();
+
+      setDragOffsetY(event.targetTouches[0].clientY - initialClientY);
+    }
+  };
+
+  const handleTouchEndOrCancel = event => endInnerContainerDrag(dragOffsetY);
+
+  useEffect(
+    () => {
+      if (!!innerContainer.current) {
+        // Super annoying logic for disabling scrolling of the body when a slide up is active.
+        // Briefly: if we're already at the top of our Drawer and trying to scroll up, disable
+        // scrolling. Likewise, if we're already at the bottom of our Drawer and trying to scroll
+        // down, disable scrolling.
+        innerContainer.current.addEventListener('touchstart', handleTouchStart);
+        innerContainer.current.addEventListener('touchmove', handleTouchMove);
+        innerContainer.current.addEventListener('touchend', handleTouchEndOrCancel);
+        innerContainer.current.addEventListener('touchcancel', handleTouchEndOrCancel);
+
+        return () => {
+          innerContainer.current.removeEventListener('touchstart', handleTouchStart);
+          innerContainer.current.removeEventListener('touchmove', handleTouchMove);
+          innerContainer.current.removeEventListener('touchend', handleTouchEndOrCancel);
+          innerContainer.current.removeEventListener('touchcancel', handleTouchEndOrCancel);
+        };
+      } else {
+        return null;
       }
+    },
+    [innerContainer.current]
+  );
 
-      const isScrollingDown = this.initialClientY > event.targetTouches[0].clientY;
-
-      if (
-        isScrollingDown &&
-        this.innerContainer.scrollHeight - this.innerContainer.scrollTop <=
-          this.innerContainer.clientHeight
-      ) {
-        event.preventDefault();
-      } else if (!isScrollingDown && this.innerContainer.scrollTop === 0) {
-        event.preventDefault();
-
-        this.setState({ dragOffsetY: event.targetTouches[0].clientY - this.initialClientY });
-      }
-    });
-
-    this.innerContainer.addEventListener('touchend', event => {
-      this.endInnerContainerDrag(this.state.dragOffsetY);
-    });
-
-    this.innerContainer.addEventListener('touchcancel', event => {
-      this.endInnerContainerDrag(this.state.dragOffsetY);
-    });
-
-    this.updateInnerContainerHeight();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.dragOffsetY === prevState.dragOffsetY) {
+  useEffect(
+    () => {
       // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
       // Without this, I can't scroll the inner container in the agenda view.
       setTimeout(() => {
-        this.innerContainer.style.left = '0';
+        innerContainer.current.style.left = '0';
         setTimeout(() => {
-          this.innerContainer.style.left = '-1px';
+          innerContainer.current.style.left = '-1px';
         }, 0);
       }, 0);
-    }
+    },
+    [children]
+  );
 
-    this.updateInnerContainerHeight();
-  }
+  const outerClassName = classNames('slide-up-outer-container', {
+    'slide-up-outer-container--visible': isVisible,
+  });
 
-  updateInnerContainerHeight() {
-    this.innerContainerHeight = this.innerContainer.offsetHeight;
-  }
+  const innerStyle = {
+    offsetY:
+      dragOffsetY ||
+      spring(isVisible ? 0 : innerContainerHeight || window.innerHeight, {
+        stiffness: 300,
+      }),
+  };
 
-  endInnerContainerDrag(endingDragOffset) {
-    const isVisible = endingDragOffset <= this.innerContainerHeight * 0.3;
+  return (
+    <Motion style={innerStyle} onRest={handleAnimationRest}>
+      {style => {
+        const interpolatedStyle = {
+          transform: `translateY(${style.offsetY}px)`,
+        };
 
-    this.setState({ dragOffsetY: null, isVisible });
-  }
+        return (
+          <div className={outerClassName} onClick={!!onClose ? handleClose : null}>
+            <div
+              onClick={handleInnerContainerClick}
+              className="slide-up-inner-container nice-scroll"
+              ref={innerContainer}
+              style={interpolatedStyle}
+            >
+              <div className="slide-up__grabber" />
 
-  handleInnerContainerClick(event) {
-    event.stopPropagation();
-  }
+              {shouldIncludeCloseButton && (
+                <button
+                  className="fas fa-times fa-lg slide-up__close-button"
+                  onClick={handleClose}
+                />
+              )}
 
-  handleClose() {
-    this.setState({ isVisible: false });
-  }
-
-  handleAnimationRest() {
-    if (!this.state.isVisible && !!this.props.onClose) {
-      this.props.onClose();
-    }
-  }
-
-  render() {
-    const { children, shouldIncludeCloseButton, onClose } = this.props;
-    const { isVisible, dragOffsetY } = this.state;
-
-    const outerClassName = classNames('slide-up-outer-container', {
-      'slide-up-outer-container--visible': isVisible,
-    });
-
-    const innerStyle = {
-      offsetY:
-        dragOffsetY ||
-        spring(isVisible ? 0 : this.innerContainerHeight || window.innerHeight, {
-          stiffness: 300,
-        }),
-    };
-
-    return (
-      <Motion style={innerStyle} onRest={this.handleAnimationRest}>
-        {style => {
-          const interpolatedStyle = {
-            transform: `translateY(${style.offsetY}px)`,
-          };
-
-          return (
-            <div className={outerClassName} onClick={!!onClose ? this.handleClose : null}>
-              <div
-                onClick={this.handleInnerContainerClick}
-                className="slide-up-inner-container nice-scroll"
-                ref={div => (this.innerContainer = div)}
-                style={interpolatedStyle}
-              >
-                <div className="slide-up__grabber" />
-
-                {shouldIncludeCloseButton && (
-                  <button
-                    className="fas fa-times fa-lg slide-up__close-button"
-                    onClick={this.handleClose}
-                  />
-                )}
-
-                {children}
-              </div>
+              {children}
             </div>
-          );
-        }}
-      </Motion>
-    );
-  }
-}
+          </div>
+        );
+      }}
+    </Motion>
+  );
+};
