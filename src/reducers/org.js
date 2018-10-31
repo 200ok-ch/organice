@@ -867,39 +867,7 @@ export const updatePropertyListItems = (state, action) => {
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
 export default (state = new Map(), action) => {
-  const dirtyingActions = [
-    'ADVANCE_TODO_STATE',
-    'UPDATE_HEADER_TITLE',
-    'UPDATE_HEADER_DESCRIPTION',
-    'ADD_HEADER',
-    'REMOVE_HEADER',
-    'MOVE_HEADER_UP',
-    'MOVE_HEADER_DOWN',
-    'MOVE_HEADER_LEFT',
-    'MOVE_HEADER_RIGHT',
-    'MOVE_SUBTREE_LEFT',
-    'MOVE_SUBTREE_RIGHT',
-    'ADD_NEW_TABLE_ROW',
-    'REMOVE_TABLE_ROW',
-    'ADD_NEW_TABLE_COLUMN',
-    'REMOVE_TABLE_COLUMN',
-    'MOVE_TABLE_ROW_DOWN',
-    'MOVE_TABLE_ROW_UP',
-    'MOVE_TABLE_COLUMN_LEFT',
-    'MOVE_TABLE_COLUMN_RIGHT',
-    'UPDATE_TABLE_CELL_VALUE',
-    'INSERT_CAPTURE',
-    'SET_HEADER_TAGS',
-    'REORDER_TAGS',
-    'REORDER_PROPERTY_LIST',
-    'UPDATE_TIMESTAMP_WITH_ID',
-    'UPDATE_PLANNING_ITEM_TIMESTAMP',
-    'ADVANCE_CHECKBOX_STATE',
-    'ADD_NEW_PLANNING_ITEM',
-    'UPDATE_PROPERTY_LIST_ITEMS',
-  ];
-
-  if (dirtyingActions.includes(action.type)) {
+  if (action.dirtying) {
     state = state.set('isDirty', true);
   }
 

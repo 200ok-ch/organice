@@ -36,11 +36,14 @@ export const stopDisplayingFile = () => {
   };
 };
 
-export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } = {}) => (
-  dispatch,
-  getState
-) => {
-  dispatch(setLoadingMessage('Syncing...'));
+export const sync = ({
+  forceAction = null,
+  successMessage = 'Changes pushed',
+  shouldSuppressMessages = false,
+} = {}) => (dispatch, getState) => {
+  if (!shouldSuppressMessages) {
+    dispatch(setLoadingMessage('Syncing...'));
+  }
   dispatch(setIsLoading(true));
   dispatch(setOrgFileErrorMessage(null));
 
@@ -64,7 +67,9 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
               )
             )
             .then(() => {
-              dispatch(setDisappearingLoadingMessage(successMessage, 2000));
+              if (!shouldSuppressMessages) {
+                dispatch(setDisappearingLoadingMessage(successMessage, 2000));
+              }
               dispatch(setIsLoading(false));
               dispatch(setDirty(false));
               dispatch(setLastSyncAt(moment().add(5, 'seconds')));
@@ -75,7 +80,9 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
               dispatch(setIsLoading(false));
             });
         } else {
-          dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+          if (!shouldSuppressMessages) {
+            dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+          }
           dispatch(setIsLoading(false));
         }
       } else {
@@ -88,7 +95,9 @@ export const sync = ({ forceAction = null, successMessage = 'Changes pushed' } =
           dispatch(applyOpennessState());
           dispatch(setDirty(false));
           dispatch(setLastSyncAt(moment().add(5, 'seconds')));
-          dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+          if (!shouldSuppressMessages) {
+            dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+          }
           dispatch(setIsLoading(false));
         }
       }
@@ -126,6 +135,7 @@ export const selectHeaderAndOpenParents = headerId => dispatch => {
 export const advanceTodoState = (headerId = null) => ({
   type: 'ADVANCE_TODO_STATE',
   headerId,
+  dirtying: true,
 });
 
 export const enterEditMode = editModeType => ({
@@ -141,17 +151,20 @@ export const updateHeaderTitle = (headerId, newRawTitle) => ({
   type: 'UPDATE_HEADER_TITLE',
   headerId,
   newRawTitle,
+  dirtying: true,
 });
 
 export const updateHeaderDescription = (headerId, newRawDescription) => ({
   type: 'UPDATE_HEADER_DESCRIPTION',
   headerId,
   newRawDescription,
+  dirtying: true,
 });
 
 export const addHeader = headerId => ({
   type: 'ADD_HEADER',
   headerId,
+  dirtying: true,
 });
 
 export const selectNextSiblingHeader = headerId => ({
@@ -178,36 +191,43 @@ export const selectPreviousVisibleHeader = headerId => ({
 export const removeHeader = headerId => ({
   type: 'REMOVE_HEADER',
   headerId,
+  dirtying: true,
 });
 
 export const moveHeaderUp = headerId => ({
   type: 'MOVE_HEADER_UP',
   headerId,
+  dirtying: true,
 });
 
 export const moveHeaderDown = headerId => ({
   type: 'MOVE_HEADER_DOWN',
   headerId,
+  dirtying: true,
 });
 
 export const moveHeaderLeft = headerId => ({
   type: 'MOVE_HEADER_LEFT',
   headerId,
+  dirtying: true,
 });
 
 export const moveHeaderRight = headerId => ({
   type: 'MOVE_HEADER_RIGHT',
   headerId,
+  dirtying: true,
 });
 
 export const moveSubtreeLeft = headerId => ({
   type: 'MOVE_SUBTREE_LEFT',
   headerId,
+  dirtying: true,
 });
 
 export const moveSubtreeRight = headerId => ({
   type: 'MOVE_SUBTREE_RIGHT',
   headerId,
+  dirtying: true,
 });
 
 export const focusHeader = headerId => ({
@@ -242,40 +262,49 @@ export const setSelectedTableCellId = cellId => dispatch => {
 
 export const addNewTableRow = () => ({
   type: 'ADD_NEW_TABLE_ROW',
+  dirtying: true,
 });
 
 export const removeTableRow = () => ({
   type: 'REMOVE_TABLE_ROW',
+  dirtying: true,
 });
 
 export const addNewTableColumn = () => ({
   type: 'ADD_NEW_TABLE_COLUMN',
+  dirtying: true,
 });
 
 export const removeTableColumn = () => ({
   type: 'REMOVE_TABLE_COLUMN',
+  dirtying: true,
 });
 
 export const moveTableRowDown = () => ({
   type: 'MOVE_TABLE_ROW_DOWN',
+  dirtying: true,
 });
 
 export const moveTableRowUp = () => ({
   type: 'MOVE_TABLE_ROW_UP',
+  dirtying: true,
 });
 
 export const moveTableColumnLeft = () => ({
   type: 'MOVE_TABLE_COLUMN_LEFT',
+  dirtying: true,
 });
 
 export const moveTableColumnRight = () => ({
   type: 'MOVE_TABLE_COLUMN_RIGHT',
+  dirtying: true,
 });
 
 export const updateTableCellValue = (cellId, newValue) => ({
   type: 'UPDATE_TABLE_CELL_VALUE',
   cellId,
   newValue,
+  dirtying: true,
 });
 
 export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, getState) => {
@@ -285,7 +314,7 @@ export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, 
     .capture.get('captureTemplates')
     .concat(sampleCaptureTemplates)
     .find(template => template.get('id') === templateId);
-  dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend });
+  dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
 };
 
 export const clearPendingCapture = () => ({
@@ -352,18 +381,21 @@ export const insertPendingCapture = () => (dispatch, getState) => {
 export const advanceCheckboxState = listItemId => ({
   type: 'ADVANCE_CHECKBOX_STATE',
   listItemId,
+  dirtying: true,
 });
 
 export const setHeaderTags = (headerId, tags) => ({
   type: 'SET_HEADER_TAGS',
   headerId,
   tags,
+  dirtying: true,
 });
 
 export const reorderTags = (fromIndex, toIndex) => ({
   type: 'REORDER_TAGS',
   fromIndex,
   toIndex,
+  dirtying: true,
 });
 
 export const reorderPropertyList = (fromIndex, toIndex) => (dispatch, getState) =>
@@ -372,12 +404,14 @@ export const reorderPropertyList = (fromIndex, toIndex) => (dispatch, getState) 
     fromIndex,
     toIndex,
     headerId: getState().base.getIn(['activePopup', 'data', 'headerId']),
+    dirtying: true,
   });
 
 export const updateTimestampWithId = (timestampId, newTimestamp) => ({
   type: 'UPDATE_TIMESTAMP_WITH_ID',
   timestampId,
   newTimestamp,
+  dirtying: true,
 });
 
 export const updatePlanningItemTimestamp = (headerId, planningItemIndex, newTimestamp) => ({
@@ -385,18 +419,21 @@ export const updatePlanningItemTimestamp = (headerId, planningItemIndex, newTime
   headerId,
   planningItemIndex,
   newTimestamp,
+  dirtying: true,
 });
 
 export const addNewPlanningItem = (headerId, planningType) => ({
   type: 'ADD_NEW_PLANNING_ITEM',
   headerId,
   planningType,
+  dirtying: true,
 });
 
 export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   type: 'UPDATE_PROPERTY_LIST_ITEMS',
   headerId,
   newPropertyListItems,
+  dirtying: true,
 });
 
 export const setOrgFileErrorMessage = message => ({
