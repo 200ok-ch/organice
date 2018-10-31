@@ -93,6 +93,12 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
+    category: 'base',
+    name: 'shouldLiveSync',
+    type: 'boolean',
+    shouldStoreInConfig: false,
+  },
+  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',

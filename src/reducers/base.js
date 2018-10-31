@@ -22,6 +22,8 @@ const setAgendaDefaultDeadlineDelayValue = (state, action) =>
 const setShouldStoreSettingsInSyncBackend = (state, action) =>
   state.set('shouldStoreSettingsInSyncBackend', action.newShouldStoreSettingsInSyncBackend);
 
+const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.shouldLiveSync);
+
 const setHasUnseenChangelog = (state, action) =>
   state.set('hasUnseenChangelog', action.newHasUnseenChangelog);
 
@@ -91,6 +93,8 @@ export default (state = new Map(), action) => {
       return setAgendaDefaultDeadlineDelayValue(state, action);
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
       return setShouldStoreSettingsInSyncBackend(state, action);
+    case 'SET_SHOULD_LIVE_SYNC':
+      return setShouldLiveSync(state, action);
     case 'SET_HAS_UNSEEN_CHANGELOG':
       return setHasUnseenChangelog(state, action);
     case 'SET_LAST_SEEN_CHANGELOG_HEADER':

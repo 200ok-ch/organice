@@ -17,6 +17,7 @@ const Settings = ({
   bulletStyle,
   shouldTapTodoToAdvance,
   shouldStoreSettingsInSyncBackend,
+  shouldLiveSync,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   hasUnseenChangelog,
@@ -43,7 +44,9 @@ const Settings = ({
   const handleAgendaDefaultDeadlineDelayUnitChange = newDelayUnit =>
     base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
 
-  const handleShouldStoreSettingsInSyncBackend = () =>
+  const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
+
+  const handleShouldStoreSettingsInSyncBackendChange = () =>
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleChangelogClick = () => base.pushModalPage('changelog');
@@ -77,6 +80,16 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
+          Live sync
+          <div className="setting-label__description">
+            If enabled, changes are automatically pushed to the sync backend as you make them.
+          </div>
+        </div>
+        <Switch isEnabled={shouldLiveSync} onToggle={handleShouldLiveSyncChange} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
           Store settings in sync backend
           <div className="setting-label__description">
             Store settings and keyboard shortcuts in a .org-web-config.json file in your sync
@@ -85,7 +98,7 @@ const Settings = ({
         </div>
         <Switch
           isEnabled={shouldStoreSettingsInSyncBackend}
-          onToggle={handleShouldStoreSettingsInSyncBackend}
+          onToggle={handleShouldStoreSettingsInSyncBackendChange}
         />
       </div>
 
@@ -185,6 +198,7 @@ const mapStateToProps = (state, props) => {
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
+    shouldLiveSync: state.base.get('shouldLiveSync'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };

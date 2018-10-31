@@ -82,6 +82,11 @@ export const setAgendaDefaultDeadlineDelayValue = newAgendaDefaultDeadlineDelayV
   newAgendaDefaultDeadlineDelayValue,
 });
 
+export const setShouldLiveSync = shouldLiveSync => ({
+  type: 'SET_SHOULD_LIVE_SYNC',
+  shouldLiveSync,
+});
+
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
     dispatch({
