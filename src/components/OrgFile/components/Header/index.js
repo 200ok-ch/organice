@@ -399,6 +399,7 @@ class Header extends PureComponent {
               <Collapse
                 isOpened={isSelected && !shouldDisableActions}
                 springConfig={{ stiffness: 300 }}
+                style={{ marginRight: rightSwipeActionContainerStyle.width }}
               >
                 <HeaderActionDrawer
                   onEnterTitleEditMode={this.handleEnterTitleEditMode}
