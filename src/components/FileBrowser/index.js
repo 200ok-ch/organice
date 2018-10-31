@@ -18,6 +18,7 @@ const FileBrowser = ({
   syncBackendType,
   syncBackend,
   additionalSyncBackendState,
+  shouldSuppressScrolling,
 }) => {
   useEffect(() => syncBackend.getDirectoryListing(path), [path]);
 
@@ -40,7 +41,7 @@ const FileBrowser = ({
   const isTopLevelDirectory = path === '';
 
   return (
-    <div className="file-browser-container">
+    <div className="file-browser-container" style={{ height: shouldSuppressScrolling ? 0 : null }}>
       {syncBackendType === 'Dropbox' && (
         <h3 className="file-browser__header">Directory: {isTopLevelDirectory ? '/' : path}</h3>
       )}

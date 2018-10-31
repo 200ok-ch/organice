@@ -8,6 +8,7 @@ import './stylesheet.css';
 
 import * as captureActions from '../../actions/capture';
 
+import Modal from '../UI/Modal';
 import CaptureTemplate from './components/CaptureTemplate';
 
 import { List } from 'immutable';
@@ -35,52 +36,57 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
     capture.reorderCaptureTemplate(fromIndex, toIndex);
 
   return (
-    <div>
-      <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
-        {(provided, snapshot) => (
-          <div
-            className="capture-templates-container"
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {captureTemplates.size === 0 ? (
-              <div className="no-capture-templates-message">
-                You don't currently have any capture templates - add one by pressing the{' '}
-                <i className="fas fa-plus" /> button.
-                <br />
-                <br />
-                Capture templates show up in the action drawer and give you quick access to creating
-                new headers (like org-capture).
-              </div>
-            ) : (
-              <Fragment>
-                {captureTemplates.map((template, index) => (
-                  <CaptureTemplate
-                    key={template.get('id')}
-                    index={index}
-                    template={template}
-                    syncBackendType={syncBackendType}
-                    onFieldPathUpdate={handleFieldPathUpdate}
-                    onAddNewTemplateOrgFileAvailability={handleAddNewTemplateOrgFileAvailability}
-                    onRemoveTemplateOrgFileAvailability={handleRemoveTemplateOrgFileAvailability}
-                    onAddNewTemplateHeaderPath={handleAddNewTemplateHeaderPath}
-                    onRemoveTemplateHeaderPath={handleRemoveTemplateHeaderPath}
-                    onDeleteTemplate={handleDeleteTemplate}
-                    onReorder={handleReorderTemplate}
-                  />
-                ))}
+    <Modal>
+      <div>
+        <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
+          {(provided, snapshot) => (
+            <div
+              className="capture-templates-container"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {captureTemplates.size === 0 ? (
+                <div className="no-capture-templates-message">
+                  You don't currently have any capture templates - add one by pressing the{' '}
+                  <i className="fas fa-plus" /> button.
+                  <br />
+                  <br />
+                  Capture templates show up in the action drawer and give you quick access to
+                  creating new headers (like org-capture).
+                </div>
+              ) : (
+                <Fragment>
+                  {captureTemplates.map((template, index) => (
+                    <CaptureTemplate
+                      key={template.get('id')}
+                      index={index}
+                      template={template}
+                      syncBackendType={syncBackendType}
+                      onFieldPathUpdate={handleFieldPathUpdate}
+                      onAddNewTemplateOrgFileAvailability={handleAddNewTemplateOrgFileAvailability}
+                      onRemoveTemplateOrgFileAvailability={handleRemoveTemplateOrgFileAvailability}
+                      onAddNewTemplateHeaderPath={handleAddNewTemplateHeaderPath}
+                      onRemoveTemplateHeaderPath={handleRemoveTemplateHeaderPath}
+                      onDeleteTemplate={handleDeleteTemplate}
+                      onReorder={handleReorderTemplate}
+                    />
+                  ))}
 
-                {provided.placeholder}
-              </Fragment>
-            )}
-          </div>
-        )}
-      </Droppable>
+                  {provided.placeholder}
+                </Fragment>
+              )}
+            </div>
+          )}
+        </Droppable>
 
-      <div className="new-capture-template-button-container">
-        <button className="fas fa-plus fa-lg btn btn--circle" onClick={handleAddNewTemplateClick} />
+        <div className="new-capture-template-button-container">
+          <button
+            className="fas fa-plus fa-lg btn btn--circle"
+            onClick={handleAddNewTemplateClick}
+          />
+        </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

@@ -318,6 +318,7 @@ class OrgFile extends PureComponent {
       customKeybindings,
       inEditMode,
       orgFileErrorMessage,
+      shouldSuppressScrolling,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -394,7 +395,11 @@ class OrgFile extends PureComponent {
     };
 
     return (
-      <HotKeys keyMap={keyMap} handlers={handlers}>
+      <HotKeys
+        keyMap={keyMap}
+        handlers={handlers}
+        style={{ height: shouldSuppressScrolling ? 0 : null }}
+      >
         <div className="org-file-container" tabIndex="-1" ref={this.handleContainerRef}>
           {headers.size === 0 ? (
             <div className="org-file__parsing-error-message">

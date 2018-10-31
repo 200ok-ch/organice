@@ -14,6 +14,7 @@ import { parseOrg } from '../../lib/parse_org';
 
 import raw from 'raw.macro';
 
+import Modal from '../UI/Modal';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
 import FileBrowser from '../FileBrowser';
@@ -52,29 +53,33 @@ class Entry extends PureComponent {
 
   renderChangelogFile() {
     return (
-      <OrgFile
-        staticFile="changelog"
-        shouldDisableDirtyIndicator={true}
-        shouldDisableActions={true}
-        shouldDisableSyncButtons={false}
-        parsingErrorMessage={
-          "The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
-        }
-      />
+      <Modal>
+        <OrgFile
+          staticFile="changelog"
+          shouldDisableDirtyIndicator={true}
+          shouldDisableActions={true}
+          shouldDisableSyncButtons={false}
+          parsingErrorMessage={
+            "The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
+          }
+        />
+      </Modal>
     );
   }
 
   renderSampleFile() {
     return (
-      <OrgFile
-        staticFile="sample"
-        shouldDisableDirtyIndicator={true}
-        shouldDisableActionDrawer={false}
-        shouldDisableSyncButtons={true}
-        parsingErrorMessage={
-          "The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
-        }
-      />
+      <Modal>
+        <OrgFile
+          staticFile="sample"
+          shouldDisableDirtyIndicator={true}
+          shouldDisableActionDrawer={false}
+          shouldDisableSyncButtons={true}
+          parsingErrorMessage={
+            "The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
+          }
+        />
+      </Modal>
     );
   }
 
@@ -87,7 +92,9 @@ class Entry extends PureComponent {
       path = '/' + path;
     }
 
-    return <FileBrowser path={path} />;
+    const hasActiveModalPage = !!this.props.activeModalPage;
+
+    return <FileBrowser path={path} shouldSuppressScrolling={hasActiveModalPage} />;
   }
 
   renderFile({
@@ -99,12 +106,15 @@ class Entry extends PureComponent {
       path = '/' + path;
     }
 
+    const hasActiveModalPage = !!this.props.activeModalPage;
+
     return (
       <OrgFile
         path={path}
         shouldDisableDirtyIndicator={false}
         shouldDisableActionDrawer={false}
         shouldDisableSyncButtons={false}
+        shouldSuppressScrolling={hasActiveModalPage}
       />
     );
   }
@@ -132,26 +142,21 @@ class Entry extends PureComponent {
 
         <LoadingIndicator message={loadingMessage} />
 
-        {activeModalPage === 'changelog' ? (
-          this.renderChangelogFile()
-        ) : isAuthenticated ? (
-          ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(
-            activeModalPage
-          ) ? (
-            <Fragment>
-              {activeModalPage === 'settings' && <Settings />}
-              {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
-              {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
-              {activeModalPage === 'sample' && this.renderSampleFile()}
-            </Fragment>
-          ) : (
+        {isAuthenticated ? (
+          <Fragment>
             <Switch>
               {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
               <Route path="/file/:path+" render={this.renderFile} />
               <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Redirect to="/files" />
             </Switch>
-          )
+
+            {activeModalPage === 'changelog' && this.renderChangelogFile()}
+            {activeModalPage === 'settings' && <Settings />}
+            {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
+            {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+            {activeModalPage === 'sample' && this.renderSampleFile()}
+          </Fragment>
         ) : (
           <Switch>
             <Route path="/sample" exact={true} render={this.renderSampleFile} />
