@@ -180,6 +180,17 @@ const Settings = ({
           before you sign up. You can unsubscribe at any time!
         </div>
 
+        <button className="btn settings-btn">
+          <a
+            href="https://twitter.com/org_web_org"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'white' }}
+          >
+            Twitter <i className="fas fa-external-link-alt fa-sm" />
+          </a>
+        </button>
+
         <hr className="settings-button-separator" />
 
         <button className="btn settings-btn" onClick={handleSignOutClick}>
