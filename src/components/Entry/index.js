@@ -51,6 +51,16 @@ class Entry extends PureComponent {
     this.props.base.setLastSeenChangelogHeader(firstHeaderTitle);
   }
 
+  componentDidUpdate() {
+    this.shouldPromptWhenLeaving()
+      ? (window.onbeforeunload = () => true)
+      : (window.onbeforeunload = undefined);
+  }
+
+  componentWillUnmount() {
+    window.onbeforeunload = undefined;
+  }
+
   renderChangelogFile() {
     return (
       <Modal>
@@ -119,6 +129,10 @@ class Entry extends PureComponent {
     );
   }
 
+  shouldPromptWhenLeaving() {
+    return this.props.location.pathname.startsWith('/file/') && this.props.isDirty;
+  }
+
   render() {
     const {
       isAuthenticated,
@@ -127,13 +141,10 @@ class Entry extends PureComponent {
       activeModalPage,
       pendingCapture,
       location: { pathname },
-      isDirty,
     } = this.props;
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
-
-    const shouldPromptWhenLeaving = pathname.startsWith('/file/') && isDirty;
 
     const className = classNames('entry-container', {
       'entry-container--large-font': fontSize === 'Large',
@@ -148,7 +159,7 @@ class Entry extends PureComponent {
         {isAuthenticated ? (
           <Fragment>
             <Prompt
-              when={shouldPromptWhenLeaving}
+              when={this.shouldPromptWhenLeaving()}
               message={() =>
                 'You have unpushed changes - are you sure you want to leave this page?'
               }
