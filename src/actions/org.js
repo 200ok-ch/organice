@@ -41,14 +41,18 @@ export const sync = ({
   successMessage = 'Changes pushed',
   shouldSuppressMessages = false,
 } = {}) => (dispatch, getState) => {
+  const client = getState().syncBackend.get('client');
+  const path = getState().org.present.get('path');
+  if (path === null) {
+    return;
+  }
+
   if (!shouldSuppressMessages) {
     dispatch(setLoadingMessage('Syncing...'));
   }
   dispatch(setIsLoading(true));
   dispatch(setOrgFileErrorMessage(null));
 
-  const client = getState().syncBackend.get('client');
-  const path = getState().org.present.get('path');
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {

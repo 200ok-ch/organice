@@ -423,10 +423,12 @@ class OrgFile extends PureComponent {
           {isDirty &&
             !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
 
-          <ActionDrawer
-            shouldDisableSyncButtons={shouldDisableSyncButtons}
-            staticFile={staticFile}
-          />
+          {!shouldDisableActions && (
+            <ActionDrawer
+              shouldDisableSyncButtons={shouldDisableSyncButtons}
+              staticFile={staticFile}
+            />
+          )}
 
           {this.renderActivePopup()}
         </div>
