@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, Prompt, withRouter } from 'react-router-dom';
 
 import './stylesheet.css';
 
@@ -127,10 +127,13 @@ class Entry extends PureComponent {
       activeModalPage,
       pendingCapture,
       location: { pathname },
+      isDirty,
     } = this.props;
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
+
+    const shouldPromptWhenLeaving = pathname.startsWith('/file/') && isDirty;
 
     const className = classNames('entry-container', {
       'entry-container--large-font': fontSize === 'Large',
@@ -144,6 +147,13 @@ class Entry extends PureComponent {
 
         {isAuthenticated ? (
           <Fragment>
+            <Prompt
+              when={shouldPromptWhenLeaving}
+              message={() =>
+                'You have unpushed changes - are you sure you want to leave this page?'
+              }
+            />
+
             <Switch>
               {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
               <Route path="/file/:path+" render={this.renderFile} />
@@ -178,6 +188,7 @@ const mapStateToProps = (state, props) => {
     lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
+    isDirty: state.org.present.get('isDirty'),
   };
 };
 
