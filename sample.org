@@ -84,6 +84,8 @@ If there's no newer version on the server and there are local changes, it'll pus
 Otherwise, it'll ask what you want to do.
 
 This button isn't enabled in this demo :)
+
+If you'd like to automatically push changes as you make them, you can enable "Live sync" in settings.
 ** Undoing
 The undo button will appear up in the header bar when you're signed in
 
