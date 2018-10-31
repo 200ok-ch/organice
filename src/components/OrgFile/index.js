@@ -224,6 +224,87 @@ class OrgFile extends PureComponent {
     }
   }
 
+  renderActivePopup() {
+    const {
+      activePopupType,
+      activePopupData,
+      captureTemplates,
+      headers,
+      selectedHeader,
+    } = this.props;
+
+    switch (activePopupType) {
+      case 'sync-confirmation':
+        return (
+          <SyncConfirmationModal
+            lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
+            onPull={this.handleSyncConfirmationPull}
+            onPush={this.handleSyncConfirmationPush}
+            onCancel={this.handleSyncConfirmationCancel}
+          />
+        );
+      case 'capture':
+        return (
+          <CaptureModal
+            template={captureTemplates.find(
+              template => template.get('id') === activePopupData.get('templateId')
+            )}
+            headers={headers}
+            onCapture={this.handleCapture}
+            onClose={this.handlePopupClose}
+          />
+        );
+      case 'tags-editor':
+        return !!selectedHeader ? (
+          <TagsEditorModal
+            header={selectedHeader}
+            allTags={OrderedSet(
+              headers.flatMap(header => header.getIn(['titleLine', 'tags']))
+            ).sort()}
+            onClose={this.handlePopupClose}
+            onChange={this.handleTagsChange}
+          />
+        ) : null;
+      case 'timestamp-editor':
+        let editingTimestamp = null;
+        if (activePopupData.get('timestampId')) {
+          editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
+        } else {
+          editingTimestamp = fromJS({
+            firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
+              'planningItems',
+              activePopupData.get('planningItemIndex'),
+              'timestamp',
+            ]),
+          });
+        }
+
+        return (
+          <TimestampEditorModal
+            timestamp={editingTimestamp}
+            singleTimestampOnly={!activePopupData.get('timestampId')}
+            onClose={this.handlePopupClose}
+            onChange={this.handleTimestampChange(activePopupData)}
+          />
+        );
+
+      case 'property-list-editor':
+        return (
+          <PropertyListEditorModal
+            onClose={this.handlePopupClose}
+            onChange={this.handlePropertyListItemsChange}
+            propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
+              'propertyListItems'
+            )}
+          />
+        );
+      case 'agenda':
+        return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
+      default:
+        return null;
+    }
+  }
+
   render() {
     const {
       headers,
@@ -236,10 +317,6 @@ class OrgFile extends PureComponent {
       staticFile,
       customKeybindings,
       inEditMode,
-      selectedHeader,
-      activePopupType,
-      activePopupData,
-      captureTemplates,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -268,21 +345,6 @@ class OrgFile extends PureComponent {
           (and include the org file if possible!)
         </div>
       );
-    }
-
-    let editingTimestamp = null;
-    if (activePopupType === 'timestamp-editor') {
-      if (activePopupData.get('timestampId')) {
-        editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
-      } else {
-        editingTimestamp = fromJS({
-          firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
-            'planningItems',
-            activePopupData.get('planningItemIndex'),
-            'timestamp',
-          ]),
-        });
-      }
     }
 
     const keyMap = _.fromPairs(calculateActionedKeybindings(customKeybindings));
@@ -361,60 +423,7 @@ class OrgFile extends PureComponent {
             staticFile={staticFile}
           />
 
-          {activePopupType === 'sync-confirmation' && (
-            <SyncConfirmationModal
-              lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
-              onPull={this.handleSyncConfirmationPull}
-              onPush={this.handleSyncConfirmationPush}
-              onCancel={this.handleSyncConfirmationCancel}
-            />
-          )}
-
-          {activePopupType === 'capture' && (
-            <CaptureModal
-              template={captureTemplates.find(
-                template => template.get('id') === activePopupData.get('templateId')
-              )}
-              headers={headers}
-              onCapture={this.handleCapture}
-              onClose={this.handlePopupClose}
-            />
-          )}
-
-          {activePopupType === 'tags-editor' &&
-            !!selectedHeader && (
-              <TagsEditorModal
-                header={selectedHeader}
-                allTags={OrderedSet(
-                  headers.flatMap(header => header.getIn(['titleLine', 'tags']))
-                ).sort()}
-                onClose={this.handlePopupClose}
-                onChange={this.handleTagsChange}
-              />
-            )}
-
-          {activePopupType === 'timestamp-editor' && (
-            <TimestampEditorModal
-              timestamp={editingTimestamp}
-              singleTimestampOnly={!activePopupData.get('timestampId')}
-              onClose={this.handlePopupClose}
-              onChange={this.handleTimestampChange(activePopupData)}
-            />
-          )}
-
-          {activePopupType === 'property-list-editor' && (
-            <PropertyListEditorModal
-              onClose={this.handlePopupClose}
-              onChange={this.handlePropertyListItemsChange}
-              propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
-                'propertyListItems'
-              )}
-            />
-          )}
-
-          {activePopupType === 'agenda' && (
-            <AgendaModal onClose={this.handlePopupClose} headers={headers} />
-          )}
+          {this.renderActivePopup()}
         </div>
       </HotKeys>
     );
