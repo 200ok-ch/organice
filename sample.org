@@ -218,17 +218,16 @@ You don't log in to org-web directly because org-web doesn't have a back end - i
 * Future plans
 org-web is currently pretty usable for simple tasks, but there's a lot more to do.
 
-If you have an idea or feature request, or if you want to contribute to org-web, check out the [[https://github.com/DanielDe/org-web][GitHub page]]
+If you have an idea or feature request, or if you want to contribute to org-web, check out the [[https://github.com/DanielDe/org-web][GitHub page]]. We also have a [[https://gitter.im/org-web/Lobby?source=orgpage][Gitter chatroom]] if you want to chat!
 
 Here are a few of the things already on the todo list:
-** org-agenda view
 ** Support for other sync backends in addition to Dropbox and Google Drive
 *** SyncThing
 *** GitHub
+*** WebDAV
 *** Mega
 *** Others? If there's one you'd like, [[https://github.com/DanielDe/org-web/issues/new][create an issue]]!
 ** Support for symmetric encryption
-** More first-class support for org features like tags and timestamps
 ** Search
 ** Ability to create new files
 ** Archiving
