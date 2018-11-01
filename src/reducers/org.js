@@ -203,6 +203,32 @@ const advanceTodoState = (state, action) => {
       ['headers', headerIndex, 'titleLine', 'todoKeyword'],
       currentTodoSet.get('keywords').first()
     );
+
+    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems => {
+      const newLastRepeatValue = [
+        {
+          type: 'timestamp',
+          id: generateId(),
+          firstTimestamp: getCurrentTimestamp({ isActive: false, withStartTime: true }),
+          secondTimestamp: null,
+        },
+      ];
+
+      return propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
+        ? propertyListItems.map(
+            item =>
+              item.get('property') === 'LAST_REPEAT'
+                ? item.set('value', fromJS(newLastRepeatValue))
+                : item
+          )
+        : propertyListItems.push(
+            fromJS({
+              property: 'LAST_REPEAT',
+              value: newLastRepeatValue,
+              id: generateId(),
+            })
+          );
+    });
   } else {
     state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
   }

@@ -32,11 +32,11 @@ export const renderAsText = timestamp => {
   return timestampText;
 };
 
-export const getCurrentTimestamp = () => {
+export const getCurrentTimestamp = ({ isActive = true, withStartTime = false }) => {
   const time = moment();
 
-  return {
-    isActive: true,
+  const timestamp = {
+    isActive,
     year: time.format('YYYY'),
     month: time.format('MM'),
     day: time.format('DD'),
@@ -52,6 +52,13 @@ export const getCurrentTimestamp = () => {
     delayValue: null,
     delayUnit: null,
   };
+
+  if (withStartTime) {
+    timestamp.startHour = time.format('HH');
+    timestamp.startMinute = time.format('mm');
+  }
+
+  return timestamp;
 };
 
 export const getCurrentTimestampAsText = () => `<${moment().format('YYYY-MM-DD ddd')}>`;
