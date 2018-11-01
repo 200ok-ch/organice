@@ -1,3 +1,5 @@
+* November 1st, 2018 (afternoon)
+** Add support for the [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][-- delay type]] with SCHEDULED items
 * November 1st, 2018
 ** Added support for [[https://orgmode.org/manual/Repeated-tasks.html][timestamp repeaters]]
 When you advance a header to a DONE state, if there is a DEADLINE or SCHEDULED planning item on that header, those timestamps will be advanced according to the specified repeater.
