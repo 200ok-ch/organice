@@ -171,7 +171,7 @@ org-web has native support for viewing and editing property lists. To bring up a
 :launch-date: [1986-05-16 Fri]
 :END:
 * Planning
-org-web has native support for adding and editing DEADLINE and SCHEDULED items. Check out these examples:
+org-web has native support for adding and editing DEADLINE and SCHEDULED items. It also supports [[https://orgmode.org/manual/Repeated-tasks.html][repeaters]] and [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][delays]]. Check out these examples:
 ** An item with a deadline
 DEADLINE: <2018-10-03 Wed>
 ** An item that is scheduled
@@ -179,6 +179,8 @@ SCHEDULED: <2018-10-18 Thu>
 ** An item with both
 DEADLINE: <2018-10-02 Tue>
 SCHEDULED: <2018-10-02 Tue>
+** TODO An item with a repeater - try swiping right to advance to the DONE state
+DEADLINE: <2018-11-01 Thu ++1w>
 * Capture
 org-web supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
 

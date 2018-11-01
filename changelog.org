@@ -1,3 +1,6 @@
+* November 1st, 2018
+** Added support for [[https://orgmode.org/manual/Repeated-tasks.html][timestamp repeaters]]
+When you advance a header to a DONE state, if there is a DEADLINE or SCHEDULED planning item on that header, those timestamps will be advanced according to the specified repeater.
 * October 31st, 2018
 ** Added a "Live sync" setting to automatically push changes as you make them, instead of requiring you to manually sync.
 ** Happy Halloween!
