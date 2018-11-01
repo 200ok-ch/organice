@@ -32,7 +32,7 @@ import {
   pathAndPartOfTimestampItemWithIdInHeaders,
   todoKeywordSetForKeyword,
 } from '../lib/org_utils';
-import { getCurrentTimestamp, applyRepeater } from '../lib/timestamps';
+import { getCurrentTimestamp, applyRepeater, renderAsText } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
 
 const displayFile = (state, action) => {
@@ -204,30 +204,48 @@ const advanceTodoState = (state, action) => {
       currentTodoSet.get('keywords').first()
     );
 
-    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems => {
-      const newLastRepeatValue = [
-        {
-          type: 'timestamp',
-          id: generateId(),
-          firstTimestamp: getCurrentTimestamp({ isActive: false, withStartTime: true }),
-          secondTimestamp: null,
-        },
-      ];
+    const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
+    const newLastRepeatValue = [
+      {
+        type: 'timestamp',
+        id: generateId(),
+        firstTimestamp: lastRepeatTimestamp,
+        secondTimestamp: null,
+      },
+    ];
+    state = state.updateIn(
+      ['headers', headerIndex, 'propertyListItems'],
+      propertyListItems =>
+        propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
+          ? propertyListItems.map(
+              item =>
+                item.get('property') === 'LAST_REPEAT'
+                  ? item.set('value', fromJS(newLastRepeatValue))
+                  : item
+            )
+          : propertyListItems.push(
+              fromJS({
+                property: 'LAST_REPEAT',
+                value: newLastRepeatValue,
+                id: generateId(),
+              })
+            )
+    );
 
-      return propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
-        ? propertyListItems.map(
-            item =>
-              item.get('property') === 'LAST_REPEAT'
-                ? item.set('value', fromJS(newLastRepeatValue))
-                : item
-          )
-        : propertyListItems.push(
-            fromJS({
-              property: 'LAST_REPEAT',
-              value: newLastRepeatValue,
-              id: generateId(),
-            })
-          );
+    state = state.updateIn(['headers', headerIndex], header => {
+      let rawDescription = header.get('rawDescription');
+      if (rawDescription.startsWith('\n')) {
+        rawDescription = rawDescription.slice(1);
+      }
+
+      rawDescription =
+        `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+          fromJS(lastRepeatTimestamp)
+        )}\n` + rawDescription;
+
+      return header
+        .set('rawDescription', rawDescription)
+        .set('description', parseRawText(rawDescription));
     });
   } else {
     state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
