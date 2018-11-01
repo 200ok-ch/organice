@@ -1,5 +1,5 @@
 * org-web - org mode on the web
-org-web lets you directly edit your org files online. It syncs with Dropbox and Google Drive and is optimized for mobile use.
+org-web lets you directly edit your org files online. It syncs with Dropbox and Google Drive and is optimized for mobile use. You can check out a [[https://www.youtube.com/watch?v=ijNqZQxNgiA][video demo here]].
 
 [[./screenshots/overview.png]]
 
