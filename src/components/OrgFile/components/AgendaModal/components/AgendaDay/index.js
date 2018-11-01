@@ -73,8 +73,13 @@ export default class AgendaDay extends PureComponent {
           } else if (planningItem.get('type') === 'SCHEDULED') {
             let appearDate = planningItemDate;
             if (!!timestamp.get('delayType')) {
-              const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
-              appearDate = planningItemDate.clone().add(timestamp.get('delayValue'), delayUnit);
+              const hasBeenRepeated = header
+                .get('propertyListItems')
+                .some(propertyListItem => propertyListItem.get('property') === 'LAST_REPEAT');
+              if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
+                const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
+                appearDate = planningItemDate.clone().add(timestamp.get('delayValue'), delayUnit);
+              }
             }
 
             if (isToday && date > appearDate) {
