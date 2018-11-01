@@ -32,7 +32,7 @@ export const renderAsText = timestamp => {
   return timestampText;
 };
 
-export const getCurrentTimestamp = ({ isActive = true, withStartTime = false }) => {
+export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } = {}) => {
   const time = moment();
 
   const timestamp = {
