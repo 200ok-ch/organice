@@ -82,8 +82,8 @@ export default class PropertyListEditorModal extends PureComponent {
     const { onClose, propertyListItems } = this.props;
 
     return (
-      <Drawer shouldIncludeCloseButton onClose={onClose}>
-        <h2 className="slide-up-modal__title">Edit property list</h2>
+      <Drawer onClose={onClose}>
+        <h2 className="drawer-modal__title">Edit property list</h2>
 
         {propertyListItems.size === 0 ? (
           <div className="no-items-message">

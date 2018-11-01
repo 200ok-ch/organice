@@ -47,7 +47,7 @@ export default class TimestampEditorModal extends PureComponent {
     const { timestamp, onClose, singleTimestampOnly } = this.props;
 
     return (
-      <Drawer shouldIncludeCloseButton onClose={onClose}>
+      <Drawer onClose={onClose}>
         <h2 className="timestamp-editor__title">Edit timestamp</h2>
 
         <TimestampEditor

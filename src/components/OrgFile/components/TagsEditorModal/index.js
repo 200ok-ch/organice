@@ -67,8 +67,8 @@ export default class TagsEditorModal extends PureComponent {
     const headerTags = header.getIn(['titleLine', 'tags']);
 
     return (
-      <Drawer shouldIncludeCloseButton onClose={onClose}>
-        <h2 className="slide-up-modal__title">Edit tags</h2>
+      <Drawer onClose={onClose}>
+        <h2 className="drawer-modal__title">Edit tags</h2>
 
         {headerTags.size === 0 ? (
           <div className="no-tags-message">

@@ -133,7 +133,7 @@ class AgendaModal extends PureComponent {
     }
 
     return (
-      <Drawer shouldIncludeCloseButton onClose={onClose}>
+      <Drawer onClose={onClose}>
         <h2 className="agenda__title">Agenda</h2>
 
         <div className="agenda__tab-container">

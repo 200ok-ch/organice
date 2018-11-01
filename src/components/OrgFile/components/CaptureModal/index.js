@@ -45,7 +45,7 @@ export default ({ template, onCapture, headers, onClose }) => {
   const handlePrependSwitchToggle = () => setShouldPrepend(!shouldPrepend);
 
   return (
-    <Drawer shouldIncludeCloseButton onClose={onClose}>
+    <Drawer onClose={onClose}>
       <div className="capture-modal-header">
         <ActionButton
           letter={template.get('letter')}
