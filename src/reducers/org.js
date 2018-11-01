@@ -183,19 +183,30 @@ const advanceTodoState = (state, action) => {
   const newStateIndex = currentStateIndex + 1;
   const newTodoState = currentTodoSet.get('keywords').get(newStateIndex) || '';
 
-  if (currentTodoSet.get('completedKeywords').includes(newTodoState)) {
-    header
-      .get('planningItems')
-      .filter(planningItem => !!planningItem.getIn(['timestamp', 'repeaterType']))
-      .forEach((planningItem, planningItemIndex) => {
-        state = state.setIn(
-          ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-          applyRepeater(planningItem.get('timestamp'), moment())
-        );
-      });
+  const indexedPlanningItemsWithRepeaters = header
+    .get('planningItems')
+    .map((planningItem, index) => [planningItem, index])
+    .filter(([planningItem, index]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
+
+  if (
+    currentTodoSet.get('completedKeywords').includes(newTodoState) &&
+    indexedPlanningItemsWithRepeaters.size > 0
+  ) {
+    indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
+      state = state.setIn(
+        ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
+        applyRepeater(planningItem.get('timestamp'), moment())
+      );
+    });
+
+    state = state.setIn(
+      ['headers', headerIndex, 'titleLine', 'todoKeyword'],
+      currentTodoSet.get('keywords').first()
+    );
+  } else {
+    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
   }
 
-  state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
   state = updateCookiesOfParentOfHeaderWithId(state, headerId);
 
   return state;
