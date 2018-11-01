@@ -9,16 +9,15 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [dragOffsetY, setDragOffsetY] = useState(null);
 
-  let initialClientY = null;
-
-  const innerContainer = useRef();
-
   useLayoutEffect(() => setIsVisible(true), []);
 
-  let innerContainerHeight = null;
-  useLayoutEffect(() => (innerContainerHeight = innerContainer.current.offsetHeight));
-  const endInnerContainerDrag = endingDragOffset => {
-    setIsVisible(endingDragOffset <= innerContainerHeight * 0.3);
+  const initialClientY = useRef();
+  const innerContainer = useRef();
+
+  const innerContainerHeight = useRef();
+  useLayoutEffect(() => (innerContainerHeight.current = innerContainer.current.offsetHeight));
+  const endInnerContainerDrag = () => {
+    setIsVisible(dragOffsetY <= innerContainerHeight.current * 0.3);
     setDragOffsetY(null);
   };
 
@@ -28,14 +27,14 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
 
   const handleAnimationRest = () => (!isVisible && !!onClose ? onClose() : void 0);
 
-  const handleTouchStart = event => (initialClientY = event.targetTouches[0].clientY);
+  const handleTouchStart = event => (initialClientY.current = event.targetTouches[0].clientY);
 
   const handleTouchMove = event => {
     if (event.target.classList.contains('drag-handle')) {
       return;
     }
 
-    const isScrollingDown = initialClientY > event.targetTouches[0].clientY;
+    const isScrollingDown = initialClientY.current > event.targetTouches[0].clientY;
 
     if (
       isScrollingDown &&
@@ -46,11 +45,11 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
     } else if (!isScrollingDown && innerContainer.current.scrollTop === 0) {
       event.preventDefault();
 
-      setDragOffsetY(event.targetTouches[0].clientY - initialClientY);
+      setDragOffsetY(event.targetTouches[0].clientY - initialClientY.current);
     }
   };
 
-  const handleTouchEndOrCancel = event => endInnerContainerDrag(dragOffsetY);
+  const handleTouchEndOrCancel = event => endInnerContainerDrag();
 
   useEffect(
     () => {
@@ -74,7 +73,7 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
         return null;
       }
     },
-    [innerContainer.current]
+    [innerContainer.current, dragOffsetY]
   );
 
   useEffect(
@@ -91,14 +90,14 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
     [children]
   );
 
-  const outerClassName = classNames('slide-up-outer-container', {
-    'slide-up-outer-container--visible': isVisible,
+  const outerClassName = classNames('drawer-outer-container', {
+    'drawer-outer-container--visible': isVisible,
   });
 
   const innerStyle = {
     offsetY:
       dragOffsetY ||
-      spring(isVisible ? 0 : innerContainerHeight || window.innerHeight, {
+      spring(isVisible ? 0 : innerContainerHeight.current || window.innerHeight, {
         stiffness: 300,
       }),
   };
@@ -114,17 +113,14 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
           <div className={outerClassName} onClick={!!onClose ? handleClose : null}>
             <div
               onClick={handleInnerContainerClick}
-              className="slide-up-inner-container nice-scroll"
+              className="drawer-inner-container nice-scroll"
               ref={innerContainer}
               style={interpolatedStyle}
             >
-              <div className="slide-up__grabber" />
+              <div className="drawer__grabber" />
 
               {shouldIncludeCloseButton && (
-                <button
-                  className="fas fa-times fa-lg slide-up__close-button"
-                  onClick={handleClose}
-                />
+                <button className="fas fa-times fa-lg drawer__close-button" onClick={handleClose} />
               )}
 
               {children}

@@ -1,4 +1,4 @@
-.slide-up-outer-container {
+.drawer-outer-container {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -8,11 +8,11 @@
   z-index: 3;
 }
 
-.slide-up-outer-container--visible {
+.drawer-outer-container--visible {
   background-color: rgba(94, 52, 140, 0.1);
 }
 
-.slide-up-inner-container {
+.drawer-inner-container {
   position: fixed;
   bottom: -1px;
   left: -1px;
@@ -31,7 +31,7 @@
   overflow: auto;
 }
 
-.slide-up__close-button {
+.drawer__close-button {
   position: absolute;
   top: 15px;
   right: 15px;
@@ -43,7 +43,7 @@
   padding: 0;
 }
 
-.slide-up__grabber {
+.drawer__grabber {
   width: 35px;
   height: 5px;
   background-color: gray;
@@ -57,7 +57,7 @@
   margin-bottom: 5px;
 }
 
-.slide-up-modal__title {
+.drawer-modal__title {
   color: #5e348c;
 
   margin-top: 0;
