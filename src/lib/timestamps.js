@@ -75,3 +75,44 @@ export const momentUnitForTimestampUnit = timestampUnit =>
     m: 'months',
     y: 'years',
   }[timestampUnit]);
+
+export const applyRepeater = (timestamp, currentDate) => {
+  if (!timestamp.get('repeaterType')) {
+    return timestamp;
+  }
+
+  const momentUnit = momentUnitForTimestampUnit(timestamp.get('repeaterUnit'));
+
+  let newDate = null;
+  switch (timestamp.get('repeaterType')) {
+    case '+':
+      newDate = momentDateForTimestamp(timestamp).add(timestamp.get('repeaterValue'), momentUnit);
+      break;
+    case '++':
+      newDate = momentDateForTimestamp(timestamp).add(timestamp.get('repeaterValue'), momentUnit);
+      while (newDate < currentDate) {
+        newDate = newDate.add(timestamp.get('repeaterValue'), momentUnit);
+      }
+      break;
+    case '.+':
+      newDate = currentDate.clone().add(timestamp.get('repeaterValue'), momentUnit);
+      break;
+    default:
+      console.error(`Unrecognized timestamp repeater type: ${timestamp.get('repeaterType')}`);
+      return timestamp;
+  }
+
+  timestamp = timestamp
+    .set('day', newDate.format('DD'))
+    .set('dayName', newDate.format('ddd'))
+    .set('month', newDate.format('MM'))
+    .set('year', newDate.format('YYYY'));
+
+  if (timestamp.get('startHour') !== undefined && timestamp.get('startHour') !== null) {
+    timestamp = timestamp
+      .set('startHour', newDate.format('HH'))
+      .set('startMinute', newDate.format('mm'));
+  }
+
+  return timestamp;
+};

@@ -1,5 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
+import moment from 'moment';
 
 import {
   parseOrg,
@@ -31,7 +32,7 @@ import {
   pathAndPartOfTimestampItemWithIdInHeaders,
   todoKeywordSetForKeyword,
 } from '../lib/org_utils';
-import { getCurrentTimestamp } from '../lib/timestamps';
+import { getCurrentTimestamp, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
 
 const displayFile = (state, action) => {
@@ -181,6 +182,18 @@ const advanceTodoState = (state, action) => {
   const currentStateIndex = currentTodoSet.get('keywords').indexOf(currentTodoState);
   const newStateIndex = currentStateIndex + 1;
   const newTodoState = currentTodoSet.get('keywords').get(newStateIndex) || '';
+
+  if (currentTodoSet.get('completedKeywords').includes(newTodoState)) {
+    header
+      .get('planningItems')
+      .filter(planningItem => !!planningItem.getIn(['timestamp', 'repeaterType']))
+      .forEach((planningItem, planningItemIndex) => {
+        state = state.setIn(
+          ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
+          applyRepeater(planningItem.get('timestamp'), moment())
+        );
+      });
+  }
 
   state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
   state = updateCookiesOfParentOfHeaderWithId(state, headerId);
