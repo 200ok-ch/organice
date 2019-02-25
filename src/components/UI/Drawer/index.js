@@ -9,13 +9,17 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [dragOffsetY, setDragOffsetY] = useState(null);
 
-  useLayoutEffect(() => setIsVisible(true), []);
+  useLayoutEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const initialClientY = useRef();
   const innerContainer = useRef();
 
   const innerContainerHeight = useRef();
-  useLayoutEffect(() => (innerContainerHeight.current = innerContainer.current.offsetHeight));
+  useLayoutEffect(() => {
+    innerContainerHeight.current = innerContainer.current.offsetHeight;
+  });
   const endInnerContainerDrag = () => {
     setIsVisible(dragOffsetY <= innerContainerHeight.current * 0.3);
     setDragOffsetY(null);
