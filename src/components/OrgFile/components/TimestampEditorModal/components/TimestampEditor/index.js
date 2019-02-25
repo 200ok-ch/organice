@@ -8,7 +8,8 @@ import TabButtons from '../../../../../UI/TabButtons/';
 import { renderAsText } from '../../../../../../lib/timestamps';
 
 import _ from 'lodash';
-import moment from 'moment';
+import parseDate from 'date-fns/parse';
+import formatDate from 'date-fns/parse';
 
 export default class TimestampEditor extends PureComponent {
   constructor(props) {
@@ -37,8 +38,12 @@ export default class TimestampEditor extends PureComponent {
   handleDateChange(event) {
     const { onChange, timestamp } = this.props;
 
-    const newDate = moment(event.target.value);
-    const [newYear, newMonth, newDay, newDayName] = newDate.format('YYYY MM DD ddd').split(' ');
+    const [newYear, newMonth, newDay, newDayName] = formatDate(
+      parseDate(event.target.value),
+      'YYYY MM DD ddd'
+    )
+      .format()
+      .split(' ');
     onChange(
       timestamp
         .set('year', newYear)
@@ -54,9 +59,7 @@ export default class TimestampEditor extends PureComponent {
 
       const [hourKey, minuteKey] =
         startOrEnd === 'start' ? ['startHour', 'startMinute'] : ['endHour', 'endMinute'];
-      const [hour, minute] = moment()
-        .format('HH:mm')
-        .split(':');
+      const [hour, minute] = formatDate(new Date(), 'HH:mm').split(':');
       onChange(timestamp.set(hourKey, hour).set(minuteKey, minute));
     };
   }

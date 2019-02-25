@@ -1,4 +1,17 @@
-import moment from 'moment';
+import formatDate from 'date-fns/format';
+import parseDate from 'date-fns/parse';
+import {
+  addHours,
+  addDays,
+  addWeeks,
+  addMonths,
+  addYears,
+  subtractHours,
+  subtractDays,
+  subtractWeeks,
+  subtractMonths,
+  subtractYears,
+} from 'date-fns';
 
 export const renderAsText = timestamp => {
   const {
@@ -33,14 +46,14 @@ export const renderAsText = timestamp => {
 };
 
 export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } = {}) => {
-  const time = moment();
+  const time = new Date();
 
   const timestamp = {
     isActive,
-    year: time.format('YYYY'),
-    month: time.format('MM'),
-    day: time.format('DD'),
-    dayName: time.format('ddd'),
+    year: formatDate(time, 'YYYY'),
+    month: formatDate(time, 'MM'),
+    day: formatDate(time, 'DD'),
+    dayName: formatDate(time, 'ddd'),
     startHour: null,
     startMinute: null,
     endHour: null,
@@ -54,16 +67,16 @@ export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } =
   };
 
   if (withStartTime) {
-    timestamp.startHour = time.format('HH');
-    timestamp.startMinute = time.format('mm');
+    timestamp.startHour = formatDate(time, 'HH');
+    timestamp.startMinute = formatDate(time, 'mm');
   }
 
   return timestamp;
 };
 
-export const getCurrentTimestampAsText = () => `<${moment().format('YYYY-MM-DD ddd')}>`;
+export const getCurrentTimestampAsText = () => `<${formatDate(new Date(), 'YYYY-MM-DD ddd')}>`;
 
-export const momentDateForTimestamp = timestamp => {
+export const dateForTimestamp = timestamp => {
   const { year, month, day, startHour, startMinute } = timestamp.toJS();
 
   let timestampString = `${year}-${month}-${day}`;
@@ -71,16 +84,25 @@ export const momentDateForTimestamp = timestamp => {
     timestampString += ` ${startHour.padStart(2, '0')}:${startMinute}`;
   }
 
-  return moment(timestampString);
+  return parseDate(timestampString);
 };
 
-export const momentUnitForTimestampUnit = timestampUnit =>
+export const addTimestampUnitToDate = (date, numUnits, timestampUnit) =>
   ({
-    h: 'hours',
-    d: 'days',
-    w: 'weeks',
-    m: 'months',
-    y: 'years',
+    h: addHours(date, numUnits),
+    d: addDays(date, numUnits),
+    w: addWeeks(date, numUnits),
+    m: addMonths(date, numUnits),
+    y: addYears(date, numUnits),
+  }[timestampUnit]);
+
+export const subtractTimestampUnitFromDate = (date, numUnits, timestampUnit) =>
+  ({
+    h: subtractHours(date, numUnits),
+    d: subtractDays(date, numUnits),
+    w: subtractWeeks(date, numUnits),
+    m: subtractMonths(date, numUnits),
+    y: subtractYears(date, numUnits),
   }[timestampUnit]);
 
 export const applyRepeater = (timestamp, currentDate) => {
@@ -88,21 +110,35 @@ export const applyRepeater = (timestamp, currentDate) => {
     return timestamp;
   }
 
-  const momentUnit = momentUnitForTimestampUnit(timestamp.get('repeaterUnit'));
-
   let newDate = null;
   switch (timestamp.get('repeaterType')) {
     case '+':
-      newDate = momentDateForTimestamp(timestamp).add(timestamp.get('repeaterValue'), momentUnit);
+      newDate = addTimestampUnitToDate(
+        dateForTimestamp(timestamp),
+        timestamp.get('repeaterValue'),
+        timestamp.get('repeaterUnit')
+      );
       break;
     case '++':
-      newDate = momentDateForTimestamp(timestamp).add(timestamp.get('repeaterValue'), momentUnit);
+      newDate = addTimestampUnitToDate(
+        dateForTimestamp(timestamp),
+        timestamp.get('repeaterValue'),
+        timestamp.get('repeaterUnit')
+      );
       while (newDate < currentDate) {
-        newDate = newDate.add(timestamp.get('repeaterValue'), momentUnit);
+        newDate = addTimestampUnitToDate(
+          dateForTimestamp(timestamp),
+          timestamp.get('repeaterValue'),
+          timestamp.get('repeaterUnit')
+        );
       }
       break;
     case '.+':
-      newDate = currentDate.clone().add(timestamp.get('repeaterValue'), momentUnit);
+      newDate = addTimestampUnitToDate(
+        new Date(),
+        timestamp.get('repeaterValue'),
+        timestamp.get('repeaterUnit')
+      );
       break;
     default:
       console.error(`Unrecognized timestamp repeater type: ${timestamp.get('repeaterType')}`);
@@ -110,15 +146,15 @@ export const applyRepeater = (timestamp, currentDate) => {
   }
 
   timestamp = timestamp
-    .set('day', newDate.format('DD'))
-    .set('dayName', newDate.format('ddd'))
-    .set('month', newDate.format('MM'))
-    .set('year', newDate.format('YYYY'));
+    .set('day', formatDate(newDate, 'DD'))
+    .set('dayName', formatDate(newDate, 'ddd'))
+    .set('month', formatDate(newDate, 'MM'))
+    .set('year', formatDate(newDate, 'YYYY'));
 
   if (timestamp.get('startHour') !== undefined && timestamp.get('startHour') !== null) {
     timestamp = timestamp
-      .set('startHour', newDate.format('HH'))
-      .set('startMinute', newDate.format('mm'));
+      .set('startHour', formatDate(newDate, 'HH'))
+      .set('startMinute', formatDate(newDate, 'mm'));
   }
 
   return timestamp;
