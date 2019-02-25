@@ -11,6 +11,7 @@ import {
   subtractWeeks,
   subtractMonths,
   subtractYears,
+  isBefore,
 } from 'date-fns';
 
 export const renderAsText = timestamp => {
@@ -125,7 +126,7 @@ export const applyRepeater = (timestamp, currentDate) => {
         timestamp.get('repeaterValue'),
         timestamp.get('repeaterUnit')
       );
-      while (newDate < currentDate) {
+      while (isBefore(newDate, currentDate)) {
         newDate = addTimestampUnitToDate(
           dateForTimestamp(timestamp),
           timestamp.get('repeaterValue'),

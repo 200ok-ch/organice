@@ -10,7 +10,7 @@ import {
 } from './org';
 import { persistField } from '../util/settings_persister';
 
-import moment from 'moment';
+import { addSeconds } from 'date-fns';
 
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
@@ -108,7 +108,7 @@ export const downloadFile = path => {
         dispatch(setDirty(false));
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
-        dispatch(setLastSyncAt(moment().add(5, 'seconds')));
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
         dispatch(displayFile(path, fileContents));
         dispatch(applyOpennessState());
       })
