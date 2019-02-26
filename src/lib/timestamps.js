@@ -128,7 +128,7 @@ export const applyRepeater = (timestamp, currentDate) => {
       );
       while (isBefore(newDate, currentDate)) {
         newDate = addTimestampUnitToDate(
-          dateForTimestamp(timestamp),
+          newDate,
           timestamp.get('repeaterValue'),
           timestamp.get('repeaterUnit')
         );
