@@ -93,21 +93,21 @@ export default () => {
       if (directoryId === '') {
         resolve(null);
       } else {
-        getAPIClient().then(gapi => {
-          gapi.client.drive.files
-            .get({
+        getAPIClient()
+          .then(gapi =>
+            gapi.client.drive.files.get({
               fileId: directoryId,
               fields: 'parents',
             })
-            .then(response => {
-              if (!response.result.parents) {
-                resolve(null);
-              } else {
-                resolve(response.result.parents[0]);
-              }
-            })
-            .catch(reject);
-        });
+          )
+          .then(response => {
+            if (!response.result.parents) {
+              resolve(null);
+            } else {
+              resolve(response.result.parents[0]);
+            }
+          })
+          .catch(reject);
       }
     });
 
@@ -115,18 +115,18 @@ export default () => {
       if (!!window.rootFolderId) {
         resolve(window.rootFolderId);
       } else {
-        getAPIClient().then(gapi => {
-          gapi.client.drive.files
-            .get({
+        getAPIClient()
+          .then(gapi =>
+            gapi.client.drive.files.get({
               fileId: 'root',
               fields: 'id',
             })
-            .then(response => {
-              window.rootFolderId = response.result.id;
-              resolve(response.result.id);
-            })
-            .catch(reject);
-        });
+          )
+          .then(response => {
+            window.rootFolderId = response.result.id;
+            resolve(response.result.id);
+          })
+          .catch(reject);
       }
     });
 
@@ -155,45 +155,30 @@ export default () => {
 
   const fileIdByNameAndParent = (name, parentId) =>
     new Promise((resolve, reject) => {
-      getAPIClient().then(gapi => {
-        gapi.client.drive.files
-          .list({
+      getAPIClient()
+        .then(gapi =>
+          gapi.client.drive.files.list({
             pageSize: 1,
             fields: 'files(id)',
             q: `'${parentId}' in parents and trashed = false and name = '${name}'`,
           })
-          .then(response => {
-            if (response.result.files.length > 0) {
-              resolve(response.result.files[0].id);
-            } else {
-              resolve(null);
-            }
-          })
-          .catch(reject);
-      });
+        )
+        .then(response =>
+          resolve(response.result.files.length > 0 ? response.result.files[0].id : null)
+        )
+        .catch(reject);
     });
 
   const updateFile = (fileId, contents) => {
     fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
 
-    return new Promise((resolve, reject) => {
-      getAPIClient().then(gapi => {
-        const xhr = new XMLHttpRequest();
-        xhr.responseType = 'json';
-        xhr.onreadystatechange = () => {
-          if (xhr.readyState === XMLHttpRequest.DONE) {
-            resolve();
-          }
-        };
-        xhr.onerror = () => {
-          reject();
-        };
-        xhr.open(
-          'PATCH',
-          `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`
-        );
-        xhr.setRequestHeader('Authorization', `Bearer ${gapi.auth.getToken().access_token}`);
-        xhr.send(contents);
+    return getAPIClient().then(gapi => {
+      fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${gapi.auth.getToken().access_token}`,
+        },
+        body: contents,
       });
     });
   };
@@ -201,26 +186,23 @@ export default () => {
   const createFile = (name, parentId, contents) => {
     return new Promise((resolve, reject) => {
       fileIdByNameAndParent(name, parentId)
-        .then(fileId => {
-          if (!!fileId) {
-            updateFile(fileId, contents)
-              .then(resolve)
-              .catch(reject);
-          } else {
-            getAPIClient().then(gapi => {
-              gapi.client.drive.files
-                .create({
-                  name,
-                  parents: parentId,
-                })
-                .then(response => {
-                  updateFile(response.result.id, contents)
+        .then(
+          fileId =>
+            !!fileId
+              ? updateFile(fileId, contents)
+                  .then(resolve)
+                  .catch(reject)
+              : getAPIClient().then(gapi => {
+                  gapi.client.drive.files
+                    .create({
+                      name,
+                      parents: parentId,
+                    })
+                    .then(response => updateFile(response.result.id, contents))
                     .then(resolve)
                     .catch(reject);
-                });
-            });
-          }
-        })
+                })
+        )
         .catch(reject);
     });
   };
@@ -328,7 +310,7 @@ export default () => {
 
   const deleteFileByNameAndParent = (name, parentId) =>
     new Promise((resolve, reject) => {
-      getAPIClient().then(gapi => {
+      getAPIClient().then(gapi =>
         gapi.client.drive.files
           .list({
             pageSize: 1,
@@ -346,8 +328,8 @@ export default () => {
             } else {
               resolve();
             }
-          });
-      });
+          })
+      );
     });
 
   return {
