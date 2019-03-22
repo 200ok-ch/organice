@@ -6,7 +6,7 @@ import TimestampEditor from './components/TimestampEditor';
 import Drawer from '../../../UI/Drawer/';
 
 import _ from 'lodash';
-import moment from 'moment';
+import formatDate from 'date-fns/format';
 import { Map } from 'immutable';
 
 export default class TimestampEditorModal extends PureComponent {
@@ -22,9 +22,7 @@ export default class TimestampEditorModal extends PureComponent {
 
   handleAddEndTimestamp() {
     const { timestamp } = this.props;
-    const [year, month, day, dayName] = moment()
-      .format('YYYY MM DD ddd')
-      .split(' ');
+    const [year, month, day, dayName] = formatDate(new Date(), 'YYYY MM DD ddd').split(' ');
     this.props.onChange(
       timestamp.set(
         'secondTimestamp',

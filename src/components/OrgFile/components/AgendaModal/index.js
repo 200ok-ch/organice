@@ -11,7 +11,18 @@ import TabButtons from '../../../UI/TabButtons';
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
-import moment from 'moment';
+import {
+  addDays,
+  addWeeks,
+  addMonths,
+  subDays,
+  subWeeks,
+  subMonths,
+  startOfWeek,
+  startOfMonth,
+  getDaysInMonth,
+} from 'date-fns';
+import formatDate from 'date-fns/format';
 
 class AgendaModal extends PureComponent {
   constructor(props) {
@@ -26,7 +37,7 @@ class AgendaModal extends PureComponent {
     ]);
 
     this.state = {
-      selectedDate: moment(),
+      selectedDate: new Date(),
       timeframeType: 'Week',
       dateDisplayType: 'absolute',
     };
@@ -41,13 +52,13 @@ class AgendaModal extends PureComponent {
 
     switch (timeframeType) {
       case 'Day':
-        this.setState({ selectedDate: selectedDate.clone().add(1, 'day') });
+        this.setState({ selectedDate: addDays(selectedDate, 1) });
         break;
       case 'Week':
-        this.setState({ selectedDate: selectedDate.clone().add(1, 'week') });
+        this.setState({ selectedDate: addWeeks(selectedDate, 1) });
         break;
       case 'Month':
-        this.setState({ selectedDate: selectedDate.clone().add(1, 'month') });
+        this.setState({ selectedDate: addMonths(selectedDate, 1) });
         break;
       default:
         return '';
@@ -64,13 +75,13 @@ class AgendaModal extends PureComponent {
 
     switch (timeframeType) {
       case 'Day':
-        this.setState({ selectedDate: selectedDate.clone().subtract(1, 'day') });
+        this.setState({ selectedDate: subDays(selectedDate, 1) });
         break;
       case 'Week':
-        this.setState({ selectedDate: selectedDate.clone().subtract(1, 'week') });
+        this.setState({ selectedDate: subWeeks(selectedDate, 1) });
         break;
       case 'Month':
-        this.setState({ selectedDate: selectedDate.clone().subtract(1, 'month') });
+        this.setState({ selectedDate: subMonths(selectedDate, 1) });
         break;
       default:
         return '';
@@ -90,15 +101,16 @@ class AgendaModal extends PureComponent {
 
     switch (timeframeType) {
       case 'Day':
-        return selectedDate.format('MMMM Do');
+        return formatDate(selectedDate, 'MMMM Do');
       case 'Week':
-        const weekStart = selectedDate.clone().startOf('week');
-        const weekEnd = weekStart.clone().add(1, 'week');
-        return `${weekStart.format('MMM Do')} - ${weekEnd.format('MMM Do')} (W${weekStart.format(
-          'w'
-        )})`;
+        const weekStart = startOfWeek(selectedDate);
+        const weekEnd = addWeeks(weekStart, 1);
+        return `${formatDate(weekStart, 'MMM Do')} - ${formatDate(
+          weekEnd,
+          'MMM Do'
+        )} (W${formatDate(weekStart, 'W')})`;
       case 'Month':
-        return selectedDate.format('MMMM');
+        return formatDate(selectedDate, 'MMMM');
       default:
         return '';
     }
@@ -120,13 +132,13 @@ class AgendaModal extends PureComponent {
         dates = [selectedDate];
         break;
       case 'Week':
-        const startOfWeek = selectedDate.clone().startOf('week');
-        dates = _.range(7).map(daysAfter => startOfWeek.clone().add(daysAfter, 'days'));
+        const weekStart = startOfWeek(selectedDate);
+        dates = _.range(7).map(daysAfter => addDays(weekStart, daysAfter));
         break;
       case 'Month':
-        const startOfMonth = selectedDate.clone().startOf('month');
-        dates = _.range(selectedDate.daysInMonth()).map(daysAfter =>
-          startOfMonth.clone().add(daysAfter, 'days')
+        const monthStart = startOfMonth(selectedDate);
+        dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
+          addDays(monthStart, daysAfter)
         );
         break;
       default:
@@ -154,7 +166,7 @@ class AgendaModal extends PureComponent {
         <div className="agenda__days-container">
           {dates.map(date => (
             <AgendaDay
-              key={date.format()}
+              key={formatDate(date)}
               date={date}
               headers={headers}
               onHeaderClick={this.handleHeaderClick}

@@ -1,6 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
-import moment from 'moment';
 
 import {
   parseOrg,
@@ -195,7 +194,7 @@ const advanceTodoState = (state, action) => {
     indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
       state = state.setIn(
         ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-        applyRepeater(planningItem.get('timestamp'), moment())
+        applyRepeater(planningItem.get('timestamp'), new Date())
       );
     });
 

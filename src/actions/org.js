@@ -13,7 +13,8 @@ import { headerWithPath } from '../lib/org_utils';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
-import moment from 'moment';
+import { isAfter, addSeconds } from 'date-fns';
+import parseDate from 'date-fns/parse';
 
 export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE',
@@ -57,10 +58,10 @@ export const sync = ({
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
       const isDirty = getState().org.present.get('isDirty');
-      const lastServerModifiedAt = moment(lastModifiedAt);
+      const lastServerModifiedAt = parseDate(lastModifiedAt);
       const lastSyncAt = getState().org.present.get('lastSyncAt');
 
-      if (lastSyncAt.isAfter(lastServerModifiedAt, 'second') || forceAction === 'push') {
+      if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
           client
             .updateFile(
@@ -76,7 +77,7 @@ export const sync = ({
               }
               dispatch(setIsLoading(false));
               dispatch(setDirty(false));
-              dispatch(setLastSyncAt(moment().add(5, 'seconds')));
+              dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
             })
             .catch(error => {
               alert(`There was an error pushing the file: ${error.toString()}`);
@@ -98,7 +99,7 @@ export const sync = ({
           dispatch(displayFile(path, contents));
           dispatch(applyOpennessState());
           dispatch(setDirty(false));
-          dispatch(setLastSyncAt(moment().add(5, 'seconds')));
+          dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
           if (!shouldSuppressMessages) {
             dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
           }

@@ -6,11 +6,23 @@ import TitleLine from '../../../TitleLine';
 
 import { isTodoKeywordCompleted } from '../../../../../../lib/org_utils';
 import {
-  momentDateForTimestamp,
-  momentUnitForTimestampUnit,
+  dateForTimestamp,
+  subtractTimestampUnitFromDate,
+  addTimestampUnitToDate,
 } from '../../../../../../lib/timestamps';
 
-import moment from 'moment';
+import {
+  isToday,
+  startOfDay,
+  endOfDay,
+  isBefore,
+  isAfter,
+  isEqual,
+  isWithinRange,
+  isPast,
+  distanceInWordsToNow,
+} from 'date-fns';
+import formatDate from 'date-fns/format';
 import classNames from 'classnames';
 
 export default class AgendaDay extends PureComponent {
@@ -29,9 +41,8 @@ export default class AgendaDay extends PureComponent {
       agendaDefaultDeadlineDelayUnit,
     } = this.props;
 
-    const isToday = date.isBetween(moment().startOf('day'), moment().endOf('day'), null, '[]');
-    const dateStart = date.clone().startOf('day');
-    const dateEnd = date.clone().endOf('day');
+    const dateStart = startOfDay(date);
+    const dateEnd = endOfDay(date);
 
     const planningItemsAndHeaders = headers
       .flatMap(header => {
@@ -41,7 +52,7 @@ export default class AgendaDay extends PureComponent {
             return false;
           }
 
-          const planningItemDate = momentDateForTimestamp(timestamp);
+          const planningItemDate = dateForTimestamp(timestamp);
           const isCompletedTodo =
             !!header.getIn(['titleLine', 'todoKeyword']) &&
             isTodoKeywordCompleted(todoKeywordSets, header.getIn(['titleLine', 'todoKeyword']));
@@ -50,25 +61,23 @@ export default class AgendaDay extends PureComponent {
           }
 
           if (planningItem.get('type') === 'DEADLINE') {
-            if (isToday) {
-              if (planningItemDate < moment()) {
+            if (isToday(date)) {
+              if (isBefore(planningItemDate, new Date())) {
                 return true;
               }
 
               const [delayValue, delayUnit] = !!timestamp.get('delayType')
-                ? [
-                    timestamp.get('delayValue'),
-                    momentUnitForTimestampUnit(timestamp.get('delayUnit')),
-                  ]
-                : [
-                    agendaDefaultDeadlineDelayValue,
-                    momentUnitForTimestampUnit(agendaDefaultDeadlineDelayUnit),
-                  ];
+                ? [timestamp.get('delayValue'), timestamp.get('delayUnit')]
+                : [agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit];
 
-              const appearDate = planningItemDate.clone().subtract(delayValue, delayUnit);
-              return date >= appearDate;
+              const appearDate = subtractTimestampUnitFromDate(
+                planningItemDate,
+                delayValue,
+                delayUnit
+              );
+              return isAfter(date, appearDate) || isEqual(date, appearDate);
             } else {
-              return planningItemDate.isBetween(dateStart, dateEnd, null, '[]');
+              return isWithinRange(planningItemDate, dateStart, dateEnd);
             }
           } else if (planningItem.get('type') === 'SCHEDULED') {
             let appearDate = planningItemDate;
@@ -77,16 +86,19 @@ export default class AgendaDay extends PureComponent {
                 .get('propertyListItems')
                 .some(propertyListItem => propertyListItem.get('property') === 'LAST_REPEAT');
               if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
-                const delayUnit = momentUnitForTimestampUnit(timestamp.get('delayUnit'));
-                appearDate = planningItemDate.clone().add(timestamp.get('delayValue'), delayUnit);
+                appearDate = addTimestampUnitToDate(
+                  planningItemDate,
+                  timestamp.get('delayValue'),
+                  timestamp.get('delayUnit')
+                );
               }
             }
 
-            if (isToday && date > appearDate) {
+            if (isToday(date) && isAfter(date, appearDate)) {
               return true;
             }
 
-            return appearDate.isBetween(dateStart, dateEnd, null, '[]');
+            return isWithinRange(appearDate, dateStart, dateEnd);
           } else {
             return false;
           }
@@ -105,19 +117,19 @@ export default class AgendaDay extends PureComponent {
     return (
       <div className="agenda-day__container">
         <div className="agenda-day__title">
-          {isToday && <div className="agenda-day__today-indicator" />}
-          <div className="agenda-day__title__day-name">{date.format('dddd')}</div>
-          <div className="agenda-day__title__date">{date.format('MMMM Do, YYYY')}</div>
+          {isToday(date) && <div className="agenda-day__today-indicator" />}
+          <div className="agenda-day__title__day-name">{formatDate(date, 'dddd')}</div>
+          <div className="agenda-day__title__date">{formatDate(date, 'MMMM Do, YYYY')}</div>
         </div>
 
         <div className="agenda-day__headers-container">
           {planningItemsAndHeaders.map(([planningItem, header]) => {
-            const planningItemDate = momentDateForTimestamp(planningItem.get('timestamp'));
+            const planningItemDate = dateForTimestamp(planningItem.get('timestamp'));
             const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
 
             const dateClassName = classNames('agenda-day__header-planning-date', {
               'agenda-day__header-planning-date--overdue':
-                hasTodoKeyword && planningItemDate < moment(),
+                hasTodoKeyword && isPast(planningItemDate),
             });
 
             return (
@@ -126,13 +138,13 @@ export default class AgendaDay extends PureComponent {
                   <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
-                      ? planningItemDate.format('MM/DD')
-                      : planningItemDate.fromNow()}
+                      ? formatDate(planningItemDate, 'MM/DD')
+                      : `${distanceInWordsToNow(planningItemDate)} ago`}
 
                     {!!planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>
                         <br />
-                        {planningItemDate.format('h:mma')}
+                        {formatDate(planningItemDate, 'h:mma')}
                       </Fragment>
                     )}
                   </div>
