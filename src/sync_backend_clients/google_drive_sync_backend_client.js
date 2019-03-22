@@ -279,9 +279,7 @@ export default () => {
               fileId,
               alt: 'media',
             })
-            .then(response => {
-              resolve(response.body);
-            })
+            .then(response => resolve(decodeURIComponent(escape(response.body))))
             .catch(error => {
               if (error.body && JSON.parse(error.body).error.errors[0].reason === 'notFound') {
                 reject();
