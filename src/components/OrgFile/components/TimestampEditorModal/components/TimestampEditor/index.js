@@ -9,7 +9,7 @@ import { renderAsText } from '../../../../../../lib/timestamps';
 
 import _ from 'lodash';
 import parseDate from 'date-fns/parse';
-import formatDate from 'date-fns/parse';
+import formatDate from 'date-fns/format';
 
 export default class TimestampEditor extends PureComponent {
   constructor(props) {
@@ -41,9 +41,7 @@ export default class TimestampEditor extends PureComponent {
     const [newYear, newMonth, newDay, newDayName] = formatDate(
       parseDate(event.target.value),
       'YYYY MM DD ddd'
-    )
-      .format()
-      .split(' ');
+    ).split(' ');
     onChange(
       timestamp
         .set('year', newYear)
