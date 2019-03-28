@@ -6,11 +6,11 @@ import {
   addWeeks,
   addMonths,
   addYears,
-  subtractHours,
-  subtractDays,
-  subtractWeeks,
-  subtractMonths,
-  subtractYears,
+  subHours,
+  subDays,
+  subWeeks,
+  subMonths,
+  subYears,
   isBefore,
 } from 'date-fns';
 
@@ -99,11 +99,11 @@ export const addTimestampUnitToDate = (date, numUnits, timestampUnit) =>
 
 export const subtractTimestampUnitFromDate = (date, numUnits, timestampUnit) =>
   ({
-    h: subtractHours(date, numUnits),
-    d: subtractDays(date, numUnits),
-    w: subtractWeeks(date, numUnits),
-    m: subtractMonths(date, numUnits),
-    y: subtractYears(date, numUnits),
+    h: subHours(date, numUnits),
+    d: subDays(date, numUnits),
+    w: subWeeks(date, numUnits),
+    m: subMonths(date, numUnits),
+    y: subYears(date, numUnits),
   }[timestampUnit]);
 
 export const applyRepeater = (timestamp, currentDate) => {
