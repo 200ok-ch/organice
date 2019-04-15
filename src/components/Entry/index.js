@@ -14,6 +14,7 @@ import { parseOrg } from '../../lib/parse_org';
 
 import raw from 'raw.macro';
 
+import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
 import FileBrowser from '../FileBrowser';
@@ -166,6 +167,7 @@ class Entry extends PureComponent {
           ) : (
             <Switch>
               {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
+              <Route path="/privacy-policy" exact component={PrivacyPolicy} />
               <Route path="/file/:path+" render={this.renderFile} />
               <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Redirect to="/files" />
@@ -173,6 +175,7 @@ class Entry extends PureComponent {
           )
         ) : (
           <Switch>
+            <Route path="/privacy-policy" exact component={PrivacyPolicy} />
             <Route path="/sample" exact={true} render={this.renderSampleFile} />
             <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
             <Route path="/" exact={true} component={Landing} />
