@@ -123,7 +123,7 @@ Press up and down to move rows, and left and right to move columns.
 ** Format specifiers (like <r> and <10>) aren't yet supported, but they're on my list!
 If this is an important feature to you, please let me know by upvoting [[https://github.com/DanielDe/org-web/issues/25][the issue]] on GitHub
 * Lists and checkboxes
-org-web has native support for dislpaying plain lists and checkboxes
+org-web has native support for displaying plain lists and checkboxes
 
 Plain:
 
