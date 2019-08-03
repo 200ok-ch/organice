@@ -22,7 +22,9 @@ exports[`<Landing /> renders 1`] = `
   <h2
     className="landing-tagline"
   >
-    Syncs with Dropbox.
+    Syncs with Dropbox
+    <br />
+    and Google Drive.
   </h2>
   <a
     href="/sample"
@@ -34,11 +36,40 @@ exports[`<Landing /> renders 1`] = `
       View sample
     </div>
   </a>
-  <div
-    className="btn landing-button"
-    onClick={undefined}
+  <a
+    href="/sign_in"
+    onClick={[Function]}
   >
-    Sign in
+    <div
+      className="btn landing-button"
+    >
+      Sign in
+    </div>
+  </a>
+  <div
+    className="mailing-list-signup-container"
+  >
+    Interested in getting updates about org-web? Sign up for the
+     
+    <a
+      href="http://eepurl.com/dK5F9w"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      mailing list
+    </a>
+     
+    (Or check out some
+     
+    <a
+      href="https://us19.campaign-archive.com/home/?u=36b9d8082ddb55e6cc7e22339&id=f427625e31"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      past emails
+    </a>
+     
+    before you sign up)
   </div>
 </div>
 `;
