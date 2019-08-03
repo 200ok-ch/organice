@@ -1,2 +1,1 @@
-release:
 web: serve build
