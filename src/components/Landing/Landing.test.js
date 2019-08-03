@@ -15,25 +15,3 @@ test('<Landing /> renders', () => {
 
   expect(component.toJSON()).toMatchSnapshot();
 });
-
-test.skip('<Landing /> handles sign in click', () => {
-  const handleSignInClick = jest.fn();
-
-  const component = mount(
-    <MemoryRouter>
-      <Landing onSignInClick={handleSignInClick} />
-    </MemoryRouter>
-  );
-
-  const signInButton = component.findWhere(node => {
-    try {
-      return node.text().trim() === 'Sign in';
-    } catch (error) {
-      return false;
-    }
-  });
-
-  signInButton.simulate('click');
-
-  expect(handleSignInClick).toHaveBeenCalled();
-});
