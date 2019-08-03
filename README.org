@@ -49,11 +49,42 @@ To test against your actual Dropbox, you'll need to create a ~.env~ file by copy
 
 Note that this will only work if you're running the app on ~http://localhost:3000~ because all redirect URIs must be specified ahead of time on the Dropbox and Google developer consoles.
 
+Alternatively, you can create your own 'application' on Dropbox [[https://www.dropbox.com/developers/apps/][here]] and then use this app key. Make sure to add your own URL as =Redirect URI=.
+
 *** Contributions
 
 To make contributions to this repository, please install [[https://prettier.io/][Prettier]] and use it to format your code. This repository includes a ~.prettierrc.json~ with some configuration options that Prettier will use automatically. I also highly recommend installing [[https://github.com/prettier/prettier-emacs][prettier-emacs]] which will format your files on save, saving you the trouble of manually running Prettier.
 
 ** Deployment
+
+Since org-web is a front-end only application, it can most easily be
+deployed to any server capable of serving a static application.
+
+Please note: If you want the hosted application to connect to Dropbox
+or Google Drive, please read the section [[*Synchronization back-ends][Synchronization back-ends]].
+
+*** FTP
+
+First create the production build locally: =yarn run build=
+
+And then upload to your web-server. Here's a script for your
+convenience:
+
+#+BEGIN_SRC shell
+HOST='your_ftp_server_host'
+USER='ftp_user'
+PASSWD='ftp_password'
+
+lftp $HOST <<END_SCRIPT
+user $USER $PASSWD
+put ../.env
+mirror -R build/
+quit
+END_SCRIPT
+exit 0
+#+END_SRC
+
+*** Heroku
 
 org-web is ready to deploy to [[https://heroku.com/][Heroku]].
 
@@ -75,9 +106,6 @@ following happens:
 - In the [[file:Procfile][Procfile]], we configured a web-server to serve the static
   assets created by the build task
   - The static web-server is installed through the [[file:package.json::"postinstall":%20"npm%20install%20-g%20serve"][postinstall task]]
-
-Please note: If you want the hosted application to connect to Dropbox
-or Google Drive, please read the section [[*Synchronization back-ends][Synchronization back-ends]].
 
 ** Thanks
 org-web is built on the shoulders of giants. These are some packages I rely on that I think are absolutely fantastic:
