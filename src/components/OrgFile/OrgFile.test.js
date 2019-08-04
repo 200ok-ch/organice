@@ -58,43 +58,49 @@ describe('Unit Tests for org file', () => {
     });
 
     describe("Planning items", () => {
-      describe("List formatting", () => {
-        test("Parsing a basic list should not mangle the list", () => {
-          const testDescription = "  - indented list\n     - Foo"
-          const parsedFile = _parsePlanningItems(testDescription)
-          expect(parsedFile.strippedDescription).toEqual(testDescription)
+      describe("Formatting is the same as in Emacs", () => {
+        describe("List formatting", () => {
+          test("Parsing a basic list should not mangle the list", () => {
+            const testDescription = "  - indented list\n     - Foo"
+            const parsedFile = _parsePlanningItems(testDescription)
+            expect(parsedFile.strippedDescription).toEqual(testDescription)
+          })
+
+          test("Parsing a list with planning items should not mangle the list", () => {
+            const testDescription = "  - indented list\n     - Foo"
+            const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`)
+            expect(parsedFile.strippedDescription).toEqual(testDescription)
+          })
         })
 
-        test("Parsing a list with planning items should not mangle the list", () => {
-          const testDescription = "  - indented list\n     - Foo"
-          const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`)
-          expect(parsedFile.strippedDescription).toEqual(testDescription)
-        })
-      })
+        describe("Planning items are formatted as is default Emacs", () => {
+          test("For basic files", () => {
+            const testOrgFile = readFixture('schedule');
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            // The call to `trimRight` is a work-around, because org-web
+            // doesn't export files with a trailing newline at this
+            // moment. This is best-practice for any text-file and Emacs
+            // does it for org-files, too. However, this is to be fixed
+            // at another time. And when it is, this expectation will
+            // fail and the call to `trimRight` can be safely removed.
+            expect(exportedFile).toEqual(testOrgFile.trimRight())
+          })
 
-      describe("Planning items are formatted as is default Emacs", () => {
-        test("For basic files", () => {
-          const testOrgFile = readFixture('schedule');
-          const exportedFile = parseAndExportOrgFile(testOrgFile);
-          // The call to `trimRight` is a work-around, because org-web
-          // doesn't export files with a trailing newline at this
-          // moment. This is best-practice for any text-file and Emacs
-          // does it for org-files, too. However, this is to be fixed
-          // at another time. And when it is, this expectation will
-          // fail and the call to `trimRight` can be safely removed.
-          expect(exportedFile).toEqual(testOrgFile.trimRight())
+          test("For files with multiple planning items", () => {
+            const testOrgFile = readFixture('schedule_and_deadline')
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            expect(exportedFile).toEqual(testOrgFile.trimRight())
+          })
         })
 
-        test("For files with multiple planning items", () => {
-          const testOrgFile = readFixture('schedule_and_deadline')
-          const exportedFile = parseAndExportOrgFile(testOrgFile);
-          expect(exportedFile).toEqual(testOrgFile.trimRight())
-        })
-      })
-
-      describe("Properties are formatted as is default Emacs", () => {
-        test("Properties are indented", () => {
+        test("Properties are formatted as is default in Emacs", () => {
           const testOrgFile = readFixture('properties')
+          const exportedFile = parseAndExportOrgFile(testOrgFile);
+          expect(exportedFile).toEqual(testOrgFile)
+        })
+
+        test("Tags are formatted as is default in Emacs", () => {
+          const testOrgFile = readFixture('tags')
           const exportedFile = parseAndExportOrgFile(testOrgFile);
           expect(exportedFile).toEqual(testOrgFile)
         })
