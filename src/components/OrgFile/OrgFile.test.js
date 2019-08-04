@@ -36,7 +36,8 @@ describe('Unit Tests for org file', () => {
       const todoKeywordSets = parsedFile.get('todoKeywordSets');
       const exportedFile = exportOrg(headers, todoKeywordSets);
 
-      // Should have the same amount of lines. Safeguard for the next expectation.
+      // Should have the same amount of lines. Safeguard for the next
+      // expectation.
       const exportedFileLines = exportedFile.split('\n');
       const testOrgFileLines = testOrgFile.split('\n');
       expect(exportedFileLines.length).toEqual(testOrgFileLines.length);
@@ -47,10 +48,16 @@ describe('Unit Tests for org file', () => {
     });
 
     describe("Planning items", () => {
-      test("Parsing a list should not yield planning items", () => {
+      test("Parsing a basic list should not mangle the list", () => {
         const testDescription = "  - indented list\n     - Foo"
         const parsedFile = _parsePlanningItems(testDescription)
-        expect(testDescription).toEqual(parsedFile.strippedDescription)
+        expect(parsedFile.strippedDescription).toEqual(testDescription)
+      })
+
+      test("Parsing a list with planning items should not mangle the list", () => {
+        const testDescription = "  - indented list\n     - Foo"
+        const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`)
+        expect(parsedFile.strippedDescription).toEqual(testDescription)
       })
     })
 
