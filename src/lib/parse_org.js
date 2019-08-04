@@ -270,6 +270,8 @@ const parseTable = tableLines => {
   return table;
 };
 
+// XXX: The `rawText` that gets passed already is trimmed. Hence the
+// wrong indentation on the first line.
 export const parseRawText = (rawText, { excludeContentElements = false } = {}) => {
   const lines = rawText.split('\n');
 
@@ -446,6 +448,9 @@ const parsePlanningItems = rawText => {
       .filter(item => !!item)
   );
 
+  // XXX: This is the culprit. `rawText` is correct here, but it gets stripped.
+  // Solution: This method should terminate earlier, because we're not
+  // really in a planning item at this point.
   return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
 };
 
@@ -633,6 +638,7 @@ export const parseOrg = fileContents => {
       strippedDescription,
     } = parseDescriptionPrefixElements(header.get('rawDescription'));
 
+    // XXX: Here it's already trimmed
     return header
       .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))
