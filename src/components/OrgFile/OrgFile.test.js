@@ -27,14 +27,24 @@ function readFixture(name) {
   return fs.readFileSync(path.join(__dirname, `./fixtures/${name}.org`)).toString();
 }
 
+/**
+ * This is a convenience wrapper around paring an org file using
+ * `parseOrg` and then export it using `exportOrg`.
+ * @param {String} testOrgFile - contents of an org file
+ */
+function parseAndExportOrgFile(testOrgFile) {
+  const parsedFile = parseOrg(testOrgFile);
+  const headers = parsedFile.get('headers');
+  const todoKeywordSets = parsedFile.get('todoKeywordSets');
+  const exportedFile = exportOrg(headers, todoKeywordSets);
+  return exportedFile;
+}
+
 describe('Unit Tests for org file', () => {
   describe('Parsing', () => {
     test("Parsing and exporting shouldn't alter the original file", () => {
       const testOrgFile = readFixture('simple_file_with_indented_list');
-      const parsedFile = parseOrg(testOrgFile);
-      const headers = parsedFile.get('headers');
-      const todoKeywordSets = parsedFile.get('todoKeywordSets');
-      const exportedFile = exportOrg(headers, todoKeywordSets);
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
 
       // Should have the same amount of lines. Safeguard for the next
       // expectation.
@@ -58,6 +68,12 @@ describe('Unit Tests for org file', () => {
         const testDescription = "  - indented list\n     - Foo"
         const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`)
         expect(parsedFile.strippedDescription).toEqual(testDescription)
+      })
+
+      test("Planning items are formatted as is default Emacs", () => {
+        const testOrgFile = readFixture('simple_file_with_schedule');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(testOrgFile).toEqual(exportedFile)
       })
     })
 
