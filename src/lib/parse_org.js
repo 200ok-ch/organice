@@ -270,8 +270,6 @@ const parseTable = tableLines => {
   return table;
 };
 
-// XXX: The `rawText` that gets passed already is trimmed. Hence the
-// wrong indentation on the first line.
 export const parseRawText = (rawText, { excludeContentElements = false } = {}) => {
   const lines = rawText.split('\n');
 
@@ -416,7 +414,12 @@ export const _parsePlanningItems = rawText => {
         .substring(1, singlePlanningItemRegex.toString().length - 1) +
       ')?'
   );
-  // XXX: The problem is that one of the space regexes match
+
+  // FIXME: The whitespace part of the regex matches `rawText` inputs
+  //        like " - indented list\n - Foo".
+  //        This is a mistake, because the input isn't really a
+  //        planning item. If the regexp could be adapted, we could
+  //        return earlier after the regexp check.
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
@@ -427,9 +430,6 @@ export const _parsePlanningItems = rawText => {
     /\s*/
   );
   const planningMatch = rawText.match(planningRegex);
-  if (!planningMatch) {
-    return { planningItems: fromJS([]), strippedDescription: rawText };
-  }
 
   const planningItems = fromJS(
     [2, 17, 32]
@@ -449,10 +449,11 @@ export const _parsePlanningItems = rawText => {
       .filter(item => !!item)
   );
 
-  // XXX: This is the culprit. `rawText` is correct here, but it gets stripped.
-  // Solution: This method should terminate earlier, because we're not
-  // really in a planning item at this point.
-  return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
+  if (planningItems.size) {
+    return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
+  } else {
+    return { planningItems: fromJS([]), strippedDescription: rawText };
+  }
 };
 
 const parsePropertyList = rawText => {
@@ -639,7 +640,6 @@ export const parseOrg = fileContents => {
       strippedDescription,
     } = parseDescriptionPrefixElements(header.get('rawDescription'));
 
-    // XXX: Here it's already trimmed
     return header
       .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))
