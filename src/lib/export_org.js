@@ -217,6 +217,7 @@ export const attributedStringToRawText = parts => {
 };
 
 export default (headers, todoKeywordSets) => {
+  const defaultIndentation = '  ';
   let configContent = '';
   if (!todoKeywordSets.get(0).get('default')) {
     configContent =
@@ -246,17 +247,18 @@ export default (headers, todoKeywordSets) => {
         const planningItemsContent = header.planningItems.map(planningItem => {
           return `${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`
         }).join(' ').trimRight();
-        contents += `\n  ${planningItemsContent}`;
+        contents += `\n${defaultIndentation}${planningItemsContent}`;
       }
 
-      if (header.propertyListItems.length > 0) {
-        contents += '\n:PROPERTIES:';
-        header.propertyListItems.forEach(propertyListItem => {
-          contents += `\n:${propertyListItem.property}: ${attributedStringToRawText(
+      if (header.propertyListItems.length) {
+        const propertyListItemsContent = header.propertyListItems.map(propertyListItem => {
+          return `${defaultIndentation}:${propertyListItem.property}: ${attributedStringToRawText(
             fromJS(propertyListItem.value)
-          )}`;
-        });
-        contents += '\n:END:\n';
+          )}`
+        }).join('\n')
+        contents += `\n${defaultIndentation}:PROPERTIES:`;
+        contents += `\n${propertyListItemsContent}`;
+        contents += `\n${defaultIndentation}:END:\n`;
       }
 
       if (header.description) {
