@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 import OrgFile from './';
 
-import { parseOrg } from '../../lib/parse_org';
+import { parseOrg, _parsePlanningItems } from '../../lib/parse_org';
 import exportOrg from '../../lib/export_org';
 import { readInitialState } from '../../util/settings_persister';
 import rootReducer from '../../reducers/';
@@ -45,6 +45,15 @@ describe('Unit Tests for org file', () => {
         expect(line).toEqual(testOrgFileLines[index]);
       });
     });
+
+    describe("Planning items", () => {
+      test("Parsing a list should not yield planning items", () => {
+        const testDescription = "  - indented list\n     - Foo"
+        const parsedFile = _parsePlanningItems(testDescription)
+        expect(testDescription).toEqual(parsedFile.strippedDescription)
+      })
+    })
+
   });
 });
 

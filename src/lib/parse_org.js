@@ -407,7 +407,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
-const parsePlanningItems = rawText => {
+export const _parsePlanningItems = rawText => {
   const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
   const optionalSinglePlanningItemRegex = RegExp(
     '(' +
@@ -416,6 +416,7 @@ const parsePlanningItems = rawText => {
         .substring(1, singlePlanningItemRegex.toString().length - 1) +
       ')?'
   );
+  // XXX: The problem is that one of the space regexes match
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
@@ -427,7 +428,7 @@ const parsePlanningItems = rawText => {
   );
   const planningMatch = rawText.match(planningRegex);
   if (!planningMatch) {
-    return { planningItems: [], strippedDescription: rawText };
+    return { planningItems: fromJS([]), strippedDescription: rawText };
   }
 
   const planningItems = fromJS(
@@ -497,7 +498,7 @@ const parsePropertyList = rawText => {
 };
 
 export const parseDescriptionPrefixElements = rawText => {
-  const planningItemsParse = parsePlanningItems(rawText);
+  const planningItemsParse = _parsePlanningItems(rawText);
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
 
   return {
