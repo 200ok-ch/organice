@@ -58,16 +58,18 @@ describe('Unit Tests for org file', () => {
     });
 
     describe("Planning items", () => {
-      test("Parsing a basic list should not mangle the list", () => {
-        const testDescription = "  - indented list\n     - Foo"
-        const parsedFile = _parsePlanningItems(testDescription)
-        expect(parsedFile.strippedDescription).toEqual(testDescription)
-      })
+      describe("List formatting", () => {
+        test("Parsing a basic list should not mangle the list", () => {
+          const testDescription = "  - indented list\n     - Foo"
+          const parsedFile = _parsePlanningItems(testDescription)
+          expect(parsedFile.strippedDescription).toEqual(testDescription)
+        })
 
-      test("Parsing a list with planning items should not mangle the list", () => {
-        const testDescription = "  - indented list\n     - Foo"
-        const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`)
-        expect(parsedFile.strippedDescription).toEqual(testDescription)
+        test("Parsing a list with planning items should not mangle the list", () => {
+          const testDescription = "  - indented list\n     - Foo"
+          const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`)
+          expect(parsedFile.strippedDescription).toEqual(testDescription)
+        })
       })
 
       describe("Planning items are formatted as is default Emacs", () => {
@@ -87,6 +89,14 @@ describe('Unit Tests for org file', () => {
           const testOrgFile = readFixture('schedule_and_deadline')
           const exportedFile = parseAndExportOrgFile(testOrgFile);
           expect(exportedFile).toEqual(testOrgFile.trimRight())
+        })
+      })
+
+      describe("Properties are formatted as is default Emacs", () => {
+        test("Properties are indented", () => {
+          const testOrgFile = readFixture('properties')
+          const exportedFile = parseAndExportOrgFile(testOrgFile);
+          expect(exportedFile).toEqual(testOrgFile)
         })
       })
     })

@@ -1,0 +1,5 @@
+* TODO Test header
+  SCHEDULED: <2019-12-08 Sun +1y>
+  :PROPERTIES:
+  :LAST_REPEAT: [2018-12-30 Sun 14:00]
+  :END:
