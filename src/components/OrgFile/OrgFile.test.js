@@ -102,7 +102,7 @@ describe('Unit Tests for org file', () => {
         test("Tags are formatted as is default in Emacs", () => {
           const testOrgFile = readFixture('tags')
           const exportedFile = parseAndExportOrgFile(testOrgFile);
-          expect(exportedFile).toEqual(testOrgFile)
+          expect(exportedFile).toEqual(testOrgFile.trimRight())
         })
       })
     })

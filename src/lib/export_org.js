@@ -239,8 +239,8 @@ export default (headers, todoKeywordSets) => {
       }
       contents += ` ${header.titleLine.rawTitle}`;
 
-      if (header.titleLine.tags.length > 0) {
-        contents += ` :${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+      if (header.titleLine.tags.length) {
+        contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
       }
 
       if (header.planningItems.length) {
