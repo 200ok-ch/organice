@@ -242,10 +242,11 @@ export default (headers, todoKeywordSets) => {
         contents += ` :${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
       }
 
-      if (header.planningItems) {
-        header.planningItems.forEach(planningItem => {
-          contents += `\n${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`;
-        });
+      if (header.planningItems.length) {
+        const planningItemsContent = header.planningItems.map(planningItem => {
+          return `${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`
+        }).join(' ').trimRight();
+        contents += `\n  ${planningItemsContent}`;
       }
 
       if (header.propertyListItems.length > 0) {

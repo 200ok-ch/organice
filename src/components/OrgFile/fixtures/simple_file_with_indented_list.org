@@ -1,3 +1,0 @@
-* Header
-  - Indentet list line 1
-    - Indentet list line 2
