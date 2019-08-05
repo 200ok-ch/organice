@@ -87,6 +87,11 @@ export const setShouldLiveSync = shouldLiveSync => ({
   shouldLiveSync,
 });
 
+export const setShouldSyncOnBecomingVisibile = shouldSyncOnBecomingVisibile => ({
+  type: 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE',
+  shouldSyncOnBecomingVisibile,
+});
+
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
     dispatch({

@@ -99,6 +99,12 @@ export const persistableFields = [
     shouldStoreInConfig: false,
   },
   {
+    category: 'base',
+    name: 'shouldSyncOnBecomingVisibile',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
+  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',
