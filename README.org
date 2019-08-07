@@ -92,6 +92,8 @@ tools]], deployment is as easy as:
 heroku create
 git push heroku master
 #+END_SRC
+** Triplebyte
+If you're looking for a job and want to support this project you can check out Triplebyte via [[https://triplebyte.com/iv/NNrKZ5i/cp/placed][this referral link]]. I used to work for Triplebyte and I think they're a fantastic service for both candidates looking for jobs and companies looking to hire. If you get a job through that referral link then Triplebyte will send me a referral bonus.
 ** Thanks
 org-web is built on the shoulders of giants. These are some packages I rely on that I think are absolutely fantastic:
 
