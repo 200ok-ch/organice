@@ -11,7 +11,7 @@ export default () => {
           .init({
             client_id: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
             discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-            scope: 'https://www.googleapis.com/auth/drive',
+            scope: 'https://www.googleapis.com/auth/drive.file',
           })
           .then(resolve);
       })
