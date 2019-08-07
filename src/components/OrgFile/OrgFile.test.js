@@ -42,6 +42,8 @@ Some description content
 let store, component;
 
 beforeEach(() => {
+  let capture = new Map();
+  capture = capture.set('captureTemplates', []);
   store = createStore(
     rootReducer,
     {
@@ -50,7 +52,8 @@ beforeEach(() => {
         present: new Map(),
         future: [],
       },
-      dropbox: new Map(),
+      syncBackend: Map(),
+      capture,
       base: new fromJS({
         customKeybindings: {},
       }),
@@ -86,7 +89,10 @@ test('Can advance todo state for selected header in an org file', () => {
     .find('.title-line')
     .first()
     .simulate('click');
-  component.find('.fas.fa-check').simulate('click');
+  component
+    .find('.fas.fa-check')
+    .first()
+    .simulate('click');
 
   expect(toJSON(component)).toMatchSnapshot();
 });
