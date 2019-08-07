@@ -57,11 +57,11 @@ To make contributions to this repository, please install [[https://prettier.io/]
 
 ** Deployment
 
-Since org-web is a front-end only application, it can most easily be
+Since org-web is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
-or Google Drive, please read the section [[*Synchronization back-ends][Synchronization back-ends]].
+or Google Drive, please read the section above on Synchronization back-ends.
 
 *** FTP
 
@@ -85,28 +85,13 @@ exit 0
 #+END_SRC
 
 *** Heroku
-
-org-web is ready to deploy to [[https://heroku.com/][Heroku]].
-
-Assuming, you have an account and have installed the [[https://devcenter.heroku.com/articles/heroku-cli][commandline
+Assuming, you have an account and have installed the [[https://devcenter.heroku.com/articles/heroku-cli][command line
 tools]], deployment is as easy as:
 
 #+BEGIN_SRC shell
 heroku create
 git push heroku master
 #+END_SRC
-
-Since org-web is a front-end only application, there's not much that
-needed to be configured for it to be ready for Heroku. On pushing, the
-following happens:
-
-- Heroku installs and runs the [[file:package.json::"engines":%20{][configured Node version]] and then runs
-  =yarn install=
-- Heroku recognizes and runs the [[file:package.json::"build":%20"react-scripts%20build",][build task]]
-- In the [[file:Procfile][Procfile]], we configured a web-server to serve the static
-  assets created by the build task
-  - The static web-server is installed through the [[file:package.json::"postinstall":%20"npm%20install%20-g%20serve"][postinstall task]]
-
 ** Thanks
 org-web is built on the shoulders of giants. These are some packages I rely on that I think are absolutely fantastic:
 
