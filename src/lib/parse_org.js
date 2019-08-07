@@ -405,7 +405,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
-const parsePlanningItems = rawText => {
+export const _parsePlanningItems = rawText => {
   const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
   const optionalSinglePlanningItemRegex = RegExp(
     '(' +
@@ -414,6 +414,15 @@ const parsePlanningItems = rawText => {
         .substring(1, singlePlanningItemRegex.toString().length - 1) +
       ')?'
   );
+
+  // FIXME: The whitespace part of the regex matches `rawText` inputs
+  //        like " - indented list\n - Foo".
+  //        This is a mistake, because the input isn't really a
+  //        planning item. If the regexp could be adapted, we could
+  //        return earlier after the regexp check.
+  //        Before this can get cleaned up, this function needs loads
+  //        more tests, because currently it matches too many things.
+  //        It does work well for planning items, though.
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
@@ -424,9 +433,6 @@ const parsePlanningItems = rawText => {
     /\s*/
   );
   const planningMatch = rawText.match(planningRegex);
-  if (!planningMatch) {
-    return { planningItems: [], strippedDescription: rawText };
-  }
 
   const planningItems = fromJS(
     [2, 17, 32]
@@ -446,7 +452,22 @@ const parsePlanningItems = rawText => {
       .filter(item => !!item)
   );
 
-  return { planningItems, strippedDescription: rawText.substring(planningMatch[0].length) };
+  if (planningItems.size) {
+    // The `rawText` can look like:
+    // `SCHEDULED: <2019-07-30 Tue>
+    //   - indented list
+    //      - Foo`
+    // For the remaining description, filter the planning item out
+    const remainingDescriptionWithoutPlanningItem = rawText
+      .split('\n')
+      .filter(e => {
+        return !e.includes(planningMatch[0].trim());
+      })
+      .join('\n');
+    return { planningItems, strippedDescription: remainingDescriptionWithoutPlanningItem };
+  } else {
+    return { planningItems: fromJS([]), strippedDescription: rawText };
+  }
 };
 
 const parsePropertyList = rawText => {
@@ -492,7 +513,7 @@ const parsePropertyList = rawText => {
 };
 
 export const parseDescriptionPrefixElements = rawText => {
-  const planningItemsParse = parsePlanningItems(rawText);
+  const planningItemsParse = _parsePlanningItems(rawText);
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
 
   return {
