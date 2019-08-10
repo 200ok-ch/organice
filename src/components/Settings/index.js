@@ -18,6 +18,7 @@ const Settings = ({
   shouldTapTodoToAdvance,
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
+  shouldSyncOnBecomingVisibile,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   hasUnseenChangelog,
@@ -45,6 +46,8 @@ const Settings = ({
     base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
+
+  const handleShouldSyncOnBecomingVisibleChange = () => base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
 
   const handleShouldStoreSettingsInSyncBackendChange = () =>
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
@@ -86,6 +89,16 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={shouldLiveSync} onToggle={handleShouldLiveSyncChange} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Sync on application becoming visible
+          <div className="setting-label__description">
+            If enabled, the current org file is pulled from the sync backend when the browser tab becomes visible. This prevents you from having a stale file before starting to make changes to it.
+          </div>
+        </div>
+        <Switch isEnabled={shouldSyncOnBecomingVisibile} onToggle={handleShouldSyncOnBecomingVisibleChange} />
       </div>
 
       <div className="setting-container">
@@ -210,6 +223,7 @@ const mapStateToProps = (state, props) => {
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
+    shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };
