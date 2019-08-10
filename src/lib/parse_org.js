@@ -221,22 +221,24 @@ const parseTable = tableLines => {
     columnProperties: [],
   };
 
-  tableLines.map(line => line.trim()).forEach(line => {
-    if (line.startsWith('|-')) {
-      table.contents.push([]);
-    } else {
-      const lastRow = _.last(table.contents);
-      const lineCells = line.substr(1, line.length - 2).split('|');
-
-      if (lastRow.length === 0) {
-        lineCells.forEach(cell => lastRow.push(cell));
+  tableLines
+    .map(line => line.trim())
+    .forEach(line => {
+      if (line.startsWith('|-')) {
+        table.contents.push([]);
       } else {
-        lineCells.forEach((cellContents, cellIndex) => {
-          lastRow[cellIndex] += `\n${cellContents}`;
-        });
+        const lastRow = _.last(table.contents);
+        const lineCells = line.substr(1, line.length - 2).split('|');
+
+        if (lastRow.length === 0) {
+          lineCells.forEach(cell => lastRow.push(cell));
+        } else {
+          lineCells.forEach((cellContents, cellIndex) => {
+            lastRow[cellIndex] += `\n${cellContents}`;
+          });
+        }
       }
-    }
-  });
+    });
 
   // Parse the contents of each cell.
   table.contents = table.contents.map(row => ({
@@ -338,11 +340,10 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
         part => part.type === 'raw-list-content'
       )
         .map(part => part.line)
-        .map(
-          line =>
-            line.startsWith(' '.repeat(numLeadingSpaces + 2))
-              ? line.substr(numLeadingSpaces + 2)
-              : line.substr(numLeadingSpaces + 1)
+        .map(line =>
+          line.startsWith(' '.repeat(numLeadingSpaces + 2))
+            ? line.substr(numLeadingSpaces + 2)
+            : line.substr(numLeadingSpaces + 1)
         );
       if (contentLines[contentLines.length - 1] === '') {
         contentLines[contentLines.length - 1] = ' ';
@@ -452,7 +453,7 @@ export const _parsePlanningItems = rawText => {
       .filter(item => !!item)
   );
 
-  if (planningItems.size) {
+  if (planningItems.size > 0) {
     // The `rawText` can look like:
     // `SCHEDULED: <2019-07-30 Tue>
     //   - indented list
@@ -460,8 +461,8 @@ export const _parsePlanningItems = rawText => {
     // For the remaining description, filter the planning item out
     const remainingDescriptionWithoutPlanningItem = rawText
       .split('\n')
-      .filter(e => {
-        return !e.includes(planningMatch[0].trim());
+      .filter(line => {
+        return !line.includes(planningMatch[0].trim());
       })
       .join('\n');
     return { planningItems, strippedDescription: remainingDescriptionWithoutPlanningItem };
@@ -635,9 +636,8 @@ export const parseOrg = fileContents => {
           );
         }
       } else {
-        headers = headers.updateIn(
-          [headers.size - 1, 'rawDescription'],
-          rawDescription => (rawDescription.length === 0 ? line : rawDescription + '\n' + line)
+        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription =>
+          rawDescription.length === 0 ? line : rawDescription + '\n' + line
         );
       }
     }
