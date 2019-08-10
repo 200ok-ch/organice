@@ -2,20 +2,47 @@ import { Dropbox } from 'dropbox';
 
 import { fromJS, Map } from 'immutable';
 
+/**
+ * Gets a directory listing ready to be rendered by org-web.
+ *  - Filters files from `listing` down to org files.
+ *  - Sorts folders atop of files.
+ *  - Sorts both folders and files alphabetically.
+ * @param {Array} listing
+ */
+export const filterAndSortDirectoryListing = listing => {
+  const filteredListing = listing.filter(file => {
+    // Show all folders
+    if (file['.tag'] === 'folder') return true;
+    // Filter out all non-org files
+    return file.name.match(/org$|org_archive$/);
+  });
+  return filteredListing.sort((a, b) => {
+    // Folders before files
+    if (a['.tag'] === 'folder' && b['.tag'] === 'file') {
+      return -1;
+    } else {
+      // Sorth both folders and files alphabetically
+      return a.name > b.name ? 1 : -1;
+    }
+  });
+};
+
 export default accessToken => {
   const dropboxClient = new Dropbox({ accessToken, fetch });
 
   const isSignedIn = () => new Promise(resolve => resolve(true));
 
-  const transformDirectoryListing = listing =>
-    fromJS(
-      listing.map(entry => ({
+  const transformDirectoryListing = listing => {
+    const sortedListing = filterAndSortDirectoryListing(listing);
+    return fromJS(
+      sortedListing.map(entry => ({
         id: entry.id,
         name: entry.name,
         isDirectory: entry['.tag'] === 'folder',
         path: entry.path_display,
       }))
     );
+  };
 
   const getDirectoryListing = path =>
     new Promise((resolve, reject) => {
