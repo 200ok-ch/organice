@@ -1,18 +1,18 @@
 const DEFAULT_BINDINGS = [
-  ['Select next header', 'selectNextVisibleHeader', 'ctrl+n'],
-  ['Select previous header', 'selectPreviousVisibleHeader', 'ctrl+p'],
+  ['Select next header', 'selectNextVisibleHeader', 'ctrl+down'],
+  ['Select previous header', 'selectPreviousVisibleHeader', 'ctrl+up'],
   ['Toggle header opened', 'toggleHeaderOpened', 'tab'],
-  ['Advance todo state', 'advanceTodo', 'ctrl+t'],
+  ['Advance todo state', 'advanceTodo', 'alt+t'],
   ['Edit title', 'editTitle', 'ctrl+h'],
   ['Edit description', 'editDescription', 'ctrl+d'],
-  ['Exit edit mode', 'exitEditMode', 'command+enter'],
+  ['Exit edit mode', 'exitEditMode', 'alt+enter'],
   ['Add header', 'addHeader', 'ctrl+enter'],
   ['Remove header', 'removeHeader', 'backspace'],
-  ['Move header up', 'moveHeaderUp', 'ctrl+command+p'],
-  ['Move header down', 'moveHeaderDown', 'ctrl+command+n'],
-  ['Move header left', 'moveHeaderLeft', 'ctrl+command+b'],
-  ['Move header right', 'moveHeaderRight', 'ctrl+command+f'],
-  ['Undo', 'undo', 'ctrl+shift+-'],
+  ['Move header up', 'moveHeaderUp', 'alt+up'],
+  ['Move header down', 'moveHeaderDown', 'alt+down'],
+  ['Move header left', 'moveHeaderLeft', 'alt+shift+left'],
+  ['Move header right', 'moveHeaderRight', 'alt+shift+right'],
+  ['Undo', 'undo', 'ctrl+/'],
 ];
 
 export const calculateNamedKeybindings = customKeybindings =>
