@@ -1,16 +1,25 @@
-* org-2go
+* organ
+
+[[./images/organ.png]]
 
 An implementation of Org mode without the dependency of Emacs - built
 for mobile and desktop browsers.
 
-org-2go lets you directly edit your org files online. It syncs with
+organ lets you directly edit your org files online. It syncs with
 Dropbox and Google Drive and is optimized for mobile use.
 
-[[./screenshots/overview.png]]
+[[./images/overview.png]]
+
+** Why =organ=?
+
+- You can play an organ like an instrument (because it is)
+- An organ has many buttons and functionality and sounds awesome (just
+  like Emacs)
+- Org is as vital to the functioning of me as an organ(;
 
 ** Capture params and Siri support
 
-org-2go supports a flexible mechanism for capturing using URL
+organ supports a flexible mechanism for capturing using URL
 parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
 Shortcuts]] feature in iOS 12, allowing you to use Siri to execute
 capture templates.
@@ -43,7 +52,7 @@ Here's an example URL:
 
 [[https://org.200ok.ch?captureTemplateName=Grocery%2520item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home]]
 ** Development
-org-2go is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create
+organ is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create
 React App]].
 
 To install the necessary packages, run:
@@ -84,7 +93,7 @@ If you're using Emacs, you can autoformat your source files: https://github.com/
 
 ** Deployment
 
-Since org-2go is a front-end only application, it can easily be
+Since organ is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
@@ -126,32 +135,32 @@ git push heroku master
 
 *** Beorg
 
-Before starting work on org-2go, I did use Beorg and donated to it
+Before starting work on organ, I did use Beorg and donated to it
 multiple times, because I was very happy to have a good option to
 access Org files on my phone with it.
 
 The important differences to me are:
 
-- org-2go is FOSS which is very much in the spirit of Org whilst Beorg
+- organ is FOSS which is very much in the spirit of Org whilst Beorg
   is proprietary
-- org-2go is web based, so there is no lock-in to a specific device or
+- organ is web based, so there is no lock-in to a specific device or
   OS
 - Beorg currently has better offline support
 
 ** History
 
-org-2go is a fork from [[https://github.com/DanielDe/org-web][org-web]]. We are extraordinarily grateful to
+organ is a fork from [[https://github.com/DanielDe/org-web][org-web]]. We are extraordinarily grateful to
 DanielDe the original creator! \_/\\_
 
 We forked the project, because we have different visions on how to go
 forward. He envisions a mobile only solution, we think it's great to
-have org-2go be available to any browser to enable anyone on the go or
+have organ be available to any browser to enable anyone on the go or
 any non-Emacs user easy access to Org files. Also, DanielDe thinks of
-org-web as [[https://github.com/DanielDe/org-web/issues/72][his pet project]] whereas org-2go has the full power of 200ok
+org-web as [[https://github.com/DanielDe/org-web/issues/72][his pet project]] whereas organ has the full power of 200ok
 llc behind it whilst building a strong self-sufficient community
 around it.
 
 Thank you for all, DanielDe!
 
-To see how org-2go differs from org-web, please consult the [[file:changelog.org][changelog]]
+To see how organ differs from org-web, please consult the [[file:changelog.org][changelog]]
 which contains all changes since forking.
