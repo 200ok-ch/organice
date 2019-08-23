@@ -122,6 +122,22 @@ heroku create
 git push heroku master
 #+END_SRC
 
+** Comparison
+
+*** Beorg
+
+Before starting work on org-2go, I did use Beorg and donated to it
+multiple times, because I was very happy to have a good option to
+access Org files on my phone with it.
+
+The important differences to me are:
+
+- org-2go is FOSS which is very much in the spirit of Org whilst Beorg
+  is proprietary
+- org-2go is web based, so there is no lock-in to a specific device or
+  OS
+- Beorg currently has better offline support
+
 ** History
 
 org-2go is a fork from [[https://github.com/DanielDe/org-web][org-web]]. We are extraordinarily grateful to
