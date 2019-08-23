@@ -1,35 +1,50 @@
-* org-web - org mode on the web
-org-web lets you directly edit your org files online. It syncs with Dropbox and Google Drive and is optimized for mobile use. You can check out a [[https://www.youtube.com/watch?v=ijNqZQxNgiA][video demo here]].
+* org-2go
+
+An implementation of Org mode without the dependency of Emacs - built
+for mobile and desktop browsers.
+
+org-2go lets you directly edit your org files online. It syncs with
+Dropbox and Google Drive and is optimized for mobile use.
 
 [[./screenshots/overview.png]]
 
-It was born out of my desire to be able to easily view and edit my org files from my phone. It's available for use [[https://org-web.org][here]].
-
-If you don't already keep your org files in Dropbox or Google Drive, I recommend symlinking them in:
-
-#+BEGIN_SRC
-ln -s ~/Documents/todo.org ~/Dropbox/todo.org
-#+END_SRC
-** Gitter chat
-If you're interested in learning more about using or developing org-web, feel free to ask for help in [[https://gitter.im/org-web/Lobby?source=orgpage][this Gitter room]]. It's quiet right now, but I still monitor it closely :)
 ** Capture params and Siri support
-org-web supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
-You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
+org-2go supports a flexible mechanism for capturing using URL
+parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
+Shortcuts]] feature in iOS 12, allowing you to use Siri to execute
+capture templates.
 
-Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. All three of the following parameters are required and must be URL encoded:
+You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away
+in iOS 12. Open the link on your iOS device and click "Get Shortcut".
+Then open up the Shortcuts app and edit the template by following the
+directions in the comments. Then record a Siri trigger and you're good
+to go!
 
-- ~captureTemplateName~: the name of the capture template to use. This capture template must already exist in Settings > Capture templates.
-- ~captureFile~: the path (for Dropbox) or id (for Google Drive) of the file in which to execute the capture template.
-- ~captureContent~: the content you'd like to capture. This content will be placed at the cursor position if specified in the capture template (with ~%?~), or at the end of the template if its not specified.
+Alternatively, you can take advantage of the URL parameters yourself
+to build your own custom capture mechanism. All three of the following
+parameters are required and must be URL encoded:
 
-You can also specify additional custom variables for use in your templates. They should be in the format ~captureVariable_<your custom variable>~, and should also be URL encoded. In your capture template they'd show up as ~%<your custom variable>~.
+- ~captureTemplateName~: the name of the capture template to use. This
+  capture template must already exist in Settings > Capture templates.
+- ~captureFile~: the path (for Dropbox) or id (for Google Drive) of
+  the file in which to execute the capture template.
+- ~captureContent~: the content you'd like to capture. This content
+  will be placed at the cursor position if specified in the capture
+  template (with ~%?~), or at the end of the template if its not
+  specified.
+
+You can also specify additional custom variables for use in your
+templates. They should be in the format ~captureVariable_<your custom
+variable>~, and should also be URL encoded. In your capture template
+they'd show up as ~%<your custom variable>~.
 
 Here's an example URL:
 
-https://org-web.org?captureTemplateName=Grocery%20item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home
+[[https://org.200ok.ch?captureTemplateName=Grocery%2520item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home]]
 ** Development
-org-web is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
+org-2go is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create
+React App]].
 
 To install the necessary packages, run:
 
@@ -45,19 +60,31 @@ yarn start
 
 *** Synchronization back-ends
 
-To test against your actual Dropbox, you'll need to create a ~.env~ file by copying ~.env.sample~ to just ~.env~. To test against your Google Drive you'll need to generate an API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
+To test against your actual Dropbox, you'll need to create a ~.env~
+file by copying ~.env.sample~ to just ~.env~. To test against your
+Google Drive you'll need to generate an API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this
+page]].
 
-Note that this will only work if you're running the app on ~http://localhost:3000~ because all redirect URIs must be specified ahead of time on the Dropbox and Google developer consoles.
+Note that this will only work if you're running the app on
+~http://localhost:3000~ because all redirect URIs must be specified
+ahead of time on the Dropbox and Google developer consoles.
 
-Alternatively, you can create your own 'application' on Dropbox [[https://www.dropbox.com/developers/apps/][here]] and then use this app key. Make sure to add your own URL as =Redirect URI=.
+Alternatively, you can create your own 'application' on Dropbox [[https://www.dropbox.com/developers/apps/][here]]
+and then use this app key. Make sure to add your own URL as =Redirect
+URI=.
 
 *** Contributions
 
-To make contributions to this repository, please install [[https://prettier.io/][Prettier]] and use it to format your code. This repository includes a ~.prettierrc.json~ with some configuration options that Prettier will use automatically. I also highly recommend installing [[https://github.com/prettier/prettier-emacs][prettier-emacs]] which will format your files on save, saving you the trouble of manually running Prettier.
+To make contributions to this repository, please install [[https://prettier.io/][Prettier]] and
+use it to format your code. This repository includes a
+~.prettierrc.json~ with some configuration options that Prettier will
+use automatically.
+
+If you're using Emacs, you can autoformat your source files: https://github.com/munen/emacs.d/#auto-formatting
 
 ** Deployment
 
-Since org-web is a front-end only application, it can easily be
+Since org-2go is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
@@ -66,6 +93,9 @@ or Google Drive, please read the section above on Synchronization back-ends.
 *** FTP
 
 First create the production build locally: =yarn run build=
+Note: Creating a build will actually make your =REACT_APP_*= variables
+from the =.env= file available under =process.env= even though it'll
+be a front-end application.
 
 And then upload to your web-server. Here's a script for your
 convenience:
@@ -77,7 +107,6 @@ PASSWD='ftp_password'
 
 lftp $HOST <<END_SCRIPT
 user $USER $PASSWD
-put ../.env
 mirror -R build/
 quit
 END_SCRIPT
@@ -92,19 +121,21 @@ tools]], deployment is as easy as:
 heroku create
 git push heroku master
 #+END_SRC
-** Triplebyte
-If you're looking for a job and want to support this project you can check out Triplebyte via [[https://triplebyte.com/iv/NNrKZ5i/cp/placed][this referral link]]. I used to work for Triplebyte and I think they're a fantastic service for both candidates looking for jobs and companies looking to hire. If you get a job through that referral link then Triplebyte will send me a referral bonus.
-** Thanks
-org-web is built on the shoulders of giants. These are some packages I rely on that I think are absolutely fantastic:
 
-- [[https://github.com/JedWatson/classnames][JedWatson/classnames]]
-- [[https://github.com/atlassian/react-beautiful-dnd][atlassian/react-beautiful-dnd]]
-- [[https://github.com/motdotla/dotenv#readme][motdotla/dotenv]]
-- [[https://github.com/facebook/immutable-js][facebook/immutable-js]]
-- [[https://github.com/lodash/lodash][lodash/lodash]]
-- [[https://github.com/facebook/create-react-app][facebook/create-react-app]]
-- [[https://github.com/nkbt/react-collapse][nkbt/react-collapse]]
-- [[https://github.com/greena13/react-hotkeys][greena13/react-hotkeys]]
-- [[https://github.com/chenglou/react-motion][chenglou/react-motion]]
-- [[https://github.com/reduxjs/redux][reduxjs/redux]]
-- [[https://github.com/ReactTraining/react-router][ReactTraining/react-router]]
+** History
+
+org-2go is a fork from [[https://github.com/DanielDe/org-web][org-web]]. We are extraordinarily grateful to
+DanielDe the original creator! \_/\\_
+
+We forked the project, because we have different visions on how to go
+forward. He envisions a mobile only solution, we think it's great to
+have org-2go be available to any browser to enable anyone on the go or
+any non-Emacs user easy access to Org files. Also, DanielDe thinks of
+org-web as [[https://github.com/DanielDe/org-web/issues/72][his pet project]] whereas org-2go has the full power of 200ok
+llc behind it whilst building a strong self-sufficient community
+around it.
+
+Thank you for all, DanielDe!
+
+To see how org-2go differs from org-web, please consult the [[file:changelog.org][changelog]]
+which contains all changes since forking.

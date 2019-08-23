@@ -1,142 +1,85 @@
-* November 1st, 2018 (afternoon)
-** Add support for the [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][-- delay type]] with SCHEDULED items
-* November 1st, 2018
-** Added support for [[https://orgmode.org/manual/Repeated-tasks.html][timestamp repeaters]]
-When you advance a header to a DONE state, if there is a DEADLINE or SCHEDULED planning item on that header, those timestamps will be advanced according to the specified repeater.
-* October 31st, 2018
-** Added a "Live sync" setting to automatically push changes as you make them, instead of requiring you to manually sync.
-** Happy Halloween!
-* October 22nd, 2018 (afternoon)
-** Added a [[http://eepurl.com/dK5F9w][mailing list]]! You can also find a link to sign up on the settings screen
-I plan on sending less than 1 email per week, and you can easily unsubscribe at any time!
-* October 22nd, 2018
-** Added first class support for property lists. Tap on any of the properties to bring up an editor (that won't work in this file, but you can try it out in the sample file!).
-:PROPERTIES:
-:prop1: value 1
-:prop2: value 2
-:END:
-* October 17th, 2018
-** Added a basic agenda view - try tapping the new calendar button at the bottom of the screen!
-* October 4th, 2018
-** Implemented new (kinda slicker?) modal component
-* October 2nd, 2018
-** Added buttons to add/edit deadline and scheduled timestamps
-* September 23rd, 2018
-** Added native support for displaying and editing timestamps
-* September 18th, 2018 (afternoon)
-** Parse and display inline markup like ~this~ and +this+ and *this* and /this/
-* September 18th, 2018
-** Added URL params for capture, specifically for Siri Shortcuts support!
-*** Check out [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Siri Shortcut]] or [[https://github.com/DanielDe/org-web/#capture-params-and-siri-support][the README file]] for more information
-* September 13th, 2018
-** Added support for Google Drive!
-*** You can now use Google Drive as a sync backend. Just choose it as an option when you click "Sign in".
-*** Please let me know if you run into any issues with Google Drive by [[https://github.com/DanielDe/org-web/issues/new][creating an issue]]!
-* September 5th, 2018
-** Native tag support and editor
-*** A new button in the header action drawer brings up the tag editor
-*** From here you can modify, add, and reorder tags
-* September 3rd, 2018
-** Huge UI overhaul!
-*** Removed the action drawer, replaced with just three buttons: Sync, Movement, and Capture Templates
-*** All other actions now available via header action drawer, table action drawer, or swipe actions
-*** See the Help/Sample file in Settings for more details!
-* September 2nd, 2018
-** Replaced "push" and "pull" buttons with a single "sync" button
-* August 31st, 2018
-** Added mini action drawer to selected headers for easier access to edit and focus buttons
-* August 30th, 2018
-** Moved undo button into the header
-*** This is one step in a major UI overhaul
-** Moved links to Github and Changelog into the settings page
-* August 29th, 2018
-** You can now swipe on headers to trigger common actions:
-*** Swipe right to advance the todo state
-*** Swipe left to remove the header
-*** This only works on touchscreen devices
-* August 28th, 2018
-** Capture templates are now reorderable (just drag and drop!)
-* August 23rd, 2018
-** Added native support for cookies like [1/2] and [50%]
-*** TODO Sample todo
-*** DONE Another sample todo
-*** They're also supported in plain checkbox lists [3/3] [100%]
-- [X] item 1
-- [X] item 2
-- [X] item 3
-* August 21st, 2018
-** Added native support for plain lists and checkboxes
-Plain lists:
+* Changelog
 
-- Example 1
-- Example 2
+All notable changes to this project will be documented in this file.
 
-Ordered lists:
+** <2019-08-12 Mon>
 
-1. Example 1
-2. Example 2
-20. [@20] Example 20
+*** Changed
 
-And checkboxes:
+- The default keybindings (when used from a desktop browser) are now
+  more in line with the defaults in Emacs itself
 
-- [ ] checkbox 1
-  - [ ] checkbox 2
-    - [ ] checkbox 3
-  - [X] checkbox 4
-* August 18th, 2018
-** Added capture templates
-*** Now under Settings > Capture Templates you can specify capture templates which show up as custom buttons in the action drawer for easily capturing items in your org file
-* August 12th, 2018
-** Native support for tables!
-| ta | da |
-|----+----|
-| 🎉 | 🎊 |
-*** Tables will now be rendered as HTML tables
-*** When a table cell is selected, the action drawer will populate with additional actions to manipulate tables (more details on this in the sample file)
-*** Format specifiers (like <r> and <10>) aren't yet natively supported
-* August 9th, 2018
-** Improved navigation with back buttons a la an iOS UINavigationController
-* August 6th, 2018
-** Implemented new setting to store settings in a .org-web-config.json file in your Dropbox. This will keep settings in sync across multiple devices.
-* August 2nd, 2018
-** Added keyboard shortcuts, as well as a way to set custom bindings
-*** Find it in Settings > Keyboard shortcuts
-* August 1st, 2018
-** Added routing (and therefore back/forward button support)
-* July 31st, 2018 (afternoon)
-** Implemented a "Focus" button - see the sample file for details.
-** Other minor niceties and bug fixes.
-* July 31st, 2018
-** Finished a complete rewrite to use more modern tooling and best practices
-*** Achieved almost complete parity with the original version, minus a couple features that weren't used often. Please let me know if those features were important to you (or if you notice any bugs) by [[https://github.com/DanielDe/org-web/issues/new][creating an issue]].
-** More features coming soon!
-* July 4th, 2017
-** Fixed bug with preserving header openness state across reloads
-* June 3rd, 2017
-** Added setting to preserve open headers across reloads
-* May 29th, 2017
-** Added setting to enable tapping the TODO label to advance the TODO state
-** Fixed export bug that caused blank descriptions to be exported as a newline
-* May 21st, 2017
-** Added some schnazzy (sp?) icons to the file chooser
-* May 20th, 2017
-** Added force touch/3d touch on devices that support it
-*** Force push the add header button (+) to reveal a new button that adds a new TODO header
-*** More uses of force push to come!
-* May 13th, 2017
-** Display tags more natively
-** Added link to the Github repo - bug reports, feature requests, and pull requests welcome!
-* May 7th, 2017
-** Confirmation is no longer required to remove a header, since its easy to undo now
-** Fixed bug where first action couldn't be undone
-* May 6th, 2017
-** Added undo button
-* April 29th, 2017
-** Backups are now made on first load of a file, rather than with every push. Should speed things up a bit!
-** Added some nice animations
-* April 27th, 2017
-** org-web is now open source! [[https://github.com/DanielDe/org-web]]
-** Added setting for larger font size
-** Added setting for fancy bullets
-** Added setting for cozier header spacing
-** Added a button to view new features (what you're reading now!)
+*** Fixed
+
+- The keybindings work on non-macOS operating systems
+
+** <2019-08-10 Sat>
+
+*** Added
+
+- As a user, when in a directory listing, I want the folders and files
+  to be sorted alphabetically. Furthermore, I only want to see files
+  that org-web can open (that is org and org archive files).
+- Note: This is only implemented for the Dropbox back-end at this time.
+
+*** Changed
+
+- Filters files from a directory listing down to org files.
+- Sorts folders atop of files.
+- Sorts both folders and files alphabetically.
+
+
+** <2019-08-05 Mon>
+
+*** Added
+
+- When the browser tab becomes visible, pull the latest version of the
+  Org file
+  - This is rather helpful when the app is used in production. Since
+    the production build supports loading the complete application and
+    org-file from cache, it can be open for a very long time. When the
+    org-file hasn't been pulled in a "very long time"™, then chances
+    are non-nil that the file has been changed by another client in
+    the meantime.
+  - Without this change, when the user opens the app after a while,
+    makes changes to the file and wants to sync to the back-end, there
+    might be the message "Since you last pulled, a newer version of
+    the file has been pushed to the server.". Now the user has two
+    conflicting versions of the same file and can only chose to keep
+    one (Which in itself is great UX and great error handling for
+    cases in which we do encounter a merge conflict, of course!).
+  - This situation is mitigated with this change. Now the user has the
+    option to enable "Sync on application becoming visible" which acts
+    similarly to "Live Sync". When the user opts to use this feature,
+    whenever the application get's pulled from the background or
+    started through the service worker, the first thing that happens
+    it that a new version of the org-file is pulled from the server.
+    It's therefore much harder for the user to create conflicts.
+
+** <2019-08-04 Sun>
+
+*** Fixed
+
+- Parser doesn't break indentation of existing files in fewer places
+- Planning Items are formatted as in Emacs Org mode
+- Properties are formatted as in Emacs Org mode
+- Tags are formatted as in Emacs Org mode
+
+
+** <2019-08-03 Sat>
+
+*** Added
+
+- Documented deployment options
+  - People have been asking for tighter access restrictions.
+  - Imo the best answer to that request is to make it as easy as
+    possible to host org-web.
+  - There's myriads of good options, of course. I picked to document
+    two that will (potentially) be cost-free to the users and which
+    are very easy and quick to set up: Ftp and Heroku.
+
+*** Fixed
+
+- Tests on =master= were red
+  - Partly due to obsolete tests
+  - Partly because tests weren't updated according to changes in the code
