@@ -244,18 +244,23 @@ export default (headers, todoKeywordSets) => {
       }
 
       if (header.planningItems.length) {
-        const planningItemsContent = header.planningItems.map(planningItem => {
-          return `${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`
-        }).join(' ').trimRight();
+        const planningItemsContent = header.planningItems
+          .map(planningItem => {
+            return `${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`;
+          })
+          .join(' ')
+          .trimRight();
         contents += `\n${defaultIndentation}${planningItemsContent}`;
       }
 
       if (header.propertyListItems.length) {
-        const propertyListItemsContent = header.propertyListItems.map(propertyListItem => {
-          return `${defaultIndentation}:${propertyListItem.property}: ${attributedStringToRawText(
-            fromJS(propertyListItem.value)
-          )}`
-        }).join('\n')
+        const propertyListItemsContent = header.propertyListItems
+          .map(propertyListItem => {
+            return `${defaultIndentation}:${propertyListItem.property}: ${attributedStringToRawText(
+              fromJS(propertyListItem.value)
+            )}`;
+          })
+          .join('\n');
         contents += `\n${defaultIndentation}:PROPERTIES:`;
         contents += `\n${propertyListItemsContent}`;
         contents += `\n${defaultIndentation}:END:\n`;
