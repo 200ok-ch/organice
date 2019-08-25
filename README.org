@@ -1,5 +1,8 @@
 * organ
 
+  #+ATTR_HTML: title="Greenkeeper badge"
+  [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/twohundredok/organ.svg]]
+
 [[./images/organ.png]]
 
 Tests (CircleCI): [[https://circleci.com/gh/twohundredok/organ.svg?style=svg]]
