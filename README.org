@@ -147,7 +147,26 @@ The important differences to me are:
   OS
 - Beorg currently has better offline support
 
+
+*** org-web
+organ has a shared history with [[https://github.com/DanielDe/org-web][org-web]]. In fact, it is a fork (read
+more about that [[history][here]]).
+
+organ differs from org-web in that:
+
+- It's a community driven project.
+- It has the commitment of a Swiss company (200ok llc:
+  https://200ok.ch/) behind it to continually work on it.
+- It has many bug fixes (for example on parsing and exporting org
+  files) compared to its ancestry and continues to evolve
+  independently.
+- It is a project with equal focus on mobile as desktop browsers.
+
+To see how organ differs from org-web, please consult the [[file:changelog.org][changelog]]
+which contains all changes since forking.
+
 ** History
+   <<history>>
 
 organ is a fork from [[https://github.com/DanielDe/org-web][org-web]]. We are extraordinarily grateful to
 DanielDe the original creator! \_/\\_
@@ -161,6 +180,3 @@ llc behind it whilst building a strong self-sufficient community
 around it.
 
 Thank you for all, DanielDe!
-
-To see how organ differs from org-web, please consult the [[file:changelog.org][changelog]]
-which contains all changes since forking.
