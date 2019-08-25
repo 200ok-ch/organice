@@ -15,6 +15,14 @@ All notable changes to this project will be documented in this file.
     contributors get automated feedback by running the regression test
     suite.
 
+- Add [[https://greenkeeper.io][Greenkeeper]] for automated dependency management
+
+- Add [[https://codeclimate.com][Codeclimate]] for automated maintainability analysis
+
+*** Changed
+
+- Upgraded to Node 12.9
+
 ** <2019-08-12 Mon>
 
 *** Changed
