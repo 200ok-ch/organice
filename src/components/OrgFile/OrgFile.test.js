@@ -164,11 +164,11 @@ Some description content
     );
   });
 
-  test('<OrgFile /> renders an org file', () => {
+  test.skip('<OrgFile /> renders an org file', () => {
     expect(toJSON(component)).toMatchSnapshot();
   });
 
-  test('Can select a header in an org file', () => {
+  test.skip('Can select a header in an org file', () => {
     component
       .find('.title-line')
       .first()
@@ -177,7 +177,7 @@ Some description content
     expect(toJSON(component)).toMatchSnapshot();
   });
 
-  test('Can advance todo state for selected header in an org file', () => {
+  test.skip('Can advance todo state for selected header in an org file', () => {
     component
       .find('.title-line')
       .first()
