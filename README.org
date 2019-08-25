@@ -4,7 +4,6 @@
 
 Tests (CircleCI): [[https://circleci.com/gh/twohundredok/organ.svg?style=svg]]
 
-
 An implementation of Org mode without the dependency of Emacs - built
 for mobile and desktop browsers.
 
