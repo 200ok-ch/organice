@@ -1,0 +1,43 @@
+** How to contribute to Organ
+
+First off, thank you for considering contributing to Organ.
+It's people like you that make Organ such a great tool.
+
+**** *Did you find a bug?*
+
+- *Ensure the bug was not already reported* by searching on GitHub under
+  [[https://github.com/twohundredok/organ/issues][Issues]].
+
+- If you're unable to find an open issue addressing the problem,
+  [[https://github.com/twohundredok/organ/issues/new][open
+  a new one]]. Be sure to include a *title and clear description*, as
+  much relevant information as possible, and a *code sample* or an
+  *executable test case* demonstrating the expected behavior that is not
+  occurring.
+
+*** *Development collaboration*
+
+We have good quality assurance and an established workflow. This is it:
+
+1. Open a new GitHub pull request
+
+- In the form of a User Story (As =<persona>=, [When I =<state>= ], I
+  want =<something>=, so that =<measurable achievement>=
+
+1. New Branch in Git
+
+- Naming: (feature|bugfix|chore)/short-description
+
+1. Develop / Test Locally until tests pass on CI
+2. Create Merge Request on Gitlab to Integration.
+3. Core Team: Merge to Integration, deploy and accept the Issue on
+   Github
+
+- Ensure the PR description clearly describes the problem and solution.
+  Include the relevant issue number if applicable.
+
+Thanks! :heart: :heart: :heart:
+
+Organ Team
+
+[[https://200ok.ch][200ok llc]] and all [[https://github.com/twohundredok/organ/graphs/contributors][contributors]]

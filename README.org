@@ -154,7 +154,10 @@ more about that [[history][here]]).
 
 organ differs from org-web in that:
 
-- It's a community driven project.
+- It's a community driven project. See our
+  -  [[file:CODE_OF_CONDUCT.org][Code of conduct]]
+  -  [[file:CONTRIBUTING.org][Contributing guidelines]]
+
 - It has the commitment of a Swiss company (200ok llc:
   https://200ok.ch/) behind it to continually work on it.
 - It has many bug fixes (for example on parsing and exporting org

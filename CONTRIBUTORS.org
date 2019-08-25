@@ -1,3 +1,0 @@
-* Contributors
-- [[https://github.com/danielde][Daniel de Haas]] - [[https://danieldehaas.com]]
-- [[https://github.com/sichallinor][Simon Challinor]]
