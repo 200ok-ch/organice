@@ -1,7 +1,5 @@
 * organ
 
-
-
 [[./images/organ.png]]
 
 Tests (CircleCI): [[https://circleci.com/gh/twohundredok/organ.svg?style=svg]]
