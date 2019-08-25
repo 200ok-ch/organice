@@ -128,6 +128,7 @@ tools]], deployment is as easy as:
 
 #+BEGIN_SRC shell
 heroku create
+heroku config:set ON_HEROKU=1
 git push heroku master
 #+END_SRC
 

@@ -27,7 +27,7 @@ Since we want Organ to be a community driven project, we have added:
 
 - As a user, when in a directory listing, I want the folders and files
   to be sorted alphabetically. Furthermore, I only want to see files
-  that org-web can open (that is org and org archive files).
+  that organ can open (that is org and org archive files).
 - Note: This is only implemented for the Dropbox back-end at this time.
 
 *** Changed
@@ -81,7 +81,7 @@ Since we want Organ to be a community driven project, we have added:
 - Documented deployment options
   - People have been asking for tighter access restrictions.
   - Imo the best answer to that request is to make it as easy as
-    possible to host org-web.
+    possible to host organ.
   - There's myriads of good options, of course. I picked to document
     two that will (potentially) be cost-free to the users and which
     are very easy and quick to set up: Ftp and Heroku.

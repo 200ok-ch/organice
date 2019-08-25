@@ -1,9 +1,9 @@
 {
-  "name": "org-web",
-  "version": "0.1.0",
+  "name": "organ",
+  "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "11.x"
+    "node": "12.9"
   },
   "dependencies": {
     "classnames": "^2.2.6",
@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "postinstall": "npm install -g serve"
+    "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
     "enzyme": "^3.3.0",
