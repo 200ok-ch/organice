@@ -6,9 +6,14 @@ All notable changes to this project will be documented in this file.
 
 *** Added
 
-Since we want Organ to be a community driven project, we have added:
-  -  [[file:CODE_OF_CONDUCT.org][Code of conduct]]
-  -  [[file:CONTRIBUTING.org][Contributing guidelines]]
+- Since we want Organ to be a community driven project, we have added:
+  - [[file:CODE_OF_CONDUCT.org][Code of conduct]]
+  - [[file:CONTRIBUTING.org][Contributing guidelines]]
+
+- Add [[https://circleci.com/][CircleCI]] to run the tests on every commit
+  - They are also integrated as a check for PRs with the benefit that
+    contributors get automated feedback by running the regression test
+    suite.
 
 ** <2019-08-12 Mon>
 
