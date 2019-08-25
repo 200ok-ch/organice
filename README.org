@@ -1,7 +1,6 @@
 * organ
 
-  #+ATTR_HTML: title="Greenkeeper badge"
-  [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/twohundredok/organ.svg]]
+
 
 [[./images/organ.png]]
 
@@ -9,6 +8,8 @@ Tests (CircleCI): [[https://circleci.com/gh/twohundredok/organ.svg?style=svg]]
 
 Maintainability (Codeclimate): [[https://api.codeclimate.com/v1/badges/a91b4cc0fee4c8ac1218/maintainability.png]]
 
+#+ATTR_HTML: title="Greenkeeper badge"
+Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/twohundredok/organ.svg]]
 
 An implementation of Org mode without the dependency of Emacs - built
 for mobile and desktop browsers.
