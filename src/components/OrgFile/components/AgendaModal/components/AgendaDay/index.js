@@ -18,9 +18,9 @@ import {
   isBefore,
   isAfter,
   isEqual,
-  isWithinRange,
+  isWithinInterval,
   isPast,
-  distanceInWordsToNow,
+  formatDistance,
 } from 'date-fns';
 import formatDate from 'date-fns/format';
 import classNames from 'classnames';
@@ -77,7 +77,7 @@ export default class AgendaDay extends PureComponent {
               );
               return isAfter(date, appearDate) || isEqual(date, appearDate);
             } else {
-              return isWithinRange(planningItemDate, dateStart, dateEnd);
+              return isWithinInterval(planningItemDate, dateStart, dateEnd);
             }
           } else if (planningItem.get('type') === 'SCHEDULED') {
             let appearDate = planningItemDate;
@@ -98,7 +98,7 @@ export default class AgendaDay extends PureComponent {
               return true;
             }
 
-            return isWithinRange(appearDate, dateStart, dateEnd);
+            return isWithinInterval(appearDate, dateStart, dateEnd);
           } else {
             return false;
           }
@@ -139,7 +139,7 @@ export default class AgendaDay extends PureComponent {
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
                       ? formatDate(planningItemDate, 'MM/DD')
-                      : `${distanceInWordsToNow(planningItemDate)} ago`}
+                      : `${formatDistance(planningItemDate)} ago`}
 
                     {!!planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>
