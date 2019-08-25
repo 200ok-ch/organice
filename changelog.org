@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-08-25 Sun>
+
+*** Added
+
+Since we want Organ to be a community driven project, we have added:
+  -  [[file:CODE_OF_CONDUCT.org][Code of conduct]]
+  -  [[file:CONTRIBUTING.org][Contributing guidelines]]
+
 ** <2019-08-12 Mon>
 
 *** Changed
