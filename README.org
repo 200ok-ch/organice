@@ -1,4 +1,8 @@
-* organice
+* organice - /'ɔ:gənaɪz/
+
+*organice organizes Org files nicely!*
+
+[[file:public/organice-small.png]]
 
 Tests (CircleCI): [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
 
@@ -13,13 +17,6 @@ organice lets you directly edit your org files online. It syncs with
 Dropbox and Google Drive and is optimized for mobile use.
 
 [[./images/overview.png]]
-
-** Why =organice=?
-
-- You can play an organice like an instrument (because it is)
-- An organice has many buttons and functionality and sounds awesome (just
-  like Emacs)
-- Org is as vital to the functioning of me as an organice(;
 
 ** Capture params and Siri support
 
@@ -179,6 +176,12 @@ organice differs from org-web in that:
 
 To see how organice differs from org-web, please consult the [[file:changelog.org][changelog]]
 which contains all changes since forking.
+
+** Attributions
+
+*** Logo
+
+Illustration credit: [[https://www.vecteezy.com/][Vecteezy.com]]
 
 ** History
    <<history>>
