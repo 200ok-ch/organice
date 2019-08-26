@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
       <h1>Privacy Policy</h1>
       <p>Last updated: April 15th, 2019</p>
       <p>
-        We ("us" or "our") operate https://org-web.org (the "Site"). This page informs you of our
+        We ("us" or "our") operate https://organice.org (the "Site"). This page informs you of our
         policies regarding the collection, use and disclosure of Personal Information we receive
         from users of the Site.
       </p>

@@ -22,14 +22,14 @@ const debouncedPushConfigToSyncBackend = _.debounce(
     switch (syncBackendClient.type) {
       case 'Dropbox':
         syncBackendClient
-          .createFile('/.org-web-config.json', contents)
+          .createFile('/.organice-config.json', contents)
           .catch(error =>
             alert(`There was an error trying to push settings to your sync backend: ${error}`)
           );
         break;
       case 'Google Drive':
         syncBackendClient
-          .createFile('.org-web-config.json', 'root', contents)
+          .createFile('.organice-config.json', 'root', contents)
           .catch(error =>
             alert(`There was an error trying to push settings to your sync backend: ${error}`)
           );
@@ -246,11 +246,11 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   let fileContentsPromise = null;
   switch (syncBackendClient.type) {
     case 'Dropbox':
-      fileContentsPromise = syncBackendClient.getFileContents('/.org-web-config.json');
+      fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
       break;
     case 'Google Drive':
       fileContentsPromise = syncBackendClient.getFileContentsByNameAndParent(
-        '.org-web-config.json',
+        '.organice-config.json',
         'root'
       );
       break;

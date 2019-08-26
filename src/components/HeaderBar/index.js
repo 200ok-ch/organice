@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Link, withRouter } from 'react-router-dom';
 
-import logo from './org-web.svg';
+import logo from './organice.svg';
 
 import './stylesheet.css';
 
@@ -91,7 +91,7 @@ class HeaderBar extends PureComponent {
     return (
       <div className="header-bar__logo-container">
         <img className="header-bar__logo" src={logo} alt="Logo" width="30" height="30" />
-        <h2 className="header-bar__app-name">org-web</h2>
+        <h2 className="header-bar__app-name">organice</h2>
       </div>
     );
   }
@@ -247,7 +247,7 @@ class HeaderBar extends PureComponent {
             )}
 
           {!isAuthenticated && (
-            <a href="https://github.com/DanielDe/org-web" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/200ok-ch/organice" target="_blank" rel="noopener noreferrer">
               <i className="fab fa-github header-bar__actions__item" />
             </a>
           )}

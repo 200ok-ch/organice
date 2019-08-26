@@ -6,7 +6,7 @@ import './stylesheet.css';
 export default () => {
   return (
     <div className="landing-container">
-      <h1 className="landing-app-name">org-web</h1>
+      <h1 className="landing-app-name">organice</h1>
       <h2 className="landing-tagline">Edit your org files online.</h2>
       <h2 className="landing-tagline">Optimized for mobile.</h2>
       <h2 className="landing-tagline">
@@ -23,7 +23,7 @@ export default () => {
       </Link>
 
       <div className="mailing-list-signup-container">
-        Interested in getting updates about org-web? Sign up for the{' '}
+        Interested in getting updates about organice? Sign up for the{' '}
         <a href="http://eepurl.com/dK5F9w" target="_blank" rel="noopener noreferrer">
           mailing list
         </a>{' '}

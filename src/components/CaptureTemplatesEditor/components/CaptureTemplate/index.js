@@ -153,7 +153,7 @@ export default ({
           <Fragment>
             {' '}
             Specify the file id of each file. You can find the file id in the URL of the file in
-            org-web (e.g.,{' '}
+            organice (e.g.,{' '}
             <code>
               /file/
               {'<file id>'}
@@ -281,7 +281,7 @@ export default ({
           </li>
           <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
-            <a href="https://github.com/DanielDe/org-web/#capture-params-and-siri-support">
+            <a href="https://github.com/200ok-ch/organice/#capture-params-and-siri-support">
               the README file
             </a>{' '}
             for more details.

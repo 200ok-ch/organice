@@ -59,7 +59,7 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          org-web syncs your files with Dropbox or Google Drive. Choose your preferred sync backend
+          organice syncs your files with Dropbox or Google Drive. Choose your preferred sync backend
           below to sign in.
         </p>
 

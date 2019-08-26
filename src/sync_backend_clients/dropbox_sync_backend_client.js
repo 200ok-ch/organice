@@ -3,7 +3,7 @@ import { Dropbox } from 'dropbox';
 import { fromJS, Map } from 'immutable';
 
 /**
- * Gets a directory listing ready to be rendered by org-web.
+ * Gets a directory listing ready to be rendered by organice.
  *  - Filters files from `listing` down to org files.
  *  - Sorts folders atop of files.
  *  - Sorts both folders and files alphabetically.
