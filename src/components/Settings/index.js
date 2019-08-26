@@ -105,7 +105,7 @@ const Settings = ({
         <div className="setting-label">
           Store settings in sync backend
           <div className="setting-label__description">
-            Store settings and keyboard shortcuts in a .org-web-config.json file in your sync
+            Store settings and keyboard shortcuts in a .organice-config.json file in your sync
             backend to sync betweeen multiple devices.
           </div>
         </div>
@@ -158,7 +158,7 @@ const Settings = ({
         </button>
         <button className="btn settings-btn">
           <a
-            href="https://github.com/DanielDe/org-web"
+            href="https://github.com/200ok-ch/organice"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: 'white' }}
@@ -182,7 +182,7 @@ const Settings = ({
 
         <div className="settings-button-help-text">
           Sign up for the mailing list if you're interested in getting occasional ({'<'}1 per week)
-          updates on org-web. Or take a look at some{' '}
+          updates on organice. Or take a look at some{' '}
           <a
             href="https://us19.campaign-archive.com/home/?u=36b9d8082ddb55e6cc7e22339&id=f427625e31"
             target="_blank"

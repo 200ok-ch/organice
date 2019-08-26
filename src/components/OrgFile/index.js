@@ -333,7 +333,7 @@ class OrgFile extends PureComponent {
           This was probably the result of an error in attempting to parse your org file. It'd be
           super helpful if you could{' '}
           <a
-            href="https://github.com/DanielDe/org-web/issues/new"
+            href="https://github.com/200ok-ch/organice/issues/new"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -406,7 +406,7 @@ class OrgFile extends PureComponent {
                 <Fragment>
                   If you think this is a bug, please{' '}
                   <a
-                    href="https://github.com/DanielDe/org-web/issues/new"
+                    href="https://github.com/200ok-ch/organice/issues/new"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

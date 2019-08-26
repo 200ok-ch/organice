@@ -3,20 +3,20 @@
 
 * This is an actual org file - feel free to play around with it! (Don't worry about messing it up - your changes won't be saved, so just refresh the page to reset it)
 * For starters, tap on the next header to open it
-This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about org-web.
+This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about organice.
 ** This is a subheader
 ** This is a subheader too!
 * Actions
 ** Todos [1/4] [25%]
 This header has a few TODO items as subheaders.
-*** TODO Learn how to use TODOs in org-web
+*** TODO Learn how to use TODOs in organice
 To advance the todo state of a header, swipe right on it until the background turns green.
 
 Try advancing the todo state of this header a few times!
 **** There's also a setting once you're signed in to enable tapping on the TODO label itself to advance the todo state. Its off by default because I thought the behavior would be confusing unless explained, but I recommend turning it on!
-*** DONE Check out org-web
+*** DONE Check out organice
 *** START Investigate custom TODO states
-org-web also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Swipe right on this header a few times.
+organice also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Swipe right on this header a few times.
 
 Note that when the cycle restarts, it defaults to the first set of todo states. Manually edit the header to get back to a different todo state cycle (more on editing headers below!)
 ** Editing headers
@@ -91,7 +91,7 @@ The undo button will appear up in the header bar when you're signed in
 
 This works just like Emacs-style undo: your history is completely linear and you can "undo undos".
 * Tables
-org-web has native support for viewing and editing tables.
+organice has native support for viewing and editing tables.
 
 Try playing around with this one by first clicking on a cell:
 
@@ -121,9 +121,9 @@ When a table cell is selected, the four-way arrow button at the bottom of the sc
 
 Press up and down to move rows, and left and right to move columns.
 ** Format specifiers (like <r> and <10>) aren't yet supported, but they're on my list!
-If this is an important feature to you, please let me know by upvoting [[https://github.com/DanielDe/org-web/issues/25][the issue]] on GitHub
+If this is an important feature to you, please let me know by upvoting [[https://github.com/200ok-ch/organice/issues/25][the issue]] on GitHub
 * Lists and checkboxes
-org-web has native support for displaying plain lists and checkboxes
+organice has native support for displaying plain lists and checkboxes
 
 Plain:
 
@@ -147,9 +147,9 @@ Checkboxes:
   - [X] 1. 2
 - [X] 2
 
-Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/DanielDe/org-web/issues/26][the issue]] on Github
+Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/200ok-ch/organice/issues/26][the issue]] on Github
 * Timestamps
-org-web has native support for displaying and editing timestamps.
+organice has native support for displaying and editing timestamps.
 
 Try tapping on the timestamps below to get a feel for the editor:
 
@@ -163,7 +163,7 @@ Try tapping on the timestamps below to get a feel for the editor:
 
 <2018-09-17 Sun>--<2018-09-25 Tue>
 * Property lists
-org-web has native support for viewing and editing property lists. To bring up an editor, expand the ~PROPERTIES~ drawer below and tap on any of the properties.
+organice has native support for viewing and editing property lists. To bring up an editor, expand the ~PROPERTIES~ drawer below and tap on any of the properties.
 ** Example
 :PROPERTIES:
 :callsign: Maverick
@@ -171,7 +171,7 @@ org-web has native support for viewing and editing property lists. To bring up a
 :launch-date: [1986-05-16 Fri]
 :END:
 * Planning
-org-web has native support for adding and editing DEADLINE and SCHEDULED items. It also supports [[https://orgmode.org/manual/Repeated-tasks.html][repeaters]] and [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][delays]]. Check out these examples:
+organice has native support for adding and editing DEADLINE and SCHEDULED items. It also supports [[https://orgmode.org/manual/Repeated-tasks.html][repeaters]] and [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][delays]]. Check out these examples:
 ** An item with a deadline
 DEADLINE: <2018-10-03 Wed>
 ** An item that is scheduled
@@ -182,7 +182,7 @@ SCHEDULED: <2018-10-02 Tue>
 ** TODO An item with a repeater - try swiping right to advance to the DONE state
 DEADLINE: <2018-11-01 Thu ++1w>
 * Capture
-org-web supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
+organice supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
 
 Click the button in the bottom right corner of the screen to see some examples. The first button, the lemon, will create a new entry in the "Groceries" list below this. The second button adds an entry to a more deeply nested header.
 
@@ -194,35 +194,35 @@ Once signed in, you can set up capture templates that specify header paths (and 
 ***** Work
 ****** Too!
 * Capture URL params and Siri support
-org-web supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
+organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
 You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
-Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/DanielDe/org-web/#capture-params-and-siri-support][the README file]].
+Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/200ok-ch/organice/#capture-params-and-siri-support][the README file]].
 * Agenda
-org-web has a basic agenda view that you can access by tapping the calendar button at the bottom of the page.
+organice has a basic agenda view that you can access by tapping the calendar button at the bottom of the page.
 
 Tap a header in this view to jump to it, and tap on the date to switch to a more readable relative date format.
 
 These overdue items with deadlines should show up on today's entry:
-** TODO check out the org-web agenda view
+** TODO check out the organice agenda view
 DEADLINE: <2018-09-10 Mon>
 ** TODO sign up for Triplebyte
 SCHEDULED: <2018-09-17 Mon>
 * Syncing
-org-web pulls down your org files from Dropbox or Google Drive. Click the "Sign in" button in the upper right hand corner to sign in with either Dropbox or Google Drive and authenticate org-web.
+organice pulls down your org files from Dropbox or Google Drive. Click the "Sign in" button in the upper right hand corner to sign in with either Dropbox or Google Drive and authenticate organice.
 ** Symlink your org files
 If you don't already keep your org files in Dropbox or Google Drive, I recommend symlinking them in:
 
 ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 ** Backups
-The first time you push changes from org-web back up to your chosen sync service, org-web will make a backup of the original file first. It'll be named {your-file-name}.org-web-bak. Dropbox and Google Drive also both keep a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up :)
-* org-web operates completely client side
-You don't log in to org-web directly because org-web doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
+The first time you push changes from organice back up to your chosen sync service, organice will make a backup of the original file first. It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive also both keep a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up :)
+* organice operates completely client side
+You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
-org-web is currently pretty usable for simple tasks, but there's a lot more to do.
+organice is currently pretty usable for simple tasks, but there's a lot more to do.
 
-If you have an idea or feature request, or if you want to contribute to org-web, check out the [[https://github.com/DanielDe/org-web][GitHub page]]. We also have a [[https://gitter.im/org-web/Lobby?source=orgpage][Gitter chatroom]] if you want to chat!
+If you have an idea or feature request, or if you want to contribute to organice, check out the [[https://github.com/200ok-ch/organice][GitHub page]]. We also have a [[https://gitter.im/organice/Lobby?source=orgpage][Gitter chatroom]] if you want to chat!
 
 Here are a few of the things already on the todo list:
 ** Support for other sync backends in addition to Dropbox and Google Drive
@@ -230,11 +230,11 @@ Here are a few of the things already on the todo list:
 *** GitHub
 *** WebDAV
 *** Mega
-*** Others? If there's one you'd like, [[https://github.com/DanielDe/org-web/issues/new][create an issue]]!
+*** Others? If there's one you'd like, [[https://github.com/200ok-ch/organice/issues/new][create an issue]]!
 ** Support for symmetric encryption
 ** Search
 ** Ability to create new files
 ** Archiving
 ** A backend API for use in your own apps/scripts/IFTTT/Alexa Skills/etc.
 ** Offline support (Safari on iOS finally supports service workers!)
-** Ability to Tweet a header directly from org-web                    :joke:
+** Ability to Tweet a header directly from organice                    :joke:

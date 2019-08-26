@@ -6,9 +6,9 @@ people like you that make Organ such a great tool.
 **** *Did you find a bug?*
 
 - *Ensure the bug was not already reported* by searching on GitHub
-  under [[https://github.com/twohundredok/organ/issues][Issues]].
+  under [[https://github.com/200ok-ch/organice/issues][Issues]].
 
-- If you're unable to find an open issue addressing the problem, [[https://github.com/twohundredok/organ/issues/new][open
+- If you're unable to find an open issue addressing the problem, [[https://github.com/200ok-ch/organice/issues/new][open
   a new one]]. Be sure to include a *title and clear description*, as
   much relevant information as possible, and a *code sample* or an
   *executable test case* demonstrating the expected behavior that is
@@ -35,4 +35,4 @@ Thanks! :heart: :heart: :heart:
 
 Organ Team
 
-[[https://200ok.ch][200ok llc]] and all [[https://github.com/twohundredok/organ/graphs/contributors][contributors]]
+[[https://200ok.ch][200ok llc]] and all [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]]

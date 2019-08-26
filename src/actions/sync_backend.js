@@ -86,11 +86,11 @@ export const pushBackup = (pathOrFileId, contents) => {
     const client = getState().syncBackend.get('client');
     switch (client.type) {
       case 'Dropbox':
-        client.createFile(`${pathOrFileId}.org-web-bak`, contents);
+        client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;
       case 'Google Drive':
         pathOrFileId = pathOrFileId.startsWith('/') ? pathOrFileId.substr(1) : pathOrFileId;
-        client.duplicateFile(pathOrFileId, fileName => `${fileName}.org-web-bak`);
+        client.duplicateFile(pathOrFileId, fileName => `${fileName}.organice-bak`);
         break;
       default:
     }

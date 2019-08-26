@@ -1,31 +1,29 @@
-* organ
+* organice
 
-[[./images/organ.png]]
+Tests (CircleCI): [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
 
-Tests (CircleCI): [[https://circleci.com/gh/twohundredok/organ][https://circleci.com/gh/twohundredok/organ.svg?style=svg]]
+Maintainability (Codeclimate): [[https://codeclimate.com/github/200ok-ch/organice/maintainability][https://api.codeclimate.com/v1/badges/41d614b1f85c8b261067/maintainability.png]]
 
-Maintainability (Codeclimate): [[https://codeclimate.com/github/twohundredok/organ/maintainability][https://api.codeclimate.com/v1/badges/a91b4cc0fee4c8ac1218/maintainability.png]]
-
-Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/twohundredok/organ.svg]]
+Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
 
 An implementation of Org mode without the dependency of Emacs - built
 for mobile and desktop browsers.
 
-organ lets you directly edit your org files online. It syncs with
+organice lets you directly edit your org files online. It syncs with
 Dropbox and Google Drive and is optimized for mobile use.
 
 [[./images/overview.png]]
 
-** Why =organ=?
+** Why =organice=?
 
-- You can play an organ like an instrument (because it is)
-- An organ has many buttons and functionality and sounds awesome (just
+- You can play an organice like an instrument (because it is)
+- An organice has many buttons and functionality and sounds awesome (just
   like Emacs)
-- Org is as vital to the functioning of me as an organ(;
+- Org is as vital to the functioning of me as an organice(;
 
 ** Capture params and Siri support
 
-organ supports a flexible mechanism for capturing using URL
+organice supports a flexible mechanism for capturing using URL
 parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
 Shortcuts]] feature in iOS 12, allowing you to use Siri to execute
 capture templates.
@@ -58,7 +56,7 @@ Here's an example URL:
 
 [[https://org.200ok.ch?captureTemplateName=Grocery%2520item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home]]
 ** Development
-organ is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create
+organice is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create
 React App]].
 
 To install the necessary packages, run:
@@ -99,7 +97,7 @@ If you're using Emacs, you can autoformat your source files: https://github.com/
 
 ** Deployment
 
-Since organ is a front-end only application, it can easily be
+Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
@@ -142,51 +140,60 @@ git push heroku master
 
 *** Beorg
 
-Before starting work on organ, I did use Beorg and donated to it
+Before starting work on organice, I did use Beorg and donated to it
 multiple times, because I was very happy to have a good option to
 access Org files on my phone with it.
 
 The important differences to me are:
 
-- organ is FOSS which is very much in the spirit of Org whilst Beorg
+- organice is FOSS which is very much in the spirit of Org whilst Beorg
   is proprietary
-- organ is web based, so there is no lock-in to a specific device or
+- organice is web based, so there is no lock-in to a specific device or
   OS
 - Beorg currently has better offline support
 
 
 *** org-web
-organ has a shared history with [[https://github.com/DanielDe/org-web][org-web]]. In fact, it is a fork (read
-more about that [[history][here]]).
+organice has a shared history with [[https://github.com/DanielDe/org-web][org-web]]. In fact, it is a friendly
+fork.
 
-organ differs from org-web in that:
+organice differs from org-web in that:
 
 - It's a community driven project. See our
-  -  [[file:CODE_OF_CONDUCT.org][Code of conduct]]
-  -  [[file:CONTRIBUTING.org][Contributing guidelines]]
+  - [[file:CODE_OF_CONDUCT.org][Code of conduct]]
+  - [[file:CONTRIBUTING.org][Contributing guidelines]]
 
-- It has the commitment of a Swiss company (200ok llc:
-  https://200ok.ch/) behind it to continually work on it.
+- It has the commitment of a Swiss company behind it to continually
+  work on it.
+  - This company is 200ok llc: https://200ok.ch/
+
 - It has many bug fixes (for example on parsing and exporting org
-  files) compared to its ancestry and continues to evolve
-  independently.
+  files) compared to its ancestry.
+- It continues to evolve independently with it's own feature set.
 - It is a project with equal focus on mobile as desktop browsers.
 
-To see how organ differs from org-web, please consult the [[file:changelog.org][changelog]]
+**** What's new?
+
+To see how organice differs from org-web, please consult the [[file:changelog.org][changelog]]
 which contains all changes since forking.
 
-** History
-   <<history>>
+**** Acknowledgment
 
-organ is a fork from [[https://github.com/DanielDe/org-web][org-web]]. We are extraordinarily grateful to
-DanielDe the original creator! \_/\\_
+We are extraordinarily grateful to DanielDe the original creator!
+\_/\\_
 
 We forked the project, because we have different visions on how to go
 forward. He envisions a mobile only solution, we think it's great to
-have organ be available to any browser to enable anyone on the go or
-any non-Emacs user easy access to Org files. Also, DanielDe thinks of
-org-web as [[https://github.com/DanielDe/org-web/issues/72][his pet project]] whereas organ has the full power of 200ok
-llc behind it whilst building a strong self-sufficient community
+have organice be available to any browser to enable anyone on the go
+or any non-Emacs user easy access to Org files. Also, DanielDe thinks
+of org-web as [[https://github.com/200ok-ch/organice/issues/72][his pet project]] whereas organice has the full power of
+[[https://200ok.ch][200ok llc]] behind it whilst building a strong self-sufficient community
 around it.
 
 Thank you for all, DanielDe!
+
+** Attributions
+
+*** Logo
+
+Illustration credit: [[https://www.vecteezy.com/][Vecteezy.com]]

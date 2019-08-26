@@ -104,18 +104,18 @@ export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncB
       switch (client.type) {
         case 'Dropbox':
           client
-            .deleteFile('/.org-web-config.json')
+            .deleteFile('/.organice-config.json')
             .catch(
               (doesFileNotExist, error) =>
                 doesFileNotExist
                   ? null
                   : alert(
-                      `There was an error trying to delete the .org-web-config.json file: ${error}`
+                      `There was an error trying to delete the .organice-config.json file: ${error}`
                     )
             );
           break;
         case 'Google Drive':
-          client.deleteFileByNameAndParent('.org-web-config.json', 'root');
+          client.deleteFileByNameAndParent('.organice-config.json', 'root');
           break;
         default:
       }

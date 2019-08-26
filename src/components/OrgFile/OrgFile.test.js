@@ -79,7 +79,7 @@ describe('Unit Tests for org file', () => {
           test('For basic files', () => {
             const testOrgFile = readFixture('schedule');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
-            // The call to `trimRight` is a work-around, because org-web
+            // The call to `trimRight` is a work-around, because organice
             // doesn't export files with a trailing newline at this
             // moment. This is best-practice for any text-file and Emacs
             // does it for org-files, too. However, this is to be fixed

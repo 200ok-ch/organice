@@ -56,9 +56,9 @@ const FileBrowser = ({
 
         {(listing || []).map(file => {
           const isDirectory = file.get('isDirectory');
-          const isBackupFile = file.get('name').endsWith('.org-web-bak');
+          const isBackupFile = file.get('name').endsWith('.organice-bak');
           const isOrgFile = file.get('name').endsWith('.org');
-          const isSettingsFile = file.get('name') === '.org-web-config.json';
+          const isSettingsFile = file.get('name') === '.organice-config.json';
 
           const iconClass = classNames('file-browser__file-list__icon fas', {
             'fa-folder': isDirectory,

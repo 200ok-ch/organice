@@ -7,7 +7,7 @@ exports[`<Landing /> renders 1`] = `
   <h1
     className="landing-app-name"
   >
-    org-web
+    organice
   </h1>
   <h2
     className="landing-tagline"
@@ -49,7 +49,7 @@ exports[`<Landing /> renders 1`] = `
   <div
     className="mailing-list-signup-container"
   >
-    Interested in getting updates about org-web? Sign up for the
+    Interested in getting updates about organice? Sign up for the
      
     <a
       href="http://eepurl.com/dK5F9w"
