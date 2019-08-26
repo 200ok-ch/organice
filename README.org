@@ -56,35 +56,41 @@ Here's an example URL:
 
 [[https://org.200ok.ch?captureTemplateName=Grocery%2520item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home]]
 ** Development
-organice is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create
-React App]].
+
+organice is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
 
 To install the necessary packages, run:
 
-#+BEGIN_SRC
+#+BEGIN_SRC shell
 yarn install
+#+END_SRC
+
+To test against your own Dropbox account, you'll need to
+create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
+
+#+BEGIN_SRC shell
+cp .env.sample .env
 #+END_SRC
 
 To run the app, run:
 
-#+BEGIN_SRC
+#+BEGIN_SRC shell
 yarn start
 #+END_SRC
 
 *** Synchronization back-ends
 
-To test against your actual Dropbox, you'll need to create a ~.env~
-file by copying ~.env.sample~ to just ~.env~. To test against your
-Google Drive you'll need to generate an API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this
-page]].
+Note that logging in to Dropbox will only work if you're running the
+app on ~http://localhost:3000~, because all redirect URIs must be
+specified ahead of time on the Dropbox developer console.
 
-Note that this will only work if you're running the app on
-~http://localhost:3000~ because all redirect URIs must be specified
-ahead of time on the Dropbox and Google developer consoles.
+To configure your own application on Dropbox, please go [[https://www.dropbox.com/developers/apps/][here]] and then
+configure this app key in the ~.env~ file. Make sure to add your own
+URL as =Redirect URI=.
 
-Alternatively, you can create your own 'application' on Dropbox [[https://www.dropbox.com/developers/apps/][here]]
-and then use this app key. Make sure to add your own URL as =Redirect
-URI=.
+To configure your own application on Google Drive, please generate an
+API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
+
 
 *** Contributions
 
@@ -93,7 +99,8 @@ use it to format your code. This repository includes a
 ~.prettierrc.json~ with some configuration options that Prettier will
 use automatically.
 
-If you're using Emacs, you can autoformat your source files: https://github.com/munen/emacs.d/#auto-formatting
+If you're using Emacs, you can autoformat your source files:
+https://github.com/munen/emacs.d/#auto-formatting
 
 ** Deployment
 
