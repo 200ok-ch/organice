@@ -8,8 +8,8 @@ cp .env.sample .env
 yarn install
 yarn run build
 cd build
-lftp "$HOST" <<END_SCRIPT
-user $USER $PASSWD
+lftp "$FTP_HOST" <<END_SCRIPT
+user $FTP_USER $FTP_PASSWD
 mirror -R ./
 quit
 END_SCRIPT

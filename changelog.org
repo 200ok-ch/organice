@@ -8,12 +8,13 @@ All notable changes to this project will be documented in this file.
 
 - Continuous deployment: Merging to =master= triggers a build on CI
   and when successful, it triggers a deploy to https://org.200ok.ch
+- Add a new temporary™ logo: [[file:public/organice.png][organice.png]]
 
 ** <2019-08-25 Sun>
 
 *** Added
 
-- Since we want Organ to be a community driven project, we have added:
+- Since we want organice to be a community driven project, we have added:
   - [[file:CODE_OF_CONDUCT.org][Code of conduct]]
   - [[file:CONTRIBUTING.org][Contributing guidelines]]
 
