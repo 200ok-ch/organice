@@ -4,6 +4,7 @@
 
 set -e
 
+cp .env.sample .env
 yarn install
 yarn run build
 cd build
