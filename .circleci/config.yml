@@ -4,9 +4,26 @@
 #
 version: 2
 jobs:
+  deploy:
+    docker:
+      - image: circleci/node:12.9-stretch
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Install lftp
+          command: sudo apt install lftp
+      - run:
+          name: Deploy to https://org.200ok.ch
+          command: ./bin/compile_and_upload.sh
+
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:12.9-stretch
 
       # Specify service dependencies here if necessary
@@ -33,5 +50,16 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
       - run: yarn test
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
