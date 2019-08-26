@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-08-26 Mon>
+
+*** Added
+
+- Continuous deployment: Merging to =master= triggers a build on CI
+  and when successful, it triggers a deploy to https://org.200ok.ch
+
 ** <2019-08-25 Sun>
 
 *** Added
