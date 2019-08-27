@@ -1,3 +1,5 @@
+@import '../../colors.css';
+
 .landing-container {
   display: flex;
   flex-direction: column;
@@ -18,7 +20,8 @@
 
 .landing-app-name {
   font-size: 80px;
-  font-weight: 300;
+  font-weight: 400;
+  color: var(--base01);
 
   margin-top: 0;
   margin-bottom: 20px;
@@ -29,9 +32,13 @@
   font-weight: 300;
 
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 0.5em;
 
   text-align: center;
+}
+
+.landing-logo {
+  height: 7em;
 }
 
 .view-sample-button {
