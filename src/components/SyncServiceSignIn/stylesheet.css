@@ -1,3 +1,5 @@
+@import '../../colors.css';
+
 .sync-service-sign-in-container {
   max-width: 500px;
   margin-left: auto;
@@ -15,7 +17,7 @@
 }
 
 .sync-service-container {
-  border-bottom: 1px solid lightgray;
+  border-bottom: 1px solid var(--base01);
 
   padding: 20px 10px;
 }

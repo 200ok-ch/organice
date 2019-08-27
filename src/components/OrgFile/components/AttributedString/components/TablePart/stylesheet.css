@@ -1,3 +1,5 @@
+@import '../../../../../../colors.css';
+
 .table-part {
   border-collapse: collapse;
   margin-top: 3px;
@@ -5,7 +7,7 @@
 }
 
 .table-part__cell {
-  border: 1px solid lightgray;
+  border: 1px solid var(--base01);
 
   white-space: pre;
 

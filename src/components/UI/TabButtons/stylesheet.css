@@ -1,3 +1,5 @@
+@import '../../../colors.css';
+
 .tab-buttons {
   border: 1px solid #d8d8d8;
   height: 34px;
@@ -15,7 +17,7 @@
   box-sizing: border-box;
   height: 100%;
   padding: 7px;
-  border-right: 1px solid lightgray;
+  border-right: 1px solid var(--base01);
 
   text-align: center;
 }

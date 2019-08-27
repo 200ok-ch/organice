@@ -1,3 +1,5 @@
+@import '../../../../colors.css';
+
 .capture-modal-header {
   display: flex;
   align-items: center;
@@ -11,7 +13,7 @@
 }
 
 .capture-modal-textarea {
-  border: 1px solid lightgray;
+  border: 1px solid var(--base01);
   font-family: Courier;
 
   margin-top: 10px;
