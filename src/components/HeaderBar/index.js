@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Link, withRouter } from 'react-router-dom';
 
-import logo from './organice.svg';
+import logo from '../../images/organice.svg';
 
 import './stylesheet.css';
 
