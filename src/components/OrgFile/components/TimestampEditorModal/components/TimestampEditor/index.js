@@ -40,7 +40,7 @@ export default class TimestampEditor extends PureComponent {
 
     const [newYear, newMonth, newDay, newDayName] = formatDate(
       parseDate(event.target.value),
-      'YYYY MM DD ddd'
+      'yyyy MM dd eee'
     ).split(' ');
     onChange(
       timestamp

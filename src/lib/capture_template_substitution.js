@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import formatDate from 'date-fns/format';
+import format from 'date-fns/format';
 import _ from 'lodash';
 
 export default (templateString, customVariables = Map()) => {
@@ -8,10 +8,10 @@ export default (templateString, customVariables = Map()) => {
   }
 
   const substitutions = {
-    '%t': `<${formatDate(new Date(), 'YYYY-MM-DD ddd')}>`,
-    '%T': `<${formatDate(new Date(), 'YYYY-MM-DD ddd HH:mm')}>`,
-    '%u': `[${formatDate(new Date(), 'YYYY-MM-DD ddd')}]`,
-    '%U': `[${formatDate(new Date(), 'YYYY-MM-DD ddd HH:mm')}]`,
+    '%t': `<${format(new Date(), 'yyyy-MM-dd eee')}>`,
+    '%T': `<${format(new Date(), 'yyyy-MM-dd eee HH:mm')}>`,
+    '%u': `[${format(new Date(), 'yyyy-MM-dd eee')}]`,
+    '%U': `[${format(new Date(), 'yyyy-MM-dd eee HH:mm')}]`,
   };
 
   customVariables.entrySeq().forEach(([key, value]) => {

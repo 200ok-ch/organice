@@ -12,6 +12,7 @@ import {
 } from '../../../../../../lib/timestamps';
 
 import {
+  format,
   isToday,
   startOfDay,
   endOfDay,
@@ -22,7 +23,6 @@ import {
   isPast,
   formatDistance,
 } from 'date-fns';
-import formatDate from 'date-fns/format';
 import classNames from 'classnames';
 
 export default class AgendaDay extends PureComponent {
@@ -77,7 +77,7 @@ export default class AgendaDay extends PureComponent {
               );
               return isAfter(date, appearDate) || isEqual(date, appearDate);
             } else {
-              return isWithinInterval(planningItemDate, dateStart, dateEnd);
+              return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
             }
           } else if (planningItem.get('type') === 'SCHEDULED') {
             let appearDate = planningItemDate;
@@ -98,7 +98,7 @@ export default class AgendaDay extends PureComponent {
               return true;
             }
 
-            return isWithinInterval(appearDate, dateStart, dateEnd);
+            return isWithinInterval(appearDate, { start: dateStart, end: dateEnd });
           } else {
             return false;
           }
@@ -118,8 +118,8 @@ export default class AgendaDay extends PureComponent {
       <div className="agenda-day__container">
         <div className="agenda-day__title">
           {isToday(date) && <div className="agenda-day__today-indicator" />}
-          <div className="agenda-day__title__day-name">{formatDate(date, 'dddd')}</div>
-          <div className="agenda-day__title__date">{formatDate(date, 'MMMM Do, YYYY')}</div>
+          <div className="agenda-day__title__day-name">{format(date, 'eeee')}</div>
+          <div className="agenda-day__title__date">{format(date, 'MMMM do, yyyy')}</div>
         </div>
 
         <div className="agenda-day__headers-container">
@@ -138,13 +138,13 @@ export default class AgendaDay extends PureComponent {
                   <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
-                      ? formatDate(planningItemDate, 'MM/DD')
+                      ? format(planningItemDate, 'MM/dd')
                       : `${formatDistance(planningItemDate)} ago`}
 
                     {!!planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>
                         <br />
-                        {formatDate(planningItemDate, 'h:mma')}
+                        {format(planningItemDate, 'h:mma')}
                       </Fragment>
                     )}
                   </div>

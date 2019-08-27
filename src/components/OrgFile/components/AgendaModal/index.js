@@ -22,7 +22,7 @@ import {
   startOfMonth,
   getDaysInMonth,
 } from 'date-fns';
-import formatDate from 'date-fns/format';
+import format from 'date-fns/format';
 
 class AgendaModal extends PureComponent {
   constructor(props) {
@@ -101,16 +101,16 @@ class AgendaModal extends PureComponent {
 
     switch (timeframeType) {
       case 'Day':
-        return formatDate(selectedDate, 'MMMM Do');
+        return format(selectedDate, 'MMMM do');
       case 'Week':
         const weekStart = startOfWeek(selectedDate);
         const weekEnd = addWeeks(weekStart, 1);
-        return `${formatDate(weekStart, 'MMM Do')} - ${formatDate(
+        return `${format(weekStart, 'MMM do')} - ${format(
           weekEnd,
-          'MMM Do'
-        )} (W${formatDate(weekStart, 'W')})`;
+          'MMM do'
+        )} (W${format(weekStart, 'w')})`;
       case 'Month':
-        return formatDate(selectedDate, 'MMMM');
+        return format(selectedDate, 'MMMM');
       default:
         return '';
     }
@@ -166,7 +166,7 @@ class AgendaModal extends PureComponent {
         <div className="agenda__days-container">
           {dates.map(date => (
             <AgendaDay
-              key={formatDate(date)}
+            key={format(date, 'yyyy MM dd')}
               date={date}
               headers={headers}
               onHeaderClick={this.handleHeaderClick}
