@@ -4,7 +4,7 @@ import './stylesheet.css';
 
 import Drawer from '../../../UI/Drawer/';
 
-import formatDate from 'date-fns/format';
+import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
 
 export default ({ lastServerModifiedAt, onPull, onPush, onCancel }) => {
@@ -16,7 +16,7 @@ export default ({ lastServerModifiedAt, onPull, onPush, onCancel }) => {
       <br />
       <br />
       <div className="sync-confirmation-modal__last-sync-time">
-        {formatDate(lastServerModifiedAt, 'MMMM Do, YYYY [at] h:mm:ss a')}
+        {format(lastServerModifiedAt, 'MMMM do, yyyy [at] h:mm:ss a')}
         <br />({formatDistanceToNow(lastServerModifiedAt)} ago)
       </div>
       <div className="sync-confirmation-modal__buttons-container">
