@@ -1,5 +1,7 @@
+@import '../../../../../../colors.css';
+
 .header-action-drawer-container {
-  color: lightgray;
+  color: var(--base01);
 
   padding-bottom: 10px;
 
@@ -28,7 +30,7 @@
 }
 
 .header-action-drawer__separator {
-  background-color: lightgray;
+  background-color: var(--base01);
 
   height: 15px;
   width: 1px;

@@ -1,5 +1,7 @@
+@import '../../../../../../../colors.css';
+
 .table-action-drawer-container {
-  color: lightgray;
+  color: var(--base01);
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);

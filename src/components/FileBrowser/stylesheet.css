@@ -1,3 +1,5 @@
+@import '../../colors.css';
+
 .file-browser-container a {
   text-decoration: none;
   color: black;
@@ -43,7 +45,7 @@
 }
 
 .file-browser__file-list__icon--not-org {
-  color: lightgray;
+  color: var(--base01);
 }
 
 .file-browser__file-list__icon--directory {

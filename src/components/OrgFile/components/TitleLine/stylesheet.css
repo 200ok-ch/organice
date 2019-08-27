@@ -1,3 +1,5 @@
+@import '../../../../colors.css';
+
 .title-line {
   margin-top: -18px;
   display: flex;
@@ -21,12 +23,12 @@
 }
 
 .todo-keyword--none {
-  color: lightgray;
+  color: var(--base01);
 }
 
 .header-tag {
   background-color: white;
-  border: 1px solid lightgray;
+  border: 1px solid var(--base01);
   padding: 1px 2px;
   margin: 2px;
   display: inline-block;

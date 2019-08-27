@@ -1,3 +1,5 @@
+@import '../../../../colors.css';
+
 .no-tags-message {
   color: gray;
   text-align: center;
@@ -65,5 +67,5 @@
 }
 
 .all-tags__tag--in-use {
-  background-color: lightgray;
+  background-color: var(--base01);
 }

@@ -1,5 +1,7 @@
+@import 'colors.css';
+
 .btn {
-    background-color: #5E348C;
+    background-color: var(--magenta);
     color: white;
     border: 0;
     padding: 8px 16px;
@@ -14,7 +16,7 @@
 }
 
 .btn--disabled {
-    background-color: lightgray;
+    background-color: var(--base01);
 }
 
 .nice-scroll {
