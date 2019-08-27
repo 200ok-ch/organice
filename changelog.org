@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+
+** <2019-08-27 Tue>
+
+*** Changed
+
+- Color scheme has been ported to the popular [[https://ethanschoonover.com/solarized/][Solarized]] (light mode)
+  - Whilst doing so, CSS variables have been introduced, so that
+    there's not a whole lot of repetition of magic rgb values going on
+  - The logo has been adapted, too
+- The landing page and settings screens have been de-cluttered
+
 ** <2019-08-26 Mon>
 
 *** Added
