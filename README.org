@@ -16,7 +16,7 @@ for mobile and desktop browsers.
 organice lets you directly edit your org files online. It syncs with
 Dropbox and Google Drive and is optimized for mobile use.
 
-[[./images/overview.png]]
+[[./images/screenshot--overview.png]]
 
 ** Capture params and Siri support
 
