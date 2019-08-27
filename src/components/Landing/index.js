@@ -21,22 +21,6 @@ export default () => {
       <Link to="/sign_in">
         <div className="btn landing-button">Sign in</div>
       </Link>
-
-      <div className="mailing-list-signup-container">
-        Interested in getting updates about organice? Sign up for the{' '}
-        <a href="http://eepurl.com/dK5F9w" target="_blank" rel="noopener noreferrer">
-          mailing list
-        </a>{' '}
-        (Or check out some{' '}
-        <a
-          href="https://us19.campaign-archive.com/home/?u=36b9d8082ddb55e6cc7e22339&id=f427625e31"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          past emails
-        </a>{' '}
-        before you sign up)
-      </div>
     </div>
   );
 };
