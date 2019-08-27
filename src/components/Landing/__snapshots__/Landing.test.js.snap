@@ -9,15 +9,20 @@ exports[`<Landing /> renders 1`] = `
   >
     organice
   </h1>
+  <img
+    alt="Logo"
+    className="landing-logo"
+    src="organice.svg"
+  />
   <h2
     className="landing-tagline"
   >
-    Edit your org files online.
+    organice organizes Org files nicely!
   </h2>
   <h2
     className="landing-tagline"
   >
-    Optimized for mobile.
+    Edit your Org files in a web browser.
   </h2>
   <h2
     className="landing-tagline"
@@ -46,30 +51,5 @@ exports[`<Landing /> renders 1`] = `
       Sign in
     </div>
   </a>
-  <div
-    className="mailing-list-signup-container"
-  >
-    Interested in getting updates about organice? Sign up for the
-     
-    <a
-      href="http://eepurl.com/dK5F9w"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      mailing list
-    </a>
-     
-    (Or check out some
-     
-    <a
-      href="https://us19.campaign-archive.com/home/?u=36b9d8082ddb55e6cc7e22339&id=f427625e31"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      past emails
-    </a>
-     
-    before you sign up)
-  </div>
 </div>
 `;

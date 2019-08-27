@@ -32,7 +32,7 @@
 
   padding-left: 10px;
 
-  color: #5e348c;
+  color: var(--base2);
 }
 
 .tags-editor__add-new-container {
@@ -59,8 +59,8 @@
 }
 
 .all-tags__tag {
-  color: white;
-  background-color: #5e348c;
+  color: var(--base00);
+  background-color: var(--base2);
 
   padding: 8px;
   margin: 5px;
@@ -68,4 +68,5 @@
 
 .all-tags__tag--in-use {
   background-color: var(--base01);
+  color: var(--base2);
 }

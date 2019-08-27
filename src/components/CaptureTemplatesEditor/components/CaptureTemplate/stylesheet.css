@@ -1,10 +1,10 @@
 @import '../../../../colors.css';
 
 .capture-template-container {
-  border-bottom: 2px solid #5e348c;
+  border-bottom: 2px solid var(--base2);
   padding: 15px 5px;
 
-  background-color: white;
+  background-color: var(--base00);
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
 
-  color: #5e348c;
+  color: var(--base2);
 }
 
 .capture-template-container__header__title {
@@ -129,9 +129,9 @@
 }
 
 .add-new-multi-textfield-button {
-  background-color: #5e348c;
+  background-color: var(--base2);
   border: 0;
-  color: white;
+  color: var(--base00);
   width: 45px;
   height: 45px;
 }

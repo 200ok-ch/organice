@@ -97,14 +97,14 @@ class HeaderList extends PureComponent {
     }
 
     const headerColors = [
-      'rgba(38, 143, 214, 1)',
-      'rgba(42, 164, 168, 1)',
-      'rgba(181, 142, 78, 1)',
-      'rgba(220, 64, 95, 1)',
-      'rgba(101, 128, 152, 1)',
-      'rgba(146, 164, 175, 1)',
-      'rgba(203, 85, 83, 1)',
-      'rgba(108, 119, 202, 1)',
+      'var(--blue)',
+      'var(--green)',
+      'var(--cyan)',
+      'var(--yellow)',
+      'var(--blue)',
+      'var(--green)',
+      'var(--cyan)',
+      'var(--yellow)',
     ];
 
     const displayedHeaderRenderData = headerRenderData.filter(

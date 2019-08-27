@@ -5,11 +5,23 @@ html {
   background: var(--base3);
 }
 
+h2 {
+  color: var(--base01) !important;
+}
+
 .btn {
     background-color: var(--magenta);
-    color: white;
+    /* TODO: What's the right way to have text on an action button in */
+    /* solarized? */
+    color: #FFE !important;
+
     border: 0;
     padding: 8px 16px;
+
+}
+
+.btn a {
+  color: #FFE !important;
 }
 
 .btn--circle {

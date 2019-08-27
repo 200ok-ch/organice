@@ -12,10 +12,7 @@
 .todo-keyword {
   font-weight: bold;
   margin-right: 5px;
-}
-
-.todo-keyword--todo {
-  color: red;
+  color: var(--orange);
 }
 
 .todo-keyword--done {
@@ -27,7 +24,6 @@
 }
 
 .header-tag {
-  background-color: white;
   border: 1px solid var(--base01);
   padding: 1px 2px;
   margin: 2px;

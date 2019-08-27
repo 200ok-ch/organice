@@ -1,3 +1,5 @@
+@import '../../../../colors.css';
+
 .no-items-message {
   color: gray;
   text-align: center;
@@ -34,7 +36,7 @@ item-container__drag-handle {
   justify-content: space-between;
   align-items: center;
 
-  color: #5e348c;
+  color: var(--base2);
 }
 
 .property-list-editor__add-new-container {

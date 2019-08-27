@@ -7,7 +7,7 @@ import './stylesheet.css';
 
 export default ({ state, onClick }) => {
   const uncheckedColor = rgbaObject(255, 255, 255, 1);
-  const checkedColor = rgbaObject(94, 52, 140, 1);
+  const checkedColor = rgbaObject(238, 232, 213, 1);
 
   const checkboxStyle = {
     colorFactor: spring(

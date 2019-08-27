@@ -1,3 +1,5 @@
+@import '../../../colors.css';
+
 .switch {
   display: inline-block;
   border: 1px solid #d8d8d8;
@@ -13,5 +15,5 @@
   border: 1px solid #d8d8d8;
   box-sizing: border-box;
   box-shadow: 1px 1px 5px 0px rgba(148, 148, 148, 0.75);
-  background-color: white;
+  background-color: var(--base00);
 }

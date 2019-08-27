@@ -1,5 +1,7 @@
+@import '../../colors.css';
+
 .header-bar {
-  background-color: #5e348c;
+  background-color: var(--base2);
   height: 30px;
   padding: 10px;
 
@@ -22,19 +24,19 @@
 }
 
 .header-bar__app-name {
-  color: white;
+  color: var(--base01);
   margin: 0;
   margin-left: 5px;
 }
 
 .header-bar__title {
-  color: white;
+  color: var(--base01);
   text-align: center;
   font-size: 20px;
 }
 
 .header-bar__back-button {
-  color: white;
+  color: var(--base01);
   text-decoration: none;
 
   text-overflow: ellipsis;
@@ -51,11 +53,11 @@
   display: flex;
   align-items: center;
 
-  color: white;
+  color: var(--base01);
 }
 
 .header-bar__actions__item {
-  color: white;
+  color: var(--base01);
 
   margin-left: 20px;
 }

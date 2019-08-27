@@ -1,5 +1,7 @@
+@import '../../../../colors.css';
+
 .agenda__title {
-  color: #5e348c;
+  color: var(--base01);
 
   margin-top: 0;
 }
@@ -16,7 +18,7 @@
 
   margin-top: 15px;
 
-  color: #5e348c;
+  color: var(--base01);
 }
 
 .agenda__timeframe-header {

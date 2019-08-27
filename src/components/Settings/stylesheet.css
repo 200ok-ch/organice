@@ -1,3 +1,5 @@
+@import '../../colors.css';
+
 .setting-container {
   display: flex;
   align-items: center;
@@ -78,7 +80,7 @@
 }
 
 .settings-button-help-text {
-  color: gray;
+  color: var(--base1);
   padding-left: 20px;
   padding-right: 20px;
 

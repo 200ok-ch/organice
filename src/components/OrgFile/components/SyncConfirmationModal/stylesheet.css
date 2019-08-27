@@ -1,11 +1,13 @@
+@import '../../../../colors.css';
+
 .sync-confirmation-modal__header {
-  color: #5e348c;
+  color: var(--base2);
 
   margin-top: 0;
 }
 
 .sync-confirmation-modal__last-sync-time {
-  color: #5e348c;
+  color: var(--base2);
 
   text-align: center;
   font-weight: bold;

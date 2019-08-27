@@ -1,3 +1,5 @@
+@import '../../../colors.css';
+
 .drawer-outer-container {
   position: fixed;
   top: 0;
@@ -9,7 +11,7 @@
 }
 
 .drawer-outer-container--visible {
-  background-color: rgba(94, 52, 140, 0.1);
+  background-color: rgba(238, 232, 213, 0.1);
 }
 
 .drawer-inner-container {
@@ -20,12 +22,12 @@
 
   padding: 15px 10px 0 10px;
 
-  box-shadow: 0px -1px 5px 0px rgba(148, 148, 148, 0.55);
+  box-shadow: 0px -1px 35px 0px var(--base03);
   border-bottom: none;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 
-  background-color: white;
+  background-color: var(--base3);
 
   max-height: 80%;
   overflow: auto;
@@ -36,7 +38,7 @@
   top: 15px;
   right: 15px;
 
-  color: #5e348c;
+  color: var(--base2);
 
   border: 0;
   background-color: transparent;
@@ -58,7 +60,7 @@
 }
 
 .drawer-modal__title {
-  color: #5e348c;
+  color: var(--base2);
 
   margin-top: 0;
 }
