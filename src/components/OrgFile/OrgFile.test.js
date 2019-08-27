@@ -20,13 +20,7 @@ import { Map, fromJS } from 'immutable';
 
 import toJSON from 'enzyme-to-json';
 
-import fs from 'fs';
-import path from 'path';
-
-function readFixture(name) {
-  return fs.readFileSync(path.join(__dirname, `./fixtures/${name}.org`)).toString();
-}
-
+import readFixture from '../../../test_helpers/index';
 /**
  * This is a convenience wrapper around paring an org file using
  * `parseOrg` and then export it using `exportOrg`.
