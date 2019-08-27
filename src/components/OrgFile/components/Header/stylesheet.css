@@ -1,3 +1,5 @@
+@import '../../../../colors.css';
+
 .header {
   margin-bottom: 2px;
   margin-top: 5px;
@@ -9,7 +11,7 @@
 }
 
 .header--selected {
-  background-color: rgba(239, 255, 0, 0.28);
+  background-color: var(--base1-soft);
 }
 
 .header--removing {
@@ -42,7 +44,7 @@
 
 .swipe-action-container__icon {
   position: absolute;
-  color: white;
+  color: var(--base00);
 }
 
 .swipe-action-container__icon--left {

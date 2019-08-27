@@ -1,6 +1,8 @@
+@import '../../colors.css';
+
 .loading-indicator {
-  color: white;
-  background-color: #5e348c;
+  color: var(--base00);
+  background-color: var(--base2);
   font-weight: bold;
   opacity: 0.9;
   padding: 18px;

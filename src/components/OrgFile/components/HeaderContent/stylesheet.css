@@ -1,10 +1,12 @@
+@import '../../../../colors.css';
+
 .header-content-container {
   white-space: pre-wrap;
   overflow-x: auto;
 }
 
 .header-content__edit-icon {
-  color: #5e348c;
+  color: var(--base2);
 
   margin-top: 10px;
   margin-right: 5px;

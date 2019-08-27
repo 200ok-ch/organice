@@ -1,5 +1,7 @@
+@import '../../../../../../colors.css';
+
 .agenda-day__title {
-  color: #5e348c;
+  color: var(--base01);
 
   display: flex;
   justify-content: space-between;
@@ -15,12 +17,12 @@
 
   width: 7px;
   height: 7px;
-  background-color: #5e348c;
+  background-color: var(--base2);
   border-radius: 50%;
 }
 
 .agenda-day__header-planning-date--overdue {
-  color: red;
+  color: var(--orange);
 }
 
 .agenda-day__title__day-name {
@@ -50,5 +52,5 @@
 
 .agenda-day__header-planning-type {
   min-width: 135px;
-  color: gray;
+  color: var(--base01);
 }

@@ -1,5 +1,7 @@
+@import '../../../../colors.css';
+
 .timestamp-editor__title {
-  color: #5e348c;
+  color: var(--base01);
 
   margin-top: 0;
 }

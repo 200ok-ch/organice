@@ -202,6 +202,12 @@ class TitleLine extends PureComponent {
       >
         {!inEditMode && !!todoKeyword ? (
           <span
+            // INFO: Instead of `todoKeyword.toLowerCase()` it would
+            // be best to render todo-keyword--done if the keyword is
+            // the last of a keywordSet. Then it would get rendered
+            // with the appropriate color, no matter what the keyword
+            // is.
+            // Relevant issue: https://github.com/200ok-ch/organice/issues/16
             className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
             onClick={this.handleTodoClick}
           >

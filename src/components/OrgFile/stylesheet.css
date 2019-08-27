@@ -1,3 +1,5 @@
+@import '../../colors.css';
+
 .org-file__parsing-error-message {
   text-align: center;
   font-size: 16px;
@@ -12,9 +14,9 @@
 
 .dirty-indicator {
   padding: 3px;
-  background-color: gray;
-  opacity: 0.5;
-  color: white;
+  opacity: 0.6;
+  color: var(--base2);
+  background-color: var(--orange);
   position: fixed;
   bottom: 100px;
   right: 10px;

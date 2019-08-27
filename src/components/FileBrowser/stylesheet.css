@@ -15,7 +15,7 @@
 }
 
 .file-browser__file-list__icon {
-  color: #5e348c;
+  color: var(--base02);
 }
 
 .file-browser__file-list__element {
@@ -31,7 +31,7 @@
 .file-browser__file-list__element--load-more-row:last-of-type {
   border-bottom: none;
   text-align: center;
-  color: #5e348c;
+  color: var(--base2);
   font-weight: bold;
 }
 
@@ -39,7 +39,7 @@
   display: flex;
   justify-content: center;
 
-  color: #5e348c;
+  color: var(--base2);
 
   margin-top: 10px;
 }
@@ -49,5 +49,5 @@
 }
 
 .file-browser__file-list__icon--directory {
-  color: #5e348c;
+  color: var(--base00);
 }

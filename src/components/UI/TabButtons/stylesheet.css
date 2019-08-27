@@ -31,6 +31,6 @@
 }
 
 .tab-buttons__btn--selected {
-  background-color: #5e348c;
-  color: white;
+  background-color: var(--base2);
+  color: var(--base03);
 }
