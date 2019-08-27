@@ -1,5 +1,10 @@
 @import 'colors.css';
 
+html {
+  color: var(--base00);
+  background: var(--base3);
+}
+
 .btn {
     background-color: var(--magenta);
     color: white;
