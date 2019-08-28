@@ -70,7 +70,7 @@ const toggleHeaderOpened = (state, action) => {
 
   if (isOpened) {
     const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
-    subheaders.forEach((subheader, index) => {
+    subheaders.forEach(index => {
       state = state.setIn(['headers', headerIndex + index + 1, 'opened'], false);
     });
   }
@@ -185,7 +185,7 @@ const advanceTodoState = (state, action) => {
   const indexedPlanningItemsWithRepeaters = header
     .get('planningItems')
     .map((planningItem, index) => [planningItem, index])
-    .filter(([planningItem, index]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
+    .filter(([planningItem]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
 
   if (
     currentTodoSet.get('completedKeywords').includes(newTodoState) &&
@@ -212,23 +212,20 @@ const advanceTodoState = (state, action) => {
         secondTimestamp: null,
       },
     ];
-    state = state.updateIn(
-      ['headers', headerIndex, 'propertyListItems'],
-      propertyListItems =>
-        propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
-          ? propertyListItems.map(
-              item =>
-                item.get('property') === 'LAST_REPEAT'
-                  ? item.set('value', fromJS(newLastRepeatValue))
-                  : item
-            )
-          : propertyListItems.push(
-              fromJS({
-                property: 'LAST_REPEAT',
-                value: newLastRepeatValue,
-                id: generateId(),
-              })
-            )
+    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
+      propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
+        ? propertyListItems.map(item =>
+            item.get('property') === 'LAST_REPEAT'
+              ? item.set('value', fromJS(newLastRepeatValue))
+              : item
+          )
+        : propertyListItems.push(
+            fromJS({
+              property: 'LAST_REPEAT',
+              value: newLastRepeatValue,
+              id: generateId(),
+            })
+          )
     );
 
     state = state.updateIn(['headers', headerIndex], header => {
@@ -257,7 +254,7 @@ const advanceTodoState = (state, action) => {
 
 const enterEditMode = (state, action) => state.set('editMode', action.editModeType);
 
-const exitEditMode = (state, action) => state.set('editMode', null);
+const exitEditMode = state => state.set('editMode', null);
 
 const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
@@ -326,7 +323,7 @@ const selectNextSiblingHeader = (state, action) => {
   return state.set('selectedHeaderId', nextSibling.get('id'));
 };
 
-const selectNextVisibleHeader = (state, action) => {
+const selectNextVisibleHeader = state => {
   const headers = state.get('headers');
 
   if (state.get('selectedHeaderId') === undefined) {
@@ -344,7 +341,7 @@ const selectNextVisibleHeader = (state, action) => {
   return state.set('selectedHeaderId', nextVisibleHeader.get('id'));
 };
 
-const selectPreviousVisibleHeader = (state, action) => {
+const selectPreviousVisibleHeader = state => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, state.get('selectedHeaderId'));
 
@@ -431,12 +428,8 @@ const moveHeaderLeft = (state, action) => {
 
   const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
 
-  state = state.updateIn(['headers', headerIndex, 'nestingLevel'], nestingLevel =>
-    Math.max(nestingLevel - 1, 1)
-  );
-
-  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
-  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+  state = shiftTreeNestingLevel({ state, headerIndex }, '-');
+  state = updateCookies(state, previousParentHeaderId, action);
 
   return state;
 };
@@ -447,14 +440,9 @@ const moveHeaderRight = (state, action) => {
 
   const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
 
-  state = state.updateIn(
-    ['headers', headerIndex, 'nestingLevel'],
-    nestingLevel => nestingLevel + 1
-  );
-
+  state = shiftTreeNestingLevel({ state, headerIndex }, '+');
   state = openDirectParent(state, action.headerId);
-  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
-  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+  state = updateCookies(state, previousParentHeaderId, action);
 
   return state;
 };
@@ -472,20 +460,8 @@ const moveSubtreeLeft = (state, action) => {
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
 
-  state = state.updateIn(
-    ['headers', headerIndex, 'nestingLevel'],
-    nestingLevel => nestingLevel - 1
-  );
-
-  subheaders.forEach((_, index) => {
-    state = state.updateIn(
-      ['headers', headerIndex + index + 1, 'nestingLevel'],
-      nestingLevel => nestingLevel - 1
-    );
-  });
-
-  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
-  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+  state = shiftTreeNestingLevel({ state, headerIndex, subheaders }, '-');
+  state = updateCookies(state, previousParentHeaderId, action);
 
   return state;
 };
@@ -498,19 +474,8 @@ const moveSubtreeRight = (state, action) => {
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
 
-  state = state.updateIn(
-    ['headers', headerIndex, 'nestingLevel'],
-    nestingLevel => nestingLevel + 1
-  );
-  subheaders.forEach((_, index) => {
-    state = state.updateIn(
-      ['headers', headerIndex + index + 1, 'nestingLevel'],
-      nestingLevel => nestingLevel + 1
-    );
-  });
-
-  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
-  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+  state = shiftTreeNestingLevel({ state, headerIndex, subheaders }, '+');
+  state = updateCookies(state, previousParentHeaderId, action);
 
   return openDirectParent(state, action.headerId);
 };
@@ -523,7 +488,7 @@ const unfocusHeader = state => state.set('focusedHeaderId', null);
 
 const noOp = state => state.update('noOpCounter', counter => (counter || 0) + 1);
 
-const applyOpennessState = (state, action) => {
+const applyOpennessState = state => {
   const opennessState = state.get('opennessState');
   if (!opennessState) {
     return state;
@@ -558,7 +523,7 @@ const updateDescriptionOfHeaderContainingTableCell = (state, cellId, header = nu
   );
 };
 
-const addNewTableRow = (state, action) => {
+const addNewTableRow = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -573,7 +538,7 @@ const addNewTableRow = (state, action) => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const removeTableRow = (state, action) => {
+const removeTableRow = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -592,7 +557,7 @@ const removeTableRow = (state, action) => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
 
-const addNewTableColumn = (state, action) => {
+const addNewTableColumn = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -609,7 +574,7 @@ const addNewTableColumn = (state, action) => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const removeTableColumn = (state, action) => {
+const removeTableColumn = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -645,7 +610,7 @@ const moveTableRowDown = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const moveTableRowUp = (state, action) => {
+const moveTableRowUp = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -660,7 +625,7 @@ const moveTableRowUp = (state, action) => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const moveTableColumnLeft = (state, action) => {
+const moveTableColumnLeft = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -671,14 +636,12 @@ const moveTableColumnLeft = (state, action) => {
       columnIndex === 0
         ? rows
         : rows.map(row =>
-            row.update(
-              'contents',
-              contents =>
-                contents.size === 0
-                  ? contents
-                  : contents
-                      .insert(columnIndex - 1, contents.get(columnIndex))
-                      .delete(columnIndex + 1)
+            row.update('contents', contents =>
+              contents.size === 0
+                ? contents
+                : contents
+                    .insert(columnIndex - 1, contents.get(columnIndex))
+                    .delete(columnIndex + 1)
             )
           )
     )
@@ -687,7 +650,7 @@ const moveTableColumnLeft = (state, action) => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const moveTableColumnRight = (state, action) => {
+const moveTableColumnRight = state => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -698,14 +661,12 @@ const moveTableColumnRight = (state, action) => {
       columnIndex + 1 >= rows.getIn([0, 'contents']).size
         ? rows
         : rows.map(row =>
-            row.update(
-              'contents',
-              contents =>
-                contents.size === 0
-                  ? contents
-                  : contents
-                      .insert(columnIndex, contents.get(columnIndex + 1))
-                      .delete(columnIndex + 2)
+            row.update('contents', contents =>
+              contents.size === 0
+                ? contents
+                : contents
+                    .insert(columnIndex, contents.get(columnIndex + 1))
+                    .delete(columnIndex + 2)
             )
           )
     )
@@ -918,10 +879,8 @@ const addNewPlanningItem = (state, action) => {
     timestamp: getCurrentTimestamp(),
   });
 
-  return state.updateIn(
-    ['headers', headerIndex, 'planningItems'],
-    planningItems =>
-      !!planningItems ? planningItems.push(newPlanningItem) : List([newPlanningItem])
+  return state.updateIn(['headers', headerIndex, 'planningItems'], planningItems =>
+    !!planningItems ? planningItems.push(newPlanningItem) : List([newPlanningItem])
   );
 };
 
@@ -1041,3 +1000,46 @@ export default (state = new Map(), action) => {
       return state;
   }
 };
+
+/**
+ * Function wrapper around `updateCookiesOfHeaderWithId` and
+ * `updateCookiesOfParentOfHeaderWithId`.
+ */
+function updateCookies(state, previousParentHeaderId, action) {
+  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
+  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
+  return state;
+}
+
+/**
+ * Helper function to calculate the new state when moving a header
+ * (either with or without subheaders) to the left or right.
+ * @param {Object} param0 - Current state
+ * @param {Object} param0.state - Redux `state` object
+ * @param {Object} param0.headerIndex - Position of relevant header object
+ * @param {Object} param0.subheaders - List of subheaders of relevant header
+ * @param {String} direction: Can be either '-' to move the header left
+ * or '+' to move it right
+ */
+function shiftTreeNestingLevel({ state, headerIndex, subheaders = [] }, direction = '-') {
+  state = state.updateIn(['headers', headerIndex, 'nestingLevel'], calculateNestingLevel());
+  subheaders.forEach((_, index) => {
+    state = state.updateIn(
+      ['headers', headerIndex + index + 1, 'nestingLevel'],
+      calculateNestingLevel()
+    );
+  });
+  return state;
+
+  function calculateNestingLevel() {
+    return nestingLevel => {
+      if (direction === '-') {
+        // Don't move a header further to the left than the first
+        // column
+        return Math.max(nestingLevel - 1, 1);
+      } else {
+        return nestingLevel + 1;
+      }
+    };
+  }
+}
