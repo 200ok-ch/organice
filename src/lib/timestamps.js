@@ -84,10 +84,11 @@ export const dateForTimestamp = timestamp => {
   let parsedDate;
   if (!!startHour && !!startMinute) {
     timestampString += ` ${startHour.padStart(2, '0')}:${startMinute}`;
-    parsedDate = parse(timestampString, 'yyyy-MM-dd hh:mm', new Date());
+    parsedDate = parse(timestampString, 'yyyy-MM-dd HH:mm', new Date());
+  } else {
+    parsedDate = parse(timestampString, 'yyyy-MM-dd', new Date());
   }
 
-  parsedDate = parse(timestampString, 'yyyy-MM-dd', new Date());
   return parsedDate;
 };
 
