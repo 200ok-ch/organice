@@ -187,65 +187,14 @@ const advanceTodoState = (state, action) => {
     .map((planningItem, index) => [planningItem, index])
     .filter(([planningItem]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
 
-  if (
-    currentTodoSet.get('completedKeywords').includes(newTodoState) &&
-    indexedPlanningItemsWithRepeaters.size > 0
-  ) {
-    indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
-      state = state.setIn(
-        ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-        applyRepeater(planningItem.get('timestamp'), new Date())
-      );
-    });
-
-    state = state.setIn(
-      ['headers', headerIndex, 'titleLine', 'todoKeyword'],
-      currentTodoSet.get('keywords').first()
-    );
-
-    const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
-    const newLastRepeatValue = [
-      {
-        type: 'timestamp',
-        id: generateId(),
-        firstTimestamp: lastRepeatTimestamp,
-        secondTimestamp: null,
-      },
-    ];
-    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
-      propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
-        ? propertyListItems.map(item =>
-            item.get('property') === 'LAST_REPEAT'
-              ? item.set('value', fromJS(newLastRepeatValue))
-              : item
-          )
-        : propertyListItems.push(
-            fromJS({
-              property: 'LAST_REPEAT',
-              value: newLastRepeatValue,
-              id: generateId(),
-            })
-          )
-    );
-
-    state = state.updateIn(['headers', headerIndex], header => {
-      let rawDescription = header.get('rawDescription');
-      if (rawDescription.startsWith('\n')) {
-        rawDescription = rawDescription.slice(1);
-      }
-
-      rawDescription =
-        `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
-          fromJS(lastRepeatTimestamp)
-        )}\n` + rawDescription;
-
-      return header
-        .set('rawDescription', rawDescription)
-        .set('description', parseRawText(rawDescription));
-    });
-  } else {
-    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
-  }
+  state = updateHeadlines(
+    currentTodoSet,
+    newTodoState,
+    indexedPlanningItemsWithRepeaters,
+    state,
+    headerIndex,
+    currentTodoState
+  );
 
   state = updateCookiesOfParentOfHeaderWithId(state, headerId);
 
@@ -1000,6 +949,103 @@ export default (state = new Map(), action) => {
       return state;
   }
 };
+
+/**
+ * Updates Headlines with the next todoKeyword `newTodoState`. Also
+ * reschedules planning items with repeaters if applicable.
+ * @param {any} currentTodoSet
+ * @param {String} newTodoState
+ * @param {any} indexedPlanningItemsWithRepeaters
+ * @param {Object} state - redux state
+ * @param {Number} headerIndex
+ * @param {String} currentTodoState
+ */
+function updateHeadlines(
+  currentTodoSet,
+  newTodoState,
+  indexedPlanningItemsWithRepeaters,
+  state,
+  headerIndex,
+  currentTodoState
+) {
+  if (
+    currentTodoSet.get('completedKeywords').includes(newTodoState) &&
+    indexedPlanningItemsWithRepeaters.size > 0
+  )
+    state = updatePlanningItemsWithRepeaters(
+      indexedPlanningItemsWithRepeaters,
+      state,
+      headerIndex,
+      currentTodoSet,
+      newTodoState,
+      currentTodoState
+    );
+  else {
+    // Update simple headline (without repeaters)
+    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  }
+  return state;
+}
+
+function updatePlanningItemsWithRepeaters(
+  indexedPlanningItemsWithRepeaters,
+  state,
+  headerIndex,
+  currentTodoSet,
+  newTodoState,
+  currentTodoState
+) {
+  {
+    indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
+      state = state.setIn(
+        ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
+        applyRepeater(planningItem.get('timestamp'), new Date())
+      );
+    });
+    state = state.setIn(
+      ['headers', headerIndex, 'titleLine', 'todoKeyword'],
+      currentTodoSet.get('keywords').first()
+    );
+    const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
+    const newLastRepeatValue = [
+      {
+        type: 'timestamp',
+        id: generateId(),
+        firstTimestamp: lastRepeatTimestamp,
+        secondTimestamp: null,
+      },
+    ];
+    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
+      propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
+        ? propertyListItems.map(item =>
+            item.get('property') === 'LAST_REPEAT'
+              ? item.set('value', fromJS(newLastRepeatValue))
+              : item
+          )
+        : propertyListItems.push(
+            fromJS({
+              property: 'LAST_REPEAT',
+              value: newLastRepeatValue,
+              id: generateId(),
+            })
+          )
+    );
+    state = state.updateIn(['headers', headerIndex], header => {
+      let rawDescription = header.get('rawDescription');
+      if (rawDescription.startsWith('\n')) {
+        rawDescription = rawDescription.slice(1);
+      }
+      rawDescription =
+        `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+          fromJS(lastRepeatTimestamp)
+        )}\n` + rawDescription;
+      return header
+        .set('rawDescription', rawDescription)
+        .set('description', parseRawText(rawDescription));
+    });
+  }
+  return state;
+}
 
 /**
  * Function wrapper around `updateCookiesOfHeaderWithId` and
