@@ -4,8 +4,6 @@
   border-bottom: 2px solid var(--base2);
   padding: 15px 5px;
 
-  background-color: var(--base00);
-
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -17,7 +15,7 @@
   display: flex;
   align-items: center;
 
-  color: var(--base2);
+  color: var(--base01);
 }
 
 .capture-template-container__header__title {
