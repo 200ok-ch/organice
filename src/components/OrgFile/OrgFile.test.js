@@ -53,7 +53,7 @@ describe('Unit Tests for org file', () => {
       test('Parsing lines with bold text', () => {
         const testOrgFile = readFixture('bold_text');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
-        expect(testOrgFile).toEqual(exportedFile);
+        expect(exportedFile).toEqual(testOrgFile);
       });
     });
 
