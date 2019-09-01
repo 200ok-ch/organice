@@ -96,7 +96,7 @@ export const persistableFields = [
     category: 'base',
     name: 'shouldLiveSync',
     type: 'boolean',
-    shouldStoreInConfig: false,
+    shouldStoreInConfig: true,
   },
   {
     category: 'base',
