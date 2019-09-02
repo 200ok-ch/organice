@@ -1,3 +1,7 @@
 .privacy-policy-container {
   margin-left: 10px;
 }
+
+.privacy-policy-container a {
+  color: var(--base00);
+}
