@@ -29,7 +29,7 @@ export default () => {
         </Link>
       </div>
       <footer>
-        <a href="/privacy-policy">Privacy Policy</a>
+        <Link to="/privacy-policy">Privacy Policy</Link>
       </footer>
     </main>
   );

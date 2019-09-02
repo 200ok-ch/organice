@@ -56,6 +56,7 @@ exports[`<Landing /> renders 1`] = `
   <footer>
     <a
       href="/privacy-policy"
+      onClick={[Function]}
     >
       Privacy Policy
     </a>
