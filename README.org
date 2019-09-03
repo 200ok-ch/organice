@@ -16,6 +16,11 @@ for mobile and desktop browsers.
 organice lets you directly edit your org files online. It syncs with
 Dropbox and Google Drive and is optimized for mobile use.
 
+At 200ok, we run an instance of organice at https://organice.200ok.ch,
+which is open for anyone to use! organice does not have a back-end
+(it's just a front-end application, which uses either Dropbox or Google
+Drive as back-end storage). Hence no data stored on our servers.
+
 [[./images/screenshot--overview.png]]
 
 ** Capture params and Siri support
