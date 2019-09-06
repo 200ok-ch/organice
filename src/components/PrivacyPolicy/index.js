@@ -4,7 +4,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="privacy-policy-container">
       <h1>Privacy Policy</h1>
-      <p>Last updated: September 2nd, 2019</p>
+      <p>Last updated: September 6nd, 2019</p>
 
       <p>
         <a href="https://200ok.ch/">200ok llc</a> operates the https://organice.200ok.ch website and
@@ -72,10 +72,6 @@ const PrivacyPolicy = () => {
         <li>To assist us in analyzing how our Service is used.</li>
       </ul>
 
-      <p>
-        In addition, we may use third party services such as Google Analytics that collect, monitor
-        and analyze this data.
-      </p>
       <p>
         We want to inform our Service users that these third parties have access to your Personal
         Information. The reason is to perform the tasks assigned to them on our behalf. However,

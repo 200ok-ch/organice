@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import googleAnalyticsLogger from './middleware/google_analytics_logging';
 import liveSync from './middleware/live_sync';
 import syncOnBecomingVisible from './middleware/sync_on_becoming_visible';
 import rootReducer from './reducers';
@@ -11,5 +10,5 @@ export default initialState =>
   createStore(
     rootReducer,
     initialState,
-    composeEnhancers(applyMiddleware(thunk, googleAnalyticsLogger, liveSync, syncOnBecomingVisible))
+    composeEnhancers(applyMiddleware(thunk, liveSync, syncOnBecomingVisible))
   );
