@@ -213,6 +213,7 @@ organice differs from org-web in that:
   files) compared to its ancestry.
 - It continues to evolve independently with it's own feature set.
 - It is a project with equal focus on mobile as desktop browsers.
+- org-web tracks users with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][doesn't]].
 
 **** What's new?
 
