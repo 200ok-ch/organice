@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-09-06 Fri>
+*** Fixed
+
+- Removed Google Analytics tracking, because it has no place here
+
+** <2019-09-02 Mon>
+
+*** Added
+
+- Configure Google Drive for the free community version of organice at
+  https://organice.200ok.ch
+- Documented SPA routing for self-hosting
+- Wrote and publicized a Privacy Policy
 
 ** <2019-08-27 Tue>
 
