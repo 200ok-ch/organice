@@ -180,27 +180,16 @@ RewriteRule ^ - [L]
 
 RewriteRule ^ /index.html [L]
 #+END_EXAMPLE
-** Capture params and Siri support
+** Capture templates
 
-organice supports a flexible mechanism for capturing using URL
-parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
-Shortcuts]] feature in iOS 12, allowing you to use Siri to execute
-capture templates.
-
-You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away
-in iOS 12. Open the link on your iOS device and click "Get Shortcut".
-Then open up the Shortcuts app and edit the template by following the
-directions in the comments. Then record a Siri trigger and you're good
-to go!
-
-Alternatively, you can take advantage of the URL parameters yourself
-to build your own custom capture mechanism. All three of the following
+organice supports capture templates by implementing a flexible
+mechanism using URL parameters. These three of the following
 parameters are required and must be URL encoded:
 
 - ~captureTemplateName~: the name of the capture template to use. This
   capture template must already exist in Settings > Capture templates.
-- ~captureFile~: the path (for Dropbox) or id (for Google Drive) of
-  the file in which to execute the capture template.
+- ~captureFile~: the =path= (for Dropbox) or =id= (for Google Drive)
+  of the file in which to execute the capture template.
 - ~captureContent~: the content you'd like to capture. This content
   will be placed at the cursor position if specified in the capture
   template (with ~%?~), or at the end of the template if its not
@@ -211,9 +200,72 @@ templates. They should be in the format ~captureVariable_<your custom
 variable>~, and should also be URL encoded. In your capture template
 they'd show up as ~%<your custom variable>~.
 
-Here's an example URL:
+*** Examples
+**** Simple: Capture a string
 
-[[https://org.200ok.ch?captureTemplateName=Grocery%2520item&captureContent=Lemon&captureFile=/org/todo.org&captureVariable_location=Home]]
+Say, you want to capture thoughts/todos as they occur to you. You
+might want to have a capture template to just get these things out of
+your head.
+
+This makes for a good "Inbox" capture template:
+
+*Capture Template*
+
+ #+BEGIN_SRC
+* TODO %?
+%U
+#+END_SRC
+
+*Example URL*
+
+https://organice.200ok.ch?captureTemplateName=Inbox&captureContent=Read+up+on+capture+templates&captureFile=/org/things.org
+
+*Result*
+
+#+BEGIN_EXAMPLE
+* TODO Read up on capture templates
+[2019-09-08 Sun 20:54]
+#+END_EXAMPLE
+
+**** With custom variable
+
+If you want to do something more complex, for example capturing a URL
+and a title (for example within a bookmarklet to create a reading
+list), this would be a good starting point:
+
+*Capture Template*
+
+#+BEGIN_EXAMPLE
+* %?
+%u
+
+- URL: %mediaURL
+#+END_EXAMPLE
+
+*Example URL*
+
+https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+like+an+instrument&captureFile=/org/media.org&captureVariable_mediaURL=https://200ok.ch/posts/2018-04-27_Play_Emacs_like_an_Instrument.html
+
+*Result*
+
+#+BEGIN_EXAMPLE
+* Play Emacs like an instrument
+[2019-09-08 Sun]
+
+- URL: https://200ok.ch/posts/2018-04-27_Play_Emacs_like_an_Instrument.html
+#+END_EXAMPLE
+
+*** Siri integration
+
+The organice capture mechanism integrates very nicely with the [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
+Shortcuts]] feature in iOS, allowing you to use Siri to execute capture
+templates.
+
+You can use [[https://www.icloud.com/shortcuts/14f91f8cf8f547a183a0734396240984][this sample Shortcut]] to get started with this right away
+in iOS 12 or newer. Open the link on your iOS device and click "Get
+Shortcut". Then open up the Shortcuts app and edit the template by
+following the directions in the comments. Then [[https://support.apple.com/en-us/HT209055][record a Siri trigger]]
+and you're good to go!
 
 ** Comparison
 
