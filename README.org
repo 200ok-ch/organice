@@ -228,10 +228,10 @@ https://organice.200ok.ch?captureTemplateName=Inbox&captureContent=Read+up+on+ca
 #+END_EXAMPLE
 
 **** With custom variable
+     <<media_capture>>
 
-If you want to do something more complex, for example capturing a URL
-and a title (for example within a bookmarklet to create a reading
-list), this would be a good starting point:
+If you want to add web pages to a reading queue (with a title, a
+capture date and a URL), this would be a good starting point:
 
 *Capture Template*
 
@@ -254,6 +254,24 @@ https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+li
 
 - URL: https://200ok.ch/posts/2018-04-27_Play_Emacs_like_an_Instrument.html
 #+END_EXAMPLE
+
+*** Bookmarklets
+
+Since organice is a web application, you can use the capture templates
+feature to create bookmarklets, of course! For example, if you want a
+bookmarklet to add the current page (title, capture date and URL) to
+your reading queue using [[media_capture][this capture template]], all you need is a
+little bit of JavaScript:
+
+#+BEGIN_SRC javascript
+  javascript:(function() {
+    const {title} = document;
+    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${
+    window.location.href
+  }`;
+    window.open(url, "_blank");
+  })()
+#+END_SRC
 
 *** Siri integration
 
