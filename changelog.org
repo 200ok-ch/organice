@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-09-15 Sun>
+
+*** Fixed
+
+- The 'Sync on application becoming visible' feature works on iOS and
+  Safari
+  - If enabled, the current org file is pulled from the sync backend
+    when the browser tab becomes visible. This prevents you from
+    having a stale file before starting to make changes to it.
+
 ** <2019-09-08 Sun>
 *** Added
 
