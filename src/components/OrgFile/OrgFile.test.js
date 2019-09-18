@@ -21,7 +21,7 @@ import { Map, fromJS } from 'immutable';
 import toJSON from 'enzyme-to-json';
 
 import readFixture from '../../../test_helpers/index';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 /**
  * This is a convenience wrapper around paring an org file using
  * `parseOrg` and then export it using `exportOrg`.
@@ -34,6 +34,8 @@ function parseAndExportOrgFile(testOrgFile) {
   const exportedFile = exportOrg(headers, todoKeywordSets);
   return exportedFile;
 }
+
+afterEach(cleanup);
 
 describe('Unit Tests for org file', () => {
   describe('Parsing', () => {
@@ -160,7 +162,7 @@ Some description content
   });
 
   test('<OrgFile /> renders an org file', () => {
-    const { container, getByText, debug } = render(
+    const { container, getAllByText, getByText } = render(
       <MemoryRouter keyLength={0}>
         <Provider store={store}>
           <OrgFile path="/some/test/file" />
@@ -170,11 +172,253 @@ Some description content
 
     expect(container).toMatchSnapshot();
 
-    const title = getByText('Top level header');
-    expect(title).toMatchInlineSnapshot(`
+    // 1) It is possible to query on container like on real dom node
+    const firstItem = container.querySelector('.title-line');
+    expect(firstItem).toMatchInlineSnapshot(`
+<div
+  class="title-line"
+  style="width: 0px;"
+>
+  
+  <div>
+    <span
+      style="word-break: break-word;"
+    >
+      <span>
+        Top level header
+      </span>
+      ...
+    </span>
+  </div>
+</div>
+`);
+    // but considered bad practice, because it often tests implementation details.
+    // Better to use one of the provided getBy... or queryBy... functions the render
+    // function returns, e.g. getAllByText:
+    const titles = getAllByText(/top level header/i);
+    expect(titles.length).toBe(2);
+
+    expect(titles[0]).toMatchInlineSnapshot(`
 <span>
   Top level header
 </span>
+`);
+
+    expect(titles[0].parentElement.parentElement).toMatchInlineSnapshot(`
+<div>
+  <span
+    style="word-break: break-word;"
+  >
+    <span>
+      Top level header
+    </span>
+    ...
+  </span>
+</div>
+`);
+    expect(titles[0].parentElement.parentElement.parentElement).toEqual(firstItem);
+
+    expect(firstItem.parentElement).toMatchInlineSnapshot(`
+<div
+  class="header"
+  style="padding-left: 20px; margin-left: 0px;"
+>
+  <div
+    class="left-swipe-action-container"
+    style="width: 0px; background-color: rgb(211, 211, 211);"
+  >
+    <i
+      class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+      style="display: none;"
+    />
+  </div>
+  <div
+    class="right-swipe-action-container"
+    style="width: 0px; background-color: rgb(211, 211, 211);"
+  >
+    <i
+      class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+      style="display: none;"
+    />
+  </div>
+  <div
+    class="header__bullet"
+    style="margin-left: -16px;"
+  >
+    *
+  </div>
+  <div
+    class="title-line"
+    style="width: 0px;"
+  >
+    
+    <div>
+      <span
+        style="word-break: break-word;"
+      >
+        <span>
+          Top level header
+        </span>
+        ...
+      </span>
+    </div>
+  </div>
+  <div />
+</div>
+`);
+
+    // Because it is the real dom we can fire real events
+    fireEvent.click(titles[0]);
+
+    // that change the real dom:
+    expect(firstItem.parentElement).toMatchInlineSnapshot(`
+<div
+  class="header header--selected"
+  style="padding-left: 20px; margin-left: 0px;"
+>
+  <div
+    class="left-swipe-action-container"
+    style="width: 0px; background-color: rgb(211, 211, 211);"
+  >
+    <i
+      class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+      style="display: none;"
+    />
+  </div>
+  <div
+    class="right-swipe-action-container"
+    style="width: 0px; background-color: rgb(211, 211, 211);"
+  >
+    <i
+      class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+      style="display: none;"
+    />
+  </div>
+  <div
+    class="header__bullet"
+    style="margin-left: -16px;"
+  >
+    *
+  </div>
+  <div
+    class="title-line"
+    style="width: 0px;"
+  >
+    
+    <div>
+      <span
+        style="word-break: break-word;"
+      >
+        <span>
+          Top level header
+        </span>
+        
+      </span>
+    </div>
+  </div>
+  <div
+    class="ReactCollapse--collapse"
+    style="overflow: hidden; height: 0px; margin-right: 0px;"
+  >
+    <div
+      class="ReactCollapse--content"
+    >
+      <div
+        class="header-action-drawer-container"
+      >
+        <div
+          class="header-action-drawer__row"
+        >
+          <div
+            class="header-action-drawer__ff-click-catcher-container"
+          >
+            <div
+              class="header-action-drawer__ff-click-catcher"
+            />
+            <i
+              class="fas fa-pencil-alt fa-lg"
+            />
+          </div>
+          <span
+            class="header-action-drawer__separator"
+          />
+          <div
+            class="header-action-drawer__ff-click-catcher-container"
+          >
+            <div
+              class="header-action-drawer__ff-click-catcher"
+            />
+            <i
+              class="fas fa-edit fa-lg"
+            />
+          </div>
+          <span
+            class="header-action-drawer__separator"
+          />
+          <div
+            class="header-action-drawer__ff-click-catcher-container"
+          >
+            <div
+              class="header-action-drawer__ff-click-catcher"
+            />
+            <i
+              class="fas fa-tags fa-lg"
+            />
+          </div>
+          <span
+            class="header-action-drawer__separator"
+          />
+          <div
+            class="header-action-drawer__ff-click-catcher-container"
+          >
+            <div
+              class="header-action-drawer__ff-click-catcher"
+            />
+            <i
+              class="fas fa-compress fa-lg"
+            />
+          </div>
+          <span
+            class="header-action-drawer__separator"
+          />
+          <div
+            class="header-action-drawer__ff-click-catcher-container"
+          >
+            <div
+              class="header-action-drawer__ff-click-catcher"
+            />
+            <i
+              class="fas fa-plus fa-lg"
+            />
+          </div>
+        </div>
+        <div
+          class="header-action-drawer__row"
+        >
+          <div
+            class="header-action-drawer__deadline-scheduled-button"
+          >
+            Deadline
+          </div>
+          <span
+            class="header-action-drawer__separator"
+          />
+          <div
+            class="header-action-drawer__deadline-scheduled-button"
+          >
+            Scheduled
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="header-content-container nice-scroll"
+    style="width: 0px;"
+  >
+    <span />
+  </div>
+</div>
 `);
   });
 
