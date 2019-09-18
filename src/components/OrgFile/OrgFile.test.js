@@ -21,6 +21,7 @@ import { Map, fromJS } from 'immutable';
 import toJSON from 'enzyme-to-json';
 
 import readFixture from '../../../test_helpers/index';
+import { render, fireEvent } from '@testing-library/react';
 /**
  * This is a convenience wrapper around paring an org file using
  * `parseOrg` and then export it using `exportOrg`.
@@ -158,8 +159,23 @@ Some description content
     );
   });
 
-  test.skip('<OrgFile /> renders an org file', () => {
-    expect(toJSON(component)).toMatchSnapshot();
+  test('<OrgFile /> renders an org file', () => {
+    const { container, getByText, debug } = render(
+      <MemoryRouter keyLength={0}>
+        <Provider store={store}>
+          <OrgFile path="/some/test/file" />
+        </Provider>
+      </MemoryRouter>
+    );
+
+    expect(container).toMatchSnapshot();
+
+    const title = getByText('Top level header');
+    expect(title).toMatchInlineSnapshot(`
+<span>
+  Top level header
+</span>
+`);
   });
 
   test.skip('Can select a header in an org file', () => {
