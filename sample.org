@@ -210,13 +210,21 @@ DEADLINE: <2018-09-10 Mon>
 ** TODO sign up for Triplebyte
 SCHEDULED: <2018-09-17 Mon>
 * Syncing
-organice pulls down your org files from Dropbox or Google Drive. Click the "Sign in" button in the upper right hand corner to sign in with either Dropbox or Google Drive and authenticate organice.
-** Symlink your org files
-If you don't already keep your org files in Dropbox or Google Drive, I recommend symlinking them in:
+organice pulls down your org files from Dropbox or Google Drive. Click
+the "Sign in" button in the upper right hand corner to sign in with
+either Dropbox or Google Drive and authenticate organice.
 
-ln -s ~/Documents/todo.org ~/Dropbox/todo.org
 ** Backups
-The first time you push changes from organice back up to your chosen sync service, organice will make a backup of the original file first. It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive also both keep a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up :)
+The first time you push changes from organice back up to your chosen
+sync service, organice will make a backup of the original file first.
+It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive
+also both keep a full version history of your files for you, but this
+is an additional precaution in case something goes wrong pushing the
+file back up.
+
+Generally, when working with distributed Org files, we're recommending
+to put them under version control and to check for bugs and racing
+conditions between clients.
 * organice operates completely client side
 You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
 * Future plans
