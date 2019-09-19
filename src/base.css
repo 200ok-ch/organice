@@ -1,9 +1,29 @@
 @import 'colors.css';
 
-html {
+/* Tablets and bigger are constrained to a max width and are centered */
+@media (min-width:767px) {
+  html {
+    background: #FFE;
+  }
+
+  #root, .action-drawer-container, .drawer-inner-container, .loading-indicator {
+    max-width: 35em;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .action-drawer-container {
+    max-width: 33em;
+  }
+}
+
+#root {
   color: var(--base00);
   background: var(--base3);
+  height: 100vh;
+  box-shadow: 0 2em 2em 2em var(--base1-soft);
 }
+
 
 h2 {
   color: var(--base01) !important;
