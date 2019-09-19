@@ -6,6 +6,10 @@
     background: var(--base2);
   }
 
+  #root {
+    box-shadow: 0 2em 2em 1.5em var(--base1-soft);
+  }
+
   #root,
   .action-drawer-container,
   .drawer-inner-container,
@@ -20,11 +24,10 @@
   }
 }
 
-#root {
+html, #root {
   color: var(--base00);
   background: var(--base3);
-  height: 100vh;
-  box-shadow: 0 2em 2em 1.5em var(--base1-soft);
+  min-height: 100vh;
 }
 
 h2 {
