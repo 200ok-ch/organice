@@ -1,12 +1,15 @@
 @import 'colors.css';
 
 /* Tablets and bigger are constrained to a max width and are centered */
-@media (min-width:767px) {
+@media (min-width: 767px) {
   html {
-    background: #FFE;
+    background: var(--base2);
   }
 
-  #root, .action-drawer-container, .drawer-inner-container, .loading-indicator {
+  #root,
+  .action-drawer-container,
+  .drawer-inner-container,
+  .loading-indicator {
     max-width: 35em;
     margin-left: auto;
     margin-right: auto;
@@ -21,66 +24,64 @@
   color: var(--base00);
   background: var(--base3);
   height: 100vh;
-  box-shadow: 0 2em 2em 2em var(--base1-soft);
+  box-shadow: 0 2em 2em 1.5em var(--base1-soft);
 }
-
 
 h2 {
   color: var(--base01) !important;
 }
 
 .btn {
-    background-color: var(--magenta);
-    /* TODO: What's the right way to have text on an action button in */
-    /* solarized? */
-    color: #FFE !important;
+  background-color: var(--magenta);
+  /* TODO: What's the right way to have text on an action button in */
+  /* solarized? */
+  color: #ffe !important;
 
-    border: 0;
-    padding: 8px 16px;
-
+  border: 0;
+  padding: 8px 16px;
 }
 
 .btn a {
-  color: #FFE !important;
+  color: #ffe !important;
 }
 
 .btn--circle {
-    border-radius: 50%;
-    font-weight: bold;
-    padding: 0;
-    width: 60px;
-    height: 60px;
+  border-radius: 50%;
+  font-weight: bold;
+  padding: 0;
+  width: 60px;
+  height: 60px;
 }
 
 .btn--disabled {
-    background-color: var(--base01);
+  background-color: var(--base01);
 }
 
 .nice-scroll {
-    -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
 }
 
 .textarea {
-    width: 95%;
-    font-size: 16px;
-    font-family: Courier;
+  width: 95%;
+  font-size: 16px;
+  font-family: Courier;
 
-    -webkit-appearance: none;
-    border-radius: 0;
+  -webkit-appearance: none;
+  border-radius: 0;
 }
 
 .textfield {
-    border: 1px solid #D8D8D8;
-    border-radius: 0;
-    -webkit-appearance: none;
-    padding: 5px;
-    font-size: 16px;
+  border: 1px solid #d8d8d8;
+  border-radius: 0;
+  -webkit-appearance: none;
+  padding: 5px;
+  font-size: 16px;
 }
 
-div[tabindex="-1"]:focus {
-    outline: 0;
+div[tabindex='-1']:focus {
+  outline: 0;
 }
 
 button {
-    touch-action: manipulation;
+  touch-action: manipulation;
 }
