@@ -1,6 +1,4 @@
-import React, { Fragment } from 'react';
-import { mount } from 'enzyme';
-import renderer from 'react-test-renderer';
+import React from 'react';
 import thunk from 'redux-thunk';
 
 import { MemoryRouter } from 'react-router-dom';
@@ -11,14 +9,11 @@ import OrgFile from './';
 
 import { parseOrg, _parsePlanningItems } from '../../lib/parse_org';
 import exportOrg from '../../lib/export_org';
-import { readInitialState } from '../../util/settings_persister';
 import rootReducer from '../../reducers/';
 
 import { displayFile } from '../../actions/org';
 
 import { Map, fromJS } from 'immutable';
-
-import toJSON from 'enzyme-to-json';
 
 import readFixture from '../../../test_helpers/index';
 import { render, fireEvent, cleanup } from '@testing-library/react';
@@ -129,7 +124,7 @@ Some description content
 * A header with [[https://google.com][a link]]
 `;
 
-  let store, component;
+  let store;
 
   beforeEach(() => {
     let capture = new Map();
@@ -151,18 +146,10 @@ Some description content
       applyMiddleware(thunk)
     );
     store.dispatch(displayFile('/some/test/file', testOrgFile));
-
-    component = mount(
-      <MemoryRouter keyLength={0}>
-        <Provider store={store}>
-          <OrgFile path="/some/test/file" />
-        </Provider>
-      </MemoryRouter>
-    );
   });
 
   test('<OrgFile /> renders an org file', () => {
-    const { container, getAllByText, getByText } = render(
+    const { container, getAllByText } = render(
       <MemoryRouter keyLength={0}>
         <Provider store={store}>
           <OrgFile path="/some/test/file" />
@@ -170,277 +157,51 @@ Some description content
       </MemoryRouter>
     );
 
+    expect(getAllByText(/\*/)).toHaveLength(4);
+    expect(container).toMatchSnapshot();
+  });
+
+  test('Can select a header in an org file', () => {
+    const { container, getByText, queryByText } = render(
+      <MemoryRouter keyLength={0}>
+        <Provider store={store}>
+          <OrgFile path="/some/test/file" />
+        </Provider>
+      </MemoryRouter>
+    );
+
+    expect(queryByText('Scheduled')).toBeFalsy();
+    expect(queryByText('Deadline')).toBeFalsy();
     expect(container).toMatchSnapshot();
 
-    // 1) It is possible to query on container like on real dom node
-    const firstItem = container.querySelector('.title-line');
-    expect(firstItem).toMatchInlineSnapshot(`
-<div
-  class="title-line"
-  style="width: 0px;"
->
-  
-  <div>
-    <span
-      style="word-break: break-word;"
-    >
-      <span>
-        Top level header
-      </span>
-      ...
-    </span>
-  </div>
-</div>
-`);
-    // but considered bad practice, because it often tests implementation details.
-    // Better to use one of the provided getBy... or queryBy... functions the render
-    // function returns, e.g. getAllByText:
-    const titles = getAllByText(/top level header/i);
-    expect(titles.length).toBe(2);
+    fireEvent.click(getByText('Top level header'));
 
-    expect(titles[0]).toMatchInlineSnapshot(`
-<span>
-  Top level header
-</span>
-`);
-
-    expect(titles[0].parentElement.parentElement).toMatchInlineSnapshot(`
-<div>
-  <span
-    style="word-break: break-word;"
-  >
-    <span>
-      Top level header
-    </span>
-    ...
-  </span>
-</div>
-`);
-    expect(titles[0].parentElement.parentElement.parentElement).toEqual(firstItem);
-
-    expect(firstItem.parentElement).toMatchInlineSnapshot(`
-<div
-  class="header"
-  style="padding-left: 20px; margin-left: 0px;"
->
-  <div
-    class="left-swipe-action-container"
-    style="width: 0px; background-color: rgb(211, 211, 211);"
-  >
-    <i
-      class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-      style="display: none;"
-    />
-  </div>
-  <div
-    class="right-swipe-action-container"
-    style="width: 0px; background-color: rgb(211, 211, 211);"
-  >
-    <i
-      class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-      style="display: none;"
-    />
-  </div>
-  <div
-    class="header__bullet"
-    style="margin-left: -16px;"
-  >
-    *
-  </div>
-  <div
-    class="title-line"
-    style="width: 0px;"
-  >
-    
-    <div>
-      <span
-        style="word-break: break-word;"
-      >
-        <span>
-          Top level header
-        </span>
-        ...
-      </span>
-    </div>
-  </div>
-  <div />
-</div>
-`);
-
-    // Because it is the real dom we can fire real events
-    fireEvent.click(titles[0]);
-
-    // that change the real dom:
-    expect(firstItem.parentElement).toMatchInlineSnapshot(`
-<div
-  class="header header--selected"
-  style="padding-left: 20px; margin-left: 0px;"
->
-  <div
-    class="left-swipe-action-container"
-    style="width: 0px; background-color: rgb(211, 211, 211);"
-  >
-    <i
-      class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-      style="display: none;"
-    />
-  </div>
-  <div
-    class="right-swipe-action-container"
-    style="width: 0px; background-color: rgb(211, 211, 211);"
-  >
-    <i
-      class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-      style="display: none;"
-    />
-  </div>
-  <div
-    class="header__bullet"
-    style="margin-left: -16px;"
-  >
-    *
-  </div>
-  <div
-    class="title-line"
-    style="width: 0px;"
-  >
-    
-    <div>
-      <span
-        style="word-break: break-word;"
-      >
-        <span>
-          Top level header
-        </span>
-        
-      </span>
-    </div>
-  </div>
-  <div
-    class="ReactCollapse--collapse"
-    style="overflow: hidden; height: 0px; margin-right: 0px;"
-  >
-    <div
-      class="ReactCollapse--content"
-    >
-      <div
-        class="header-action-drawer-container"
-      >
-        <div
-          class="header-action-drawer__row"
-        >
-          <div
-            class="header-action-drawer__ff-click-catcher-container"
-          >
-            <div
-              class="header-action-drawer__ff-click-catcher"
-            />
-            <i
-              class="fas fa-pencil-alt fa-lg"
-            />
-          </div>
-          <span
-            class="header-action-drawer__separator"
-          />
-          <div
-            class="header-action-drawer__ff-click-catcher-container"
-          >
-            <div
-              class="header-action-drawer__ff-click-catcher"
-            />
-            <i
-              class="fas fa-edit fa-lg"
-            />
-          </div>
-          <span
-            class="header-action-drawer__separator"
-          />
-          <div
-            class="header-action-drawer__ff-click-catcher-container"
-          >
-            <div
-              class="header-action-drawer__ff-click-catcher"
-            />
-            <i
-              class="fas fa-tags fa-lg"
-            />
-          </div>
-          <span
-            class="header-action-drawer__separator"
-          />
-          <div
-            class="header-action-drawer__ff-click-catcher-container"
-          >
-            <div
-              class="header-action-drawer__ff-click-catcher"
-            />
-            <i
-              class="fas fa-compress fa-lg"
-            />
-          </div>
-          <span
-            class="header-action-drawer__separator"
-          />
-          <div
-            class="header-action-drawer__ff-click-catcher-container"
-          >
-            <div
-              class="header-action-drawer__ff-click-catcher"
-            />
-            <i
-              class="fas fa-plus fa-lg"
-            />
-          </div>
-        </div>
-        <div
-          class="header-action-drawer__row"
-        >
-          <div
-            class="header-action-drawer__deadline-scheduled-button"
-          >
-            Deadline
-          </div>
-          <span
-            class="header-action-drawer__separator"
-          />
-          <div
-            class="header-action-drawer__deadline-scheduled-button"
-          >
-            Scheduled
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="header-content-container nice-scroll"
-    style="width: 0px;"
-  >
-    <span />
-  </div>
-</div>
-`);
+    expect(queryByText('Scheduled')).toBeTruthy();
+    expect(queryByText('Deadline')).toBeTruthy();
+    expect(container).toMatchSnapshot();
   });
 
-  test.skip('Can select a header in an org file', () => {
-    component
-      .find('.title-line')
-      .first()
-      .simulate('click');
-
-    expect(toJSON(component)).toMatchSnapshot();
-  });
-
-  test.skip('Can advance todo state for selected header in an org file', () => {
-    component
-      .find('.title-line')
-      .first()
-      .simulate('click');
-    component
-      .find('.fas.fa-check')
-      .first()
-      .simulate('click');
-
-    expect(toJSON(component)).toMatchSnapshot();
+  test('Can advance todo state for selected header in an org file', () => {
+    // What exactly should we test here? There were no dom after the second click.
+    // This test now does what the old test using enzyme did but we use react testing library
+    // here.
+    // Guess is the old test was looking at state/prop changes, which should be avoided, as
+    // looking for state/prop changes is testing implementation details.
+    // That's why react testing library doesn't offer anything to do that. If we only test
+    // what the user sees and how the user interacts with what she sees the tests
+    // are less brittle and give us more confidence:
+    // https://testing-library.com/docs/guiding-principles
+    // We should probably delete or change this test but I thought it's good to leave
+    // it here for posterity's sake.
+    const { container } = render(
+      <MemoryRouter keyLength={0}>
+        <Provider store={store}>
+          <OrgFile path="/some/test/file" />
+        </Provider>
+      </MemoryRouter>
+    );
+    fireEvent.click(container.querySelector('.title-line'));
+    fireEvent.click(container.querySelector('.fas.fa-check'));
+    expect(container).toMatchSnapshot();
   });
 });
