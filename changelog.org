@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-09-19 Thu>
+
+*** Changed
+
+- Constraining to a max width and centering for tablets and bigger
+
 ** <2019-09-15 Sun>
 
 *** Fixed
