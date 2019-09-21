@@ -1,3 +1,4 @@
+* Main header (required for parser atm)
 *This is bold*: Hello spec!
 
 *Bold* text can also be just one word.
