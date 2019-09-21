@@ -609,7 +609,9 @@ export const parseOrg = fileContents => {
   let todoKeywordSets = new List();
 
   lines.forEach(line => {
-    if (line.startsWith('*')) {
+    // A header has to start with at least one consecutive asterisk
+    // followed by a blank
+    if (line.match(/^\*+\ /)) {
       let nestingLevel = line.indexOf(' ');
       if (nestingLevel === -1) {
         nestingLevel = line.length;

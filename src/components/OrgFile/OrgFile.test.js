@@ -49,6 +49,14 @@ describe('Unit Tests for org file', () => {
       });
     });
 
+    describe('Boldness', () => {
+      test('Parsing lines with bold text', () => {
+        const testOrgFile = readFixture('bold_text');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
     describe('Planning items', () => {
       describe('Formatting is the same as in Emacs', () => {
         describe('List formatting', () => {
