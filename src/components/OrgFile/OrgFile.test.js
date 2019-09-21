@@ -117,11 +117,10 @@ describe('Rendering an org file', () => {
 * Top level header
 ** A nested header
 ** TODO A todo item
-** DONE A finished todo item
 * Another top level header
 Some description content
 * A header with tags                                              :tag1:tag2:
-* A header with [[https://google.com][a link]]
+* A header with [[https://organice.200ok.ch][a link]]
 `;
 
   let store;
@@ -141,18 +140,19 @@ Some description content
         capture,
         base: new fromJS({
           customKeybindings: {},
+          shouldTapTodoToAdvance: true,
         }),
       },
       applyMiddleware(thunk)
     );
-    store.dispatch(displayFile('/some/test/file', testOrgFile));
+    store.dispatch(displayFile('fixtureTestFile.org', testOrgFile));
   });
 
   test('<OrgFile /> renders an org file', () => {
     const { container, getAllByText } = render(
       <MemoryRouter keyLength={0}>
         <Provider store={store}>
-          <OrgFile path="/some/test/file" />
+          <OrgFile path="fixtureTestFile.org" />
         </Provider>
       </MemoryRouter>
     );
@@ -162,46 +162,49 @@ Some description content
   });
 
   test('Can select a header in an org file', () => {
-    const { container, getByText, queryByText } = render(
+    const { getByText, queryByText } = render(
       <MemoryRouter keyLength={0}>
         <Provider store={store}>
-          <OrgFile path="/some/test/file" />
+          <OrgFile path="fixtureTestFile.org" />
         </Provider>
       </MemoryRouter>
     );
 
     expect(queryByText('Scheduled')).toBeFalsy();
     expect(queryByText('Deadline')).toBeFalsy();
-    expect(container).toMatchSnapshot();
 
     fireEvent.click(getByText('Top level header'));
 
     expect(queryByText('Scheduled')).toBeTruthy();
     expect(queryByText('Deadline')).toBeTruthy();
-    expect(container).toMatchSnapshot();
   });
 
   test('Can advance todo state for selected header in an org file', () => {
-    // What exactly should we test here? There were no dom after the second click.
-    // This test now does what the old test using enzyme did but we use react testing library
-    // here.
-    // Guess is the old test was looking at state/prop changes, which should be avoided, as
-    // looking for state/prop changes is testing implementation details.
-    // That's why react testing library doesn't offer anything to do that. If we only test
-    // what the user sees and how the user interacts with what she sees the tests
-    // are less brittle and give us more confidence:
-    // https://testing-library.com/docs/guiding-principles
-    // We should probably delete or change this test but I thought it's good to leave
-    // it here for posterity's sake.
-    const { container } = render(
+    const { queryByText } = render(
       <MemoryRouter keyLength={0}>
         <Provider store={store}>
-          <OrgFile path="/some/test/file" />
+          <OrgFile path="fixtureTestFile.org" />
         </Provider>
       </MemoryRouter>
     );
-    fireEvent.click(container.querySelector('.title-line'));
-    fireEvent.click(container.querySelector('.fas.fa-check'));
-    expect(container).toMatchSnapshot();
+
+    // In the very beginning, the TODO is hidden, because the file
+    // starts folded down to the top level
+    expect(queryByText('TODO')).toBeFalsy();
+
+    // Cycle the top header (which will make the next headers
+    // [including the TODO] visible
+    fireEvent.click(queryByText('Top level header'));
+
+    // In the beginning, the TODO is not DONE
+    expect(queryByText('TODO')).toBeTruthy();
+    expect(queryByText('DONE')).toBeFalsy();
+
+    // Toggle the TODO
+    fireEvent.click(queryByText('TODO'));
+
+    // Then the TODO is DONE
+    expect(queryByText('TODO')).toBeFalsy();
+    expect(queryByText('DONE')).toBeTruthy();
   });
 });
