@@ -209,7 +209,7 @@ exports[`Rendering an org file <OrgFile /> renders an org file 1`] = `
                     a link
                   </a>
                 </span>
-                
+                ...
               </span>
             </div>
           </div>

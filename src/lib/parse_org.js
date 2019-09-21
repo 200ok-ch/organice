@@ -639,9 +639,16 @@ export const parseOrg = fileContents => {
         }
       } else {
         headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
-          console.log(`rawDescription: ${rawDescription}`);
-          console.log(`line: ${line}`);
-          return rawDescription.length === 0 ? line + '\n' : rawDescription + '\n' + line;
+          // In the beginning of the `parseOrg` function, the original
+          // fileContent lines are split by '\n'. Therefore, if the
+          // original line was a newline, it will show up here as an
+          // empty `line` with an empty `rawDescription`. Add a
+          // newline here to the list, so that the exported file will
+          // have newlines in the same places as the originally parsed
+          // file.
+          if (!line && !rawDescription) return '\n';
+
+          return rawDescription.length === 0 ? line : rawDescription + '\n' + line;
         });
       }
     }
