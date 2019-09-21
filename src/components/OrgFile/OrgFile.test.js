@@ -49,6 +49,9 @@ describe('Unit Tests for org file', () => {
       });
     });
 
+    // TODO: Write such a file
+    test.skip('Parses and exports a file which contains all features of organice', () => {});
+
     describe('Boldness', () => {
       test('Parsing lines with bold text', () => {
         const testOrgFile = readFixture('bold_text');
