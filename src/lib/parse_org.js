@@ -638,9 +638,11 @@ export const parseOrg = fileContents => {
           );
         }
       } else {
-        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription =>
-          rawDescription.length === 0 ? line : rawDescription + '\n' + line
-        );
+        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
+          console.log(`rawDescription: ${rawDescription}`);
+          console.log(`line: ${line}`);
+          return rawDescription.length === 0 ? line + '\n' : rawDescription + '\n' + line;
+        });
       }
     }
   });

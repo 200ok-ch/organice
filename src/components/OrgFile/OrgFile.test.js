@@ -57,6 +57,14 @@ describe('Unit Tests for org file', () => {
       });
     });
 
+    describe('Newlines', () => {
+      test('Newlines in between headers and items are preserved', () => {
+        const testOrgFile = readFixture('newlines');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
     describe('Planning items', () => {
       describe('Formatting is the same as in Emacs', () => {
         describe('List formatting', () => {
@@ -104,7 +112,7 @@ describe('Unit Tests for org file', () => {
         test('Tags are formatted as is default in Emacs', () => {
           const testOrgFile = readFixture('tags');
           const exportedFile = parseAndExportOrgFile(testOrgFile);
-          expect(exportedFile).toEqual(testOrgFile.trimRight());
+          expect(exportedFile).toEqual(testOrgFile);
         });
       });
     });
