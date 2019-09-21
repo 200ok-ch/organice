@@ -4,15 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ** <2019-09-21 Sat>
 
-*** Changed
-
-- @MTrost [[https://github.com/200ok-ch/organice/pull/45][introduced]] a new testing library called [[https://testing-library.com/docs/intro][React Testing
-  Library]] which greatly simplified writing interaction tests.
-
 *** Fixed
 
 - Parser bug which would interpret *bold* statements in the beginning
   of a line as a header.
+- Parser bug which would delete newlines between headers and items
+
+*** Changed
+
+- @MTrost [[https://github.com/200ok-ch/organice/pull/45][introduced]] a new testing library called [[https://testing-library.com/docs/intro][React Testing
+  Library]] which greatly simplified writing interaction tests.
 
 ** <2019-09-19 Thu>
 
