@@ -179,6 +179,10 @@ Some description content
     expect(queryByText('Deadline')).toBeTruthy();
   });
 
+  // Org Mode has keywords as workflow states and can cycle through
+  // them: https://orgmode.org/manual/Workflow-states.html
+  // In organice, we can cycle through them by swiping or by clicking
+  // (if enabled). This test checks for the latter.
   test('Can advance todo state for selected header in an org file', () => {
     const { queryByText } = render(
       <MemoryRouter keyLength={0}>
