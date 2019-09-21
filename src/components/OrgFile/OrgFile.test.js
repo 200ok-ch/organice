@@ -107,6 +107,12 @@ describe('Unit Tests for org file', () => {
           expect(exportedFile).toEqual(testOrgFile.trimRight());
         });
       });
+
+      describe('Parses planning item with following checkmark', () => {
+        const testOrgFile = readFixture('planning_item_with_following_checkmark');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile.trimRight());
+      });
     });
   });
 });
