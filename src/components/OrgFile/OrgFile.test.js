@@ -49,9 +49,23 @@ describe('Unit Tests for org file', () => {
       });
     });
 
+    test('Parses and exports a file which contains all features of organice', () => {
+      const testOrgFile = readFixture('all_the_features');
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
+    });
+
     describe('Boldness', () => {
       test('Parsing lines with bold text', () => {
         const testOrgFile = readFixture('bold_text');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('Newlines', () => {
+      test('Newlines in between headers and items are preserved', () => {
+        const testOrgFile = readFixture('newlines');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
       });
@@ -104,7 +118,7 @@ describe('Unit Tests for org file', () => {
         test('Tags are formatted as is default in Emacs', () => {
           const testOrgFile = readFixture('tags');
           const exportedFile = parseAndExportOrgFile(testOrgFile);
-          expect(exportedFile).toEqual(testOrgFile.trimRight());
+          expect(exportedFile).toEqual(testOrgFile);
         });
       });
     });
