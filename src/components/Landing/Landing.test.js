@@ -1,17 +1,17 @@
 import React from 'react';
-import { mount } from 'enzyme';
-import renderer from 'react-test-renderer';
-
+import { render, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import Landing from './';
 
+afterEach(cleanup);
+
 test('<Landing /> renders', () => {
-  const component = renderer.create(
+  const { container } = render(
     <MemoryRouter>
       <Landing />
     </MemoryRouter>
   );
 
-  expect(component.toJSON()).toMatchSnapshot();
+  expect(container).toMatchSnapshot();
 });

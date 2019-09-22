@@ -10,7 +10,6 @@
     "date-fns": "^2.0.1",
     "dotenv": "^8.0.0",
     "dropbox": "^4.0.9",
-    "enzyme-adapter-react-16": "^1.1.1",
     "immutable": "^3.8.2",
     "lodash": "^4.17.15",
     "react": "^16.8.3",
@@ -35,8 +34,6 @@
   },
   "devDependencies": {
     "@testing-library/react": "^9.1.4",
-    "enzyme": "^3.3.0",
-    "enzyme-to-json": "^3.3.4",
     "prettier": "^1.16.4",
     "raw.macro": "0.3.0",
     "react-test-renderer": "^16.4.2"
