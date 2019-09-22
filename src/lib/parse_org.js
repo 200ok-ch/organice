@@ -611,6 +611,7 @@ export const parseOrg = fileContents => {
   lines.forEach(line => {
     // A header has to start with at least one consecutive asterisk
     // followed by a blank
+    // eslint-disable-next-line no-useless-escape
     if (line.match(/^\*+\ /)) {
       let nestingLevel = line.indexOf(' ');
       if (nestingLevel === -1) {
