@@ -217,7 +217,6 @@ export const attributedStringToRawText = parts => {
 };
 
 export default (headers, todoKeywordSets) => {
-  const defaultIndentation = '  ';
   let configContent = '';
   if (!todoKeywordSets.get(0).get('default')) {
     configContent =
@@ -231,6 +230,9 @@ export default (headers, todoKeywordSets) => {
   const headerContent = headers
     .toJS()
     .map(header => {
+      // Pad things like planning items and tables appropriately
+      // considering the nestingLevel of the header.
+      const indentation = ' '.repeat(header.nestingLevel + 1)
       let contents = '';
       contents += '*'.repeat(header.nestingLevel);
 
@@ -250,20 +252,20 @@ export default (headers, todoKeywordSets) => {
           })
           .join(' ')
           .trimRight();
-        contents += `\n${defaultIndentation}${planningItemsContent}`;
+        contents += `\n${indentation}${planningItemsContent}`;
       }
 
       if (header.propertyListItems.length) {
         const propertyListItemsContent = header.propertyListItems
           .map(propertyListItem => {
-            return `${defaultIndentation}:${propertyListItem.property}: ${attributedStringToRawText(
+            return `${indentation}:${propertyListItem.property}: ${attributedStringToRawText(
               fromJS(propertyListItem.value)
             )}`;
           })
           .join('\n');
-        contents += `\n${defaultIndentation}:PROPERTIES:`;
+        contents += `\n${indentation}:PROPERTIES:`;
         contents += `\n${propertyListItemsContent}`;
-        contents += `\n${defaultIndentation}:END:\n`;
+        contents += `\n${indentation}:END:\n`;
       }
 
       if (header.description) {
