@@ -1,7 +1,7 @@
-** How to contribute to Organ
+** How to contribute to organice
 
-First off, thank you for considering contributing to Organ. It's
-people like you that make Organ such a great tool.
+First off, thank you for considering contributing to organice. It's
+people like you that make organice such a great tool!
 
 **** *Did you find a bug?*
 
@@ -26,6 +26,11 @@ We have good quality assurance and an established workflow. This is it:
 4. New Branch in Git
 5. Naming: =(feature|fix|chore)/issue-id/short-description=
 6. Develop / Test locally until tests pass
+   - Please install [[https://prettier.io/][Prettier]] and use it to format your code. This
+     repository includes a ~.prettierrc.json~ with some configuration
+     options that Prettier will use automatically.
+   - If you're using Emacs, you can autoformat your source files:
+     https://github.com/munen/emacs.d/#auto-formatting
 7. Create Pull Request on Github to =master=
    - Check that the tests also pass on CI
 8. Core Team: Merge to =master=, deploy and accept the Issue on
@@ -33,6 +38,6 @@ We have good quality assurance and an established workflow. This is it:
 
 Thanks! :heart: :heart: :heart:
 
-Organ Team
+organice Team
 
 [[https://200ok.ch][200ok llc]] and all [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]]

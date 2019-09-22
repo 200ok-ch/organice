@@ -10,18 +10,25 @@ Maintainability (Codeclimate): [[https://codeclimate.com/github/200ok-ch/organic
 
 Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
 
-An implementation of Org mode without the dependency of Emacs - built
-for mobile and desktop browsers.
+** What does this project do?
 
-organice lets you directly edit your org files online. It syncs with
-Dropbox and Google Drive and is optimized for mobile use.
+organice is an implementation of [[http://orgmode.org/][Org mode]] without the dependency of
+[[https://www.gnu.org/software/emacs/][Emacs]]. It is built for mobile and desktop browsers and syncs with
+Dropbox and Google Drive.
 
-At 200ok, we run an instance of organice at https://organice.200ok.ch,
+At [[https://200ok.ch/][200ok]], we run an instance of organice at https://organice.200ok.ch,
 which is open for anyone to use! organice does not have a back-end
-(it's just a front-end application, which uses either Dropbox or Google
-Drive as back-end storage). Hence no data stored on our servers.
+(it's just a front-end application, which uses either Dropbox or
+Google Drive as back-end storage). We don't store any kind of data on
+our servers - we also don't use analytics on organice.200ok.ch.
 
 [[./images/screenshot--overview.png]]
+
+** Why is this project useful
+
+Emacs is great, but it's desktop software. For users who want to
+access or edit their Org mode files whilst on the go, organice is a
+great choice.
 
 ** Usage
 *** Current restrictions/expectations of organice
@@ -42,8 +49,6 @@ restrictions and expectations.
     users with 10k LOC Org files with all kinds of native Org features
     (of which organice only has partial understanding) and they just
     work fine!
-- There is [[https://github.com/200ok-ch/organice/pull/2][a known parser bug]]: If you have a =*bold*= statement at
-  the beginning of a line, it will be interpreted as a headline.
 
 Generally, when working with distributed Org files, we're recommending
 to put them under version control and to check for bugs and racing
@@ -54,16 +59,19 @@ or bugs that you you wouldn’t have expected.
 
 **** Background information
 
-organice utilizes [[src/lib/parse_org.js][a custom parser]] for Org files. It works fine - if
-you know about the kinks. Getting those out is not trivial, because
-writing a parser in custom code is hard. "We're working hard" means
-that we're in the process of implementing a proper BNF based parser
-and a set of tests behind that. We're working on [[https://gitlab.200ok.ch/200ok/org-parser][org-parser]] which
-strives to be that!
+organice has [[src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
+has unit tests to prove it. However, writing a parser for a complex
+syntax like Org mode in custom code is hard. Therefore, we are in the
+process of implementing a proper BNF based parser and a set of tests
+behind that. If you're interested, please check it out:
+[[https://gitlab.200ok.ch/200ok/org-parser]]
 
 ** Development
 
-organice is built with React and Redux. It was bootstrapped with [[https://github.com/facebook/create-react-app][Create React App]].
+organice is built with React and Redux. It was bootstrapped with
+[[https://github.com/facebook/create-react-app][Create React App]].
+
+*** Setup
 
 To install the necessary packages, run:
 
@@ -85,6 +93,7 @@ yarn start
 #+END_SRC
 
 *** Synchronization back-ends
+    <<synchronization_back-ends>>
 
 Note that logging in to Dropbox will only work if you're running the
 app on ~http://localhost:3000~, because all redirect URIs must be
@@ -100,20 +109,15 @@ API key as described on [[https://developers.google.com/drive/api/v3/quickstart/
 
 *** Contributions
 
-To make contributions to this repository, please install [[https://prettier.io/][Prettier]] and
-use it to format your code. This repository includes a
-~.prettierrc.json~ with some configuration options that Prettier will
-use automatically.
+Please see our [[file:CONTRIBUTING.org][contributer guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
-If you're using Emacs, you can autoformat your source files:
-https://github.com/munen/emacs.d/#auto-formatting
 ** Deployment
 
 Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
-or Google Drive, please read the section above on Synchronization back-ends.
+or Google Drive, please read the section on [[synchronization_back-ends][Synchronization back-ends]].
 
 *** FTP
 
@@ -320,17 +324,16 @@ organice differs from org-web in that:
   files) compared to its ancestry.
 - It continues to evolve independently with it's own feature set.
 - It is a project with equal focus on mobile as desktop browsers.
-- org-web tracks users with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][doesn't]].
+- org-web tracks users with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].
 
 **** What's new?
 
 To see how organice differs from org-web, please consult the [[file:changelog.org][changelog]]
-which contains all changes since forking.
+which contains the user visible changes since forking.
 
 **** Acknowledgment
 
 We are extraordinarily grateful to DanielDe the original creator!
-\_/\\_
 
 We forked the project, because we have different visions on how to go
 forward. He envisions a mobile only solution, we think it's great to
