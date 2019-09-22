@@ -25,10 +25,8 @@
 
 **** TODO I am scheduled
      SCHEDULED: <2019-09-22 Sun>
-
 **** TODO I have deadline
      DEADLINE: <2019-09-22 Sun>
-
 **** TODO I have a repeating schedule and a deadline
      DEADLINE: <2020-09-26 Sat> SCHEDULED: <2020-09-25 Fri +1y>
      :PROPERTIES:

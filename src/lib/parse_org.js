@@ -648,7 +648,9 @@ export const parseOrg = fileContents => {
           // file.
           if (!line && !rawDescription) return '\n';
 
-          return rawDescription.length === 0 ? line : rawDescription + '\n' + line;
+          if (rawDescription.length === 0) return line;
+
+          return rawDescription + '\n' + line;
         });
       }
     }
