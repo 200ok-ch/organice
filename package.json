@@ -15,7 +15,7 @@
     "react": "^16.10.0",
     "react-beautiful-dnd": "^11.0.0",
     "react-collapse": "^4.0.3",
-    "react-dom": "^16.7.0-alpha.0",
+    "react-dom": "^16.10.0",
     "react-hotkeys": "^2.0.0",
     "react-motion": "^0.5.2",
     "react-redux": "^7.1.0",
