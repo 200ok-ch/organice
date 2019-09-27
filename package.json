@@ -36,7 +36,7 @@
     "@testing-library/react": "^9.1.4",
     "prettier": "^1.16.4",
     "raw.macro": "0.3.0",
-    "react-test-renderer": "^16.4.2"
+    "react-test-renderer": "^16.10.0"
   },
   "browserslist": [
     ">0.2%",
