@@ -20,10 +20,6 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
   useLayoutEffect(() => {
     innerContainerHeight.current = innerContainer.current.offsetHeight;
   });
-  const endInnerContainerDrag = () => {
-    setIsVisible(dragOffsetY <= innerContainerHeight.current * 0.3);
-    setDragOffsetY(null);
-  };
 
   const handleInnerContainerClick = event => event.stopPropagation();
 
@@ -53,46 +49,49 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
     }
   };
 
-  const handleTouchEndOrCancel = event => endInnerContainerDrag();
+  useEffect(() => {
+    const endInnerContainerDrag = () => {
+      setIsVisible(dragOffsetY <= innerContainerHeight.current * 0.3);
+      setDragOffsetY(null);
+    };
+    const handleTouchEndOrCancel = event => endInnerContainerDrag();
 
-  useEffect(
-    () => {
-      if (!!innerContainer.current) {
-        // Super annoying logic for disabling scrolling of the body when a slide up is active.
-        // Briefly: if we're already at the top of our Drawer and trying to scroll up, disable
-        // scrolling. Likewise, if we're already at the bottom of our Drawer and trying to scroll
-        // down, disable scrolling.
-        innerContainer.current.addEventListener('touchstart', handleTouchStart);
-        innerContainer.current.addEventListener('touchmove', handleTouchMove);
-        innerContainer.current.addEventListener('touchend', handleTouchEndOrCancel);
-        innerContainer.current.addEventListener('touchcancel', handleTouchEndOrCancel);
+    if (!!innerContainer.current) {
+      // Super annoying logic for disabling scrolling of the body when a slide up is active.
+      // Briefly: if we're already at the top of our Drawer and trying to scroll up, disable
+      // scrolling. Likewise, if we're already at the bottom of our Drawer and trying to scroll
+      // down, disable scrolling.
+      innerContainer.current.addEventListener('touchstart', handleTouchStart);
+      innerContainer.current.addEventListener('touchmove', handleTouchMove);
+      innerContainer.current.addEventListener('touchend', handleTouchEndOrCancel);
+      innerContainer.current.addEventListener('touchcancel', handleTouchEndOrCancel);
 
-        return () => {
-          innerContainer.current.removeEventListener('touchstart', handleTouchStart);
-          innerContainer.current.removeEventListener('touchmove', handleTouchMove);
-          innerContainer.current.removeEventListener('touchend', handleTouchEndOrCancel);
-          innerContainer.current.removeEventListener('touchcancel', handleTouchEndOrCancel);
-        };
-      } else {
-        return null;
-      }
-    },
-    [innerContainer.current, dragOffsetY]
-  );
+      // Tmp variable for cleanup. Otherwise the linter will complain
+      // that the `current` value will change. It suggested this tmp
+      // variable.
+      const innerContainerCurrent = innerContainer.current;
 
-  useEffect(
-    () => {
-      // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
-      // Without this, I can't scroll the inner container in the agenda view.
+      return () => {
+        innerContainerCurrent.removeEventListener('touchstart', handleTouchStart);
+        innerContainerCurrent.removeEventListener('touchmove', handleTouchMove);
+        innerContainerCurrent.removeEventListener('touchend', handleTouchEndOrCancel);
+        innerContainerCurrent.removeEventListener('touchcancel', handleTouchEndOrCancel);
+      };
+    } else {
+      return null;
+    }
+  }, [innerContainer, dragOffsetY]);
+
+  useEffect(() => {
+    // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
+    // Without this, I can't scroll the inner container in the agenda view.
+    setTimeout(() => {
+      innerContainer.current.style.left = '0';
       setTimeout(() => {
-        innerContainer.current.style.left = '0';
-        setTimeout(() => {
-          innerContainer.current.style.left = '-1px';
-        }, 0);
+        innerContainer.current.style.left = '-1px';
       }, 0);
-    },
-    [children]
-  );
+    }, 0);
+  }, [children]);
 
   const outerClassName = classNames('drawer-outer-container', {
     'drawer-outer-container--visible': isVisible,

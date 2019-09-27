@@ -12,12 +12,12 @@ import substituteTemplateVariables from '../../../../lib/capture_template_substi
 export default ({ template, onCapture, headers, onClose }) => {
   const [substitutedTemplate, initialCursorIndex] = useMemo(
     () => substituteTemplateVariables(template.get('template')),
-    [template.get('template')]
+    [template]
   );
 
   const targetHeader = useMemo(() => headerWithPath(headers, template.get('headerPaths')), [
     headers,
-    template.get('headerPaths'),
+    template,
   ]);
 
   const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
@@ -25,18 +25,15 @@ export default ({ template, onCapture, headers, onClose }) => {
 
   const textarea = useRef(null);
 
-  useEffect(
-    () => {
-      if (textarea.current) {
-        textarea.current.focus();
-        if (initialCursorIndex !== null) {
-          textarea.current.selectionStart = initialCursorIndex;
-          textarea.current.selectionEnd = initialCursorIndex;
-        }
+  useEffect(() => {
+    if (textarea.current) {
+      textarea.current.focus();
+      if (initialCursorIndex !== null) {
+        textarea.current.selectionStart = initialCursorIndex;
+        textarea.current.selectionEnd = initialCursorIndex;
       }
-    },
-    [textarea]
-  );
+    }
+  }, [textarea, initialCursorIndex]);
 
   const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend);
 
