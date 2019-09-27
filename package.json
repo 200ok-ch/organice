@@ -20,7 +20,7 @@
     "react-motion": "^0.5.2",
     "react-redux": "^7.1.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.1.2",
+    "react-scripts": "3.1.2",
     "redux": "^4.0.0",
     "redux-linear-undo": "^1.0.8",
     "redux-thunk": "^2.3.0"
