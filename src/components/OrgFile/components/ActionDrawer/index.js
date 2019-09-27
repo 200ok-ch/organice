@@ -31,10 +31,12 @@ const ActionDrawer = ({
   const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
   const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
 
-  // Send a no-op action to take care of the bug where redux-undo won't allow the first
-  // action to be undone.
+  // Send a no-op action to take care of the bug where redux-undo
+  // won't allow the first action to be undone.
+  // FIXME: This bug is confirmed in a small test by Alain on 2019-09-27
   useEffect(() => {
     org.noOp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const ActionDrawer = ({
 
   const mainArrowButtonBoundingRect = useMemo(
     () => (!!mainArrowButton.current ? mainArrowButton.current.getBoundingClientRect() : null),
-    [mainArrowButton.current]
+    [mainArrowButton]
   );
 
   const handleUpClick = () =>
@@ -83,11 +85,10 @@ const ActionDrawer = ({
             template.get('isAvailableInAllOrgFiles') ||
             template
               .get('orgFilesWhereAvailable')
-              .map(
-                availablePath =>
-                  availablePath.trim().startsWith('/')
-                    ? availablePath.trim()
-                    : '/' + availablePath.trim()
+              .map(availablePath =>
+                availablePath.trim().startsWith('/')
+                  ? availablePath.trim()
+                  : '/' + availablePath.trim()
               )
               .includes((path || '').trim())
         );

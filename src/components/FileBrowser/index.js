@@ -19,7 +19,7 @@ const FileBrowser = ({
   syncBackend,
   additionalSyncBackendState,
 }) => {
-  useEffect(() => syncBackend.getDirectoryListing(path), [path]);
+  useEffect(() => syncBackend.getDirectoryListing(path), [syncBackend, path]);
 
   const handleLoadMoreClick = () => syncBackend.loadMoreDirectoryListing();
 
