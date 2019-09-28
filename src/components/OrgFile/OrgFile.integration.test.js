@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
 import OrgFile from './';
+import HeaderBar from '../HeaderBar';
 
 import rootReducer from '../../reducers/';
 
@@ -13,7 +14,7 @@ import { displayFile } from '../../actions/org';
 
 import { Map, fromJS } from 'immutable';
 
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { render, fireEvent, cleanup, wait } from '@testing-library/react';
 afterEach(cleanup);
 
 describe('Render all views', () => {
@@ -50,7 +51,9 @@ Some description content
           present: new Map(),
           future: [],
         },
-        syncBackend: Map(),
+        syncBackend: Map({
+          isAuthenticated: true,
+        }),
         capture,
         base: new fromJS({
           customKeybindings: {},
@@ -116,11 +119,12 @@ Some description content
   });
 
   describe('Renders everything starting from an Org file', () => {
-    let container, getAllByText, getByTitle, getByAltText, queryByText;
+    let container, getAllByText, getByTitle, getByAltText, getByTestId, queryByText;
     beforeEach(() => {
       let res = render(
         <MemoryRouter keyLength={0}>
           <Provider store={store}>
+            <HeaderBar />
             <OrgFile path="fixtureTestFile.org" />
           </Provider>
         </MemoryRouter>
@@ -130,12 +134,50 @@ Some description content
       getAllByText = res.getAllByText;
       getByAltText = res.getByAltText;
       getByTitle = res.getByTitle;
+      getByTestId = res.getByTestId;
       queryByText = res.queryByText;
     });
 
     test('renders an Org file', () => {
       expect(getAllByText(/\*/)).toHaveLength(4);
       expect(container).toMatchSnapshot();
+    });
+
+    describe('Undo / Redo', () => {
+      test('On loading an Org file, both are disabled', () => {
+        expect(getByTitle('Undo').classList.contains('header-bar__actions__item--disabled')).toBe(
+          true
+        );
+        expect(getByTitle('Redo').classList.contains('header-bar__actions__item--disabled')).toBe(
+          true
+        );
+      });
+
+      // FIXME: Why is this test not working?
+      test.skip('Undo becomes available on interaction', () => {
+        fireEvent.click(queryByText('Top level header'));
+        fireEvent.click(queryByText('TODO'));
+        // INFO: In the real app, the class is removed now
+        expect(getByTitle('Undo').classList.contains('header-bar__actions__item--disabled')).toBe(
+          false
+        );
+      });
+
+      // FIXME: Why is this test not working?
+      test.skip('Undo and redo do their respective task', () => {
+        fireEvent.click(queryByText('Top level header'));
+        expect(queryByText('TODO')).toBeTruthy();
+        fireEvent.click(queryByText('TODO'));
+        expect(queryByText('TODO')).toBeFalsy();
+
+        // Likely this is what is not working
+        fireEvent.click(getByTitle('Undo'));
+        // INFO: This is where the test stops working
+        expect(queryByText('TODO')).toBeTruthy();
+
+        // fireEvent.click(getByTitle('Redo'));
+        // expect(queryByText('TODO')).toBeFalsy();
+      });
     });
 
     describe('Agenda', () => {
