@@ -25,6 +25,7 @@ class HeaderBar extends PureComponent {
       'handleModalPageDoneClick',
       'handleSettingsSubPageBackClick',
       'handleUndoClick',
+      'handleRedoClick',
       'handleHelpClick',
     ]);
   }
@@ -206,6 +207,12 @@ class HeaderBar extends PureComponent {
     }
   }
 
+  handleRedoClick() {
+    if (this.props.isRedoEnabled) {
+      this.props.undo.redo();
+    }
+  }
+
   handleHelpClick() {
     this.props.base.pushModalPage('settings');
     this.props.base.pushModalPage('sample');
@@ -218,6 +225,7 @@ class HeaderBar extends PureComponent {
       activeModalPage,
       path,
       isUndoEnabled,
+      isRedoEnabled,
     } = this.props;
 
     if (!!activeModalPage) {
@@ -229,6 +237,9 @@ class HeaderBar extends PureComponent {
     } else {
       const undoIconClassName = classNames('fas fa-undo header-bar__actions__item', {
         'header-bar__actions__item--disabled': !isUndoEnabled,
+      });
+      const redoIconClassName = classNames('fas fa-redo header-bar__actions__item', {
+        'header-bar__actions__item--disabled': !isRedoEnabled,
       });
 
       const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item', {
@@ -258,6 +269,7 @@ class HeaderBar extends PureComponent {
           {isAuthenticated && !activeModalPage && !!path && (
             <Fragment>
               <i className={undoIconClassName} onClick={this.handleUndoClick} title="Undo" />
+              <i className={redoIconClassName} onClick={this.handleRedoClick} title="Redo" />
               <i
                 className="fas fa-question-circle header-bar__actions__item"
                 onClick={this.handleHelpClick}
@@ -300,6 +312,7 @@ const mapStateToProps = (state, props) => {
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     path: state.org.present.get('path'),
     isUndoEnabled: state.org.past.length > 0,
+    isRedoEnabled: state.org.future.length > 0,
     syncBackendType: state.syncBackend.get('client') && state.syncBackend.get('client').type,
   };
 };

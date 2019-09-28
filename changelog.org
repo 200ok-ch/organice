@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-09-28 Sat>
+
+*** Added
+
+- Implemented a =redo= Button next to the =undo= button
+
 ** <2019-09-21 Sat>
 
 *** Fixed

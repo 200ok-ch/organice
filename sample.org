@@ -86,10 +86,9 @@ Otherwise, it'll ask what you want to do.
 This button isn't enabled in this demo :)
 
 If you'd like to automatically push changes as you make them, you can enable "Live sync" in settings.
-** Undoing
-The undo button will appear up in the header bar when you're signed in
-
-This works just like Emacs-style undo: your history is completely linear and you can "undo undos".
+** Undo / Redo
+   When you're signed in, you'll have =undo= and =redo= buttons in the
+   headerbar.
 * Tables
 organice has native support for viewing and editing tables.
 
@@ -193,12 +192,6 @@ Once signed in, you can set up capture templates that specify header paths (and 
 **** Headers
 ***** Work
 ****** Too!
-* Capture URL params and Siri support
-organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
-
-You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
-
-Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/200ok-ch/organice/#capture-params-and-siri-support][the README file]].
 * Agenda
 organice has a basic agenda view that you can access by tapping the calendar button at the bottom of the page.
 
@@ -207,7 +200,7 @@ Tap a header in this view to jump to it, and tap on the date to switch to a more
 These overdue items with deadlines should show up on today's entry:
 ** TODO check out the organice agenda view
 DEADLINE: <2018-09-10 Mon>
-** TODO sign up for Triplebyte
+** TODO install organice to your phones homescreen
 SCHEDULED: <2018-09-17 Mon>
 * Syncing
 organice pulls down your org files from Dropbox or Google Drive. Click
@@ -227,22 +220,9 @@ to put them under version control and to check for bugs and racing
 conditions between clients.
 * organice operates completely client side
 You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
-* Future plans
-organice is currently pretty usable for simple tasks, but there's a lot more to do.
+* Capture URL params and Siri support
+organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
-If you have an idea or feature request, or if you want to contribute to organice, check out the [[https://github.com/200ok-ch/organice][GitHub page]]. We also have a [[https://gitter.im/organice/Lobby?source=orgpage][Gitter chatroom]] if you want to chat!
+You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
-Here are a few of the things already on the todo list:
-** Support for other sync backends in addition to Dropbox and Google Drive
-*** SyncThing
-*** GitHub
-*** WebDAV
-*** Mega
-*** Others? If there's one you'd like, [[https://github.com/200ok-ch/organice/issues/new][create an issue]]!
-** Support for symmetric encryption
-** Search
-** Ability to create new files
-** Archiving
-** A backend API for use in your own apps/scripts/IFTTT/Alexa Skills/etc.
-** Offline support (Safari on iOS finally supports service workers!)
-** Ability to Tweet a header directly from organice                    :joke:
+Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/200ok-ch/organice/#capture-params-and-siri-support][the README file]].
