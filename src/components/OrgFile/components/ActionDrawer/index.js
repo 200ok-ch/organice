@@ -31,14 +31,6 @@ const ActionDrawer = ({
   const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
   const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
 
-  // Send a no-op action to take care of the bug where redux-undo
-  // won't allow the first action to be undone.
-  // FIXME: This bug is confirmed in a small test by Alain on 2019-09-27
-  useEffect(() => {
-    org.noOp();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   useEffect(() => {
     document.querySelector('html').style.paddingBottom = '90px';
 
