@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import undoable, { includeAction } from 'redux-linear-undo';
+import undoable, { includeAction } from 'redux-undo';
 
 import baseReducer from './base';
 import syncBackendReducer from './sync_backend';
@@ -33,7 +33,6 @@ export default combineReducers({
   syncBackend: syncBackendReducer,
   org: undoable(orgReducer, {
     filter: includeAction(UNDOABLE_ACTIONS),
-    linearizeHistory: true,
   }),
   capture: captureReducer,
 });
