@@ -1,4 +1,5 @@
 /* global gapi */
+import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
 import {
@@ -111,6 +112,7 @@ export const downloadFile = path => {
         dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
         dispatch(displayFile(path, fileContents));
         dispatch(applyOpennessState());
+        dispatch(ActionCreators.clearHistory());
       })
       .catch(() => {
         dispatch(hideLoadingMessage());

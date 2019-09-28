@@ -23,7 +23,7 @@ import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as captureActions from '../../actions/capture';
-import { ActionCreators as undoActions } from 'redux-linear-undo';
+import { ActionCreators as undoActions } from 'redux-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
@@ -420,8 +420,9 @@ class OrgFile extends PureComponent {
             <HeaderList shouldDisableActions={shouldDisableActions} />
           )}
 
-          {isDirty &&
-            !shouldDisableDirtyIndicator && <div className="dirty-indicator">Unpushed changes</div>}
+          {isDirty && !shouldDisableDirtyIndicator && (
+            <div className="dirty-indicator">Unpushed changes</div>
+          )}
 
           {!shouldDisableActions && (
             <ActionDrawer

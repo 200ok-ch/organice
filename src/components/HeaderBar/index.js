@@ -9,7 +9,7 @@ import logo from '../../images/organice.svg';
 import './stylesheet.css';
 
 import * as baseActions from '../../actions/base';
-import { ActionCreators as undoActions } from 'redux-linear-undo';
+import { ActionCreators as undoActions } from 'redux-undo';
 
 import { List } from 'immutable';
 import _ from 'lodash';
@@ -237,33 +237,34 @@ class HeaderBar extends PureComponent {
 
       return (
         <div className="header-bar__actions">
-          {!isAuthenticated &&
-            this.getPathRoot() !== 'sign_in' && (
-              <Link to="/sign_in">
-                <div className="header-bar__actions__item" title="Sign in">
-                  Sign in
-                </div>
-              </Link>
-            )}
+          {!isAuthenticated && this.getPathRoot() !== 'sign_in' && (
+            <Link to="/sign_in">
+              <div className="header-bar__actions__item" title="Sign in">
+                Sign in
+              </div>
+            </Link>
+          )}
 
           {!isAuthenticated && (
-            <a href="https://github.com/200ok-ch/organice" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://github.com/200ok-ch/organice"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <i className="fab fa-github header-bar__actions__item" />
             </a>
           )}
 
-          {isAuthenticated &&
-            !activeModalPage &&
-            !!path && (
-              <Fragment>
-                <i className={undoIconClassName} onClick={this.handleUndoClick} title="Undo" />
-                <i
-                  className="fas fa-question-circle header-bar__actions__item"
-                  onClick={this.handleHelpClick}
-                  title="Help"
-                />
-              </Fragment>
-            )}
+          {isAuthenticated && !activeModalPage && !!path && (
+            <Fragment>
+              <i className={undoIconClassName} onClick={this.handleUndoClick} title="Undo" />
+              <i
+                className="fas fa-question-circle header-bar__actions__item"
+                onClick={this.handleHelpClick}
+                title="Help"
+              />
+            </Fragment>
+          )}
 
           {isAuthenticated && (
             <i

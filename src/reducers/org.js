@@ -435,8 +435,6 @@ const focusHeader = (state, action) => {
 
 const unfocusHeader = state => state.set('focusedHeaderId', null);
 
-const noOp = state => state.update('noOpCounter', counter => (counter || 0) + 1);
-
 const applyOpennessState = state => {
   const opennessState = state.get('opennessState');
   if (!opennessState) {
@@ -891,8 +889,6 @@ export default (state = new Map(), action) => {
       return moveSubtreeLeft(state, action);
     case 'MOVE_SUBTREE_RIGHT':
       return moveSubtreeRight(state, action);
-    case 'NO_OP':
-      return noOp(state, action);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':

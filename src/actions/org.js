@@ -1,4 +1,4 @@
-import { ActionTypes } from 'redux-linear-undo';
+import { ActionCreators } from 'redux-undo';
 import {
   setLoadingMessage,
   hideLoadingMessage,
@@ -14,7 +14,7 @@ import { headerWithPath } from '../lib/org_utils';
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
-import { parseISO } from 'date-fns'
+import { parseISO } from 'date-fns';
 
 export const displayFile = (path, contents) => ({
   type: 'DISPLAY_FILE',
@@ -30,7 +30,7 @@ export const setLastSyncAt = lastSyncAt => ({
 export const stopDisplayingFile = () => {
   return (dispatch, getState) => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
-    dispatch({ type: ActionTypes.CLEAR_HISTORY });
+    dispatch(ActionCreators.clearHistory());
     dispatch(unfocusHeader());
     dispatch(closePopup());
     dispatch(setLastSyncAt(null));
@@ -242,10 +242,6 @@ export const focusHeader = headerId => ({
 
 export const unfocusHeader = () => ({
   type: 'UNFOCUS_HEADER',
-});
-
-export const noOp = () => ({
-  type: 'NO_OP',
 });
 
 export const applyOpennessState = () => ({
