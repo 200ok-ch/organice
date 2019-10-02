@@ -81,7 +81,7 @@ export default ({ template, onCapture, headers, onClose }) => {
     }
     // Set Cursor position to the %? part of the template.
     textarea.current.setSelectionRange(initialCursorIndex, initialCursorIndex);
-  }, [textarea]);
+  }, [textarea, initialCursorIndex]);
 
   const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend);
 
