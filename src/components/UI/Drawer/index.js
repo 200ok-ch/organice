@@ -82,17 +82,6 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
     }
   }, [innerContainer, dragOffsetY]);
 
-  useEffect(() => {
-    // A ridiculous hack to get around what is presumably a Mobile Safari bug in iOS 12.
-    // Without this, I can't scroll the inner container in the agenda view.
-    setTimeout(() => {
-      innerContainer.current.style.left = '0';
-      setTimeout(() => {
-        innerContainer.current.style.left = '-1px';
-      }, 0);
-    }, 0);
-  }, [children]);
-
   const outerClassName = classNames('drawer-outer-container', {
     'drawer-outer-container--visible': isVisible,
   });
