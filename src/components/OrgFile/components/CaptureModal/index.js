@@ -33,15 +33,13 @@ export default ({ template, onCapture, headers, onClose }) => {
   });
 
   // INFO: Mobile Safari does _not_ like it when the focus is set
-  // without an explicit user interaction (which is the case here,
+  // without an explicit user interaction. This is the case in organice,
   // because the user interaction is on a button which in turn opens a
-  // textarea which should have the focus). It will open the software
+  // textarea which should have the focus. It will open the software
   // keyboard, but the capture template will stay on the bottom of the
   // view, so it will be hidden by the keyboard. The user would have
   // to manually scroll down. On iOS 12, it worked without this
   // workaround.
-  // The following `min-height` values are measured for an iPhone Xs.
-  // TODO: Measure the values for other iPhone form factors and iPads.
   const getMinHeight = () => {
     // Only Mobile Safari needs the shenannigans for moving the input
     // above the software keyboard.
@@ -54,8 +52,26 @@ export default ({ template, onCapture, headers, onClose }) => {
         }
         // Portrait Mode
         else {
-          return '23em';
-          // TODO: For iPhone 6s, make it 18em
+          // iPhone Xs
+          if (
+            window.matchMedia('(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)')
+              .matches
+          ) {
+            return '23em';
+          }
+          // iPhone 6, 7 and 8
+          else if (
+            window.matchMedia('(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)')
+              .matches
+          ) {
+            return '19em';
+          }
+          // For unmeasured models, it's safest to stick with the
+          // default iOS behavior - even if the keyboard hides the
+          // input field it's better than if it's moved too far up.
+          else {
+            return 'auto';
+          }
         }
       }
       // Not within PWA, but standard Mobile Safari
@@ -66,7 +82,26 @@ export default ({ template, onCapture, headers, onClose }) => {
         }
         // Portrait Mode
         else {
-          return '18em';
+          // iPhone Xs
+          if (
+            window.matchMedia('(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)')
+              .matches
+          ) {
+            return '18em';
+          }
+          // iPhone 6, 7 and 8
+          else if (
+            window.matchMedia('(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)')
+              .matches
+          ) {
+            return '18em';
+          }
+          // For unmeasured models, it's safest to stick with the
+          // default iOS behavior - even if the keyboard hides the
+          // input field it's better than if it's moved too far up.
+          else {
+            return 'auto';
+          }
         }
       }
     } else {
