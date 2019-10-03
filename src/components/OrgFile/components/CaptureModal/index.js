@@ -55,6 +55,7 @@ export default ({ template, onCapture, headers, onClose }) => {
         // Portrait Mode
         else {
           return '23em';
+          // TODO: For iPhone 6s, make it 18em
         }
       }
       // Not within PWA, but standard Mobile Safari
