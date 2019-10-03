@@ -24,46 +24,54 @@ export default ({ template, onCapture, headers, onClose }) => {
   const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
   const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
 
-  const browser = Bowser.getParser(window.navigator.userAgent);
+  /** Is the browser Mobile Safari with iOS version of at least 13 */
+  const isNewestMobileSafari = (() => {
+    const browser = Bowser.getParser(window.navigator.userAgent);
 
-  const isNewMobileSafari = browser.satisfies({
-    mobile: {
-      safari: '>=13',
-    },
-  });
+    return browser.satisfies({
+      mobile: {
+        safari: '>=13',
+      },
+    });
+  })();
 
-  // INFO: Mobile Safari does _not_ like it when the focus is set
-  // without an explicit user interaction. This is the case in organice,
-  // because the user interaction is on a button which in turn opens a
-  // textarea which should have the focus. It will open the software
-  // keyboard, but the capture template will stay on the bottom of the
-  // view, so it will be hidden by the keyboard. The user would have
-  // to manually scroll down. On iOS 12, it worked without this
-  // workaround.
+  /** Is iPhone Model X (tested with Xs) */
+  const isIphoneX = window.matchMedia(
+    '(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)'
+  ).matches;
+
+  /** Is iPhone Model 6, 7 or 8 (tested with 6s) */
+  const isIphone678 = window.matchMedia(
+    '(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)'
+  ).matches;
+
+  /** Is running in standalone mode (not in Mobile Safari) */
+  const isRunningAsPWA = 'standalone' in window.navigator && window.navigator.standalone;
+
+  /** Is running in Landscape Mode (as opposed to Portait Mode) */
+  function isInLandscapeMode() {
+    return [90, -90].includes(window.orientation);
+  }
+
+  /** INFO: Mobile Safari does _not_ like it when the focus is set
+   * without an explicit user interaction. This is the case in
+   * organice, because the user interaction is on a button which in
+   * turn opens a textarea which should have the focus. It will open
+   * the software keyboard, but the capture template will stay on the
+   * bottom of the view, so it will be hidden by the keyboard. The
+   * user would have to manually scroll down. On iOS 12, it worked
+   * without this workaround. */
   const getMinHeight = () => {
     // Only Mobile Safari needs the shenannigans for moving the input
     // above the software keyboard.
-    if (isNewMobileSafari) {
-      // Within PWA
-      if ('standalone' in window.navigator && window.navigator.standalone) {
-        // Landscape mode
-        if ([90, -90].includes(window.orientation)) {
+    if (isNewestMobileSafari) {
+      if (isRunningAsPWA) {
+        if (isInLandscapeMode()) {
           return '9em';
-        }
-        // Portrait Mode
-        else {
-          // iPhone Xs
-          if (
-            window.matchMedia('(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)')
-              .matches
-          ) {
+        } else {
+          if (isIphoneX) {
             return '23em';
-          }
-          // iPhone 6, 7 and 8
-          else if (
-            window.matchMedia('(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)')
-              .matches
-          ) {
+          } else if (isIphone678) {
             return '19em';
           }
           // For unmeasured models, it's safest to stick with the
@@ -74,32 +82,16 @@ export default ({ template, onCapture, headers, onClose }) => {
           }
         }
       }
-      // Not within PWA, but standard Mobile Safari
+      // Portrait mode
       else {
-        // Landscape mode
-        if ([90, -90].includes(window.orientation)) {
+        if (isInLandscapeMode()) {
           return '9em';
-        }
-        // Portrait Mode
-        else {
-          // iPhone Xs
-          if (
-            window.matchMedia('(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)')
-              .matches
-          ) {
+        } else {
+          if (isIphoneX) {
             return '18em';
-          }
-          // iPhone 6, 7 and 8
-          else if (
-            window.matchMedia('(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)')
-              .matches
-          ) {
+          } else if (isIphone678) {
             return '18em';
-          }
-          // For unmeasured models, it's safest to stick with the
-          // default iOS behavior - even if the keyboard hides the
-          // input field it's better than if it's moved too far up.
-          else {
+          } else {
             return 'auto';
           }
         }
@@ -163,7 +155,7 @@ export default ({ template, onCapture, headers, onClose }) => {
           </div>
           {/* Add padding to move the above textarea above the fold.
           More documentation, see getMinHeight(). */}
-          {isNewMobileSafari && <div style={{ minHeight: getMinHeight() }} />}
+          {isNewestMobileSafari && <div style={{ minHeight: getMinHeight() }} />}
         </Fragment>
       ) : (
         <div className="capture-modal-error-message">
