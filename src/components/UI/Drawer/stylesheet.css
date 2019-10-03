@@ -28,6 +28,7 @@
   border-top-right-radius: 20px;
 
   background-color: var(--base3);
+  max-height: 97%;
 
   overflow: auto;
 }
