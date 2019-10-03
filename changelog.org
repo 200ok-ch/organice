@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-10-02 Wed>
+
+*** Fixed
+
+- On iOS 13, fix the regression which made capture input fields hide
+  under the keyboard
+  - More information and screenshots in the ticket: https://github.com/200ok-ch/organice/issues/46
+  - Turns out this issue is non trivial to fix and requires specific
+    rules for every size of iPhone. I tested against the Xs and 6s. If
+    you have a different form factor and the capture template input
+    screen looks off to you, please send me a screenshot of what it
+    looks like and I'll add the dimensions for your form factor right
+    away!
+
 ** <2019-09-28 Sat>
 
 *** Added
