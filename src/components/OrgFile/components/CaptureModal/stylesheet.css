@@ -15,10 +15,14 @@
 .capture-modal-textarea {
   border: 1px solid var(--base01);
   font-family: Courier;
+  overflow: scroll;
 
-  margin-top: 10px;
+  margin-top: 0.5em;
 
-  width: calc(100% - 5px);
+  width: calc(100% - 2.25em);
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 
   -webkit-appearance: none;
   border-radius: 0;
