@@ -12,14 +12,14 @@ export const isNewestMobileSafari = (() => {
 })();
 
 /** Is iPhone Model X (tested with Xs) */
-export const isIphoneX = window.matchMedia(
-  '(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)'
-).matches;
+export const isIphoneX = window.matchMedia
+  ? window.matchMedia('(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)').matches
+  : false;
 
 /** Is iPhone Model 6, 7 or 8 (tested with 6s) */
-export const isIphone678 = window.matchMedia(
-  '(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)'
-).matches;
+export const isIphone678 = window.matchMedia
+  ? window.matchMedia('(min-device-width: 375px) and (-webkit-device-pixel-ratio : 2)').matches
+  : false;
 
 /** Is running in standalone mode (not in Mobile Safari) */
 export const isRunningAsPWA = 'standalone' in window.navigator && window.navigator.standalone;
