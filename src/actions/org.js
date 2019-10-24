@@ -80,7 +80,10 @@ export const sync = ({
               dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
             })
             .catch(error => {
-              alert(`There was an error pushing the file: ${error.toString()}`);
+              // TODO: It's possible to get here with a 429
+              // "too_many_write_operations" whilst pushing more than
+              // once at the same time. Let's prevent that properly.
+              // alert(`There was an error pushing the file: ${error.toString()}`);
               dispatch(hideLoadingMessage());
               dispatch(setIsLoading(false));
             });
