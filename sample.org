@@ -75,7 +75,8 @@ Give them a try on these nested headers to get a feel for how they operate:
 ***** Rex
 ***** Clooney
 ** Syncing
-The "cloud" button in the lower left hand corner syncs changes to your chosen sync service (Dropbox or Google Drive).
+The "cloud" button in the lower left hand corner syncs changes to your
+chosen sync service (Dropbox, Google Drive or WebDAV).
 
 If there's a newer version on the server and no local changes, it'll pull.
 
@@ -203,9 +204,9 @@ DEADLINE: <2018-09-10 Mon>
 ** TODO install organice to your phones homescreen
 SCHEDULED: <2018-09-17 Mon>
 * Syncing
-organice pulls down your org files from Dropbox or Google Drive. Click
-the "Sign in" button in the upper right hand corner to sign in with
-either Dropbox or Google Drive and authenticate organice.
+organice pulls down your org files from Dropbox, Google Drive or
+WebDAV. Click the "Sign in" button in the upper right hand corner to
+sign in with either of them and authenticate organice.
 
 ** Backups
 The first time you push changes from organice back up to your chosen
@@ -219,7 +220,9 @@ Generally, when working with distributed Org files, we're recommending
 to put them under version control and to check for bugs and racing
 conditions between clients.
 * organice operates completely client side
-You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox's wonderful Javascript SDK. This also means I'm not storing your Dropbox auth tokens in a database somewhere :)
+You don't log in to organice directly because organice doesn't have a
+back end - it operates completely client side using Dropbox, Google
+Drive or WebDAV as back-ends.
 * Capture URL params and Siri support
 organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 

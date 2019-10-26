@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 ** <2019-10-26 Sat>
 
 *** Added
+    - *WebDAV as a sync backend!*
+      - Thank you [[https://github.com/TristanCacqueray][@TristanCacqueray]] for your [[https://github.com/200ok-ch/organice/pull/82][PR]]!
+
     - As a user, when I swipe a header, I want the icon to contrast
       the background, so that better see the action taken
       - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/78][PR]]!
+
     - As a user, when I hover a clickable element, I want my cursor to
     change, so that I can see that it is clickable.
       - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/79][PR]]!
