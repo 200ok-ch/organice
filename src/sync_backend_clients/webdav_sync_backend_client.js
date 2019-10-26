@@ -10,12 +10,24 @@ import { createClient } from 'webdav';
  */
 export const filterAndSortDirectoryListing = listing => {
   // TODO
-  return listing
+  return listing;
 };
 
 export default (url, login, password) => {
-  const webdavClient = createClient(url, {username: login, password: password});
-  const isSignedIn = () => new Promise(resolve => resolve(true));
+  const webdavClient = createClient(url, { username: login, password: password });
+  const isSignedIn = () =>
+    new Promise(resolve => {
+      // There's no direct API to know if the login worked. So, let's
+      // check if the root folder contents can be accessed.
+      getDirectoryListing('/')
+        .then(() => {
+          resolve(true);
+        })
+        .catch(error => {
+          console.log("Login didn't work");
+          resolve(false);
+        });
+    });
 
   const transformDirectoryListing = listing => {
     const sortedListing = filterAndSortDirectoryListing(listing);
