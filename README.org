@@ -66,6 +66,36 @@ process of implementing a proper BNF based parser and a set of tests
 behind that. If you're interested, please check it out:
 [[https://gitlab.200ok.ch/200ok/org-parser]]
 
+*** PWA / Offline Support
+
+organice can run as a PWA and does have offline Support. On iOS and
+Android, you can install the web app to your home screen [[[https://www.howtogeek.com/196087/how-to-add-websites-to-the-home-screen-on-any-smartphone-or-tablet/][tutorial]]].
+From your home screen, organice will start up in full screen and it
+will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]] to cache the application. On a desktop
+browser, the Service Worker will be used automatically. This is
+implemented using the Create React App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]]
+functionality which enables the following features:
+
+- All static assets are cached so that organice loads fast on
+  subsequent visits, regardless of network connectivity.
+- Updates are downloaded in the background.
+- organice works regardless of network state, even if offline.
+- On mobile devices, organice can be added directly to the user's home
+  screen, app icon and all.
+
+Following that, if you start modifying your Org file when offline,
+organice will recognize that you are offline and queue up the
+synchronization until you are online again.
+
+organice also understands when it's local Org file is outdated
+compared to the upstream file and will ask you want you want to do -
+pull the one from the synchronization back-end, push the one from
+organice or cancel. This happens when you made changes to your file on
+at least two machines at the same time without synchronizing them in
+the meantime. For this, we recommend to put your Org file under
+version control which is the idiomatic solution for changing text
+based files on multiple machines in parallel.
+
 ** Development
 
 organice is built with React and Redux. It was bootstrapped with
@@ -215,10 +245,10 @@ This makes for a good "Inbox" capture template:
 
 *Capture Template*
 
- #+BEGIN_SRC
+#+BEGIN_EXAMPLE
 * TODO %?
 %U
-#+END_SRC
+#+END_EXAMPLE
 
 *Example URL*
 
@@ -324,7 +354,7 @@ organice differs from org-web in that:
   files) compared to its ancestry.
 - It continues to evolve independently with it's own feature set.
 - It is a project with equal focus on mobile as desktop browsers.
-- org-web tracks users with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].
+- org-web [[https://github.com/DanielDe/org-web/issues/75][tracks users]] with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].
 
 **** What's new?
 
