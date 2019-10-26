@@ -15,6 +15,9 @@ import { addSeconds } from 'date-fns';
 
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
+    case 'WebDAV':
+      ['Endpoint', 'Username', 'Password'].forEach(e => {persistField('webdav' + e, null);})
+      break;
     case 'Dropbox':
       persistField('dropboxAccessToken', null);
       break;
@@ -87,6 +90,7 @@ export const pushBackup = (pathOrFileId, contents) => {
     const client = getState().syncBackend.get('client');
     switch (client.type) {
       case 'Dropbox':
+      case 'WebDAV':
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;
       case 'Google Drive':
