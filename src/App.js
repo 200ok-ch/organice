@@ -77,7 +77,8 @@ export default class App extends PureComponent {
           client = createWebDAVSyncBackendClient(
             getPersistedField('webdavEndpoint'),
             getPersistedField('webdavUsername'),
-            getPersistedField('webdavPassword'));
+            getPersistedField('webdavPassword')
+          );
           initialState.syncBackend = Map({
             isAuthenticated: true,
             client,

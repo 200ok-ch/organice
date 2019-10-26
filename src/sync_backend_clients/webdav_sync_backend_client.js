@@ -55,17 +55,13 @@ export default (url, login, password) => {
 
   const getMoreDirectoryListing = additionalSyncBackendState => {
     // TODO
-    return new Promise((resolve, reject) => resolve())
+    return new Promise((resolve, reject) => resolve());
   };
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
       webdavClient
-        .putFileContents(
-          path,
-          contents,
-          {overwrite: true}
-        )
+        .putFileContents(path, contents, { overwrite: true })
         .then(resolve)
         .catch(reject)
     );
@@ -79,22 +75,23 @@ export default (url, login, password) => {
         .stat(path)
         .then(stat => {
           webdavClient
-            .getFileContents(path, {format: "text"})
+            .getFileContents(path, { format: 'text' })
             .then(response => {
               resolve({
                 contents: response,
-                lastModifiedAt: (new Date(Date.parse(stat.lastmod))).toISOString()
-              })
+                lastModifiedAt: new Date(Date.parse(stat.lastmod)).toISOString(),
+              });
             })
             .catch(error => {
-              console.error(path, ": get file failed", error);
+              console.error(path, ': get file failed', error);
               reject();
-            })
+            });
         })
         .catch(error => {
-          console.error(path, ": get stat failed", error);
+          console.error(path, ': get stat failed', error);
           reject();
-        }));
+        })
+    );
 
   const getFileContents = path =>
     new Promise((resolve, reject) =>
@@ -109,7 +106,7 @@ export default (url, login, password) => {
         .deleteFile(path)
         .then(resolve)
         .catch(error => {
-          console.error(path, ": delete failed", error);
+          console.error(path, ': delete failed', error);
           reject();
         })
     );
