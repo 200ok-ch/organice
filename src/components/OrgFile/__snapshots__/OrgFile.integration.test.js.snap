@@ -65,7 +65,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -74,7 +74,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -111,7 +111,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -120,7 +120,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -157,7 +157,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -166,7 +166,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -215,7 +215,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div
@@ -224,7 +224,7 @@ exports[`Render all views Renders everything starting from an Org file renders a
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
-              style="display: none;"
+              style="display: none; color: rgb(0, 0, 0);"
             />
           </div>
           <div

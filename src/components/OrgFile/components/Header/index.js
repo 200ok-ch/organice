@@ -297,9 +297,12 @@ class Header extends PureComponent {
           const isRightActionActivated =
             -1 * swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
 
-          const disabledColor = rgbaObject(211, 211, 211, 1);
-          const leftActivatedColor = rgbaObject(0, 128, 0, 1);
-          const rightActivatedColor = rgbaObject(255, 0, 0, 1);
+          const disabledBackgroundColor = rgbaObject(211, 211, 211, 1);
+          const leftActivatedBackgroundColor = rgbaObject(0, 128, 0, 1);
+          const rightActivatedBackgroundColor = rgbaObject(255, 0, 0, 1);
+
+          const disabledIconColor = rgbaObject(0, 0, 0, 1);
+          const activatedIconColor = rgbaObject(255, 255, 255, 1);
 
           const leftSwipeActionContainerStyle = {
             width: interpolatedStyle.marginLeft,
@@ -308,13 +311,6 @@ class Header extends PureComponent {
           const rightSwipeActionContainerStyle = {
             width: -1 * interpolatedStyle.marginLeft,
             backgroundColorFactor: spring(isRightActionActivated ? 1 : 0, { stiffness: 300 }),
-          };
-
-          const leftIconStyle = {
-            display: swipedDistance > 30 ? '' : 'none',
-          };
-          const rightIconStyle = {
-            display: -1 * swipedDistance > 30 ? '' : 'none',
           };
 
           const { heightFactor, ...headerStyle } = interpolatedStyle;
@@ -344,8 +340,19 @@ class Header extends PureComponent {
                     width: leftInterpolatedStyle.width,
                     backgroundColor: rgbaString(
                       interpolateColors(
-                        disabledColor,
-                        leftActivatedColor,
+                        disabledBackgroundColor,
+                        leftActivatedBackgroundColor,
+                        leftInterpolatedStyle.backgroundColorFactor
+                      )
+                    ),
+                  };
+
+                  const leftIconStyle = {
+                    display: swipedDistance > 30 ? '' : 'none',
+                    color: rgbaString(
+                      interpolateColors(
+                        disabledIconColor,
+                        activatedIconColor,
                         leftInterpolatedStyle.backgroundColorFactor
                       )
                     ),
@@ -367,8 +374,19 @@ class Header extends PureComponent {
                     width: rightInterpolatedStyle.width,
                     backgroundColor: rgbaString(
                       interpolateColors(
-                        disabledColor,
-                        rightActivatedColor,
+                        disabledBackgroundColor,
+                        rightActivatedBackgroundColor,
+                        rightInterpolatedStyle.backgroundColorFactor
+                      )
+                    ),
+                  };
+
+                  const rightIconStyle = {
+                    display: -1 * swipedDistance > 30 ? '' : 'none',
+                    color: rgbaString(
+                      interpolateColors(
+                        disabledIconColor,
+                        activatedIconColor,
                         rightInterpolatedStyle.backgroundColorFactor
                       )
                     ),
