@@ -101,6 +101,8 @@ export default (url, login, password) => {
             });
         })
         .catch(error => {
+          if (error && error.response && [401, 403].indexOf(error.response.status) !== -1)
+            alert(login + '@' + url + ': ' + error.response.statusText);
           console.error(path, ': get stat failed', error);
           reject();
         })
