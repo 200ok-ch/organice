@@ -225,9 +225,6 @@ are not meant to be used in production, though.
 
 #+BEGIN_SRC shell
 sudo apt -y install apache2-utils apache2
-sudo a2enmod headers
-sudo a2enmod dav*
-sudo a2ensite webdav
 #+END_SRC
 
 *Set up a new vhost for webdav*
@@ -236,6 +233,10 @@ sudo a2ensite webdav
 
 #+BEGIN_EXAMPLE
 Alias /webdav /srv/dav/
+
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
 
 <Location /webdav>
     Options Indexes
@@ -253,6 +254,15 @@ Alias /webdav /srv/dav/
     Require all granted
 </location>
 #+END_EXAMPLE
+
+*Enable Apache modules*
+
+#+BEGIN_SRC shell
+sudo a2enmod headers
+sudo a2enmod dav*
+sudo a2enmod rewrite
+sudo a2ensite webdav
+#+END_SRC
 
 *Setup folder, password and rights*
 
