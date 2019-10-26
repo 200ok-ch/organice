@@ -9081,7 +9081,7 @@ request-promise-native@^1.0.5:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.81.0, request@^2.87.0, request@^2.88.0:
+request@^2.87.0, request@^2.88.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==
@@ -10591,14 +10591,6 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-webdav-client@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/webdav-client/-/webdav-client-1.4.2.tgz#cef8a5096832017173717fd8e283109023c272d8"
-  integrity sha512-acdokHLddXJfMBdZhpLYXNxXocImhDPEdL6RMoQ1ZTtM/myShH/5HKwouakhqAAjbYZyBZNmiEUAwl+KaiiU/Q==
-  dependencies:
-    request "^2.81.0"
-    xml-js-builder "^1.0.1"
-
 webdav@^2.10.0:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/webdav/-/webdav-2.10.0.tgz#96601aafa0a16ad1410dc734285817efbc7f101d"
@@ -11005,20 +10997,6 @@ ws@^6.1.2:
   integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
   dependencies:
     async-limiter "~1.0.0"
-
-xml-js-builder@^1.0.1:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/xml-js-builder/-/xml-js-builder-1.0.3.tgz#91d275cb926f9dc4167f029357a5b2875b5d3894"
-  integrity sha512-BoLgG/glT45M0jK5PGh9h+iGrQxa8jJk9ofR63GroRifl2tbGB3/yYiVY3wQWHrZgWWfl9+7fhEB/VoD9mWnSg==
-  dependencies:
-    xml-js "^1.6.2"
-
-xml-js@^1.6.2:
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/xml-js/-/xml-js-1.6.11.tgz#927d2f6947f7f1c19a316dd8eea3614e8b18f8e9"
-  integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
-  dependencies:
-    sax "^1.2.4"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
