@@ -1,5 +1,23 @@
 @import '../../colors.css';
 
+#webdavLogin h2 {
+  font-size: 3.5em;
+  margin: 0;
+}
+
+#webdavLogin form {
+  display: table;
+}
+#webdavLogin p {
+  display: table-row;
+}
+#webdavLogin label {
+  display: table-cell;
+}
+#webdavLogin input {
+  display: table-cell;
+}
+
 .sync-service-sign-in-container {
   max-width: 500px;
   margin-left: auto;
