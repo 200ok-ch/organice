@@ -33,6 +33,7 @@
 }
 
 .timestamp-editor__field {
+  cursor: pointer;
   font-family: Courier;
 
   flex: 1;

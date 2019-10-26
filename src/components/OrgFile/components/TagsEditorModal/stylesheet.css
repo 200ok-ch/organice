@@ -59,11 +59,17 @@
 }
 
 .all-tags__tag {
+  cursor: pointer;
   color: var(--base00);
   background-color: var(--base2);
 
   padding: 8px;
   margin: 5px;
+}
+
+.all-tags__tag:hover {
+  color: var(--base2);
+  background-color: var(--base00);
 }
 
 .all-tags__tag--in-use {
