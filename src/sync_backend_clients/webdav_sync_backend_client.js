@@ -9,25 +9,38 @@ import { createClient } from 'webdav';
  * @param {Array} listing
  */
 export const filterAndSortDirectoryListing = listing => {
-  return listing.filter(file => {
-    // Show all folders
-    if (file.type === 'directory')
-      return true;
-    // And only file with the 'org' extension
-    return file.basename.match(/org$|org_archive$/);
-  }).sort((a, b) => {
-    // Folders before files
-    if (a.type === 'directory' && b.type !== 'directory') {
-      return -1;
-    } else {
-      return a.basename > b.basename ? 1 : -1;
-    }
-  })
+  return listing
+    .filter(file => {
+      // Show all folders
+      if (file.type === 'directory') return true;
+      // And only file with the 'org' extension
+      return file.basename.match(/org$|org_archive$/);
+    })
+    .sort((a, b) => {
+      // Folders before files
+      if (a.type === 'directory' && b.type !== 'directory') {
+        return -1;
+      } else {
+        return a.basename > b.basename ? 1 : -1;
+      }
+    });
 };
 
 export default (url, login, password) => {
-  const webdavClient = createClient(url, {username: login, password: password});
-  const isSignedIn = () => new Promise(resolve => resolve(true));
+  const webdavClient = createClient(url, { username: login, password: password });
+  const isSignedIn = () =>
+    new Promise(resolve => {
+      // There's no direct API to know if the login worked. So, let's
+      // check if the root folder contents can be accessed.
+      getDirectoryListing('/')
+        .then(() => {
+          resolve(true);
+        })
+        .catch(error => {
+          console.log("Login didn't work");
+          resolve(false);
+        });
+    });
 
   const transformDirectoryListing = listing => {
     const sortedListing = filterAndSortDirectoryListing(listing);
@@ -55,17 +68,13 @@ export default (url, login, password) => {
 
   const getMoreDirectoryListing = additionalSyncBackendState => {
     // TODO
-    return new Promise((resolve, reject) => resolve())
+    return new Promise((resolve, reject) => resolve());
   };
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
       webdavClient
-        .putFileContents(
-          path,
-          contents,
-          {overwrite: true}
-        )
+        .putFileContents(path, contents, { overwrite: true })
         .then(resolve)
         .catch(reject)
     );
@@ -79,22 +88,23 @@ export default (url, login, password) => {
         .stat(path)
         .then(stat => {
           webdavClient
-            .getFileContents(path, {format: "text"})
+            .getFileContents(path, { format: 'text' })
             .then(response => {
               resolve({
                 contents: response,
-                lastModifiedAt: (new Date(Date.parse(stat.lastmod))).toISOString()
-              })
+                lastModifiedAt: new Date(Date.parse(stat.lastmod)).toISOString(),
+              });
             })
             .catch(error => {
-              console.error(path, ": get file failed", error);
+              console.error(path, ': get file failed', error);
               reject();
-            })
+            });
         })
         .catch(error => {
-          console.error(path, ": get stat failed", error);
+          console.error(path, ': get stat failed', error);
           reject();
-        }));
+        })
+    );
 
   const getFileContents = path =>
     new Promise((resolve, reject) =>
@@ -109,9 +119,8 @@ export default (url, login, password) => {
         .deleteFile(path)
         .then(resolve)
         .catch(error => {
-          if (error && error.response && error.response.status === 404)
-            return;
-          console.error(path, ": delete failed", error);
+          if (error && error.response && error.response.status === 404) return;
+          console.error(path, ': delete failed', error);
           reject();
         })
     );
