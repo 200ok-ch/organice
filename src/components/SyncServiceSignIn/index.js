@@ -13,6 +13,47 @@ import { Dropbox } from 'dropbox';
 
 import _ from 'lodash';
 
+class WebDAVForm extends React.Component {
+  state = {
+    url: '',
+    username: '',
+    password: '',
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    persistField('authenticatedSyncService', 'WebDAV');
+    persistField('webdavEndpoint', this.state.url)
+    persistField('webdavUsername', this.state.username)
+    persistField('webdavPassword', this.state.password)
+    window.location = window.location.origin + '/'
+  }
+
+  render() {
+    return (
+        <form onSubmit={this.handleSubmit}>
+        <h2>WebDAV</h2>
+        <label>
+          Url:
+          <input type="text" value={this.state.url}
+                 onChange={e => {this.setState({url: e.target.value})}} />
+        </label><br/>
+        <label>
+          Username:
+          <input type="text" value={this.state.username}
+                 onChange={e => {this.setState({username: e.target.value})}} />
+        </label><br/>
+        <label>
+          Password:
+          <input type="password" value={this.state.password}
+                 onChange={e => {this.setState({password: e.target.value})}} />
+        </label><br/>
+        <input type="submit" value="Sign-in" />
+      </form>
+    );
+  }
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -69,6 +110,10 @@ export default class SyncServiceSignIn extends PureComponent {
 
         <div className="sync-service-container" onClick={this.handleGoogleDriveClick}>
           <img src={GoogleDriveLogo} alt="Google Drive logo" className="google-drive-logo" />
+        </div>
+
+        <div className="sync-service-container">
+          <WebDAVForm />
         </div>
       </div>
     );
