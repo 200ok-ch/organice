@@ -16,7 +16,9 @@ import { addSeconds } from 'date-fns';
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
     case 'WebDAV':
-      ['Endpoint', 'Username', 'Password'].forEach(e => {persistField('webdav' + e, null);})
+      ['Endpoint', 'Username', 'Password'].forEach(e => {
+        persistField('webdav' + e, null);
+      });
       break;
     case 'Dropbox':
       persistField('dropboxAccessToken', null);
