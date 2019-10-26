@@ -18,6 +18,11 @@
 
 .header-action-drawer__ff-click-catcher-container {
   position: relative;
+  cursor: pointer;
+}
+
+.header-action-drawer__ff-click-catcher-container:hover {
+  color: var(--base02);
 }
 
 .header-action-drawer__ff-click-catcher {
@@ -40,7 +45,12 @@
 }
 
 .header-action-drawer__deadline-scheduled-button {
+  cursor: pointer;
   text-transform: uppercase;
   width: 90px;
   text-align: center;
+}
+
+.header-action-drawer__deadline-scheduled-button:hover {
+  color: var(--base02);
 }

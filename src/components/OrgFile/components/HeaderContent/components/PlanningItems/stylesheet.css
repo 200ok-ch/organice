@@ -7,6 +7,7 @@
 }
 
 .planning-item__timestamp {
+  cursor: pointer;
   color: blue;
   text-decoration: underline;
 }
