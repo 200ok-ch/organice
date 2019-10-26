@@ -34,7 +34,7 @@
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
-    "@testing-library/react": "^9.1.4",
+    "@testing-library/react": "^9.3.0",
     "prettier": "^1.16.4",
     "raw.macro": "0.3.0",
     "react-test-renderer": "^16.4.2"
