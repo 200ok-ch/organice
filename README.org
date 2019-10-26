@@ -214,6 +214,72 @@ RewriteRule ^ - [L]
 
 RewriteRule ^ /index.html [L]
 #+END_EXAMPLE
+
+*** WebDAV
+
+For testing purposes, here are the instructions to setup WebDAV
+locally on your machine using Apache2 using Debian. These instructions
+are not meant to be used in production, though.
+
+*Initial package installation*
+
+#+BEGIN_SRC shell
+sudo apt -y install apache2-utils apache2
+#+END_SRC
+
+*Set up a new vhost for webdav*
+
+=/etc/apache2/sites-available/webdav.conf=
+
+#+BEGIN_EXAMPLE
+Alias /webdav /srv/dav/
+
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+<Location /webdav>
+    Options Indexes
+    DAV On
+    AuthType Basic
+    AuthName "webdav"
+    AuthUserFile /srv/dav/.htpasswd
+    Require valid-user
+
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT,PROPFIND"
+    Header always set Access-Control-Allow-Headers "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth"
+    Header always set Access-Control-Allow-Credentials true
+
+    Require all granted
+</location>
+#+END_EXAMPLE
+
+*Enable Apache modules*
+
+#+BEGIN_SRC shell
+sudo a2enmod headers
+sudo a2enmod dav*
+sudo a2enmod rewrite
+sudo a2ensite webdav
+#+END_SRC
+
+*Setup folder, password and rights*
+
+#+BEGIN_SRC shell
+sudo mkdir /srv/dav
+sudo htpasswd -c /srv/dav/.htpasswd webdav
+sudo chmod 770 /srv/dav; sudo chown www-data. /srv/dav
+sudo service apache2 restart
+#+END_SRC
+
+*Test webdav access using a commandline tool*
+
+#+BEGIN_SRC shell
+sudo apt -y install cadaver
+cadaver http://localhost/webdav/
+#+END_SRC
+
 ** Capture templates
 
 organice supports capture templates by implementing a flexible

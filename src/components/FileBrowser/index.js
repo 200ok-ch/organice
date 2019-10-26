@@ -26,6 +26,7 @@ const FileBrowser = ({
   const getParentDirectoryPath = () => {
     switch (syncBackendType) {
       case 'Dropbox':
+      case 'WebDAV':
         const pathParts = path.split('/');
         return pathParts.slice(0, pathParts.length - 1).join('/');
       case 'Google Drive':

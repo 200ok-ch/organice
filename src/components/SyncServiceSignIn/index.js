@@ -1,6 +1,6 @@
 /* global process, gapi */
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
 
@@ -12,6 +12,73 @@ import { persistField } from '../../util/settings_persister';
 import { Dropbox } from 'dropbox';
 
 import _ from 'lodash';
+
+function WebDAVForm() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [url, setUrl] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  return !isVisible ? (
+    <div
+      id="webdavLogin"
+      onClick={() => {
+        setIsVisible(true);
+      }}
+    >
+      <h2>WebDAV</h2>
+    </div>
+  ) : (
+    <div id="webdavLogin">
+      <h2>WebDAV</h2>
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          persistField('authenticatedSyncService', 'WebDAV');
+          persistField('webdavEndpoint', url);
+          persistField('webdavUsername', username);
+          persistField('webdavPassword', password);
+          window.location = window.location.origin + '/';
+        }}
+      >
+        <p>
+          <label>Url:</label>
+          <input
+            type="text"
+            value={url}
+            className="textfield"
+            onChange={e => {
+              setUrl(e.target.value);
+            }}
+          />
+        </p>
+        <p>
+          <label>Username:</label>
+          <input
+            type="text"
+            className="textfield"
+            value={username}
+            onChange={e => {
+              setUsername(e.target.value);
+            }}
+          />
+        </p>
+        <p>
+          <label>Password:</label>
+          <input
+            type="password"
+            className="textfield"
+            value={password}
+            onChange={e => {
+              setPassword(e.target.value);
+            }}
+          />
+        </p>
+        <input type="submit" value="Sign-in" />
+      </form>
+    </div>
+  );
+}
 
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
@@ -59,8 +126,8 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox or Google Drive. Choose your preferred sync backend
-          below to sign in.
+          organice syncs your files with Dropbox, Google Drive and WebDAV. Choose your preferred
+          sync backend below to sign in.
         </p>
 
         <div className="sync-service-container" onClick={this.handleDropboxClick}>
@@ -69,6 +136,10 @@ export default class SyncServiceSignIn extends PureComponent {
 
         <div className="sync-service-container" onClick={this.handleGoogleDriveClick}>
           <img src={GoogleDriveLogo} alt="Google Drive logo" className="google-drive-logo" />
+        </div>
+
+        <div className="sync-service-container">
+          <WebDAVForm />
         </div>
       </div>
     );
