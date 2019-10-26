@@ -14,6 +14,7 @@
 }
 
 .tab-buttons__btn {
+  cursor: pointer;
   box-sizing: border-box;
   height: 100%;
   padding: 7px;

@@ -21,6 +21,10 @@
   color: var(--base01);
 }
 
+.agenda__timeframe-header-container > i {
+  cursor: pointer;
+}
+
 .agenda__timeframe-header {
   font-weight: bold;
   font-size: 18px;
