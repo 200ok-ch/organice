@@ -36,6 +36,8 @@ export default class TimestampEditor extends PureComponent {
   }
 
   handleDateChange(event) {
+    if (!event.target.value) return;
+
     const { onChange, timestamp } = this.props;
 
     const [newYear, newMonth, newDay, newDayName] = format(
