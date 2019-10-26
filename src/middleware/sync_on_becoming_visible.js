@@ -29,7 +29,10 @@ export default store => next => action => {
   if (visProp) {
     const evtname = visProp.replace(/[H|h]idden/, '') + 'visibilitychange';
     document.addEventListener(evtname, () => {
-      if (store.getState().base.get('shouldSyncOnBecomingVisibile')) {
+      if (
+        store.getState().syncBackend.get('client') &&
+        store.getState().base.get('shouldSyncOnBecomingVisibile')
+      ) {
         debouncedDispatchSync(store);
       }
     });
