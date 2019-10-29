@@ -138,6 +138,28 @@ API key as described on [[https://developers.google.com/drive/api/v3/quickstart/
 
 **** WebDAV
 
+***** General
+
+With WebDAV support, organice can potentially be used with a multitude
+of synchronization backends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
+[[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
+like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
+
+Since organice is a front-end application, it will login with
+JavaScript from within the browser - in turn the [[https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS][Cross-Origin Resource
+Sharing (CORS)]] headers must be set appropriately. If they are not set,
+you will not be able to login to your service from a browser.
+Alternatively, if you're using a server like Apache or Nginx, you can
+simply get around CORS by hosting organice on the same domain as your
+service.
+
+***** Screencast
+
+In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], there's a screencast of how organice works when logging in to a
+WebDAV server.
+
+***** Setup your own WebDAV Server
+
 For testing purposes, here are the instructions to setup WebDAV
 locally on your machine using Apache2 using Debian. These instructions
 are not meant to be used in production, though.
