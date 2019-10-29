@@ -13,12 +13,10 @@ export default () => {
         <img className="landing-logo" src={logo} alt="Logo" />
 
         <h2 className="landing-tagline">organice organizes Org files nicely!</h2>
-        <h2 className="landing-tagline">Edit your Org files in a web browser.</h2>
 
         <h2 className="landing-tagline">
-          Syncs with Dropbox
-          <br />
-          and Google Drive.
+          Syncs with Dropbox,
+          <br /> Google Drive and WebDAV.
         </h2>
 
         <Link to="/sample">
