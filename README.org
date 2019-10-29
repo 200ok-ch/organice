@@ -153,6 +153,14 @@ Alternatively, if you're using a server like Apache or Nginx, you can
 simply get around CORS by hosting organice on the same domain as your
 service.
 
+Please note, that when your back-end does not set the correct CORS
+headers, organice cannot show you a really semantic error message on
+that. The reason is that browsers [[https://www.w3.org/TR/cors/#handling-a-response-to-a-cross-origin-request][hide this information]] from
+JavaScript. You will simply get a network error. However, you can
+easily debug it yourself by looking into the JavaScript console. No
+worries, you don't have to be a (JavaScript) developer to find out
+about that - here's a [[https://github.com/200ok-ch/organice/wiki#missing-cors-headers][screencast in the Wiki]] to show you how to do it.
+
 ***** Screencast
 
 In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], there's a screencast of how organice works when logging in to a
