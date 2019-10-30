@@ -466,7 +466,7 @@ We forked the project, because we have different visions on how to go
 forward. He envisions a mobile only solution, we think it's great to
 have organice be available to any browser to enable anyone on the go
 or any non-Emacs user easy access to Org files. Also, DanielDe thinks
-of org-web as [[https://github.com/200ok-ch/organice/issues/72][his pet project]] whereas organice has the full power of
+of org-web as [[https://github.com/DanielDe/org-web//issues/72][his pet project]] whereas organice has the full power of
 [[https://200ok.ch][200ok llc]] behind it whilst building a strong self-sufficient community
 around it.
 
