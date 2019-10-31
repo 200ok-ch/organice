@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
     - Keep all in-file settings and content lines from top of file
       - Thank you [[https://github.com/andersjohansson][@andersjohansson]] for your [[https://github.com/200ok-ch/organice/pull/90][PR]]!
 
+** <2019-10-29 Tue>
+
+*** Added
+    - Show login options as clickable links with cursor pointer
+    - Also improve wording with regards to login options
+      - Thank you [[https://github.com/rodrigomaia17][@rodrigomaia17]] for your [[https://github.com/200ok-ch/organice/pull/88][PR]]!
+
 
 ** <2019-10-26 Sat>
 
