@@ -1,0 +1,35 @@
+#+SETUPFILE: orgmode-export.conf
+#+TITLE:     Testing what happens before the first headline
+#+AUTHOR:    \includegraphics[height=2cm]{images/organice.png}
+#+EMAIL:
+#+DATE:      \today
+#+DESCRIPTION: Introduction
+#+KEYWORDS:  beamer org orgmode
+#+LANGUAGE:  en
+#+STARTUP: beamer showeverything
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+BEAMER_THEME: metropolis
+#+OPTIONS:   H:2 toc:t ^:{}
+
+All this content will not be visible in organice, however, it will be
+properly exported back!
+
+   A paragraph before the first headline, weirdly indented.
+
+Another paragraph before the first headline, not indented.
+
+A list:
+
+- 1
+- 2
+- 3
+
+
+
+
+* This is the first headline
+- 1
+- 2
+- 3
+* Second headline

@@ -13,7 +13,7 @@ function parseAndExportOrgFile(testOrgFile) {
   const todoKeywordSets = parsedFile.get('todoKeywordSets');
   const fileConfigLines = parsedFile.get('fileConfigLines');
   const linesBeforeHeadings = parsedFile.get('linesBeforeHeadings');
-  const exportedFile = exportOrg(headers, todoKeywordSets,fileConfigLines,linesBeforeHeadings);
+  const exportedFile = exportOrg(headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings);
   return exportedFile;
 }
 
@@ -56,7 +56,7 @@ describe('Unit Tests for org file', () => {
       });
     });
 
-	test('Config and content lines before first heading line are kept', () => {
+    test('Config and content lines before first heading line are kept', () => {
       const testOrgFile = readFixture('before-first-headline');
       const exportedFile = parseAndExportOrgFile(testOrgFile);
       expect(exportedFile).toEqual(testOrgFile);
