@@ -439,7 +439,7 @@ fork.
 organice differs from org-web in that:
 
 - It's a community driven project. See our
-  - [[file:CODE_OF_CONDUCT.org][Code of conduct]]
+  - [[file:CODE_OF_CONDUCT.md][Code of conduct]]
   - [[file:CONTRIBUTING.org][Contributing guidelines]]
 
 - It has the commitment of a Swiss company behind it to continually
