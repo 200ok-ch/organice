@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-10-31 Thu>
+
+*** Fixed
+    - Keep all in-file settings and content lines from top of file
+      - Thank you [[https://github.com/andersjohansson][@andersjohansson]] for your [[https://github.com/200ok-ch/organice/pull/90][PR]]!
+
+
 ** <2019-10-26 Sat>
 
 *** Added
