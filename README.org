@@ -36,19 +36,17 @@ great choice.
 "Current" means we're working hard on removing the following
 restrictions and expectations.
 
-- organice understands only few in-buffer settings (=#+TODO:= and
+- organice understands only a few in-buffer settings (=#+TODO:= and
   =#+TYP_TODO:=).
-  - If you have other in-buffer settings and save the file with
-    organice, they will be lost.
-- After potential in-buffer settings, your Org file _has to_ begin
-  with a headline.
-  - Meaning that a file with just some text (which would otherwise be
-    proper Org syntax) will not be parsed correctly.
-  - After that first headline, organice is actually very robust in
-    reading your Org file and _not_ breaking any of it. We've had
-    users with 10k LOC Org files with all kinds of native Org features
-    (of which organice only has partial understanding) and they just
-    work fine!
+  - Other in-buffer settings are imported and re-exported but are not
+    editable with organice.
+- Other content before the first headline is imported and re-exported,
+  but invisible and currently not editable with organice.
+- In treating all the rest of the content beyond the first headline
+  organice is actually very robust in reading and editing your Org
+  file and _not_ breaking any of it. We've had users with 10k LOC Org
+  files with all kinds of native Org features (of which organice only
+  has partial understanding) and they just work fine!
 
 Generally, when working with distributed Org files, we're recommending
 to put them under version control and to check for bugs and racing

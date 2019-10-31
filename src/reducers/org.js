@@ -41,7 +41,9 @@ const displayFile = (state, action) => {
     .set('path', action.path)
     .set('contents', action.contents)
     .set('headers', parsedFile.get('headers'))
-    .set('todoKeywordSets', parsedFile.get('todoKeywordSets'));
+    .set('todoKeywordSets', parsedFile.get('todoKeywordSets'))
+    .set('fileConfigLines', parsedFile.get('fileConfigLines'))
+    .set('linesBeforeHeadings', parsedFile.get('linesBeforeHeadings'));
 };
 
 const stopDisplayingFile = state =>
@@ -49,7 +51,9 @@ const stopDisplayingFile = state =>
     .set('path', null)
     .set('contents', null)
     .set('headers', null)
-    .set('todoKeywordSets', null);
+    .set('todoKeywordSets', null)
+    .set('fileConfigLines', null)
+    .set('linesBeforeHeadings', null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
