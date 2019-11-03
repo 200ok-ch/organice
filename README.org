@@ -22,7 +22,7 @@ which is open for anyone to use! organice does not have a back-end
 Drive or WebDAV as back-end storage). We don't store any kind of data
 on our servers - we also don't use analytics on organice.200ok.ch.
 
-[[./images/screenshot--overview.png]]
+[[./images/screenshot-overview.png]]
 
 ** Why is this project useful
 
@@ -36,8 +36,8 @@ great choice.
 "Current" means we're working hard on removing the following
 restrictions and expectations.
 
-- organice understands only a few in-buffer settings (=#+TODO:= and
-  =#+TYP_TODO:=).
+- organice understands only a few in-buffer settings (see [[*Supported in-buffer settings][Supported
+  in-buffer settings]])
   - Other in-buffer settings are imported and re-exported but are not
     editable with organice.
 - Other content before the first headline is imported and re-exported,
@@ -93,6 +93,44 @@ at least two machines at the same time without synchronizing them in
 the meantime. For this, we recommend to put your Org file under
 version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
+
+*** Customization
+
+**** General
+
+Since organice implements Org mode, one might wonder if organice plans
+to duplicate Emacs configuration strategy. In Emacs Org mode, there's
+more than [[https://orgmode.org/manual/Customization.html#Customization][500 variables for customization]] - and on top of that,
+there's often two ways to configure things:
+
+1. Using elisp
+2. Using [[https://orgmode.org/manual/In_002dbuffer-settings.html][in-buffer settings]]
+
+Modifying Org behavior using elisp (variables) is certainly mighty and
+powerful. However, the current goal of organice is not to clone Emacs
+in full. In fact, I'd argue that this is impossible. Emacs being a
+LISP machine has inherent power that cannot be copied. The goal is to
+make Org mode accessible for smartphones and for non-Emacs users. For
+both use-cases, elisp variable configuration is not really suitable.
+
+organice uses this customization strategy:
+
+- Use in-buffer settings where appropriate
+- Build custom and mobile friendly user interfaces where appropriate
+  - For example [[*Capture templates][Capture templates]]
+
+**** Supported in-buffer settings
+
+- =#+TODO=
+- =#+TYP_TODO=
+
+**** Other customizations
+
+For some customizations, organice exposes a mobile friendly user
+interface. Please find them in the 'settings' view (cogs item in the
+header on the right).
+
+[[./images/screenshot-settings.png]]
 
 ** Development
 
