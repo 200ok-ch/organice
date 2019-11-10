@@ -108,18 +108,19 @@ export default accessToken => {
           reader.readAsText(response.fileBlob);
         })
         .catch(error => {
-          if (!!error.error && JSON.parse(error.error).error.path['.tag'] === 'not_found') {
-            reject();
-          }
+          console.error(error);
+          reject();
         })
     );
 
-  const getFileContents = path =>
-    new Promise((resolve, reject) =>
+  const getFileContents = path => {
+    if (!path) return Promise.reject('No path given');
+    return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(path)
         .then(({ contents }) => resolve(contents))
         .catch(reject)
     );
+  };
 
   const deleteFile = path =>
     new Promise((resolve, reject) =>

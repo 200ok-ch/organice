@@ -27,6 +27,7 @@
 .sync-service-sign-in__help-text {
   padding-left: 5px;
   padding-right: 5px;
+  font-weight: bold;
 
   font-size: 18px;
   color: gray;
@@ -36,6 +37,7 @@
 
 .sync-service-container {
   border-bottom: 1px solid var(--base01);
+  cursor: pointer;
 
   padding: 20px 10px;
 }

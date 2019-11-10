@@ -186,22 +186,21 @@ export default () => {
   const createFile = (name, parentId, contents) => {
     return new Promise((resolve, reject) => {
       fileIdByNameAndParent(name, parentId)
-        .then(
-          fileId =>
-            !!fileId
-              ? updateFile(fileId, contents)
+        .then(fileId =>
+          !!fileId
+            ? updateFile(fileId, contents)
+                .then(resolve)
+                .catch(reject)
+            : getAPIClient().then(gapi => {
+                gapi.client.drive.files
+                  .create({
+                    name,
+                    parents: parentId,
+                  })
+                  .then(response => updateFile(response.result.id, contents))
                   .then(resolve)
-                  .catch(reject)
-              : getAPIClient().then(gapi => {
-                  gapi.client.drive.files
-                    .create({
-                      name,
-                      parents: parentId,
-                    })
-                    .then(response => updateFile(response.result.id, contents))
-                    .then(resolve)
-                    .catch(reject);
-                })
+                  .catch(reject);
+              })
         )
         .catch(reject);
     });
@@ -296,12 +295,14 @@ export default () => {
       });
     });
 
-  const getFileContents = fileId =>
-    new Promise((resolve, reject) =>
+  const getFileContents = fileId => {
+    if (!fileId) return Promise.reject('No fileId given');
+    return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(fileId)
         .then(({ contents }) => resolve(contents))
         .catch(reject)
     );
+  };
 
   const getFileContentsByNameAndParent = (name, parentId) =>
     new Promise((resolve, reject) =>

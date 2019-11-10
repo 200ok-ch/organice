@@ -68,7 +68,9 @@ export const sync = ({
               path,
               exportOrg(
                 getState().org.present.get('headers'),
-                getState().org.present.get('todoKeywordSets')
+                getState().org.present.get('todoKeywordSets'),
+                getState().org.present.get('fileConfigLines'),
+                getState().org.present.get('linesBeforeHeadings')
               )
             )
             .then(() => {

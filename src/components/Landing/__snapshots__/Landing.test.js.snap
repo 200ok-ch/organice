@@ -24,14 +24,9 @@ exports[`<Landing /> renders 1`] = `
       <h2
         class="landing-tagline"
       >
-        Edit your Org files in a web browser.
-      </h2>
-      <h2
-        class="landing-tagline"
-      >
-        Syncs with Dropbox
+        Syncs with Dropbox,
         <br />
-        and Google Drive.
+         Google Drive and WebDAV.
       </h2>
       <a
         href="/sample"

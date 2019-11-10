@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "12.9"
+    "node": "12.13.0"
   },
   "dependencies": {
     "bowser": "^2.6.1",

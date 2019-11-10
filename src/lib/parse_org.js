@@ -607,6 +607,8 @@ export const parseOrg = fileContents => {
   const lines = fileContents.split('\n');
 
   let todoKeywordSets = new List();
+  let fileConfigLines = new List();
+  let linesBeforeHeadings = new List();
 
   lines.forEach(line => {
     // A header has to start with at least one consecutive asterisk
@@ -637,6 +639,10 @@ export const parseOrg = fileContents => {
               default: false,
             })
           );
+        } else if (line.startsWith('#+')) {
+          fileConfigLines = fileConfigLines.push(line);
+        } else {
+          linesBeforeHeadings = linesBeforeHeadings.push(line);
         }
       } else {
         headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
@@ -678,5 +684,7 @@ export const parseOrg = fileContents => {
   return fromJS({
     headers,
     todoKeywordSets,
+    fileConfigLines,
+    linesBeforeHeadings,
   });
 };

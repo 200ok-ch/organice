@@ -126,9 +126,9 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox, Google Drive and WebDAV. Choose your preferred
-          sync backend below to sign in.
+          organice syncs your files with Dropbox, Google Drive and WebDAV.
         </p>
+        <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
         <div className="sync-service-container" onClick={this.handleDropboxClick}>
           <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />

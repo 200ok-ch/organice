@@ -1,11 +1,12 @@
 @import '../../colors.css';
 
 footer {
-  position: absolute;
+  position: relative;
   right: 0;
   bottom: 0;
   left: 0;
   padding: 1rem;
+  margin-top: 1rem;
   background-color: var(--base2);
   text-align: center;
 }

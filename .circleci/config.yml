@@ -6,7 +6,7 @@ version: 2
 jobs:
   deploy:
     docker:
-      - image: circleci/node:12.9-stretch
+      - image: circleci/node:12.13-stretch
     steps:
       - checkout
       # Download and cache dependencies
@@ -24,8 +24,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/node:12.9-stretch
-
+      - image: circleci/node:12.13-stretch
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/

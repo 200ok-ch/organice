@@ -22,7 +22,7 @@ which is open for anyone to use! organice does not have a back-end
 Drive or WebDAV as back-end storage). We don't store any kind of data
 on our servers - we also don't use analytics on organice.200ok.ch.
 
-[[./images/screenshot--overview.png]]
+[[./images/screenshot-overview.png]]
 
 ** Why is this project useful
 
@@ -36,19 +36,17 @@ great choice.
 "Current" means we're working hard on removing the following
 restrictions and expectations.
 
-- organice understands only few in-buffer settings (=#+TODO:= and
-  =#+TYP_TODO:=).
-  - If you have other in-buffer settings and save the file with
-    organice, they will be lost.
-- After potential in-buffer settings, your Org file _has to_ begin
-  with a headline.
-  - Meaning that a file with just some text (which would otherwise be
-    proper Org syntax) will not be parsed correctly.
-  - After that first headline, organice is actually very robust in
-    reading your Org file and _not_ breaking any of it. We've had
-    users with 10k LOC Org files with all kinds of native Org features
-    (of which organice only has partial understanding) and they just
-    work fine!
+- organice understands only a few in-buffer settings (see [[*Supported in-buffer settings][Supported
+  in-buffer settings]])
+  - Other in-buffer settings are imported and re-exported but are not
+    editable with organice.
+- Other content before the first headline is imported and re-exported,
+  but invisible and currently not editable with organice.
+- In treating all the rest of the content beyond the first headline
+  organice is actually very robust in reading and editing your Org
+  file and _not_ breaking any of it. We've had users with 10k LOC Org
+  files with all kinds of native Org features (of which organice only
+  has partial understanding) and they just work fine!
 
 Generally, when working with distributed Org files, we're recommending
 to put them under version control and to check for bugs and racing
@@ -96,6 +94,45 @@ the meantime. For this, we recommend to put your Org file under
 version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
 
+*** Customization
+
+**** General
+
+Since organice implements Org mode, one might wonder if we plan to
+duplicate the Emacs configuration strategy. In Emacs Org mode, there's
+more than [[https://orgmode.org/manual/Customization.html#Customization][500 variables for customization]] - and on top of that,
+there's often two ways to configure things:
+
+1. Using elisp
+2. Using [[https://orgmode.org/manual/In_002dbuffer-settings.html][in-buffer settings]]
+
+Modifying Org behavior using elisp (variables) is certainly mighty and
+powerful. However, the goal of organice is not to clone Emacs in full.
+In fact, it could be argued that this is not possible. Emacs being a
+LISP machine has inherent power that cannot be brought to a web
+application. Instead, the goal is to make Org mode accessible on
+smartphones and for non-Emacs users. For both use-cases, elisp
+variable configuration is not an idiomatic or ergonomic option.
+
+organice implements this customization strategy:
+
+- Use in-buffer settings where appropriate
+- Build custom and mobile friendly user interfaces where appropriate
+  - For example [[*Capture templates][Capture templates]]
+
+**** Supported in-buffer settings
+
+- =#+TODO=
+- =#+TYP_TODO=
+
+**** Other customizations
+
+For some customizations, organice exposes a mobile friendly user
+interface. Please find them in the 'settings' view (cogs icon in the
+header on the right).
+
+[[./images/screenshot-settings.png]]
+
 ** Development
 
 organice is built with React and Redux. It was bootstrapped with
@@ -137,6 +174,36 @@ To configure your own application on Google Drive, please generate an
 API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
 
 **** WebDAV
+
+***** General
+
+With WebDAV support, organice can potentially be used with a multitude
+of synchronization backends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
+[[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
+like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
+
+Since organice is a front-end application, it will login with
+JavaScript from within the browser - in turn the [[https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS][Cross-Origin Resource
+Sharing (CORS)]] headers must be set appropriately. If they are not set,
+you will not be able to login to your service from a browser.
+Alternatively, if you're using a server like Apache or Nginx, you can
+simply get around CORS by hosting organice on the same domain as your
+service.
+
+Please note, that when your back-end does not set the correct CORS
+headers, organice cannot show you a really semantic error message on
+that. The reason is that browsers [[https://www.w3.org/TR/cors/#handling-a-response-to-a-cross-origin-request][hide this information]] from
+JavaScript. You will simply get a network error. However, you can
+easily debug it yourself by looking into the JavaScript console. No
+worries, you don't have to be a (JavaScript) developer to find out
+about that - here's a [[https://github.com/200ok-ch/organice/wiki#missing-cors-headers][screencast in the Wiki]] to show you how to do it.
+
+***** Screencast
+
+In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], there's a screencast of how organice works when logging in to a
+WebDAV server.
+
+***** Setup your own WebDAV Server
 
 For testing purposes, here are the instructions to setup WebDAV
 locally on your machine using Apache2 using Debian. These instructions
@@ -409,7 +476,7 @@ fork.
 organice differs from org-web in that:
 
 - It's a community driven project. See our
-  - [[file:CODE_OF_CONDUCT.org][Code of conduct]]
+  - [[file:CODE_OF_CONDUCT.md][Code of conduct]]
   - [[file:CONTRIBUTING.org][Contributing guidelines]]
 
 - It has the commitment of a Swiss company behind it to continually
@@ -436,7 +503,7 @@ We forked the project, because we have different visions on how to go
 forward. He envisions a mobile only solution, we think it's great to
 have organice be available to any browser to enable anyone on the go
 or any non-Emacs user easy access to Org files. Also, DanielDe thinks
-of org-web as [[https://github.com/200ok-ch/organice/issues/72][his pet project]] whereas organice has the full power of
+of org-web as [[https://github.com/DanielDe/org-web//issues/72][his pet project]] whereas organice has the full power of
 [[https://200ok.ch][200ok llc]] behind it whilst building a strong self-sufficient community
 around it.
 

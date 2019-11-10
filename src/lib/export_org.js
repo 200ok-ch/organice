@@ -216,15 +216,30 @@ export const attributedStringToRawText = parts => {
     .join('');
 };
 
-export default (headers, todoKeywordSets) => {
+export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) => {
   let configContent = '';
+
+  if (fileConfigLines.size > 0) {
+    configContent = fileConfigLines.join('\n') + '\n';
+  }
+
   if (!todoKeywordSets.get(0).get('default')) {
     configContent =
+      configContent +
       todoKeywordSets
         .map(todoKeywordSet => {
           return todoKeywordSet.get('configLine');
         })
-        .join('\n') + '\n\n';
+        .join('\n') +
+      '\n';
+  }
+
+  if (linesBeforeHeadings.size > 0) {
+    configContent = configContent + linesBeforeHeadings.join('\n');
+  }
+
+  if (configContent.length > 0) {
+    configContent = configContent + '\n';
   }
 
   const headerContent = headers
