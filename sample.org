@@ -226,6 +226,6 @@ Drive or WebDAV as back-ends.
 * Capture URL params and Siri support
 organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
-You can use [[https://www.icloud.com/shortcuts/4e51e8b748d14a50aa70ac6fb963f775][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
+You can use [[https://www.icloud.com/shortcuts/14f91f8cf8f547a183a0734396240984][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
 Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/200ok-ch/organice/#capture-params-and-siri-support][the README file]].
