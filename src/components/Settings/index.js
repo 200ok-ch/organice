@@ -106,7 +106,7 @@ const Settings = ({
           Store settings in sync backend
           <div className="setting-label__description">
             Store settings and keyboard shortcuts in a .organice-config.json file in your sync
-            backend to sync betweeen multiple devices.
+            backend to sync between multiple devices.
           </div>
         </div>
         <Switch
