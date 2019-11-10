@@ -108,12 +108,14 @@ export default (url, login, password) => {
         })
     );
 
-  const getFileContents = path =>
-    new Promise((resolve, reject) =>
+  const getFileContents = path => {
+    if (!path) return Promise.reject('No path given');
+    return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(path)
         .then(({ contents }) => resolve(contents))
         .catch(reject)
     );
+  };
 
   const deleteFile = path =>
     new Promise((resolve, reject) =>
