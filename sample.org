@@ -114,14 +114,14 @@ When a table cell is selected, a table-specific action drawer appears.
 
 The leftmost icon allows you to edit a cell.
 
-On the right side, the top two icons let you add and remove rows. The bottom two icons let you add and remove columns.
+On the right side, the top two icons let you add and remove rows. The
+bottom two icons let you add and remove columns.
 
 ** Moving rows and columns
-When a table cell is selected, the four-way arrow button at the bottom of the screen changes to manipulate tables.
+When a table cell is selected, the four-way arrow button at the bottom
+of the screen changes to manipulate tables.
 
 Press up and down to move rows, and left and right to move columns.
-** Format specifiers (like <r> and <10>) aren't yet supported, but they're on my list!
-If this is an important feature to you, please let me know by upvoting [[https://github.com/200ok-ch/organice/issues/25][the issue]] on GitHub
 * Lists and checkboxes
 organice has native support for displaying plain lists and checkboxes
 
