@@ -22,7 +22,7 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
         <Fragment>
           {logBookEntries.map((entry, index) => (
             <div className="logbook-entries__item-container" key={entry.get('id')}>
-              CLOCK:
+              <span className="logbook-entries__item-clock">CLOCK:</span>
               <span className="logbook-entries__item-start" onClick={onClick(index, 'start')}>
                 {renderAsText(entry.get('start'))}
               </span>
