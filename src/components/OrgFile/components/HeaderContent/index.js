@@ -79,6 +79,7 @@ class HeaderContent extends PureComponent {
   calculateRawDescription(header) {
     const planningItems = header.get('planningItems');
     const propertyListItems = header.get('propertyListItems');
+    const logBookEntries = header.get('logBookEntries');
 
     const planningItemsText = planningItems
       .map(
@@ -101,7 +102,25 @@ class HeaderContent extends PureComponent {
       propertyListItemsText += '\n:END:';
     }
 
-    return planningItemsText + '\n' + propertyListItemsText + '\n' + header.get('rawDescription');
+    let logBookEntriesText = '';
+    if (logBookEntries.size > 0) {
+      logBookEntriesText += ':LOGBOOK:\n';
+      logBookEntriesText += logBookEntries
+        .map(
+          entry =>
+            entry.get('end') === null
+            ? `CLOCK: ${renderAsText(entry.get('start'))}`
+            : `CLOCK: ${renderAsText(entry.get('start'))}--${renderAsText(entry.get('end'))}`
+        )
+        .join('\n');
+      logBookEntriesText += '\n:END:';
+    }
+
+    const headerText = [planningItemsText, propertyListItemsText, logBookEntriesText]
+          .filter(str => str.length !== 0)
+          .join('\n');
+
+    return headerText + (headerText.length === 0 ? '' : '\n') + header.get('rawDescription');
   }
 
   handleTextareaRef(textarea) {
