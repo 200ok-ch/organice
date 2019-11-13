@@ -307,6 +307,10 @@ class Header extends PureComponent {
       'header--removing': isPlayingRemoveAnimation,
     });
 
+    const logBookEntries = header.get('logBookEntries');
+    const hasActiveClock =
+      logBookEntries.size !== 0 && logBookEntries.filter(entry => !entry.get('end')).size !== 0;
+
     return (
       <Motion style={style} onRest={this.handleRest}>
         {interpolatedStyle => {
@@ -448,6 +452,7 @@ class Header extends PureComponent {
                   onDeadlineClick={this.handleDeadlineClick}
                   onClockInOutClick={this.handleClockInOutClick}
                   onScheduledClick={this.handleScheduledClick}
+                  hasActiveClock={hasActiveClock}
                 />
               </Collapse>
 

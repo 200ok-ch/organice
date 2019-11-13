@@ -26,6 +26,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onDeadlineClick,
       onClockInOutClick,
       onScheduledClick,
+      hasActiveClock,
     } = this.props;
 
     return (
@@ -64,7 +65,7 @@ export default class HeaderActionDrawer extends PureComponent {
             className="header-action-drawer__deadline-scheduled-button"
             onClick={onClockInOutClick}
           >
-            Clock In/Out
+            Clock {hasActiveClock ? 'Out' : 'In'}
           </div>
           <span className="header-action-drawer__separator" />
 
