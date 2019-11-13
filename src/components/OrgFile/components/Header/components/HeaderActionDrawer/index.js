@@ -24,6 +24,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onUnfocus,
       onAddNewHeader,
       onDeadlineClick,
+      onClockInOutClick,
       onScheduledClick,
     } = this.props;
 
@@ -58,6 +59,13 @@ export default class HeaderActionDrawer extends PureComponent {
             Deadline
           </div>
 
+          <span className="header-action-drawer__separator" />
+          <div
+            className="header-action-drawer__deadline-scheduled-button"
+            onClick={onClockInOutClick}
+          >
+            Clock In/Out
+          </div>
           <span className="header-action-drawer__separator" />
 
           <div

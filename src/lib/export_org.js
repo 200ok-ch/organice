@@ -283,6 +283,22 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
         contents += `\n${indentation}:END:\n`;
       }
 
+      if (header.logBookEntries.length) {
+        const logBookEntriesContent = header.logBookEntries
+          .map(entry => {
+            if (entry.end === null) {
+              return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}`;
+            } else {
+              return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(fromJS(entry.end))}`;
+            }
+          })
+          .join('\n')
+          .trimRight();
+        contents += `\n${indentation}:LOGBOOK:`;
+        contents += `\n${logBookEntriesContent}`;
+        contents += `\n${indentation}:END:`;
+      }
+
       if (header.description) {
         if (!header.rawDescription.startsWith('\n') && header.rawDescription.length !== 0) {
           contents += '\n';

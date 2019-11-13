@@ -513,14 +513,58 @@ const parsePropertyList = rawText => {
   };
 };
 
+const parseLogbook = rawText => {
+  const lines = rawText.split('\n');
+  const logbookLineIndex = lines.findIndex(line => line.trim() === ':LOGBOOK:');
+  const endLineIndex = lines.findIndex(line => line.trim() === ':END:');
+
+  if (
+    logbookLineIndex === -1 ||
+    endLineIndex === -1 ||
+      !rawText.trim().startsWith(':LOGBOOK:')
+  ) {
+    return {
+      logBookEntries: List(),
+      strippedDescription: rawText,
+    };
+  }
+
+  const logBookEntries = fromJS(
+    lines
+      .slice(logbookLineIndex + 1, endLineIndex)
+      .map(line => {
+        const [startText, endText] = line.trim().split(/--/);
+        const startMatch = startText.match(timestampRegex);
+        const start = timestampFromRegexMatch(startMatch, _.range(1, 14));
+
+        let end;
+        if (endText) {
+          const endMatch = endText.match(timestampRegex);
+          end = timestampFromRegexMatch(endMatch, _.range(1, 14));
+        } else {
+          end = null;
+        }
+
+        return {start, end, id: generateId()};
+      })
+  );
+
+  return {
+    logBookEntries,
+    strippedDescription: lines.slice(endLineIndex + 1).join('\n'),
+  };
+};
+
 export const parseDescriptionPrefixElements = rawText => {
   const planningItemsParse = _parsePlanningItems(rawText);
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
+  const logBookParse = parseLogbook(propertyListParse.strippedDescription);
 
   return {
     planningItems: planningItemsParse.planningItems,
     propertyListItems: propertyListParse.propertyListItems,
-    strippedDescription: propertyListParse.strippedDescription,
+    strippedDescription: logBookParse.strippedDescription,
+    logBookEntries: logBookParse.logBookEntries
   };
 };
 
@@ -573,6 +617,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     nestingLevel,
     planningItems: [],
     propertyListItems: [],
+    logBookEntries: [],
   });
 };
 
@@ -591,7 +636,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .slice(1)
     .join('\n');
 
-  const { planningItems, propertyListItems, strippedDescription } = parseDescriptionPrefixElements(
+  const { planningItems, propertyListItems, strippedDescription, logBookEntries } = parseDescriptionPrefixElements(
     description
   );
 
@@ -599,7 +644,8 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .set('rawDescription', strippedDescription)
     .set('description', parseRawText(strippedDescription))
     .set('planningItems', planningItems)
-    .set('propertyListItems', propertyListItems);
+    .set('propertyListItems', propertyListItems)
+    .set('logBookEntries', logBookEntries);
 };
 
 export const parseOrg = fileContents => {
@@ -672,13 +718,15 @@ export const parseOrg = fileContents => {
       planningItems,
       propertyListItems,
       strippedDescription,
+      logBookEntries,
     } = parseDescriptionPrefixElements(header.get('rawDescription'));
 
     return header
       .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))
       .set('planningItems', planningItems)
-      .set('propertyListItems', propertyListItems);
+      .set('propertyListItems', propertyListItems)
+      .set('logBookEntries', logBookEntries);
   });
 
   return fromJS({

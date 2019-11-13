@@ -19,6 +19,7 @@ import HeaderActionDrawer from './components/HeaderActionDrawer';
 
 import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
+import { getCurrentTimestamp } from '../../../../lib/timestamps';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -46,6 +47,7 @@ class Header extends PureComponent {
       'handleAddNewHeader',
       'handleRest',
       'handleDeadlineClick',
+      'handleClockInOutClick',
       'handleScheduledClick',
     ]);
 
@@ -244,6 +246,26 @@ class Header extends PureComponent {
     this.handleDeadlineAndScheduledClick('DEADLINE');
   }
 
+  handleClockInOutClick() {
+    const { header } = this.props;
+    const logBook = header.get('logBookEntries', []);
+    const existingClockIndex = logBook
+          .findIndex(entry => entry.get('end') === null);
+    const now = getCurrentTimestamp({isActive: false, withStartTime: true});
+    if (existingClockIndex !== -1) {
+      this.props.org.setLogEntryStop(
+        header.get('id'),
+        logBook.getIn([existingClockIndex, 'id']),
+        now
+      );
+    } else {
+      this.props.org.createLogEntryStart(
+        header.get('id'),
+        now
+      );
+    }
+  }
+
   handleScheduledClick() {
     this.handleDeadlineAndScheduledClick('SCHEDULED');
   }
@@ -428,6 +450,7 @@ class Header extends PureComponent {
                   onUnfocus={this.handleUnfocus}
                   onAddNewHeader={this.handleAddNewHeader}
                   onDeadlineClick={this.handleDeadlineClick}
+                  onClockInOutClick={this.handleClockInOutClick}
                   onScheduledClick={this.handleScheduledClick}
                 />
               </Collapse>

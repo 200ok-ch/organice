@@ -6,6 +6,7 @@ import './stylesheet.css';
 
 import PlanningItems from './components/PlanningItems';
 import PropertyListItems from './components/PropertyListItems';
+import LogBookEntries from './components/LogBookEntries';
 
 import _ from 'lodash';
 
@@ -242,6 +243,9 @@ class HeaderContent extends PureComponent {
               onTimestampClick={this.handleTimestampClick}
               shouldDisableActions={shouldDisableActions}
               onEdit={this.handlePropertyListEdit}
+            />
+            <LogBookEntries
+              logBookEntries={header.get('logBookEntries')}
             />
             <AttributedString
               parts={header.get('description')}

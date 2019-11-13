@@ -446,3 +446,18 @@ export const setOrgFileErrorMessage = message => ({
   type: 'SET_ORG_FILE_ERROR_MESSAGE',
   message,
 });
+
+export const setLogEntryStop = (headerId, entryId, time) => ({
+  type: 'SET_LOG_ENTRY_STOP',
+  headerId,
+  entryId,
+  time,
+  dirtying: true,
+});
+
+export const createLogEntryStart = (headerId, time) => ({
+  type: 'CREATE_LOG_ENTRY_START',
+  headerId,
+  time,
+  dirtying: true,
+});

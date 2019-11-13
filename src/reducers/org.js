@@ -841,6 +841,31 @@ export const updatePropertyListItems = (state, action) => {
   return state.setIn(['headers', headerIndex, 'propertyListItems'], action.newPropertyListItems);
 };
 
+export const setLogEntryStop = (state, action) => {
+  const { headerId, entryId, time } = action;
+  const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
+  const entryIndex = state.getIn(['headers', headerIdx, 'logBookEntries'])
+        .findIndex(entry => entry.get('id') === entryId);
+  return state.setIn(
+    ['headers', headerIdx, 'logBookEntries', entryIndex, 'end'],
+    fromJS(time)
+  );
+};
+
+export const createLogEntryStart = (state, action) => {
+  const { headerId, time } = action;
+  const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
+  const newEntry = fromJS({
+    id: generateId(),
+    start: time,
+    end: null,
+  });
+  return state.updateIn(
+    ['headers', headerIdx, 'logBookEntries'],
+    entries => !!entries ? entries.unshift(newEntry) : List([newEntry])
+  );
+};
+
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
 export default (state = new Map(), action) => {
@@ -945,6 +970,10 @@ export default (state = new Map(), action) => {
       return updatePropertyListItems(state, action);
     case 'SET_ORG_FILE_ERROR_MESSAGE':
       return setOrgFileErrorMessage(state, action);
+    case 'SET_LOG_ENTRY_STOP':
+      return setLogEntryStop(state, action);
+    case 'CREATE_LOG_ENTRY_START':
+      return createLogEntryStart(state, action);
     default:
       return state;
   }
