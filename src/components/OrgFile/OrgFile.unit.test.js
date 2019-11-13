@@ -113,5 +113,12 @@ describe('Unit Tests for org file', () => {
         });
       });
     });
+    describe('Logbook entries', () => {
+      test('Logbook entries are formatted as is default in Emacs', () => {
+        const testOrgFile = readFixture('logbook');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
   });
 });

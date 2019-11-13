@@ -88,3 +88,10 @@ exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
 ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
 ea voluptate velit esse quam nihil molestiae consequatur, vel illum
 qui dolorem eum fugiat quo voluptas nulla pariatur?"
+
+** Something with logbook
+   :LOGBOOK:
+   CLOCK: [2019-11-13 Wed 13:12]--[2019-11-13 Wed 13:12] =>  0:00
+   CLOCK: [2019-11-11 Mon 13:12]--[2019-11-12 Tue 13:12] => 24:00
+   CLOCK: [2019-10-13 Sun 12:15]--[2019-10-13 Sun 14:12] =>  1:57
+   :END:
