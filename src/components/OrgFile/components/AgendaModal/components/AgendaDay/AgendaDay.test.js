@@ -49,6 +49,7 @@ describe('Unit Tests for AgendaDay', () => {
           opened: false,
           id: 4,
           nestingLevel: 1,
+          logBookEntries: [],
           planningItems: [
             {
               type: 'DEADLINE',
