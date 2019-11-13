@@ -298,7 +298,7 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
           .trimRight();
         contents += `\n${indentation}:LOGBOOK:`;
         contents += `\n${logBookEntriesContent}`;
-        contents += `\n${indentation}:END:`;
+        contents += `\n${indentation}:END:\n`;
       }
 
       if (header.description) {
