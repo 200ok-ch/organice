@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
-import { renderAsText } from './timestamps';
+import { renderAsText, timestampDuration } from './timestamps';
 
 const linkPartToRawText = linkPart => {
   if (!!linkPart.getIn(['contents', 'title'])) {
@@ -291,7 +291,7 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
             } else {
               return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(
                 fromJS(entry.end)
-              )}`;
+              )} => ${timestampDuration(fromJS(entry.start), fromJS(entry.end))}`;
             }
           })
           .join('\n')

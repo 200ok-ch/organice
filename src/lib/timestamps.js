@@ -12,6 +12,7 @@ import {
   subMonths,
   subYears,
   isBefore,
+  differenceInMinutes,
 } from 'date-fns';
 
 export const renderAsText = timestamp => {
@@ -163,4 +164,16 @@ export const applyRepeater = (timestamp, currentDate) => {
   }
 
   return timestamp;
+};
+
+export const timestampDuration = (startTimestamp, endTimestamp) => {
+  const [start, end] = [startTimestamp, endTimestamp].map(dateForTimestamp);
+  if (start > end) {
+    return `-${timestampDuration(endTimestamp, startTimestamp)}`;
+  }
+  const minDiff = differenceInMinutes(end, start);
+  const hours = Math.floor(minDiff / 60);
+  const minutes = minDiff % 60;
+  const minutesText = minutes >= 10 ? minutes : `0${minutes}`;
+  return `${hours}:${minutesText}`;
 };

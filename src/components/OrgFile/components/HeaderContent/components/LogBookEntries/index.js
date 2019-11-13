@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 
 import './stylesheet.css';
 
-import { renderAsText } from '../../../../../../lib/timestamps';
+import { renderAsText, timestampDuration } from '../../../../../../lib/timestamps';
 
 export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
   const [isDrawerCollapsed, setIsDrawerCollapsed] = useState(true);
@@ -33,6 +33,9 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
                   --
                   <span className="logbook-entries__item-end" onClick={onClick(index, 'end')}>
                     {renderAsText(entry.get('end'))}
+                  </span>
+                  <span className="logbook-entries__item-duration">
+                    => {timestampDuration(entry.get('start'), entry.get('end'))}
                   </span>
                 </Fragment>
               )}
