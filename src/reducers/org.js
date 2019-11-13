@@ -863,6 +863,15 @@ export const createLogEntryStart = (state, action) => {
   );
 };
 
+export const updateLogEntryTime = (state, action) => {
+  const { headerId, entryIndex, entryType, newTime } = action;
+  const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
+  return state.setIn(
+    ['headers', headerIdx, 'logBookEntries', entryIndex, entryType],
+    fromJS(newTime)
+  );
+};
+
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
 export default (state = new Map(), action) => {
@@ -971,6 +980,8 @@ export default (state = new Map(), action) => {
       return setLogEntryStop(state, action);
     case 'CREATE_LOG_ENTRY_START':
       return createLogEntryStart(state, action);
+    case 'UPDATE_LOG_ENTRY_TIME':
+      return updateLogEntryTime(state, action);
     default:
       return state;
   }

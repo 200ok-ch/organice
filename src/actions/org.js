@@ -461,3 +461,12 @@ export const createLogEntryStart = (headerId, time) => ({
   time,
   dirtying: true,
 });
+
+export const updateLogEntryTime = (headerId, entryIndex, entryType, newTime) => ({
+  type: 'UPDATE_LOG_ENTRY_TIME',
+  headerId,
+  entryIndex,
+  entryType,
+  newTime,
+  dirtying: true,
+});

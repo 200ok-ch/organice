@@ -9,8 +9,8 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
 
   const handleCollapseToggle = () => setIsDrawerCollapsed(!isDrawerCollapsed);
 
-  // [TODO]
-  const onClick = ts => () => (shouldDisableActions ? void 0 : onTimestampClick(ts.get('id')));
+  const onClick = (entryIndex, type) => () =>
+    shouldDisableActions ? void 0 : onTimestampClick(entryIndex, type);
 
   return logBookEntries.size === 0 ? null : (
     <div className="logbook-entries-container">
@@ -20,10 +20,10 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
       </div>
       {!isDrawerCollapsed && (
         <Fragment>
-          {logBookEntries.map(entry => (
+          {logBookEntries.map((entry, index) => (
             <div className="logbook-entries__item-container" key={entry.get('id')}>
               CLOCK:
-              <span className="logbook-entries__item-start">
+              <span className="logbook-entries__item-start" onClick={onClick(index, 'start')}>
                 {renderAsText(entry.get('start'))}
               </span>
               {entry.get('end') === null ? (
@@ -31,7 +31,7 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
               ) : (
                 <Fragment>
                   --
-                  <span className="logbook-entries__item-end">
+                  <span className="logbook-entries__item-end" onClick={onClick(index, 'end')}>
                     {renderAsText(entry.get('end'))}
                   </span>
                 </Fragment>

@@ -212,6 +212,14 @@ class OrgFile extends PureComponent {
     if (!!popupData.get('timestampId')) {
       return newTimestamp =>
         this.props.org.updateTimestampWithId(popupData.get('timestampId'), newTimestamp);
+    } else if (popupData.get('logEntryIndex') !== undefined) {
+      return newTimestamp =>
+        this.props.org.updateLogEntryTime(
+          popupData.get('headerId'),
+          popupData.get('logEntryIndex'),
+          popupData.get('entryType'),
+          newTimestamp.get('firstTimestamp')
+        );
     } else {
       return newTimestamp =>
         this.props.org.updatePlanningItemTimestamp(
@@ -267,6 +275,14 @@ class OrgFile extends PureComponent {
         let editingTimestamp = null;
         if (activePopupData.get('timestampId')) {
           editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
+        } else if (activePopupData.get('logEntryIndex') !== undefined) {
+          editingTimestamp = fromJS({
+            firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
+              'logBookEntries',
+              activePopupData.get('logEntryIndex'),
+              activePopupData.get('entryType'),
+            ]),
+          });
         } else {
           editingTimestamp = fromJS({
             firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
@@ -467,7 +483,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrgFile);
+export default connect(mapStateToProps, mapDispatchToProps)(OrgFile);

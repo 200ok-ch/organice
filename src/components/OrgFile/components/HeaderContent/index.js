@@ -37,6 +37,7 @@ class HeaderContent extends PureComponent {
       'handleRemoveTableColumn',
       'handleCheckboxClick',
       'handleTimestampClick',
+      'handleLogEntryTimestampClick',
       'handleInsertTimestamp',
       'handlePlanningItemTimestampClick',
       'handlePropertyListEdit',
@@ -185,6 +186,15 @@ class HeaderContent extends PureComponent {
     this.props.base.activatePopup('timestamp-editor', { timestampId });
   }
 
+  handleLogEntryTimestampClick(headerId) {
+    return (logEntryIndex, entryType) =>
+      this.props.base.activatePopup('timestamp-editor', {
+        headerId,
+        logEntryIndex,
+        entryType,
+      });
+  }
+
   handleInsertTimestamp() {
     // Clicking this button will unfocus the textarea, but we don't want to exit edit mode,
     // so instruct the blur handler to ignore the event.
@@ -262,7 +272,11 @@ class HeaderContent extends PureComponent {
               shouldDisableActions={shouldDisableActions}
               onEdit={this.handlePropertyListEdit}
             />
-            <LogBookEntries logBookEntries={header.get('logBookEntries')} />
+            <LogBookEntries
+              logBookEntries={header.get('logBookEntries')}
+              onTimestampClick={this.handleLogEntryTimestampClick(header.get('id'))}
+              shouldDisableActions={shouldDisableActions}
+            />
             <AttributedString
               parts={header.get('description')}
               subPartDataAndHandlers={{
