@@ -106,9 +106,8 @@ class HeaderContent extends PureComponent {
     if (logBookEntries.size > 0) {
       logBookEntriesText += ':LOGBOOK:\n';
       logBookEntriesText += logBookEntries
-        .map(
-          entry =>
-            entry.get('end') === null
+        .map(entry =>
+          entry.get('end') === null
             ? `CLOCK: ${renderAsText(entry.get('start'))}`
             : `CLOCK: ${renderAsText(entry.get('start'))}--${renderAsText(entry.get('end'))}`
         )
@@ -117,8 +116,8 @@ class HeaderContent extends PureComponent {
     }
 
     const headerText = [planningItemsText, propertyListItemsText, logBookEntriesText]
-          .filter(str => str.length !== 0)
-          .join('\n');
+      .filter(str => str.length !== 0)
+      .join('\n');
 
     return headerText + (headerText.length === 0 ? '' : '\n') + header.get('rawDescription');
   }
@@ -263,9 +262,7 @@ class HeaderContent extends PureComponent {
               shouldDisableActions={shouldDisableActions}
               onEdit={this.handlePropertyListEdit}
             />
-            <LogBookEntries
-              logBookEntries={header.get('logBookEntries')}
-            />
+            <LogBookEntries logBookEntries={header.get('logBookEntries')} />
             <AttributedString
               parts={header.get('description')}
               subPartDataAndHandlers={{
@@ -309,7 +306,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HeaderContent);
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderContent);

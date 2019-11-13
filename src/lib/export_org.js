@@ -247,7 +247,7 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
     .map(header => {
       // Pad things like planning items and tables appropriately
       // considering the nestingLevel of the header.
-      const indentation = ' '.repeat(header.nestingLevel + 1)
+      const indentation = ' '.repeat(header.nestingLevel + 1);
       let contents = '';
       contents += '*'.repeat(header.nestingLevel);
 
@@ -289,7 +289,9 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
             if (entry.end === null) {
               return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}`;
             } else {
-              return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(fromJS(entry.end))}`;
+              return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(
+                fromJS(entry.end)
+              )}`;
             }
           })
           .join('\n')

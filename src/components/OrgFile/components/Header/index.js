@@ -249,9 +249,8 @@ class Header extends PureComponent {
   handleClockInOutClick() {
     const { header } = this.props;
     const logBook = header.get('logBookEntries', []);
-    const existingClockIndex = logBook
-          .findIndex(entry => entry.get('end') === null);
-    const now = getCurrentTimestamp({isActive: false, withStartTime: true});
+    const existingClockIndex = logBook.findIndex(entry => entry.get('end') === null);
+    const now = getCurrentTimestamp({ isActive: false, withStartTime: true });
     if (existingClockIndex !== -1) {
       this.props.org.setLogEntryStop(
         header.get('id'),
@@ -259,10 +258,7 @@ class Header extends PureComponent {
         now
       );
     } else {
-      this.props.org.createLogEntryStart(
-        header.get('id'),
-        now
-      );
+      this.props.org.createLogEntryStart(header.get('id'), now);
     }
   }
 
@@ -297,8 +293,8 @@ class Header extends PureComponent {
       !!dragStartX && !!currentDragX && isDraggingFreely
         ? currentDragX - dragStartX
         : isPlayingRemoveAnimation
-          ? spring(-1 * containerWidth, { stiffness: 300 })
-          : spring(0, { stiffness: 300 });
+        ? spring(-1 * containerWidth, { stiffness: 300 })
+        : spring(0, { stiffness: 300 });
 
     const style = {
       paddingLeft: 20 * indentLevel,
@@ -482,7 +478,4 @@ const mapDispatchToProps = dispatch => ({
   base: bindActionCreators(baseActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -518,11 +518,7 @@ const parseLogbook = rawText => {
   const logbookLineIndex = lines.findIndex(line => line.trim() === ':LOGBOOK:');
   const endLineIndex = lines.findIndex(line => line.trim() === ':END:');
 
-  if (
-    logbookLineIndex === -1 ||
-    endLineIndex === -1 ||
-      !rawText.trim().startsWith(':LOGBOOK:')
-  ) {
+  if (logbookLineIndex === -1 || endLineIndex === -1 || !rawText.trim().startsWith(':LOGBOOK:')) {
     return {
       logBookEntries: List(),
       strippedDescription: rawText,
@@ -530,23 +526,21 @@ const parseLogbook = rawText => {
   }
 
   const logBookEntries = fromJS(
-    lines
-      .slice(logbookLineIndex + 1, endLineIndex)
-      .map(line => {
-        const [startText, endText] = line.trim().split(/--/);
-        const startMatch = startText.match(timestampRegex);
-        const start = timestampFromRegexMatch(startMatch, _.range(1, 14));
+    lines.slice(logbookLineIndex + 1, endLineIndex).map(line => {
+      const [startText, endText] = line.trim().split(/--/);
+      const startMatch = startText.match(timestampRegex);
+      const start = timestampFromRegexMatch(startMatch, _.range(1, 14));
 
-        let end;
-        if (endText) {
-          const endMatch = endText.match(timestampRegex);
-          end = timestampFromRegexMatch(endMatch, _.range(1, 14));
-        } else {
-          end = null;
-        }
+      let end;
+      if (endText) {
+        const endMatch = endText.match(timestampRegex);
+        end = timestampFromRegexMatch(endMatch, _.range(1, 14));
+      } else {
+        end = null;
+      }
 
-        return {start, end, id: generateId()};
-      })
+      return { start, end, id: generateId() };
+    })
   );
 
   return {
@@ -564,7 +558,7 @@ export const parseDescriptionPrefixElements = rawText => {
     planningItems: planningItemsParse.planningItems,
     propertyListItems: propertyListParse.propertyListItems,
     strippedDescription: logBookParse.strippedDescription,
-    logBookEntries: logBookParse.logBookEntries
+    logBookEntries: logBookParse.logBookEntries,
   };
 };
 
@@ -636,9 +630,12 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .slice(1)
     .join('\n');
 
-  const { planningItems, propertyListItems, strippedDescription, logBookEntries } = parseDescriptionPrefixElements(
-    description
-  );
+  const {
+    planningItems,
+    propertyListItems,
+    strippedDescription,
+    logBookEntries,
+  } = parseDescriptionPrefixElements(description);
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)

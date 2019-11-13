@@ -1,5 +1,6 @@
-.logbook-entries__item-start, .logbook-entries__item-end {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
+.logbook-entries__item-start,
+.logbook-entries__item-end {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 }

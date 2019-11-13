@@ -844,12 +844,10 @@ export const updatePropertyListItems = (state, action) => {
 export const setLogEntryStop = (state, action) => {
   const { headerId, entryId, time } = action;
   const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
-  const entryIndex = state.getIn(['headers', headerIdx, 'logBookEntries'])
-        .findIndex(entry => entry.get('id') === entryId);
-  return state.setIn(
-    ['headers', headerIdx, 'logBookEntries', entryIndex, 'end'],
-    fromJS(time)
-  );
+  const entryIndex = state
+    .getIn(['headers', headerIdx, 'logBookEntries'])
+    .findIndex(entry => entry.get('id') === entryId);
+  return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
 };
 
 export const createLogEntryStart = (state, action) => {
@@ -860,9 +858,8 @@ export const createLogEntryStart = (state, action) => {
     start: time,
     end: null,
   });
-  return state.updateIn(
-    ['headers', headerIdx, 'logBookEntries'],
-    entries => !!entries ? entries.unshift(newEntry) : List([newEntry])
+  return state.updateIn(['headers', headerIdx, 'logBookEntries'], entries =>
+    !!entries ? entries.unshift(newEntry) : List([newEntry])
   );
 };
 
