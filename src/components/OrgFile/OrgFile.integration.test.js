@@ -116,6 +116,35 @@ Some description content
       expect(queryByText('TODO')).toBeFalsy();
       expect(queryByText('DONE')).toBeTruthy();
     });
+
+    test('Can clock in & out of an event', () => {
+      const { getByText, queryByText } = render(
+        <MemoryRouter keyLength={0}>
+          <Provider store={store}>
+            <OrgFile path="fixtureTestFile.org" />
+          </Provider>
+        </MemoryRouter>
+      );
+
+      expect(queryByText('Clock In')).toBeFalsy();
+      expect(queryByText('Clock Out')).toBeFalsy();
+
+      fireEvent.click(getByText('Top level header'));
+
+      expect(queryByText('Clock In')).toBeTruthy();
+      expect(queryByText('Clock Out')).toBeFalsy();
+
+      fireEvent.click(getByText('Clock In'));
+
+      expect(queryByText('Clock In')).toBeFalsy();
+      expect(queryByText('Clock Out')).toBeTruthy();
+
+      fireEvent.click(getByText('Clock Out'));
+
+      expect(queryByText('Clock In')).toBeTruthy();
+      expect(queryByText('Clock Out')).toBeFalsy();
+
+    });
   });
 
   describe('Renders everything starting from an Org file', () => {
