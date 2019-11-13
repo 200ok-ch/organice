@@ -133,17 +133,24 @@ Some description content
 
       expect(queryByText('Clock In')).toBeTruthy();
       expect(queryByText('Clock Out')).toBeFalsy();
+      expect(queryByText(':LOGBOOK:...')).toBeFalsy();
 
       fireEvent.click(getByText('Clock In'));
 
       expect(queryByText('Clock In')).toBeFalsy();
       expect(queryByText('Clock Out')).toBeTruthy();
+      expect(queryByText(':LOGBOOK:...')).toBeTruthy();
 
       fireEvent.click(getByText('Clock Out'));
 
       expect(queryByText('Clock In')).toBeTruthy();
       expect(queryByText('Clock Out')).toBeFalsy();
+      expect(queryByText(':LOGBOOK:...')).toBeTruthy();
 
+      fireEvent.click(getByText(':LOGBOOK:...'));
+
+      expect(queryByText('CLOCK:')).toBeTruthy();
+      expect(queryByText('=> 0:00')).toBeTruthy();
     });
   });
 
