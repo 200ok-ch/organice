@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-11-14 Thu>
+
+*** Added
+
+    - *Clocking work time*
+      - Org mode allows you to clock the time you spend on specific
+        tasks in a project:
+        https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
+      - organice is compatible with logbook clocking, now
+      - You can 'clock in' and 'clock out' to a header
+      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/103][PR]]!
+
 ** <2019-10-31 Thu>
 
 *** Fixed
