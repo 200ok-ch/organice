@@ -301,16 +301,18 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
         contents += `\n${indentation}:END:\n`;
       }
 
-      if (header.description) {
+      if (header.description.length > 0) {
         if (!header.rawDescription.startsWith('\n') && header.rawDescription.length !== 0) {
           contents += '\n';
         }
         contents += header.rawDescription;
+      } else {
+        contents = contents.trimRight();
       }
 
       return contents;
     })
     .join('\n');
 
-  return configContent + headerContent;
+  return configContent + headerContent + (headerContent.endsWith('\n') ? '' : '\n');
 };

@@ -84,19 +84,13 @@ describe('Unit Tests for org file', () => {
           test('For basic files', () => {
             const testOrgFile = readFixture('schedule');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
-            // The call to `trimRight` is a work-around, because organice
-            // doesn't export files with a trailing newline at this
-            // moment. This is best-practice for any text-file and Emacs
-            // does it for org-files, too. However, this is to be fixed
-            // at another time. And when it is, this expectation will
-            // fail and the call to `trimRight` can be safely removed.
-            expect(exportedFile).toEqual(testOrgFile.trimRight());
+            expect(exportedFile).toEqual(testOrgFile);
           });
 
           test('For files with multiple planning items', () => {
             const testOrgFile = readFixture('schedule_and_deadline');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
-            expect(exportedFile).toEqual(testOrgFile.trimRight());
+            expect(exportedFile).toEqual(testOrgFile);
           });
         });
 
