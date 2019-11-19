@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-11-19 Tue>
+
+*** Changed
+
+    - Don't put newlines after headers with no content, add newline at EOF
+      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/106][PR]]!
+
 ** <2019-11-14 Thu>
 
 *** Added
