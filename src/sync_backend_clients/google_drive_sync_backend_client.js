@@ -296,7 +296,6 @@ export default () => {
     });
 
   const getFileContents = fileId => {
-    if (!fileId) return Promise.reject('No fileId given');
     return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(fileId)
         .then(({ contents }) => resolve(contents))
@@ -304,10 +303,17 @@ export default () => {
     );
   };
 
-  const getFileContentsByNameAndParent = (name, parentId) =>
-    new Promise((resolve, reject) =>
-      fileIdByNameAndParent(name, parentId).then(fileId => getFileContents(fileId).then(resolve))
+  const getFileContentsByNameAndParent = (name, parentId) => {
+    return new Promise((resolve, reject) =>
+      fileIdByNameAndParent(name, parentId).then(fileId => {
+        if (fileId) {
+          getFileContents(fileId).then(resolve);
+        } else {
+          reject();
+        }
+      })
     );
+  };
 
   const deleteFileByNameAndParent = (name, parentId) =>
     new Promise((resolve, reject) => {
