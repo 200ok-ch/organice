@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
 import { createClient } from 'webdav';
+import { isEmpty } from 'lodash';
 
 /**
  * Gets a directory listing ready to be rendered by organice.
@@ -109,7 +110,7 @@ export default (url, login, password) => {
     );
 
   const getFileContents = path => {
-    if (!path) return Promise.reject('No path given');
+    if (isEmpty(path)) return Promise.reject('No path given');
     return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(path)
         .then(({ contents }) => resolve(contents))

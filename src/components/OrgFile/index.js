@@ -75,7 +75,7 @@ class OrgFile extends PureComponent {
       }
 
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
-    } else if (!!path && path !== loadedPath) {
+    } else if (!_.isEmpty(path) && path !== loadedPath) {
       this.props.syncBackend.downloadFile(path);
     }
   }

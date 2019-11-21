@@ -1,4 +1,5 @@
 import { Dropbox } from 'dropbox';
+import { isEmpty } from 'lodash';
 
 import { fromJS, Map } from 'immutable';
 
@@ -129,7 +130,7 @@ export default accessToken => {
     );
 
   const getFileContents = path => {
-    if (!path) return Promise.reject('No path given');
+    if (isEmpty(path)) return Promise.reject('No path given');
     return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(path)
         .then(({ contents }) => resolve(contents))
