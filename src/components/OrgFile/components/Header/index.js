@@ -307,7 +307,9 @@ class Header extends PureComponent {
       'header--removing': isPlayingRemoveAnimation,
     });
 
-    const logBookEntries = header.get('logBookEntries');
+    const logBookEntries = header
+      .get('logBookEntries')
+      .filter(entry => entry.get('raw') === undefined);
     const hasActiveClock =
       logBookEntries.size !== 0 && logBookEntries.filter(entry => !entry.get('end')).size !== 0;
 
