@@ -530,7 +530,7 @@ const parseLogbook = rawText => {
       const [startText, endText] = line.trim().split(/--/);
       const startMatch = startText.match(timestampRegex);
       if (!startMatch) {
-        return { raw: line.trimLeft() };
+        return { raw: line.trimLeft(), id: generateId() };
       }
       const start = timestampFromRegexMatch(startMatch, _.range(1, 14));
 
