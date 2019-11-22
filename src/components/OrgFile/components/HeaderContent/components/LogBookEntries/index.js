@@ -23,7 +23,7 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
           {logBookEntries.map((entry, index) =>
             entry.get('raw') !== undefined ? (
               <div className="logbook-entries__item-container" key={index}>
-                {entry.get('raw') || " "}
+                {entry.get('raw') || ' '}
               </div>
             ) : (
               <div className="logbook-entries__item-container" key={entry.get('id')}>
