@@ -286,7 +286,9 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
       if (header.logBookEntries.length) {
         const logBookEntriesContent = header.logBookEntries
           .map(entry => {
-            if (entry.end === null) {
+            if (entry.raw !== undefined) {
+              return entry.raw ? `${indentation}${entry.raw}` : '';
+            } else if (entry.end === null) {
               return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}`;
             } else {
               return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(

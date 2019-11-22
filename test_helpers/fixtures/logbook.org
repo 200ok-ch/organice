@@ -1,7 +1,10 @@
 * Spec header
   :LOGBOOK:
   CLOCK: [2019-11-13 Wed 13:15]
+
   CLOCK: [2019-11-13 Wed 13:15]--[2019-11-13 Wed 13:15] =>  0:00
+
+  some inter-entry text
   CLOCK: [2019-11-12 Tue 14:15]--[2019-11-12 Tue 13:20] => -0:55
   CLOCK: [2019-11-12 Tue 14:15]--[2019-11-12 Tue 14:25] =>  0:10
   :END:

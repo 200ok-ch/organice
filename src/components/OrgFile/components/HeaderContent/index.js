@@ -108,7 +108,9 @@ class HeaderContent extends PureComponent {
       logBookEntriesText += ':LOGBOOK:\n';
       logBookEntriesText += logBookEntries
         .map(entry =>
-          entry.get('end') === null
+          entry.get('raw') !== undefined
+            ? entry.get('raw')
+            : entry.get('end') === null
             ? `CLOCK: ${renderAsText(entry.get('start'))}`
             : `CLOCK: ${renderAsText(entry.get('start'))}--${renderAsText(entry.get('end'))}`
         )
