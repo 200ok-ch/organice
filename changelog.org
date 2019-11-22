@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-11-22 Fri>
+
+*** Fixed
+
+    - Handle non-clock entries in =:LOGBOOK:= drawers
+      - Fixes [[https://github.com/200ok-ch/organice/issues/111][issue #111]], [[https://github.com/200ok-ch/organice/issues/108][issue #108]] and [[https://github.com/200ok-ch/organice/issues/110][issue #110]]
+      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/112][PR]]!
+
+** <2019-11-21 Thu>
+
+*** Fixed
+
+    - Safeguard against potential Dropbox SDK Bug
+      - More information in [[https://github.com/200ok-ch/organice/issues/108][issue #108]]
+
 ** <2019-11-19 Tue>
 
 *** Changed
