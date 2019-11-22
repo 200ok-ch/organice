@@ -1,6 +1,7 @@
 * Spec header
   :LOGBOOK:
   CLOCK: [2019-11-13 Wed 13:15]
+  - State "DONE"      from "TODO"     CLOCK: [2019-11-13 Wed 13:15]
 
   CLOCK: [2019-11-13 Wed 13:15]--[2019-11-13 Wed 13:15] =>  0:00
 

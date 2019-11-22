@@ -525,24 +525,33 @@ const parseLogbook = rawText => {
     };
   }
 
+  const logBookEntryStartRegex = concatRegexes(/^CLOCK: /, timestampRegex, /$/);
+  const logBookEntryFullRegex = concatRegexes(
+    /^CLOCK: /,
+    timestampRegex,
+    '/--/',
+    timestampRegex,
+    /$/
+  );
   const logBookEntries = fromJS(
     lines.slice(logbookLineIndex + 1, endLineIndex).map(line => {
-      const [startText, endText] = line.trim().split(/--/);
-      const startMatch = startText.match(timestampRegex);
-      if (!startMatch) {
-        return { raw: line.trimLeft(), id: generateId() };
+      const lineFullMatch = line.trim().match(logBookEntryFullRegex);
+      if (lineFullMatch) {
+        return {
+          start: timestampFromRegexMatch(lineFullMatch, _.range(1, 14)),
+          end: timestampFromRegexMatch(lineFullMatch, _.range(16, 31)),
+          id: generateId(),
+        };
       }
-      const start = timestampFromRegexMatch(startMatch, _.range(1, 14));
-
-      let end;
-      if (endText) {
-        const endMatch = endText.match(timestampRegex);
-        end = timestampFromRegexMatch(endMatch, _.range(1, 14));
-      } else {
-        end = null;
+      const lineStartMatch = line.trim().match(logBookEntryStartRegex);
+      if (lineStartMatch) {
+        return {
+          start: timestampFromRegexMatch(lineStartMatch, _.range(1, 14)),
+          end: null,
+          id: generateId(),
+        };
       }
-
-      return { start, end, id: generateId() };
+      return { raw: line.trimLeft(), id: generateId() };
     })
   );
 
