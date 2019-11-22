@@ -531,7 +531,7 @@ const parseLogbook = rawText => {
     timestampRegex,
     '/--/',
     timestampRegex,
-    /$/
+    /\s*=>\s*\S+$/
   );
   const logBookEntries = fromJS(
     lines.slice(logbookLineIndex + 1, endLineIndex).map(line => {
@@ -539,7 +539,7 @@ const parseLogbook = rawText => {
       if (lineFullMatch) {
         return {
           start: timestampFromRegexMatch(lineFullMatch, _.range(1, 14)),
-          end: timestampFromRegexMatch(lineFullMatch, _.range(16, 31)),
+          end: timestampFromRegexMatch(lineFullMatch, _.range(14, 31)),
           id: generateId(),
         };
       }
