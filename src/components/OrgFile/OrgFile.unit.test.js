@@ -133,6 +133,14 @@ describe('Unit Tests for Org file', () => {
         const state = parseOrg(testOrgFile);
         expect(noLogRepeatEnabledP({ state, headerIndex: 0 })).toBe(true);
       });
+      test('Detects "nologrepeat" when set via a property list', () => {
+        const testOrgFile = readFixture('schedule_with_repeater_and_nologrepeat_property');
+        const state = parseOrg(testOrgFile);
+        expect(noLogRepeatEnabledP({ state, headerIndex: 1 })).toBe(false);
+        expect(noLogRepeatEnabledP({ state, headerIndex: 2 })).toBe(false);
+        expect(noLogRepeatEnabledP({ state, headerIndex: 5 })).toBe(true);
+        expect(noLogRepeatEnabledP({ state, headerIndex: 7 })).toBe(false);
+      });
     });
   });
 });
