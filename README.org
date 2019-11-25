@@ -125,6 +125,10 @@ organice implements this customization strategy:
 - =#+TODO=
 - =#+TYP_TODO=
 
+=#+STARTUP:= options:
+
+- =nologrepeat=: Do not record when reinstating repeating item
+
 **** Other customizations
 
 For some customizations, organice exposes a mobile friendly user
