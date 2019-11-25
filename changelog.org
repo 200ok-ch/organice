@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-11-25 Mon>
+
+*** Added
+    - Honor the 'nologrepeat' option
+      - It can be set via =#+STARTUP:= or as a property
+      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/119][PR]]!
+
 ** <2019-11-22 Fri>
 
 *** Fixed
