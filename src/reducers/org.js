@@ -1033,71 +1033,78 @@ function updatePlanningItemsWithRepeaters(
   newTodoState,
   currentTodoState
 ) {
-  {
-    indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
-      state = state.setIn(
-        ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-        applyRepeater(planningItem.get('timestamp'), new Date())
-      );
-    });
+  indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
-      ['headers', headerIndex, 'titleLine', 'todoKeyword'],
-      currentTodoSet.get('keywords').first()
+      ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
+      applyRepeater(planningItem.get('timestamp'), new Date())
     );
-    const startupOptNoLogRepeat = state
-      .get('fileConfigLines')
-      .some(elt => elt.match(/^#\+STARTUP:\s+nologrepeat/));
-    const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
-    if (
-      !startupOptNoLogRepeat &&
-      !(
-        loggingProp &&
-        loggingProp.some(
-          v => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
-        )
-      )
-    ) {
-      const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
-      const newLastRepeatValue = [
-        {
-          type: 'timestamp',
-          id: generateId(),
-          firstTimestamp: lastRepeatTimestamp,
-          secondTimestamp: null,
-        },
-      ];
+  });
+  state = state.setIn(
+    ['headers', headerIndex, 'titleLine', 'todoKeyword'],
+    currentTodoSet.get('keywords').first()
+  );
+  if (noLogRepeatEnabledP({ state, headerIndex })) {
+    const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
+    const newLastRepeatValue = [
+      {
+        type: 'timestamp',
+        id: generateId(),
+        firstTimestamp: lastRepeatTimestamp,
+        secondTimestamp: null,
+      },
+    ];
 
-      state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
-        propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
-          ? propertyListItems.map(item =>
-              item.get('property') === 'LAST_REPEAT'
-                ? item.set('value', fromJS(newLastRepeatValue))
-                : item
-            )
-          : propertyListItems.push(
-              fromJS({
-                property: 'LAST_REPEAT',
-                value: newLastRepeatValue,
-                id: generateId(),
-              })
-            )
-      );
-      state = state.updateIn(['headers', headerIndex], header => {
-        let rawDescription = header.get('rawDescription');
-        if (rawDescription.startsWith('\n')) {
-          rawDescription = rawDescription.slice(1);
-        }
-        rawDescription =
-          `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
-            fromJS(lastRepeatTimestamp)
-          )}\n` + rawDescription;
-        return header
-          .set('rawDescription', rawDescription)
-          .set('description', parseRawText(rawDescription));
-      });
-    }
+    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
+      propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
+        ? propertyListItems.map(item =>
+            item.get('property') === 'LAST_REPEAT'
+              ? item.set('value', fromJS(newLastRepeatValue))
+              : item
+          )
+        : propertyListItems.push(
+            fromJS({
+              property: 'LAST_REPEAT',
+              value: newLastRepeatValue,
+              id: generateId(),
+            })
+          )
+    );
+    state = state.updateIn(['headers', headerIndex], header => {
+      let rawDescription = header.get('rawDescription');
+      if (rawDescription.startsWith('\n')) {
+        rawDescription = rawDescription.slice(1);
+      }
+      rawDescription =
+        `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+          fromJS(lastRepeatTimestamp)
+        )}\n` + rawDescription;
+      return header
+        .set('rawDescription', rawDescription)
+        .set('description', parseRawText(rawDescription));
+    });
   }
   return state;
+}
+
+/**
+ * Is the `nologrepeat` feature enabled for this buffer?
+ * More info:
+ * https://www.gnu.org/software/emacs/manual/html_node/org/Repeated-tasks.html
+ */
+export function noLogRepeatEnabledP({ state, headerIndex }) {
+  const startupOptNoLogRepeat = state
+    .get('fileConfigLines')
+    .some(elt => elt.match(/^#\+STARTUP:.*nologrepeat.*/));
+  const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
+  return (
+    !startupOptNoLogRepeat &&
+    !(
+      loggingProp &&
+      loggingProp.some(
+        v => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
+      )
+    )
+  );
 }
 
 /**

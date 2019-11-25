@@ -212,13 +212,12 @@ const tablePartContainsCellId = (tablePart, cellId) =>
 const doesAttributedStringContainTableCellId = (parts, cellId) =>
   parts
     .filter(part => ['table', 'list'].includes(part.get('type')))
-    .some(
-      part =>
-        part.get('type') === 'table'
-          ? tablePartContainsCellId(part, cellId)
-          : part
-              .get('items')
-              .some(item => doesAttributedStringContainTableCellId(item.get('contents'), cellId))
+    .some(part =>
+      part.get('type') === 'table'
+        ? tablePartContainsCellId(part, cellId)
+        : part
+            .get('items')
+            .some(item => doesAttributedStringContainTableCellId(item.get('contents'), cellId))
     );
 
 export const headerThatContainsTableCellId = (headers, cellId) =>
