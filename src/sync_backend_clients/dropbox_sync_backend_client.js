@@ -109,20 +109,28 @@ export default accessToken => {
           reader.readAsText(response.fileBlob);
         })
         .catch(error => {
-          console.error(error);
           // INFO: It's possible organice is using the Dropbox API
           // wrongly. In any case, for some files and only sometimes,
-          // when a file is requested, there's either a 400 with a
-          // plain text error or a 409 with an embedded JSON error
+          // when a file is requested, there's either:
+          //   - a 400 with a plain text error or
+          //   - a 409 with an embedded JSON error
+          //   - a 409 with a plain text error under `.error`
           // coming back. Sometimes, there's even two API calls to
           // `/download` happening at the same time (of types `json`
           // and `octet-stream`) where one might fail and the other
           // might prevail.
           // More debug information in this issue:
           // https://github.com/200ok-ch/organice/issues/108
+          const objectContainsTagErrorP = (function() {
+            try {
+              return JSON.parse(error.error).error.path['.tag'] === 'not_found';
+            } catch (e) {
+              return false;
+            }
+          })();
           if (
             (typeof error === 'string' && error.match(/missing required field 'path'/)) ||
-            (!!error.error && JSON.parse(error.error).error.path['.tag'] === 'not_found')
+            objectContainsTagErrorP
           ) {
             reject();
           }
