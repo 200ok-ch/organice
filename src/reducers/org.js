@@ -30,6 +30,7 @@ import {
   pathAndPartOfListItemWithIdInHeaders,
   pathAndPartOfTimestampItemWithIdInHeaders,
   todoKeywordSetForKeyword,
+  inheritedValueOfProperty,
 } from '../lib/org_utils';
 import { getCurrentTimestamp, applyRepeater, renderAsText } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -1043,8 +1044,19 @@ function updatePlanningItemsWithRepeaters(
       ['headers', headerIndex, 'titleLine', 'todoKeyword'],
       currentTodoSet.get('keywords').first()
     );
-
-    if (!state.get('fileConfigLines').find(elt => elt.match(/^#\+STARTUP:\s+nologrepeat/))) {
+    const startupOptNoLogRepeat = state
+      .get('fileConfigLines')
+      .some(elt => elt.match(/^#\+STARTUP:\s+nologrepeat/));
+    const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
+    if (
+      !startupOptNoLogRepeat &&
+      !(
+        loggingProp &&
+        loggingProp.some(
+          v => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
+        )
+      )
+    ) {
       const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
       const newLastRepeatValue = [
         {
