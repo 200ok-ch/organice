@@ -1043,7 +1043,7 @@ function updatePlanningItemsWithRepeaters(
     ['headers', headerIndex, 'titleLine', 'todoKeyword'],
     currentTodoSet.get('keywords').first()
   );
-  if (noLogRepeatEnabledP({ state, headerIndex })) {
+  if (!noLogRepeatEnabledP({ state, headerIndex })) {
     const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
     const newLastRepeatValue = [
       {
@@ -1096,14 +1096,12 @@ export function noLogRepeatEnabledP({ state, headerIndex }) {
     .get('fileConfigLines')
     .some(elt => elt.match(/^#\+STARTUP:.*nologrepeat.*/));
   const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
-  return (
-    !startupOptNoLogRepeat &&
-    !(
-      loggingProp &&
+  return !!(
+    startupOptNoLogRepeat ||
+    (loggingProp &&
       loggingProp.some(
         v => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
-      )
-    )
+      ))
   );
 }
 
