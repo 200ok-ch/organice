@@ -1,0 +1,18 @@
+* Header
+  :PROPERTIES:
+  :LOGGING:  nologrepeat
+  :END:
+** Intermediate
+*** TODO Leaf
+    DEADLINE: <2019-11-25 Mon ++1d>
+* Header Two
+** Middle
+   :PROPERTIES:
+   :LOGGING:  logrepeat
+   :END:
+*** Beep
+** Middle 2
+   :PROPERTIES:
+   :LOGGING:  nologrepeat
+   :END:
+*** Boop

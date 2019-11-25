@@ -30,6 +30,7 @@ import {
   pathAndPartOfListItemWithIdInHeaders,
   pathAndPartOfTimestampItemWithIdInHeaders,
   todoKeywordSetForKeyword,
+  inheritedValueOfProperty,
 } from '../lib/org_utils';
 import { getCurrentTimestamp, applyRepeater, renderAsText } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -1032,17 +1033,17 @@ function updatePlanningItemsWithRepeaters(
   newTodoState,
   currentTodoState
 ) {
-  {
-    indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
-      state = state.setIn(
-        ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-        applyRepeater(planningItem.get('timestamp'), new Date())
-      );
-    });
+  indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
-      ['headers', headerIndex, 'titleLine', 'todoKeyword'],
-      currentTodoSet.get('keywords').first()
+      ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
+      applyRepeater(planningItem.get('timestamp'), new Date())
     );
+  });
+  state = state.setIn(
+    ['headers', headerIndex, 'titleLine', 'todoKeyword'],
+    currentTodoSet.get('keywords').first()
+  );
+  if (!noLogRepeatEnabledP({ state, headerIndex })) {
     const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
     const newLastRepeatValue = [
       {
@@ -1052,6 +1053,7 @@ function updatePlanningItemsWithRepeaters(
         secondTimestamp: null,
       },
     ];
+
     state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
       propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
         ? propertyListItems.map(item =>
@@ -1082,6 +1084,25 @@ function updatePlanningItemsWithRepeaters(
     });
   }
   return state;
+}
+
+/**
+ * Is the `nologrepeat` feature enabled for this buffer?
+ * More info:
+ * https://www.gnu.org/software/emacs/manual/html_node/org/Repeated-tasks.html
+ */
+export function noLogRepeatEnabledP({ state, headerIndex }) {
+  const startupOptNoLogRepeat = state
+    .get('fileConfigLines')
+    .some(elt => elt.match(/^#\+STARTUP:.*nologrepeat.*/));
+  const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
+  return !!(
+    startupOptNoLogRepeat ||
+    (loggingProp &&
+      loggingProp.some(
+        v => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
+      ))
+  );
 }
 
 /**

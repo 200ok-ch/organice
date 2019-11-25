@@ -64,6 +64,21 @@ export const parentIdOfHeaderWithId = (headers, headerId) => {
   return parentHeader.get('id');
 };
 
+export const inheritedValueOfProperty = (headers, headerIndex, property) => {
+  const headerProp = headers
+    .getIn([headerIndex, 'propertyListItems'])
+    .find(item => item.get('property') === property);
+  if (headerProp) {
+    return headerProp.get('value');
+  }
+  const parentId = parentIdOfHeaderWithId(headers, headers.getIn([headerIndex, 'id']));
+  if (parentId) {
+    const parentHeaderIndex = indexOfHeaderWithId(headers, parentId);
+    return inheritedValueOfProperty(headers, parentHeaderIndex, property);
+  }
+  return null;
+};
+
 export const indexOfPreviousSibling = (headers, headerIndex) => {
   const nestingLevel = headers.getIn([headerIndex, 'nestingLevel']);
 
@@ -197,13 +212,12 @@ const tablePartContainsCellId = (tablePart, cellId) =>
 const doesAttributedStringContainTableCellId = (parts, cellId) =>
   parts
     .filter(part => ['table', 'list'].includes(part.get('type')))
-    .some(
-      part =>
-        part.get('type') === 'table'
-          ? tablePartContainsCellId(part, cellId)
-          : part
-              .get('items')
-              .some(item => doesAttributedStringContainTableCellId(item.get('contents'), cellId))
+    .some(part =>
+      part.get('type') === 'table'
+        ? tablePartContainsCellId(part, cellId)
+        : part
+            .get('items')
+            .some(item => doesAttributedStringContainTableCellId(item.get('contents'), cellId))
     );
 
 export const headerThatContainsTableCellId = (headers, cellId) =>
