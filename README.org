@@ -222,7 +222,7 @@ about that - here's a [[https://github.com/200ok-ch/organice/wiki#missing-cors-h
 In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], there's a screencast of how organice works when logging in to a
 WebDAV server.
 
-***** Setup your own WebDAV Server
+***** Setup your own WebDAV Server with Apache2 on Debian
 
 For testing purposes, here are the instructions to setup WebDAV
 locally on your machine using Apache2 using Debian. These instructions
@@ -287,6 +287,70 @@ sudo apt -y install cadaver
 cadaver http://localhost/webdav/
 #+END_SRC
 
+***** Configuring Nextcloud behind haproxy to allow WebDAV
+If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
+Organice using WebDAV. ...it's just a little bit convoluted.
+
+The first part is the haproxy config. It should look a little bit like this:
+
+#+NAME: /etc/haproxy/haproxy.conf
+#+BEGIN_SRC conf
+  frontend www
+    acl host_nextcloud hdr(host) nextcloud.example.org
+    acl path_nextcloud_public_webdav path_beg /public.php/webdav
+    # Because we need to inspect the path in the backend section we set a variable
+    # containing the path.
+    http-request set-var(txn.path) path
+    # Because the OPTIONS requests from Organice doesn't include authentication we
+    # need to fake it. We can do that by redirecting all requests that satisfy these conditions:
+    #
+    # + host is Nextcloud
+    # + path is for public webdav
+    # + HTTP method is OPTIONS
+    use_backend always200ok if host_nextcloud path_nextcloud_public_webdav METH_OPTIONS
+
+  # haproxy doesn't really have a way of returning an arbitrary response, unless
+  # you want to drop down to Lua. There's no need for that, though, as this works
+  # perfectly fine. This backend doesn't have any servers attached, so it'll
+  # always result in a 503. We override the 503 by setting a custom errorfile,
+  # which incidentally looks just like a HTTP 200 response and contains all the
+  # headers we need to satisfy a CORS request.
+  backend always200ok
+    mode http
+    errorfile 503 /etc/haproxy/errors/200-ok.http
+
+  # The Nextcloud server backend is configured here. We inject CORS headers if URL
+  # starts with `/public.php/webdav`.
+  backend nextcloud
+    mode http
+    option httplog
+    acl is_webdav var(txn.path) -m beg /public.php/webdav
+    http-response add-header Access-Control-Allow-Origin "*" if is_webdav
+    http-response add-header Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT,PROPFIND" if is_webdav
+    http-response add-header Access-Control-Allow-Headers "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth" if is_webdav
+    http-response add-header Access-Control-Allow-Credentials "true" if is_webdav
+    server backend01 127.0.0.1:8001
+#+END_SRC
+
+The ~errorfile~ needs to look something like the below. Note that the text below
+has carriage returns (~13~, ~o15~ or ~0x0d~); these are required as per the HTTP
+RFC!
+
+#+NAME: /etc/haproxy/errors/200-ok.http
+#+BEGIN_SRC text
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache
+  Connection: close
+  Content-Type: text/html
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
+  Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
+  Access-Control-Allow-Credentials: true
+  
+  <html><body><h1>200 Stuff is good!</h1>
+  Something something dark side.
+  </body></html>
+#+END_SRC
 
 *** Contributions
 
