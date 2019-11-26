@@ -42,9 +42,11 @@ restrictions and expectations.
     editable with organice.
 - Other content before the first headline is imported and re-exported,
   but invisible and currently not editable with organice.
+- After potential in-buffer settings, your Org file _has to_ begin
+  with a headline.
 - In treating all the rest of the content beyond the first headline
   organice is actually very robust in reading and editing your Org
-  file and _not_ breaking any of it. We've had users with 10k LOC Org
+  file and not breaking any of it. We've had users with 10k LOC Org
   files with all kinds of native Org features (of which organice only
   has partial understanding) and they just work fine!
 
