@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-11-27 Wed>
+
+*** Added
+
+    - Instructions on configuring Nextcloud+haproxy to allow WebDAV
+    - Documentation on how to share from Nextcloud using WebDAV
+    - Thank you [[https://github.com/runejuhl][runejuhl]] for your [[https://github.com/200ok-ch/organice/pull/122][PR]]!
+
 ** <2019-11-25 Mon>
 
 *** Added
