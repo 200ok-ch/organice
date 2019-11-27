@@ -352,6 +352,21 @@ RFC!
   </body></html>
 #+END_SRC
 
+***** Nextcloud sharing
+In order to share a document using WebDAV you might be inclined to try to follow
+the [[https://docs.nextcloud.com/server/16/user_manual/files/access_webdav.html#accessing-public-shares-over-webdav][official documentation]], but it can be a tad confusing. Here's the executive
+summary for how to share things from Nextcloud using WebDAV:
+
++ share a link to a folder/file
++ remove everything but the token from the link; the token matches
+  ~/[a-zA-Z0-9]+$/~ (hit the button right of "Share link" if using the web
+  interface)
++ use these details when logging in:
+  + URL :: https://nextcloud.example.org/public.php/webdav
+  + Username :: the token, e.g. ~ed65Fxw9Bz3MTn3~
+  + Password :: if you've set a password for the shared folder, here's where you
+                input it
+
 *** Contributions
 
 Please see our [[file:CONTRIBUTING.org][contributer guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
