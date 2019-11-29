@@ -36,8 +36,8 @@ great choice.
 "Current" means we're working hard on removing the following
 restrictions and expectations.
 
-- organice understands only a few in-buffer settings (see [[*Supported in-buffer settings][Supported
-  in-buffer settings]])
+- organice understands only a few in-buffer settings (see [[#supported-in-buffer-configuration][Supported
+  in-buffer configuration]])
   - Other in-buffer settings are imported and re-exported but are not
     editable with organice.
 - Other content before the first headline is imported and re-exported,
@@ -179,7 +179,6 @@ yarn start
 #+END_SRC
 
 *** Synchronization back-ends
-    <<synchronization_back-ends>>
 
 Note that logging in to Dropbox will only work if you're running the
 app on ~http://localhost:3000~, because all redirect URIs must be
@@ -377,7 +376,7 @@ Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
-or Google Drive, please read the section on [[synchronization_back-ends][Synchronization back-ends]].
+or Google Drive, please read the section on [[#synchronization-back-ends][Synchronization back-ends]].
 
 *** FTP
 
@@ -525,7 +524,7 @@ https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+li
 Since organice is a web application, you can use the capture templates
 feature to create bookmarklets, of course! For example, if you want a
 bookmarklet to add the current page (title, capture date and URL) to
-your reading queue using [[media_capture][this capture template]], all you need is a
+your reading queue using [[#with-custom-variable][this capture template]], all you need is a
 little bit of JavaScript:
 
 #+BEGIN_SRC javascript
