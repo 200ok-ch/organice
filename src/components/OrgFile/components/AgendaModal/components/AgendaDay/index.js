@@ -21,7 +21,7 @@ import {
   isEqual,
   isWithinInterval,
   isPast,
-  formatDistance,
+  formatDistanceToNow,
 } from 'date-fns';
 import classNames from 'classnames';
 
@@ -79,7 +79,7 @@ export default class AgendaDay extends PureComponent {
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
                       ? format(planningItemDate, 'MM/dd')
-                      : `${formatDistance(planningItemDate)} ago`}
+                      : `${formatDistanceToNow(planningItemDate)} ago`}
 
                     {!!planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>

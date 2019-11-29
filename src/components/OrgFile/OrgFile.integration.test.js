@@ -13,6 +13,7 @@ import rootReducer from '../../reducers/';
 import { displayFile } from '../../actions/org';
 
 import { Map, fromJS } from 'immutable';
+import { formatDistanceToNow } from 'date-fns';
 
 import { render, fireEvent, cleanup, wait } from '@testing-library/react';
 afterEach(cleanup);
@@ -238,6 +239,17 @@ Some description content
         expect(queryByText('Agenda')).toBeFalsy();
         expect(queryByText('A scheduled todo item')).toBeTruthy();
         expect(queryByText('Scheduled')).toBeTruthy();
+      });
+
+      test('Clicking the Timestamp in a TODO within the agenda toggles from the date to the time', () => {
+        fireEvent.click(getByTitle('Show agenda'));
+        const timeSinceScheduled = formatDistanceToNow(new Date('2019-09-19'));
+        console.log(timeSinceScheduled);
+        expect(queryByText(timeSinceScheduled)).toBeFalsy();
+        expect(queryByText('09/19')).toBeTruthy();
+        fireEvent.click(queryByText('09/19'));
+        expect(queryByText('09/19')).toBeFalsy();
+        expect(queryByText(`${timeSinceScheduled} ago`)).toBeTruthy();
       });
     });
   });

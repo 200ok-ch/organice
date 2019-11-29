@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-11-29 Fri>
+
+*** Fixed
+
+    - Clicking the Timestamp in a TODO within the agenda toggles from
+      the date to a human readable timespan
+
 ** <2019-11-27 Wed>
 
 *** Added
