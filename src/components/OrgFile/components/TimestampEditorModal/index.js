@@ -50,6 +50,7 @@ export default class TimestampEditorModal extends PureComponent {
 
         <TimestampEditor
           timestamp={timestamp.get('firstTimestamp')}
+          onClose={onClose}
           onChange={this.handleChange('firstTimestamp')}
         />
 

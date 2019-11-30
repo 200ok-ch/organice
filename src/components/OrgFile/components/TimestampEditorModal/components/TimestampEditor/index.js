@@ -1,9 +1,13 @@
 import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
 import Switch from '../../../../../UI/Switch/';
 import TabButtons from '../../../../../UI/TabButtons/';
+
+import * as orgActions from '../../../../../../actions/org';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 
@@ -11,7 +15,7 @@ import _ from 'lodash';
 import { parseISO } from 'date-fns';
 import format from 'date-fns/format';
 
-export default class TimestampEditor extends PureComponent {
+class TimestampEditor extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -36,21 +40,27 @@ export default class TimestampEditor extends PureComponent {
   }
 
   handleDateChange(event) {
-    if (!event.target.value) return;
+    if (!event.target.value) {
+      // TODO: Don't pass the bogus 0 as planningItemIndex, but pass
+      // either "SCHEDULED" || "DEADLINE" or the acteual
+      // planningItemIndex, so the right planningItem can be deleted.
+      this.props.org.removePlanningItem(this.props.selectedHeaderId, 0);
+      this.props.onClose();
+    } else {
+      const { onChange, timestamp } = this.props;
 
-    const { onChange, timestamp } = this.props;
-
-    const [newYear, newMonth, newDay, newDayName] = format(
-      parseISO(event.target.value),
-      'yyyy MM dd eee'
-    ).split(' ');
-    onChange(
-      timestamp
-        .set('year', newYear)
-        .set('month', newMonth)
-        .set('day', newDay)
-        .set('dayName', newDayName)
-    );
+      const [newYear, newMonth, newDay, newDayName] = format(
+        parseISO(event.target.value),
+        'yyyy MM dd eee'
+      ).split(' ');
+      onChange(
+        timestamp
+          .set('year', newYear)
+          .set('month', newMonth)
+          .set('day', newDay)
+          .set('dayName', newDayName)
+      );
+    }
   }
 
   handleAddTime(startOrEnd) {
@@ -326,3 +336,17 @@ export default class TimestampEditor extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const headers = state.org.present.get('headers');
+  const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  return {
+    selectedHeaderId,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  org: bindActionCreators(orgActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimestampEditor);
