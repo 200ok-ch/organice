@@ -326,6 +326,9 @@ templates. They should be in the format ~captureVariable_<your custom
 variable>~, and should also be URL encoded. In your capture template
 they'd show up as ~%<your custom variable>~.
 
+Important: At this point, organice assumes that you'll capture your
+entries into a header - hence, you'll have to specify a "header path".
+
 *** Examples
 **** Simple: Capture a string
 
