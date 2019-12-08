@@ -341,7 +341,6 @@ class TimestampEditor extends PureComponent {
 }
 
 const mapStateToProps = state => {
-  const headers = state.org.present.get('headers');
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
   return {
     selectedHeaderId,
