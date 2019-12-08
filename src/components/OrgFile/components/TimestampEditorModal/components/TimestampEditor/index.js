@@ -324,6 +324,9 @@ class TimestampEditor extends PureComponent {
                 type="date"
                 className="timestamp-editor__date-input"
                 onChange={event => this.handleDateChange(event, planningItemIndex)}
+                // Needed for iOS due to React bug
+                // https://github.com/facebook/react/issues/8938#issuecomment-519074141
+                onFocus={event => (event.nativeEvent.target.defaultValue = '')}
                 value={`${year}-${month}-${day}`}
               />
             </div>
