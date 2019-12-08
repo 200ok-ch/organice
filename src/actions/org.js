@@ -435,6 +435,13 @@ export const addNewPlanningItem = (headerId, planningType) => ({
   dirtying: true,
 });
 
+export const removePlanningItem = (headerId, planningItemIndex) => ({
+  type: 'REMOVE_PLANNING_ITEM',
+  headerId,
+  planningItemIndex,
+  dirtying: true,
+});
+
 export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   type: 'UPDATE_PROPERTY_LIST_ITEMS',
   headerId,

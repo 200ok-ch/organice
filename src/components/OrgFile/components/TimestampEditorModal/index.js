@@ -42,7 +42,7 @@ export default class TimestampEditorModal extends PureComponent {
   }
 
   render() {
-    const { timestamp, onClose, singleTimestampOnly } = this.props;
+    const { timestamp, onClose, singleTimestampOnly, planningItemIndex } = this.props;
 
     return (
       <Drawer onClose={onClose}>
@@ -50,6 +50,8 @@ export default class TimestampEditorModal extends PureComponent {
 
         <TimestampEditor
           timestamp={timestamp.get('firstTimestamp')}
+          planningItemIndex={planningItemIndex}
+          onClose={onClose}
           onChange={this.handleChange('firstTimestamp')}
         />
 

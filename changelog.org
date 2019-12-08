@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-08 Sun>
+
+*** Added
+
+    - As a user, when I'm on a headline with a planning item (schedule
+      or deadline), I want to be able to remove it.
+
 ** <2019-11-29 Fri>
 
 *** Fixed

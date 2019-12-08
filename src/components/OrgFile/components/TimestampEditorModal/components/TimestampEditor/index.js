@@ -1,9 +1,13 @@
 import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
 import Switch from '../../../../../UI/Switch/';
 import TabButtons from '../../../../../UI/TabButtons/';
+
+import * as orgActions from '../../../../../../actions/org';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
 
@@ -11,7 +15,7 @@ import _ from 'lodash';
 import { parseISO } from 'date-fns';
 import format from 'date-fns/format';
 
-export default class TimestampEditor extends PureComponent {
+class TimestampEditor extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -35,22 +39,30 @@ export default class TimestampEditor extends PureComponent {
     this.props.onChange(this.props.timestamp.update('isActive', isActive => !isActive));
   }
 
-  handleDateChange(event) {
-    if (!event.target.value) return;
+  handleDateChange(event, planningItemIndex) {
+    // The user deleted the timestamp
+    if (_.isEmpty(event.target.value)) {
+      // It's a planning item and the parser knows which one.
+      // TODO: Also delete timestamps which are not planningItems
+      if (_.isNumber(planningItemIndex)) {
+        this.props.org.removePlanningItem(this.props.selectedHeaderId, planningItemIndex);
+      }
+      this.props.onClose();
+    } else {
+      const { onChange, timestamp } = this.props;
 
-    const { onChange, timestamp } = this.props;
-
-    const [newYear, newMonth, newDay, newDayName] = format(
-      parseISO(event.target.value),
-      'yyyy MM dd eee'
-    ).split(' ');
-    onChange(
-      timestamp
-        .set('year', newYear)
-        .set('month', newMonth)
-        .set('day', newDay)
-        .set('dayName', newDayName)
-    );
+      const [newYear, newMonth, newDay, newDayName] = format(
+        parseISO(event.target.value),
+        'yyyy MM dd eee'
+      ).split(' ');
+      onChange(
+        timestamp
+          .set('year', newYear)
+          .set('month', newMonth)
+          .set('day', newDay)
+          .set('dayName', newDayName)
+      );
+    }
   }
 
   handleAddTime(startOrEnd) {
@@ -280,7 +292,7 @@ export default class TimestampEditor extends PureComponent {
   }
 
   render() {
-    const { timestamp } = this.props;
+    const { timestamp, planningItemIndex } = this.props;
     const {
       isActive,
       year,
@@ -308,9 +320,10 @@ export default class TimestampEditor extends PureComponent {
             <div className="timestamp-editor__field-title">Date</div>
             <div className="timestamp-editor__field">
               <input
+                data-testid="timestamp-selector"
                 type="date"
                 className="timestamp-editor__date-input"
-                onChange={this.handleDateChange}
+                onChange={event => this.handleDateChange(event, planningItemIndex)}
                 value={`${year}-${month}-${day}`}
               />
             </div>
@@ -326,3 +339,17 @@ export default class TimestampEditor extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const headers = state.org.present.get('headers');
+  const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  return {
+    selectedHeaderId,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  org: bindActionCreators(orgActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimestampEditor);

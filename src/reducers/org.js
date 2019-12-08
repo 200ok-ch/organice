@@ -836,6 +836,13 @@ const addNewPlanningItem = (state, action) => {
   );
 };
 
+const removePlanningItem = (state, action) => {
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
+  const { planningItemIndex } = action;
+
+  return state.removeIn(['headers', headerIndex, 'planningItems', planningItemIndex]);
+};
+
 export const updatePropertyListItems = (state, action) => {
   const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
 
@@ -973,6 +980,8 @@ export default (state = new Map(), action) => {
       return updatePlanningItemTimestamp(state, action);
     case 'ADD_NEW_PLANNING_ITEM':
       return addNewPlanningItem(state, action);
+    case 'REMOVE_PLANNING_ITEM':
+      return removePlanningItem(state, action);
     case 'UPDATE_PROPERTY_LIST_ITEMS':
       return updatePropertyListItems(state, action);
     case 'SET_ORG_FILE_ERROR_MESSAGE':

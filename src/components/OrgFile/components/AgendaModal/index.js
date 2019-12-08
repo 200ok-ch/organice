@@ -105,10 +105,10 @@ class AgendaModal extends PureComponent {
       case 'Week':
         const weekStart = startOfWeek(selectedDate);
         const weekEnd = addWeeks(weekStart, 1);
-        return `${format(weekStart, 'MMM do')} - ${format(
-          weekEnd,
-          'MMM do'
-        )} (W${format(weekStart, 'w')})`;
+        return `${format(weekStart, 'MMM do')} - ${format(weekEnd, 'MMM do')} (W${format(
+          weekStart,
+          'w'
+        )})`;
       case 'Month':
         return format(selectedDate, 'MMMM');
       default:
@@ -166,7 +166,7 @@ class AgendaModal extends PureComponent {
         <div className="agenda__days-container">
           {dates.map(date => (
             <AgendaDay
-            key={format(date, 'yyyy MM dd')}
+              key={format(date, 'yyyy MM dd')}
               date={date}
               headers={headers}
               onHeaderClick={this.handleHeaderClick}
@@ -195,7 +195,4 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgendaModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AgendaModal);
