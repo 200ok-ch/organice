@@ -1,5 +1,6 @@
 import React from 'react';
 import thunk from 'redux-thunk';
+import _ from 'lodash';
 
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -31,8 +32,8 @@ describe('Render all views', () => {
   const testOrgFile = `
 * Top level header
 ** A nested header
-** TODO A scheduled todo item
-   SCHEDULED: <2019-09-19 Thu>
+** TODO A todo item with schedule and deadline
+   DEADLINE: <2018-10-05 Fri> SCHEDULED: <2019-09-19 Thu>
 * Another top level header
 Some description content
 * A header with tags                                              :tag1:tag2:
@@ -156,7 +157,7 @@ Some description content
   });
 
   describe('Renders everything starting from an Org file', () => {
-    let container, getAllByText, getByTitle, getByAltText, getByTestId, queryByText;
+    let container, getAllByText, getByTitle, getByAltText, getByTestId, queryByText, queryAllByText;
     beforeEach(() => {
       let res = render(
         <MemoryRouter keyLength={0}>
@@ -173,6 +174,7 @@ Some description content
       getByTitle = res.getByTitle;
       getByTestId = res.getByTestId;
       queryByText = res.queryByText;
+      queryAllByText = res.queryAllByText;
     });
 
     test('renders an Org file', () => {
@@ -217,6 +219,40 @@ Some description content
       });
     });
 
+    describe('Planning items', () => {
+      test('deletes planning items', () => {
+        fireEvent.click(queryByText('Top level header'));
+        fireEvent.click(queryByText('A todo item with schedule and deadline'));
+        fireEvent.click(queryByText('<2019-09-19 Thu>'));
+
+        expect(queryByText('SCHEDULED:')).toBeTruthy();
+        expect(queryByText('DEADLINE:')).toBeTruthy();
+
+        // First: Delete "Scheduled" time
+
+        // The <input type="date"> field exposes a 'x' button to
+        // delete the time. There's no direct API to trigger it.
+        // Hence, get the element, remove the time and fire the
+        // 'change' event manually.
+        let timePicker = getByTestId('timestamp-selector');
+        timePicker.value = null;
+        fireEvent.change(timePicker);
+
+        expect(queryByText('SCHEDULED:')).toBeFalsy();
+        expect(queryByText('DEADLINE:')).toBeTruthy();
+
+        // Second: Delete "Deadline" time
+
+        fireEvent.click(queryByText('<2018-10-05 Fri>'));
+        timePicker = getByTestId('timestamp-selector');
+        timePicker.value = null;
+        fireEvent.change(timePicker);
+
+        expect(queryByText('SCHEDULED:')).toBeFalsy();
+        expect(queryByText('DEADLINE:')).toBeFalsy();
+      });
+    });
+
     describe('Agenda', () => {
       test('renders Agenda for an Org file', () => {
         // Agenda is not visible by default
@@ -230,21 +266,20 @@ Some description content
         expect(queryByText('Agenda')).toBeTruthy();
         expect(queryByText('Day')).toBeTruthy();
         expect(queryByText('Month')).toBeTruthy();
-        expect(queryByText('A scheduled todo item')).toBeTruthy();
+        expect(queryAllByText('A todo item with schedule and deadline')).toBeTruthy();
       });
 
       test('Clicking a TODO within the agenda highlights it in the main view', () => {
         fireEvent.click(getByTitle('Show agenda'));
-        fireEvent.click(queryByText('A scheduled todo item'));
+        fireEvent.click(queryAllByText('A todo item with schedule and deadline')[0]);
         expect(queryByText('Agenda')).toBeFalsy();
-        expect(queryByText('A scheduled todo item')).toBeTruthy();
+        expect(queryByText('A todo item with schedule and deadline')).toBeTruthy();
         expect(queryByText('Scheduled')).toBeTruthy();
       });
 
       test('Clicking the Timestamp in a TODO within the agenda toggles from the date to the time', () => {
         fireEvent.click(getByTitle('Show agenda'));
         const timeSinceScheduled = formatDistanceToNow(new Date('2019-09-19'));
-        console.log(timeSinceScheduled);
         expect(queryByText(timeSinceScheduled)).toBeFalsy();
         expect(queryByText('09/19')).toBeTruthy();
         fireEvent.click(queryByText('09/19'));

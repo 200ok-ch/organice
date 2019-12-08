@@ -39,12 +39,14 @@ class TimestampEditor extends PureComponent {
     this.props.onChange(this.props.timestamp.update('isActive', isActive => !isActive));
   }
 
-  handleDateChange(event) {
-    if (!event.target.value) {
-      // TODO: Don't pass the bogus 0 as planningItemIndex, but pass
-      // either "SCHEDULED" || "DEADLINE" or the acteual
-      // planningItemIndex, so the right planningItem can be deleted.
-      this.props.org.removePlanningItem(this.props.selectedHeaderId, 0);
+  handleDateChange(event, planningItemIndex) {
+    // The user deleted the timestamp
+    if (_.isEmpty(event.target.value)) {
+      // It's a planning item and the parser knows which one.
+      // TODO: Also delete timestamps which are not planningItems
+      if (_.isNumber(planningItemIndex)) {
+        this.props.org.removePlanningItem(this.props.selectedHeaderId, planningItemIndex);
+      }
       this.props.onClose();
     } else {
       const { onChange, timestamp } = this.props;
@@ -290,7 +292,7 @@ class TimestampEditor extends PureComponent {
   }
 
   render() {
-    const { timestamp } = this.props;
+    const { timestamp, planningItemIndex } = this.props;
     const {
       isActive,
       year,
@@ -318,9 +320,10 @@ class TimestampEditor extends PureComponent {
             <div className="timestamp-editor__field-title">Date</div>
             <div className="timestamp-editor__field">
               <input
+                data-testid="timestamp-selector"
                 type="date"
                 className="timestamp-editor__date-input"
-                onChange={this.handleDateChange}
+                onChange={event => this.handleDateChange(event, planningItemIndex)}
                 value={`${year}-${month}-${day}`}
               />
             </div>
