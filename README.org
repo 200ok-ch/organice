@@ -30,6 +30,20 @@ Emacs is great, but it's desktop software. For users who want to
 access or edit their Org mode files whilst on the go, organice is a
 great choice.
 
+** Introduction
+
+If you prefer a video to some text, we've got you covered! For
+[[https://emacsconf.org/2019/][EmacsConf 2019]], we've created a 10 minute introductory video into the
+rationale and usability of organice.
+
+[[./images/screenshot-introduction.png]]
+
+You can watch it on:
+
+- [[https://www.youtube.com/watch?v=aQKc0hcFXCk][Youtube]]
+- [[https://media.emacsconf.org/2019/05.html][emacsconf.org]]
+
+
 ** Usage
 *** Current restrictions/expectations of organice
 
