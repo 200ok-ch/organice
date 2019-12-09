@@ -9,8 +9,8 @@ RUN yarn install \
     && yarn global add serve \
     && yarn build
 
-RUN addgroup -S organic \
-    && adduser -S organic -G organic
+RUN addgroup -S organice \
+    && adduser -S organice -G organice
 USER organic
 
 ENV NODE_ENV=production
