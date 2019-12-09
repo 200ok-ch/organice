@@ -14,7 +14,8 @@ WORKDIR /opt/organice
 RUN yarn install \
     && yarn global add serve \
     && yarn build \
-    && yarn cache clean
+    && yarn cache clean \
+    && rm -rf node_modules
 
 # No root privileges are required. Create and switch to non-root user.
 # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
