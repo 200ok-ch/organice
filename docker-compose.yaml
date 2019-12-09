@@ -1,0 +1,7 @@
+version: "3"
+services:
+  organice:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
