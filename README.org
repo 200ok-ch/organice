@@ -306,6 +306,33 @@ RewriteRule ^ - [L]
 RewriteRule ^ /index.html [L]
 #+END_EXAMPLE
 
+  *
+*** Docker
+Organice is also available as a docker image.
+
+**** with docker-compose
+
+If [[https://docs.docker.com/compose/][docker-compose]] is installed the following command downloads and runs the
+latest image automatically.
+
+#+BEGIN_SRC shell
+docker-compose up -d
+#+END_SRC
+
+The webserver is listening on port 5000 and can be reached here:
+http://localhost:5000
+
+**** Without docker-compose
+
+If docker-compose is not installed the command looks like this:
+
+#+BEGIN_SRC shell
+docker run -p 5000:5000 -t organice twohundredok/organice:latest
+#+END_SRC
+
+Again the webserver is listening on port 5000 and can be reached here:
+http://localhost:5000
+  
 ** Capture templates
 
 organice supports capture templates by implementing a flexible
