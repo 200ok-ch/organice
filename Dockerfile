@@ -13,7 +13,8 @@ WORKDIR /opt/organice
 
 RUN yarn install \
     && yarn global add serve \
-    && yarn build
+    && yarn build \
+    && yarn cache clean
 
 # No root privileges are required. Create and switch to non-root user.
 # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
