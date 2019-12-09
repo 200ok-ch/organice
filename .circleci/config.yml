@@ -68,15 +68,15 @@ workflows:
   build-deploy:
     jobs:
       - build
-      # - deploy:
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         only: master
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
       - push-image:
           requires:
             - build  # because of tests
-          # filters:
-          #   branches:
-          #     only: master
+          filters:
+            branches:
+              only: master
