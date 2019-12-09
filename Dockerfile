@@ -11,7 +11,7 @@ RUN yarn install \
 
 RUN addgroup -S organice \
     && adduser -S organice -G organice
-USER organic
+USER organice
 
 ENV NODE_ENV=production
 EXPOSE 5000
