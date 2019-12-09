@@ -51,14 +51,28 @@ jobs:
 
       - run: yarn test
 
+  push-image:
+    machine: true
+    steps:
+      - checkout
+      - run: docker build --rm=false -t ${DOCKER_HUB_USR}/organice:${CIRCLE_SHA1} .
+      - run: docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PWD}
+      - run: docker push ${DOCKER_HUB_USR}/organice:${CIRCLE_SHA1}
+
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+      # - build
+      - push-image
+          # requires:
+          #   - build
+          # filters:
+          #   branches:
+          #     only: master
+      # - deploy:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only: master
