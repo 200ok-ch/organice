@@ -1,6 +1,6 @@
-version: "3"
+version: '3'
 services:
   organice:
-    image: "twohundredok/organice:latest"
+    image: 'twohundredok/organice:latest'
     ports:
-      - "5000:5000"
+      - '5000:5000'
