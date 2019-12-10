@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-10 Tue>
+
+*** Added
+
+    - *Docker Support*
+    - The CI/CD workflow now also builds a Docker container which is
+      then published to
+      https://hub.docker.com/repository/docker/twohundredok/organice
+    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/133][PR]]!
+
 ** <2019-12-08 Sun>
 
 *** Added
