@@ -427,17 +427,6 @@ class Header extends PureComponent {
                 }}
               </Motion>
 
-              <div style={{ marginLeft: -16, color }} className="header__bullet">
-                {bulletStyle === 'Fancy' ? '●' : '*'}
-              </div>
-              <TitleLine
-                header={header}
-                color={color}
-                hasContent={hasContent}
-                isSelected={isSelected}
-                shouldDisableActions={shouldDisableActions}
-              />
-
               <Collapse
                 isOpened={isSelected && !shouldDisableActions}
                 springConfig={{ stiffness: 300 }}
@@ -457,6 +446,17 @@ class Header extends PureComponent {
                   hasActiveClock={hasActiveClock}
                 />
               </Collapse>
+
+              <div style={{ marginLeft: -16, color }} className="header__bullet">
+                {bulletStyle === 'Fancy' ? '●' : '*'}
+              </div>
+              <TitleLine
+                header={header}
+                color={color}
+                hasContent={hasContent}
+                isSelected={isSelected}
+                shouldDisableActions={shouldDisableActions}
+              />
 
               <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
             </div>
