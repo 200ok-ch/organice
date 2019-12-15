@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-15 Sun>
+
+*** Fixed
+    - Android PWA implementation was broken (issue [[https://github.com/200ok-ch/organice/issues/134][#134]])
+      - It required two more icon sizes
+    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/135][PR]]!
+
 ** <2019-12-10 Tue>
 
 *** Added
