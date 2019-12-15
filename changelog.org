@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ** <2019-12-15 Sun>
 
+*** Changed
+    - UX: Move Org header actions before selected headline
+    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/136][PR]]!
+
 *** Fixed
     - Android PWA implementation was broken (issue [[https://github.com/200ok-ch/organice/issues/134][#134]])
       - It required two more icon sizes
