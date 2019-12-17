@@ -2,7 +2,9 @@
 
 exports[`<Landing /> renders 1`] = `
 <div>
-  <main>
+  <main
+    class="landing-container-wrapper"
+  >
     <div
       class="landing-container"
     >

@@ -6,7 +6,7 @@ import logo from '../../images/organice.svg';
 
 export default () => {
   return (
-    <main>
+    <main className="landing-container-wrapper">
       <div className="landing-container">
         <h1 className="landing-app-name">organice</h1>
 

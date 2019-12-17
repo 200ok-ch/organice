@@ -24,10 +24,10 @@
   }
 }
 
-html, #root {
+html, body, #root {
   color: var(--base00);
   background: var(--base3);
-  min-height: 100vh;
+  height: 100%;
 }
 
 h2 {
