@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-17 Tue>
+*** Changed
+    - Improve webdav url input
+      - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/139][PR]]!
+*** Fixed
+    - Make "privacy policy" sticky to the bottom of the landing page
+      - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/140][PR]]!
+
 ** <2019-12-15 Sun>
 
 *** Changed
