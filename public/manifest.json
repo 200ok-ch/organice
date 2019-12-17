@@ -18,6 +18,14 @@
       "type": "image/x-icon"
     }
   ],
+  "share_target": {
+    "action": "/share",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",

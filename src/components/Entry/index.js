@@ -120,6 +120,21 @@ class Entry extends PureComponent {
     );
   }
 
+  renderShare() {
+    const parsedUrl = new URL(window.location);
+    const title = parsedUrl.searchParams.get('title');
+    const text = parsedUrl.searchParams.get('text');
+    const url = parsedUrl.searchParams.get('url');
+    console.log(title, text, url);
+    return (
+      <ul>
+        <li>{title}</li>
+        <li>{text}</li>
+        <li>{url}</li>
+      </ul>
+    );
+  }
+
   shouldPromptWhenLeaving() {
     return this.props.location.pathname.startsWith('/file/') && this.props.isDirty;
   }
@@ -155,7 +170,7 @@ class Entry extends PureComponent {
         {activeModalPage === 'changelog' ? (
           this.renderChangelogFile()
         ) : isAuthenticated ? (
-          ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(
+          ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample', 'share'].includes(
             activeModalPage
           ) ? (
             <Fragment>
@@ -163,6 +178,7 @@ class Entry extends PureComponent {
               {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
               {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
               {activeModalPage === 'sample' && this.renderSampleFile()}
+              {activeModalPage === 'share' && this.renderShare()}
             </Fragment>
           ) : (
             <Switch>
@@ -178,6 +194,7 @@ class Entry extends PureComponent {
             <Route path="/privacy-policy" exact component={PrivacyPolicy} />
             <Route path="/sample" exact={true} render={this.renderSampleFile} />
             <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
+            <Route path="/share" exact={true} render={this.renderShare} />
             <Route path="/" exact={true} component={Landing} />
             <Redirect to="/" />
           </Switch>
