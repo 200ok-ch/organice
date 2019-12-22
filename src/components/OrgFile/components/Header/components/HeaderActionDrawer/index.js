@@ -27,6 +27,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onClockInOutClick,
       onScheduledClick,
       hasActiveClock,
+      onShareHeader,
     } = this.props;
 
     return (
@@ -47,6 +48,10 @@ export default class HeaderActionDrawer extends PureComponent {
           {isFocused
             ? this.iconWithFFClickCatcher('fas fa-expand fa-lg', onUnfocus)
             : this.iconWithFFClickCatcher('fas fa-compress fa-lg', onFocus)}
+
+          <span className="header-action-drawer__separator" />
+
+          {this.iconWithFFClickCatcher('fas fa-share fa-lg', onShareHeader)}
 
           <span className="header-action-drawer__separator" />
 

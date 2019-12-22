@@ -49,6 +49,7 @@ class Header extends PureComponent {
       'handleDeadlineClick',
       'handleClockInOutClick',
       'handleScheduledClick',
+      'handleShareHeaderClick',
     ]);
 
     this.state = {
@@ -266,6 +267,20 @@ class Header extends PureComponent {
     this.handleDeadlineAndScheduledClick('SCHEDULED');
   }
 
+  handleShareHeaderClick() {
+    const { header } = this.props;
+    console.log(JSON.stringify([...header]));
+
+    const subject = header.get('titleLine').get('title').get(0).get('contents').trim();
+                                       // on this level is also 'todoKeyword' and 'tags'
+    const body = header.get('rawDescription');
+    //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
+    //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
+    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    console.log(mailtoURI);
+    window.location.href = mailtoURI; // TODO or better start OS share system
+  }
+
   render() {
     const {
       header,
@@ -444,6 +459,7 @@ class Header extends PureComponent {
                   onClockInOutClick={this.handleClockInOutClick}
                   onScheduledClick={this.handleScheduledClick}
                   hasActiveClock={hasActiveClock}
+                  onShareHeader={this.handleShareHeaderClick}
                 />
               </Collapse>
 
