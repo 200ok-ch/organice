@@ -304,6 +304,16 @@ class OrgFile extends PureComponent {
         );
 
       case 'property-list-editor':
+        const allOrgProperties = [].concat(...headers.map(h => {
+          const propertyList = h.get('propertyListItems');
+          return propertyList.map(property => {
+            const prop = property.get('property');
+            // TODO get all (comma-separated?) values; requires another .map()
+            const firstVal = property.get('value').get(0).get('contents').toString();
+            //console.log(firstVal);
+            return [prop, firstVal];
+          });
+        }));
         return (
           <PropertyListEditorModal
             onClose={this.handlePopupClose}
@@ -311,6 +321,7 @@ class OrgFile extends PureComponent {
             propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
               'propertyListItems'
             )}
+            allOrgProperties={allOrgProperties}
           />
         );
       case 'agenda':

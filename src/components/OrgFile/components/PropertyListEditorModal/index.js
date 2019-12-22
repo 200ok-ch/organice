@@ -79,16 +79,23 @@ export default class PropertyListEditorModal extends PureComponent {
   }
 
   render() {
-    const { onClose, propertyListItems } = this.props;
+    const { onClose, propertyListItems, allOrgProperties } = this.props;
+    const allPropertyNames = [...new Set(allOrgProperties.map(([x]) => x))]; // TODO sort?
+
+    const propertyListItemsWithAllPropVals = propertyListItems.map(p => {
+      const propertyName = p.get('property');
+      const allPropertyValues = [...new Set(allOrgProperties.filter(([x]) => x === propertyName).map(([_, y]) => y))]; // TODO sort?
+      return [p, allPropertyValues];
+    });
 
     return (
       <Drawer onClose={onClose}>
         <h2 className="drawer-modal__title">Edit property list</h2>
 
         <datalist id="datalist-property-names">
-          <option value="blocks"/>
-          <option value="depends"/>
-          <option value="assignee"/>
+          {allPropertyNames.map(propertyName => (
+            <option value={propertyName}/>
+          ))}
         </datalist>
 
         {propertyListItems.size === 0 ? (
@@ -107,7 +114,7 @@ export default class PropertyListEditorModal extends PureComponent {
                 {...provided.droppableProps}
               >
                 <Fragment>
-                  {propertyListItems.map((propertyListItem, index) => (
+                  {propertyListItemsWithAllPropVals.map(([propertyListItem, allPropertyValues], index) => (
                     <Draggable
                       draggableId={`property-list-item--${index}`}
                       index={index}
@@ -138,8 +145,9 @@ export default class PropertyListEditorModal extends PureComponent {
                               list={`datalist-property-${index}-values`}
                             />
                             <datalist id={`datalist-property-${index}-values`}>
-                              <option value="Jakob"/>
-                              <option value="Niklas"/>
+                              {allPropertyValues.map(propertyValue => (
+                                <option value={propertyValue}/>
+                              ))}
                             </datalist>
                           </div>
                           <div className="item-container__actions-container">
