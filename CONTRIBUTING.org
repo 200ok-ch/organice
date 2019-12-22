@@ -36,6 +36,32 @@ We have good quality assurance and an established workflow. This is it:
 8. Core Team: Merge to =master=, deploy and accept the Issue on
    Github
 
+**** Definition of Done
+
+An issue is done when:
+
+- Functionality has been implemented
+- Functionality has been verified
+- Surrounding main functionality has been regression tested
+- Code has been reviewed
+  - Proper code style
+  - Code has tests (acceptance tests for user visible changes,
+    otherwise at least unit tests)
+  - Follows clean code guidelines and architecture best practices
+  - Code has been documented
+- Code has been merged
+- Tested on supported browsers
+
+*Clean code guidelines*
+
+- Create small and highly cohesive modules
+  - Avoid long modules and classes
+  - Extract modules to separate responsibilities
+- Create small methods or functions
+  - Avoid long methods or functions
+  - Extract methods or functions to separate responsibilities
+  - Do one thing
+
 Thanks! :heart: :heart: :heart:
 
 organice Team
