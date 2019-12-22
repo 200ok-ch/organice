@@ -93,8 +93,11 @@ export default class PropertyListEditorModal extends PureComponent {
         <h2 className="drawer-modal__title">Edit property list</h2>
 
         <datalist id="datalist-property-names">
-          {allPropertyNames.map(propertyName => (
-            <option value={propertyName}/>
+          {allPropertyNames.map((propertyName, idx) => (
+            <option
+              key={idx}
+              value={propertyName}
+            />
           ))}
         </datalist>
 
@@ -145,8 +148,11 @@ export default class PropertyListEditorModal extends PureComponent {
                               list={`datalist-property-${index}-values`}
                             />
                             <datalist id={`datalist-property-${index}-values`}>
-                              {allPropertyValues.map(propertyValue => (
-                                <option value={propertyValue}/>
+                              {allPropertyValues.map((propertyValue, idx) => (
+                                <option
+                                  key={idx}
+                                  value={propertyValue}
+                                />
                               ))}
                             </datalist>
                           </div>
