@@ -309,8 +309,9 @@ class OrgFile extends PureComponent {
           return [...propertyList.map(property => { // make it a Array to get concat working
             const prop = property.get('property');
             // TODO get all (comma-separated?) values; requires another .map()
-            const firstVal = property.get('value').get(0).get('contents').toString();
-            //console.log([prop, firstVal]);
+            const valThing = property.get('value');
+            // valThing can be '' or a possibly empty List object
+            const firstVal = (valThing && valThing.size > 0) ? valThing.get(0).get('contents').toString() : '';
             return [prop, firstVal];
           })];
         }));
