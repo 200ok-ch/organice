@@ -306,13 +306,13 @@ class OrgFile extends PureComponent {
       case 'property-list-editor':
         const allOrgProperties = [].concat(...headers.map(h => {
           const propertyList = h.get('propertyListItems');
-          return propertyList.map(property => {
+          return [...propertyList.map(property => { // make it a Array to get concat working
             const prop = property.get('property');
             // TODO get all (comma-separated?) values; requires another .map()
             const firstVal = property.get('value').get(0).get('contents').toString();
-            //console.log(firstVal);
+            //console.log([prop, firstVal]);
             return [prop, firstVal];
-          });
+          })];
         }));
         return (
           <PropertyListEditorModal
