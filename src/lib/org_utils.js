@@ -2,6 +2,8 @@ import generateId from './id_generator';
 
 import { List, fromJS } from 'immutable';
 
+import _ from 'lodash';
+
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
 };
@@ -563,7 +565,7 @@ export const extractAllOrgProperties = headers =>
   }));
 
 export const computeAllPropertyNames = allOrgProperties =>
-  [...new Set(allOrgProperties.map(([x]) => x))]; // TODO sort?
+  _.sortBy([...new Set(allOrgProperties.map(([x]) => x))]);
 
 export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
-  [...new Set(allOrgProperties.filter(([x]) => x === propertyName).map(([_, y]) => y))]; // TODO sort?
+  _.sortBy([...new Set(allOrgProperties.filter(([x]) => x === propertyName).map(([_, y]) => y))]);
