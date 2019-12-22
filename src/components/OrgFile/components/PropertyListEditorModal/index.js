@@ -12,6 +12,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import { fromJS } from 'immutable';
 import _ from 'lodash';
+import { computeAllPropertyNames, computeAllPropertyValuesFor } from '../../../../lib/org_utils';
 
 export default class PropertyListEditorModal extends PureComponent {
   constructor(props) {
@@ -80,11 +81,11 @@ export default class PropertyListEditorModal extends PureComponent {
 
   render() {
     const { onClose, propertyListItems, allOrgProperties } = this.props;
-    const allPropertyNames = [...new Set(allOrgProperties.map(([x]) => x))]; // TODO sort?
+    const allPropertyNames = computeAllPropertyNames(allOrgProperties)
 
     const propertyListItemsWithAllPropVals = propertyListItems.map(p => {
       const propertyName = p.get('property');
-      const allPropertyValues = [...new Set(allOrgProperties.filter(([x]) => x === propertyName).map(([_, y]) => y))]; // TODO sort?
+      const allPropertyValues = computeAllPropertyValuesFor(allOrgProperties, propertyName)
       return [p, allPropertyValues];
     });
 

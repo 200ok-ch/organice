@@ -25,7 +25,7 @@ import { ActionCreators as undoActions } from 'redux-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
-import { timestampWithId, headerWithId } from '../../lib/org_utils';
+import { timestampWithId, headerWithId, extractAllOrgProperties } from '../../lib/org_utils';
 
 import _ from 'lodash';
 import { fromJS, OrderedSet } from 'immutable';
@@ -304,17 +304,7 @@ class OrgFile extends PureComponent {
         );
 
       case 'property-list-editor':
-        const allOrgProperties = [].concat(...headers.map(h => {
-          const propertyList = h.get('propertyListItems');
-          return [...propertyList.map(property => { // make it a Array to get concat working
-            const prop = property.get('property');
-            // TODO get all (comma-separated?) values; requires another .map()
-            const valThing = property.get('value');
-            // valThing can be '' or a possibly empty List object
-            const firstVal = (valThing && valThing.size > 0) ? valThing.get(0).get('contents').toString() : '';
-            return [prop, firstVal];
-          })];
-        }));
+        const allOrgProperties = extractAllOrgProperties(headers);
         return (
           <PropertyListEditorModal
             onClose={this.handlePopupClose}

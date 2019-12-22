@@ -548,3 +548,22 @@ export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
   todoKeywordSetForKeyword(todoKeywordSets, keyword)
     .get('completedKeywords')
     .includes(keyword);
+
+export const extractAllOrgProperties = headers =>
+  [].concat(...headers.map(h => {
+    const propertyList = h.get('propertyListItems');
+    return [...propertyList.map(property => { // make it a Array to get concat working
+      const prop = property.get('property');
+      // TODO get all (comma-separated?) values; requires another .map()
+      const valThing = property.get('value');
+      // valThing can be '' or a possibly empty List object
+      const firstVal = (valThing && valThing.size > 0) ? valThing.get(0).get('contents').toString() : '';
+      return [prop, firstVal];
+    })];
+  }));
+
+export const computeAllPropertyNames = allOrgProperties =>
+  [...new Set(allOrgProperties.map(([x]) => x))]; // TODO sort?
+
+export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
+  [...new Set(allOrgProperties.filter(([x]) => x === propertyName).map(([_, y]) => y))]; // TODO sort?
