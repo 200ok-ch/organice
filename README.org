@@ -170,6 +170,8 @@ header on the right).
 
 organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.org/][Redux]]. It was bootstrapped with
 [[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
+The internal data structures are written as immutable persistent
+data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
 
 *** Setup
 
