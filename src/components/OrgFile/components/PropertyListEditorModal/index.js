@@ -85,6 +85,12 @@ export default class PropertyListEditorModal extends PureComponent {
       <Drawer onClose={onClose}>
         <h2 className="drawer-modal__title">Edit property list</h2>
 
+        <datalist id="datalist-property-names">
+          <option value="blocks"/>
+          <option value="depends"/>
+          <option value="assignee"/>
+        </datalist>
+
         {propertyListItems.size === 0 ? (
           <div className="no-items-message">
             There are no items in this property list.
@@ -122,13 +128,19 @@ export default class PropertyListEditorModal extends PureComponent {
                               value={propertyListItem.get('property')}
                               onChange={this.handlePropertyChange(propertyListItem.get('id'))}
                               ref={textfield => (this.lastTextfield = textfield)}
+                              list="datalist-property-names"
                             />
                             <input
                               type="text"
                               className="textfield item-container__textfield"
                               value={attributedStringToRawText(propertyListItem.get('value'))}
                               onChange={this.handleValueChange(propertyListItem.get('id'))}
+                              list={`datalist-property-${index}-values`}
                             />
+                            <datalist id={`datalist-property-${index}-values`}>
+                              <option value="Jakob"/>
+                              <option value="Niklas"/>
+                            </datalist>
                           </div>
                           <div className="item-container__actions-container">
                             <i
