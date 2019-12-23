@@ -70,6 +70,15 @@ export default class TagsEditorModal extends PureComponent {
       <Drawer onClose={onClose}>
         <h2 className="drawer-modal__title">Edit tags</h2>
 
+        <datalist id="datalist-tag-names">
+          {allTags.map((tagName, idx) => (
+            <option
+              key={idx}
+              value={tagName}
+            />
+          ))}
+        </datalist>
+
         {headerTags.size === 0 ? (
           <div className="no-tags-message">
             This header doesn't have any tags.
@@ -99,6 +108,7 @@ export default class TagsEditorModal extends PureComponent {
                             value={tag}
                             onChange={this.handleTagChange(index)}
                             ref={textfield => (this.lastTextfield = textfield)}
+                            list="datalist-tag-names"
                           />
                           <div className="tag-container__actions-container">
                             <i
