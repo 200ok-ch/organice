@@ -556,10 +556,19 @@ export const extractAllOrgProperties = headers =>
     const propertyList = h.get('propertyListItems');
     return [...propertyList.map(property => { // make it a Array to get concat working
       const prop = property.get('property');
-      // TODO get all (comma-separated?) values; requires another .map()
       const valThing = property.get('value');
-      // valThing can be '' or a possibly empty List object
-      const firstVal = (valThing && valThing.size > 0) ? valThing.get(0).get('contents').toString() : '';
+      // TODO Wird diese valThing Struktur durch den Parser bestimmt? Was gibt es sonst noch für Fälle?
+      // valThing can be '' or a possibly empty List<Map> object.
+      // As I don't understand the Orgmode concept 'multivalued property', I
+      // only use the first value for the suggestions. Other options would be
+      // to concatenate the values with whitespace inbetween, or to list them
+      // as individual values.
+      let firstVal = '';
+      if (valThing && valThing.size > 0) {
+        const valMap = valThing.get(0);
+        firstVal = valMap.get('type') === 'text' ? valMap.get('contents')
+                                                 : valMap.toString();
+      }
       return [prop, firstVal];
     })];
   }));
