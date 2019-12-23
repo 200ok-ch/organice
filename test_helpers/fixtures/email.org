@@ -1,0 +1,2 @@
+* foo
+This is an e-mail foo.bar@baz.org in a line of text.

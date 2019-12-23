@@ -49,6 +49,30 @@ describe('Unit Tests for Org file', () => {
       });
     });
 
+    describe('HTTP URLs', () => {
+      test('Parse a line containing an URL but no /italic/ text', () => {
+        const testOrgFile = readFixture('url');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('E-mail address', () => {
+      test('Parse a line containing an e-mail address', () => {
+        const testOrgFile = readFixture('email');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('Phone number in canonical format (+xxxxxx)', () => {
+      test('Parse a line containing a phone number but no +striked+ text', () => {
+        const testOrgFile = readFixture('phonenumber');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
     describe('Newlines', () => {
       test('Newlines in between headers and items are preserved', () => {
         const testOrgFile = readFixture('newlines');

@@ -141,6 +141,24 @@ export const parseMarkupAndCookies = (
         firstTimestamp,
         secondTimestamp,
       });
+    } else if (!!match[36]) {
+      matches.push({
+        type: 'url',
+        rawText: match[0],
+        index: match.index,
+      });
+    } else if (!!match[39]) {
+      matches.push({
+        type: 'e-mail',
+        rawText: match[0],
+        index: match.index,
+      });
+    } else if (!!match[40]) {
+      matches.push({
+        type: 'phone-number',
+        rawText: match[0],
+        index: match.index,
+      });
     }
     match = markupAndCookieRegex.exec(rawText);
   }
