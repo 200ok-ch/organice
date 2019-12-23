@@ -188,10 +188,16 @@ create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~
 cp .env.sample .env
 #+END_SRC
 
-To run the app, run:
+Running the application:
 
 #+BEGIN_SRC shell
 yarn start
+#+END_SRC
+
+Running the tests:
+
+#+BEGIN_SRC shell
+yarn test
 #+END_SRC
 
 *** Contributions
