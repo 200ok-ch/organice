@@ -269,11 +269,20 @@ class Header extends PureComponent {
 
   handleShareHeaderClick() {
     const { header } = this.props;
-    console.log(JSON.stringify([...header]));
+    //console.log(header);
 
-    const subject = header.get('titleLine').get('title').get(0).get('contents').trim();
-                                       // on this level is also 'todoKeyword' and 'tags'
-    const body = header.get('rawDescription');
+    const titleLine = header.get('titleLine');
+    const todoKeyword = titleLine.get('todoKeyword');
+    const tags = titleLine.get('tags');
+    const title = titleLine.get('title'); // List of parsed tokens
+    const titleStrings = title.map(x => x.has('contents') ? x.get('contents').trim() : x.toString());
+    // TODO Same problem here as in property editor: How am I supposed to
+    // handle the various different data structures?
+    const subject = titleStrings.insert(0, todoKeyword).join(' ');
+    const body = `
+${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
+${header.get('rawDescription')}
+`;
     //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
     //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
     const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
