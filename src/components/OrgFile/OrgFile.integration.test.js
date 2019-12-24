@@ -17,6 +17,8 @@ import { Map, fromJS } from 'immutable';
 import { formatDistanceToNow } from 'date-fns';
 
 import { render, fireEvent, cleanup, wait } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+
 afterEach(cleanup);
 
 describe('Render all views', () => {
@@ -38,6 +40,13 @@ describe('Render all views', () => {
 Some description content
 * A header with tags                                              :tag1:tag2:
 * A header with [[https://organice.200ok.ch][a link]]
+* A header with a URL, mail address and phone number as content
+
+  This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.
+
+  This is an e-mail foo.bar@baz.org in a line of text.
+
+  +Don't+ call me on: +498025123456789.
 `;
 
   let store;
@@ -157,7 +166,14 @@ Some description content
   });
 
   describe('Renders everything starting from an Org file', () => {
-    let container, getAllByText, getByTitle, getByAltText, getByTestId, queryByText, queryAllByText;
+    let container,
+      getByText,
+      getAllByText,
+      getByTitle,
+      getByAltText,
+      getByTestId,
+      queryByText,
+      queryAllByText;
     beforeEach(() => {
       let res = render(
         <MemoryRouter keyLength={0}>
@@ -169,6 +185,7 @@ Some description content
       );
 
       container = res.container;
+      getByText = res.getByText;
       getAllByText = res.getAllByText;
       getByAltText = res.getByAltText;
       getByTitle = res.getByTitle;
@@ -178,7 +195,7 @@ Some description content
     });
 
     test('renders an Org file', () => {
-      expect(getAllByText(/\*/)).toHaveLength(4);
+      expect(getAllByText(/\*/)).toHaveLength(5);
       expect(container).toMatchSnapshot();
     });
 
@@ -285,6 +302,42 @@ Some description content
         fireEvent.click(queryByText('09/19'));
         expect(queryByText('09/19')).toBeFalsy();
         expect(queryByText(`${timeSinceScheduled} ago`)).toBeTruthy();
+      });
+    });
+
+    describe('Link recognition', () => {
+      test('recognizes phone numbers', () => {
+        fireEvent.click(
+          queryByText('A header with a URL, mail address and phone number as content')
+        );
+        const elem = getAllByText('+498025123456789');
+        // There's exactly one phone number
+        expect(elem.length).toEqual(1);
+        // And it renders as such
+        expect(elem[0]).toHaveAttribute('href', 'tel:+498025123456789');
+        expect(elem[0]).toHaveTextContent('+498025123456789');
+      });
+      test('recognizes URLs', () => {
+        fireEvent.click(
+          queryByText('A header with a URL, mail address and phone number as content')
+        );
+        const elem = getAllByText('https://foo.bar.baz/xyz?a=b&d#foo');
+        // There's exactly one such URL
+        expect(elem.length).toEqual(1);
+        // And it renders as such
+        expect(elem[0]).toHaveAttribute('href', 'https://foo.bar.baz/xyz?a=b&d#foo');
+        expect(elem[0]).toHaveTextContent('https://foo.bar.baz/xyz?a=b&d#foo');
+      });
+      test('recognizes email addresses', () => {
+        fireEvent.click(
+          queryByText('A header with a URL, mail address and phone number as content')
+        );
+        const elem = getAllByText('foo.bar@baz.org');
+        // There's exactly one such email address
+        expect(elem.length).toEqual(1);
+        // And it renders as such
+        expect(elem[0]).toHaveAttribute('href', 'mailto:foo.bar@baz.org');
+        expect(elem[0]).toHaveTextContent('foo.bar@baz.org');
       });
     });
   });

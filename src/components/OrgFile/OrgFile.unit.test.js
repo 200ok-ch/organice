@@ -1,4 +1,4 @@
-import { parseOrg, _parsePlanningItems } from '../../lib/parse_org';
+import { parseOrg, _parsePlanningItems, parseMarkupAndCookies } from '../../lib/parse_org';
 import exportOrg from '../../lib/export_org';
 import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
@@ -44,6 +44,37 @@ describe('Unit Tests for Org file', () => {
     describe('Boldness', () => {
       test('Parsing lines with bold text', () => {
         const testOrgFile = readFixture('bold_text');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('Parsing inline-markup', () => {
+      test('Parses inline-markup where closing delim is followed by ;', () => {
+        const result = parseMarkupAndCookies('*bold*;');
+        expect(result.length).toEqual(2);
+      });
+    });
+
+    describe('HTTP URLs', () => {
+      test('Parse a line containing an URL but no /italic/ text before the URL', () => {
+        const testOrgFile = readFixture('url');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('E-mail address', () => {
+      test('Parse a line containing an e-mail address', () => {
+        const testOrgFile = readFixture('email');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('Phone number in canonical format (+xxxxxx)', () => {
+      test('Parse a line containing a phone number but no +striked+ text after the number', () => {
+        const testOrgFile = readFixture('phonenumber');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
       });

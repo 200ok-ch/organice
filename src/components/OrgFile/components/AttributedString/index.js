@@ -85,6 +85,24 @@ export default ({ parts, subPartDataAndHandlers }) => {
                 subPartDataAndHandlers={subPartDataAndHandlers}
               />
             );
+          case 'url':
+            return (
+              <a href={part.get('content')}  key={part.get('id')} target="_blank" rel="noopener noreferrer">
+                {part.get('content')}
+              </a>
+            );
+          case 'e-mail':
+            return (
+              <a href={`mailto:${part.get('content')}`} key={part.get('id')}>
+                {part.get('content')}
+              </a>
+            );
+          case 'phone-number':
+            return (
+              <a href={`tel:${part.get('content')}`} key={part.get('id')}>
+                {part.get('content')}
+              </a>
+            );
           default:
             console.error(`Unrecognized attributed string part type! ${part.get('type')}`);
             return '';

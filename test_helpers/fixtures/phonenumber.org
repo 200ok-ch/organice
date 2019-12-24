@@ -1,0 +1,2 @@
+* foo
++Don't+ call me on: +498025123456789 (should become a tel: link)

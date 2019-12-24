@@ -204,6 +204,11 @@ export const attributedStringToRawText = parts => {
         case 'timestamp':
           text = timestampPartToRawText(part);
           break;
+        case 'url':
+        case 'e-mail':
+        case 'phone-number':
+          text = part.get('content');
+          break;
         default:
           console.error(
             `Unknown attributed string part type in attributedStringToRawText: ${part.get('type')}`
