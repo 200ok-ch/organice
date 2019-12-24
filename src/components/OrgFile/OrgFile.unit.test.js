@@ -1,4 +1,4 @@
-import { parseOrg, _parsePlanningItems } from '../../lib/parse_org';
+import { parseOrg, _parsePlanningItems, parseMarkupAndCookies } from '../../lib/parse_org';
 import exportOrg from '../../lib/export_org';
 import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
@@ -46,6 +46,13 @@ describe('Unit Tests for Org file', () => {
         const testOrgFile = readFixture('bold_text');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
+    describe('Parsing inline-markup', () => {
+      test('Parses inline-markup where closing delim is followed by ;', () => {
+        const result = parseMarkupAndCookies('*bold*;');
+        expect(result.length).toEqual(2);
       });
     });
 
