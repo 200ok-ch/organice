@@ -1,0 +1,15 @@
+* Header
+:PROPERTIES:
+:foo: http://example.com
+:bar: xyz
+:baz: test
+:bay: since: [2019-12-24 Tue]
+:END:
+
+* Header 2
+:PROPERTIES:
+:foo2: abc
+:bar: zyx
+:baz: test
+:emptyprop:
+:END:
