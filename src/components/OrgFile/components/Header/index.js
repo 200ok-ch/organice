@@ -274,15 +274,13 @@ class Header extends PureComponent {
     const titleLine = header.get('titleLine');
     const todoKeyword = titleLine.get('todoKeyword');
     const tags = titleLine.get('tags');
-    const title = titleLine.get('title'); // List of parsed tokens
-    const titleStrings = title.map(x => x.has('contents') ? x.get('contents').trim() : x.toString());
-    // TODO Same problem here as in property editor: How am I supposed to
-    // handle the various different data structures?
-    const subject = titleStrings.insert(0, todoKeyword).join(' ');
+    const title = titleLine.get('rawTitle').trim();
+    const subject = `${todoKeyword} ${title}`;
     const body = `
 ${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
 ${header.get('rawDescription')}
 `;
+    //const titleParts = titleLine.get('title'); // List of parsed tokens in title
     //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
     //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
     const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
