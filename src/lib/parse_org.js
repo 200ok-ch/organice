@@ -145,19 +145,19 @@ export const parseMarkupAndCookies = (
         firstTimestamp,
         secondTimestamp,
       });
-    } else if (!!match[36]) {
+    } else if (!!match[42]) {
       matches.push({
         type: 'url',
         rawText: match[0],
         index: match.index,
       });
-    } else if (!!match[39]) {
+    } else if (!!match[45]) {
       matches.push({
         type: 'e-mail',
         rawText: match[0],
         index: match.index,
       });
-    } else if (!!match[40]) {
+    } else if (!!match[46]) {
       matches.push({
         type: 'phone-number',
         rawText: match[0],
@@ -217,6 +217,14 @@ export const parseMarkupAndCookies = (
         type: 'timestamp',
         firstTimestamp: match.firstTimestamp,
         secondTimestamp: match.secondTimestamp,
+      });
+    } else if (match.type === 'url'
+            || match.type === 'e-mail'
+            || match.type === 'phone-number') {
+      lineParts.push({
+        id: generateId(),
+        type: match.type,
+        content: match.rawText,
       });
     }
 
