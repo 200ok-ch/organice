@@ -50,7 +50,7 @@ describe('Unit Tests for Org file', () => {
     });
 
     describe('HTTP URLs', () => {
-      test('Parse a line containing an URL but no /italic/ text', () => {
+      test('Parse a line containing an URL but no /italic/ text before the URL', () => {
         const testOrgFile = readFixture('url');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
@@ -66,7 +66,7 @@ describe('Unit Tests for Org file', () => {
     });
 
     describe('Phone number in canonical format (+xxxxxx)', () => {
-      test('Parse a line containing a phone number but no +striked+ text', () => {
+      test('Parse a line containing a phone number but no +striked+ text after the number', () => {
         const testOrgFile = readFixture('phonenumber');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
