@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-24 Tue>
+*** Added
+    - Suggestion list for inputs in tag editor
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/149][PR]]!
+
 ** <2019-12-17 Tue>
 *** Changed
     - Improve webdav url input
