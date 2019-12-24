@@ -42,7 +42,7 @@ Some description content
 * A header with [[https://organice.200ok.ch][a link]]
 * A header with a URL, mail address and phone number as content
 
-  This is a =URL= https://foo.bar.baz/xyz?a=b&d#foo in a line of text.
+  This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.
 
   This is an e-mail foo.bar@baz.org in a line of text.
 
