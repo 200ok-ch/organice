@@ -2,8 +2,6 @@ import generateId from './id_generator';
 
 import { List, fromJS } from 'immutable';
 
-import _ from 'lodash';
-
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
 };
@@ -552,9 +550,9 @@ export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
     .includes(keyword);
 
 export const extractAllOrgProperties = headers =>
-  [].concat(...headers.map(h => {
+  headers.map(h => {
     const propertyList = h.get('propertyListItems');
-    return [...propertyList.map(property => { // make it a Array to get concat working
+    return propertyList.map(property => {
       const prop = property.get('property');
       const valThing = property.get('value');
       // TODO Wird diese valThing Struktur durch den Parser bestimmt? Was gibt es sonst noch für Fälle?
@@ -568,13 +566,21 @@ export const extractAllOrgProperties = headers =>
         const valMap = valThing.get(0);
         firstVal = valMap.get('type') === 'text' ? valMap.get('contents')
                                                  : valMap.toString();
+        // TODO use .map(attributedStringToRawText) here and .join('')
       }
       return [prop, firstVal];
-    })];
-  }));
+    });
+  })
+  .filter(x => !x.isEmpty())
+  .flatten();
 
 export const computeAllPropertyNames = allOrgProperties =>
-  _.sortBy([...new Set(allOrgProperties.map(([x]) => x))]);
+  allOrgProperties
+    .map(([x]) => x)
+    .toSet().sort();
 
 export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
-  _.sortBy([...new Set(allOrgProperties.filter(([x]) => x === propertyName).map(([_, y]) => y))]);
+  allOrgProperties
+    .filter(([x]) => x === propertyName)
+    .map(([_, y]) => y)
+    .toSet().sort();
