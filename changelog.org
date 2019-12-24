@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ** <2019-12-24 Tue>
 *** Added
+
+    - *Automatically render links for URLs, e-mail addresses and phone
+      numbers*
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/147][PR]]!
+
     - Suggestion list for inputs in tag editor
       - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/149][PR]]!
 
