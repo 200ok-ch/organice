@@ -1,6 +1,7 @@
 import generateId from './id_generator';
 
 import { List, fromJS } from 'immutable';
+import { attributedStringToRawText } from './export_org';
 
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
@@ -554,21 +555,9 @@ export const extractAllOrgProperties = headers =>
     const propertyList = h.get('propertyListItems');
     return propertyList.map(property => {
       const prop = property.get('property');
-      const valThing = property.get('value');
-      // TODO Wird diese valThing Struktur durch den Parser bestimmt? Was gibt es sonst noch für Fälle?
-      // valThing can be '' or a possibly empty List<Map> object.
-      // As I don't understand the Orgmode concept 'multivalued property', I
-      // only use the first value for the suggestions. Other options would be
-      // to concatenate the values with whitespace inbetween, or to list them
-      // as individual values.
-      let firstVal = '';
-      if (valThing && valThing.size > 0) {
-        const valMap = valThing.get(0);
-        firstVal = valMap.get('type') === 'text' ? valMap.get('contents')
-                                                 : valMap.toString();
-        // TODO use .map(attributedStringToRawText) here and .join('')
-      }
-      return [prop, firstVal];
+      const valParts = property.get('value'); // lineParts, see parser
+      const val = attributedStringToRawText(valParts);
+      return [prop, val];
     });
   })
   .filter(x => !x.isEmpty())
