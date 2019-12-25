@@ -200,6 +200,60 @@ Running the tests:
 yarn test
 #+END_SRC
 
+*** Testing
+
+**** In a browser
+
+Run the application with =yarn start= (see above) and
+open the displayed URL in your favorite browser.
+
+**** On the smartphone
+
+Run the application with =yarn start= (see above) and
+type in the displayed URL (IP address + port number) in a browser on your
+smartphone.
+
+***** Caveats
+
+*Problem when testing on the phone:*
+
+You cannot simply connect to your cloud storage (Dropbox, Google Drive, etc.).
+The authorization API of the cloud storage
+will not authorize your phone because it does not connect with the registered
+domain name in the =Host:= header (something like that).
+
+*Solutions:*
+
+The easy way (when you don't actually need synchronization): Just open the
+sample.org file. That works without logging in.
+
+The harder ways:
+
+1. The Dropbox app for organice.200ok.ch is configured to accept connections
+   from localhost:3000 - so you can use it easily from your Desktop.
+   And you can use it from your phone as well, if you do a port forward to
+   make the phones' localhost:3000 point to your organice server on the Desktop.
+
+2. Use ipv6 and set up a custom domain for your machine.
+   Configure your own Dropbox app for this domain.
+   Note: You'll have to use HTTPS for that.
+
+I'm usually doing the easy version or the port forward.
+
+The way 1. works like this:
+
+- Use an App that allows the use of SSH on your phone (or a rooted phone with
+  a shell).
+- Start ssh with port forwarding as in SSH port forwarding (documented in
+  =man ssh= under the =-L= flag, or in articles like this one:
+  https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding)
+
+Specifically:
+I'm using a dedicated ssh application (https://www.termius.com/) for that.
+If you have a shell on your phone (e.g. on Android) you could just
+use ssh like this:
+: $ ssh -L 3000:localhost:3000 you@your-dev-machine
+
 *** Contributions
 
 Please see our [[file:CONTRIBUTING.org][contributer guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
