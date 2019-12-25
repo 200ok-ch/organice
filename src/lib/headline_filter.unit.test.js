@@ -100,6 +100,10 @@ describe('Match function for headline filter', () => {
       const filterExpr = gprop('prop1', 'abc');
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
+    test('Match property with value (name/key matches case-insensitive)', () => {
+      const filterExpr = gprop('PROP1', 'abc');
+      expect(isMatch(filterExpr)(header)).toBe(true);
+    });
     test('Match property with part of value', () => {
       const filterExpr = gprop('prop1', 'b');
       expect(isMatch(filterExpr)(header)).toBe(true);

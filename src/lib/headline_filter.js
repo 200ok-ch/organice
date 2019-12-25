@@ -22,9 +22,12 @@ export const isMatch = (filterExpr) => (header) => {
     .map(x => [x.property, x.words]);
 
   const orChain = source => xs => xs.some(x => source.includes(x));
-  // TODO Property names (keys) are case-insetive - https://orgmode.org/manual/Property-Syntax.html
-  const propertyFilter = ([x, ys]) => ! properties.filter(([key, val]) =>
-    key == x && ys.some(y => val.includes(y))).isEmpty();
+  const propertyFilter = ([x, ys]) => ! properties.filter(([key, val]) => {
+    // Property names (keys) are case-insetive - https://orgmode.org/manual/Property-Syntax.html
+    const nameMatch = key.toLowerCase() == x.toLowerCase();
+    const valueMatch = ys.some(y => val.includes(y));
+    return nameMatch && valueMatch;
+  }).isEmpty();
   return filterTags.every(orChain(tags))
       && filterCS.every(orChain(headlineText))
       && filterIC.every(orChain(headlineText.toLowerCase()))
