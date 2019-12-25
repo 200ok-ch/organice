@@ -2,21 +2,26 @@ import { parseOrg } from './parse_org';
 import readFixture from '../../test_helpers/index';
 import { isMatch } from './headline_filter';
 
+// Helper functions
+// Generate tag filter
 const gtag = tag => ([{type: 'tag', words: [tag]}]);
 const gtags = tags => tags.map(x => ({type: 'tag', words: [x]}));
 const gtagsOr = tagsArr => tagsArr.map(x => ({type: 'tag', words: x}));
+// Generate case-sensitive filter
 const gcs = word => ([{type: 'case-sensitive', words: [word]}]);
 const gcss = words => words.map(x => ({type: 'case-sensitive', words: [x]}));
 const gcssOr = wordsArr => wordsArr.map(x => ({type: 'case-sensitive', words: x}));
+// Generate ignore-case filter
 const gic = word => ([{type: 'ignore-case', words: [word]}]);
 const gics = words => words.map(x => ({type: 'ignore-case', words: [x]}));
 const gicsOr = wordsArr => wordsArr.map(x => ({type: 'ignore-case', words: x}));
+// Generate property filter
 const gprop = (key, word) => ([{type: 'property', property: key, words: [word]}]);
 const gprops = props => props.map(([x, y]) => ({type: 'property', property: x, words: [y]}));
 const gpropsOr = props => props.map(([x, ys]) => ({type: 'property', property: x, words: ys}));
 
 describe('Match function for headline filter', () => {
-  const testOrgFile = readFixture('tags');
+  const testOrgFile = readFixture('headline_filter');
   const parsedFile = parseOrg(testOrgFile);
   const headers = parsedFile.get('headers');
   const header = headers.get(0);
@@ -93,6 +98,10 @@ describe('Match function for headline filter', () => {
   describe('Tests for property matching', () => {
     test('Match property with value', () => {
       const filterExpr = gprop('prop1', 'abc');
+      expect(isMatch(filterExpr)(header)).toBe(true);
+    });
+    test('Match property with part of value', () => {
+      const filterExpr = gprop('prop1', 'b');
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Not match property with wrong value', () => {

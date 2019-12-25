@@ -20,10 +20,10 @@ export const isMatch = (filterExpr) => (header) => {
     .map(x => [x.property, x.words]);
 
   const orChain = source => xs => xs.some(x => source.includes(x));
-  const xxx = ([x, ys]) => ! properties.filter(([key, val]) =>
+  const propertyFilter = ([x, ys]) => ! properties.filter(([key, val]) =>
     key == x && ys.some(y => val.includes(y))).isEmpty();
   return filterTags.every(orChain(tags))
       && filterCS.every(orChain(headlineText))
       && filterIC.every(orChain(headlineText.toLowerCase()))
-      && filterProps.every(xxx);
+      && filterProps.every(propertyFilter);
 };
