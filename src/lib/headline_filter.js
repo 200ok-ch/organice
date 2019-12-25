@@ -1,4 +1,6 @@
 
+// Matcher
+
 import { attributedStringToRawText } from './export_org.js';
 
 export const isMatch = (filterExpr) => (header) => {
@@ -20,6 +22,7 @@ export const isMatch = (filterExpr) => (header) => {
     .map(x => [x.property, x.words]);
 
   const orChain = source => xs => xs.some(x => source.includes(x));
+  // TODO Property names (keys) are case-insetive - https://orgmode.org/manual/Property-Syntax.html
   const propertyFilter = ([x, ys]) => ! properties.filter(([key, val]) =>
     key == x && ys.some(y => val.includes(y))).isEmpty();
   return filterTags.every(orChain(tags))
@@ -28,51 +31,15 @@ export const isMatch = (filterExpr) => (header) => {
       && filterProps.every(propertyFilter);
 };
 
-// :assignee:jak|nik   TODO|DONE    Spec  test    :tag :foo|bar
-// TODO detect upper-case unicode chars
-// TODO define syntax of tag names and property names (see orgmode)
-// TODO define Word
-// TODO generate parser (JS API or cmd line)
+// Parser
 
-Expression
-  = _* head:Term tail:(_+ Term)* _* {
-      return tail.reduce(function(result, element) {
-        result.push(element[1]);
-        return result;
-      }, [head]);
-    }
+import fs from 'fs';
+import path from 'path';
+import peg from 'pegjs';
 
-Term "filter term"
-  = TermProp
-  / TermText
-  / TermTag
+const grammar = fs.readFileSync(path.join(__dirname, './headline_filter_parser.grammar.js')).toString();
+export const parser = peg.generate(grammar);
 
-TermText "ignore-case term"
-  = a:Alternatives {
-        let type = 'ignore-case';
-  		if (text().match(/[A-Z]/))
-          type = 'case-sensitive';
-  		return {type: type, words: a} } // [a-z0-9]+
+// Suggestions / Completions
 
-TermTag "tag term"
-  = ":" a:Alternatives { return {type: 'tag', words: a} }
-
-TermProp "property term"
-  = ":" a:Word ":" b:Alternatives? { return {key: a, value: b === null ? '' : b} };
-
-Alternatives "alternative words"
-  = head:Word tail:("|" Word)* {
-       return tail.reduce((result, element) => {
-         result.push(element[1]);
-         return result;
-       }, [head])
-     }
-
-Word "word"
-  = [A-Za-z0-9]+ {return text()}
-
-// TagName   PropertyName
-
-_ "whitespace"
-  = [ \t\n\r]
 
