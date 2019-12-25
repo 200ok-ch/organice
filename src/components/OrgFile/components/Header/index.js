@@ -287,7 +287,14 @@ ${header.get('rawDescription')}
     )}`;
     // TODO: If available, use webshare
     // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
+
     window.open(mailtoURI);
+    // INFO: Alternative implementation that works without having a
+    // popup window. We didn't go this route, because it's non-trivial
+    // to mock the window object, so it's harder to test. Having
+    // slightly worse UX in favor of having a test is not optimal, as
+    // well, of course.
+    // window.location.href = mailtoURI;
   }
 
   render() {
