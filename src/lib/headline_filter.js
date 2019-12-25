@@ -12,19 +12,19 @@ export const isMatch = (filterExpr) => (header) => {
   const properties = header.get('propertyListItems')
     .map(p => [p.get('property'), attributedStringToRawText(p.get('value'))]);
 
-  const filterTags = filterExpr.filter(x => x.type == 'tag')
+  const filterTags = filterExpr.filter(x => x.type === 'tag')
     .map(x => x.words);
-  const filterCS = filterExpr.filter(x => x.type == 'case-sensitive')
+  const filterCS = filterExpr.filter(x => x.type === 'case-sensitive')
     .map(x => x.words);
-  const filterIC = filterExpr.filter(x => x.type == 'ignore-case')
+  const filterIC = filterExpr.filter(x => x.type === 'ignore-case')
     .map(x => x.words);
-  const filterProps = filterExpr.filter(x => x.type == 'property')
+  const filterProps = filterExpr.filter(x => x.type === 'property')
     .map(x => [x.property, x.words]);
 
   const orChain = source => xs => xs.some(x => source.includes(x));
   const propertyFilter = ([x, ys]) => ! properties.filter(([key, val]) => {
     // Property names (keys) are case-insensitive - https://orgmode.org/manual/Property-Syntax.html
-    const nameMatch = key.toLowerCase() == x.toLowerCase();
+    const nameMatch = key.toLowerCase() === x.toLowerCase();
     const valueMatch = ys.some(y => val.includes(y));
     return nameMatch && valueMatch;
   }).isEmpty();
