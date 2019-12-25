@@ -170,12 +170,13 @@ describe('Computation of completions / suggestions', () => {
   const tagAndPropNames = [].concat(tagNames, allProperties.map(([x]) => x));
   const propValsForProp1 = allProperties.filter(([x]) => x === 'prop1').map(([_, y]) => y);
 
+  // Function under test:
   const compute = computeCompletions(todoKeywords, tagNames, allProperties);
 
   // Helper:
   const expectComputation = (filterString, curserPosition) => expect(compute(filterString, curserPosition));
 
-  describe('Completions for TODO keywords after space or at ^', () => {
+  describe('Completions for TODO keywords after space or at begin of line', () => {
     test('Suggests keywords at begin of empty line', () => {
       expectComputation('', 0).toEqual(todoKeywords);
     });
@@ -184,6 +185,9 @@ describe('Computation of completions / suggestions', () => {
     });
     test('Suggests keywords after | when it is a text filter', () => {
       expectComputation('a|', 2).toEqual(todoKeywords);
+    });
+    test('Suggests keywords after | when it is a text filter', () => {
+      expectComputation(' a| ', 3).toEqual(todoKeywords);
     });
   });
 
@@ -209,15 +213,27 @@ describe('Computation of completions / suggestions', () => {
   });
 
   describe('Completions for property values after second :', () => {
-    test('Completions for property after : #1', () => {
+    test('Completions for property value after : #1', () => {
       expectComputation(':prop1:', 7).toEqual(propValsForProp1);
     });
-    test('Completions for property after : #2', () => {
+    test('Completions for property value after : #2', () => {
       expectComputation(' :prop1: ', 8).toEqual(propValsForProp1);
+    });
+    test('Completions for property value after : #3', () => {
+      expectComputation('a :prop1: ', 9).toEqual(propValsForProp1);
     });
   });
 
-  describe('Completions for tag names after |', () => {
+  describe('Completions for tag names after | in a tag filter', () => {
+    test('Completions for tag after | in a tag filter #1', () => {
+      expectComputation(':foo|', 5).toEqual(tagNames);
+    });
+    test('Completions for tag after | in a tag filter #2', () => {
+      expectComputation(' :foo| ', 6).toEqual(tagNames);
+    });
+    test('Completions for tag after | in a tag filter #3', () => {
+      expectComputation('a :foo| ', 7).toEqual(tagNames);
+    });
   });
 
 });

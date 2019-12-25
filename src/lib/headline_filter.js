@@ -60,8 +60,8 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (fi
 
   const charBeforeCursor = filterString.charAt(curserPosition - 1);
   if (charBeforeCursor === ':') {
-    const indexOfFirstColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
-    const maybePropertyName = filterString.substring(indexOfFirstColon + 1, curserPosition - 1);
+    const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
+    const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
     if (maybePropertyName.match(/[^ ]/)) {
       // No space in property name -> is property -> return values
       return allProperties.filter(([x]) => x === maybePropertyName).map(([_, y]) => y);
@@ -69,6 +69,16 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (fi
       return tagAndPropNames;
     }
     return tagAndPropNames;
+  } else if (charBeforeCursor === '|') {
+    const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
+    const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
+    console.log(maybeTagName);
+    if (indexOfOtherColon > -1 && !maybeTagName.match(/ /)) {
+      // No space between : and |  ->  | is in a tag filter
+      return tagNames;
+    } else {
+      return todoKeywords;
+    }
   }
 
   return todoKeywords;
