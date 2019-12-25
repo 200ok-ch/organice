@@ -269,13 +269,12 @@ class Header extends PureComponent {
 
   handleShareHeaderClick() {
     const { header } = this.props;
-    //console.log(header);
 
     const titleLine = header.get('titleLine');
     const todoKeyword = titleLine.get('todoKeyword');
     const tags = titleLine.get('tags');
     const title = titleLine.get('rawTitle').trim();
-    const subject = `${todoKeyword} ${title}`;
+    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
     const body = `
 ${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
 ${header.get('rawDescription')}
@@ -283,9 +282,12 @@ ${header.get('rawDescription')}
     //const titleParts = titleLine.get('title'); // List of parsed tokens in title
     //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
     //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
-    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    console.log(mailtoURI);
-    window.location.href = mailtoURI; // TODO or better start OS share system
+    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+      body
+    )}`;
+    // TODO: If available, use webshare
+    // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
+    window.location.href = mailtoURI;
   }
 
   render() {
