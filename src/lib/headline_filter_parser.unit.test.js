@@ -62,10 +62,20 @@ describe('Headline filter parser', () => {
   });
 
   describe('Parsing of alltogether', () => {
-    const s = ':assignee:jak|nik TODO|DONE Spec test :tag :foo|bar';
-    const expr = parser.parse(s);
+    const s1 = ':assignee:jak|nik TODO|DONE Spec test :tag :foo|bar';
+    const s2 = ' ';
+    const s3 = '';
     test('Parses all AND-terms', () => {
+      const expr = parser.parse(s1);
       expect(expr.length).toEqual(6);
+    });
+    test('Parses blank line with whitespace', () => {
+      const expr = parser.parse(s2);
+      expect(expr).toEqual([]);
+    });
+    test('Parses blank line', () => {
+      const expr = parser.parse(s3);
+      expect(expr).toEqual([]);
     });
   });
 

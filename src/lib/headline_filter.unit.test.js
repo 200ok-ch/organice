@@ -1,6 +1,6 @@
 import { parseOrg } from './parse_org';
 import readFixture from '../../test_helpers/index';
-import { isMatch } from './headline_filter';
+import { isMatch, computeCompletions } from './headline_filter';
 
 // Helper functions
 // Generate tag filter
@@ -160,4 +160,64 @@ describe('Match function for headline filter', () => {
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
   });
+});
+
+describe('Computation of completions / suggestions', () => {
+
+  const todoKeywords = ['TODO', 'DONE'];
+  const tagNames = ['t1', 't2'];
+  const allProperties = [['prop1', 'val1'], ['prop1', 'val2'], ['prop3', 'val3']];
+  const tagAndPropNames = [].concat(tagNames, allProperties.map(([x]) => x));
+  const propValsForProp1 = allProperties.filter(([x]) => x === 'prop1').map(([_, y]) => y);
+
+  const compute = computeCompletions(todoKeywords, tagNames, allProperties);
+
+  // Helper:
+  const expectComputation = (filterString, curserPosition) => expect(compute(filterString, curserPosition));
+
+  describe('Completions for TODO keywords after space or at ^', () => {
+    test('Suggests keywords at begin of empty line', () => {
+      expectComputation('', 0).toEqual(todoKeywords);
+    });
+    test('Suggests keywords after space', () => {
+      expectComputation(' ', 1).toEqual(todoKeywords);
+    });
+    test('Suggests keywords after | when it is a text filter', () => {
+      expectComputation('a|', 2).toEqual(todoKeywords);
+    });
+  });
+
+  describe('Completions for TODO keywords after [A-Z] at \\b', () => {
+  });
+
+  describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {
+  });
+
+  describe('Completions for property/tag names after :', () => {
+    test('Completions after : #1', () => {
+      expectComputation(':', 1).toEqual(tagAndPropNames);
+    });
+    test('Completions after : #2', () => {
+      expectComputation(' : ', 2).toEqual(tagAndPropNames);
+    });
+  });
+
+  describe('No completions after : when within text filter', () => {
+    test('No completion when : within text filter', () => {
+      expectComputation(' a:', 3).toEqual([]);
+    });
+  });
+
+  describe('Completions for property values after second :', () => {
+    test('Completions for property after : #1', () => {
+      expectComputation(':prop1:', 7).toEqual(propValsForProp1);
+    });
+    test('Completions for property after : #2', () => {
+      expectComputation(' :prop1: ', 8).toEqual(propValsForProp1);
+    });
+  });
+
+  describe('Completions for tag names after |', () => {
+  });
+
 });

@@ -45,4 +45,31 @@ export const parser = peg.generate(grammar);
 
 // Suggestions / Completions
 
+export const computeCompletions = (todoKeywords, tagNames, allProperties) => (filterString, curserPosition) => {
+  const tagAndPropNames = [].concat(tagNames, allProperties.map(([x]) => x));
 
+  // let expr = null;
+  // try {
+  //   expr = parser.parse(filterString)
+  // } catch {
+  // };
+
+  if (curserPosition === 0) {
+    return todoKeywords;
+  }
+
+  const charBeforeCursor = filterString.charAt(curserPosition - 1);
+  if (charBeforeCursor === ':') {
+    const indexOfFirstColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
+    const maybePropertyName = filterString.substring(indexOfFirstColon + 1, curserPosition - 1);
+    if (maybePropertyName.match(/[^ ]/)) {
+      // No space in property name -> is property -> return values
+      return allProperties.filter(([x]) => x === maybePropertyName).map(([_, y]) => y);
+    } else {
+      return tagAndPropNames;
+    }
+    return tagAndPropNames;
+  }
+
+  return todoKeywords;
+};
