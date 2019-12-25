@@ -51,7 +51,7 @@ export default class HeaderActionDrawer extends PureComponent {
 
           <span className="header-action-drawer__separator" />
 
-          {this.iconWithFFClickCatcher('fas fa-share fa-lg', onShareHeader)}
+          {this.iconWithFFClickCatcher('fas fa-envelope fa-lg', onShareHeader)}
 
           <span className="header-action-drawer__separator" />
 
