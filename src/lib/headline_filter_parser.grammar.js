@@ -8,6 +8,7 @@ Expression "filter expression"
         return result;
       }, [head]);
     }
+ / _* { return [] }
 
 Term "filter term"
   = TermText
