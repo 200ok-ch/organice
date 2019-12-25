@@ -236,4 +236,25 @@ describe('Computation of completions / suggestions', () => {
     });
   });
 
+  describe('No completions when it makes no sense', () => {
+    test('No completion when after lower-case text filter #1', () => {
+      expectComputation('a', 1).toEqual([]);
+    });
+    test('No completion when after lower-case text filter #2', () => {
+      expectComputation(' a', 2).toEqual([]);
+    });
+    test('No completion when in lower-case text filter', () => {
+      expectComputation('hallo', 2).toEqual([]);
+    });
+    test('No completion when after tag filter', () => {
+      expectComputation(':a', 2).toEqual([]);
+    });
+    test('No completion when after property filter', () => {
+      expectComputation(':a:b', 4).toEqual([]);
+    });
+    test('No completion when in property filter', () => {
+      expectComputation(':a:hallo', 5).toEqual([]);
+    });
+  });
+
 });

@@ -48,18 +48,14 @@ export const parser = peg.generate(grammar);
 export const computeCompletions = (todoKeywords, tagNames, allProperties) => (filterString, curserPosition) => {
   const tagAndPropNames = [].concat(tagNames, allProperties.map(([x]) => x));
 
-  // let expr = null;
-  // try {
-  //   expr = parser.parse(filterString)
-  // } catch {
-  // };
-
   if (curserPosition === 0) {
     return todoKeywords;
   }
 
   const charBeforeCursor = filterString.charAt(curserPosition - 1);
-  if (charBeforeCursor === ':') {
+  if (charBeforeCursor === ' ') {
+    return todoKeywords;
+  } else if (charBeforeCursor === ':') {
     const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
     const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
     if (maybePropertyName.match(/[^ ]/)) {
@@ -72,7 +68,6 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (fi
   } else if (charBeforeCursor === '|') {
     const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
     const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-    console.log(maybeTagName);
     if (indexOfOtherColon > -1 && !maybeTagName.match(/ /)) {
       // No space between : and |  ->  | is in a tag filter
       return tagNames;
@@ -81,5 +76,5 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (fi
     }
   }
 
-  return todoKeywords;
+  return [];
 };
