@@ -58,7 +58,7 @@ Word "word"
   = [^: \t|]+ { return text() }
 
 // https://orgmode.org/manual/Property-Syntax.html
-// - Property names (keys) are case-insetive
+// - Property names (keys) are case-insensitive
 // - Property names must not contain space
 PropertyName "property name"
   = [^: \t]+ { return text() }

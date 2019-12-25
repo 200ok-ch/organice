@@ -23,7 +23,7 @@ export const isMatch = (filterExpr) => (header) => {
 
   const orChain = source => xs => xs.some(x => source.includes(x));
   const propertyFilter = ([x, ys]) => ! properties.filter(([key, val]) => {
-    // Property names (keys) are case-insetive - https://orgmode.org/manual/Property-Syntax.html
+    // Property names (keys) are case-insensitive - https://orgmode.org/manual/Property-Syntax.html
     const nameMatch = key.toLowerCase() == x.toLowerCase();
     const valueMatch = ys.some(y => val.includes(y));
     return nameMatch && valueMatch;
