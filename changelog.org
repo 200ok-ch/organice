@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-25 Wed>
+
+*** Added
+
+    - Suggestion list for inputs in property editor
+      - To minimize typing and typos, add smart completion for property
+        names and values in the PropertyListEditorModal.
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/144][PR]]!
+
 ** <2019-12-24 Tue>
 *** Added
 
