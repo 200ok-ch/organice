@@ -569,7 +569,9 @@ export const computeAllPropertyNames = allOrgProperties =>
     .toSet().sort();
 
 export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
+  // toLowerCase() because property names (keys) are case-insensitive:
+  // https://orgmode.org/manual/Property-Syntax.html
   allOrgProperties
-    .filter(([x]) => x === propertyName)
+    .filter(([x]) => x.toLowerCase() === propertyName.toLowerCase())
     .map(([_, y]) => y)
     .toSet().sort();
