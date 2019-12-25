@@ -30,7 +30,13 @@ TermTag "tag filter term"
   = ":" a:TagAlternatives { return {type: 'tag', words: a} }
 
 TermProp "property filter term"
-  = ":" a:PropertyName ":" b:WordAlternatives? { return {key: a, value: b === null ? '' : b} };
+  = ":" a:PropertyName ":" b:WordAlternatives? {
+          return {
+            type: 'property',
+            key: a,
+            value: b === null ? [''] : b
+          }
+        };
 
 WordAlternatives "alternatives"
   = head:Word tail:("|" Word)* {
