@@ -287,7 +287,7 @@ ${header.get('rawDescription')}
     )}`;
     // TODO: If available, use webshare
     // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
-    window.location.href = mailtoURI;
+    window.open(mailtoURI);
   }
 
   render() {
