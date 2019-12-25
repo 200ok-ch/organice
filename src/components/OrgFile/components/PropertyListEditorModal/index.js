@@ -12,6 +12,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import { fromJS } from 'immutable';
 import _ from 'lodash';
+import { computeAllPropertyNames, computeAllPropertyValuesFor } from '../../../../lib/org_utils';
 
 export default class PropertyListEditorModal extends PureComponent {
   constructor(props) {
@@ -79,11 +80,27 @@ export default class PropertyListEditorModal extends PureComponent {
   }
 
   render() {
-    const { onClose, propertyListItems } = this.props;
+    const { onClose, propertyListItems, allOrgProperties } = this.props;
+    const allPropertyNames = computeAllPropertyNames(allOrgProperties)
+
+    const propertyListItemsWithAllPropVals = propertyListItems.map(p => {
+      const propertyName = p.get('property');
+      const allPropertyValues = computeAllPropertyValuesFor(allOrgProperties, propertyName)
+      return [p, allPropertyValues];
+    });
 
     return (
       <Drawer onClose={onClose}>
         <h2 className="drawer-modal__title">Edit property list</h2>
+
+        <datalist id="datalist-property-names">
+          {allPropertyNames.map((propertyName, idx) => (
+            <option
+              key={idx}
+              value={propertyName}
+            />
+          ))}
+        </datalist>
 
         {propertyListItems.size === 0 ? (
           <div className="no-items-message">
@@ -101,7 +118,7 @@ export default class PropertyListEditorModal extends PureComponent {
                 {...provided.droppableProps}
               >
                 <Fragment>
-                  {propertyListItems.map((propertyListItem, index) => (
+                  {propertyListItemsWithAllPropVals.map(([propertyListItem, allPropertyValues], index) => (
                     <Draggable
                       draggableId={`property-list-item--${index}`}
                       index={index}
@@ -122,13 +139,23 @@ export default class PropertyListEditorModal extends PureComponent {
                               value={propertyListItem.get('property')}
                               onChange={this.handlePropertyChange(propertyListItem.get('id'))}
                               ref={textfield => (this.lastTextfield = textfield)}
+                              list="datalist-property-names"
                             />
                             <input
                               type="text"
                               className="textfield item-container__textfield"
                               value={attributedStringToRawText(propertyListItem.get('value'))}
                               onChange={this.handleValueChange(propertyListItem.get('id'))}
+                              list={`datalist-property-${index}-values`}
                             />
+                            <datalist id={`datalist-property-${index}-values`}>
+                              {allPropertyValues.map((propertyValue, idx) => (
+                                <option
+                                  key={idx}
+                                  value={propertyValue}
+                                />
+                              ))}
+                            </datalist>
                           </div>
                           <div className="item-container__actions-container">
                             <i

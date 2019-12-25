@@ -25,7 +25,7 @@ import { ActionCreators as undoActions } from 'redux-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
-import { timestampWithId, headerWithId } from '../../lib/org_utils';
+import { timestampWithId, headerWithId, extractAllOrgProperties } from '../../lib/org_utils';
 
 import _ from 'lodash';
 import { fromJS, OrderedSet } from 'immutable';
@@ -304,6 +304,7 @@ class OrgFile extends PureComponent {
         );
 
       case 'property-list-editor':
+        const allOrgProperties = extractAllOrgProperties(headers);
         return (
           <PropertyListEditorModal
             onClose={this.handlePopupClose}
@@ -311,6 +312,7 @@ class OrgFile extends PureComponent {
             propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
               'propertyListItems'
             )}
+            allOrgProperties={allOrgProperties}
           />
         );
       case 'agenda':

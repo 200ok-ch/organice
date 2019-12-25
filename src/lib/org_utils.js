@@ -1,6 +1,7 @@
 import generateId from './id_generator';
 
 import { List, fromJS } from 'immutable';
+import { attributedStringToRawText } from './export_org';
 
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
@@ -548,3 +549,29 @@ export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
   todoKeywordSetForKeyword(todoKeywordSets, keyword)
     .get('completedKeywords')
     .includes(keyword);
+
+export const extractAllOrgProperties = headers =>
+  headers.map(h => {
+    const propertyList = h.get('propertyListItems');
+    return propertyList.map(property => {
+      const prop = property.get('property');
+      const valParts = property.get('value'); // lineParts, see parser
+      const val = attributedStringToRawText(valParts);
+      return [prop, val];
+    });
+  })
+  .filter(x => !x.isEmpty())
+  .flatten();
+
+export const computeAllPropertyNames = allOrgProperties =>
+  allOrgProperties
+    .map(([x]) => x)
+    .toSet().sort();
+
+export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
+  // toLowerCase() because property names (keys) are case-insensitive:
+  // https://orgmode.org/manual/Property-Syntax.html
+  allOrgProperties
+    .filter(([x]) => x.toLowerCase() === propertyName.toLowerCase())
+    .map(([_, y]) => y)
+    .toSet().sort();
