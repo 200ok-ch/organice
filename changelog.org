@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-26 Thu>
+
+*** Added
+
+    - "Share" button for headlines (sharing via email)
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/145][PR]]!
+
 ** <2019-12-25 Wed>
 
 *** Added
