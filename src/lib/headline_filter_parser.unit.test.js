@@ -17,6 +17,12 @@ describe('Headline filter parser', () => {
     });
   });
 
+  describe('Parsing intermediary states while typing', () => {
+    test('it does not crash when beginning to type a tag', () => {
+      expect(() => parser.parse(':')).not.toThrowError();
+    });
+  });
+
   describe('Parsing of property filters', () => {
     const s = ':assignee:jak|nik :prop1: :prop2:test';
     const expr = parser.parse(s);
