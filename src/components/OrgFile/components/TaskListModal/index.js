@@ -6,19 +6,12 @@ import './stylesheet.css';
 
 import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
-import TabButtons from '../../../UI/TabButtons';
 
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
 import {
   addDays,
-  addWeeks,
-  addMonths,
-  subDays,
-  subWeeks,
-  subMonths,
-  startOfWeek,
   startOfMonth,
   getDaysInMonth,
 } from 'date-fns';
@@ -31,12 +24,13 @@ class TaskListModal extends PureComponent {
     _.bindAll(this, [
       'handleHeaderClick',
       'handleToggleDateDisplayType',
+      'handleFilterChange',
     ]);
 
     this.state = {
       selectedDate: new Date(),
-      timeframeType: 'Week',
       dateDisplayType: 'absolute',
+      filterString: '',
     };
   }
 
@@ -53,6 +47,12 @@ class TaskListModal extends PureComponent {
     });
   }
 
+  handleFilterChange(event) {
+    this.setState({ filterString: event.target.value });
+    console.log(this.state.filterString);
+    // TODO state hinkt immer eins hinterher!
+  }
+
   render() {
     const {
       onClose,
@@ -61,25 +61,13 @@ class TaskListModal extends PureComponent {
       agendaDefaultDeadlineDelayValue,
       agendaDefaultDeadlineDelayUnit,
     } = this.props;
-    const { timeframeType, selectedDate, dateDisplayType } = this.state;
+    const { selectedDate, dateDisplayType } = this.state;
 
     let dates = [];
-    switch (timeframeType) {
-      case 'Day':
-        dates = [selectedDate];
-        break;
-      case 'Week':
-        const weekStart = startOfWeek(selectedDate);
-        dates = _.range(7).map(daysAfter => addDays(weekStart, daysAfter));
-        break;
-      case 'Month':
-        const monthStart = startOfMonth(selectedDate);
-        dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
-          addDays(monthStart, daysAfter)
-        );
-        break;
-      default:
-    }
+    const monthStart = startOfMonth(selectedDate);
+    dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
+      addDays(monthStart, daysAfter)
+    );
 
     return (
       <Drawer onClose={onClose}>
@@ -89,9 +77,9 @@ class TaskListModal extends PureComponent {
           <input
             type="text"
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
-
+            onChange={this.handleFilterChange}
           />
-          <button>Bookmark filter</button>
+          <button>Bookmark</button>
         </div>
 
         <div className="agenda__days-container">
