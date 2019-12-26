@@ -17,9 +17,12 @@ describe('Headline filter parser', () => {
     });
   });
 
-  describe('Parsing intermediary states while typing', () => {
-    test('it does not crash when beginning to type a tag', () => {
-      expect(() => parser.parse(':')).not.toThrowError();
+  describe('Parser fails with invalid syntax but this is OK', () => {
+    test('Parser fails when beginning to type a tag', () => {
+      expect(() => parser.parse(':')).toThrowError();
+    });
+    test('Parser fails when ending with a |', () => {
+      expect(() => parser.parse('a|')).toThrowError();
     });
   });
 
