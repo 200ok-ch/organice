@@ -362,11 +362,16 @@ exports[`Render all views Renders everything starting from an Org file renders a
           style="opacity: 1;"
           title="Show agenda"
         />
+        <button
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
+          style="opacity: 1;"
+          title="Show task list"
+        />
         <div
           class="action-drawer__capture-buttons-container"
         >
           <button
-            class="btn btn--circle action-drawer__btn fas fa-lg fa-list-ul"
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
             style="opacity: 1; position: relative; z-index: 1;"
             title="Show capture templates"
           />
