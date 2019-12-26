@@ -1,3 +1,9 @@
+
+// Grammar for the parser for the headline filter.
+
+// It will automatically be compiled to the parser JavaScript file using the
+// parser generator pegjs.
+
 Expression "filter expression"
   = _* head:Term tail:(_+ Term)* _* {
       return tail.reduce((result, element) => {
