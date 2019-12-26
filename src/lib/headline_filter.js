@@ -58,7 +58,7 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
 ) => {
   const tagAndPropNames = [].concat(
     tagNames,
-    allProperties.map(([x]) => x)
+    allProperties.map(([x]) => x + ':')
   );
 
   if (curserPosition === 0) {

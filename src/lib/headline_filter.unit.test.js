@@ -184,7 +184,7 @@ describe('Computation of completions and suggestions for task filter', () => {
   ];
   const tagAndPropNames = [].concat(
     tagNames,
-    allProperties.map(([x]) => x)
+    allProperties.map(([x]) => x + ':')
   );
   const propValsForProp1 = allProperties.filter(([x]) => x === 'prop1').map(([_, y]) => y);
 
@@ -232,6 +232,12 @@ describe('Computation of completions and suggestions for task filter', () => {
       });
       test('Completions after [A-Z] after space', () => {
         expectComputation(':a D ', 4).toEqual(['ONE']);
+      });
+      test('No completions after [A-Z]{2}', () => {
+        expectComputation('TO ', 2).toEqual([]);
+      });
+      test('No completions after [A-Z]{2} after space', () => {
+        expectComputation(' TO ', 3).toEqual([]);
       });
     });
 
