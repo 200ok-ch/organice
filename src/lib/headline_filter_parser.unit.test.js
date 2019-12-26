@@ -1,10 +1,8 @@
 import peg from 'pegjs';
 
-import { grammar } from './headline_filter_parser.grammar';
+import parser from './headline_filter_parser';
 
 describe('Headline filter parser', () => {
-  const parser = peg.generate(grammar);
-
   describe('Parsing of tag filters', () => {
     const s = ':tax :foo|bar';
     const expr = parser.parse(s);

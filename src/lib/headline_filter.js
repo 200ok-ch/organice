@@ -37,8 +37,7 @@ export const isMatch = (filterExpr) => (header) => {
 
 // Parser
 
-import { grammar } from './headline_filter_parser.grammar';
-export const parser = peg.generate(grammar);
+import parser from './headline_filter_parser';
 
 // Suggestions / Completions
 
