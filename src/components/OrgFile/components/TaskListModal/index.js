@@ -56,11 +56,17 @@ class TaskListModal extends PureComponent {
     const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
-    const filterExpr = [{ type: 'ignore-case', words: [this.state.filterString] }];
+    let filteredHeaders = headers;
 
-    const filteredHeaders = this.props.headers.filter(header => {
-      return isMatch(filterExpr)(header);
-    });
+    try {
+      const filterExpr = parser.parse(this.state.filterString);
+
+      filteredHeaders = this.props.headers.filter(header => {
+        return isMatch(filterExpr)(header);
+      });
+    } catch (e) {
+      console.error('Exception while parsing the search string: ' + e);
+    }
 
     let dates = [];
     const monthStart = startOfMonth(selectedDate);
