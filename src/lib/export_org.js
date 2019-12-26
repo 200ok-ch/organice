@@ -205,6 +205,7 @@ export const attributedStringToRawText = parts => {
           text = timestampPartToRawText(part);
           break;
         case 'url':
+        case 'www-url':
         case 'e-mail':
         case 'phone-number':
           text = part.get('content');

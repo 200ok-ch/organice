@@ -1,0 +1,3 @@
+* Foo
+Parse www.example.com and www.service.example.com/signin.
+But not www.foo (missing TLD)!
