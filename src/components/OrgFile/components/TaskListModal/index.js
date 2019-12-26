@@ -99,15 +99,6 @@ class TaskListModal extends PureComponent {
           ))}
         </datalist>
 
-        <div className="agenda__tab-container">
-          <input
-            type="text"
-            placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
-            list="datalist-filter"
-            onChange={this.handleFilterChange}
-          />
-        </div>
-
         <div className="agenda__days-container">
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
@@ -116,6 +107,16 @@ class TaskListModal extends PureComponent {
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
+          />
+        </div>
+
+        <div className="agenda__tab-container">
+          <input
+            type="text"
+            placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
+            list="datalist-filter"
+            onChange={this.handleFilterChange}
+            onSelectionChange={this.handleSelectionChange}
           />
         </div>
 
