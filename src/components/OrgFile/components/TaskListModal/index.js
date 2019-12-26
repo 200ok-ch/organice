@@ -25,7 +25,7 @@ class TaskListModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange']);
+    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange', 'handleSelectionChange']);
 
     this.state = {
       selectedDate: new Date(),
@@ -52,17 +52,23 @@ class TaskListModal extends PureComponent {
     this.setState({ filterString });
   }
 
+  handleSelectionChange(event) {
+    console.log(event.nativeEvent.selection);
+    console.log(event.selection);
+    const curserPosition = 0;
+    this.setState({ curserPosition });
+  }
+
   render() {
     const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
-
-    let filteredHeaders = headers;
 
     try {
       const filterExpr = parser.parse(this.state.filterString);
 
       filteredHeaders = this.props.headers.filter(header => {
         return isMatch(filterExpr)(header);
+        // TODO highlight the input (syntax error)
       });
     } catch (e) {
       console.error('Exception while parsing the search string: ' + e);
@@ -74,7 +80,14 @@ class TaskListModal extends PureComponent {
 
     const date = new Date();
 
-    const filterSuggestions = ['test'];
+    const todoKeywords = ['TODO', 'DONE'];
+    const tagNames = ['t1', 't2'];
+    const allProperties = [
+      ['prop1', 'val1'],
+      ['prop1', 'val2'],
+      ['prop3', 'val3'],
+    ];
+    const filterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(this.state.filterString, this.state.curserPosition);
 
     return (
       <Drawer onClose={onClose}>
