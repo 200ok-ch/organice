@@ -69,6 +69,8 @@ class TaskListModal extends PureComponent {
       addDays(monthStart, daysAfter)
     );
 
+    const date = new Date();
+
     return (
       <Drawer onClose={onClose}>
         <h2 className="agenda__title">Task list</h2>
@@ -79,23 +81,20 @@ class TaskListModal extends PureComponent {
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
             onChange={this.handleFilterChange}
           />
-          <button>Bookmark</button>
         </div>
 
         <div className="agenda__days-container">
-          {dates.map(date => (
-            <AgendaDay
-              key={format(date, 'yyyy MM dd')}
-              date={date}
-              headers={headers}
-              onHeaderClick={this.handleHeaderClick}
-              todoKeywordSets={todoKeywordSets}
-              dateDisplayType={dateDisplayType}
-              onToggleDateDisplayType={this.handleToggleDateDisplayType}
-              agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
-              agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
-            />
-          ))}
+          <AgendaDay
+            key={format(date, 'yyyy MM dd')}
+            date={date}
+            headers={headers}
+            onHeaderClick={this.handleHeaderClick}
+            todoKeywordSets={todoKeywordSets}
+            dateDisplayType={dateDisplayType}
+            onToggleDateDisplayType={this.handleToggleDateDisplayType}
+            agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
+            agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
+          />
         </div>
 
         <br />

@@ -51,16 +51,19 @@ export default class AgendaDay extends PureComponent {
 
         <div className="agenda-day__headers-container">
           {planningItemsAndHeaders.map(([planningItem, header]) => {
-            const planningItemDate = dateForTimestamp(planningItem.get('timestamp'));
+            const planningItemDate = planningItem
+              ? dateForTimestamp(planningItem.get('timestamp'))
+              : null;
             const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
 
             const dateClassName = classNames('agenda-day__header-planning-date', {
               'agenda-day__header-planning-date--overdue':
-                hasTodoKeyword && isPast(planningItemDate),
+                hasTodoKeyword && planningItem && isPast(planningItemDate),
             });
 
-            return (
-              <div key={planningItem.get('id')} className="agenda-day__header-container">
+            let planningInformation = <div/>
+            if (planningItemDate) {
+              planningInformation = (
                 <div className="agenda-day__header__planning-item-container">
                   <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
@@ -76,6 +79,12 @@ export default class AgendaDay extends PureComponent {
                     )}
                   </div>
                 </div>
+              )
+            }
+
+            return (
+              <div key={header.get('id')} className="agenda-day__header-container">
+                {planningInformation}
                 <div className="agenda-day__header__header-container">
                   <TitleLine
                     header={header}
@@ -105,15 +114,14 @@ export default class AgendaDay extends PureComponent {
     dateEnd,
   }) {
     return headers
-      .flatMap(header => {
-        const planningItemsforDate = header.get('planningItems');
-        return planningItemsforDate.map(planningItem => [planningItem, header]);
+      .filter(header => header.get('titleLine').get('todoKeyword'))
+      .map(header => {
+        const firstPlanningItem = header.get('planningItems').first();
+        return [firstPlanningItem, header]; // only the first planningItem information is displayed (randomly)
       })
       .sortBy(([planningItem, header]) => {
-        const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
-          .get('timestamp')
-          .toJS();
-        return [!!startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
+        const maybeTimestamp = planningItem ? planningItem.get('timestamp').toJS() : null;
+        return [maybeTimestamp, header.get('titleLine').get('rawText')];
       });
   }
 }
