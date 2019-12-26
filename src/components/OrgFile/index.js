@@ -16,6 +16,7 @@ import TagsEditorModal from './components/TagsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
 import AgendaModal from './components/AgendaModal';
+import TaskListModal from './components/TaskListModal';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -317,6 +318,8 @@ class OrgFile extends PureComponent {
         );
       case 'agenda':
         return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
+      case 'task-list':
+        return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
       default:
         return null;
     }

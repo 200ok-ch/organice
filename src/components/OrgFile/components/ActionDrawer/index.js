@@ -278,6 +278,7 @@ const ActionDrawer = ({
   };
 
   const handleAgendaClick = () => base.activatePopup('agenda');
+  const handleTaskListClick = () => base.activatePopup('task-list');
 
   return (
     <div className="action-drawer-container nice-scroll">
@@ -306,6 +307,15 @@ const ActionDrawer = ({
             onClick={handleAgendaClick}
             style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
             tooltip="Show agenda"
+          />
+
+          <ActionButton
+            iconName="tasks"
+            shouldSpinSubIcon={isLoading}
+            isDisabled={false}
+            onClick={handleTaskListClick}
+            style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
+            tooltip="Show task list"
           />
 
           {renderCaptureButtons()}
