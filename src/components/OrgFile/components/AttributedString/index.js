@@ -87,7 +87,13 @@ export default ({ parts, subPartDataAndHandlers }) => {
             );
           case 'url':
             return (
-              <a href={part.get('content')}  key={part.get('id')} target="_blank" rel="noopener noreferrer">
+              <a href={part.get('content')} key={part.get('id')} target="_blank" rel="noopener noreferrer">
+                {part.get('content')}
+              </a>
+            );
+          case 'www-url':
+            return (
+              <a href={`https://${part.get('content')}`} key={part.get('id')} target="_blank" rel="noopener noreferrer">
                 {part.get('content')}
               </a>
             );
