@@ -5,11 +5,11 @@ import './stylesheet.css';
 export default class HeaderActionDrawer extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.
-  iconWithFFClickCatcher(className, onClick) {
+  iconWithFFClickCatcher(className, onClick, testId = '') {
     return (
       <div onClick={onClick} className="header-action-drawer__ff-click-catcher-container">
         <div className="header-action-drawer__ff-click-catcher" />
-        <i className={className} />
+        <i className={className} data-testid={testId} />
       </div>
     );
   }
@@ -27,6 +27,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onClockInOutClick,
       onScheduledClick,
       hasActiveClock,
+      onShareHeader,
     } = this.props;
 
     return (
@@ -47,6 +48,10 @@ export default class HeaderActionDrawer extends PureComponent {
           {isFocused
             ? this.iconWithFFClickCatcher('fas fa-expand fa-lg', onUnfocus)
             : this.iconWithFFClickCatcher('fas fa-compress fa-lg', onFocus)}
+
+          <span className="header-action-drawer__separator" />
+
+          {this.iconWithFFClickCatcher('fas fa-envelope fa-lg', onShareHeader, 'share')}
 
           <span className="header-action-drawer__separator" />
 

@@ -270,6 +270,28 @@ Some description content
       });
     });
 
+    describe('Sharing', () => {
+      let windowSpy;
+      beforeEach(() => {
+        windowSpy = jest.spyOn(global, 'open');
+        windowSpy.mockImplementation(x => x);
+      });
+
+      afterEach(() => {
+        windowSpy.mockRestore();
+      });
+
+      test('sends the selected header and its body as an email', () => {
+        fireEvent.click(queryByText('Another top level header'));
+        fireEvent.click(getByTestId('share'));
+        expect(global.open).toBeCalledWith(
+          `mailto:?subject=${encodeURIComponent(
+            'Another top level header'
+          )}&body=${encodeURIComponent('\n\nSome description content\n')}`
+        );
+      });
+    });
+
     describe('Agenda', () => {
       test('renders Agenda for an Org file', () => {
         // Agenda is not visible by default

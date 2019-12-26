@@ -49,6 +49,7 @@ class Header extends PureComponent {
       'handleDeadlineClick',
       'handleClockInOutClick',
       'handleScheduledClick',
+      'handleShareHeaderClick',
     ]);
 
     this.state = {
@@ -266,6 +267,36 @@ class Header extends PureComponent {
     this.handleDeadlineAndScheduledClick('SCHEDULED');
   }
 
+  handleShareHeaderClick() {
+    const { header } = this.props;
+
+    const titleLine = header.get('titleLine');
+    const todoKeyword = titleLine.get('todoKeyword');
+    const tags = titleLine.get('tags');
+    const title = titleLine.get('rawTitle').trim();
+    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
+    const body = `
+${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
+${header.get('rawDescription')}
+`;
+    //const titleParts = titleLine.get('title'); // List of parsed tokens in title
+    //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
+    //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
+    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+      body
+    )}`;
+    // TODO: If available, use webshare
+    // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
+
+    window.open(mailtoURI);
+    // INFO: Alternative implementation that works without having a
+    // popup window. We didn't go this route, because it's non-trivial
+    // to mock the window object, so it's harder to test. Having
+    // slightly worse UX in favor of having a test is not optimal, as
+    // well, of course.
+    // window.location.href = mailtoURI;
+  }
+
   render() {
     const {
       header,
@@ -444,6 +475,7 @@ class Header extends PureComponent {
                   onClockInOutClick={this.handleClockInOutClick}
                   onScheduledClick={this.handleScheduledClick}
                   hasActiveClock={hasActiveClock}
+                  onShareHeader={this.handleShareHeaderClick}
                 />
               </Collapse>
 
