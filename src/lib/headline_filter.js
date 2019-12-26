@@ -45,6 +45,21 @@ export const parser = peg.generate(grammar);
 
 // Suggestions / Completions
 
+// The computation of completions rely on the fact, that the filter syntax does NOT
+// support quoted strings (i.e. no search for a quoted 'master headline').
+
+const isInTextFilter = (filterString, curserPosition) => {
+  if (filterString.length === 0)
+    return false;
+  const indexOfLastSpace = filterString.substring(0, curserPosition).lastIndexOf(' ');
+  return filterString.charAt(indexOfLastSpace + 1) !== ':';
+};
+
+// TODO This function is complex and still not perfect. It resembles parts of
+// the filter syntax parser. It would be better to run the actual parser and
+// using the parse results to decide on completions.
+// Open question: What if the parser fails (invalid filter string)?
+
 export const computeCompletions = (todoKeywords, tagNames, allProperties) => (filterString, curserPosition) => {
   const tagAndPropNames = [].concat(tagNames, allProperties.map(([x]) => x));
 
@@ -73,6 +88,20 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (fi
       return tagNames;
     } else {
       return todoKeywords;
+    }
+  } else if (charBeforeCursor.match(/[A-Z]/)) {
+    const filteredTodoKeywords = todoKeywords.filter(x => x.startsWith(charBeforeCursor)).map(x => x.substring(1));
+    if (curserPosition > 1) {
+      const charTwoBeforeCursor = filterString.charAt(curserPosition - 2);
+      if (charTwoBeforeCursor === ' ') {
+        return filteredTodoKeywords;
+      } else if (charTwoBeforeCursor === '|') {
+        // Only if in a text filter (not tag or property filter)
+        if (isInTextFilter(filterString, curserPosition))
+          return filteredTodoKeywords;
+      }
+    } else {
+      return filteredTodoKeywords;
     }
   }
 

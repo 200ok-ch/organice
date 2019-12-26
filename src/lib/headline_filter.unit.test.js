@@ -191,7 +191,28 @@ describe('Computation of completions / suggestions', () => {
     });
   });
 
-  describe('Completions for TODO keywords after [A-Z] at \\b', () => {
+  describe('Filtered completions for TODO keywords after [A-Z] in a text filter', () => {
+    test('Completions after [A-Z] after begin of line', () => {
+      expectComputation('T', 1).toEqual(['ODO']);
+    });
+    test('Completions after [A-Z] after space', () => {
+      expectComputation(' T', 2).toEqual(['ODO']);
+    });
+    test('No completions after [A-Z] after space', () => {
+      expectComputation(' X', 2).toEqual([]);
+    });
+    test('Completions after [A-Z] after |', () => {
+      expectComputation('x|T', 3).toEqual(['ODO']);
+    });
+    test('No completions after [A-Z] after | in a tag filter', () => {
+      expectComputation(':x|T', 4).toEqual([]);
+    });
+    test('No completions after [A-Z] after :', () => {
+      expectComputation('x:T', 3).toEqual([]);
+    });
+    test('Completions after [A-Z] after space', () => {
+      expectComputation(':a D ', 4).toEqual(['ONE']);
+    });
   });
 
   describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {
