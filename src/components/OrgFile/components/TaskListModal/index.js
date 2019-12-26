@@ -71,14 +71,23 @@ class TaskListModal extends PureComponent {
 
     const date = new Date();
 
+    const filterSuggestions = ['test'];
+    const text = filterSuggestions[0];
+    const i = 0;
+
     return (
       <Drawer onClose={onClose}>
         <h2 className="agenda__title">Task list</h2>
+
+        <datalist id="datalist-filter">
+          <option value={text} key={i} />
+        </datalist>
 
         <div className="agenda__tab-container">
           <input
             type="text"
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
+            list="datalist-filter"
             onChange={this.handleFilterChange}
           />
         </div>
