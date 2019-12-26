@@ -202,57 +202,53 @@ yarn test
 
 *** Testing
 
-**** In a browser
+When you're developing a new feature and you want to manually test it,
+it's best to check it out in a Desktop browser and on your smartphone.
+This is how you do that:
 
-Run the application with =yarn start= (see above) and
-open the displayed URL in your favorite browser.
+**** Desktop
 
-**** On the smartphone
+Run the application with =yarn start= which will open organice in your
+configured default browser. Alternatively, visit
+=http://localhost:3000= in the browser of your choice.
 
-Run the application with =yarn start= (see above) and
-type in the displayed URL (IP address + port number) in a browser on your
-smartphone.
+**** Smartphone
 
-***** Caveats
+There are multiple options on how you can connect from your smartphone
+to your computer running organice.
 
-*Problem when testing on the phone:*
+When running organice with =yarn start=, it will show you all the IPs
+that the application server is bound to. One will be local to your
+computer, one will be on your network (if you're connected to a LAN or
+Wifi, that is).
 
-You cannot simply connect to your cloud storage (Dropbox, Google Drive, etc.).
-The authorization API of the cloud storage
-will not authorize your phone because it does not connect with the registered
-domain name in the =Host:= header (something like that).
+If your smartphone has access to the same network, you can access it
+with the given IP address and port number.
 
-*Solutions:*
+If your new feature doesn't require a synchronization back-end, just
+open the =sample.org= file which doesn't require a login. You're good
+to go.
 
-The easy way (when you don't actually need synchronization): Just open the
-sample.org file. That works without logging in.
+*Synchronizing with Dropbox or Google Drive*
 
-The harder ways:
+If your new feature does require the Dropbox or Google Drive
+synchronization back-end, there's an extra step you need to perform.
 
-1. The Dropbox app for organice.200ok.ch is configured to accept connections
-   from localhost:3000 - so you can use it easily from your Desktop.
-   And you can use it from your phone as well, if you do a port forward to
-   make the phones' localhost:3000 point to your organice server on the Desktop.
+Both Dropbox and Google Drive require a whitelist of domains that they
+can be synchronized from. The whitelist for local domains is
+exclusively short: =http://localhost:3000=.
 
-2. Use ipv6 and set up a custom domain for your machine.
-   Configure your own Dropbox app for this domain.
-   Note: You'll have to use HTTPS for that.
+Hence, to be able to login from your phone to your dev instance of
+organice, you'll need to set up [[https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding][port forwarding]]. If you have a shell
+on your phone and an ssh client, you can do that with the following
+command:
 
-I'm usually doing the easy version or the port forward.
+#+BEGIN_SRC shell
+ssh -L 3000:localhost:3000 user-dev-machine
+#+END_SRC
 
-The way 1. works like this:
-
-- Use an App that allows the use of SSH on your phone (or a rooted phone with
-  a shell).
-- Start ssh with port forwarding as in SSH port forwarding (documented in
-  =man ssh= under the =-L= flag, or in articles like this one:
-  https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding)
-
-Specifically:
-I'm using a dedicated ssh application (https://www.termius.com/) for that.
-If you have a shell on your phone (e.g. on Android) you could just
-use ssh like this:
-: $ ssh -L 3000:localhost:3000 you@your-dev-machine
+If you don't have a shell on your phone, you can use a dedicated SSH
+application (like [[https://www.termius.com/][Terminus]]).
 
 *** Contributions
 
