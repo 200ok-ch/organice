@@ -10,22 +10,14 @@ import Drawer from '../../../UI/Drawer';
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
-import {
-  addDays,
-  startOfMonth,
-  getDaysInMonth,
-} from 'date-fns';
+import { addDays, startOfMonth, getDaysInMonth } from 'date-fns';
 import format from 'date-fns/format';
 
 class TaskListModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, [
-      'handleHeaderClick',
-      'handleToggleDateDisplayType',
-      'handleFilterChange',
-    ]);
+    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange']);
 
     this.state = {
       selectedDate: new Date(),
@@ -48,26 +40,17 @@ class TaskListModal extends PureComponent {
   }
 
   handleFilterChange(event) {
-    this.setState({ filterString: event.target.value });
-    console.log(this.state.filterString);
-    // TODO state hinkt immer eins hinterher!
+    const filterString = event.target.value;
+    this.setState({ filterString });
   }
 
   render() {
-    const {
-      onClose,
-      headers,
-      todoKeywordSets,
-      agendaDefaultDeadlineDelayValue,
-      agendaDefaultDeadlineDelayUnit,
-    } = this.props;
+    const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     let dates = [];
     const monthStart = startOfMonth(selectedDate);
-    dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
-      addDays(monthStart, daysAfter)
-    );
+    dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter => addDays(monthStart, daysAfter));
 
     const date = new Date();
 
@@ -79,10 +62,7 @@ class TaskListModal extends PureComponent {
 
         <datalist id="datalist-filter">
           {filterSuggestions.map((string, idx) => (
-            <option
-              key={idx}
-              value={string}
-            />
+            <option key={idx} value={string} />
           ))}
         </datalist>
 
@@ -101,11 +81,8 @@ class TaskListModal extends PureComponent {
             date={date}
             headers={headers}
             onHeaderClick={this.handleHeaderClick}
-            todoKeywordSets={todoKeywordSets}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
-            agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
-            agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
           />
         </div>
 
@@ -115,11 +92,7 @@ class TaskListModal extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
-  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
