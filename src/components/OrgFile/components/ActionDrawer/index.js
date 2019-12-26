@@ -128,7 +128,7 @@ const ActionDrawer = ({
         {style => (
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
-              iconName={isDisplayingCaptureButtons ? 'times' : 'list-ul'}
+              iconName={isDisplayingCaptureButtons ? 'times' : 'plus'}
               isDisabled={false}
               onClick={handleMainCaptureButtonClick}
               style={mainButtonStyle}
