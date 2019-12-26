@@ -1,4 +1,8 @@
 
+import fs from 'fs';
+import path from 'path';
+import peg from 'pegjs';
+
 // Matcher
 
 import { attributedStringToRawText } from './export_org.js';
@@ -35,10 +39,6 @@ export const isMatch = (filterExpr) => (header) => {
 };
 
 // Parser
-
-import fs from 'fs';
-import path from 'path';
-import peg from 'pegjs';
 
 const grammar = fs.readFileSync(path.join(__dirname, './headline_filter_parser.grammar.js')).toString();
 export const parser = peg.generate(grammar);
@@ -106,4 +106,9 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (fi
   }
 
   return [];
+};
+
+export const computeCompletionsForDatalist =  (todoKeywords, tagNames, allProperties) => (filterString, curserPosition) => {
+  const completions = computeCompletions(todoKeywords, tagNames, allProperties)(filterString, curserPosition);
+  return completions.map(x => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition));
 };

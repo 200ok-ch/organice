@@ -7,6 +7,8 @@ import './stylesheet.css';
 import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
 
+//import { parser, isMatch, computeCompletions, computeCompletionsForDatalist } from '../../../../lib/headline_filter';
+
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
