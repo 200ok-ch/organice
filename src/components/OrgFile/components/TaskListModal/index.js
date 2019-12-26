@@ -63,6 +63,8 @@ class TaskListModal extends PureComponent {
     const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
+    let filteredHeaders = headers;
+
     try {
       const filterExpr = parser.parse(this.state.filterString);
 
