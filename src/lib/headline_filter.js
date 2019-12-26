@@ -1,5 +1,3 @@
-import peg from 'pegjs';
-
 // Matcher
 
 import { attributedStringToRawText } from './export_org.js';
@@ -23,7 +21,8 @@ export const isMatch = filterExpr => header => {
   const propertyFilter = ([x, ys]) =>
     !properties
       .filter(([key, val]) => {
-        // Property names (keys) are case-insensitive - https://orgmode.org/manual/Property-Syntax.html
+        // Property names (keys) are case-insensitive
+        // https://orgmode.org/manual/Property-Syntax.html
         const nameMatch = key.toLowerCase() === x.toLowerCase();
         const valueMatch = ys.some(y => val.includes(y));
         return nameMatch && valueMatch;
@@ -37,10 +36,6 @@ export const isMatch = filterExpr => header => {
   );
 };
 
-// Parser
-
-import parser from './headline_filter_parser';
-
 // Suggestions / Completions
 
 // The computation of completions rely on the fact, that the filter syntax does NOT
@@ -52,9 +47,9 @@ const isInTextFilter = (filterString, curserPosition) => {
   return filterString.charAt(indexOfLastSpace + 1) !== ':';
 };
 
-// TODO This function is complex and still not perfect. It resembles parts of
-// the filter syntax parser. It would be better to run the actual parser and
-// using the parse results to decide on completions.
+// TODO: This function is complex and still not perfect. It resembles
+// parts of the filter syntax parser. It would be better to run the
+// actual parser and using the parse results to decide on completions.
 // Open question: What if the parser fails (invalid filter string)?
 
 export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
@@ -76,12 +71,12 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
   } else if (charBeforeCursor === ':') {
     const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
     const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
+
     if (maybePropertyName.match(/[^ ]/)) {
       // No space in property name -> is property -> return values
       return allProperties.filter(([x]) => x === maybePropertyName).map(([_, y]) => y);
-    } else {
-      return tagAndPropNames;
     }
+
     return tagAndPropNames;
   } else if (charBeforeCursor === '|') {
     const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
