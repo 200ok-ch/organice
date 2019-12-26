@@ -7,7 +7,13 @@ import './stylesheet.css';
 import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
 
-//import { parser, isMatch, computeCompletions, computeCompletionsForDatalist } from '../../../../lib/headline_filter';
+import {
+  isMatch,
+  computeCompletions,
+  computeCompletionsForDatalist,
+} from '../../../../lib/headline_filter';
+
+import parser from '../../../../lib/headline_filter_parser';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -50,6 +56,12 @@ class TaskListModal extends PureComponent {
     const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
+    const filterExpr = [{ type: 'ignore-case', words: [this.state.filterString] }];
+
+    const filteredHeaders = this.props.headers.filter(header => {
+      return isMatch(filterExpr)(header);
+    });
+
     let dates = [];
     const monthStart = startOfMonth(selectedDate);
     dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter => addDays(monthStart, daysAfter));
@@ -81,7 +93,7 @@ class TaskListModal extends PureComponent {
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
             date={date}
-            headers={headers}
+            headers={filteredHeaders}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
