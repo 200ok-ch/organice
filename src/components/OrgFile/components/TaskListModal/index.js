@@ -29,9 +29,6 @@ class TaskListModal extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleTimeframeTypeChange',
-      'handleNextDateClick',
-      'handlePreviousDateClick',
       'handleHeaderClick',
       'handleToggleDateDisplayType',
     ]);
@@ -43,49 +40,9 @@ class TaskListModal extends PureComponent {
     };
   }
 
-  handleTimeframeTypeChange(timeframeType) {
-    this.setState({ timeframeType });
-  }
-
-  handleNextDateClick() {
-    const { selectedDate, timeframeType } = this.state;
-
-    switch (timeframeType) {
-      case 'Day':
-        this.setState({ selectedDate: addDays(selectedDate, 1) });
-        break;
-      case 'Week':
-        this.setState({ selectedDate: addWeeks(selectedDate, 1) });
-        break;
-      case 'Month':
-        this.setState({ selectedDate: addMonths(selectedDate, 1) });
-        break;
-      default:
-        return '';
-    }
-  }
-
   handleHeaderClick(headerId) {
     this.props.onClose();
     this.props.org.selectHeaderAndOpenParents(headerId);
-  }
-
-  handlePreviousDateClick() {
-    const { selectedDate, timeframeType } = this.state;
-
-    switch (timeframeType) {
-      case 'Day':
-        this.setState({ selectedDate: subDays(selectedDate, 1) });
-        break;
-      case 'Week':
-        this.setState({ selectedDate: subWeeks(selectedDate, 1) });
-        break;
-      case 'Month':
-        this.setState({ selectedDate: subMonths(selectedDate, 1) });
-        break;
-      default:
-        return '';
-    }
   }
 
   handleToggleDateDisplayType() {
@@ -94,26 +51,6 @@ class TaskListModal extends PureComponent {
     this.setState({
       dateDisplayType: dateDisplayType === 'absolute' ? 'relative' : 'absolute',
     });
-  }
-
-  calculateTimeframeHeader() {
-    const { selectedDate, timeframeType } = this.state;
-
-    switch (timeframeType) {
-      case 'Day':
-        return format(selectedDate, 'MMMM do');
-      case 'Week':
-        const weekStart = startOfWeek(selectedDate);
-        const weekEnd = addWeeks(weekStart, 1);
-        return `${format(weekStart, 'MMM do')} - ${format(weekEnd, 'MMM do')} (W${format(
-          weekStart,
-          'w'
-        )})`;
-      case 'Month':
-        return format(selectedDate, 'MMMM');
-      default:
-        return '';
-    }
   }
 
   render() {
@@ -149,18 +86,12 @@ class TaskListModal extends PureComponent {
         <h2 className="agenda__title">Task list</h2>
 
         <div className="agenda__tab-container">
-          <TabButtons
-            buttons={['Day', 'Week', 'Month']}
-            selectedButton={timeframeType}
-            onSelect={this.handleTimeframeTypeChange}
-            useEqualWidthTabs
-          />
-        </div>
+          <input
+            type="text"
+            placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
 
-        <div className="agenda__timeframe-header-container">
-          <i className="fas fa-chevron-left fa-lg" onClick={this.handlePreviousDateClick} />
-          <div className="agenda__timeframe-header">{this.calculateTimeframeHeader()}</div>
-          <i className="fas fa-chevron-right fa-lg" onClick={this.handleNextDateClick} />
+          />
+          <button>Bookmark filter</button>
         </div>
 
         <div className="agenda__days-container">
