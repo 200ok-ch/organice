@@ -268,7 +268,9 @@ Some description content
         fireEvent.click(queryByText('Another top level header'));
         fireEvent.click(getByTestId('share'));
         expect(global.open).toBeCalledWith(
-          'mailto:?subject=Another%20top%20level%20header&body=%0A%0ASome%20description%20content%0A'
+          `mailto:?subject=${encodeURIComponent(
+            'Another top level header'
+          )}&body=${encodeURIComponent('\n\nSome description content\n')}`
         );
       });
     });
