@@ -78,7 +78,6 @@ class TaskListModal extends PureComponent {
         <h2 className="agenda__title">Task list</h2>
 
         <datalist id="datalist-filter">
-          <option value={text} key={i} />
           {filterSuggestions.map((string, idx) => (
             <option
               key={idx}
