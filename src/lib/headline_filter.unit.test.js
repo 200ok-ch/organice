@@ -4,21 +4,21 @@ import { isMatch, computeCompletions, computeCompletionsForDatalist } from './he
 
 // Helper functions
 // Generate tag filter
-const gtag = tag => ([{type: 'tag', words: [tag]}]);
-const gtags = tags => tags.map(x => ({type: 'tag', words: [x]}));
-const gtagsOr = tagsArr => tagsArr.map(x => ({type: 'tag', words: x}));
+const gtag = tag => [{ type: 'tag', words: [tag] }];
+const gtags = tags => tags.map(x => ({ type: 'tag', words: [x] }));
+const gtagsOr = tagsArr => tagsArr.map(x => ({ type: 'tag', words: x }));
 // Generate case-sensitive filter
-const gcs = word => ([{type: 'case-sensitive', words: [word]}]);
-const gcss = words => words.map(x => ({type: 'case-sensitive', words: [x]}));
-const gcssOr = wordsArr => wordsArr.map(x => ({type: 'case-sensitive', words: x}));
+const gcs = word => [{ type: 'case-sensitive', words: [word] }];
+const gcss = words => words.map(x => ({ type: 'case-sensitive', words: [x] }));
+const gcssOr = wordsArr => wordsArr.map(x => ({ type: 'case-sensitive', words: x }));
 // Generate ignore-case filter
-const gic = word => ([{type: 'ignore-case', words: [word]}]);
-const gics = words => words.map(x => ({type: 'ignore-case', words: [x]}));
-const gicsOr = wordsArr => wordsArr.map(x => ({type: 'ignore-case', words: x}));
+const gic = word => [{ type: 'ignore-case', words: [word] }];
+const gics = words => words.map(x => ({ type: 'ignore-case', words: [x] }));
+const gicsOr = wordsArr => wordsArr.map(x => ({ type: 'ignore-case', words: x }));
 // Generate property filter
-const gprop = (key, word) => ([{type: 'property', property: key, words: [word]}]);
-const gprops = props => props.map(([x, y]) => ({type: 'property', property: x, words: [y]}));
-const gpropsOr = props => props.map(([x, ys]) => ({type: 'property', property: x, words: ys}));
+const gprop = (key, word) => [{ type: 'property', property: key, words: [word] }];
+const gprops = props => props.map(([x, y]) => ({ type: 'property', property: x, words: [y] }));
+const gpropsOr = props => props.map(([x, ys]) => ({ type: 'property', property: x, words: ys }));
 
 describe('Match function for headline filter', () => {
   const testOrgFile = readFixture('headline_filter');
@@ -52,7 +52,10 @@ describe('Match function for headline filter', () => {
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Match (tag1 OR tag2) AND (tag3 OR tag4)', () => {
-      const filterExpr = gtagsOr([['nonexisting', 'spec_tag'], ['tag2', 'nonexisting2']]);
+      const filterExpr = gtagsOr([
+        ['nonexisting', 'spec_tag'],
+        ['tag2', 'nonexisting2'],
+      ]);
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
   });
@@ -113,15 +116,24 @@ describe('Match function for headline filter', () => {
       expect(isMatch(filterExpr)(header)).toBe(false);
     });
     test('Match two properties (AND)', () => {
-      const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xyz']]);
+      const filterExpr = gprops([
+        ['prop1', 'abc'],
+        ['prop2', 'xyz'],
+      ]);
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Match two properties but one is wrong', () => {
-      const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xxx']]);
+      const filterExpr = gprops([
+        ['prop1', 'abc'],
+        ['prop2', 'xxx'],
+      ]);
       expect(isMatch(filterExpr)(header)).toBe(false);
     });
     test('Match two times the same property with different values (see example org)', () => {
-      const filterExpr = gprops([['prop1', 'abc'], ['prop1', 'def']]);
+      const filterExpr = gprops([
+        ['prop1', 'abc'],
+        ['prop1', 'def'],
+      ]);
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Match property with no value', () => {
@@ -163,20 +175,26 @@ describe('Match function for headline filter', () => {
 });
 
 describe('Computation of completions and suggestions for task filter', () => {
-
   const todoKeywords = ['TODO', 'DONE'];
   const tagNames = ['t1', 't2'];
-  const allProperties = [['prop1', 'val1'], ['prop1', 'val2'], ['prop3', 'val3']];
-  const tagAndPropNames = [].concat(tagNames, allProperties.map(([x]) => x));
+  const allProperties = [
+    ['prop1', 'val1'],
+    ['prop1', 'val2'],
+    ['prop3', 'val3'],
+  ];
+  const tagAndPropNames = [].concat(
+    tagNames,
+    allProperties.map(([x]) => x)
+  );
   const propValsForProp1 = allProperties.filter(([x]) => x === 'prop1').map(([_, y]) => y);
 
   describe('Computation of completions', () => {
-
     // Function under test:
     const compute = computeCompletions(todoKeywords, tagNames, allProperties);
 
     // Helper:
-    const expectComputation = (filterString, curserPosition) => expect(compute(filterString, curserPosition));
+    const expectComputation = (filterString, curserPosition) =>
+      expect(compute(filterString, curserPosition));
 
     describe('Completions for TODO keywords after space or at begin of line', () => {
       test('Suggests keywords at begin of empty line', () => {
@@ -217,8 +235,7 @@ describe('Computation of completions and suggestions for task filter', () => {
       });
     });
 
-    describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {
-    });
+    describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {});
 
     describe('Completions for property/tag names after :', () => {
       test('Completions after : #1', () => {
@@ -279,16 +296,15 @@ describe('Computation of completions and suggestions for task filter', () => {
         expectComputation(':a:hallo', 5).toEqual([]);
       });
     });
-
   });
 
   describe('Computation of suggestions for datalist', () => {
-
     // Function under test:
     const compute = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties);
 
     // Helper:
-    const expectComputation = (filterString, curserPosition) => expect(compute(filterString, curserPosition));
+    const expectComputation = (filterString, curserPosition) =>
+      expect(compute(filterString, curserPosition));
 
     test('Begin of empty line', () => {
       expectComputation('', 0).toEqual(todoKeywords);
@@ -306,5 +322,4 @@ describe('Computation of completions and suggestions for task filter', () => {
       expectComputation(':a| ', 3).toEqual(tagNames.map(x => `:a|${x} `));
     });
   });
-
 });

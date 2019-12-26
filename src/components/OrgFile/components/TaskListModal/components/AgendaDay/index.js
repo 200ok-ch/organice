@@ -4,17 +4,9 @@ import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
 
-import {
-  dateForTimestamp,
-} from '../../../../../../lib/timestamps';
+import { dateForTimestamp } from '../../../../../../lib/timestamps';
 
-import {
-  format,
-  startOfDay,
-  endOfDay,
-  isPast,
-  formatDistanceToNow,
-} from 'date-fns';
+import { format, startOfDay, endOfDay, isPast, formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
 
 export default class AgendaDay extends PureComponent {
@@ -48,7 +40,6 @@ export default class AgendaDay extends PureComponent {
 
     return (
       <div className="agenda-day__container">
-
         <div className="agenda-day__headers-container">
           {planningItemsAndHeaders.map(([planningItem, header]) => {
             const planningItemDate = planningItem
@@ -61,7 +52,7 @@ export default class AgendaDay extends PureComponent {
                 hasTodoKeyword && planningItem && isPast(planningItemDate),
             });
 
-            let planningInformation = <div/>
+            let planningInformation = <div />;
             if (planningItemDate) {
               planningInformation = (
                 <div className="agenda-day__header__planning-item-container">
@@ -79,7 +70,7 @@ export default class AgendaDay extends PureComponent {
                     )}
                   </div>
                 </div>
-              )
+              );
             }
 
             return (
