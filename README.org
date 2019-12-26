@@ -209,6 +209,56 @@ you can manually generate it with:
 ./bin/compile_search_parser.sh
 #+END_SRC
 
+*** Testing
+
+When you're developing a new feature and you want to manually test it,
+it's best to check it out in a Desktop browser and on your smartphone.
+This is how you do that:
+
+**** Desktop
+
+Run the application with =yarn start= which will open organice in your
+configured default browser. Alternatively, visit
+=http://localhost:3000= in the browser of your choice.
+
+**** Smartphone
+
+There are multiple options on how you can connect from your smartphone
+to your computer running organice.
+
+When running organice with =yarn start=, it will show you all the IPs
+that the application server is bound to. One will be local to your
+computer, one will be on your network (if you're connected to a LAN or
+Wifi, that is).
+
+If your smartphone has access to the same network, you can access it
+with the given IP address and port number.
+
+If your new feature doesn't require a synchronization back-end, just
+open the =sample.org= file which doesn't require a login. You're good
+to go.
+
+*Synchronizing with Dropbox or Google Drive*
+
+If your new feature does require the Dropbox or Google Drive
+synchronization back-end, there's an extra step you need to perform.
+
+Both Dropbox and Google Drive require a whitelist of domains that they
+can be synchronized from. The whitelist for local domains is
+exclusively short: =http://localhost:3000=.
+
+Hence, to be able to login from your phone to your dev instance of
+organice, you'll need to set up [[https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding][port forwarding]]. If you have a shell
+on your phone and an ssh client, you can do that with the following
+command:
+
+#+BEGIN_SRC shell
+ssh -L 3000:localhost:3000 user-dev-machine
+#+END_SRC
+
+If you don't have a shell on your phone, you can use a dedicated SSH
+application (like [[https://www.termius.com/][Terminus]]).
+
 *** Contributions
 
 Please see our [[file:CONTRIBUTING.org][contributer guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].

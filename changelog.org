@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 
     - "Share" button for headlines (sharing via email)
       - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/145][PR]]!
+    - Automatically render links for URLs with www prefix, but without
+      protocol
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/159][PR]]!
 
 ** <2019-12-25 Wed>
 

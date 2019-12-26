@@ -64,6 +64,20 @@ describe('Unit Tests for Org file', () => {
       });
     });
 
+    describe('www URLs', () => {
+      const testOrgFile = readFixture('www_url');
+      test('Parse a line containing an URL starting with www', () => {
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+      test('Parses all valid URLs starting with www', () => {
+        const parsedFile = parseOrg(testOrgFile);
+        const firstHeader = parsedFile.get('headers').first();
+        const parsedUrls = firstHeader.get('description').filter(x => x.get('type') === 'www-url');
+        expect(parsedUrls.size).toEqual(2);
+      });
+    });
+
     describe('E-mail address', () => {
       test('Parse a line containing an e-mail address', () => {
         const testOrgFile = readFixture('email');
