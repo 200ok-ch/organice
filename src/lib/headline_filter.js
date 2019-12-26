@@ -1,6 +1,3 @@
-
-import fs from 'fs';
-import path from 'path';
 import peg from 'pegjs';
 
 // Matcher
@@ -40,7 +37,7 @@ export const isMatch = (filterExpr) => (header) => {
 
 // Parser
 
-const grammar = fs.readFileSync(path.join(__dirname, './headline_filter_parser.grammar.js')).toString();
+import { grammar } from './headline_filter_parser.grammar';
 export const parser = peg.generate(grammar);
 
 // Suggestions / Completions

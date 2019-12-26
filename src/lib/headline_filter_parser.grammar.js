@@ -1,6 +1,5 @@
-
-// Not a JS file but the grammar for pegjs parser generator.
-
+module.exports = {
+  grammar: `
 Expression "filter expression"
   = _* head:Term tail:(_+ Term)* _* {
       return tail.reduce((result, element) => {
@@ -70,3 +69,5 @@ TagName "tag name"
 
 _ "whitespace"
   = [ \t]
+`,
+};

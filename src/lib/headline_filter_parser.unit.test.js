@@ -1,11 +1,8 @@
-
-import fs from 'fs';
-import path from 'path';
 import peg from 'pegjs';
 
-describe('Headline filter parser', () => {
+import { grammar } from './headline_filter_parser.grammar';
 
-  const grammar = fs.readFileSync(path.join(__dirname, './headline_filter_parser.grammar.js')).toString();
+describe('Headline filter parser', () => {
   const parser = peg.generate(grammar);
 
   describe('Parsing of tag filters', () => {
@@ -78,5 +75,4 @@ describe('Headline filter parser', () => {
       expect(expr).toEqual([]);
     });
   });
-
 });
