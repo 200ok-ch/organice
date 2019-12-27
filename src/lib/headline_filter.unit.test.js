@@ -52,10 +52,7 @@ describe('Match function for headline filter', () => {
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Match (tag1 OR tag2) AND (tag3 OR tag4)', () => {
-      const filterExpr = gtagsOr([
-        ['nonexisting', 'spec_tag'],
-        ['tag2', 'nonexisting2'],
-      ]);
+      const filterExpr = gtagsOr([['nonexisting', 'spec_tag'], ['tag2', 'nonexisting2']]);
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
   });
@@ -116,24 +113,15 @@ describe('Match function for headline filter', () => {
       expect(isMatch(filterExpr)(header)).toBe(false);
     });
     test('Match two properties (AND)', () => {
-      const filterExpr = gprops([
-        ['prop1', 'abc'],
-        ['prop2', 'xyz'],
-      ]);
+      const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xyz']]);
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Match two properties but one is wrong', () => {
-      const filterExpr = gprops([
-        ['prop1', 'abc'],
-        ['prop2', 'xxx'],
-      ]);
+      const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xxx']]);
       expect(isMatch(filterExpr)(header)).toBe(false);
     });
     test('Match two times the same property with different values (see example org)', () => {
-      const filterExpr = gprops([
-        ['prop1', 'abc'],
-        ['prop1', 'def'],
-      ]);
+      const filterExpr = gprops([['prop1', 'abc'], ['prop1', 'def']]);
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
     test('Match property with no value', () => {
@@ -177,15 +165,8 @@ describe('Match function for headline filter', () => {
 describe('Computation of completions and suggestions for task filter', () => {
   const todoKeywords = ['TODO', 'DONE'];
   const tagNames = ['t1', 't2'];
-  const allProperties = [
-    ['prop1', 'val1'],
-    ['prop1', 'val2'],
-    ['prop3', 'val3'],
-  ];
-  const tagAndPropNames = [].concat(
-    tagNames,
-    ['prop1:', 'prop3:']
-  );
+  const allProperties = [['prop1', 'val1'], ['prop1', 'val2'], ['prop3', 'val3']];
+  const tagAndPropNames = [].concat(tagNames, ['prop1:', 'prop3:']);
   const propValsForProp1 = allProperties.filter(([x]) => x === 'prop1').map(([_, y]) => y);
 
   describe('Computation of completions', () => {

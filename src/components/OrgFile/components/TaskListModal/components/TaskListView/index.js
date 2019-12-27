@@ -106,12 +106,15 @@ export default class AgendaDay extends PureComponent {
     agendaDefaultDeadlineDelayUnit,
     dateStart,
     dateEnd,
-    only
+    only,
   }) {
     return headers
       .filter(header => searchAllHeaders || header.get('titleLine').get('todoKeyword'))
       .map(header => {
-        const earliestPlanningItem = header.get('planningItems').sortBy(x => x.get('timestamp')).first(); // TODO sort DESC by timestamp (must be converted to datetime)
+        const earliestPlanningItem = header
+          .get('planningItems')
+          .sortBy(x => x.get('timestamp'))
+          .first(); // TODO sort DESC by timestamp (must be converted to datetime)
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {

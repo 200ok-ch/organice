@@ -7,12 +7,13 @@ import './stylesheet.css';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
-import {
-  isMatch,
-  computeCompletionsForDatalist,
-} from '../../../../lib/headline_filter';
+import { isMatch, computeCompletionsForDatalist } from '../../../../lib/headline_filter';
 
-import { extractAllOrgTags, extractAllOrgProperties, extractAllTodoKeywords } from '../../../../lib/org_utils';
+import {
+  extractAllOrgTags,
+  extractAllOrgProperties,
+  extractAllTodoKeywords,
+} from '../../../../lib/org_utils';
 
 import parser from '../../../../lib/headline_filter_parser';
 
@@ -25,7 +26,12 @@ class TaskListModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange', 'handleSearchAllCheckboxChange']);
+    _.bindAll(this, [
+      'handleHeaderClick',
+      'handleToggleDateDisplayType',
+      'handleFilterChange',
+      'handleSearchAllCheckboxChange',
+    ]);
 
     this.state = {
       selectedDate: new Date(),
@@ -66,7 +72,6 @@ class TaskListModal extends PureComponent {
       //console.log(e);
       // TODO highlight the input (syntax error)
     }
-
   }
 
   render() {
@@ -90,11 +95,10 @@ class TaskListModal extends PureComponent {
       const todoKeywords = extractAllTodoKeywords(headers).toJS(); // TODO use todoKeywordSets to complete ALL possible keywords; delete redundant function extractAllTodoKeywords
       const tagNames = extractAllOrgTags(headers).toJS();
       const allProperties = extractAllOrgProperties(headers).toJS();
-      filterSuggestions = computeCompletionsForDatalist(
-        todoKeywords,
-        tagNames,
-        allProperties
-      )(this.state.filterString, this.state.curserPosition);
+      filterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
+        this.state.filterString,
+        this.state.curserPosition
+      );
     }
 
     return (
@@ -133,9 +137,7 @@ class TaskListModal extends PureComponent {
             id="checkbox-search-all-headers"
             onChange={this.handleSearchAllCheckboxChange}
           />
-          <label htmlFor="checkbox-search-all-headers">
-            Search in all headlines
-          </label>
+          <label htmlFor="checkbox-search-all-headers">Search all headlines</label>
         </div>
 
         <br />
@@ -150,4 +152,7 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskListModal);

@@ -60,7 +60,9 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
 ) => {
   const tagAndPropNames = [].concat(
     tagNames,
-    computeAllPropertyNames(fromJS(allProperties)).toJS().map(x => x + ':')
+    computeAllPropertyNames(fromJS(allProperties))
+      .toJS()
+      .map(x => x + ':')
   );
 
   if (curserPosition === 0) {
@@ -83,7 +85,6 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
         return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName).toJS();
       }
     }
-
   } else if (charBeforeCursor === '|') {
     const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
     const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
@@ -112,11 +113,10 @@ export const computeCompletionsForDatalist = (todoKeywords, tagNames, allPropert
   filterString,
   curserPosition
 ) => {
-  const completions = computeCompletions(
-    todoKeywords,
-    tagNames,
-    allProperties
-  )(filterString, curserPosition);
+  const completions = computeCompletions(todoKeywords, tagNames, allProperties)(
+    filterString,
+    curserPosition
+  );
   return completions.map(
     x => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
   );
