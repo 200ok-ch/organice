@@ -1,5 +1,5 @@
-@import '../../../../colors.css';
-@import '../AgendaModal/stylesheet.css';
+/* Currently, the markup is the same as in the AgendaModal component.
+ * Hence the CSS rules from there apply. */
 
 agenda__filter-input {
   width: 100%;

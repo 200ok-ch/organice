@@ -114,7 +114,9 @@ export default class AgendaDay extends PureComponent {
         const earliestPlanningItem = header
           .get('planningItems')
           .sortBy(x => x.get('timestamp'))
-          .first(); // TODO sort DESC by timestamp (must be converted to datetime)
+          // TODO: sort DESC by timestamp (must be converted to
+          // datetime)
+          .first();
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {

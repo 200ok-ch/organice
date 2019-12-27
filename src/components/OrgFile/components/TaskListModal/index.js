@@ -70,16 +70,18 @@ class TaskListModal extends PureComponent {
       this.setState({ filterExpr });
     } catch (e) {
       //console.log(e);
-      // TODO highlight the input (syntax error)
+      // TODO: highlight the input (syntax error)
     }
   }
 
   render() {
-    const { onClose, headers, todoKeywordSets } = this.props; // TODO is this THE way to get this variable? it must be provided from parent
+    // TODO: is this THE way to get this variable? it must be provided
+    // from parent
+    const { onClose, headers, todoKeywordSets } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     let filteredHeaders = headers;
-    if (this.state.filterExpr !== []) {
+    if (!_.isEmpty(this.state.filterExpr)) {
       filteredHeaders = this.props.headers.filter(header => {
         return isMatch(this.state.filterExpr)(header);
       });
@@ -87,18 +89,23 @@ class TaskListModal extends PureComponent {
 
     const date = new Date();
 
-    const lastUsedFitlerStrings = ['TODO :simple']; // TODO read from localStorage (the react way?)
-    // TODO insertOrUpdate list in localStorage with this.state.filterString when modal becomes hidden/closed
+    // TODO: read from localStorage (the react way?)
+    const lastUsedFitlerStrings = ['TODO :simple'];
+    // TODO: insertOrUpdate list in localStorage with
+    // this.state.filterString when modal becomes hidden/closed
 
     let filterSuggestions = lastUsedFitlerStrings;
     if (this.state.filterString.trim() !== '') {
-      const todoKeywords = extractAllTodoKeywords(headers).toJS(); // TODO use todoKeywordSets to complete ALL possible keywords; delete redundant function extractAllTodoKeywords
+      // TODO: use todoKeywordSets to complete ALL possible keywords;
+      // delete redundant function extractAllTodoKeywords
+      const todoKeywords = extractAllTodoKeywords(headers).toJS();
       const tagNames = extractAllOrgTags(headers).toJS();
       const allProperties = extractAllOrgProperties(headers).toJS();
-      filterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
-        this.state.filterString,
-        this.state.curserPosition
-      );
+      filterSuggestions = computeCompletionsForDatalist(
+        todoKeywords,
+        tagNames,
+        allProperties
+      )(this.state.filterString, this.state.curserPosition);
     }
 
     return (
@@ -152,7 +159,4 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListModal);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);
