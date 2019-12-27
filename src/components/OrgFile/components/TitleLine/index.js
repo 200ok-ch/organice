@@ -186,10 +186,6 @@ class TitleLine extends PureComponent {
       shouldDisableExplicitWidth,
     } = this.props;
     const { containerWidth } = this.state;
-
-    // TODO: how get todoKeywordSet for this headline?
-    console.log(header.toJS());
-    const isDone = todoKeyword => todoKeyword === 'DONE';
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
@@ -212,10 +208,7 @@ class TitleLine extends PureComponent {
             // with the appropriate color, no matter what the keyword
             // is.
             // Relevant issue: https://github.com/200ok-ch/organice/issues/16
-            className={classNames(
-              'todo-keyword',
-              isDone(todoKeyword) ? 'todo-keyword--done' : null
-            )}
+            className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
             onClick={this.handleTodoClick}
           >
             {todoKeyword}
