@@ -35,16 +35,16 @@ describe('Headline filter parser', () => {
       expect(expr[2].type).toEqual('property');
     });
     test('Parses property name', () => {
-      expect(expr[0].key).toEqual('assignee');
+      expect(expr[0].property).toEqual('assignee');
     });
     test('Parses alternatives', () => {
-      expect(expr[0].value).toEqual(['jak', 'nik']);
+      expect(expr[0].words).toEqual(['jak', 'nik']);
     });
     test('Parses empty value', () => {
-      expect(expr[1].value).toEqual(['']);
+      expect(expr[1].words).toEqual(['']);
     });
     test('Parses single value', () => {
-      expect(expr[2].value).toEqual(['test']);
+      expect(expr[2].words).toEqual(['test']);
     });
   });
 

@@ -37,8 +37,8 @@ TermProp "property filter term"
   = ":" a:PropertyName ":" b:WordAlternatives? {
           return {
             type: 'property',
-            key: a,
-            value: b === null ? [''] : b
+            property: a,
+            words: b === null ? [''] : b
           }
         };
 
