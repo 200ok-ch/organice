@@ -80,9 +80,15 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
       // Either property name or text filter
       const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
       const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
+      const onlyFirstPartOfValue = x => {
+        const match = x.match(/^[^ ]*/);
+        return match ? [match[0]] : [];
+      };
       if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
         // No space in property name -> is property -> return values for that property
-        return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName).toJS();
+        return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName)
+          .flatMap(onlyFirstPartOfValue)
+          .toJS();
       }
     }
   } else if (charBeforeCursor === '|') {
