@@ -201,55 +201,54 @@ const computeParseResults = (rawText, match, index, startIndex) => {
       contents: text,
     };
   }
-  if (match.type === 'link') {
-    const linkPart = {
-      id: generateId(),
-      type: 'link',
-      contents: {
-        uri: match.uri,
-      },
-    };
-    if (match.title) {
-      linkPart.contents.title = match.title;
-    }
-    return linkPart;
-  } else if (match.type === 'percentage-cookie') {
-    return {
-      id: generateId(),
-      type: 'percentage-cookie',
-      percentage: match.percentage,
-    };
-  } else if (match.type === 'fraction-cookie') {
-    return {
-      id: generateId(),
-      type: 'fraction-cookie',
-      fraction: match.fraction,
-    };
-  } else if (match.type === 'inline-markup') {
-    return {
-      id: generateId(),
-      type: 'inline-markup',
-      content: match.content,
-      markupType: match.markupType,
-    };
-  } else if (match.type === 'timestamp') {
-    return {
-      id: generateId(),
-      type: 'timestamp',
-      firstTimestamp: match.firstTimestamp,
-      secondTimestamp: match.secondTimestamp,
-    };
-  } else if (
-    match.type === 'url' ||
-    match.type === 'e-mail' ||
-    match.type === 'phone-number' ||
-    match.type === 'www-url'
-  ) {
-    return {
-      id: generateId(),
-      type: match.type,
-      content: match.rawText,
-    };
+  switch (match.type) {
+    case 'link':
+      const linkPart = {
+        id: generateId(),
+        type: 'link',
+        contents: {
+          uri: match.uri,
+        },
+      };
+      if (match.title) {
+        linkPart.contents.title = match.title;
+      }
+      return linkPart;
+    case 'percentage-cookie':
+      return {
+        id: generateId(),
+        type: 'percentage-cookie',
+        percentage: match.percentage,
+      };
+    case 'fraction-cookie':
+      return {
+        id: generateId(),
+        type: 'fraction-cookie',
+        fraction: match.fraction,
+      };
+    case 'inline-markup':
+      return {
+        id: generateId(),
+        type: 'inline-markup',
+        content: match.content,
+        markupType: match.markupType,
+      };
+    case 'timestamp':
+      return {
+        id: generateId(),
+        type: 'timestamp',
+        firstTimestamp: match.firstTimestamp,
+        secondTimestamp: match.secondTimestamp,
+      };
+    case 'url':
+    case 'www-url':
+    case 'e-mail':
+    case 'phone-number':
+      return {
+        id: generateId(),
+        type: match.type,
+        content: match.rawText,
+      };
   }
 };
 
