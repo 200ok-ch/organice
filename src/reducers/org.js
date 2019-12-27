@@ -891,8 +891,6 @@ export const updateLogEntryTime = (state, action) => {
 
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition } = action;
-  console.log(searchFilter);
-  console.log(cursorPosition);
   const headers = state.get('headers');
   try {
     const searchFilterExpr = headline_filter_parser.parse(searchFilter);
@@ -917,9 +915,7 @@ export const setSearchFilterInformation = (state, action) => {
 
   let searchFilterSuggestions = '';
   if (!_.isEmpty(searchFilter)) {
-    // TODO: use todoKeywordSets to complete ALL possible keywords;
-    // delete redundant function extractAllTodoKeywords
-    const todoKeywords = extractAllTodoKeywords(headers).toJS();
+    const todoKeywords = getTodoKeywordSetsAsFlattenedArray(state);
     const tagNames = extractAllOrgTags(headers).toJS();
     const allProperties = extractAllOrgProperties(headers).toJS();
     searchFilterSuggestions = computeCompletionsForDatalist(
@@ -1060,6 +1056,16 @@ export default (state = new Map(), action) => {
       return state;
   }
 };
+
+function getTodoKeywordSetsAsFlattenedArray(state) {
+  return state
+    .get('todoKeywordSets')
+    .flatMap(todoKeywordSet => {
+      return todoKeywordSet.get('keywords');
+    })
+    .toSet()
+    .toJS();
+}
 
 /**
  * Updates Headlines with the next todoKeyword `newTodoState`. Also
