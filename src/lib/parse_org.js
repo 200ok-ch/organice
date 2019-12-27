@@ -177,8 +177,20 @@ export const parseMarkupAndCookies = (
   let startIndex = 0;
   matches.forEach(match => {
     let index = match.index;
-    const part = computeParseResults(rawText, match, index, startIndex);
+
+    // Get the part before the first match:
+    if (index !== startIndex) {
+      const text = rawText.substring(startIndex, index);
+      lineParts.push({
+        type: 'text',
+        contents: text,
+      });
+    }
+
+    // Get this match:
+    const part = computeParseResults(rawText, match);
     lineParts.push(part);
+
     startIndex = match.index + match.rawText.length;
   });
 
@@ -194,14 +206,7 @@ export const parseMarkupAndCookies = (
   return lineParts;
 };
 
-const computeParseResults = (rawText, match, index, startIndex) => {
-  if (index !== startIndex) {
-    const text = rawText.substring(startIndex, index);
-    return {
-      type: 'text',
-      contents: text,
-    };
-  }
+const computeParseResults = (rawText, match) => {
   switch (match.type) {
     case 'link':
       const linkPart = {
