@@ -181,15 +181,14 @@ export const readInitialState = () => {
 
   let initialState = {
     syncBackend: Map(),
-    search: Map(
-      fromJS({
-        searchFilter: '',
-        searchFilterExpr: [],
-      })
-    ),
     org: {
       past: [],
-      present: Map(),
+      present: Map({
+        search: Map({
+          searchFilter: '',
+          searchFilterExpr: [],
+        }),
+      }),
       future: [],
     },
     base: Map(),

@@ -142,8 +142,8 @@ class TaskListModal extends PureComponent {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  searchFilter: state.search.get('searchFilter'),
-  searchFilterExpr: state.search.get('searchFilterExpr'),
+  searchFilter: state.org.present.get('search').get('searchFilter'),
+  searchFilterExpr: state.org.present.get('search').get('searchFilterExpr'),
 });
 
 const mapDispatchToProps = dispatch => ({

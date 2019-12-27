@@ -4,7 +4,6 @@ import undoable, { includeAction } from 'redux-undo';
 import baseReducer from './base';
 import syncBackendReducer from './sync_backend';
 import orgReducer from './org';
-import searchReducer from './search';
 import captureReducer from './capture';
 
 const UNDOABLE_ACTIONS = [
@@ -34,6 +33,5 @@ export default combineReducers({
   org: undoable(orgReducer, {
     filter: includeAction(UNDOABLE_ACTIONS),
   }),
-  search: searchReducer,
   capture: captureReducer,
 });
