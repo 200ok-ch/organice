@@ -1,6 +1,8 @@
 /* Currently, the markup is the same as in the AgendaModal component.
  * Hence the CSS rules from there apply. */
 
-agenda__filter-input {
+.searchModal__filter-input {
+  margin: 1em 0 1em 0;
+  box-sizing: border-box;
   width: 100%;
 }

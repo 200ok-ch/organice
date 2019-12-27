@@ -107,14 +107,16 @@ class TaskListModal extends PureComponent {
           />
         </div>
 
-        <div className="agenda__tab-container">
+        <div>
           <input
             type="text"
-            className="agenda__filter-input"
+            className="searchModal__filter-input"
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
             list="datalist-filter"
             onChange={this.handleFilterChange}
           />
+        </div>
+        <div className="agenda__tab-container">
           <input
             type="checkbox"
             id="checkbox-search-all-headers"
