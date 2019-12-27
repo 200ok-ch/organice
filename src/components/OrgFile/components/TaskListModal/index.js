@@ -25,13 +25,14 @@ class TaskListModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange']);
+    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange', 'handleSearchAllCheckboxChange']);
 
     this.state = {
       selectedDate: new Date(),
       dateDisplayType: 'absolute',
       filterString: '',
       filterExpr: [],
+      searchAllHeaders: false,
     };
   }
 
@@ -46,6 +47,11 @@ class TaskListModal extends PureComponent {
     this.setState({
       dateDisplayType: dateDisplayType === 'absolute' ? 'relative' : 'absolute',
     });
+  }
+
+  handleSearchAllCheckboxChange(event) {
+    const searchAllHeaders = event.target.value;
+    this.setState({ searchAllHeaders });
   }
 
   handleFilterChange(event) {
@@ -106,6 +112,7 @@ class TaskListModal extends PureComponent {
             key={format(date, 'yyyy MM dd')}
             date={date}
             headers={filteredHeaders}
+            searchAllHeaders={this.state.searchAllHeaders}
             todoKeywordSets={todoKeywordSets}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
@@ -121,6 +128,14 @@ class TaskListModal extends PureComponent {
             list="datalist-filter"
             onChange={this.handleFilterChange}
           />
+          <input
+            type="checkbox"
+            id="checkbox-search-all-headers"
+            onChange={this.handleSearchAllCheckboxChange}
+          />
+          <label htmlFor="checkbox-search-all-headers">
+            Search in all headlines
+          </label>
         </div>
 
         <br />

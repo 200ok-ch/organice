@@ -18,6 +18,7 @@ export default class AgendaDay extends PureComponent {
     const {
       date,
       headers,
+      searchAllHeaders,
       todoKeywordSets,
       dateDisplayType,
       onToggleDateDisplayType,
@@ -30,6 +31,7 @@ export default class AgendaDay extends PureComponent {
 
     const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
       headers,
+      searchAllHeaders,
       todoKeywordSets,
       date,
       agendaDefaultDeadlineDelayValue,
@@ -97,6 +99,7 @@ export default class AgendaDay extends PureComponent {
 
   getPlanningItemsAndHeaders({
     headers,
+    searchAllHeaders,
     todoKeywordSets,
     date,
     agendaDefaultDeadlineDelayValue,
@@ -106,7 +109,7 @@ export default class AgendaDay extends PureComponent {
     only
   }) {
     return headers
-      .filter(header => header.get('titleLine').get('todoKeyword'))
+      .filter(header => searchAllHeaders || header.get('titleLine').get('todoKeyword'))
       .map(header => {
         const earliestPlanningItem = header.get('planningItems').sortBy(x => x.get('timestamp')).first(); // TODO sort DESC by timestamp (must be converted to datetime)
         return [earliestPlanningItem, header];
