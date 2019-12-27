@@ -32,6 +32,7 @@ class TaskListModal extends PureComponent {
       selectedDate: new Date(),
       dateDisplayType: 'absolute',
       filterString: '',
+      filterExpr: [],
     };
   }
 
@@ -52,25 +53,25 @@ class TaskListModal extends PureComponent {
     const filterString = event.target.value;
     const curserPosition = event.target.selectionStart;
     this.setState({ filterString, curserPosition });
+    try {
+      const filterExpr = parser.parse(this.state.filterString);
+      // state change triggers rendering? -> infinite loop
+      this.setState({ filterExpr });
+    } catch (e) {
+      //console.log(e);
+      // TODO highlight the input (syntax error)
+    }
+
   }
 
   render() {
     const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
-    let filterExpr = null;
-    try {
-      filterExpr = parser.parse(this.state.filterString);
-    } catch (e) {
-      console.log('filter expression invalid');
-      console.log(e);
-      // TODO highlight the input (syntax error)
-    }
-
     let filteredHeaders = headers;
-    if (filterExpr !== null) {
+    if (this.state.filterExpr !== []) {
       filteredHeaders = this.props.headers.filter(header => {
-        return isMatch(filterExpr)(header);
+        return isMatch(this.state.filterExpr)(header);
       });
     }
 
