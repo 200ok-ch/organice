@@ -16,6 +16,7 @@ import {
 } from '../../../../lib/org_utils';
 
 import * as orgActions from '../../../../actions/org';
+import * as searchActions from '../../../../actions/search';
 
 import _ from 'lodash';
 import format from 'date-fns/format';
@@ -57,7 +58,7 @@ class TaskListModal extends PureComponent {
   }
 
   handleFilterChange(event) {
-    this.props.org.setSearchFilter(event.target.value);
+    this.props.search.setSearchFilter(event.target.value);
 
     const curserPosition = event.target.selectionStart;
     this.setState({ curserPosition });
@@ -143,12 +144,13 @@ class TaskListModal extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  searchFilter: state.org.present.get('searchFilter'),
-  searchFilterExpr: state.org.present.get('searchFilterExpr'),
+  searchFilter: state.search.get('searchFilter'),
+  searchFilterExpr: state.search.get('searchFilterExpr'),
 });
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
+  search: bindActionCreators(searchActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);
