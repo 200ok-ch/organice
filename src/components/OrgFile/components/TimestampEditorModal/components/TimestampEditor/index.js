@@ -9,6 +9,7 @@ import TabButtons from '../../../../../UI/TabButtons/';
 
 import * as orgActions from '../../../../../../actions/org';
 
+import { headerWithId } from '../../../../../../lib/org_utils';
 import { renderAsText } from '../../../../../../lib/timestamps';
 
 import _ from 'lodash';
@@ -73,6 +74,18 @@ class TimestampEditor extends PureComponent {
         startOrEnd === 'start' ? ['startHour', 'startMinute'] : ['endHour', 'endMinute'];
       const [hour, minute] = format(new Date(), 'HH:mm').split(':');
       onChange(timestamp.set(hourKey, hour).set(minuteKey, minute));
+    };
+  }
+
+  handleRemoveCompleteTimestamp(header, planningItemIndex) {
+    return () => {
+      const planningItems = header.get('planningItems');
+      const changedPlanningItems = planningItems.remove(planningItemIndex);
+      header.set('planningItems', changedPlanningItems);
+      // TODO: the previous line seem to have no effect.
+      console.log(planningItems.toJS());
+      console.log(changedPlanningItems.toJS());
+      // TODO: hide/close modal
     };
   }
 
@@ -292,7 +305,8 @@ class TimestampEditor extends PureComponent {
   }
 
   render() {
-    const { timestamp, planningItemIndex } = this.props;
+    const { timestamp, planningItemIndex, header } = this.props;
+    console.log(this.props);
     const {
       isActive,
       year,
@@ -329,6 +343,11 @@ class TimestampEditor extends PureComponent {
                 onFocus={event => (event.nativeEvent.target.defaultValue = '')}
                 value={`${year}-${month}-${day}`}
               />
+              <span
+                className="fas fa-times fa-lg timestamp-editor__icon timestamp-editor__icon--remove"
+                title="Remove the complete timestamp"
+                onClick={this.handleRemoveCompleteTimestamp(header, planningItemIndex)}
+              />
             </div>
           </div>
 
@@ -345,8 +364,11 @@ class TimestampEditor extends PureComponent {
 
 const mapStateToProps = state => {
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  const headers = state.org.present.get('headers');
+  const header = headerWithId(headers, selectedHeaderId);
   return {
     selectedHeaderId,
+    header,
   };
 };
 
