@@ -51,14 +51,7 @@ class TaskListModal extends PureComponent {
   }
 
   render() {
-    const {
-      onClose,
-      headers,
-      todoKeywordSets,
-      searchFilterExpr,
-      filteredHeaders,
-      searchFilterSuggestions,
-    } = this.props;
+    const { onClose, searchFilterSuggestions } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     const date = new Date();
@@ -77,7 +70,6 @@ class TaskListModal extends PureComponent {
           <TaskListView
             key={format(date, 'yyyy MM dd')}
             date={date}
-            headers={filteredHeaders}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
@@ -109,12 +101,7 @@ class TaskListModal extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
   searchFilter: state.org.present.get('search').get('searchFilter'),
-  searchFilterExpr: state.org.present.get('search').get('searchFilterExpr'),
-  // When no filtering has happened, yet (initial state), use all headers.
-  filteredHeaders:
-    state.org.present.get('search').get('filteredHeaders') || state.org.present.get('headers'),
   searchFilterSuggestions: state.org.present.get('search').get('searchFilterSuggestions') || [''],
 });
 

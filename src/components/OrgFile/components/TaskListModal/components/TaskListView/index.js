@@ -1,6 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
@@ -131,6 +130,9 @@ class TaskListView extends PureComponent {
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
   searchAllHeaders: state.org.present.get('search').get('searchAllHeaders'),
+  // When no filtering has happened, yet (initial state), use all headers.
+  headers:
+    state.org.present.get('search').get('filteredHeaders') || state.org.present.get('headers'),
 });
 
 const mapDispatchToProps = dispatch => ({});
