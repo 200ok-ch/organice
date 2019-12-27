@@ -130,6 +130,7 @@ class TaskListView extends PureComponent {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
+  searchAllHeaders: state.org.present.get('search').get('searchAllHeaders'),
 });
 
 const mapDispatchToProps = dispatch => ({});

@@ -34,7 +34,6 @@ class TaskListModal extends PureComponent {
     this.state = {
       selectedDate: new Date(),
       dateDisplayType: 'absolute',
-      searchAllHeaders: false,
     };
   }
 
@@ -52,8 +51,7 @@ class TaskListModal extends PureComponent {
   }
 
   handleSearchAllCheckboxChange(event) {
-    const searchAllHeaders = event.target.value;
-    this.setState({ searchAllHeaders });
+    this.props.org.setSearchAllHeadersFlag(event.target.checked);
   }
 
   handleFilterChange(event) {
@@ -103,7 +101,6 @@ class TaskListModal extends PureComponent {
             key={format(date, 'yyyy MM dd')}
             date={date}
             headers={filteredHeaders}
-            searchAllHeaders={this.state.searchAllHeaders}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
@@ -136,6 +133,7 @@ const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
   searchFilter: state.org.present.get('search').get('searchFilter'),
   searchFilterExpr: state.org.present.get('search').get('searchFilterExpr'),
+  // When no filtering has happened, yet (initial state), use all headers.
   filteredHeaders:
     state.org.present.get('search').get('filteredHeaders') || state.org.present.get('headers'),
 });

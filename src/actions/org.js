@@ -482,3 +482,8 @@ export const setSearchFilter = searchFilter => ({
   type: 'SET_SEARCH_FILTER',
   searchFilter,
 });
+
+export const setSearchAllHeadersFlag = searchAllHeaders => ({
+  type: 'SET_SEARCH_ALL_HEADERS_FLAG',
+  searchAllHeaders,
+});
