@@ -15,8 +15,6 @@ import {
   extractAllTodoKeywords,
 } from '../../../../lib/org_utils';
 
-import parser from '../../../../lib/headline_filter_parser';
-
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
@@ -36,8 +34,6 @@ class TaskListModal extends PureComponent {
     this.state = {
       selectedDate: new Date(),
       dateDisplayType: 'absolute',
-      filterString: '',
-      filterExpr: [],
       searchAllHeaders: false,
     };
   }
@@ -61,29 +57,20 @@ class TaskListModal extends PureComponent {
   }
 
   handleFilterChange(event) {
-    const filterString = event.target.value;
+    this.props.org.setSearchFilter(event.target.value);
+
     const curserPosition = event.target.selectionStart;
-    this.setState({ filterString, curserPosition });
-    try {
-      const filterExpr = parser.parse(this.state.filterString);
-      // state change triggers rendering? -> infinite loop
-      this.setState({ filterExpr });
-    } catch (e) {
-      //console.log(e);
-      // TODO: highlight the input (syntax error)
-    }
+    this.setState({ curserPosition });
   }
 
   render() {
-    // TODO: is this THE way to get this variable? it must be provided
-    // from parent
-    const { onClose, headers, todoKeywordSets } = this.props;
+    const { onClose, headers, todoKeywordSets, searchFilterExpr } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     let filteredHeaders = headers;
-    if (!_.isEmpty(this.state.filterExpr)) {
+    if (!_.isEmpty(searchFilterExpr)) {
       filteredHeaders = this.props.headers.filter(header => {
-        return isMatch(this.state.filterExpr)(header);
+        return isMatch(searchFilterExpr)(header);
       });
     }
 
@@ -95,7 +82,7 @@ class TaskListModal extends PureComponent {
     // this.state.filterString when modal becomes hidden/closed
 
     let filterSuggestions = lastUsedFitlerStrings;
-    if (this.state.filterString.trim() !== '') {
+    if (this.props.searchFilter !== '') {
       // TODO: use todoKeywordSets to complete ALL possible keywords;
       // delete redundant function extractAllTodoKeywords
       const todoKeywords = extractAllTodoKeywords(headers).toJS();
@@ -105,7 +92,7 @@ class TaskListModal extends PureComponent {
         todoKeywords,
         tagNames,
         allProperties
-      )(this.state.filterString, this.state.curserPosition);
+      )(this.props.searchFilter, this.state.curserPosition);
     }
 
     return (
@@ -124,6 +111,8 @@ class TaskListModal extends PureComponent {
             date={date}
             headers={filteredHeaders}
             searchAllHeaders={this.state.searchAllHeaders}
+            // TODO: Don't pass todoKeywords. Instead use Redux and
+            // mapStateToProps.
             todoKeywordSets={todoKeywordSets}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
@@ -153,7 +142,10 @@ class TaskListModal extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  searchFilter: state.org.present.get('searchFilter'),
+  searchFilterExpr: state.org.present.get('searchFilterExpr'),
+});
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
