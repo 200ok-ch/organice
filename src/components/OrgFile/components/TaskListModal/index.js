@@ -76,14 +76,20 @@ class TaskListModal extends PureComponent {
 
     const date = new Date();
 
-    const todoKeywords = extractAllTodoKeywords(headers).toJS(); // TODO use todoKeywordSets to complete ALL possible keywords; delete redundant function extractAllTodoKeywords
-    const tagNames = extractAllOrgTags(headers).toJS();
-    const allProperties = extractAllOrgProperties(headers).toJS();
-    const filterSuggestions = computeCompletionsForDatalist(
-      todoKeywords,
-      tagNames,
-      allProperties
-    )(this.state.filterString, this.state.curserPosition);
+    const lastUsedFitlerStrings = ['TODO :simple']; // TODO read from localStorage (the react way?)
+    // TODO insertOrUpdate list in localStorage with this.state.filterString when modal becomes hidden/closed
+
+    let filterSuggestions = lastUsedFitlerStrings;
+    if (this.state.filterString.trim() !== '') {
+      const todoKeywords = extractAllTodoKeywords(headers).toJS(); // TODO use todoKeywordSets to complete ALL possible keywords; delete redundant function extractAllTodoKeywords
+      const tagNames = extractAllOrgTags(headers).toJS();
+      const allProperties = extractAllOrgProperties(headers).toJS();
+      filterSuggestions = computeCompletionsForDatalist(
+        todoKeywords,
+        tagNames,
+        allProperties
+      )(this.state.filterString, this.state.curserPosition);
+    }
 
     return (
       <Drawer onClose={onClose}>
