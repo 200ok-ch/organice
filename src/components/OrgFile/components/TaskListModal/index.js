@@ -7,14 +7,6 @@ import './stylesheet.css';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
-import { computeCompletionsForDatalist } from '../../../../lib/headline_filter';
-
-import {
-  extractAllOrgTags,
-  extractAllOrgProperties,
-  extractAllTodoKeywords,
-} from '../../../../lib/org_utils';
-
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
@@ -55,43 +47,28 @@ class TaskListModal extends PureComponent {
   }
 
   handleFilterChange(event) {
-    this.props.org.setSearchFilter(event.target.value);
-
-    const curserPosition = event.target.selectionStart;
-    this.setState({ curserPosition });
+    this.props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
   }
 
   render() {
-    const { onClose, headers, todoKeywordSets, searchFilterExpr, filteredHeaders } = this.props;
+    const {
+      onClose,
+      headers,
+      todoKeywordSets,
+      searchFilterExpr,
+      filteredHeaders,
+      searchFilterSuggestions,
+    } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     const date = new Date();
-
-    // TODO: read from localStorage (the react way?)
-    const lastUsedFitlerStrings = ['TODO :simple'];
-    // TODO: insertOrUpdate list in localStorage with
-    // this.state.filterString when modal becomes hidden/closed
-
-    let filterSuggestions = lastUsedFitlerStrings;
-    if (this.props.searchFilter !== '') {
-      // TODO: use todoKeywordSets to complete ALL possible keywords;
-      // delete redundant function extractAllTodoKeywords
-      const todoKeywords = extractAllTodoKeywords(headers).toJS();
-      const tagNames = extractAllOrgTags(headers).toJS();
-      const allProperties = extractAllOrgProperties(headers).toJS();
-      filterSuggestions = computeCompletionsForDatalist(
-        todoKeywords,
-        tagNames,
-        allProperties
-      )(this.props.searchFilter, this.state.curserPosition);
-    }
 
     return (
       <Drawer onClose={onClose}>
         <h2 className="agenda__title">Task list</h2>
 
         <datalist id="datalist-filter">
-          {filterSuggestions.map((string, idx) => (
+          {searchFilterSuggestions.map((string, idx) => (
             <option key={idx} value={string} />
           ))}
         </datalist>
@@ -138,6 +115,7 @@ const mapStateToProps = state => ({
   // When no filtering has happened, yet (initial state), use all headers.
   filteredHeaders:
     state.org.present.get('search').get('filteredHeaders') || state.org.present.get('headers'),
+  searchFilterSuggestions: state.org.present.get('search').get('searchFilterSuggestions') || [''],
 });
 
 const mapDispatchToProps = dispatch => ({

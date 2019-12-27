@@ -2,7 +2,13 @@ import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
-import { isMatch } from '../lib/headline_filter';
+import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
+
+import {
+  extractAllOrgTags,
+  extractAllOrgProperties,
+  extractAllTodoKeywords,
+} from '../lib/org_utils';
 
 import {
   parseOrg,
@@ -883,13 +889,16 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
-export const setSearchFilter = (state, action) => {
-  const { searchFilter } = action;
+export const setSearchFilterInformation = (state, action) => {
+  const { searchFilter, cursorPosition } = action;
+  console.log(searchFilter);
+  console.log(cursorPosition);
+  const headers = state.get('headers');
   try {
     const searchFilterExpr = headline_filter_parser.parse(searchFilter);
     state = state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
 
-    let filteredHeaders = state.get('headers');
+    let filteredHeaders = headers;
     if (!_.isEmpty(searchFilterExpr)) {
       filteredHeaders = filteredHeaders.filter(header => {
         return isMatch(searchFilterExpr)(header);
@@ -901,6 +910,26 @@ export const setSearchFilter = (state, action) => {
     console.warn('Exception parsing headline filter: ' + e);
   }
   state = state.setIn(['search', 'searchFilter'], _.trim(searchFilter));
+
+  // INFO: This is a POC draft of a future feature
+  // This could come from the last session, hence from localStorage.
+  // const lastUsedFitlerStrings = ['TODO :simple'];
+
+  let searchFilterSuggestions = '';
+  if (!_.isEmpty(searchFilter)) {
+    // TODO: use todoKeywordSets to complete ALL possible keywords;
+    // delete redundant function extractAllTodoKeywords
+    const todoKeywords = extractAllTodoKeywords(headers).toJS();
+    const tagNames = extractAllOrgTags(headers).toJS();
+    const allProperties = extractAllOrgProperties(headers).toJS();
+    searchFilterSuggestions = computeCompletionsForDatalist(
+      todoKeywords,
+      tagNames,
+      allProperties
+    )(searchFilter, cursorPosition);
+
+    state = state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
+  }
 
   return state;
 };
@@ -1022,8 +1051,8 @@ export default (state = new Map(), action) => {
       return createLogEntryStart(state, action);
     case 'UPDATE_LOG_ENTRY_TIME':
       return updateLogEntryTime(state, action);
-    case 'SET_SEARCH_FILTER':
-      return setSearchFilter(state, action);
+    case 'SET_SEARCH_FILTER_INFORMATION':
+      return setSearchFilterInformation(state, action);
     case 'SET_SEARCH_ALL_HEADERS_FLAG':
       return setSearchAllHeadersFlag(state, action);
 
