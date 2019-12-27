@@ -1,2 +1,6 @@
 @import '../../../../colors.css';
 @import '../AgendaModal/stylesheet.css';
+
+agenda__filter-input {
+  width: 100%;
+}

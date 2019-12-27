@@ -19,7 +19,6 @@ import parser from '../../../../lib/headline_filter_parser';
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
-import { addDays, startOfMonth, getDaysInMonth } from 'date-fns';
 import format from 'date-fns/format';
 
 class TaskListModal extends PureComponent {
@@ -65,7 +64,7 @@ class TaskListModal extends PureComponent {
   }
 
   render() {
-    const { onClose, headers } = this.props;
+    const { onClose, headers, todoKeywordSets } = this.props; // TODO is this THE way to get this variable? it must be provided from parent
     const { selectedDate, dateDisplayType } = this.state;
 
     let filteredHeaders = headers;
@@ -77,7 +76,7 @@ class TaskListModal extends PureComponent {
 
     const date = new Date();
 
-    const todoKeywords = extractAllTodoKeywords(headers).toJS();
+    const todoKeywords = extractAllTodoKeywords(headers).toJS(); // TODO use todoKeywordSets to complete ALL possible keywords; delete redundant function extractAllTodoKeywords
     const tagNames = extractAllOrgTags(headers).toJS();
     const allProperties = extractAllOrgProperties(headers).toJS();
     const filterSuggestions = computeCompletionsForDatalist(
@@ -101,6 +100,7 @@ class TaskListModal extends PureComponent {
             key={format(date, 'yyyy MM dd')}
             date={date}
             headers={filteredHeaders}
+            todoKeywordSets={todoKeywordSets}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
@@ -110,6 +110,7 @@ class TaskListModal extends PureComponent {
         <div className="agenda__tab-container">
           <input
             type="text"
+            className="agenda__filter-input"
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
             list="datalist-filter"
             onChange={this.handleFilterChange}
