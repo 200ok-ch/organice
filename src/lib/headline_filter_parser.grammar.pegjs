@@ -4,6 +4,8 @@
 // It will automatically be compiled to the parser JavaScript file using the
 // parser generator pegjs.
 
+// You can use https://pegjs.org/online to debug it.
+
 // Note: The parser will fail when the syntax does not match the grammar.
 // For example, it fails for filter strings like ":" or "this|" because the
 // grammar dictates a property or tag after ":" and an alternative word after
@@ -20,7 +22,12 @@ Expression "filter expression"
     }
  / _* { return [] }
 
+// The order of lines is important here.
 Term "filter term"
+  = "-" a:PlainTerm { a.exclude = true;  return a; }
+  /     a:PlainTerm { a.exclude = false; return a; }
+
+PlainTerm
   = TermText
   / TermProp
   / TermTag
