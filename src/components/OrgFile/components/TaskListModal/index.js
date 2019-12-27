@@ -7,7 +7,7 @@ import './stylesheet.css';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
-import { isMatch, computeCompletionsForDatalist } from '../../../../lib/headline_filter';
+import { computeCompletionsForDatalist } from '../../../../lib/headline_filter';
 
 import {
   extractAllOrgTags,
@@ -16,7 +16,6 @@ import {
 } from '../../../../lib/org_utils';
 
 import * as orgActions from '../../../../actions/org';
-import * as searchActions from '../../../../actions/search';
 
 import _ from 'lodash';
 import format from 'date-fns/format';
@@ -58,22 +57,15 @@ class TaskListModal extends PureComponent {
   }
 
   handleFilterChange(event) {
-    this.props.search.setSearchFilter(event.target.value);
+    this.props.org.setSearchFilter(event.target.value);
 
     const curserPosition = event.target.selectionStart;
     this.setState({ curserPosition });
   }
 
   render() {
-    const { onClose, headers, todoKeywordSets, searchFilterExpr } = this.props;
+    const { onClose, headers, todoKeywordSets, searchFilterExpr, filteredHeaders } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
-
-    let filteredHeaders = headers;
-    if (!_.isEmpty(searchFilterExpr)) {
-      filteredHeaders = this.props.headers.filter(header => {
-        return isMatch(searchFilterExpr)(header);
-      });
-    }
 
     const date = new Date();
 
@@ -144,11 +136,12 @@ const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
   searchFilter: state.org.present.get('search').get('searchFilter'),
   searchFilterExpr: state.org.present.get('search').get('searchFilterExpr'),
+  filteredHeaders:
+    state.org.present.get('search').get('filteredHeaders') || state.org.present.get('headers'),
 });
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
-  search: bindActionCreators(searchActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);

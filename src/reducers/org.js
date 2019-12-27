@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
+import { isMatch } from '../lib/headline_filter';
 
 import {
   parseOrg,
@@ -885,8 +886,17 @@ export const updateLogEntryTime = (state, action) => {
 export const setSearchFilter = (state, action) => {
   const { searchFilter } = action;
   try {
-    const filterExpr = headline_filter_parser.parse(searchFilter);
-    state = state.setIn(['search', 'searchFilterExpr'], filterExpr);
+    const searchFilterExpr = headline_filter_parser.parse(searchFilter);
+    state = state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
+
+    let filteredHeaders = state.get('headers');
+    if (!_.isEmpty(searchFilterExpr)) {
+      filteredHeaders = filteredHeaders.filter(header => {
+        return isMatch(searchFilterExpr)(header);
+      });
+
+      state = state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+    }
   } catch (e) {
     console.warn('Exception parsing headline filter: ' + e);
   }
