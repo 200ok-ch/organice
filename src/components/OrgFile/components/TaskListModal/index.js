@@ -26,7 +26,7 @@ class TaskListModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange', 'handleSelectionChange']);
+    _.bindAll(this, ['handleHeaderClick', 'handleToggleDateDisplayType', 'handleFilterChange']);
 
     this.state = {
       selectedDate: new Date(),
@@ -70,10 +70,6 @@ class TaskListModal extends PureComponent {
       // TODO highlight the input (syntax error)
     }
 
-    let dates = [];
-    const monthStart = startOfMonth(selectedDate);
-    dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter => addDays(monthStart, daysAfter));
-
     const date = new Date();
 
     const todoKeywords = extractAllTodoKeywords(headers).toJS();
@@ -112,7 +108,6 @@ class TaskListModal extends PureComponent {
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
             list="datalist-filter"
             onChange={this.handleFilterChange}
-            onSelectionChange={this.handleSelectionChange}
           />
         </div>
 
