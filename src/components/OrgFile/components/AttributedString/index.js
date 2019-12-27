@@ -67,7 +67,6 @@ export default ({ parts, subPartDataAndHandlers }) => {
               />
             );
           case 'inline-markup':
-            console.log('rendering inline-markup');
             className = classNames(
               'attributed-string__inline-markup',
               `attributed-string__inline-markup--${part.get('markupType')}`
