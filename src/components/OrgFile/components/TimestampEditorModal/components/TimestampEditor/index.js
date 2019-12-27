@@ -182,14 +182,14 @@ class TimestampEditor extends PureComponent {
                 onChange={this.handleTimeChange(timeKey)}
               />
               {showRemoveButton && (
-                <i
+                <span
                   className="fas fa-times fa-lg timestamp-editor__icon timestamp-editor__icon--remove"
                   onClick={this.handleRemoveTime(timeKey)}
                 />
               )}
             </Fragment>
           ) : (
-            <i
+            <span
               className="fas fa-plus timestamp-editor__icon timestamp-editor__icon--add"
               onClick={this.handleAddTime(timeKey)}
             />
@@ -229,13 +229,13 @@ class TimestampEditor extends PureComponent {
                   onSelect={this.handleRepeaterUnitChange}
                 />
               </div>
-              <i
+              <span
                 className="fas fa-times fa-lg timestamp-editor__icon timestamp-editor__icon--remove"
                 onClick={this.handleRemoveRepeater}
               />
             </Fragment>
           ) : (
-            <i
+            <span
               className="fas fa-plus timestamp-editor__icon timestamp-editor__icon--add"
               onClick={this.handleAddRepeater}
             />
@@ -275,13 +275,13 @@ class TimestampEditor extends PureComponent {
                   onSelect={this.handleDelayUnitChange}
                 />
               </div>
-              <i
+              <span
                 className="fas fa-times fa-lg timestamp-editor__icon timestamp-editor__icon--remove"
                 onClick={this.handleRemoveDelay}
               />
             </Fragment>
           ) : (
-            <i
+            <span
               className="fas fa-plus timestamp-editor__icon timestamp-editor__icon--add"
               onClick={this.handleAddDelay}
             />
@@ -354,4 +354,7 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimestampEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TimestampEditor);
