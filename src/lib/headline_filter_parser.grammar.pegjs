@@ -4,6 +4,13 @@
 // It will automatically be compiled to the parser JavaScript file using the
 // parser generator pegjs.
 
+// Note: The parser will fail when the syntax does not match the grammar.
+// For example, it fails for filter strings like ":" or "this|" because the
+// grammar dictates a property or tag after ":" and an alternative word after
+// "|". That is intended. Handling this edge cases would add complexity.
+// Just wrap parser.parse() in a try-catch block and handle the case of an
+// incomplete/incorrect filter string.
+
 Expression "filter expression"
   = _* head:Term tail:(_+ Term)* _* {
       return tail.reduce((result, element) => {
