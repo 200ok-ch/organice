@@ -184,7 +184,7 @@ describe('Computation of completions and suggestions for task filter', () => {
   ];
   const tagAndPropNames = [].concat(
     tagNames,
-    allProperties.map(([x]) => x + ':')
+    ['prop1:', 'prop3:']
   );
   const propValsForProp1 = allProperties.filter(([x]) => x === 'prop1').map(([_, y]) => y);
 
@@ -241,7 +241,9 @@ describe('Computation of completions and suggestions for task filter', () => {
       });
     });
 
-    describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {});
+    describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {
+      // TODO
+    });
 
     describe('Completions for property/tag names after :', () => {
       test('Completions after : #1', () => {
@@ -249,6 +251,9 @@ describe('Computation of completions and suggestions for task filter', () => {
       });
       test('Completions after : #2', () => {
         expectComputation(' : ', 2).toEqual(tagAndPropNames);
+      });
+      test('Completions after : #3', () => {
+        expectComputation('a : ', 3).toEqual(tagAndPropNames);
       });
     });
 

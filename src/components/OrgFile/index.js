@@ -26,10 +26,10 @@ import { ActionCreators as undoActions } from 'redux-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
-import { timestampWithId, headerWithId, extractAllOrgProperties } from '../../lib/org_utils';
+import { timestampWithId, headerWithId, extractAllOrgTags, extractAllOrgProperties } from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { fromJS, OrderedSet } from 'immutable';
+import { fromJS } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -262,12 +262,11 @@ class OrgFile extends PureComponent {
           />
         );
       case 'tags-editor':
+        const allTags = extractAllOrgTags(headers);
         return !!selectedHeader ? (
           <TagsEditorModal
             header={selectedHeader}
-            allTags={OrderedSet(
-              headers.flatMap(header => header.getIn(['titleLine', 'tags']))
-            ).sort()}
+            allTags={allTags}
             onClose={this.handlePopupClose}
             onChange={this.handleTagsChange}
           />

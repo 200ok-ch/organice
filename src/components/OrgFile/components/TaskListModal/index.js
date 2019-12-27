@@ -9,9 +9,10 @@ import Drawer from '../../../UI/Drawer';
 
 import {
   isMatch,
-  computeCompletions,
   computeCompletionsForDatalist,
 } from '../../../../lib/headline_filter';
+
+import { extractAllOrgTags, extractAllOrgProperties, extractAllTodoKeywords } from '../../../../lib/org_utils';
 
 import parser from '../../../../lib/headline_filter_parser';
 
@@ -49,14 +50,8 @@ class TaskListModal extends PureComponent {
 
   handleFilterChange(event) {
     const filterString = event.target.value;
-    this.setState({ filterString });
-  }
-
-  handleSelectionChange(event) {
-    console.log(event.nativeEvent.selection);
-    console.log(event.selection);
-    const curserPosition = 0;
-    this.setState({ curserPosition });
+    const curserPosition = event.target.selectionStart;
+    this.setState({ filterString, curserPosition });
   }
 
   render() {
@@ -70,10 +65,9 @@ class TaskListModal extends PureComponent {
 
       filteredHeaders = this.props.headers.filter(header => {
         return isMatch(filterExpr)(header);
-        // TODO highlight the input (syntax error)
       });
     } catch (e) {
-      console.error('Exception while parsing the search string: ' + e);
+      // TODO highlight the input (syntax error)
     }
 
     let dates = [];
@@ -82,14 +76,14 @@ class TaskListModal extends PureComponent {
 
     const date = new Date();
 
-    const todoKeywords = ['TODO', 'DONE'];
-    const tagNames = ['t1', 't2'];
-    const allProperties = [
-      ['prop1', 'val1'],
-      ['prop1', 'val2'],
-      ['prop3', 'val3'],
-    ];
-    const filterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(this.state.filterString, this.state.curserPosition);
+    const todoKeywords = extractAllTodoKeywords(headers).toJS();
+    const tagNames = extractAllOrgTags(headers).toJS();
+    const allProperties = extractAllOrgProperties(headers).toJS();
+    const filterSuggestions = computeCompletionsForDatalist(
+      todoKeywords,
+      tagNames,
+      allProperties
+    )(this.state.filterString, this.state.curserPosition);
 
     return (
       <Drawer onClose={onClose}>

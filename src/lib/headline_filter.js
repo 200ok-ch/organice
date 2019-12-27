@@ -1,6 +1,8 @@
 // Matcher
 
+import { fromJS } from 'immutable';
 import { attributedStringToRawText } from './export_org.js';
+import { computeAllPropertyNames, computeAllPropertyValuesFor } from './org_utils';
 
 export const isMatch = filterExpr => header => {
   const headLine = header.get('titleLine');
@@ -58,7 +60,7 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
 ) => {
   const tagAndPropNames = [].concat(
     tagNames,
-    allProperties.map(([x]) => x + ':')
+    computeAllPropertyNames(fromJS(allProperties)).toJS().map(x => x + ':')
   );
 
   if (curserPosition === 0) {
@@ -66,18 +68,22 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
   }
 
   const charBeforeCursor = filterString.charAt(curserPosition - 1);
+  const charTwoBeforeCursor = curserPosition > 1 ? filterString.charAt(curserPosition - 2) : '';
   if (charBeforeCursor === ' ') {
     return todoKeywords;
   } else if (charBeforeCursor === ':') {
-    const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
-    const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-
-    if (maybePropertyName.match(/[^ ]/)) {
-      // No space in property name -> is property -> return values
-      return allProperties.filter(([x]) => x === maybePropertyName).map(([_, y]) => y);
+    if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') {
+      return tagAndPropNames;
+    } else {
+      // Either property name or text filter
+      const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
+      const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
+      if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
+        // No space in property name -> is property -> return values for that property
+        return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName).toJS();
+      }
     }
 
-    return tagAndPropNames;
   } else if (charBeforeCursor === '|') {
     const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
     const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
@@ -91,16 +97,11 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
     const filteredTodoKeywords = todoKeywords
       .filter(x => x.startsWith(charBeforeCursor))
       .map(x => x.substring(1));
-    if (curserPosition > 1) {
-      const charTwoBeforeCursor = filterString.charAt(curserPosition - 2);
-      if (charTwoBeforeCursor === ' ') {
-        return filteredTodoKeywords;
-      } else if (charTwoBeforeCursor === '|') {
-        // Only if in a text filter (not tag or property filter)
-        if (isInTextFilter(filterString, curserPosition)) return filteredTodoKeywords;
-      }
-    } else {
+    if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') {
       return filteredTodoKeywords;
+    } else if (charTwoBeforeCursor === '|') {
+      // Only if in a text filter (not tag or property filter)
+      if (isInTextFilter(filterString, curserPosition)) return filteredTodoKeywords;
     }
   }
 
