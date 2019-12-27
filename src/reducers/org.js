@@ -248,7 +248,7 @@ const addHeader = (state, action) => {
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
 
   const newHeader = newHeaderWithTitle(
-    '',
+    header.getIn(['titleLine', 'todoKeyword']) + ' ',
     header.get('nestingLevel'),
     state.get('todoKeywordSets')
   );
