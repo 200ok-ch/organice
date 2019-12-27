@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
-import AgendaDay from './components/AgendaDay';
+import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
 import {
@@ -96,7 +96,7 @@ class TaskListModal extends PureComponent {
         </datalist>
 
         <div className="agenda__days-container">
-          <AgendaDay
+          <TaskListView
             key={format(date, 'yyyy MM dd')}
             date={date}
             headers={filteredHeaders}
