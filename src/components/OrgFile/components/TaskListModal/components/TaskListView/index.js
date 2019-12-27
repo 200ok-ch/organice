@@ -1,4 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
@@ -9,7 +11,7 @@ import { dateForTimestamp } from '../../../../../../lib/timestamps';
 import { format, startOfDay, endOfDay, isPast, formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
 
-export default class AgendaDay extends PureComponent {
+class TaskListView extends PureComponent {
   handleHeaderClick(headerId) {
     return () => this.props.onHeaderClick(headerId);
   }
@@ -125,3 +127,11 @@ export default class AgendaDay extends PureComponent {
       });
   }
 }
+
+const mapStateToProps = state => ({
+  todoKeywordSets: state.org.present.get('todoKeywordSets'),
+});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);

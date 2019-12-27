@@ -112,9 +112,6 @@ class TaskListModal extends PureComponent {
             date={date}
             headers={filteredHeaders}
             searchAllHeaders={this.state.searchAllHeaders}
-            // TODO: Don't pass todoKeywords. Instead use Redux and
-            // mapStateToProps.
-            todoKeywordSets={todoKeywordSets}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}
@@ -144,6 +141,7 @@ class TaskListModal extends PureComponent {
 }
 
 const mapStateToProps = state => ({
+  todoKeywordSets: state.org.present.get('todoKeywordSets'),
   searchFilter: state.search.get('searchFilter'),
   searchFilterExpr: state.search.get('searchFilterExpr'),
 });
