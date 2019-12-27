@@ -177,7 +177,8 @@ export const parseMarkupAndCookies = (
   let startIndex = 0;
   matches.forEach(match => {
     let index = match.index;
-    lineParts.push(computeParseResults(rawText, match, index, startIndex));
+    const part = computeParseResults(rawText, match, index, startIndex);
+    lineParts.push(part);
     startIndex = match.index + match.rawText.length;
   });
 
@@ -249,6 +250,10 @@ const computeParseResults = (rawText, match, index, startIndex) => {
         type: match.type,
         content: match.rawText,
       };
+    default:
+      throw Error(
+        'The regex parser parsed something but it is not converted to proper data structure.'
+      );
   }
 };
 
