@@ -58,16 +58,20 @@ class TaskListModal extends PureComponent {
     const { onClose, headers } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
-    let filteredHeaders = headers;
-
+    let filterExpr = null;
     try {
-      const filterExpr = parser.parse(this.state.filterString);
+      filterExpr = parser.parse(this.state.filterString);
+    } catch (e) {
+      console.log('filter expression invalid');
+      console.log(e);
+      // TODO highlight the input (syntax error)
+    }
 
+    let filteredHeaders = headers;
+    if (filterExpr !== null) {
       filteredHeaders = this.props.headers.filter(header => {
         return isMatch(filterExpr)(header);
       });
-    } catch (e) {
-      // TODO highlight the input (syntax error)
     }
 
     const date = new Date();
