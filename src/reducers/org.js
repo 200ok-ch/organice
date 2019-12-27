@@ -57,6 +57,7 @@ const stopDisplayingFile = state =>
     .set('path', null)
     .set('contents', null)
     .set('headers', null)
+    .set('filteredHeaders', null)
     .set('todoKeywordSets', null)
     .set('fileConfigLines', null)
     .set('linesBeforeHeadings', null);
