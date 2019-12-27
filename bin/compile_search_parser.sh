@@ -7,4 +7,4 @@ npx pegjs -o src/lib/headline_filter_parser.{js,grammar.pegjs}
 # we're telling eslint to ignore the generated file.
 PARSER_FILE=src/lib/headline_filter_parser.js
 # Prepend the generated parser code with a `eslint-disable` comment.
-echo "/* eslint-disable */"|cat - $PARSER_FILE > /tmp/out && mv /tmp/out $PARSER_FILE
+sed -i '1i \/* eslint-disable */' "$PARSER_FILE"
