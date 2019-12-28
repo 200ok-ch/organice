@@ -214,7 +214,7 @@ class TitleLine extends PureComponent {
             // Relevant issue: https://github.com/200ok-ch/organice/issues/16
             className={classNames(
               'todo-keyword',
-              isDone(todoKeyword) ? 'todo-keyword--done' : null
+              isDone(todoKeyword) ? 'todo-keyword--done-state' : null
             )}
             onClick={this.handleTodoClick}
           >
