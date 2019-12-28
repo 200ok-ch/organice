@@ -4,21 +4,24 @@ import { isMatch, computeCompletions, computeCompletionsForDatalist } from './he
 
 // Helper functions
 // Generate tag filter
-const gtag = tag => [{ type: 'tag', words: [tag] }];
-const gtags = tags => tags.map(x => ({ type: 'tag', words: [x] }));
-const gtagsOr = tagsArr => tagsArr.map(x => ({ type: 'tag', words: x }));
+const gtag = tag => [{ type: 'tag', words: [tag], exclude: false }];
+const gtags = tags => tags.map(x => ({ type: 'tag', words: [x], exclude: false }));
+const gtagsOr = tagsArr => tagsArr.map(x => ({ type: 'tag', words: x, exclude: false }));
 // Generate case-sensitive filter
-const gcs = word => [{ type: 'case-sensitive', words: [word] }];
-const gcss = words => words.map(x => ({ type: 'case-sensitive', words: [x] }));
-const gcssOr = wordsArr => wordsArr.map(x => ({ type: 'case-sensitive', words: x }));
+const gcs = word => [{ type: 'case-sensitive', words: [word], exclude: false }];
+const gcss = words => words.map(x => ({ type: 'case-sensitive', words: [x], exclude: false }));
+const gcssOr = wordsArr =>
+  wordsArr.map(x => ({ type: 'case-sensitive', words: x, exclude: false }));
 // Generate ignore-case filter
-const gic = word => [{ type: 'ignore-case', words: [word] }];
-const gics = words => words.map(x => ({ type: 'ignore-case', words: [x] }));
-const gicsOr = wordsArr => wordsArr.map(x => ({ type: 'ignore-case', words: x }));
+const gic = word => [{ type: 'ignore-case', words: [word], exclude: false }];
+const gics = words => words.map(x => ({ type: 'ignore-case', words: [x], exclude: false }));
+const gicsOr = wordsArr => wordsArr.map(x => ({ type: 'ignore-case', words: x, exclude: false }));
 // Generate property filter
-const gprop = (key, word) => [{ type: 'property', property: key, words: [word] }];
-const gprops = props => props.map(([x, y]) => ({ type: 'property', property: x, words: [y] }));
-const gpropsOr = props => props.map(([x, ys]) => ({ type: 'property', property: x, words: ys }));
+const gprop = (key, word) => [{ type: 'property', property: key, words: [word], exclude: false }];
+const gprops = props =>
+  props.map(([x, y]) => ({ type: 'property', property: x, words: [y], exclude: false }));
+const gpropsOr = props =>
+  props.map(([x, ys]) => ({ type: 'property', property: x, words: ys, exclude: false }));
 
 describe('Match function for headline filter', () => {
   const testOrgFile = readFixture('headline_filter');

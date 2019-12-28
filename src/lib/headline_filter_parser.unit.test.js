@@ -66,7 +66,6 @@ describe('Headline filter parser', () => {
   });
 
   describe('Parsing of exclude-terms', () => {
-    console.log(parser.parse('-text'));
     const expectFirstParseResultExclude = s => expect(parser.parse(s)[0].exclude);
     test('Parses text filter', () => {
       expectFirstParseResultExclude('-text').toBe(true);
