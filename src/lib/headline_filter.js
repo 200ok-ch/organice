@@ -59,39 +59,10 @@ export const isMatch = filterExpr => header => {
 // The computation of completions rely on the fact, that the filter syntax does NOT
 // support quoted strings (i.e. no search for a quoted 'master headline').
 
-const SPACE_SURROUNDED = ' ';
-
-// Compute the logical curser position within the parsed filter expression.
-// Return SPACE_SURROUNDED if the curser is inbetween two expressions and
-// surrounded by spaces (begin and end of line count as space).
-// Return the the filter term if the curser is in or at the edge of an filter term.
-const computeLogicalPosition = (filterExpr, filterString, curserPosition) => {
-  if (filterExpr.length === 0) return SPACE_SURROUNDED;
-  const tup = (x, y) => ({ value: x, elem: y });
-  const firstElem = { offset: -1, endOffset: -1 };
-  const { value } = filterExpr.reduce(
-    ({ value, elem }, next) => {
-      if (elem === null) {
-        return tup(value, null); // short-circuit if already found
-      }
-      if (curserPosition >= next.offset && curserPosition <= next.endOffset) {
-        return tup(next, null);
-      }
-      if (curserPosition > elem.endOffset && curserPosition < next.offset) {
-        return tup(SPACE_SURROUNDED, null);
-      }
-      return tup(null, next);
-    },
-    { value: null, elem: firstElem }
-  );
-  if (curserPosition > filterExpr[filterExpr.length - 1].endOffset) return SPACE_SURROUNDED;
-  return value;
-};
-
-// TODO: This function is complex and still not perfect. It resembles
-// parts of the filter syntax parser. It would be better to run the
-// actual parser and using the parse results to decide on completions.
-// Open question: What if the parser fails (invalid filter string)?
+// This function is complex and still not perfect. It resembles parts of the
+// filter syntax parser. If the parser would annotate all parsed symbols with
+// offsets information, computeLogicalPosition could simplify the algorithm as
+// long as the filter string is parsed successfully.
 
 export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
   filterExpr,
@@ -132,32 +103,40 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
   } else if (logicalCursorPosition.type === 'ignore-case') {
     return [];
   } else if (logicalCursorPosition.type === 'tag') {
+    // This case will likely not occur because ':' alone cannot be parsed
+    if (charBeforeCursor === ':') return tagAndPropNames;
   } else if (logicalCursorPosition.type === 'property') {
+    if (charBeforeCursor === ':') {
+      if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') return tagAndPropNames;
+      else {
+        // Either property name or text filter
+        const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
+        const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
+        const onlyFirstPartOfValue = x => {
+          const match = x.match(/^[^ ]*/);
+          return match ? [match[0]] : [];
+        };
+        if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
+          // No space in property name -> is property -> return values for that property
+          return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName)
+            .flatMap(onlyFirstPartOfValue)
+            .toJS();
+        }
+      }
+    }
   }
 
+  // If ':' or '|' is before cursor, the filter string is likely not
+  // successfully parsed and therefore cannot be handled above.
   if (charBeforeCursor === ':') {
     if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') {
       return tagAndPropNames;
-    } else {
-      // Either property name or text filter
-      const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
-      const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-      const onlyFirstPartOfValue = x => {
-        const match = x.match(/^[^ ]*/);
-        return match ? [match[0]] : [];
-      };
-      if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
-        // No space in property name -> is property -> return values for that property
-        return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName)
-          .flatMap(onlyFirstPartOfValue)
-          .toJS();
-      }
     }
   } else if (charBeforeCursor === '|') {
     const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
     const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
     if (indexOfOtherColon > -1 && !maybeTagName.match(/ /)) {
-      // No space between : and |  ->  | is in a tag filter
+      // No space characters between ':' and '|'  ->  '|' is in a tag filter
       return tagNames;
     } else {
       return todoKeywords;
@@ -180,4 +159,33 @@ export const computeCompletionsForDatalist = (todoKeywords, tagNames, allPropert
   return completions.map(
     x => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
   );
+};
+
+const SPACE_SURROUNDED = ' ';
+
+// Compute the logical curser position within the parsed filter expression.
+// Return SPACE_SURROUNDED if the curser is inbetween two expressions and
+// surrounded by spaces (begin and end of line count as space).
+// Return the the filter term if the curser is in or at the edge of an filter term.
+const computeLogicalPosition = (filterExpr, filterString, curserPosition) => {
+  if (filterExpr.length === 0) return SPACE_SURROUNDED;
+  const tup = (x, y) => ({ value: x, elem: y });
+  const firstElem = { offset: -1, endOffset: -1 };
+  const { value } = filterExpr.reduce(
+    ({ value, elem }, next) => {
+      if (elem === null) {
+        return tup(value, null); // short-circuit if already found
+      }
+      if (curserPosition >= next.offset && curserPosition <= next.endOffset) {
+        return tup(next, null);
+      }
+      if (curserPosition > elem.endOffset && curserPosition < next.offset) {
+        return tup(SPACE_SURROUNDED, null);
+      }
+      return tup(null, next);
+    },
+    { value: null, elem: firstElem }
+  );
+  if (curserPosition > filterExpr[filterExpr.length - 1].endOffset) return SPACE_SURROUNDED;
+  return value;
 };
