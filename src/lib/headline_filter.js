@@ -59,10 +59,33 @@ export const isMatch = filterExpr => header => {
 // The computation of completions rely on the fact, that the filter syntax does NOT
 // support quoted strings (i.e. no search for a quoted 'master headline').
 
-const isInTextFilter = (filterString, curserPosition) => {
-  if (filterString.length === 0) return false;
-  const indexOfLastSpace = filterString.substring(0, curserPosition).lastIndexOf(' ');
-  return filterString.charAt(indexOfLastSpace + 1) !== ':';
+const SPACE_SURROUNDED = ' ';
+
+// Compute the logical curser position within the parsed filter expression.
+// Return SPACE_SURROUNDED if the curser is inbetween two expressions and
+// surrounded by spaces (begin and end of line count as space).
+// Return the the filter term if the curser is in or at the edge of an filter term.
+const computeLogicalPosition = (filterExpr, filterString, curserPosition) => {
+  if (filterExpr.length === 0) return SPACE_SURROUNDED;
+  const tup = (x, y) => ({ value: x, elem: y });
+  const firstElem = { offset: -1, endOffset: -1 };
+  const { value } = filterExpr.reduce(
+    ({ value, elem }, next) => {
+      if (elem === null) {
+        return tup(value, null); // short-circuit if already found
+      }
+      if (curserPosition >= next.offset && curserPosition <= next.endOffset) {
+        return tup(next, null);
+      }
+      if (curserPosition > elem.endOffset && curserPosition < next.offset) {
+        return tup(SPACE_SURROUNDED, null);
+      }
+      return tup(null, next);
+    },
+    { value: null, elem: firstElem }
+  );
+  if (curserPosition > filterExpr[filterExpr.length - 1].endOffset) return SPACE_SURROUNDED;
+  return value;
 };
 
 // TODO: This function is complex and still not perfect. It resembles
@@ -82,7 +105,22 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
       .map(x => x + ':')
   );
 
-  // TODO use filterExpr to find out in what filter term we are
+  const logicalCursorPosition = filterExpr
+    ? computeLogicalPosition(filterExpr, filterString, curserPosition)
+    : null;
+
+  if (logicalCursorPosition === null) {
+  } else if (logicalCursorPosition === SPACE_SURROUNDED) {
+    return todoKeywords;
+  } else if (logicalCursorPosition.type === 'case-sensitive') {
+    // const filteredTodoKeywords = todoKeywords
+    //   .filter(x => x.startsWith(charBeforeCursor))
+    //   .map(x => x.substring(1));
+  } else if (logicalCursorPosition.type === 'ignore-case') {
+    return [];
+  } else if (logicalCursorPosition.type === 'tag') {
+  } else if (logicalCursorPosition.type === 'property') {
+  }
 
   if (curserPosition === 0) {
     return todoKeywords;
@@ -127,7 +165,8 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
       return filteredTodoKeywords;
     } else if (charTwoBeforeCursor === '|') {
       // Only if in a text filter (not tag or property filter)
-      if (isInTextFilter(filterString, curserPosition)) return filteredTodoKeywords;
+      if (['case-sensitive', 'ignore-case'].includes(logicalCursorPosition.type))
+        return filteredTodoKeywords;
     }
   }
 
