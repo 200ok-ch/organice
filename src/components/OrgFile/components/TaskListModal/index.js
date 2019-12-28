@@ -51,7 +51,7 @@ class TaskListModal extends PureComponent {
   }
 
   render() {
-    const { onClose, searchFilter, searchFilterSuggestions } = this.props;
+    const { onClose, searchFilter, searchFilterSuggestions, searchAllHeaders } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     const date = new Date();
@@ -89,6 +89,7 @@ class TaskListModal extends PureComponent {
         <div className="agenda__tab-container">
           <input
             type="checkbox"
+            checked={searchAllHeaders}
             id="checkbox-search-all-headers"
             onChange={this.handleSearchAllCheckboxChange}
           />
@@ -102,8 +103,9 @@ class TaskListModal extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  searchFilter: state.org.present.get('search').get('searchFilter'),
-  searchFilterSuggestions: state.org.present.get('search').get('searchFilterSuggestions') || [''],
+  searchFilter: state.org.present.getIn(['search', 'searchFilter']),
+  searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
+  searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']),
 });
 
 const mapDispatchToProps = dispatch => ({

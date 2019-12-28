@@ -917,7 +917,8 @@ export const setSearchFilterInformation = (state, action) => {
   ];
 
   let searchFilterSuggestions = [];
-  if (_.isEmpty(searchFilter.trim())) {
+  if (_.isEmpty(searchFilter)) {
+    // Only for an empty filter string,  provide last used filters as suggestions.
     searchFilterSuggestions = lastUsedFilterStrings;
   } else {
     const todoKeywords = getTodoKeywordSetsAsFlattenedArray(state);
