@@ -55,7 +55,7 @@ export default class HeaderActionDrawer extends PureComponent {
 
           <span className="header-action-drawer__separator" />
 
-          {this.iconWithFFClickCatcher('fas fa-plus fa-lg', onAddNewHeader)}
+          {this.iconWithFFClickCatcher('fas fa-plus fa-lg', onAddNewHeader, 'header-action-plus')}
         </div>
         <div className="header-action-drawer__row">
           <div

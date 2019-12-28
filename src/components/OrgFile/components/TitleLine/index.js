@@ -222,6 +222,7 @@ class TitleLine extends PureComponent {
             <textarea
               autoFocus
               className="textarea"
+              data-testid="titleLineInput"
               rows="3"
               ref={this.handleTextareaRef}
               value={this.state.titleValue}
@@ -288,7 +289,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TitleLine);
+export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);

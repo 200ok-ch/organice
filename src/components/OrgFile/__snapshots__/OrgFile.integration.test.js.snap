@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Render all views Renders everything starting from an Org file renders an Org file 1`] = `
+exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
     class="header-bar header-bar--with-logo"
