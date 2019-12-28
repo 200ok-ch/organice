@@ -188,6 +188,7 @@ class TitleLine extends PureComponent {
     } = this.props;
     const { containerWidth } = this.state;
 
+    // FIXME: memoize (?) this for speed optimization; and extract function to org_utils.js?
     const isDone = todoKeyword =>
       todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
