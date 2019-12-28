@@ -610,6 +610,13 @@ const parseLogbook = rawText => {
   };
 };
 
+// TODO: Active timestamps in the headline, and (at least) active
+// timestamps in the "descriptionPrefix" should go into the planning items.
+// Suggested fix:
+// - pass parsed titleLine to this function (and extract the active timestamps
+//   from it).
+// - recognize active timestamps in the "descriptionPrefix" also with out a
+//   "planning keyword".
 export const parseDescriptionPrefixElements = rawText => {
   const planningItemsParse = _parsePlanningItems(rawText);
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
