@@ -245,7 +245,7 @@ describe('Computation of completions and suggestions for task filter', () => {
     });
 
     describe('Filtered completions for TODO keywords after [A-Z] in a text filter', () => {
-      test('Completions after [A-Z] after begin of line', () => {
+      test('Completions after [A-Z] at begin of line', () => {
         expectComputation('T', 1).toEqual(['ODO']);
       });
       test('Completions after [A-Z] after space', () => {
@@ -272,10 +272,6 @@ describe('Computation of completions and suggestions for task filter', () => {
       test('No completions after [A-Z]{2} after space', () => {
         expectComputation(' TO ', 3).toEqual([]);
       });
-    });
-
-    describe('Completions for TODO keywords after [A-Z] at | in text filter', () => {
-      // TODO
     });
 
     describe('Completions for property/tag names after :', () => {
