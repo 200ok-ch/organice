@@ -184,12 +184,12 @@ class TitleLine extends PureComponent {
       inEditMode,
       shouldDisableActions,
       shouldDisableExplicitWidth,
+      todoKeywordSets,
     } = this.props;
     const { containerWidth } = this.state;
 
-    // TODO: how get todoKeywordSet for this headline?
-    console.log(header.toJS());
-    const isDone = todoKeyword => todoKeyword === 'DONE';
+    const isDone = todoKeyword =>
+      todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
@@ -285,6 +285,7 @@ const mapStateToProps = (state, props) => {
       state.org.present.get('selectedHeaderId') === props.header.get('id'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
+    todoKeywordSets: state.org.present.get('todoKeywordSets'),
   };
 };
 
