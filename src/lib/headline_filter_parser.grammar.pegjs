@@ -14,13 +14,21 @@
 // incomplete/incorrect filter string.
 
 Expression "filter expression"
-  = _* head:Term tail:(_+ Term)* _* {
+  = _* head:LocationAnnotedTerm tail:(_+ LocationAnnotedTerm)* _* {
       return tail.reduce((result, element) => {
         result.push(element[1]);
         return result;
       }, [head]);
     }
  / _* { return [] }
+
+// Used for computation of completions
+LocationAnnotedTerm
+  = a:Term {
+        a.offset = location().start.offset;
+        a.endOffset = location().end.offset;
+        return a;
+      };
 
 // The order of lines is important here.
 Term "filter term"

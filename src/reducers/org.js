@@ -925,6 +925,7 @@ export const setSearchFilterInformation = (state, action) => {
     const tagNames = extractAllOrgTags(headers).toJS();
     const allProperties = extractAllOrgProperties(headers).toJS();
     searchFilterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
+      searchFilterExpr,
       searchFilter,
       cursorPosition
     );

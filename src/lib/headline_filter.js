@@ -71,6 +71,7 @@ const isInTextFilter = (filterString, curserPosition) => {
 // Open question: What if the parser fails (invalid filter string)?
 
 export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
+  filterExpr,
   filterString,
   curserPosition
 ) => {
@@ -80,6 +81,8 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
       .toJS()
       .map(x => x + ':')
   );
+
+  // TODO use filterExpr to find out in what filter term we are
 
   if (curserPosition === 0) {
     return todoKeywords;
@@ -132,10 +135,12 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
 };
 
 export const computeCompletionsForDatalist = (todoKeywords, tagNames, allProperties) => (
+  filterExpr,
   filterString,
   curserPosition
 ) => {
   const completions = computeCompletions(todoKeywords, tagNames, allProperties)(
+    filterExpr,
     filterString,
     curserPosition
   );

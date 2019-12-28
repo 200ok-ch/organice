@@ -1,6 +1,7 @@
 import { parseOrg } from './parse_org';
 import readFixture from '../../test_helpers/index';
 import { isMatch, computeCompletions, computeCompletionsForDatalist } from './headline_filter';
+import headline_filter_parser from './headline_filter_parser';
 
 // Helper functions
 // Generate tag filter
@@ -220,8 +221,13 @@ describe('Computation of completions and suggestions for task filter', () => {
     const compute = computeCompletions(todoKeywords, tagNames, allProperties);
 
     // Helper:
-    const expectComputation = (filterString, curserPosition) =>
-      expect(compute(filterString, curserPosition));
+    const expectComputation = (filterString, curserPosition) => {
+      let filterExpr;
+      try {
+        filterExpr = headline_filter_parser.parse(filterString);
+      } catch {}
+      return expect(compute(filterExpr, filterString, curserPosition));
+    };
 
     describe('Completions for TODO keywords after space or at begin of line', () => {
       test('Suggests keywords at begin of empty line', () => {
@@ -345,8 +351,13 @@ describe('Computation of completions and suggestions for task filter', () => {
     const compute = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties);
 
     // Helper:
-    const expectComputation = (filterString, curserPosition) =>
-      expect(compute(filterString, curserPosition));
+    const expectComputation = (filterString, curserPosition) => {
+      let filterExpr;
+      try {
+        filterExpr = headline_filter_parser.parse(filterString);
+      } catch {}
+      return expect(compute(filterExpr, filterString, curserPosition));
+    };
 
     test('Begin of empty line', () => {
       expectComputation('', 0).toEqual(todoKeywords);
