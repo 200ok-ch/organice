@@ -12,6 +12,8 @@ import * as baseActions from '../../../../actions/base';
 
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
+import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
+
 import AttributedString from '../AttributedString';
 
 class TitleLine extends PureComponent {
@@ -188,9 +190,7 @@ class TitleLine extends PureComponent {
     } = this.props;
     const { containerWidth } = this.state;
 
-    // FIXME: memoize (?) this for speed optimization; and extract function to org_utils.js?
-    const isDone = todoKeyword =>
-      todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
+    const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
@@ -215,7 +215,7 @@ class TitleLine extends PureComponent {
             // Relevant issue: https://github.com/200ok-ch/organice/issues/16
             className={classNames(
               'todo-keyword',
-              isDone(todoKeyword) ? 'todo-keyword--done-state' : null
+              isTodoKeywordInDoneState(todoKeyword) ? 'todo-keyword--done-state' : null
             )}
             onClick={this.handleTodoClick}
           >
@@ -297,7 +297,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TitleLine);
+export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);
