@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 *** Added
     - Proper coloring of DONE todoKeywords from custom todo sequences
       - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/165][PR]]!
+    - Place TODO keyword of previous header in the new header
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/164][PR]]!
 
 ** <2019-12-26 Thu>
 
