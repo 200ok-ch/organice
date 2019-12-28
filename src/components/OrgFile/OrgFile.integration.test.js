@@ -32,6 +32,9 @@ describe('Render all views', () => {
   });
 
   const testOrgFile = `
+#+TODO: TODO | DONE
+#+TODO: START | FINISHED
+
 * Top level header
 ** A nested header
 ** TODO A todo item with schedule and deadline
@@ -47,6 +50,7 @@ Some description content
   This is an e-mail foo.bar@baz.org in a line of text.
 
   +Don't+ call me on: +498025123456789.
+* FINISHED A header with a custom todo sequence in DONE state
 `;
 
   let store;
@@ -195,8 +199,18 @@ Some description content
     });
 
     test('renders an Org file', () => {
-      expect(getAllByText(/\*/)).toHaveLength(5);
+      expect(getAllByText(/\*/)).toHaveLength(6);
       expect(container).toMatchSnapshot();
+    });
+
+    describe('Custom todo sequences', () => {
+      test('It recognizes custom todo sequences and their DONE state', () => {
+        fireEvent.click(getByText('Top level header'));
+        expect(queryByText('TODO').classList.contains('todo-keyword--done-state')).toBe(false);
+        fireEvent.click(queryByText('TODO'));
+        expect(queryByText('DONE').classList.contains('todo-keyword--done-state')).toBe(true);
+        expect(queryByText('FINISHED').classList.contains('todo-keyword--done-state')).toBe(true);
+      });
     });
 
     describe('Undo / Redo', () => {

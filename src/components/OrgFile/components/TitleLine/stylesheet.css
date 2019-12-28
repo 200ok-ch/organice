@@ -15,7 +15,7 @@
   color: var(--orange);
 }
 
-.todo-keyword--done {
+.todo-keyword--done-state {
   color: green;
 }
 
