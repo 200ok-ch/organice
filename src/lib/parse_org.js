@@ -6,7 +6,7 @@ import _ from 'lodash';
 // Yeah, this thing is pretty wild. I use https://www.debuggex.com/ to edit it, then paste the results in here.
 // But fixing this mess is on my todo list...
 const markupAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]])?)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))|([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)|(\+\d{8,30})|(www(\.[-_a-zA-Z0-9]+){2,}(\/[-_a-zA-Z0-9]+)*)/g;
-const timestampRegex = /* scroll to the right ---> */                                                                                                                     /([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]]/;
+const timestampRegex = /* scroll to the right --->                                                                                                                     */ /([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]]/;
 
 // - HTTP URL regex taken from https://stackoverflow.com/a/3809435/999007
 // - e-mail regex taken from https://stackoverflow.com/a/1373724/999007
@@ -178,6 +178,7 @@ export const parseMarkupAndCookies = (
   matches.forEach(match => {
     let index = match.index;
 
+    // Get the part before the first match:
     if (index !== startIndex) {
       const text = rawText.substring(startIndex, index);
       lineParts.push({
@@ -186,54 +187,9 @@ export const parseMarkupAndCookies = (
       });
     }
 
-    if (match.type === 'link') {
-      const linkPart = {
-        id: generateId(),
-        type: 'link',
-        contents: {
-          uri: match.uri,
-        },
-      };
-      if (match.title) {
-        linkPart.contents.title = match.title;
-      }
-      lineParts.push(linkPart);
-    } else if (match.type === 'percentage-cookie') {
-      lineParts.push({
-        id: generateId(),
-        type: 'percentage-cookie',
-        percentage: match.percentage,
-      });
-    } else if (match.type === 'fraction-cookie') {
-      lineParts.push({
-        id: generateId(),
-        type: 'fraction-cookie',
-        fraction: match.fraction,
-      });
-    } else if (match.type === 'inline-markup') {
-      lineParts.push({
-        id: generateId(),
-        type: 'inline-markup',
-        content: match.content,
-        markupType: match.markupType,
-      });
-    } else if (match.type === 'timestamp') {
-      lineParts.push({
-        id: generateId(),
-        type: 'timestamp',
-        firstTimestamp: match.firstTimestamp,
-        secondTimestamp: match.secondTimestamp,
-      });
-    } else if (match.type === 'url'
-            || match.type === 'www-url'
-            || match.type === 'e-mail'
-            || match.type === 'phone-number') {
-      lineParts.push({
-        id: generateId(),
-        type: match.type,
-        content: match.rawText,
-      });
-    }
+    // Get this match:
+    const part = computeParseResults(rawText, match);
+    lineParts.push(part);
 
     startIndex = match.index + match.rawText.length;
   });
@@ -248,6 +204,62 @@ export const parseMarkupAndCookies = (
   }
 
   return lineParts;
+};
+
+const computeParseResults = (rawText, match) => {
+  switch (match.type) {
+    case 'link':
+      const linkPart = {
+        id: generateId(),
+        type: 'link',
+        contents: {
+          uri: match.uri,
+        },
+      };
+      if (match.title) {
+        linkPart.contents.title = match.title;
+      }
+      return linkPart;
+    case 'percentage-cookie':
+      return {
+        id: generateId(),
+        type: 'percentage-cookie',
+        percentage: match.percentage,
+      };
+    case 'fraction-cookie':
+      return {
+        id: generateId(),
+        type: 'fraction-cookie',
+        fraction: match.fraction,
+      };
+    case 'inline-markup':
+      return {
+        id: generateId(),
+        type: 'inline-markup',
+        content: match.content,
+        markupType: match.markupType,
+      };
+    case 'timestamp':
+      return {
+        id: generateId(),
+        type: 'timestamp',
+        firstTimestamp: match.firstTimestamp,
+        secondTimestamp: match.secondTimestamp,
+      };
+    case 'url':
+    case 'www-url':
+    case 'e-mail':
+    case 'phone-number':
+      return {
+        id: generateId(),
+        type: match.type,
+        content: match.rawText,
+      };
+    default:
+      throw Error(
+        'The regex parser parsed something but it is not converted to proper data structure.'
+      );
+  }
 };
 
 const parseTable = tableLines => {
