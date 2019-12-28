@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-28 Sat>
+
+*** Added
+    - Proper coloring of DONE todoKeywords from custom todo sequences
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/165][PR]]!
+
 ** <2019-12-26 Thu>
 
 *** Added

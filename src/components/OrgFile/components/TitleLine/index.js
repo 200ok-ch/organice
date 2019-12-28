@@ -12,6 +12,8 @@ import * as baseActions from '../../../../actions/base';
 
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
+import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
+
 import AttributedString from '../AttributedString';
 
 class TitleLine extends PureComponent {
@@ -184,8 +186,11 @@ class TitleLine extends PureComponent {
       inEditMode,
       shouldDisableActions,
       shouldDisableExplicitWidth,
+      todoKeywordSets,
     } = this.props;
     const { containerWidth } = this.state;
+
+    const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
     const titleStyle = {
@@ -208,7 +213,10 @@ class TitleLine extends PureComponent {
             // with the appropriate color, no matter what the keyword
             // is.
             // Relevant issue: https://github.com/200ok-ch/organice/issues/16
-            className={classNames('todo-keyword', `todo-keyword--${todoKeyword.toLowerCase()}`)}
+            className={classNames(
+              'todo-keyword',
+              isTodoKeywordInDoneState(todoKeyword) ? 'todo-keyword--done-state' : null
+            )}
             onClick={this.handleTodoClick}
           >
             {todoKeyword}
@@ -279,6 +287,7 @@ const mapStateToProps = (state, props) => {
       state.org.present.get('selectedHeaderId') === props.header.get('id'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
+    todoKeywordSets: state.org.present.get('todoKeywordSets'),
   };
 };
 
