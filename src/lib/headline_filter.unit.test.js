@@ -184,6 +184,10 @@ describe('Match function for headline filter', () => {
   });
 
   describe('Tests for combined matching', () => {
+    test('Empty filter matches everything', () => {
+      const filterExpr = [];
+      expect(isMatch(filterExpr)(header)).toBe(true);
+    });
     test('Match tag and TODO', () => {
       const filterExpr = gtag('spec_tag').concat(gcs('TODO'));
       expect(isMatch(filterExpr)(header)).toBe(true);

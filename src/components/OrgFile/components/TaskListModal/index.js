@@ -80,7 +80,7 @@ class TaskListModal extends PureComponent {
           <input
             type="text"
             className="searchModal__filter-input"
-            placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
+            placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
             list="agenda__datalist-filter"
             onChange={this.handleFilterChange}
           />
