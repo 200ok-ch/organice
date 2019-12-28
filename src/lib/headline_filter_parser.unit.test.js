@@ -65,13 +65,30 @@ describe('Headline filter parser', () => {
     });
   });
 
+  describe('Parsing of exclude-terms', () => {
+    console.log(parser.parse('-text'));
+    const expectFirstParseResultExclude = s => expect(parser.parse(s)[0].exclude);
+    test('Parses text filter', () => {
+      expectFirstParseResultExclude('-text').toBe(true);
+      expectFirstParseResultExclude('text').toBe(false);
+    });
+    test('Parses tag filter', () => {
+      expectFirstParseResultExclude('-:tag').toBe(true);
+      expectFirstParseResultExclude(':tag').toBe(false);
+    });
+    test('Parses property filter', () => {
+      expectFirstParseResultExclude('-:prop1:foo').toBe(true);
+      expectFirstParseResultExclude(':prop1:foo').toBe(false);
+    });
+  });
+
   describe('Parsing of alltogether', () => {
-    const s1 = ':assignee:jak|nik TODO|DONE Spec test :tag :foo|bar';
+    const s1 = ':assignee:jak|nik TODO|DONE Spec test -doc :tag :foo|bar';
     const s2 = ' ';
     const s3 = '';
     test('Parses all AND-terms', () => {
       const expr = parser.parse(s1);
-      expect(expr.length).toEqual(6);
+      expect(expr.length).toEqual(7);
     });
     test('Parses blank line with whitespace', () => {
       const expr = parser.parse(s2);
