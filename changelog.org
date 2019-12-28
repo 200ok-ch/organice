@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
     - Place TODO keyword of previous header in the new header
       - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/164][PR]]!
 
+*** Changed
+    - Refactor current Org parser and regex
+      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/161][PR]]!
+
 ** <2019-12-26 Thu>
 
 *** Added
