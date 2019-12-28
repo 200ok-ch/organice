@@ -230,6 +230,7 @@ class TitleLine extends PureComponent {
             <textarea
               autoFocus
               className="textarea"
+              data-testid="titleLineInput"
               rows="3"
               ref={this.handleTextareaRef}
               value={this.state.titleValue}

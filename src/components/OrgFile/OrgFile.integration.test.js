@@ -111,6 +111,7 @@ Some description content
 
     describe('Actions within an Org file', () => {
       test('Can select a header in an org file', () => {
+        expect(queryByText('Scheduled')).toBeFalsy();
         expect(queryByText('Deadline')).toBeFalsy();
 
         fireEvent.click(getByText('Top level header'));
@@ -142,6 +143,19 @@ Some description content
         // Then the TODO is DONE
         expect(queryByText('TODO')).toBeFalsy();
         expect(queryByText('DONE')).toBeTruthy();
+      });
+
+      // Same behaviour has `S-C-RET` in Emacs Org mode.
+      test('Can create a new header with an inherited todoKeyword', () => {
+        fireEvent.click(queryByText('Top level header'));
+        // Click 'plus' on the first header which is _not_ a todoKeyword header
+        fireEvent.click(container.querySelectorAll("[data-testid='header-action-plus']")[0]);
+        expect(getByTestId('titleLineInput').value).toEqual('');
+
+        // Click 'plus' on the second header which _is_ a todoKeyword header
+        fireEvent.click(queryByText('A todo item with schedule and deadline'));
+        fireEvent.click(container.querySelectorAll("[data-testid='header-action-plus']")[1]);
+        expect(getByTestId('titleLineInput').value).toEqual('TODO ');
       });
 
       test('Can clock in & out of an event', () => {
