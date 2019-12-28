@@ -116,7 +116,7 @@ class TaskListView extends PureComponent {
           .get('planningItems')
           .sortBy(x => x.get('timestamp'))
           // TODO: sort DESC by timestamp (must be converted to
-          // datetime)
+          // datetime) - and items without planning info should appear below
           .first();
         return [earliestPlanningItem, header];
       })
