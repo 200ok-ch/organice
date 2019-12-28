@@ -320,6 +320,24 @@ describe('Computation of completions and suggestions for task filter', () => {
       });
     });
 
+    describe('Completions for exclude filters with - in front', () => {
+      test('Completions for tag after | in a tag filter', () => {
+        expectComputation('-:foo|', 6).toEqual(tagNames);
+      });
+      test('Completions for tag : in a tag filter', () => {
+        expectComputation('-:', 2).toEqual(tagAndPropNames);
+      });
+      test('Completions for TODO keywords #1', () => {
+        expectComputation('-', 1).toEqual(todoKeywords);
+      });
+      test('Completions for TODO keywords #2', () => {
+        expectComputation(' a -', 4).toEqual(todoKeywords);
+      });
+      test('No completions for TODO keywords after --', () => {
+        expectComputation('--', 2).toEqual([]);
+      });
+    });
+
     describe('No completions when it makes no sense', () => {
       test('No completion when after lower-case text filter #1', () => {
         expectComputation('a', 1).toEqual([]);

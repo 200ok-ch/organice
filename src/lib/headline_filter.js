@@ -92,15 +92,13 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
       const filteredTodoKeywords = todoKeywords
         .filter(x => x.startsWith(textBeforeCursor))
         .map(x => x.substring(textBeforeCursor.length));
-      if (
-        charTwoBeforeCursor === ' ' ||
-        charTwoBeforeCursor === '' ||
-        charTwoBeforeCursor === '|'
-      ) {
+      if ([' ', '', '|', '-'].includes(charTwoBeforeCursor)) {
         return filteredTodoKeywords;
       }
     }
   } else if (logicalCursorPosition.type === 'ignore-case') {
+    // A text filter starting with '-' turns into an exclude filter as soon as text is appended
+    if (charBeforeCursor === '-' && [' ', ''].includes(charTwoBeforeCursor)) return todoKeywords;
     return [];
   } else if (logicalCursorPosition.type === 'tag') {
     // This case will likely not occur because ':' alone cannot be parsed
@@ -129,7 +127,7 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
   // If ':' or '|' is before cursor, the filter string is likely not
   // successfully parsed and therefore cannot be handled above.
   if (charBeforeCursor === ':') {
-    if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') {
+    if ([' ', '', '-'].includes(charTwoBeforeCursor)) {
       return tagAndPropNames;
     }
   } else if (charBeforeCursor === '|') {
