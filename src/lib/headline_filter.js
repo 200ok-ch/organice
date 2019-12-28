@@ -109,28 +109,33 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
     ? computeLogicalPosition(filterExpr, filterString, curserPosition)
     : null;
 
+  const charBeforeCursor = filterString.charAt(curserPosition - 1);
+  const charTwoBeforeCursor = curserPosition > 1 ? filterString.charAt(curserPosition - 2) : '';
+
   if (logicalCursorPosition === null) {
   } else if (logicalCursorPosition === SPACE_SURROUNDED) {
     return todoKeywords;
   } else if (logicalCursorPosition.type === 'case-sensitive') {
-    // const filteredTodoKeywords = todoKeywords
-    //   .filter(x => x.startsWith(charBeforeCursor))
-    //   .map(x => x.substring(1));
+    if (charBeforeCursor.match(/[A-Z]/)) {
+      const textBeforeCursor = charBeforeCursor;
+      const filteredTodoKeywords = todoKeywords
+        .filter(x => x.startsWith(textBeforeCursor))
+        .map(x => x.substring(textBeforeCursor.length));
+      if (
+        charTwoBeforeCursor === ' ' ||
+        charTwoBeforeCursor === '' ||
+        charTwoBeforeCursor === '|'
+      ) {
+        return filteredTodoKeywords;
+      }
+    }
   } else if (logicalCursorPosition.type === 'ignore-case') {
     return [];
   } else if (logicalCursorPosition.type === 'tag') {
   } else if (logicalCursorPosition.type === 'property') {
   }
 
-  if (curserPosition === 0) {
-    return todoKeywords;
-  }
-
-  const charBeforeCursor = filterString.charAt(curserPosition - 1);
-  const charTwoBeforeCursor = curserPosition > 1 ? filterString.charAt(curserPosition - 2) : '';
-  if (charBeforeCursor === ' ') {
-    return todoKeywords;
-  } else if (charBeforeCursor === ':') {
+  if (charBeforeCursor === ':') {
     if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') {
       return tagAndPropNames;
     } else {
@@ -156,17 +161,6 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
       return tagNames;
     } else {
       return todoKeywords;
-    }
-  } else if (charBeforeCursor.match(/[A-Z]/)) {
-    const filteredTodoKeywords = todoKeywords
-      .filter(x => x.startsWith(charBeforeCursor))
-      .map(x => x.substring(1));
-    if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') {
-      return filteredTodoKeywords;
-    } else if (charTwoBeforeCursor === '|') {
-      // Only if in a text filter (not tag or property filter)
-      if (['case-sensitive', 'ignore-case'].includes(logicalCursorPosition.type))
-        return filteredTodoKeywords;
     }
   }
 
