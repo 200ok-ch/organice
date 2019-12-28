@@ -1,5 +1,432 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
+<div>
+  <div
+    class="header-bar header-bar--with-logo"
+  >
+    <div
+      class="header-bar__logo-container"
+    >
+      <img
+        alt="Logo"
+        class="header-bar__logo"
+        height="30"
+        src="organice.svg"
+        width="30"
+      />
+      <h2
+        class="header-bar__app-name"
+      >
+        organice
+      </h2>
+    </div>
+    <div
+      class="header-bar__title"
+    />
+    <div
+      class="header-bar__actions"
+    >
+      <i
+        class="fas fa-undo header-bar__actions__item header-bar__actions__item--disabled"
+        title="Undo"
+      />
+      <i
+        class="fas fa-redo header-bar__actions__item header-bar__actions__item--disabled"
+        title="Redo"
+      />
+      <i
+        class="fas fa-question-circle header-bar__actions__item"
+        title="Help"
+      />
+      <i
+        class="fas fa-cogs header-bar__actions__item"
+        title="Settings"
+      />
+    </div>
+  </div>
+  <div
+    tabindex="-1"
+  >
+    <div
+      class="org-file-container"
+      tabindex="-1"
+    >
+      <div
+        class="header-list-container"
+      >
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  Top level header
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  Another top level header
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with tags                                              
+                </span>
+                
+              </span>
+              <div>
+                <div
+                  class="header-tag"
+                >
+                  tag1
+                </div>
+                <div
+                  class="header-tag"
+                >
+                  tag2
+                </div>
+              </div>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with 
+                  <a
+                    href="https://organice.200ok.ch"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    a link
+                  </a>
+                </span>
+                
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with a URL, mail address and phone number as content
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            <span
+              class="todo-keyword todo-keyword--done-state"
+            >
+              FINISHED
+            </span>
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with a custom todo sequence in DONE state
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+      </div>
+      <div
+        class="action-drawer-container nice-scroll"
+      >
+        <button
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-cloud action-drawer__btn--with-sub-icon"
+          style="opacity: 1;"
+          title="Sync changes"
+        >
+          <i
+            class="fas fa-xs fa-sync-alt action-drawer__btn__sub-icon"
+          />
+        </button>
+        <div
+          class="action-drawer__arrow-buttons-container"
+          style="left: 0px;"
+        >
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-arrow-up"
+            style="opacity: 1; box-shadow: none; bottom: 0px;"
+            title="Move header up"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-arrow-down"
+            style="opacity: 1; box-shadow: none; bottom: 0px;"
+            title="Move header down"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-arrow-left"
+            style="opacity: 1; box-shadow: none; bottom: 0px; right: 0px;"
+            title="Move header left"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-arrow-right"
+            style="opacity: 1; box-shadow: none; bottom: 0px; left: 0px;"
+            title="Move header right"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-chevron-left"
+            style="opacity: 1; box-shadow: none; bottom: 0px; right: 0px;"
+            title="Move entire subtree left"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-chevron-right"
+            style="opacity: 1; box-shadow: none; bottom: 0px; left: 0px;"
+            title="Move entire subtree right"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn action-drawer__main-arrow-button fas fa-lg fa-arrows-alt"
+            style="opacity: 1;"
+            title="Show movement buttons"
+          />
+        </div>
+        <button
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-alt"
+          style="opacity: 1;"
+          title="Show agenda"
+        />
+        <div
+          class="action-drawer__capture-buttons-container"
+        >
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-list-ul"
+            style="opacity: 1; position: relative; z-index: 1;"
+            title="Show capture templates"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Render all views Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
