@@ -145,6 +145,44 @@ describe('Match function for headline filter', () => {
     });
   });
 
+  describe('Tests for exclude matching', () => {
+    const makeExclude = xs =>
+      xs.map(x => {
+        x.exclude = true;
+        return x;
+      });
+    test('Not match text when using exclude filter #1', () => {
+      let filterExpr = gic('header');
+      filterExpr = makeExclude(filterExpr);
+      expect(isMatch(filterExpr)(header)).toBe(false);
+    });
+    test('Not match text when using exclude filter #2', () => {
+      let filterExpr = gcs('Spec');
+      filterExpr = makeExclude(filterExpr);
+      expect(isMatch(filterExpr)(header)).toBe(false);
+    });
+    test('Not match tag when using exclude filter', () => {
+      let filterExpr = gtag('tag2');
+      filterExpr = makeExclude(filterExpr);
+      expect(isMatch(filterExpr)(header)).toBe(false);
+    });
+    test('Not match property when using exclude filter', () => {
+      let filterExpr = gprop('prop1', 'abc');
+      filterExpr = makeExclude(filterExpr);
+      expect(isMatch(filterExpr)(header)).toBe(false);
+    });
+    test('Match property when using exclude filter with non-matching value', () => {
+      let filterExpr = gprop('prop1', 'xxxxx');
+      filterExpr = makeExclude(filterExpr);
+      expect(isMatch(filterExpr)(header)).toBe(true);
+    });
+    test('Not match property when using exclude filter on empty property', () => {
+      let filterExpr = gprop('prop3', '');
+      filterExpr = makeExclude(filterExpr);
+      expect(isMatch(filterExpr)(header)).toBe(false);
+    });
+  });
+
   describe('Tests for combined matching', () => {
     test('Match tag and TODO', () => {
       const filterExpr = gtag('spec_tag').concat(gcs('TODO'));
