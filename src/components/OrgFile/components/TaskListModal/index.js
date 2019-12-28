@@ -60,7 +60,7 @@ class TaskListModal extends PureComponent {
       <Drawer onClose={onClose}>
         <h2 className="agenda__title">Task list</h2>
 
-        <datalist id="datalist-filter">
+        <datalist id="agenda__datalist-filter">
           {searchFilterSuggestions.map((string, idx) => (
             <option key={idx} value={string} />
           ))}
@@ -81,7 +81,7 @@ class TaskListModal extends PureComponent {
             type="text"
             className="searchModal__filter-input"
             placeholder="e.g. TODO|FIXME doc :simple|easy :assignee:nobody|none"
-            list="datalist-filter"
+            list="agenda__datalist-filter"
             onChange={this.handleFilterChange}
           />
         </div>
@@ -109,4 +109,7 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskListModal);
