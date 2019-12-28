@@ -51,7 +51,7 @@ class TaskListModal extends PureComponent {
   }
 
   render() {
-    const { onClose, searchFilterSuggestions } = this.props;
+    const { onClose, searchFilter, searchFilterSuggestions } = this.props;
     const { selectedDate, dateDisplayType } = this.state;
 
     const date = new Date();
@@ -79,6 +79,7 @@ class TaskListModal extends PureComponent {
         <div>
           <input
             type="text"
+            value={searchFilter}
             className="searchModal__filter-input"
             placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
             list="agenda__datalist-filter"

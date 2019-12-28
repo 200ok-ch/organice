@@ -889,40 +889,46 @@ export const updateLogEntryTime = (state, action) => {
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition } = action;
   const headers = state.get('headers');
+
+  let searchFilterExpr;
   try {
-    const searchFilterExpr = headline_filter_parser.parse(searchFilter);
+    searchFilterExpr = headline_filter_parser.parse(searchFilter);
     state = state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
-
-    let filteredHeaders = headers;
-    if (!_.isEmpty(searchFilterExpr)) {
-      filteredHeaders = filteredHeaders.filter(header => {
-        return isMatch(searchFilterExpr)(header);
-      });
-
-      state = state.setIn(['search', 'filteredHeaders'], filteredHeaders);
-    }
-  } catch (e) {
-    console.warn('Exception parsing headline filter: ' + e);
+  } catch {
+    // No need to print this parser exceptions.
+    // They are expected, see *.grammar.pegjs
   }
-  state = state.setIn(['search', 'searchFilter'], _.trim(searchFilter));
+
+  let filteredHeaders = headers;
+  if (searchFilterExpr) {
+    // Only run filter if a filter is given and parsing was successfull
+    filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+  }
+  state = state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+  state = state.setIn(['search', 'searchFilter'], searchFilter);
 
   // INFO: This is a POC draft of a future feature
   // This could come from the last session, hence from localStorage.
-  // const lastUsedFitlerStrings = ['TODO :simple'];
+  // Just some more examples for now:
+  const lastUsedFilterStrings = [
+    'TODO organice',
+    '-organice :medium',
+    '-DONE doc|man :assignee:none',
+  ];
 
-  let searchFilterSuggestions = '';
-  if (!_.isEmpty(searchFilter)) {
+  let searchFilterSuggestions = [];
+  if (_.isEmpty(searchFilter.trim())) {
+    searchFilterSuggestions = lastUsedFilterStrings;
+  } else {
     const todoKeywords = getTodoKeywordSetsAsFlattenedArray(state);
     const tagNames = extractAllOrgTags(headers).toJS();
     const allProperties = extractAllOrgProperties(headers).toJS();
-    searchFilterSuggestions = computeCompletionsForDatalist(
-      todoKeywords,
-      tagNames,
-      allProperties
-    )(searchFilter, cursorPosition);
-
-    state = state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
+    searchFilterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
+      searchFilter,
+      cursorPosition
+    );
   }
+  state = state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
 
   return state;
 };
