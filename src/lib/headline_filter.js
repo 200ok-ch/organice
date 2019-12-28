@@ -14,10 +14,22 @@ export const isMatch = filterExpr => header => {
     .get('propertyListItems')
     .map(p => [p.get('property'), attributedStringToRawText(p.get('value'))]);
 
-  const filterTags = filterExpr.filter(x => x.type === 'tag').map(x => x.words);
-  const filterCS = filterExpr.filter(x => x.type === 'case-sensitive').map(x => x.words);
-  const filterIC = filterExpr.filter(x => x.type === 'ignore-case').map(x => x.words);
-  const filterProps = filterExpr.filter(x => x.type === 'property').map(x => [x.property, x.words]);
+  const filterFilter = (type, exclude) => x => x.type === type && x.exclude === exclude;
+  const words = x => x.words;
+
+  const filterTags = filterExpr.filter(filterFilter('tag', false)).map(words);
+  const filterCS = filterExpr.filter(filterFilter('case-sensitive', false)).map(words);
+  const filterIC = filterExpr.filter(filterFilter('ignore-case', false)).map(words);
+  const filterProps = filterExpr
+    .filter(filterFilter('property', false))
+    .map(x => [x.property, x.words]);
+
+  const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
+  const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
+  const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(words);
+  const filterPropsExcl = filterExpr
+    .filter(filterFilter('property', true))
+    .map(x => [x.property, x.words]);
 
   const orChain = source => xs => xs.some(x => source.includes(x));
   const propertyFilter = ([x, ys]) =>
@@ -34,7 +46,11 @@ export const isMatch = filterExpr => header => {
     filterTags.every(orChain(tags)) &&
     filterCS.every(orChain(headlineText)) &&
     filterIC.every(orChain(headlineText.toLowerCase())) &&
-    filterProps.every(propertyFilter)
+    filterProps.every(propertyFilter) &&
+    !filterTagsExcl.some(orChain(tags)) &&
+    !filterCSExcl.some(orChain(headlineText)) &&
+    !filterICExcl.some(orChain(headlineText.toLowerCase())) &&
+    !filterPropsExcl.some(propertyFilter)
   );
 };
 
