@@ -82,6 +82,10 @@ h2 {
   font-size: 16px;
 }
 
+.label-for-checkbox {
+  margin: 4px 0 0;
+}
+
 div[tabindex='-1']:focus {
   outline: 0;
 }

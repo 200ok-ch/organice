@@ -89,11 +89,14 @@ class TaskListModal extends PureComponent {
           <input
             type="checkbox"
             className="checkbox"
+            // TODO: Why does the .checkbox css rule from the Checkbox component apply for this input? If it is by accident, can we duplicate/move the css class rule to base.css?
             checked={searchAllHeaders}
             id="task-list__checkbox-search-all-headers"
             onChange={this.handleSearchAllCheckboxChange}
           />
-          <label htmlFor="task-list__checkbox-search-all-headers">Search all headlines</label>
+          <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
+            Search all headlines
+          </label>
         </div>
 
         <br />
