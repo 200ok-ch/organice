@@ -10,7 +10,6 @@ import Drawer from '../../../UI/Drawer';
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
-import format from 'date-fns/format';
 
 class TaskListModal extends PureComponent {
   constructor(props) {
@@ -53,8 +52,6 @@ class TaskListModal extends PureComponent {
     const { onClose, searchFilter, searchFilterSuggestions, searchAllHeaders } = this.props;
     const { dateDisplayType } = this.state;
 
-    const date = new Date();
-
     return (
       <Drawer onClose={onClose}>
         <h2 className="agenda__title">Task list</h2>
@@ -67,8 +64,6 @@ class TaskListModal extends PureComponent {
 
         <div className="agenda__days-container">
           <TaskListView
-            key={format(date, 'yyyy MM dd')}
-            date={date}
             onHeaderClick={this.handleHeaderClick}
             dateDisplayType={dateDisplayType}
             onToggleDateDisplayType={this.handleToggleDateDisplayType}

@@ -7,7 +7,7 @@ import TitleLine from '../../../TitleLine';
 
 import { dateForTimestamp } from '../../../../../../lib/timestamps';
 
-import { format, startOfDay, endOfDay, isPast, formatDistanceToNow } from 'date-fns';
+import { format, isPast, formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
 
 class TaskListView extends PureComponent {
@@ -17,21 +17,19 @@ class TaskListView extends PureComponent {
 
   render() {
     const {
-      date,
       headers,
       searchAllHeaders,
       todoKeywordSets,
       dateDisplayType,
       onToggleDateDisplayType,
-      agendaDefaultDeadlineDelayValue,
-      agendaDefaultDeadlineDelayUnit,
     } = this.props;
+
+    const date = new Date();
 
     const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
       headers,
       searchAllHeaders,
       todoKeywordSets,
-      date,
     });
 
     return (
@@ -91,7 +89,7 @@ class TaskListView extends PureComponent {
     );
   }
 
-  getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeywordSets, date }) {
+  getPlanningItemsAndHeaders({ headers, searchAllHeaders }) {
     return headers
       .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
@@ -113,10 +111,10 @@ class TaskListView extends PureComponent {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  searchAllHeaders: state.org.present.get('search').get('searchAllHeaders'),
+  searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']),
   // When no filtering has happened, yet (initial state), use all headers.
   headers:
-    state.org.present.get('search').get('filteredHeaders') || state.org.present.get('headers'),
+    state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
 });
 
 const mapDispatchToProps = dispatch => ({});
