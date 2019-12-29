@@ -59,7 +59,7 @@ class TaskListModal extends PureComponent {
       <Drawer onClose={onClose}>
         <h2 className="agenda__title">Task list</h2>
 
-        <datalist id="agenda__datalist-filter">
+        <datalist id="task-list__datalist-filter">
           {searchFilterSuggestions.map((string, idx) => (
             <option key={idx} value={string} />
           ))}
@@ -79,9 +79,9 @@ class TaskListModal extends PureComponent {
           <input
             type="text"
             value={searchFilter}
-            className="textfield agenda__filter-input"
+            className="textfield task-list__filter-input"
             placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
-            list="agenda__datalist-filter"
+            list="task-list__datalist-filter"
             onChange={this.handleFilterChange}
           />
         </div>
@@ -90,10 +90,10 @@ class TaskListModal extends PureComponent {
             type="checkbox"
             className="checkbox"
             checked={searchAllHeaders}
-            id="agenda__checkbox-search-all-headers"
+            id="task-list__checkbox-search-all-headers"
             onChange={this.handleSearchAllCheckboxChange}
           />
-          <label htmlFor="agenda__checkbox-search-all-headers">Search all headlines</label>
+          <label htmlFor="task-list__checkbox-search-all-headers">Search all headlines</label>
         </div>
 
         <br />
