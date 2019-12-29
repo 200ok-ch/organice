@@ -8,6 +8,8 @@ import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
 import * as orgActions from '../../../../actions/org';
+import * as syncBackendActions from '../../../../actions/sync_backend';
+import * as baseActions from '../../../../actions/base';
 
 import _ from 'lodash';
 import format from 'date-fns/format';
@@ -28,8 +30,22 @@ class TaskListModal extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { path, loadedPath } = this.props;
+
+    // TODO: Loading sample manually here is a hack, of course. Fix
+    // this by implementing proper routing.
+    if (!path) {
+      this.props.base.loadStaticFile('sample');
+    } else if (!_.isEmpty(path) && path !== loadedPath) {
+      this.props.syncBackend.downloadFile(path);
+    }
+  }
+
   handleHeaderClick(headerId) {
-    this.props.onClose();
+    // TODO: This code still thinks the search operates within a
+    // drawer. Since it's not happening in a drawer, an appropriate
+    // action will have to be defined.
     this.props.org.selectHeaderAndOpenParents(headerId);
   }
 
@@ -50,13 +66,19 @@ class TaskListModal extends PureComponent {
   }
 
   render() {
-    const { onClose, searchFilter, searchFilterSuggestions, searchAllHeaders } = this.props;
+    const {
+      onClose,
+      searchFilter,
+      searchFilterSuggestions,
+      searchAllHeaders,
+      headers,
+    } = this.props;
     const { dateDisplayType } = this.state;
 
     const date = new Date();
 
-    return (
-      <Drawer onClose={onClose}>
+    return headers ? (
+      <div>
         <h2 className="agenda__title">Task list</h2>
 
         <datalist id="task-list__datalist-filter">
@@ -100,12 +122,15 @@ class TaskListModal extends PureComponent {
         </div>
 
         <br />
-      </Drawer>
+      </div>
+    ) : (
+      <div />
     );
   }
 }
 
 const mapStateToProps = state => ({
+  headers: state.org.present.get('headers'),
   searchFilter: state.org.present.getIn(['search', 'searchFilter']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
   searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']),
@@ -113,9 +138,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
+  base: bindActionCreators(baseActions, dispatch),
+  syncBackend: bindActionCreators(syncBackendActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListModal);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);

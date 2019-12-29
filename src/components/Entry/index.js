@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Route, Switch, Redirect, Prompt, withRouter } from 'react-router-dom';
+import TaskListModal from '../OrgFile/components/TaskListModal';
 
 import './stylesheet.css';
 
@@ -120,6 +121,21 @@ class Entry extends PureComponent {
     );
   }
 
+  renderFileSearch({
+    match: {
+      params: { path },
+    },
+  }) {
+    if (!!path) {
+      path = '/' + path;
+    }
+
+    return (
+      // <TaskListModal onClose={this.handlePopupClose} headers={headers} />
+      <TaskListModal path={path} />
+    );
+  }
+
   shouldPromptWhenLeaving() {
     return this.props.location.pathname.startsWith('/file/') && this.props.isDirty;
   }
@@ -168,6 +184,7 @@ class Entry extends PureComponent {
             <Switch>
               {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
               <Route path="/privacy-policy" exact component={PrivacyPolicy} />
+              <Route path="/file/:path+/search" render={this.renderFileSearch} />
               <Route path="/file/:path+" render={this.renderFile} />
               <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Redirect to="/files" />
@@ -176,6 +193,7 @@ class Entry extends PureComponent {
         ) : (
           <Switch>
             <Route path="/privacy-policy" exact component={PrivacyPolicy} />
+            <Route path="/sample/search" render={this.renderFileSearch} />
             <Route path="/sample" exact={true} render={this.renderSampleFile} />
             <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
             <Route path="/" exact={true} component={Landing} />
@@ -207,9 +225,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Entry)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entry));
