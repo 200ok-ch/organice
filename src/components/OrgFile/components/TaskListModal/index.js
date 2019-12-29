@@ -79,7 +79,7 @@ class TaskListModal extends PureComponent {
           <input
             type="text"
             value={searchFilter}
-            className="searchModal__filter-input"
+            className="textfield agenda__filter-input"
             placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
             list="agenda__datalist-filter"
             onChange={this.handleFilterChange}
@@ -88,11 +88,12 @@ class TaskListModal extends PureComponent {
         <div className="agenda__tab-container">
           <input
             type="checkbox"
+            className="checkbox"
             checked={searchAllHeaders}
-            id="checkbox-search-all-headers"
+            id="agenda__checkbox-search-all-headers"
             onChange={this.handleSearchAllCheckboxChange}
           />
-          <label htmlFor="checkbox-search-all-headers">Search all headlines</label>
+          <label htmlFor="agenda__checkbox-search-all-headers">Search all headlines</label>
         </div>
 
         <br />
