@@ -17,14 +17,12 @@ class TaskListView extends PureComponent {
 
   render() {
     const {
+      dateDisplayType,
+      onToggleDateDisplayType,
       headers,
       searchAllHeaders,
       todoKeywordSets,
-      dateDisplayType,
-      onToggleDateDisplayType,
     } = this.props;
-
-    const date = new Date();
 
     const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
       headers,
@@ -89,7 +87,7 @@ class TaskListView extends PureComponent {
     );
   }
 
-  getPlanningItemsAndHeaders({ headers, searchAllHeaders }) {
+  getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeyword }) {
     return headers
       .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
