@@ -114,7 +114,7 @@ class TaskListView extends PureComponent {
       .map(header => {
         const earliestPlanningItem = header
           .get('planningItems')
-          .sortBy(x => x.get('timestamp'))
+          .sortBy(x => dateForTimestamp(x.get('timestamp')))
           // TODO: sort DESC by timestamp (must be converted to
           // datetime) - and items without planning info should appear below
           .first();
@@ -137,4 +137,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskListView);
