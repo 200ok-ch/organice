@@ -27,18 +27,11 @@ class TaskListView extends PureComponent {
       agendaDefaultDeadlineDelayUnit,
     } = this.props;
 
-    const dateStart = startOfDay(date);
-    const dateEnd = endOfDay(date);
-
     const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
       headers,
       searchAllHeaders,
       todoKeywordSets,
       date,
-      agendaDefaultDeadlineDelayValue,
-      agendaDefaultDeadlineDelayUnit,
-      dateStart,
-      dateEnd,
     });
 
     return (
@@ -98,17 +91,7 @@ class TaskListView extends PureComponent {
     );
   }
 
-  getPlanningItemsAndHeaders({
-    headers,
-    searchAllHeaders,
-    todoKeywordSets,
-    date,
-    agendaDefaultDeadlineDelayValue,
-    agendaDefaultDeadlineDelayUnit,
-    dateStart,
-    dateEnd,
-    only,
-  }) {
+  getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeywordSets, date }) {
     return headers
       .filter(header => searchAllHeaders || header.get('titleLine').get('todoKeyword'))
       .map(header => {
