@@ -24,7 +24,6 @@ class TaskListModal extends PureComponent {
     ]);
 
     this.state = {
-      selectedDate: new Date(),
       dateDisplayType: 'absolute',
     };
   }
@@ -52,7 +51,7 @@ class TaskListModal extends PureComponent {
 
   render() {
     const { onClose, searchFilter, searchFilterSuggestions, searchAllHeaders } = this.props;
-    const { selectedDate, dateDisplayType } = this.state;
+    const { dateDisplayType } = this.state;
 
     const date = new Date();
 
