@@ -78,7 +78,6 @@ class TaskListView extends PureComponent {
 
             return (
               <div key={header.get('id')} className="agenda-day__header-container">
-                {planningInformation}
                 <div className="agenda-day__header__header-container">
                   <TitleLine
                     header={header}
@@ -89,6 +88,7 @@ class TaskListView extends PureComponent {
                     shouldDisableExplicitWidth
                     onClick={this.handleHeaderClick(header.get('id'))}
                   />
+                  {planningInformation}
                 </div>
               </div>
             );

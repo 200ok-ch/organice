@@ -1,2 +1,12 @@
 /* Currently, the markup is the same as in the AgendaDay component. Hence */
 /* the CSS rules from there apply. */
+
+.agenda-day__header-planning-type {
+  min-width: 8em;
+  margin: 0 5px 0 0;
+  display: inline-block;
+}
+
+.agenda-day__header-planning-date {
+  display: inline-block;
+}
