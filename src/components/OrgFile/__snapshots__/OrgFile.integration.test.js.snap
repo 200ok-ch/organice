@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Render all views Renders everything starting from an Org file renders an Org file 1`] = `
+exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
     class="header-bar header-bar--with-logo"
@@ -297,6 +297,56 @@ exports[`Render all views Renders everything starting from an Org file renders a
               >
                 <span>
                   A header with a URL, mail address and phone number as content
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            <span
+              class="todo-keyword todo-keyword--done-state"
+            >
+              FINISHED
+            </span>
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with a custom todo sequence in DONE state
                 </span>
                 ...
               </span>

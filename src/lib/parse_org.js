@@ -178,6 +178,7 @@ export const parseMarkupAndCookies = (
   matches.forEach(match => {
     let index = match.index;
 
+    // Get the part before the first match:
     if (index !== startIndex) {
       const text = rawText.substring(startIndex, index);
       lineParts.push({
@@ -186,56 +187,9 @@ export const parseMarkupAndCookies = (
       });
     }
 
-    if (match.type === 'link') {
-      const linkPart = {
-        id: generateId(),
-        type: 'link',
-        contents: {
-          uri: match.uri,
-        },
-      };
-      if (match.title) {
-        linkPart.contents.title = match.title;
-      }
-      lineParts.push(linkPart);
-    } else if (match.type === 'percentage-cookie') {
-      lineParts.push({
-        id: generateId(),
-        type: 'percentage-cookie',
-        percentage: match.percentage,
-      });
-    } else if (match.type === 'fraction-cookie') {
-      lineParts.push({
-        id: generateId(),
-        type: 'fraction-cookie',
-        fraction: match.fraction,
-      });
-    } else if (match.type === 'inline-markup') {
-      lineParts.push({
-        id: generateId(),
-        type: 'inline-markup',
-        content: match.content,
-        markupType: match.markupType,
-      });
-    } else if (match.type === 'timestamp') {
-      lineParts.push({
-        id: generateId(),
-        type: 'timestamp',
-        firstTimestamp: match.firstTimestamp,
-        secondTimestamp: match.secondTimestamp,
-      });
-    } else if (
-      match.type === 'url' ||
-      match.type === 'www-url' ||
-      match.type === 'e-mail' ||
-      match.type === 'phone-number'
-    ) {
-      lineParts.push({
-        id: generateId(),
-        type: match.type,
-        content: match.rawText,
-      });
-    }
+    // Get this match:
+    const part = computeParseResults(rawText, match);
+    lineParts.push(part);
 
     startIndex = match.index + match.rawText.length;
   });
@@ -250,6 +204,62 @@ export const parseMarkupAndCookies = (
   }
 
   return lineParts;
+};
+
+const computeParseResults = (rawText, match) => {
+  switch (match.type) {
+    case 'link':
+      const linkPart = {
+        id: generateId(),
+        type: 'link',
+        contents: {
+          uri: match.uri,
+        },
+      };
+      if (match.title) {
+        linkPart.contents.title = match.title;
+      }
+      return linkPart;
+    case 'percentage-cookie':
+      return {
+        id: generateId(),
+        type: 'percentage-cookie',
+        percentage: match.percentage,
+      };
+    case 'fraction-cookie':
+      return {
+        id: generateId(),
+        type: 'fraction-cookie',
+        fraction: match.fraction,
+      };
+    case 'inline-markup':
+      return {
+        id: generateId(),
+        type: 'inline-markup',
+        content: match.content,
+        markupType: match.markupType,
+      };
+    case 'timestamp':
+      return {
+        id: generateId(),
+        type: 'timestamp',
+        firstTimestamp: match.firstTimestamp,
+        secondTimestamp: match.secondTimestamp,
+      };
+    case 'url':
+    case 'www-url':
+    case 'e-mail':
+    case 'phone-number':
+      return {
+        id: generateId(),
+        type: match.type,
+        content: match.rawText,
+      };
+    default:
+      throw Error(
+        'The regex parser parsed something but it is not converted to proper data structure.'
+      );
+  }
 };
 
 const parseTable = tableLines => {

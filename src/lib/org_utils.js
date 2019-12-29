@@ -577,4 +577,14 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
   allOrgProperties
     .filter(([x]) => x.toLowerCase() === propertyName.toLowerCase())
     .map(([_, y]) => y)
-    .toSet().sort();
+    .toSet()
+    .sort();
+
+/**
+ * Returns a function which takes a `todoKeyword` which then returns
+ * if said `todoKeyword` is in `todoKeywordSets`.
+ * @param {Object} todoKeywordSets
+ */
+export const createIsTodoKeywordInDoneState = todoKeywordSets => {
+  return todoKeyword => todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
+};

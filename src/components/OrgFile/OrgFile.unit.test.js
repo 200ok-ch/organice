@@ -19,7 +19,21 @@ function parseAndExportOrgFile(testOrgFile) {
 }
 
 describe('Unit Tests for Org file', () => {
-  describe('Parsing', () => {
+  describe('Test the parser', () => {
+    const expectType = result => expect(result.map(x => x.type));
+    describe('Parsing inline-markup', () => {
+      test('Parses inline-markup where closing delim is followed by ;', () => {
+        const result = parseMarkupAndCookies('*bold*;');
+        expectType(result).toEqual(['inline-markup', 'text']);
+      });
+      test('Parses inline-markup surrounded by text', () => {
+        const result = parseMarkupAndCookies(' *bold*;');
+        expectType(result).toEqual(['text', 'inline-markup', 'text']);
+      });
+    });
+  });
+
+  describe('Parsing and exporting should not alter the original file', () => {
     test("Parsing and exporting shouldn't alter the original file", () => {
       const testOrgFile = readFixture('indented_list');
       const exportedFile = parseAndExportOrgFile(testOrgFile);
