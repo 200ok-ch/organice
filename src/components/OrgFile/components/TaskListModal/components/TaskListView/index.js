@@ -121,8 +121,11 @@ class TaskListView extends PureComponent {
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
-        const maybeTimestamp = planningItem ? planningItem.get('timestamp').toJS() : null;
-        return [maybeTimestamp, header.get('titleLine').get('rawText')];
+        const maybeTimestamp = planningItem
+          ? dateForTimestamp(planningItem.get('timestamp'))
+          : null;
+        const title = header.get('titleLine').get('rawText');
+        return [maybeTimestamp, title];
       });
   }
 }
