@@ -93,22 +93,20 @@ class TaskListView extends PureComponent {
 
   getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeywordSets, date }) {
     return headers
-      .filter(header => searchAllHeaders || header.get('titleLine').get('todoKeyword'))
+      .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
         const earliestPlanningItem = header
           .get('planningItems')
-          .sortBy(x => dateForTimestamp(x.get('timestamp')))
-          // TODO: sort DESC by timestamp (must be converted to
-          // datetime) - and items without planning info should appear below
+          .sortBy(getTimeFromPlanningItem)
           .first();
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
-        const maybeTimestamp = planningItem
-          ? dateForTimestamp(planningItem.get('timestamp'))
-          : null;
-        const title = header.get('titleLine').get('rawText');
-        return [maybeTimestamp, title];
+        const timeAsSortCriterion = planningItem
+          ? getTimeFromPlanningItem(planningItem)
+          : Number.MAX_SAFE_INTEGER; // Sort tasks without timestamp last
+        const title = header.getIn(['titleLine', 'rawTitle']);
+        return [timeAsSortCriterion, title];
       });
   }
 }
@@ -122,6 +120,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({});
+
+const getTimeFromPlanningItem = planningItem =>
+  dateForTimestamp(planningItem.get('timestamp')).getTime();
 
 export default connect(
   mapStateToProps,
