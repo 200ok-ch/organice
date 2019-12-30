@@ -93,6 +93,10 @@ describe('Match function for headline filter', () => {
       const filterExpr = gic('spec');
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
+    test('Match a word with really ignore-case', () => {
+      const filterExpr = gic('SPEC');
+      expect(isMatch(filterExpr)(header)).toBe(true);
+    });
     test('Not match a word', () => {
       const filterExpr = gic('xyz');
       expect(isMatch(filterExpr)(header)).toBe(false);

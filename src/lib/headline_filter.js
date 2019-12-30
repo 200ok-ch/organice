@@ -16,17 +16,18 @@ export const isMatch = filterExpr => header => {
 
   const filterFilter = (type, exclude) => x => x.type === type && x.exclude === exclude;
   const words = x => x.words;
+  const wordsLowerCase = x => x.words.map(y => y.toLowerCase());
 
   const filterTags = filterExpr.filter(filterFilter('tag', false)).map(words);
   const filterCS = filterExpr.filter(filterFilter('case-sensitive', false)).map(words);
-  const filterIC = filterExpr.filter(filterFilter('ignore-case', false)).map(words);
+  const filterIC = filterExpr.filter(filterFilter('ignore-case', false)).map(wordsLowerCase);
   const filterProps = filterExpr
     .filter(filterFilter('property', false))
     .map(x => [x.property, x.words]);
 
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
-  const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(words);
+  const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(wordsLowerCase);
   const filterPropsExcl = filterExpr
     .filter(filterFilter('property', true))
     .map(x => [x.property, x.words]);
