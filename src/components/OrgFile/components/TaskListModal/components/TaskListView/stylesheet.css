@@ -1,12 +1,18 @@
 /* Currently, the markup is the same as in the AgendaDay component. Hence */
 /* the CSS rules from there apply. */
 
-.agenda-day__header-planning-type {
+
+.task-list__header-planning-type {
+  color: var(--base01);
   min-width: 8em;
   margin: 0 5px 0 0;
   display: inline-block;
 }
 
-.agenda-day__header-planning-date {
+.task-list__header-planning-date {
   display: inline-block;
+}
+
+.task-list__header-planning-date--overdue {
+  color: var(--orange);
 }

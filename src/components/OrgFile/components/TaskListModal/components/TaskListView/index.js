@@ -39,8 +39,8 @@ class TaskListView extends PureComponent {
               : null;
             const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
 
-            const dateClassName = classNames('agenda-day__header-planning-date', {
-              'agenda-day__header-planning-date--overdue':
+            const dateClassName = classNames('task-list__header-planning-date', {
+              'task-list__header-planning-date--overdue':
                 hasTodoKeyword && planningItem && isPast(planningItemDate),
             });
 
@@ -48,7 +48,7 @@ class TaskListView extends PureComponent {
             if (planningItemDate) {
               planningInformation = (
                 <div className="agenda-day__header__planning-item-container">
-                  <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
+                  <div className="task-list__header-planning-type">{planningItem.get('type')}</div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
                       ? format(planningItemDate, 'MM/dd')
