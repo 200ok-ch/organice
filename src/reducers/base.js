@@ -64,16 +64,29 @@ const popModalPage = state =>
 
 const clearModalStack = state => state.set('modalPageStack', List());
 
-const activatePopup = (state, action) =>
-  state.set(
+const activatePopup = (state, action) => {
+  const { data, popupType } = action;
+
+  // Remember active popup in URL state
+  window.location.hash = popupType;
+
+  return state.set(
     'activePopup',
     fromJS({
-      type: action.popupType,
-      data: action.data,
+      type: popupType,
+      data,
     })
   );
+};
 
-const closePopup = state => state.set('activePopup', null);
+const closePopup = state => {
+  window.history.replaceState(
+    '',
+    document.title,
+    window.location.pathname + window.location.search
+  );
+  return state.set('activePopup', null);
+};
 
 const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
 

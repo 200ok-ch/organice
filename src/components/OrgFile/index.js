@@ -26,7 +26,12 @@ import { ActionCreators as undoActions } from 'redux-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
-import { timestampWithId, headerWithId, extractAllOrgTags, extractAllOrgProperties } from '../../lib/org_utils';
+import {
+  timestampWithId,
+  headerWithId,
+  extractAllOrgTags,
+  extractAllOrgProperties,
+} from '../../lib/org_utils';
 
 import _ from 'lodash';
 import { fromJS } from 'immutable';
@@ -78,6 +83,17 @@ class OrgFile extends PureComponent {
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
     } else if (!_.isEmpty(path) && path !== loadedPath) {
       this.props.syncBackend.downloadFile(path);
+    }
+
+    this.activatePopup();
+  }
+
+  // If a fragment is set in the URL (by the activatePopup base
+  // action), activate the appropriate pop-up
+  activatePopup() {
+    const urlFragment = window.location.hash.substr(1);
+    if (!_.isEmpty(urlFragment)) {
+      this.props.base.activatePopup(urlFragment);
     }
   }
 
