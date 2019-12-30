@@ -617,7 +617,7 @@ const parseLogbook = rawText => {
 export const parseDescriptionPrefixElements = (rawText, parsedTitle) => {
   const planningItemsParse = _parsePlanningItems(rawText);
   const planningItemsFromTitle = parsedTitle
-    .filter(x => x.get('type') === 'timestamp' && x.getIn(['timestamp', 'isActive']))
+    .filter(x => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
     .map(x => createTimestamp({ type: 'TIMESTAMP', timestamp: x.get('firstTimestamp') })); // ignore second timestamp
 
   const planningItems = planningItemsParse.planningItems.merge(planningItemsFromTitle);
@@ -706,7 +706,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     propertyListItems,
     strippedDescription,
     logBookEntries,
-  } = parseDescriptionPrefixElements(description, fromJS([])); // TODO cannot pass parsed title here, as it is parsed only in the next line...
+  } = parseDescriptionPrefixElements(description, fromJS([])); // TODO: cannot pass parsed title here, as it is parsed only in the next line...
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
