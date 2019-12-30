@@ -13,8 +13,8 @@ import _ from 'lodash';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import { renderAsText, getCurrentTimestampAsText } from '../../../../lib/timestamps';
-import { attributedStringToRawText, createRawDescriptionText } from '../../../../lib/export_org';
+import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { createRawDescriptionText } from '../../../../lib/export_org';
 
 import AttributedString from '../AttributedString';
 
@@ -78,56 +78,7 @@ class HeaderContent extends PureComponent {
   }
 
   calculateRawDescription(header) {
-    console.log('calc raw descr');
     return createRawDescriptionText(header, false);
-
-    // FIXME: DUPLICATE CODE:
-
-    const planningItems = header.get('planningItems');
-    const propertyListItems = header.get('propertyListItems');
-    const logBookEntries = header.get('logBookEntries');
-
-    const planningItemsText = planningItems
-      .map(
-        planningItem =>
-          `${planningItem.get('type')}: ${renderAsText(planningItem.get('timestamp'))}`
-      )
-      .join(' ');
-
-    let propertyListItemsText = '';
-    if (propertyListItems.size > 0) {
-      propertyListItemsText += ':PROPERTIES:\n';
-      propertyListItemsText += propertyListItems
-        .map(
-          propertyListItem =>
-            `:${propertyListItem.get('property')}: ${attributedStringToRawText(
-              propertyListItem.get('value')
-            )}`
-        )
-        .join('\n');
-      propertyListItemsText += '\n:END:';
-    }
-
-    let logBookEntriesText = '';
-    if (logBookEntries.size > 0) {
-      logBookEntriesText += ':LOGBOOK:\n';
-      logBookEntriesText += logBookEntries
-        .map(entry =>
-          entry.get('raw') !== undefined
-            ? entry.get('raw')
-            : entry.get('end') === null
-            ? `CLOCK: ${renderAsText(entry.get('start'))}`
-            : `CLOCK: ${renderAsText(entry.get('start'))}--${renderAsText(entry.get('end'))}`
-        )
-        .join('\n');
-      logBookEntriesText += '\n:END:';
-    }
-
-    const headerText = [planningItemsText, propertyListItemsText, logBookEntriesText]
-      .filter(str => str.length !== 0)
-      .join('\n');
-
-    return headerText + (headerText.length === 0 ? '' : '\n') + header.get('rawDescription');
   }
 
   handleTextareaRef(textarea) {
