@@ -891,25 +891,26 @@ export const updateLogEntryTime = (state, action) => {
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition } = action;
   const headers = state.get('headers');
+  state = state.asMutable();
 
   let searchFilterExpr;
   try {
     searchFilterExpr = headline_filter_parser.parse(searchFilter);
-    state = state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
+    state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
   } catch {
     // No need to print this parser exceptions.
     // They are expected, see *.grammar.pegjs
   }
 
-  state = state.setIn(['search', 'searchFilterValid'], !!searchFilterExpr);
+  state.setIn(['search', 'searchFilterValid'], !!searchFilterExpr);
 
   let filteredHeaders = headers;
   if (searchFilterExpr) {
     // Only run filter if a filter is given and parsing was successfull
     filteredHeaders = headers.filter(isMatch(searchFilterExpr));
   }
-  state = state.setIn(['search', 'filteredHeaders'], filteredHeaders);
-  state = state.setIn(['search', 'searchFilter'], searchFilter);
+  state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+  state.setIn(['search', 'searchFilter'], searchFilter);
 
   // INFO: This is a POC draft of a future feature
   // This could come from the last session, hence from localStorage.
@@ -934,9 +935,9 @@ export const setSearchFilterInformation = (state, action) => {
       cursorPosition
     );
   }
-  state = state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
+  state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
 
-  return state;
+  return state.asImmutable();
 };
 
 export const setSearchAllHeadersFlag = (state, action) => {
