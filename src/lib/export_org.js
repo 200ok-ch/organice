@@ -255,13 +255,13 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
 };
 
 export const createRawDescriptionText = (header, includeTitle) => {
+  // To simplify access to properties:
+  header = header.toJS();
+
   // Pad things like planning items and tables appropriately
   // considering the nestingLevel of the header.
   const indentation = ' '.repeat(header.nestingLevel + 1);
   let contents = '';
-
-  // To simplify access to properties:
-  header = header.toJS();
 
   if (includeTitle) {
     contents += '*'.repeat(header.nestingLevel);
