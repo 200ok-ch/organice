@@ -81,6 +81,27 @@ describe('Headline filter parser', () => {
     });
   });
 
+  describe('Parsing of quoted strings', () => {
+    const expectStrings = s => expect(parser.parse(s)[0].words);
+    test('Parses a double-quoted string', () => {
+      expectStrings('"a b"').toEqual(['a b']);
+    });
+    test('Parses a single-quoted string', () => {
+      expectStrings("'a b'").toEqual(['a b']);
+    });
+    test('Parses a single-quoted string with alternatives', () => {
+      expectStrings("'a b'|'c d'").toEqual(['a b', 'c d']);
+    });
+    test('Not parses a quoted empty string, because that is bad input for the matcher', () => {
+      // The empty string would only make sense for property matching, but that
+      // must be currently done with this filter string: :prop1:
+      expect(() => expectStrings("''")).toThrowError();
+    });
+    test('Parses a quoted string in a property filter term', () => {
+      expectStrings(":prop1:'a b'").toEqual(['a b']);
+    });
+  });
+
   describe('Parsing of alltogether', () => {
     const s1 = ':assignee:jak|nik TODO|DONE Spec test -doc :tag :foo|bar';
     const s2 = ' ';
