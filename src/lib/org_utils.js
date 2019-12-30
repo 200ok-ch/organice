@@ -550,6 +550,9 @@ export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
     .get('completedKeywords')
     .includes(keyword);
 
+export const extractAllOrgTags = headers =>
+  headers.flatMap(h => h.getIn(['titleLine', 'tags'])).toSet().sort()
+
 export const extractAllOrgProperties = headers =>
   headers.map(h => {
     const propertyList = h.get('propertyListItems');

@@ -201,6 +201,15 @@ Running the tests:
 yarn test
 #+END_SRC
 
+For searching the Org file, there's a [[file:src/lib/headline_filter_parser.grammar.pegjs][grammar]] for the search
+clause. It's written in [[https://pegjs.org/][pegjs]]. Generating the parser code happens
+automatically on =yarn start|build|test=. When working on the parser,
+you can manually generate it with:
+
+#+BEGIN_SRC shell
+./bin/compile_search_parser.sh
+#+END_SRC
+
 *** Testing
 
 When you're developing a new feature and you want to manually test it,

@@ -70,12 +70,9 @@ export default class TagsEditorModal extends PureComponent {
       <Drawer onClose={onClose}>
         <h2 className="drawer-modal__title">Edit tags</h2>
 
-        <datalist id="datalist-tag-names">
+        <datalist id="drawer-modal__datalist-tag-names">
           {allTags.map((tagName, idx) => (
-            <option
-              key={idx}
-              value={tagName}
-            />
+            <option key={idx} value={tagName} />
           ))}
         </datalist>
 
@@ -108,7 +105,7 @@ export default class TagsEditorModal extends PureComponent {
                             value={tag}
                             onChange={this.handleTagChange(index)}
                             ref={textfield => (this.lastTextfield = textfield)}
-                            list="datalist-tag-names"
+                            list="drawer-modal__datalist-tag-names"
                           />
                           <div className="tag-container__actions-container">
                             <i
@@ -141,17 +138,19 @@ export default class TagsEditorModal extends PureComponent {
         <h2 className="tags-editor__title">All tags</h2>
 
         <div className="all-tags-container">
-          {allTags.filter(tag => !!tag).map(tag => {
-            const className = classNames('all-tags__tag', {
-              'all-tags__tag--in-use': headerTags.includes(tag),
-            });
+          {allTags
+            .filter(tag => !!tag)
+            .map(tag => {
+              const className = classNames('all-tags__tag', {
+                'all-tags__tag--in-use': headerTags.includes(tag),
+              });
 
-            return (
-              <div className={className} key={tag} onClick={this.handleExistingTagClick(tag)}>
-                {tag}
-              </div>
-            );
-          })}
+              return (
+                <div className={className} key={tag} onClick={this.handleExistingTagClick(tag)}>
+                  {tag}
+                </div>
+              );
+            })}
         </div>
       </Drawer>
     );

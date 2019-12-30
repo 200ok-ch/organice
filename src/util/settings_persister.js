@@ -128,14 +128,13 @@ const getFieldsToPersist = (state, fields) =>
     .concat(
       persistableFields
         .filter(field => field.category !== 'org')
-        .map(
-          field =>
-            field.type === 'json'
-              ? [
-                  field.name,
-                  JSON.stringify(state[field.category].get(field.name) || field.default || {}),
-                ]
-              : [field.name, state[field.category].get(field.name)]
+        .map(field =>
+          field.type === 'json'
+            ? [
+                field.name,
+                JSON.stringify(state[field.category].get(field.name) || field.default || {}),
+              ]
+            : [field.name, state[field.category].get(field.name)]
         )
     );
 
@@ -184,7 +183,12 @@ export const readInitialState = () => {
     syncBackend: Map(),
     org: {
       past: [],
-      present: Map(),
+      present: Map({
+        search: Map({
+          searchFilter: '',
+          searchFilterExpr: [],
+        }),
+      }),
       future: [],
     },
     base: Map(),

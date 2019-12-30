@@ -88,7 +88,8 @@ Some description content
       getByAltText,
       getByTestId,
       queryByText,
-      queryAllByText;
+      queryAllByText,
+      getByPlaceholderText;
     beforeEach(() => {
       let res = render(
         <MemoryRouter keyLength={0}>
@@ -107,6 +108,7 @@ Some description content
       getByTestId = res.getByTestId;
       queryByText = res.queryByText;
       queryAllByText = res.queryAllByText;
+      getByPlaceholderText = res.getByPlaceholderText;
     });
 
     describe('Actions within an Org file', () => {
@@ -293,6 +295,59 @@ Some description content
               'Another top level header'
             )}&body=${encodeURIComponent('\n\nSome description content\n')}`
           );
+        });
+      });
+
+      describe('TaskList', () => {
+        test('renders TaskList for an Org file', () => {
+          expect(queryByText('Task list')).toBeFalsy();
+          expect(queryByText('Search all headlines')).toBeFalsy();
+          expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
+
+          fireEvent.click(getByTitle('Show task list'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toHaveTextContent('Task list');
+          expect(drawerElem).toHaveTextContent('Search all headlines');
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        test('search in TaskList filters headers (by default only with todoKeywords)', () => {
+          fireEvent.click(getByTitle('Show task list'));
+          const drawerElem = getByTestId('drawer');
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+          fireEvent.change(input, { target: { value: 'a search with no results' } });
+
+          expect(drawerElem).not.toHaveTextContent('A todo item with schedule and deadline');
+          fireEvent.change(input, { target: { value: 'todo item' } });
+
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        // More rigerous testing of the search parser is here:
+        // headline_filter_parser.unit.test.js
+        test('search in TaskList filters headers (on demand without todoKeywords)', () => {
+          fireEvent.click(getByTitle('Show task list'));
+          const drawerElem = getByTestId('drawer');
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          expect(drawerElem).not.toHaveTextContent('Another top level header');
+
+          // Enable searching for all headers
+          fireEvent.click(getByTestId('task-list__checkbox'));
+
+          // All kinds of headers are visible
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).toHaveTextContent('Another top level header');
+
+          // Filter down to headers with tag :tag1:
+          fireEvent.change(input, { target: { value: ':tag1' } });
+
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).not.toHaveTextContent('Another top level header');
         });
       });
 

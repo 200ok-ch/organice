@@ -39,10 +39,14 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         class="fas fa-question-circle header-bar__actions__item"
         title="Help"
       />
-      <i
-        class="fas fa-cogs header-bar__actions__item"
-        title="Settings"
-      />
+      <a
+        href="/settings"
+      >
+        <i
+          class="fas fa-cogs header-bar__actions__item"
+          title="Settings"
+        />
+      </a>
     </div>
   </div>
   <div
@@ -412,11 +416,16 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           style="opacity: 1;"
           title="Show agenda"
         />
+        <button
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
+          style="opacity: 1;"
+          title="Show task list"
+        />
         <div
           class="action-drawer__capture-buttons-container"
         >
           <button
-            class="btn btn--circle action-drawer__btn fas fa-lg fa-list-ul"
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
             style="opacity: 1; position: relative; z-index: 1;"
             title="Show capture templates"
           />

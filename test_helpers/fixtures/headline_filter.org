@@ -1,0 +1,8 @@
+* TODO Spec header							  :spec_tag:tag2:
+
+:PROPERTIES:
+:prop1: abc
+:prop1: def
+:prop2: xyz
+:prop3:
+:END:
