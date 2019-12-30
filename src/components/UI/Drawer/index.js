@@ -112,6 +112,7 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
             <div
               onClick={handleInnerContainerClick}
               className="drawer-inner-container nice-scroll"
+              data-testid="drawer"
               ref={innerContainer}
               style={interpolatedStyle}
             >

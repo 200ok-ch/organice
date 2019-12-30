@@ -87,6 +87,7 @@ class TaskListModal extends PureComponent {
               // TODO: Why does the .checkbox css rule from the Checkbox component apply for this input? If it is by accident, can we duplicate/move the css class rule to base.css?
               checked={searchAllHeaders}
               id="task-list__checkbox-search-all-headers"
+              data-testid="task-list__checkbox"
               onChange={this.handleSearchAllCheckboxChange}
             />
             <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
@@ -110,10 +111,10 @@ class TaskListModal extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  searchFilter: state.org.present.getIn(['search', 'searchFilter']),
+  searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
-  searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']),
+  searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']) || false,
 });
 
 const mapDispatchToProps = dispatch => ({
