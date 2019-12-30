@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
+import classNames from 'classnames';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
@@ -49,7 +50,13 @@ class TaskListModal extends PureComponent {
   }
 
   render() {
-    const { onClose, searchFilter, searchFilterSuggestions, searchAllHeaders } = this.props;
+    const {
+      onClose,
+      searchFilter,
+      searchFilterValid,
+      searchFilterSuggestions,
+      searchAllHeaders,
+    } = this.props;
     const { dateDisplayType } = this.state;
 
     return (
@@ -74,7 +81,9 @@ class TaskListModal extends PureComponent {
           <input
             type="text"
             value={searchFilter}
-            className="textfield task-list__filter-input"
+            className={classNames('textfield', 'task-list__filter-input', {
+              'task-list__filter-input-invalid': !searchFilterValid,
+            })}
             placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
             list="task-list__datalist-filter"
             onChange={this.handleFilterChange}
@@ -102,6 +111,7 @@ class TaskListModal extends PureComponent {
 
 const mapStateToProps = state => ({
   searchFilter: state.org.present.getIn(['search', 'searchFilter']),
+  searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
   searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']),
 });

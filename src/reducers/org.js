@@ -901,6 +901,8 @@ export const setSearchFilterInformation = (state, action) => {
     // They are expected, see *.grammar.pegjs
   }
 
+  state = state.setIn(['search', 'searchFilterValid'], !!searchFilterExpr);
+
   let filteredHeaders = headers;
   if (searchFilterExpr) {
     // Only run filter if a filter is given and parsing was successfull

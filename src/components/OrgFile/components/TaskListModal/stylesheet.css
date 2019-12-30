@@ -6,3 +6,9 @@
   box-sizing: border-box;
   width: 100%;
 }
+
+.task-list__filter-input-invalid {
+  /* border-color: red; */
+  /* TODO: with 1px (default), the color is almost not visible when the input is focused. */
+  border: 2px solid red;
+}
