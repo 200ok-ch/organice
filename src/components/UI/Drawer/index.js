@@ -5,7 +5,7 @@ import './stylesheet.css';
 import { Motion, spring } from 'react-motion';
 import classNames from 'classnames';
 
-export default ({ children, shouldIncludeCloseButton, onClose }) => {
+export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [dragOffsetY, setDragOffsetY] = useState(null);
 
@@ -99,6 +99,7 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
       {style => {
         const interpolatedStyle = {
           transform: `translateY(${style.offsetY}px)`,
+          height: maxSize ? '97%' : 'auto',
         };
 
         return (

@@ -60,7 +60,7 @@ class TaskListModal extends PureComponent {
     const { dateDisplayType } = this.state;
 
     return (
-      <Drawer onClose={onClose}>
+      <Drawer onClose={onClose} maxSize={true}>
         <h2 className="agenda__title">Task list</h2>
 
         <datalist id="task-list__datalist-filter">
@@ -120,7 +120,4 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListModal);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);
