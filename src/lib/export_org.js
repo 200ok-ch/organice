@@ -250,80 +250,82 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
 
   const headerContent = headers
     .toJS()
-    .map(header => {
-      // Pad things like planning items and tables appropriately
-      // considering the nestingLevel of the header.
-      const indentation = ' '.repeat(header.nestingLevel + 1);
-      let contents = '';
-      contents += '*'.repeat(header.nestingLevel);
-
-      if (header.titleLine.todoKeyword) {
-        contents += ` ${header.titleLine.todoKeyword}`;
-      }
-      contents += ` ${header.titleLine.rawTitle}`;
-
-      if (header.titleLine.tags.length) {
-        contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
-      }
-
-      // Special case: do not render planning items that are normal active timestamps
-      const planningItemsToRender = header.planningItems.filter(x => x.type !== 'TIMESTAMP');
-      if (planningItemsToRender.length) {
-        const planningItemsContent = header.planningItems
-          .map(planningItem => {
-            const timestampString = renderAsText(fromJS(planningItem.timestamp));
-            return `${planningItem.type}: ${timestampString}`;
-          })
-          .join(' ')
-          .trimRight();
-        contents += `\n${indentation}${planningItemsContent}`;
-      }
-
-      if (header.propertyListItems.length) {
-        const propertyListItemsContent = header.propertyListItems
-          .map(propertyListItem => {
-            return `${indentation}:${propertyListItem.property}: ${attributedStringToRawText(
-              fromJS(propertyListItem.value)
-            )}`;
-          })
-          .join('\n');
-        contents += `\n${indentation}:PROPERTIES:`;
-        contents += `\n${propertyListItemsContent}`;
-        contents += `\n${indentation}:END:\n`;
-      }
-
-      if (header.logBookEntries.length) {
-        const logBookEntriesContent = header.logBookEntries
-          .map(entry => {
-            if (entry.raw !== undefined) {
-              return entry.raw ? `${indentation}${entry.raw}` : '';
-            } else if (entry.end === null) {
-              return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}`;
-            } else {
-              return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(
-                fromJS(entry.end)
-              )} => ${timestampDuration(fromJS(entry.start), fromJS(entry.end))}`;
-            }
-          })
-          .join('\n')
-          .trimRight();
-        contents += `\n${indentation}:LOGBOOK:`;
-        contents += `\n${logBookEntriesContent}`;
-        contents += `\n${indentation}:END:\n`;
-      }
-
-      if (header.description.length > 0) {
-        if (!header.rawDescription.startsWith('\n') && header.rawDescription.length !== 0) {
-          contents += '\n';
-        }
-        contents += header.rawDescription;
-      } else {
-        contents = contents.trimRight();
-      }
-
-      return contents;
-    })
+    .map(createRawDescriptionText)
     .join('\n');
 
   return configContent + headerContent + (headerContent.endsWith('\n') ? '' : '\n');
+};
+
+export const createRawDescriptionText = header => {
+  // Pad things like planning items and tables appropriately
+  // considering the nestingLevel of the header.
+  const indentation = ' '.repeat(header.nestingLevel + 1);
+  let contents = '';
+  contents += '*'.repeat(header.nestingLevel);
+
+  if (header.titleLine.todoKeyword) {
+    contents += ` ${header.titleLine.todoKeyword}`;
+  }
+  contents += ` ${header.titleLine.rawTitle}`;
+
+  if (header.titleLine.tags.length) {
+    contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+  }
+
+  // Special case: do not render planning items that are normal active timestamps
+  const planningItemsToRender = header.planningItems.filter(x => x.type !== 'TIMESTAMP');
+  if (planningItemsToRender.length) {
+    const planningItemsContent = header.planningItems
+      .map(planningItem => {
+        const timestampString = renderAsText(fromJS(planningItem.timestamp));
+        return `${planningItem.type}: ${timestampString}`;
+      })
+      .join(' ')
+      .trimRight();
+    contents += `\n${indentation}${planningItemsContent}`;
+  }
+
+  if (header.propertyListItems.length) {
+    const propertyListItemsContent = header.propertyListItems
+      .map(propertyListItem => {
+        return `${indentation}:${propertyListItem.property}: ${attributedStringToRawText(
+          fromJS(propertyListItem.value)
+        )}`;
+      })
+      .join('\n');
+    contents += `\n${indentation}:PROPERTIES:`;
+    contents += `\n${propertyListItemsContent}`;
+    contents += `\n${indentation}:END:\n`;
+  }
+
+  if (header.logBookEntries.length) {
+    const logBookEntriesContent = header.logBookEntries
+      .map(entry => {
+        if (entry.raw !== undefined) {
+          return entry.raw ? `${indentation}${entry.raw}` : '';
+        } else if (entry.end === null) {
+          return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}`;
+        } else {
+          return `${indentation}CLOCK: ${renderAsText(fromJS(entry.start))}--${renderAsText(
+            fromJS(entry.end)
+          )} => ${timestampDuration(fromJS(entry.start), fromJS(entry.end))}`;
+        }
+      })
+      .join('\n')
+      .trimRight();
+    contents += `\n${indentation}:LOGBOOK:`;
+    contents += `\n${logBookEntriesContent}`;
+    contents += `\n${indentation}:END:\n`;
+  }
+
+  if (header.description.length > 0) {
+    if (!header.rawDescription.startsWith('\n') && header.rawDescription.length !== 0) {
+      contents += '\n';
+    }
+    contents += header.rawDescription;
+  } else {
+    contents = contents.trimRight();
+  }
+
+  return contents;
 };
