@@ -82,6 +82,7 @@ class HeaderContent extends PureComponent {
     const propertyListItems = header.get('propertyListItems');
     const logBookEntries = header.get('logBookEntries');
 
+    // FIXME: DUPLICATE! code
     const planningItemsText = planningItems
       .map(
         planningItem =>
@@ -322,4 +323,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderContent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HeaderContent);

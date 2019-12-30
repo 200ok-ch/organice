@@ -456,13 +456,8 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 };
 
 export const _parsePlanningItems = rawText => {
-  const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
   const optionalSinglePlanningItemRegex = RegExp(
-    '(' +
-      singlePlanningItemRegex
-        .toString()
-        .substring(1, singlePlanningItemRegex.toString().length - 1) +
-      ')?'
+    `((DEADLINE|SCHEDULED|CLOSED):\\s*${asStrNoSlashs(timestampRegex)})?`
   );
 
   // FIXME: The whitespace part of the regex matches `rawText` inputs
@@ -497,7 +492,7 @@ export const _parsePlanningItems = rawText => {
           _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
         );
 
-        return { type, timestamp, id: generateId() };
+        return createTimestamp({ type, timestamp });
       })
       .filter(item => !!item)
   );
@@ -691,12 +686,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
 };
 
 const concatRegexes = (...regexes) =>
-  regexes.reduce((prev, curr) =>
-    RegExp(
-      prev.toString().substring(1, prev.toString().length - 1) +
-        curr.toString().substring(1, curr.toString().length - 1)
-    )
-  );
+  regexes.reduce((prev, curr) => RegExp(asStrNoSlashs(prev) + asStrNoSlashs(curr)));
 
 // Converts RegExp or strings like '/regex/' to a string without these slashs.
 const asStrNoSlashs = regex => {

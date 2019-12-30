@@ -266,10 +266,13 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
         contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
       }
 
-      if (header.planningItems.length) {
+      // Special case: do not render planning items that are normal active timestamps
+      const planningItemsToRender = header.planningItems.filter(x => x.type !== 'TIMESTAMP');
+      if (planningItemsToRender.length) {
         const planningItemsContent = header.planningItems
           .map(planningItem => {
-            return `${planningItem.type}: ${renderAsText(fromJS(planningItem.timestamp))}`;
+            const timestampString = renderAsText(fromJS(planningItem.timestamp));
+            return `${planningItem.type}: ${timestampString}`;
           })
           .join(' ')
           .trimRight();
