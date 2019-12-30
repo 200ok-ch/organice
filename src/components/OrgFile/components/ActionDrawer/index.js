@@ -322,7 +322,7 @@ const mapStateToProps = (state, props) => {
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
-    captureTemplates: state.capture.get('captureTemplates', new List()),
+    captureTemplates: state.capture.get('captureTemplates', List()),
     path: state.org.present.get('path'),
     isLoading: state.base.get('isLoading'),
   };

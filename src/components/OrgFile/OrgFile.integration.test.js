@@ -56,14 +56,14 @@ Some description content
   let store;
 
   beforeEach(() => {
-    let capture = new Map();
+    let capture = Map();
     capture = capture.set('captureTemplates', []);
     store = createStore(
       rootReducer,
       {
         org: {
           past: [],
-          present: new Map(),
+          present: Map(),
           future: [],
         },
         syncBackend: Map({
