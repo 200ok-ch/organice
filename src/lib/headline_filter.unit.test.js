@@ -97,6 +97,10 @@ describe('Match function for headline filter', () => {
       const filterExpr = gic('SPEC');
       expect(isMatch(filterExpr)(header)).toBe(true);
     });
+    test('Match a quoted string', () => {
+      const filterExpr = gic('spec head');
+      expect(isMatch(filterExpr)(header)).toBe(true);
+    });
     test('Not match a word', () => {
       const filterExpr = gic('xyz');
       expect(isMatch(filterExpr)(header)).toBe(false);
