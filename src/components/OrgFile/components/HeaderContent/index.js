@@ -14,7 +14,7 @@ import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
 import { renderAsText, getCurrentTimestampAsText } from '../../../../lib/timestamps';
-import { attributedStringToRawText } from '../../../../lib/export_org';
+import { attributedStringToRawText, createRawDescriptionText } from '../../../../lib/export_org';
 
 import AttributedString from '../AttributedString';
 
@@ -78,11 +78,15 @@ class HeaderContent extends PureComponent {
   }
 
   calculateRawDescription(header) {
+    console.log('calc raw descr');
+    return createRawDescriptionText(header, false);
+
+    // FIXME: DUPLICATE CODE:
+
     const planningItems = header.get('planningItems');
     const propertyListItems = header.get('propertyListItems');
     const logBookEntries = header.get('logBookEntries');
 
-    // FIXME: DUPLICATE! code
     const planningItemsText = planningItems
       .map(
         planningItem =>

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
+import { shouldRenderPlanningItem } from './org_utils';
 import { renderAsText, timestampDuration } from './timestamps';
 
 const linkPartToRawText = linkPart => {
@@ -248,32 +249,31 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
     configContent = configContent + '\n';
   }
 
-  const headerContent = headers
-    .toJS()
-    .map(createRawDescriptionText)
-    .join('\n');
+  const headerContent = headers.map(x => createRawDescriptionText(x, true)).join('\n');
 
   return configContent + headerContent + (headerContent.endsWith('\n') ? '' : '\n');
 };
 
-export const createRawDescriptionText = header => {
+export const createRawDescriptionText = (header, includeTitle) => {
+  header = header.toJS(); // <- TODO: get rid of this?
   // Pad things like planning items and tables appropriately
   // considering the nestingLevel of the header.
   const indentation = ' '.repeat(header.nestingLevel + 1);
   let contents = '';
-  contents += '*'.repeat(header.nestingLevel);
 
-  if (header.titleLine.todoKeyword) {
-    contents += ` ${header.titleLine.todoKeyword}`;
-  }
-  contents += ` ${header.titleLine.rawTitle}`;
-
-  if (header.titleLine.tags.length) {
-    contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+  if (includeTitle) {
+    contents += '*'.repeat(header.nestingLevel);
+    if (header.titleLine.todoKeyword) {
+      contents += ` ${header.titleLine.todoKeyword}`;
+    }
+    contents += ` ${header.titleLine.rawTitle}`;
+    if (header.titleLine.tags.length) {
+      contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+    }
   }
 
   // Special case: do not render planning items that are normal active timestamps
-  const planningItemsToRender = header.planningItems.filter(x => x.type !== 'TIMESTAMP');
+  const planningItemsToRender = header.planningItems.filter(shouldRenderPlanningItem);
   if (planningItemsToRender.length) {
     const planningItemsContent = header.planningItems
       .map(planningItem => {

@@ -35,6 +35,9 @@
 
      - State "DONE"       from "TODO"       [2019-09-22 Sun 11:27]
 
+**** TODO <2019-12-30 Mon> I have a timestamp in the title
+**** TODO [2019-12-30 Mon] I have an inactive timestamp in the title
+
 ** Tables, clock reports, time entries, source blocks
 
    #+BEGIN: clocktable :maxlevel 25 :scope subtree :tstart "<2019-09-01 Sun>" :tend "<2019-10-01 Tue>" :indent nil :tcolumns 1 :timestamp nil :formula "$3=$2*150;t"

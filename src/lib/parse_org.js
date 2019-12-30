@@ -617,7 +617,7 @@ const parseLogbook = rawText => {
 export const parseDescriptionPrefixElements = (rawText, parsedTitle) => {
   const planningItemsParse = _parsePlanningItems(rawText);
   const planningItemsFromTitle = parsedTitle
-    .filter(x => x.get('type') === 'timestamp')
+    .filter(x => x.get('type') === 'timestamp' && x.getIn(['timestamp', 'isActive']))
     .map(x => createTimestamp({ type: 'TIMESTAMP', timestamp: x.get('firstTimestamp') })); // ignore second timestamp
 
   const planningItems = planningItemsParse.planningItems.merge(planningItemsFromTitle);
