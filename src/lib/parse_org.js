@@ -485,7 +485,7 @@ export const _parsePlanningItems = rawText => {
   const planningMatch = rawText.match(planningRegex);
 
   const planningItems = fromJS(
-    [2, 17, 32]
+    [2, 17, 32] // what magic numbers are these?
       .map(planningTypeIndex => {
         const type = planningMatch[planningTypeIndex];
         if (!type) {
@@ -519,6 +519,8 @@ export const _parsePlanningItems = rawText => {
     return { planningItems: fromJS([]), strippedDescription: rawText };
   }
 };
+
+const createTimestamp = ({ type, timestamp }) => fromJS({ type, timestamp, id: generateId() });
 
 const parsePropertyList = rawText => {
   const lines = rawText.split('\n');
@@ -617,13 +619,18 @@ const parseLogbook = rawText => {
 //   from it).
 // - recognize active timestamps in the "descriptionPrefix" also with out a
 //   "planning keyword".
-export const parseDescriptionPrefixElements = rawText => {
+export const parseDescriptionPrefixElements = (rawText, parsedTitle) => {
   const planningItemsParse = _parsePlanningItems(rawText);
+  const planningItemsFromTitle = parsedTitle
+    .filter(x => x.get('type') === 'timestamp')
+    .map(x => createTimestamp({ type: 'TIMESTAMP', timestamp: x.get('firstTimestamp') })); // ignore second timestamp
+
+  const planningItems = planningItemsParse.planningItems.merge(planningItemsFromTitle);
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
   const logBookParse = parseLogbook(propertyListParse.strippedDescription);
 
   return {
-    planningItems: planningItemsParse.planningItems,
+    planningItems: planningItems,
     propertyListItems: propertyListParse.propertyListItems,
     strippedDescription: logBookParse.strippedDescription,
     logBookEntries: logBookParse.logBookEntries,
@@ -691,6 +698,12 @@ const concatRegexes = (...regexes) =>
     )
   );
 
+// Converts RegExp or strings like '/regex/' to a string without these slashs.
+const asStrNoSlashs = regex => {
+  const s = regex.toString();
+  return s.toString().substring(1, s.length - 1);
+};
+
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
   const description = rawText
@@ -703,7 +716,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     propertyListItems,
     strippedDescription,
     logBookEntries,
-  } = parseDescriptionPrefixElements(description);
+  } = parseDescriptionPrefixElements(description, fromJS([])); // TODO cannot pass parsed title here, as it is parsed only in the next line...
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
@@ -784,7 +797,10 @@ export const parseOrg = fileContents => {
       propertyListItems,
       strippedDescription,
       logBookEntries,
-    } = parseDescriptionPrefixElements(header.get('rawDescription'));
+    } = parseDescriptionPrefixElements(
+      header.get('rawDescription'),
+      header.getIn(['titleLine', 'title'])
+    );
 
     return header
       .set('rawDescription', strippedDescription)

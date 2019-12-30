@@ -226,11 +226,12 @@ const updateHeaderDescription = (state, action) => {
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
   return state.updateIn(['headers', headerIndex], header => {
+    const parsedTitle = header.getIn(['titleLine', 'title']);
     const {
       planningItems,
       propertyListItems,
       strippedDescription,
-    } = parseDescriptionPrefixElements(action.newRawDescription);
+    } = parseDescriptionPrefixElements(action.newRawDescription, parsedTitle);
 
     return header
       .set('rawDescription', strippedDescription)
