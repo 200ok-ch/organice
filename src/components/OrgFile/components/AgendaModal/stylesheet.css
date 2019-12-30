@@ -7,7 +7,6 @@
 }
 
 .agenda__tab-container {
-  display: flex;
   justify-content: center;
 }
 
@@ -16,7 +15,7 @@
   justify-content: center;
   align-items: center;
 
-  margin-top: 15px;
+  margin: 2em 0 1.5em 0;
 
   color: var(--base01);
 }

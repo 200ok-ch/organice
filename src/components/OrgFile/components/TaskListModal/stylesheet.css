@@ -1,14 +1,25 @@
+@import '../../../../colors.css';
+
 /* Currently, the markup is the same as in the AgendaModal component.
  * Hence the CSS rules from there apply. */
 
-.task-list__filter-input {
-  margin: 1em 0 1em 0;
+.task-list__headers-container {
+  overflow: auto;
+}
+
+.task-list__filter-input,
+.task-list__filter-input-invalid {
   box-sizing: border-box;
   width: 100%;
 }
 
+.task-list__input-container {
+  margin-bottom: 2em;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
 .task-list__filter-input-invalid {
-  /* border-color: red; */
-  /* TODO: with 1px (default), the color is almost not visible when the input is focused. */
-  border: 2px solid red;
+  border: 2px solid var(--red);
 }

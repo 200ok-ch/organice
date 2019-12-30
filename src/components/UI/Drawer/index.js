@@ -99,8 +99,13 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
       {style => {
         const interpolatedStyle = {
           transform: `translateY(${style.offsetY}px)`,
-          height: maxSize ? '97%' : 'auto',
         };
+
+        // For maximized drawers, there's different rules:
+        if (maxSize) {
+          interpolatedStyle.height = '92%';
+          interpolatedStyle.overflow = 'none';
+        }
 
         return (
           <div className={outerClassName} onClick={!!onClose ? handleClose : null}>

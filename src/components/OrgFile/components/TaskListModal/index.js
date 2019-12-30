@@ -69,15 +69,7 @@ class TaskListModal extends PureComponent {
           ))}
         </datalist>
 
-        <div className="agenda__days-container">
-          <TaskListView
-            onHeaderClick={this.handleHeaderClick}
-            dateDisplayType={dateDisplayType}
-            onToggleDateDisplayType={this.handleToggleDateDisplayType}
-          />
-        </div>
-
-        <div>
+        <div className="task-list__input-container">
           <input
             type="text"
             value={searchFilter}
@@ -88,19 +80,27 @@ class TaskListModal extends PureComponent {
             list="task-list__datalist-filter"
             onChange={this.handleFilterChange}
           />
+          <div className="agenda__tab-container">
+            <input
+              type="checkbox"
+              className="checkbox"
+              // TODO: Why does the .checkbox css rule from the Checkbox component apply for this input? If it is by accident, can we duplicate/move the css class rule to base.css?
+              checked={searchAllHeaders}
+              id="task-list__checkbox-search-all-headers"
+              onChange={this.handleSearchAllCheckboxChange}
+            />
+            <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
+              Search all headlines
+            </label>
+          </div>
         </div>
-        <div className="agenda__tab-container">
-          <input
-            type="checkbox"
-            className="checkbox"
-            // TODO: Why does the .checkbox css rule from the Checkbox component apply for this input? If it is by accident, can we duplicate/move the css class rule to base.css?
-            checked={searchAllHeaders}
-            id="task-list__checkbox-search-all-headers"
-            onChange={this.handleSearchAllCheckboxChange}
+
+        <div className="task-list__headers-container">
+          <TaskListView
+            onHeaderClick={this.handleHeaderClick}
+            dateDisplayType={dateDisplayType}
+            onToggleDateDisplayType={this.handleToggleDateDisplayType}
           />
-          <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
-            Search all headlines
-          </label>
         </div>
 
         <br />
