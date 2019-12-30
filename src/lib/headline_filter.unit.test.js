@@ -214,7 +214,7 @@ describe('Computation of completions and suggestions for task filter', () => {
   const allProperties = [['prop1', 'val1'], ['prop1', 'val2'], ['prop3', 'val 3']];
   const tagAndPropNames = [].concat(tagNames, ['prop1:', 'prop3:']);
   const propValsForProp1 = ['val1', 'val2'];
-  const propValsForProp3 = ['val'];
+  const propValsForProp3 = ['"val 3"'];
 
   describe('Computation of completions', () => {
     // Function under test:
@@ -303,7 +303,6 @@ describe('Computation of completions and suggestions for task filter', () => {
         expectComputation('a :prop1: ', 9).toEqual(propValsForProp1);
       });
       test('Completions for property value must be the value part up to the first whitespace', () => {
-        // ... because of the limitation that quoted filter strings are not allowed.
         expectComputation(':prop3: ', 7).toEqual(propValsForProp3);
       });
     });
