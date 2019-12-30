@@ -67,8 +67,12 @@ const clearModalStack = state => state.set('modalPageStack', List());
 const activatePopup = (state, action) => {
   const { data, popupType } = action;
 
-  // Remember active popup in URL state
-  window.location.hash = popupType;
+  // Remember active popup in URL state for popups that are uniquely
+  // identifiable (aka not related to a single header like tags,
+  // properties or timestamps).
+  if (['task-list', 'agenda'].includes(popupType)) {
+    window.location.hash = popupType;
+  }
 
   return state.set(
     'activePopup',
