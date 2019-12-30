@@ -214,7 +214,7 @@ const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
-  const newTitleLine = parseTitleLine(action.newRawTitle, state.get('todoKeywordSets'));
+  const newTitleLine = parseTitleLine(action.newRawTitle.trim(), state.get('todoKeywordSets'));
 
   state = state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
 

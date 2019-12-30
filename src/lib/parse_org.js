@@ -685,7 +685,7 @@ const concatRegexes = (...regexes) =>
   );
 
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
-  const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
+  const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
   const description = rawText
     .split('\n')
     .slice(1)
