@@ -30,119 +30,121 @@ describe('Match function for headline filter', () => {
   const headers = parsedFile.get('headers');
   const header = headers.get(0);
 
+  const expectMatch = filterExpr => expect(isMatch(filterExpr)(header));
+
   describe('Tests for tag matching', () => {
     test('Matches if no filter is given', () => {
       const filterExpr = [];
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Matches single tag', () => {
       const filterExpr = gtag('spec_tag');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not matches wrong tag', () => {
       const filterExpr = gtag('non-existing-tag');
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Only matches exact tag names', () => {
       const filterExpr = gtag('spec_');
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Only matches if all tags are matched (AND)', () => {
       const filterExpr = gtags(['tag2', 'spec_tag']);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match tag1 OR tag2', () => {
       const filterExpr = gtagsOr([['nonexisting', 'spec_tag']]);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match (tag1 OR tag2) AND (tag3 OR tag4)', () => {
       const filterExpr = gtagsOr([['nonexisting', 'spec_tag'], ['tag2', 'nonexisting2']]);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
   });
 
   describe('Tests for case-sensitive matching in headline text', () => {
     test('Match TODO', () => {
       const filterExpr = gcs('TODO');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match for substring of TODO', () => {
       const filterExpr = gcs('TOD');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('No match for wrongly spelled TODO', () => {
       const filterExpr = gcs('TIDI');
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Match for two substrings with AND', () => {
       const filterExpr = gcss(['TODO', 'Spec']);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match for two substrings with AND, one with OR', () => {
       const filterExpr = gcssOr([['TODO', 'FIXME'], ['Spec']]);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not match (misspelled) for two substrings with AND, one with OR', () => {
       const filterExpr = gcssOr([['TIDI', 'FIXME'], ['Spec']]);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
   });
 
   describe('Tests for ignore-case matching in headline text', () => {
     test('Match a word', () => {
       const filterExpr = gic('spec');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not match a word', () => {
       const filterExpr = gic('xyz');
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
   });
 
   describe('Tests for property matching', () => {
     test('Match property with value', () => {
       const filterExpr = gprop('prop1', 'abc');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match property with value (name/key matches case-insensitive)', () => {
       const filterExpr = gprop('PROP1', 'abc');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match property with part of value', () => {
       const filterExpr = gprop('prop1', 'b');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not match property with wrong value', () => {
       const filterExpr = gprop('prop1', 'aaa');
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Match two properties (AND)', () => {
       const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xyz']]);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match two properties but one is wrong', () => {
       const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xxx']]);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Match two times the same property with different values (see example org)', () => {
       const filterExpr = gprops([['prop1', 'abc'], ['prop1', 'def']]);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match property with no value', () => {
       const filterExpr = gprop('prop3', '');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not match property with no value', () => {
       const filterExpr = gprop('prop3', 'xxx');
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Match property without providing a value', () => {
       const filterExpr = gprop('prop1', '');
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match property with either value (OR)', () => {
       const filterExpr = gpropsOr([['prop1', ['aaa', 'abc']]]);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
   });
 
@@ -155,55 +157,55 @@ describe('Match function for headline filter', () => {
     test('Not match text when using exclude filter #1', () => {
       let filterExpr = gic('header');
       filterExpr = makeExclude(filterExpr);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Not match text when using exclude filter #2', () => {
       let filterExpr = gcs('Spec');
       filterExpr = makeExclude(filterExpr);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Not match tag when using exclude filter', () => {
       let filterExpr = gtag('tag2');
       filterExpr = makeExclude(filterExpr);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Not match property when using exclude filter', () => {
       let filterExpr = gprop('prop1', 'abc');
       filterExpr = makeExclude(filterExpr);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Match property when using exclude filter with non-matching value', () => {
       let filterExpr = gprop('prop1', 'xxxxx');
       filterExpr = makeExclude(filterExpr);
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not match property when using exclude filter on empty property', () => {
       let filterExpr = gprop('prop3', '');
       filterExpr = makeExclude(filterExpr);
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
   });
 
   describe('Tests for combined matching', () => {
     test('Empty filter matches everything', () => {
       const filterExpr = [];
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match tag and TODO', () => {
       const filterExpr = gtag('spec_tag').concat(gcs('TODO'));
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Not match misspelled tag and correct TODO', () => {
       const filterExpr = gtag('spec_').concat(gcs('TODO'));
-      expect(isMatch(filterExpr)(header)).toBe(false);
+      expectMatch(filterExpr).toBe(false);
     });
     test('Match tag, TODO, and ignore-case', () => {
       const filterExpr = gtag('spec_tag').concat(gcs('TODO'), gic('spec'));
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
     test('Match tag, TODO, ignore-case, and property', () => {
       const filterExpr = gtag('spec_tag').concat(gcs('TODO'), gic('spec'), gprop('prop1', 'def'));
-      expect(isMatch(filterExpr)(header)).toBe(true);
+      expectMatch(filterExpr).toBe(true);
     });
   });
 });
