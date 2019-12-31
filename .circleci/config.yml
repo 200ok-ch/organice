@@ -51,17 +51,17 @@ jobs:
 
       - run: yarn test
 
-  push-image:
-    machine: true
-    steps:
-      - checkout
-      # Build docker image and push it to DockerHub
-      - run: docker build --rm=false -t ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} .
-      - run: docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PWD}
-      - run: docker push ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM}
-      # Re-assign latest tag to current build
-      - run: docker tag ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} ${DOCKER_HUB_USR}/organice:latest
-      - run: docker push ${DOCKER_HUB_USR}/organice:latest
+  # push-image:
+  #   machine: true
+  #   steps:
+  #     - checkout
+  #     # Build docker image and push it to DockerHub
+  #     - run: docker build --rm=false -t ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} .
+  #     - run: docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PWD}
+  #     - run: docker push ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM}
+  #     # Re-assign latest tag to current build
+  #     - run: docker tag ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} ${DOCKER_HUB_USR}/organice:latest
+  #     - run: docker push ${DOCKER_HUB_USR}/organice:latest
 
 workflows:
   version: 2
@@ -74,9 +74,9 @@ workflows:
           filters:
             branches:
               only: master
-      - push-image:
-          requires:
-            - build  # because of tests
-          filters:
-            branches:
-              only: master
+      # - push-image:
+      #     requires:
+      #       - build  # because of tests
+      #     filters:
+      #       branches:
+      #         only: master
