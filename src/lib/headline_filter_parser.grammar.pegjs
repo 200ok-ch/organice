@@ -41,7 +41,7 @@ PlainTerm
   / TermTag
 
 TermText "text filter term"
-  = a:WordAlternatives {
+  = a:StringAlternatives {
         let type = 'ignore-case';
         // It's hard to check for upper-case chars in JS.
         // Best approach: https://stackoverflow.com/a/31415820/999007
@@ -56,7 +56,7 @@ TermTag "tag filter term"
   = ":" a:TagAlternatives { return {type: 'tag', words: a} }
 
 TermProp "property filter term"
-  = ":" a:PropertyName ":" b:WordAlternatives? {
+  = ":" a:PropertyName ":" b:StringAlternatives? {
           return {
             type: 'property',
             property: a,
@@ -64,8 +64,8 @@ TermProp "property filter term"
           }
         };
 
-WordAlternatives "alternatives"
-  = head:Word tail:("|" Word)* {
+StringAlternatives "alternatives"
+  = head:String tail:("|" String)* {
        return tail.reduce((result, element) => {
          result.push(element[1]);
          return result;
@@ -80,7 +80,7 @@ TagAlternatives "tag alternatives"
        }, [head])
      }
 
-Word "word"
+String "string"
   = [^: \t|'"]+ { return text() }
   / "'" a:([^']+) "'" { return a.join('') }
   / '"' a:([^"]+) '"' { return a.join('') }
