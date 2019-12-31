@@ -82,8 +82,8 @@ TagAlternatives "tag alternatives"
 
 Word "word"
   = [^: \t|'"]+ { return text() }
-  / "'" a:([^']+) "'" { return ''.concat(...a) }
-  / '"' a:([^"]+) '"' { return ''.concat(...a) }
+  / "'" a:([^']+) "'" { return a.join('') }
+  / '"' a:([^"]+) '"' { return a.join('') }
 
 // https://orgmode.org/manual/Property-Syntax.html
 // - Property names (keys) are case-insensitive
