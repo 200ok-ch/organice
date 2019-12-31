@@ -6,6 +6,11 @@
 
 // You can use https://pegjs.org/online to debug it.
 
+// Note: As suggested by alphapapa, the parser can be extended to support
+// additional types of filter terms ("predicates"), e.g. ts:on=today
+// ts-active:from=2019-12-31 priority:A,B
+// - https://github.com/alphapapa/org-ql#non-sexp-query-syntax
+
 // Note: The parser will fail when the syntax does not match the grammar.
 // For example, it fails for filter strings like ":" or "this|" because the
 // grammar dictates a property or tag after ":" and an alternative word after
