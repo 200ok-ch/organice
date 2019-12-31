@@ -6,7 +6,7 @@ FROM node:12.13-alpine3.9
 # https://github.com/gliderlabs/docker-alpine/issues/307#issuecomment-427465925
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/http\:\/\/mirror.clarkson.edu/g' /etc/apk/repositories
 
-RUN apk add --no-cache yarn
+RUN apk add --no-cache bash yarn
 
 COPY . /opt/organice
 WORKDIR /opt/organice
