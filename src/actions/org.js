@@ -477,3 +477,14 @@ export const updateLogEntryTime = (headerId, entryIndex, entryType, newTime) => 
   newTime,
   dirtying: true,
 });
+
+export const setSearchFilterInformation = (searchFilter, cursorPosition) => ({
+  type: 'SET_SEARCH_FILTER_INFORMATION',
+  searchFilter,
+  cursorPosition,
+});
+
+export const setSearchAllHeadersFlag = searchAllHeaders => ({
+  type: 'SET_SEARCH_ALL_HEADERS_FLAG',
+  searchAllHeaders,
+});

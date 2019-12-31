@@ -145,7 +145,7 @@ class AgendaModal extends PureComponent {
     }
 
     return (
-      <Drawer onClose={onClose}>
+      <Drawer onClose={onClose} maxSize={true}>
         <h2 className="agenda__title">Agenda</h2>
 
         <div className="agenda__tab-container">

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as baseActions from '../../actions/base';
@@ -53,8 +53,6 @@ const Settings = ({
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleChangelogClick = () => base.pushModalPage('changelog');
-
-  const handleHelpClick = () => base.pushModalPage('sample');
 
   return (
     <div className="settings-container">
@@ -153,15 +151,13 @@ const Settings = ({
             </div>
           )}
         </button>
-        <button className="btn settings-btn" onClick={handleHelpClick}>
+
+        <Link to="/sample" className="btn settings-btn">
           Help
-        </button>
+        </Link>
+
         <button className="btn settings-btn">
-          <a
-            href="https://github.com/200ok-ch/organice"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://github.com/200ok-ch/organice" target="_blank" rel="noopener noreferrer">
             Github repo <i className="fas fa-external-link-alt fa-sm" />
           </a>
         </button>

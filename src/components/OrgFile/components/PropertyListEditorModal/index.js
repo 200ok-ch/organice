@@ -81,11 +81,11 @@ export default class PropertyListEditorModal extends PureComponent {
 
   render() {
     const { onClose, propertyListItems, allOrgProperties } = this.props;
-    const allPropertyNames = computeAllPropertyNames(allOrgProperties)
+    const allPropertyNames = computeAllPropertyNames(allOrgProperties);
 
     const propertyListItemsWithAllPropVals = propertyListItems.map(p => {
       const propertyName = p.get('property');
-      const allPropertyValues = computeAllPropertyValuesFor(allOrgProperties, propertyName)
+      const allPropertyValues = computeAllPropertyValuesFor(allOrgProperties, propertyName);
       return [p, allPropertyValues];
     });
 
@@ -93,12 +93,9 @@ export default class PropertyListEditorModal extends PureComponent {
       <Drawer onClose={onClose}>
         <h2 className="drawer-modal__title">Edit property list</h2>
 
-        <datalist id="datalist-property-names">
+        <datalist id="drawer-modal__datalist-property-names">
           {allPropertyNames.map((propertyName, idx) => (
-            <option
-              key={idx}
-              value={propertyName}
-            />
+            <option key={idx} value={propertyName} />
           ))}
         </datalist>
 
@@ -118,59 +115,58 @@ export default class PropertyListEditorModal extends PureComponent {
                 {...provided.droppableProps}
               >
                 <Fragment>
-                  {propertyListItemsWithAllPropVals.map(([propertyListItem, allPropertyValues], index) => (
-                    <Draggable
-                      draggableId={`property-list-item--${index}`}
-                      index={index}
-                      key={propertyListItem.get('id')}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          className={classNames('property-list-editor__item-container', {
-                            'property-list-editor__item-container--dragging': snapshot.isDragging,
-                          })}
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                        >
-                          <div className="item__textfields-container">
-                            <input
-                              type="text"
-                              className="textfield item-container__textfield"
-                              value={propertyListItem.get('property')}
-                              onChange={this.handlePropertyChange(propertyListItem.get('id'))}
-                              ref={textfield => (this.lastTextfield = textfield)}
-                              list="datalist-property-names"
-                            />
-                            <input
-                              type="text"
-                              className="textfield item-container__textfield"
-                              value={attributedStringToRawText(propertyListItem.get('value'))}
-                              onChange={this.handleValueChange(propertyListItem.get('id'))}
-                              list={`datalist-property-${index}-values`}
-                            />
-                            <datalist id={`datalist-property-${index}-values`}>
-                              {allPropertyValues.map((propertyValue, idx) => (
-                                <option
-                                  key={idx}
-                                  value={propertyValue}
-                                />
-                              ))}
-                            </datalist>
+                  {propertyListItemsWithAllPropVals.map(
+                    ([propertyListItem, allPropertyValues], index) => (
+                      <Draggable
+                        draggableId={`property-list-item--${index}`}
+                        index={index}
+                        key={propertyListItem.get('id')}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            className={classNames('property-list-editor__item-container', {
+                              'property-list-editor__item-container--dragging': snapshot.isDragging,
+                            })}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                          >
+                            <div className="item__textfields-container">
+                              <input
+                                type="text"
+                                className="textfield item-container__textfield"
+                                value={propertyListItem.get('property')}
+                                onChange={this.handlePropertyChange(propertyListItem.get('id'))}
+                                ref={textfield => (this.lastTextfield = textfield)}
+                                list="drawer-modal__datalist-property-names"
+                              />
+                              <input
+                                type="text"
+                                className="textfield item-container__textfield"
+                                value={attributedStringToRawText(propertyListItem.get('value'))}
+                                onChange={this.handleValueChange(propertyListItem.get('id'))}
+                                list={`drawer-modal__datalist-property-${index}-values`}
+                              />
+                              <datalist id={`drawer-modal__datalist-property-${index}-values`}>
+                                {allPropertyValues.map((propertyValue, idx) => (
+                                  <option key={idx} value={propertyValue} />
+                                ))}
+                              </datalist>
+                            </div>
+                            <div className="item-container__actions-container">
+                              <i
+                                className="fas fa-times fa-lg"
+                                onClick={this.handleRemoveItem(propertyListItem.get('id'))}
+                              />
+                              <i
+                                className="fas fa-bars fa-lg item-container__drag-handle drag-handle"
+                                {...provided.dragHandleProps}
+                              />
+                            </div>
                           </div>
-                          <div className="item-container__actions-container">
-                            <i
-                              className="fas fa-times fa-lg"
-                              onClick={this.handleRemoveItem(propertyListItem.get('id'))}
-                            />
-                            <i
-                              className="fas fa-bars fa-lg item-container__drag-handle drag-handle"
-                              {...provided.dragHandleProps}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                        )}
+                      </Draggable>
+                    )
+                  )}
 
                   {provided.placeholder}
                 </Fragment>

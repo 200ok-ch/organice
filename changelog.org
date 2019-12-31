@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2019-12-31 Tue>
+
+*** Added
+    - *Searching of headlines/todos with a composable query language*
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/154][PR]] 🙏
+    - Routing for Settings (/settings) and Sample (/sample)
+    - Routing for Agenda and TaskList
+
+*** Changes
+    - The action for capture templates now uses a more idiomatic
+      'plus' icon instead of a 'list' icon
+
 ** <2019-12-28 Sat>
 
 *** Added

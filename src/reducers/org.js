@@ -1,6 +1,11 @@
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
+import headline_filter_parser from '../lib/headline_filter_parser';
+import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
+
+import { extractAllOrgTags, extractAllOrgProperties } from '../lib/org_utils';
+
 import {
   parseOrg,
   parseTitleLine,
@@ -52,6 +57,7 @@ const stopDisplayingFile = state =>
     .set('path', null)
     .set('contents', null)
     .set('headers', null)
+    .set('filteredHeaders', null)
     .set('todoKeywordSets', null)
     .set('fileConfigLines', null)
     .set('linesBeforeHeadings', null);
@@ -882,6 +888,63 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
+export const setSearchFilterInformation = (state, action) => {
+  const { searchFilter, cursorPosition } = action;
+  const headers = state.get('headers');
+  state = state.asMutable();
+
+  let searchFilterExpr;
+  try {
+    searchFilterExpr = headline_filter_parser.parse(searchFilter);
+    state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
+  } catch {
+    // No need to print this parser exceptions.
+    // They are expected, see *.grammar.pegjs
+  }
+
+  state.setIn(['search', 'searchFilterValid'], !!searchFilterExpr);
+
+  let filteredHeaders = headers;
+  if (searchFilterExpr) {
+    // Only run filter if a filter is given and parsing was successfull
+    filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+  }
+  state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+  state.setIn(['search', 'searchFilter'], searchFilter);
+
+  // INFO: This is a POC draft of a future feature
+  // This could come from the last session, hence from localStorage.
+  // Just some more examples for now:
+  const lastUsedFilterStrings = [
+    'TODO organice',
+    '-organice :medium',
+    '-DONE doc|man :assignee:none',
+  ];
+
+  let searchFilterSuggestions = [];
+  if (_.isEmpty(searchFilter)) {
+    // Only for an empty filter string,  provide last used filters as suggestions.
+    searchFilterSuggestions = lastUsedFilterStrings;
+  } else {
+    const todoKeywords = getTodoKeywordSetsAsFlattenedArray(state);
+    const tagNames = extractAllOrgTags(headers).toJS();
+    const allProperties = extractAllOrgProperties(headers).toJS();
+    searchFilterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
+      searchFilterExpr,
+      searchFilter,
+      cursorPosition
+    );
+  }
+  state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
+
+  return state.asImmutable();
+};
+
+export const setSearchAllHeadersFlag = (state, action) => {
+  const { searchAllHeaders } = action;
+  return state.setIn(['search', 'searchAllHeaders'], searchAllHeaders);
+};
+
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
 export default (state = Map(), action) => {
@@ -994,10 +1057,25 @@ export default (state = Map(), action) => {
       return createLogEntryStart(state, action);
     case 'UPDATE_LOG_ENTRY_TIME':
       return updateLogEntryTime(state, action);
+    case 'SET_SEARCH_FILTER_INFORMATION':
+      return setSearchFilterInformation(state, action);
+    case 'SET_SEARCH_ALL_HEADERS_FLAG':
+      return setSearchAllHeadersFlag(state, action);
+
     default:
       return state;
   }
 };
+
+function getTodoKeywordSetsAsFlattenedArray(state) {
+  return state
+    .get('todoKeywordSets')
+    .flatMap(todoKeywordSet => {
+      return todoKeywordSet.get('keywords');
+    })
+    .toSet()
+    .toJS();
+}
 
 /**
  * Updates Headlines with the next todoKeyword `newTodoState`. Also

@@ -159,7 +159,6 @@ class Entry extends PureComponent {
             activeModalPage
           ) ? (
             <Fragment>
-              {activeModalPage === 'settings' && <Settings />}
               {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
               {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
               {activeModalPage === 'sample' && this.renderSampleFile()}
@@ -170,6 +169,10 @@ class Entry extends PureComponent {
               <Route path="/privacy-policy" exact component={PrivacyPolicy} />
               <Route path="/file/:path+" render={this.renderFile} />
               <Route path="/files/:path*" render={this.renderFileBrowser} />
+              <Route path="/sample" exact={true} render={this.renderSampleFile} />
+              <Route path="/settings" exact={true}>
+                <Settings />
+              </Route>
               <Redirect to="/files" />
             </Switch>
           )
@@ -207,9 +210,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Entry)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entry));

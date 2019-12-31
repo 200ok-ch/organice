@@ -1,8 +1,11 @@
-
 import readFixture from '../../test_helpers/index';
 import { parseOrg } from './parse_org.js';
 
-import { extractAllOrgProperties, computeAllPropertyNames, computeAllPropertyValuesFor } from './org_utils'
+import {
+  extractAllOrgProperties,
+  computeAllPropertyNames,
+  computeAllPropertyValuesFor,
+} from './org_utils';
 
 describe('Extracting and computing property names and values', () => {
   const testOrgFile = readFixture('properties_extended');

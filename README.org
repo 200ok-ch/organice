@@ -54,6 +54,7 @@ restrictions and expectations.
   in-buffer configuration]])
   - Other in-buffer settings are imported and re-exported but are not
     editable with organice.
+  - In-buffer settings have to be declared before the first headline.
 - Other content before the first headline is imported and re-exported,
   but invisible and currently not editable with organice.
 - After potential in-buffer settings, your Org file _has to_ begin
@@ -198,6 +199,15 @@ Running the tests:
 
 #+BEGIN_SRC shell
 yarn test
+#+END_SRC
+
+For searching the Org file, there's a [[file:src/lib/headline_filter_parser.grammar.pegjs][grammar]] for the search
+clause. It's written in [[https://pegjs.org/][pegjs]]. Generating the parser code happens
+automatically on =yarn start|build|test=. When working on the parser,
+you can manually generate it with:
+
+#+BEGIN_SRC shell
+./bin/compile_search_parser.sh
 #+END_SRC
 
 *** Testing
