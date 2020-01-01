@@ -477,10 +477,11 @@ export const _parsePlanningItems = rawText => {
     optionalSinglePlanningItemRegex,
     /\s*/
   );
+  const planningRegexCaptureGroupsOfType = [2, 17, 32]; // depends on timestampRegex
   const planningMatch = rawText.match(planningRegex);
 
   const planningItems = fromJS(
-    [2, 17, 32] // what magic numbers are these?
+    planningRegexCaptureGroupsOfType
       .map(planningTypeIndex => {
         const type = planningMatch[planningTypeIndex];
         if (!type) {
@@ -691,7 +692,7 @@ const concatRegexes = (...regexes) =>
 // Converts RegExp or strings like '/regex/' to a string without these slashs.
 const asStrNoSlashs = regex => {
   const s = regex.toString();
-  return s.toString().substring(1, s.length - 1);
+  return s.substring(1, s.length - 1);
 };
 
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
