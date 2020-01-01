@@ -31,14 +31,14 @@ export default ({ template, onCapture, headers, onClose }) => {
   const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
 
   /** INFO: Some versions of Mobile Safari do _not_ like it when the
-  focus is set * without an explicit user interaction. This is the
-  case in * organice, because the user interaction is on a button
-  which in * turn opens a textarea which should have the focus. It
-  will open * the software keyboard, but the capture template will
-  stay on the * bottom of the view, so it will be hidden by the
-  keyboard. The * user would have to manually scroll down. On iOS 12,
-  it worked * without this workaround. Starting with iOS 13.3, the
-  workaround isn't needed, anymore. */
+  focus is set without an explicit user interaction. This is the case
+  in organice, because the user interaction is on a button which in
+  turn opens a textarea which should have the focus. It will open the
+  software keyboard, but the capture template will stay on the bottom
+  of the view, so it will be hidden by the keyboard. The user would
+  have to manually scroll down. On iOS 12, it worked without this
+  workaround. Starting with iOS 13.3, the workaround isn't needed,
+  anymore. */
   const getMinHeight = () => {
     // Only Mobile Safari needs the shenannigans for moving the input
     // above the software keyboard.
