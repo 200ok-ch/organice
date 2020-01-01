@@ -460,14 +460,16 @@ export const _parsePlanningItems = rawText => {
     `((DEADLINE|SCHEDULED|CLOSED):\\s*${asStrNoSlashs(timestampRegex)})?`
   );
 
+  // If there are any planning items, consume not more
+  // than one newline after the last planning item.
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
-    /\s*/,
+    /[ \t]*/,
     optionalSinglePlanningItemRegex,
-    /\s*/,
+    /[ \t]*/,
     optionalSinglePlanningItemRegex,
-    /\s*/
+    /[ \t]*\n?/
   );
   const planningRegexCaptureGroupsOfType = [2, 17, 32]; // depends on timestampRegex
   const planningMatch = rawText.match(planningRegex);
@@ -494,12 +496,7 @@ export const _parsePlanningItems = rawText => {
     // If there are no matches for planning items, return the original rawText.
     return { planningItems: fromJS([]), strippedDescription: rawText };
   } else {
-    const remainingDescriptionWithoutPlanningItem = rawText
-      .split('\n')
-      .filter(line => {
-        return !line.includes(planningMatch[0].trim());
-      })
-      .join('\n');
+    const remainingDescriptionWithoutPlanningItem = rawText.replace(planningRegex, '');
     return { planningItems, strippedDescription: remainingDescriptionWithoutPlanningItem };
   }
 };
