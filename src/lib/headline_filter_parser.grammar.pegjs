@@ -6,6 +6,11 @@
 
 // You can use https://pegjs.org/online to debug it.
 
+// Note: As suggested by alphapapa, the parser can be extended to support
+// additional types of filter terms ("predicates"), e.g. ts:on=today
+// ts-active:from=2019-12-31 priority:A,B
+// - https://github.com/alphapapa/org-ql#non-sexp-query-syntax
+
 // Note: The parser will fail when the syntax does not match the grammar.
 // For example, it fails for filter strings like ":" or "this|" because the
 // grammar dictates a property or tag after ":" and an alternative word after
@@ -41,7 +46,7 @@ PlainTerm
   / TermTag
 
 TermText "text filter term"
-  = a:WordAlternatives {
+  = a:StringAlternatives {
         let type = 'ignore-case';
         // It's hard to check for upper-case chars in JS.
         // Best approach: https://stackoverflow.com/a/31415820/999007
@@ -56,7 +61,7 @@ TermTag "tag filter term"
   = ":" a:TagAlternatives { return {type: 'tag', words: a} }
 
 TermProp "property filter term"
-  = ":" a:PropertyName ":" b:WordAlternatives? {
+  = ":" a:PropertyName ":" b:StringAlternatives? {
           return {
             type: 'property',
             property: a,
@@ -64,8 +69,8 @@ TermProp "property filter term"
           }
         };
 
-WordAlternatives "alternatives"
-  = head:Word tail:("|" Word)* {
+StringAlternatives "alternatives"
+  = head:String tail:("|" String)* {
        return tail.reduce((result, element) => {
          result.push(element[1]);
          return result;
@@ -80,8 +85,10 @@ TagAlternatives "tag alternatives"
        }, [head])
      }
 
-Word "word"
-  = [^: \t|]+ { return text() }
+String "string"
+  = [^: \t|'"]+ { return text() }
+  / "'" a:([^']+) "'" { return a.join('') }
+  / '"' a:([^"]+) '"' { return a.join('') }
 
 // https://orgmode.org/manual/Property-Syntax.html
 // - Property names (keys) are case-insensitive

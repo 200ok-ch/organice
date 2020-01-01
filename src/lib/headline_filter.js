@@ -16,17 +16,18 @@ export const isMatch = filterExpr => header => {
 
   const filterFilter = (type, exclude) => x => x.type === type && x.exclude === exclude;
   const words = x => x.words;
+  const wordsLowerCase = x => x.words.map(y => y.toLowerCase());
 
   const filterTags = filterExpr.filter(filterFilter('tag', false)).map(words);
   const filterCS = filterExpr.filter(filterFilter('case-sensitive', false)).map(words);
-  const filterIC = filterExpr.filter(filterFilter('ignore-case', false)).map(words);
+  const filterIC = filterExpr.filter(filterFilter('ignore-case', false)).map(wordsLowerCase);
   const filterProps = filterExpr
     .filter(filterFilter('property', false))
     .map(x => [x.property, x.words]);
 
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
-  const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(words);
+  const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(wordsLowerCase);
   const filterPropsExcl = filterExpr
     .filter(filterFilter('property', true))
     .map(x => [x.property, x.words]);
@@ -110,14 +111,19 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
         // Either property name or text filter
         const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
         const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-        const onlyFirstPartOfValue = x => {
-          const match = x.match(/^[^ ]*/);
-          return match ? [match[0]] : [];
+        const quoteStringIfPossible = x => {
+          if (x.match(/ /)) {
+            if (!x.match(/"/)) return [`"${x}"`];
+            if (!x.match(/'/)) return [`'${x}'`];
+            const match = x.match(/^[^ ]*/);
+            return [match[0]];
+          }
+          return [x];
         };
         if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
           // No space in property name -> is property -> return values for that property
           return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName)
-            .flatMap(onlyFirstPartOfValue)
+            .flatMap(quoteStringIfPossible)
             .toJS();
         }
       }
