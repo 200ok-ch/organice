@@ -319,6 +319,16 @@ class OrgFile extends PureComponent {
           />
         );
 
+      case 'property-list-editor-by-button':
+        const allOrgProperties1 = extractAllOrgProperties(headers);
+        return selectedHeader ? (
+          <PropertyListEditorModal
+            onClose={this.handlePopupClose}
+            onChange={this.handlePropertyListItemsChange}
+            propertyListItems={selectedHeader.get('propertyListItems')}
+            allOrgProperties={allOrgProperties1}
+          />
+        ) : null;
       case 'property-list-editor':
         const allOrgProperties = extractAllOrgProperties(headers);
         return (

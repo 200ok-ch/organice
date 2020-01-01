@@ -42,6 +42,7 @@ class Header extends PureComponent {
       'handleEnterTitleEditMode',
       'handleEnterDescriptionEditMode',
       'handleShowTagsModal',
+      'handleShowPropertyListEditorModal',
       'handleFocus',
       'handleUnfocus',
       'handleAddNewHeader',
@@ -200,6 +201,10 @@ class Header extends PureComponent {
 
   handleShowTagsModal() {
     this.props.base.activatePopup('tags-editor');
+  }
+
+  handleShowPropertyListEditorModal() {
+    this.props.base.activatePopup('property-list-editor-by-button');
   }
 
   handleFocus() {
@@ -479,6 +484,7 @@ ${header.get('rawDescription')}
                   onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
                   isFocused={isFocused}
                   onTagsClick={this.handleShowTagsModal}
+                  onPropertiesClick={this.handleShowPropertyListEditorModal}
                   onFocus={this.handleFocus}
                   onUnfocus={this.handleUnfocus}
                   onAddNewHeader={this.handleAddNewHeader}
