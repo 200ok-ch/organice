@@ -234,6 +234,16 @@ describe('Unit Tests for Org file', () => {
             expect(exportedFile).toEqual(testOrgFile);
           });
 
+          test('Parsing planning items must exactly consume one trailing newline', () => {
+            const description = 'abc\n';
+            const completeDescription = `
+
+SCHEDULED: <2020-01-01 Wed>
+${description}`;
+            const { strippedDescription } = _parsePlanningItems(completeDescription);
+            expect(strippedDescription).toEqual(description);
+          });
+
           test('Parsing planning items should not add an empty line of description text', () => {
             const testOrgFile = `* Header
   SCHEDULED: <2019-07-30 Tue>
