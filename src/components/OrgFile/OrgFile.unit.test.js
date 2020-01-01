@@ -212,8 +212,15 @@ describe('Unit Tests for Org file', () => {
 
           test('Parsing planning items must not consume leading spaces in description', () => {
             const description = '  - list item';
-            const allDescription = `SCHEDULED: <2020-01-01> \n${description}`;
-            const { strippedDescription } = _parsePlanningItems(allDescription);
+            const completeDescription = `SCHEDULED: <2020-01-01> \n${description}`;
+            const { strippedDescription } = _parsePlanningItems(completeDescription);
+            expect(strippedDescription).toEqual(description);
+          });
+
+          test('Parsing planning items must only consume one trailing newline', () => {
+            const description = '\n\nabc';
+            const completeDescription = `SCHEDULED: <2020-01-01> \n${description}`;
+            const { strippedDescription } = _parsePlanningItems(completeDescription);
             expect(strippedDescription).toEqual(description);
           });
 
