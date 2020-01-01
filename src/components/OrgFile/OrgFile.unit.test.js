@@ -122,6 +122,29 @@ describe('Unit Tests for Org file', () => {
       const description = 'DEADLINE: <2020-01-01 Mon> \nfoo\n';
       expectStrippedDescription(description).toEqual('foo\n');
     });
+
+    test('Parse simple description with properties', () => {
+      const description = `:PROPERTIES:
+:END:
+`;
+      expectStrippedDescription(description).toEqual('');
+    });
+
+    test('Parse simple description with properties', () => {
+      const text = '\n';
+      const description = `:PROPERTIES:
+:END:
+${text}`;
+      expectStrippedDescription(description).toEqual(text);
+    });
+
+    test('Parse simple description with properties', () => {
+      const text = 'abc\n';
+      const description = `:PROPERTIES:
+:END:
+${text}`;
+      expectStrippedDescription(description).toEqual(text);
+    });
   });
 
   describe('Parsing and exporting should not alter the original file', () => {
@@ -138,6 +161,24 @@ describe('Unit Tests for Org file', () => {
       exportedFileLines.forEach((line, index) => {
         expect(line).toEqual(testOrgFileLines[index]);
       });
+    });
+
+    test('Parse very basic file with description', () => {
+      const testOrgFile = '* Header\n'; // only one header line, no description
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
+    });
+
+    test('Parse very basic file with description', () => {
+      const testOrgFile = '* Header\n\n'; // one empty line of description
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
+    });
+
+    test('Parse very basic file with description', () => {
+      const testOrgFile = '* Header\nabc\n'; // header with one line of description
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
     });
 
     test('Parse basic file with description', () => {
