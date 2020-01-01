@@ -704,7 +704,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 
 export const parseOrg = fileContents => {
   let headers = new List();
-  const lines = fileContents.split('\n');
+  const lines = getLinesFromFileContents(fileContents);
 
   let todoKeywordSets = new List();
   let fileConfigLines = new List();
@@ -741,18 +741,12 @@ export const parseOrg = fileContents => {
       }
     } else {
       headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
-        // In the beginning of the `parseOrg` function, the original
-        // fileContent lines are split by '\n'. Therefore, if the
-        // original line was a newline, it will show up here as an
-        // empty `line` with an empty `rawDescription`. Add a
-        // newline here to the list, so that the exported file will
-        // have newlines in the same places as the originally parsed
-        // file.
-        if (!line && !rawDescription) return '\n';
-
-        if (rawDescription.length === 0) return line;
-
-        return rawDescription + '\n' + line;
+        // In the beginning of the parseOrg function, the original
+        // fileContent lines are split by '\n'. Therefore, the newline
+        // has to be added again to the line:
+        const lineToAdd = line + '\n';
+        rawDescription = rawDescription ? rawDescription : '';
+        return rawDescription + lineToAdd;
       });
     }
   });
@@ -792,4 +786,16 @@ const computeNestingLevel = titleLineWithAsterisk => {
   const nestingLevel = titleLineWithAsterisk.indexOf(' ');
   if (nestingLevel === -1) return titleLineWithAsterisk.trimRight().length;
   return nestingLevel;
+};
+
+const getLinesFromFileContents = fileContents => {
+  // We expect a newline at EOF (from the last line of fileContents).
+  // After split(), this results in an empty string at the last position of the
+  // array => Remove that last array item.
+  const lines = fileContents.split('\n');
+
+  // No special case for empty files:
+  if (lines.length === 0) return [''];
+
+  return lines.slice(0, lines.length - 1);
 };

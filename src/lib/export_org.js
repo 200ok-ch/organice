@@ -249,9 +249,9 @@ export const exportOrg = (headers, todoKeywordSets, fileConfigLines, linesBefore
     configContent = configContent + '\n';
   }
 
-  const headerContent = headers.map(x => createRawDescriptionText(x, true)).join('\n');
+  const headerContent = headers.map(x => createRawDescriptionText(x, true)).join('');
 
-  return configContent + headerContent + (headerContent.endsWith('\n') ? '' : '\n');
+  return configContent + headerContent;
 };
 
 export const createRawDescriptionText = (header, includeTitle) => {
@@ -272,6 +272,7 @@ export const createRawDescriptionText = (header, includeTitle) => {
     if (header.titleLine.tags.length) {
       contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
     }
+    contents += '\n'; // Newline after title line
   }
 
   // Special case: do not render planning items that are normal active timestamps
@@ -284,7 +285,7 @@ export const createRawDescriptionText = (header, includeTitle) => {
       })
       .join(' ')
       .trimRight();
-    contents += `\n${indentation}${planningItemsContent}`;
+    contents += `${indentation}${planningItemsContent}\n`;
   }
 
   if (header.propertyListItems.length) {
@@ -295,9 +296,9 @@ export const createRawDescriptionText = (header, includeTitle) => {
         )}`;
       })
       .join('\n');
-    contents += `\n${indentation}:PROPERTIES:`;
-    contents += `\n${propertyListItemsContent}`;
-    contents += `\n${indentation}:END:\n`;
+    contents += `${indentation}:PROPERTIES:\n`;
+    contents += `${propertyListItemsContent}\n`;
+    contents += `${indentation}:END:\n`;
   }
 
   if (header.logBookEntries.length) {
@@ -315,19 +316,16 @@ export const createRawDescriptionText = (header, includeTitle) => {
       })
       .join('\n')
       .trimRight();
-    contents += `\n${indentation}:LOGBOOK:`;
-    contents += `\n${logBookEntriesContent}`;
-    contents += `\n${indentation}:END:\n`;
+    contents += `${indentation}:LOGBOOK:\n`;
+    contents += `${logBookEntriesContent}\n`;
+    contents += `${indentation}:END:\n`;
   }
 
-  if (header.description.length > 0) {
-    if (!header.rawDescription.startsWith('\n') && header.rawDescription.length !== 0) {
-      contents += '\n';
-    }
-    contents += header.rawDescription;
-  } else {
-    contents = contents.trimRight();
-  }
+  // A newline character belongs to its line, not to the next line.
+  // Unless rawDescription === '', it must have a trailing newline character.
+  let fixedRawDescription = header.rawDescription;
+  if (header.rawDescription.match(/[^\n]$/)) fixedRawDescription = header.rawDescription + '\n';
+  contents += fixedRawDescription;
 
   return contents;
 };
