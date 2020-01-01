@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
     - Trim whitespace for entered or updated headlines
       - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/177][PR]] 🙏
 
+*** Fixed
+    - Capture templates in iOS 13.3 are positioned properly
+      - iOS 13 introduced a styling regression when setting focus
+        without user interaction. iOS 13.3 reverts to the way other
+        browsers do it.
+
 ** <2019-12-31 Tue>
 
 *** Added
