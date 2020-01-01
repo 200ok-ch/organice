@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file.
         without user interaction. iOS 13.3 reverts to the way other
         browsers do it.
 
+*** Changed
+    - Revert "Move HeaderActionDrawer before headline"
+      - As per #188, the changes introduced in #100 didn't fare well
+        with the community. Hence, as a first step to improve UX,
+        we're reverting to the previous state.
+
 ** <2019-12-31 Tue>
 
 *** Added
