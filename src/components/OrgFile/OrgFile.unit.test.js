@@ -204,6 +204,19 @@ describe('Unit Tests for Org file', () => {
             expect(parsedFile.strippedDescription).toEqual(testDescription);
           });
 
+          test('Parsing planning items must not consume leading spaces in description', () => {
+            const description = '  - list item';
+            const { strippedDescription } = _parsePlanningItems(description);
+            expect(strippedDescription).toEqual(description);
+          });
+
+          test('Parsing planning items must not consume leading spaces in description', () => {
+            const description = '  - list item';
+            const allDescription = `SCHEDULED: <2020-01-01> \n${description}`;
+            const { strippedDescription } = _parsePlanningItems(allDescription);
+            expect(strippedDescription).toEqual(description);
+          });
+
           test('Parsing planning items should not discard an empty line of description text', () => {
             const testOrgFile = `* Header
   SCHEDULED: <2019-07-30 Tue>

@@ -460,14 +460,6 @@ export const _parsePlanningItems = rawText => {
     `((DEADLINE|SCHEDULED|CLOSED):\\s*${asStrNoSlashs(timestampRegex)})?`
   );
 
-  // FIXME: The whitespace part of the regex matches `rawText` inputs
-  //        like " - indented list\n - Foo".
-  //        This is a mistake, because the input isn't really a
-  //        planning item. If the regexp could be adapted, we could
-  //        return earlier after the regexp check.
-  //        Before this can get cleaned up, this function needs loads
-  //        more tests, because currently it matches too many things.
-  //        It does work well for planning items, though.
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
@@ -498,12 +490,10 @@ export const _parsePlanningItems = rawText => {
       .filter(item => !!item)
   );
 
-  if (planningItems.size > 0) {
-    // The `rawText` can look like:
-    // `SCHEDULED: <2019-07-30 Tue>
-    //   - indented list
-    //      - Foo`
-    // For the remaining description, filter the planning item out
+  if (planningItems.size === 0) {
+    // If there are no matches for planning items, return the original rawText.
+    return { planningItems: fromJS([]), strippedDescription: rawText };
+  } else {
     const remainingDescriptionWithoutPlanningItem = rawText
       .split('\n')
       .filter(line => {
@@ -511,8 +501,6 @@ export const _parsePlanningItems = rawText => {
       })
       .join('\n');
     return { planningItems, strippedDescription: remainingDescriptionWithoutPlanningItem };
-  } else {
-    return { planningItems: fromJS([]), strippedDescription: rawText };
   }
 };
 
