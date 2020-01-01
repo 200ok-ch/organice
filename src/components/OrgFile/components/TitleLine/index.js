@@ -138,9 +138,13 @@ class TitleLine extends PureComponent {
   }
 
   handleTextareaFocus(event) {
-    const text = event.target.value;
-    event.target.selectionStart = text.length;
-    event.target.selectionEnd = text.length;
+    const { header } = this.props;
+    const rawTitle = header.getIn(['titleLine', 'rawTitle']);
+    if (rawTitle === '') {
+      const text = event.target.value;
+      event.target.selectionStart = text.length;
+      event.target.selectionEnd = text.length;
+    }
   }
 
   handleTitleChange(event) {
