@@ -685,7 +685,10 @@ const concatRegexes = (...regexes) =>
   );
 
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
-  const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
+  // This function is currently only used for capture templates.
+  // Hence, it's acceptable that it is opinionated on treating
+  // whitespace.
+  const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
   const description = rawText
     .split('\n')
     .slice(1)
