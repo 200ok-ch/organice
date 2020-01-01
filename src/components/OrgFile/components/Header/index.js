@@ -277,8 +277,7 @@ class Header extends PureComponent {
     const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
     const body = `
 ${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
-${header.get('rawDescription')}
-`;
+${header.get('rawDescription')}`;
     //const titleParts = titleLine.get('title'); // List of parsed tokens in title
     //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
     //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')

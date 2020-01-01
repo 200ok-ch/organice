@@ -223,7 +223,7 @@ export const attributedStringToRawText = parts => {
     .join('');
 };
 
-export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) => {
+export const exportOrg = (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) => {
   let configContent = '';
 
   if (fileConfigLines.size > 0) {
