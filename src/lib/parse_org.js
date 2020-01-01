@@ -713,12 +713,8 @@ export const parseOrg = fileContents => {
   lines.forEach(line => {
     // A header has to start with at least one consecutive asterisk
     // followed by a blank
-    // eslint-disable-next-line no-useless-escape
-    if (line.match(/^\*+\ /)) {
-      let nestingLevel = line.indexOf(' ');
-      if (nestingLevel === -1) {
-        nestingLevel = line.length;
-      }
+    if (line.match(/^\*+ /)) {
+      const nestingLevel = computeNestingLevel(line);
       const title = line.substr(nestingLevel + 1);
       headers = headers.push(newHeaderWithTitle(title, nestingLevel, todoKeywordSets));
     } else {
@@ -792,4 +788,10 @@ export const parseOrg = fileContents => {
     fileConfigLines,
     linesBeforeHeadings,
   });
+};
+
+const computeNestingLevel = titleLineWithAsterisk => {
+  const nestingLevel = titleLineWithAsterisk.indexOf(' ');
+  if (nestingLevel === -1) return titleLineWithAsterisk.trimRight().length;
+  return nestingLevel;
 };
