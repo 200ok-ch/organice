@@ -1,7 +1,13 @@
-import { parseOrg, _parsePlanningItems, parseMarkupAndCookies } from '../../lib/parse_org';
+import {
+  parseOrg,
+  parseDescriptionPrefixElements,
+  _parsePlanningItems,
+  parseMarkupAndCookies,
+} from '../../lib/parse_org';
 import exportOrg from '../../lib/export_org';
 import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
+import { fromJS } from 'immutable';
 
 /**
  * This is a convenience wrapper around parsing an org file using
@@ -33,6 +39,53 @@ describe('Unit Tests for Org file', () => {
     });
   });
 
+  describe('Parsing and export should not alter the description part', () => {
+    const expectStrippedDescription = description => {
+      const {
+        planningItems,
+        propertyListItems,
+        logBookEntries,
+        strippedDescription,
+      } = parseDescriptionPrefixElements(description, fromJS([]));
+      return expect(strippedDescription);
+    };
+
+    test('Parse simple description', () => {
+      const description = '';
+      expectStrippedDescription(description).toEqual(description);
+    });
+
+    test('Parse simple description', () => {
+      const description = '\n';
+      expectStrippedDescription(description).toEqual(description);
+    });
+
+    test('Parse simple description', () => {
+      const description = '\nfoo';
+      expectStrippedDescription(description).toEqual(description);
+    });
+
+    test('Parse simple description', () => {
+      const description = '\nfoo\n';
+      expectStrippedDescription(description).toEqual(description);
+    });
+
+    test('Parse simple description with planning item', () => {
+      const description = 'DEADLINE: <2020-01-01 Mon>';
+      expectStrippedDescription(description).toEqual('');
+    });
+
+    test('Parse simple description with planning item', () => {
+      const description = 'DEADLINE: <2020-01-01 Mon> \n';
+      expectStrippedDescription(description).toEqual('\n');
+    });
+
+    test('Parse simple description with planning item', () => {
+      const description = 'DEADLINE: <2020-01-01 Mon> \nfoo';
+      expectStrippedDescription(description).toEqual('\nfoo');
+    });
+  });
+
   describe('Parsing and exporting should not alter the original file', () => {
     test("Parsing and exporting shouldn't alter the original file", () => {
       const testOrgFile = readFixture('indented_list');
@@ -47,6 +100,18 @@ describe('Unit Tests for Org file', () => {
       exportedFileLines.forEach((line, index) => {
         expect(line).toEqual(testOrgFileLines[index]);
       });
+    });
+
+    test('Parse basic file with description', () => {
+      const testOrgFile = readFixture('bold_text');
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
+    });
+
+    test('Parse basic file with list', () => {
+      const testOrgFile = readFixture('indented_list');
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
     });
 
     test('Parses and exports a file which contains all features of organice', () => {
@@ -138,11 +203,36 @@ describe('Unit Tests for Org file', () => {
             );
             expect(parsedFile.strippedDescription).toEqual(testDescription);
           });
+
+          test('Parsing planning items should not discard an empty line of description text', () => {
+            const testOrgFile = `* Header
+  SCHEDULED: <2019-07-30 Tue>
+
+* Header 2
+`;
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            expect(exportedFile).toEqual(testOrgFile);
+          });
+
+          test('Parsing planning items should not add an empty line of description text', () => {
+            const testOrgFile = `* Header
+  SCHEDULED: <2019-07-30 Tue>
+* Header 2
+`;
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            expect(exportedFile).toEqual(testOrgFile);
+          });
         });
 
         describe('Planning items are formatted as is default Emacs', () => {
           test('For basic files', () => {
             const testOrgFile = readFixture('schedule');
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            expect(exportedFile).toEqual(testOrgFile);
+          });
+
+          test('For basic files', () => {
+            const testOrgFile = readFixture('multiple_headlines_with_timestamps');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
             expect(exportedFile).toEqual(testOrgFile);
           });
