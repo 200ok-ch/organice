@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2020-01-01 Wed>
+
+*** Added
+    - Support single- and double-quoted strings in the search filter
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/176][PR]] 🙏
+
 ** <2019-12-31 Tue>
 
 *** Added
