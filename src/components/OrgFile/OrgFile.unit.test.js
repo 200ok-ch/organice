@@ -4,7 +4,7 @@ import {
   _parsePlanningItems,
   parseMarkupAndCookies,
 } from '../../lib/parse_org';
-import exportOrg from '../../lib/export_org';
+import { exportOrg, createRawDescriptionText } from '../../lib/export_org';
 import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
 import { fromJS } from 'immutable';
@@ -23,6 +23,44 @@ function parseAndExportOrgFile(testOrgFile) {
   const exportedFile = exportOrg(headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings);
   return exportedFile;
 }
+
+describe('Tests for export', () => {
+  const createSimpleHeaderWithDescription = description =>
+    fromJS({
+      titleLine: undefined, // not needed
+      rawDescription: description,
+      description: [{ type: 'text', contents: description }],
+      id: 4,
+      nestingLevel: 1,
+      logBookEntries: [],
+      planningItems: [],
+      propertyListItems: [],
+    });
+
+  test('Simple description export of empty description works', () => {
+    const description = '';
+    const header = createSimpleHeaderWithDescription(description);
+    expect(createRawDescriptionText(header, false)).toEqual(description);
+  });
+
+  test('Simple description export of empty line works', () => {
+    const description = '\n';
+    const header = createSimpleHeaderWithDescription(description);
+    expect(createRawDescriptionText(header, false)).toEqual(description);
+  });
+
+  test('Simple description export of non-empty line works', () => {
+    const description = 'abc\n';
+    const header = createSimpleHeaderWithDescription(description);
+    expect(createRawDescriptionText(header, false)).toEqual(description);
+  });
+
+  test('Simple description export of non-empty line without trailing newline works (newline will be added)', () => {
+    const description = 'abc';
+    const header = createSimpleHeaderWithDescription(description);
+    expect(createRawDescriptionText(header, false)).toEqual(`${description}\n`);
+  });
+});
 
 describe('Unit Tests for Org file', () => {
   describe('Test the parser', () => {
