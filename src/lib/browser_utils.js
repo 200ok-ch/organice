@@ -5,12 +5,18 @@ less than 13.3 */
 export const isMobileSafari13 = (() => {
   const browser = Bowser.getParser(window.navigator.userAgent);
 
-  return browser.satisfies({
-    mobile: {
-      safari: '>=13',
-      safari: '<13.0.4',
-    },
-  });
+  return (
+    browser.satisfies({
+      mobile: {
+        safari: '>=13',
+      },
+    }) &&
+    browser.satisfies({
+      mobile: {
+        safari: '<13.0.4',
+      },
+    })
+  );
 })();
 
 /** Is iPhone Model X (tested with Xs) */
