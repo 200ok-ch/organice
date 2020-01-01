@@ -717,45 +717,43 @@ export const parseOrg = fileContents => {
       const nestingLevel = computeNestingLevel(line);
       const title = line.substr(nestingLevel + 1);
       headers = headers.push(newHeaderWithTitle(title, nestingLevel, todoKeywordSets));
-    } else {
-      if (headers.size === 0) {
-        if (line.startsWith('#+TODO: ') || line.startsWith('#+TYP_TODO: ')) {
-          const keywordsString = line.substr(line.indexOf(':') + 2);
-          const keywordTokens = keywordsString.split(/\s/);
-          const keywords = keywordTokens.filter(keyword => keyword !== '|');
+    } else if (headers.size === 0) {
+      if (line.startsWith('#+TODO: ') || line.startsWith('#+TYP_TODO: ')) {
+        const keywordsString = line.substr(line.indexOf(':') + 2);
+        const keywordTokens = keywordsString.split(/\s/);
+        const keywords = keywordTokens.filter(keyword => keyword !== '|');
 
-          const pipeIndex = keywordTokens.indexOf('|');
-          const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
+        const pipeIndex = keywordTokens.indexOf('|');
+        const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
 
-          todoKeywordSets = todoKeywordSets.push(
-            fromJS({
-              keywords,
-              completedKeywords,
-              configLine: line,
-              default: false,
-            })
-          );
-        } else if (line.startsWith('#+')) {
-          fileConfigLines = fileConfigLines.push(line);
-        } else {
-          linesBeforeHeadings = linesBeforeHeadings.push(line);
-        }
+        todoKeywordSets = todoKeywordSets.push(
+          fromJS({
+            keywords,
+            completedKeywords,
+            configLine: line,
+            default: false,
+          })
+        );
+      } else if (line.startsWith('#+')) {
+        fileConfigLines = fileConfigLines.push(line);
       } else {
-        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
-          // In the beginning of the `parseOrg` function, the original
-          // fileContent lines are split by '\n'. Therefore, if the
-          // original line was a newline, it will show up here as an
-          // empty `line` with an empty `rawDescription`. Add a
-          // newline here to the list, so that the exported file will
-          // have newlines in the same places as the originally parsed
-          // file.
-          if (!line && !rawDescription) return '\n';
-
-          if (rawDescription.length === 0) return line;
-
-          return rawDescription + '\n' + line;
-        });
+        linesBeforeHeadings = linesBeforeHeadings.push(line);
       }
+    } else {
+      headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
+        // In the beginning of the `parseOrg` function, the original
+        // fileContent lines are split by '\n'. Therefore, if the
+        // original line was a newline, it will show up here as an
+        // empty `line` with an empty `rawDescription`. Add a
+        // newline here to the list, so that the exported file will
+        // have newlines in the same places as the originally parsed
+        // file.
+        if (!line && !rawDescription) return '\n';
+
+        if (rawDescription.length === 0) return line;
+
+        return rawDescription + '\n' + line;
+      });
     }
   });
 
