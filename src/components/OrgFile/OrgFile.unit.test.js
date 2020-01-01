@@ -77,12 +77,12 @@ describe('Unit Tests for Org file', () => {
 
     test('Parse simple description with planning item', () => {
       const description = 'DEADLINE: <2020-01-01 Mon> \n';
-      expectStrippedDescription(description).toEqual('\n');
+      expectStrippedDescription(description).toEqual('');
     });
 
     test('Parse simple description with planning item', () => {
-      const description = 'DEADLINE: <2020-01-01 Mon> \nfoo';
-      expectStrippedDescription(description).toEqual('\nfoo');
+      const description = 'DEADLINE: <2020-01-01 Mon> \nfoo\n';
+      expectStrippedDescription(description).toEqual('foo\n');
     });
   });
 
