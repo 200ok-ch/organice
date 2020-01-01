@@ -203,50 +203,42 @@ Once signed in, you can set up capture templates that specify header paths (and 
 
 Below, there is a button to open up a task list.
 
-Tap a header in the task list view to jump to it, and tap on the date to
-switch to a more readable relative date format.
+Tap a header in the task list view to jump to it, and tap on the date to switch to a more readable relative date format.
 
-By default, only tasks, i.e. headlines with a TODO keyword are displayed.
-You can display all headlines by checking the checkbox.
+By default, only tasks, i.e. headlines with a TODO keyword are displayed. You can display all headlines by checking the checkbox.
 
-Using the filter input, you can search for headlines.
-Specifically, you can search for headline text, TODO keywords, tags, and
-[[https://orgmode.org/guide/Properties.html][orgmode properties]].
-It also supports alternatives, and you can exclude headlines by negating a
-filter.
+Using the filter input, you can search for headlines. Specifically, you can search for headline text, TODO keywords, tags, and [[https://orgmode.org/guide/Properties.html][orgmode properties]]. It also supports alternatives, and you can exclude headlines by negating a filter.
 
 ** Examples for the search syntax
 
 You can simply search for
-: TODO check out organice|orgmode
-to filter for tasks containing these
-words.
-The pipe symbol (=|=) means a logical /OR/.
-The filter is a smart-case search:
+
+TODO check out organice|orgmode
+
+to filter for tasks containing these words. The pipe symbol (=|=) means a logical /OR/. The filter is a smart-case search:
+
 - Lower-case words mean that the filter ignores the case.
 - If a word contains upper-case letters, the filter is case-sensitive.
 
-The following example searches for headlines containing =START= or =FINISHED=
-keywords and the string "states are".
-You can also use single-quotes.
-: START|FINISHED "states are"
+The following example searches for headlines containing =START= or =FINISHED= keywords and the string "states are". You can also use single-quotes.
+
+START|FINISHED "states are"
 
 The next example excludes =DONE= headlines but requires the tag =fun=.
-: -DONE  :fun
 
-You can exclude text strings, tags, and properties as well by prepending the
-minus sign (=-=).
+-DONE  :fun
+
+You can exclude text strings, tags, and properties as well by prepending the minus sign (=-=).
 
 Last but not least, you can search for headlines with defined properties:
-: TODO  :blocked_by:  :assignee:nobody|none
-This filters headlines having a property =blocked_by= (with any value) and a
-property =assignee= with a value containing =nobody= or =none=.
+
+TODO  :blocked_by:  :assignee:nobody|none
+
+This filters headlines having a property =blocked_by= (with any value) and a property =assignee= with a value containing =nobody= or =none=.
 
 ** Auto-completion for filters
 
-You probably noticed that organice provides suggestions for your filter.
-After space, =-=, =:=, and =|= you can tap on the completion – no need to
-type the tag, property, etc.
+You probably noticed that organice provides suggestions for your filter. After space, =-=, =:=, and =|= you can tap on the completion – no need to type the tag, property, etc.
 
 ** TODO Example with properties							:fun:
 :PROPERTIES:
