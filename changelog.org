@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 *** Added
     - Place cursor after the TODO keyword when creating a new header
       - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/193][PR]] 🙏
+    - Highlight verbatim markup
+
+*** Changes
+    - Highlight cookies and cookie percentages according to Solarized
+      color scheme
 
 ** <2020-01-01 Wed>
 
