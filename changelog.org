@@ -13,9 +13,11 @@ All notable changes to this project will be documented in this file.
     - Highlight cookies and cookie percentages according to Solarized
       color scheme
 
-
 *** Fixed
     - Don't update search results when using an invalid search filter
+    - On mobile: Styling of Search / Task List drawer when searching all
+      headlines
+    - On mobile: Ability to scroll Search / Task List
 
 ** <2020-01-01 Wed>
 
