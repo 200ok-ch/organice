@@ -3,10 +3,6 @@
 /* Currently, the markup is the same as in the AgendaModal component.
  * Hence the CSS rules from there apply. */
 
-.task-list__headers-container {
-  overflow: auto;
-}
-
 .task-list__filter-input,
 .task-list__filter-input-invalid {
   box-sizing: border-box;

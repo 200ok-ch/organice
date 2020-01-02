@@ -8,6 +8,8 @@ import classNames from 'classnames';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
+
 import * as orgActions from '../../../../actions/org';
 
 function TaskListModal(props) {
@@ -37,6 +39,17 @@ function TaskListModal(props) {
     searchFilterSuggestions,
     searchAllHeaders,
   } = props;
+
+  // On mobile devices, the Drawer already handles the touch event.
+  // Hence, scrolling within the Drawers container does not work with
+  // the same event. Therefore, we're just opting to scroll the whole
+  // drawer. That's not the best UX. And a better CSS juggler than me
+  // is welcome to improve on it.
+  let taskListViewStyle = {
+    overflow: (() => {
+      return isMobileBrowser ? 'none' : 'auto';
+    })(),
+  };
 
   return (
     <Drawer onClose={onClose} maxSize={true}>
@@ -74,7 +87,7 @@ function TaskListModal(props) {
         </div>
       </div>
 
-      <div className="task-list__headers-container">
+      <div className="task-list__headers-container" style={taskListViewStyle}>
         <TaskListView
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
