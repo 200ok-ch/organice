@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file.
     - On mobile: Styling of Search / Task List drawer when searching all
       headlines
     - On mobile: Ability to scroll Search / Task List
+    - Teach #+TODO parser to understand (..) suffix
+      - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/202][PR]] 🙏
 
 ** <2020-01-01 Wed>
 
