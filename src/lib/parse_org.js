@@ -794,8 +794,8 @@ const getLinesFromFileContents = fileContents => {
   // array => Remove that last array item.
   const lines = fileContents.split('\n');
 
-  // No special case for empty files:
-  if (lines.length === 0) return [''];
+  // Special case when last line did not end with a newline character:
+  if (lines.length > 0 && lines[lines.length - 1] !== '') return lines;
 
   return lines.slice(0, lines.length - 1);
 };
