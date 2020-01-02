@@ -10,84 +10,82 @@ import { dateForTimestamp } from '../../../../../../lib/timestamps';
 import { format, isPast, formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
 
-class TaskListView extends PureComponent {
-  handleHeaderClick(headerId) {
-    return () => this.props.onHeaderClick(headerId);
+function TaskListView(props) {
+  function handleHeaderClick(headerId) {
+    return () => props.onHeaderClick(headerId);
   }
 
-  render() {
-    const {
-      dateDisplayType,
-      onToggleDateDisplayType,
-      headers,
-      searchAllHeaders,
-      todoKeywordSets,
-    } = this.props;
+  const {
+    dateDisplayType,
+    onToggleDateDisplayType,
+    headers,
+    searchAllHeaders,
+    todoKeywordSets,
+  } = props;
 
-    const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
-      headers,
-      searchAllHeaders,
-      todoKeywordSets,
-    });
+  const planningItemsAndHeaders = getPlanningItemsAndHeaders({
+    headers,
+    searchAllHeaders,
+    todoKeywordSets,
+  });
 
-    return (
-      <div className="agenda-day__container">
-        <div className="agenda-day__headers-container">
-          {planningItemsAndHeaders.map(([planningItem, header]) => {
-            const planningItemDate = planningItem
-              ? dateForTimestamp(planningItem.get('timestamp'))
-              : null;
-            const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
+  return (
+    <div className="agenda-day__container">
+      <div className="agenda-day__headers-container">
+        {planningItemsAndHeaders.map(([planningItem, header]) => {
+          const planningItemDate = planningItem
+            ? dateForTimestamp(planningItem.get('timestamp'))
+            : null;
+          const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
 
-            const dateClassName = classNames('task-list__header-planning-date', {
-              'task-list__header-planning-date--overdue':
-                hasTodoKeyword && planningItem && isPast(planningItemDate),
-            });
+          const dateClassName = classNames('task-list__header-planning-date', {
+            'task-list__header-planning-date--overdue':
+              hasTodoKeyword && planningItem && isPast(planningItemDate),
+          });
 
-            let planningInformation = <div />;
-            if (planningItemDate) {
-              planningInformation = (
-                <div className="agenda-day__header__planning-item-container">
-                  <div className="task-list__header-planning-type">{planningItem.get('type')}</div>
-                  <div className={dateClassName} onClick={onToggleDateDisplayType}>
-                    {dateDisplayType === 'absolute'
-                      ? format(planningItemDate, 'MM/dd')
-                      : `${formatDistanceToNow(planningItemDate)} ago`}
+          let planningInformation = <div />;
+          if (planningItemDate) {
+            planningInformation = (
+              <div className="agenda-day__header__planning-item-container">
+                <div className="task-list__header-planning-type">{planningItem.get('type')}</div>
+                <div className={dateClassName} onClick={onToggleDateDisplayType}>
+                  {dateDisplayType === 'absolute'
+                    ? format(planningItemDate, 'MM/dd')
+                    : `${formatDistanceToNow(planningItemDate)} ago`}
 
-                    {!!planningItem.getIn(['timestamp', 'startHour']) && (
-                      <Fragment>
-                        <br />
-                        {format(planningItemDate, 'h:mma')}
-                      </Fragment>
-                    )}
-                  </div>
-                </div>
-              );
-            }
-
-            return (
-              <div key={header.get('id')} className="agenda-day__header-container">
-                <div className="agenda-day__header__header-container">
-                  <TitleLine
-                    header={header}
-                    color="black"
-                    hasContent={false}
-                    isSelected={false}
-                    shouldDisableActions
-                    shouldDisableExplicitWidth
-                    onClick={this.handleHeaderClick(header.get('id'))}
-                  />
-                  {planningInformation}
+                  {!!planningItem.getIn(['timestamp', 'startHour']) && (
+                    <Fragment>
+                      <br />
+                      {format(planningItemDate, 'h:mma')}
+                    </Fragment>
+                  )}
                 </div>
               </div>
             );
-          })}
-        </div>
-      </div>
-    );
-  }
+          }
 
-  getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeyword }) {
+          return (
+            <div key={header.get('id')} className="agenda-day__header-container">
+              <div className="agenda-day__header__header-container">
+                <TitleLine
+                  header={header}
+                  color="black"
+                  hasContent={false}
+                  isSelected={false}
+                  shouldDisableActions
+                  shouldDisableExplicitWidth
+                  onClick={handleHeaderClick(header.get('id'))}
+                />
+                {planningInformation}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  function getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeyword }) {
     return headers
       .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
@@ -120,7 +118,4 @@ const mapDispatchToProps = dispatch => ({});
 const getTimeFromPlanningItem = planningItem =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
