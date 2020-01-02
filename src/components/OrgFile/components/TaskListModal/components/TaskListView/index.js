@@ -85,6 +85,11 @@ function TaskListView(props) {
     </div>
   );
 
+  // Doing this on every render of the TaskListView is potentially
+  // inefficient and could be done in the reducer. However, doing it
+  // on every update of the headers state when not even looking at the
+  // Agenda is certainly more inefficient. Hence, we're doing it on
+  // every render.
   function getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeyword }) {
     return headers
       .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
