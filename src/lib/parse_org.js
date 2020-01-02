@@ -709,6 +709,28 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .set('logBookEntries', logBookEntries);
 };
 
+export const parseTodoKeywordConfig = (line) => {
+  if (!line.startsWith('#+TODO: ') && !line.startsWith('#+TYP_TODO: ')) {
+    return null;
+  }
+
+  const keywordsString = line.substr(line.indexOf(':') + 2);
+  const keywordTokens = keywordsString.split(/\s/);
+  const keywords = keywordTokens.filter(keyword => keyword !== '|');
+
+  const pipeIndex = keywordTokens.indexOf('|');
+  const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
+
+  return fromJS({
+    keywords,
+    completedKeywords,
+    configLine: line,
+    default: false,
+  });
+
+  return true;
+};
+
 export const parseOrg = fileContents => {
   let headers = List();
   const lines = fileContents.split('\n');
@@ -730,22 +752,9 @@ export const parseOrg = fileContents => {
       headers = headers.push(newHeaderWithTitle(title, nestingLevel, todoKeywordSets));
     } else {
       if (headers.size === 0) {
-        if (line.startsWith('#+TODO: ') || line.startsWith('#+TYP_TODO: ')) {
-          const keywordsString = line.substr(line.indexOf(':') + 2);
-          const keywordTokens = keywordsString.split(/\s/);
-          const keywords = keywordTokens.filter(keyword => keyword !== '|');
-
-          const pipeIndex = keywordTokens.indexOf('|');
-          const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
-
-          todoKeywordSets = todoKeywordSets.push(
-            fromJS({
-              keywords,
-              completedKeywords,
-              configLine: line,
-              default: false,
-            })
-          );
+        const newKeywordSet = parseTodoKeywordConfig(line);
+        if (newKeywordSet) {
+          todoKeywordSets = todoKeywordSets.push(newKeywordSet);
         } else if (line.startsWith('#+')) {
           fileConfigLines = fileConfigLines.push(line);
         } else {
