@@ -709,7 +709,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .set('logBookEntries', logBookEntries);
 };
 
-export const parseTodoKeywordConfig = (line) => {
+export const parseTodoKeywordConfig = line => {
   if (!line.startsWith('#+TODO: ') && !line.startsWith('#+TYP_TODO: ')) {
     return null;
   }
@@ -717,8 +717,11 @@ export const parseTodoKeywordConfig = (line) => {
   const keywordsString = line.substr(line.indexOf(':') + 2);
   const keywordTokens = keywordsString.split(/\s/);
   const keywords = keywordTokens
-        .filter(keyword => keyword !== '|')
-        .map(keyword => keyword.replace(/\(.[!@]?(\/[!@])?\)$/, ''));
+    .filter(keyword => keyword !== '|')
+    // Remove fast access TODO states suffix from keyword, because
+    // there's no UI to handle those in organice
+    // https://orgmode.org/manual/Fast-access-to-TODO-states.html#Fast-access-to-TODO-states
+    .map(keyword => keyword.replace(/\(.[!@]?(\/[!@])?\)$/, ''));
 
   const pipeIndex = keywordTokens.indexOf('|');
   const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
