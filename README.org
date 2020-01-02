@@ -75,11 +75,24 @@ or bugs that you you wouldn’t have expected.
 **** Background information
 
 organice has [[src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
-has unit tests to prove it. However, writing a parser for a complex
-syntax like Org mode in custom code is hard. Therefore, we are in the
-process of implementing a proper BNF based parser and a set of tests
-behind that. If you're interested, please check it out:
-[[https://github.com/200ok-ch/org-parser]]
+has unit tests to prove it. One of the quality goals for the parser is
+that when it parses and re-exports an Org file, it should not change
+the original file. Not seeing unrelated diffs is important for the
+productivity of the user. It sounds trivial, but lots of alternative
+products do not live up to this expectation.
+
+Writing a parser for a complex syntax like Org mode in custom code is
+hard. Therefore, we are in the process of implementing a proper BNF
+based parser and a set of tests behind that. If you're interested,
+please check it out: [[https://github.com/200ok-ch/org-parser]]
+
+The strategy we're using with regards to the parser is this:
+
+- Keep improving the existing custom parser for new features and make
+  bugfixes as long as the new one isn't ready.
+- In parallel, when there's time, work on the new one until there's
+  feature parity with the old one from organice.
+- When the new one is finished, integrate it into organice.
 
 *** PWA / Offline Support
 
