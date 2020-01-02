@@ -732,8 +732,6 @@ export const parseTodoKeywordConfig = line => {
     configLine: line,
     default: false,
   });
-
-  return true;
 };
 
 export const parseOrg = fileContents => {
