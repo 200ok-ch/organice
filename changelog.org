@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2020-01-02 Thu>
+
+*** Added
+    - Place cursor after the TODO keyword when creating a new header
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/193][PR]] 🙏
+
 ** <2020-01-01 Wed>
 
 *** Added
