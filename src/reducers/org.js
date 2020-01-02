@@ -4,7 +4,11 @@ import _ from 'lodash';
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
 
-import { extractAllOrgTags, extractAllOrgProperties } from '../lib/org_utils';
+import {
+  extractAllOrgTags,
+  extractAllOrgProperties,
+  getTodoKeywordSetsAsFlattenedArray,
+} from '../lib/org_utils';
 
 import {
   parseOrg,
@@ -1068,16 +1072,6 @@ export default (state = Map(), action) => {
       return state;
   }
 };
-
-function getTodoKeywordSetsAsFlattenedArray(state) {
-  return state
-    .get('todoKeywordSets')
-    .flatMap(todoKeywordSet => {
-      return todoKeywordSet.get('keywords');
-    })
-    .toSet()
-    .toJS();
-}
 
 /**
  * Updates Headlines with the next todoKeyword `newTodoState`. Also
