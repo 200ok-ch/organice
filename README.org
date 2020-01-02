@@ -2,7 +2,7 @@
 
 *organice organizes Org files nicely!*
 
-[[file:public/organice-small.png]]
+#+html: <p align="center"> <img src="public/organice-small.png"/> </p>
 
 Tests (CircleCI): [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
 
