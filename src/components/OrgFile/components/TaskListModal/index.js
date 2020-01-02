@@ -63,9 +63,6 @@ function TaskListModal(props) {
           <input
             type="checkbox"
             className="checkbox"
-            // TODO: Why does the .checkbox css rule from the Checkbox
-            // component apply for this input? If it is by accident,
-            // can we duplicate/move the css class rule to base.css?
             checked={searchAllHeaders}
             id="task-list__checkbox-search-all-headers"
             data-testid="task-list__checkbox"
