@@ -893,23 +893,25 @@ export const setSearchFilterInformation = (state, action) => {
   const headers = state.get('headers');
   state = state.asMutable();
 
+  let searchFilterValid = true;
   let searchFilterExpr;
   try {
     searchFilterExpr = headline_filter_parser.parse(searchFilter);
     state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
-  } catch {
-    // No need to print this parser exceptions.
-    // They are expected, see *.grammar.pegjs
+  } catch (e) {
+    // No need to print this parser exceptions. They are expected, see
+    // *.grammar.pegjs. However, we don't need to update the filtered
+    // headers when given an invalid search filter.
+    searchFilterValid = false;
   }
 
-  state.setIn(['search', 'searchFilterValid'], !!searchFilterExpr);
-
-  let filteredHeaders = headers;
-  if (searchFilterExpr) {
-    // Only run filter if a filter is given and parsing was successfull
-    filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+  state.setIn(['search', 'searchFilterValid'], searchFilterValid);
+  // Only run filter if a filter is given and parsing was successfull
+  if (searchFilterValid) {
+    const filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+    state.setIn(['search', 'filteredHeaders'], filteredHeaders);
   }
-  state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+
   state.setIn(['search', 'searchFilter'], searchFilter);
 
   // INFO: This is a POC draft of a future feature
