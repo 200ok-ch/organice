@@ -710,12 +710,12 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 };
 
 export const parseOrg = fileContents => {
-  let headers = new List();
+  let headers = List();
   const lines = fileContents.split('\n');
 
-  let todoKeywordSets = new List();
-  let fileConfigLines = new List();
-  let linesBeforeHeadings = new List();
+  let todoKeywordSets = List();
+  let fileConfigLines = List();
+  let linesBeforeHeadings = List();
 
   lines.forEach(line => {
     // A header has to start with at least one consecutive asterisk

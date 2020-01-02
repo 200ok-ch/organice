@@ -500,7 +500,7 @@ export const newEmptyTableRowLikeRows = rows =>
       contents.map(cell =>
         cell
           .set('id', generateId())
-          .set('contents', new List())
+          .set('contents', List())
           .set('rawContents', '')
       )
     );

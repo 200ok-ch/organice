@@ -947,7 +947,7 @@ export const setSearchAllHeadersFlag = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-export default (state = new Map(), action) => {
+export default (state = Map(), action) => {
   if (action.dirtying) {
     state = state.set('isDirty', true);
   }

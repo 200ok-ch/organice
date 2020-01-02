@@ -21,7 +21,7 @@ const setIsLoadingMoreDirectoryListing = (state, action) =>
     )
     .setIn(['currentFileBrowserDirectoryListing', 'isLoadingMore'], action.isLoadingMore);
 
-export default (state = new Map(), action) => {
+export default (state = Map(), action) => {
   switch (action.type) {
     case 'SIGN_OUT':
       return signOut(state, action);
