@@ -213,28 +213,28 @@ Using the filter input, you can search for headlines. Specifically, you can sear
 
 You can simply search for
 
-TODO check out organice|orgmode
+=TODO check out organice|orgmode=
 
-to filter for tasks containing these words. The pipe symbol (=|=) means a logical /OR/. The filter is a smart-case search:
+to filter for tasks containing these words. The pipe symbol (|) is a logical /OR/. The filter is a smart-case search:
 
 - Lower-case words mean that the filter ignores the case.
 - If a word contains upper-case letters, the filter is case-sensitive.
 
-The following example searches for headlines containing =START= or =FINISHED= keywords and the string "states are". You can also use single-quotes.
+The following example searches for headlines containing *START* or *FINISHED* keywords and the string "states are". You can also use single-quotes.
 
-START|FINISHED "states are"
+=START|FINISHED "states are"=
 
-The next example excludes =DONE= headlines but requires the tag =fun=.
+The next example excludes *DONE* headlines but requires the tag *fun*.
 
--DONE  :fun
+=-DONE  :fun=
 
-You can exclude text strings, tags, and properties as well by prepending the minus sign (=-=).
+You can exclude text strings, tags, and properties as well by prepending the minus sign (-).
 
 Last but not least, you can search for headlines with defined properties:
 
-TODO  :blocked_by:  :assignee:nobody|none
+=TODO :blocked_by:  :assignee:nobody|none=
 
-This filters headlines having a property =blocked_by= (with any value) and a property =assignee= with a value containing =nobody= or =none=.
+This filters headlines having a property *blocked_by* (with any value) and a property *assignee* with a value containing =nobody= or =none=.
 
 ** Auto-completion for filters
 
