@@ -1,10 +1,10 @@
 import Bowser from 'bowser';
 
+const browser = Bowser.getParser(window.navigator.userAgent);
+
 /** Is the browser Mobile Safari with iOS version of at least 13, but
 less than 13.3 */
 export const isMobileSafari13 = (() => {
-  const browser = Bowser.getParser(window.navigator.userAgent);
-
   return (
     browser.satisfies({
       mobile: {
@@ -17,6 +17,16 @@ export const isMobileSafari13 = (() => {
       },
     })
   );
+})();
+
+/** Is the OS iOS or Android? */
+export const isMobileBrowser = (() => {
+  return browser.satisfies({
+    mobile: {
+      safari: '>=6',
+      'android browser': '>3',
+    },
+  });
 })();
 
 /** Is iPhone Model X (tested with Xs) */

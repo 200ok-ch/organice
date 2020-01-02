@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -8,106 +8,96 @@ import classNames from 'classnames';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
+
 import * as orgActions from '../../../../actions/org';
 
-import _ from 'lodash';
+function TaskListModal(props) {
+  const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
-class TaskListModal extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, [
-      'handleHeaderClick',
-      'handleToggleDateDisplayType',
-      'handleFilterChange',
-      'handleSearchAllCheckboxChange',
-    ]);
-
-    this.state = {
-      dateDisplayType: 'absolute',
-    };
+  function handleHeaderClick(headerId) {
+    props.onClose();
+    props.org.selectHeaderAndOpenParents(headerId);
   }
 
-  handleHeaderClick(headerId) {
-    this.props.onClose();
-    this.props.org.selectHeaderAndOpenParents(headerId);
+  function handleToggleDateDisplayType() {
+    setdateDisplayType(dateDisplayType === 'absolute' ? 'relative' : 'absolute');
   }
 
-  handleToggleDateDisplayType() {
-    const { dateDisplayType } = this.state;
-
-    this.setState({
-      dateDisplayType: dateDisplayType === 'absolute' ? 'relative' : 'absolute',
-    });
+  function handleSearchAllCheckboxChange(event) {
+    props.org.setSearchAllHeadersFlag(event.target.checked);
   }
 
-  handleSearchAllCheckboxChange(event) {
-    this.props.org.setSearchAllHeadersFlag(event.target.checked);
+  function handleFilterChange(event) {
+    props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
   }
 
-  handleFilterChange(event) {
-    this.props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
-  }
+  const {
+    onClose,
+    searchFilter,
+    searchFilterValid,
+    searchFilterSuggestions,
+    searchAllHeaders,
+  } = props;
 
-  render() {
-    const {
-      onClose,
-      searchFilter,
-      searchFilterValid,
-      searchFilterSuggestions,
-      searchAllHeaders,
-    } = this.props;
-    const { dateDisplayType } = this.state;
+  // On mobile devices, the Drawer already handles the touch event.
+  // Hence, scrolling within the Drawers container does not work with
+  // the same event. Therefore, we're just opting to scroll the whole
+  // drawer. That's not the best UX. And a better CSS juggler than me
+  // is welcome to improve on it.
+  let taskListViewStyle = {
+    overflow: (() => {
+      return isMobileBrowser ? 'none' : 'auto';
+    })(),
+  };
 
-    return (
-      <Drawer onClose={onClose} maxSize={true}>
-        <h2 className="agenda__title">Task list</h2>
+  return (
+    <Drawer onClose={onClose} maxSize={true}>
+      <h2 className="agenda__title">Task list</h2>
 
-        <datalist id="task-list__datalist-filter">
-          {searchFilterSuggestions.map((string, idx) => (
-            <option key={idx} value={string} />
-          ))}
-        </datalist>
+      <datalist id="task-list__datalist-filter">
+        {searchFilterSuggestions.map((string, idx) => (
+          <option key={idx} value={string} />
+        ))}
+      </datalist>
 
-        <div className="task-list__input-container">
+      <div className="task-list__input-container">
+        <input
+          type="text"
+          value={searchFilter}
+          className={classNames('textfield', 'task-list__filter-input', {
+            'task-list__filter-input-invalid': !searchFilterValid,
+          })}
+          placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
+          list="task-list__datalist-filter"
+          onChange={handleFilterChange}
+        />
+        <div className="agenda__tab-container">
           <input
-            type="text"
-            value={searchFilter}
-            className={classNames('textfield', 'task-list__filter-input', {
-              'task-list__filter-input-invalid': !searchFilterValid,
-            })}
-            placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
-            list="task-list__datalist-filter"
-            onChange={this.handleFilterChange}
+            type="checkbox"
+            className="checkbox"
+            checked={searchAllHeaders}
+            id="task-list__checkbox-search-all-headers"
+            data-testid="task-list__checkbox"
+            onChange={handleSearchAllCheckboxChange}
           />
-          <div className="agenda__tab-container">
-            <input
-              type="checkbox"
-              className="checkbox"
-              // TODO: Why does the .checkbox css rule from the Checkbox component apply for this input? If it is by accident, can we duplicate/move the css class rule to base.css?
-              checked={searchAllHeaders}
-              id="task-list__checkbox-search-all-headers"
-              data-testid="task-list__checkbox"
-              onChange={this.handleSearchAllCheckboxChange}
-            />
-            <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
-              Search all headlines
-            </label>
-          </div>
+          <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
+            Search all headlines
+          </label>
         </div>
+      </div>
 
-        <div className="task-list__headers-container">
-          <TaskListView
-            onHeaderClick={this.handleHeaderClick}
-            dateDisplayType={dateDisplayType}
-            onToggleDateDisplayType={this.handleToggleDateDisplayType}
-          />
-        </div>
+      <div className="task-list__headers-container" style={taskListViewStyle}>
+        <TaskListView
+          onHeaderClick={handleHeaderClick}
+          dateDisplayType={dateDisplayType}
+          onToggleDateDisplayType={handleToggleDateDisplayType}
+        />
+      </div>
 
-        <br />
-      </Drawer>
-    );
-  }
+      <br />
+    </Drawer>
+  );
 }
 
 const mapStateToProps = state => ({

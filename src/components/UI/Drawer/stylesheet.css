@@ -52,6 +52,7 @@
   width: 35px;
   height: 5px;
   background-color: gray;
+  flex-shrink: 0;
 
   border-radius: 50px;
 
