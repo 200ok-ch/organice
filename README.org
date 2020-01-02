@@ -173,11 +173,12 @@ organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.or
 [[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
 The internal data structures are written as immutable persistent
 data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
+
 *** Prerequisites
 
-You will need a version of the Node.js engine installed which fulfils
-the requirement stated in =package.json=.  If you don't already have
-this installed, it is recommended to install it via [[https://nvm.sh/][nvm]].  This
+You will need a version of the Node.js engine installed which fulfills
+the requirement stated in =package.json=. If you don't already have
+this installed, it is recommended to install it via [[https://github.com/nvm-sh/nvm][nvm]]. The organice
 repository already contains an =.nvmrc= file, so once you have nvm
 installed, the following commands should be sufficient:
 
@@ -185,9 +186,6 @@ installed, the following commands should be sufficient:
 nvm install
 nvm use
 #+END_SRC
-
-It's worth noting that the =Dockerfile= will also specify a particular
-Node.js version.
 
 *** Setup
 
