@@ -163,6 +163,19 @@ ${text}`;
       });
     });
 
+    test('Parse empty file', () => {
+      const testOrgFile = '';
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
+    });
+
+    test('Parse file with one empty line', () => {
+      const testOrgFile = '\n';
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      // if the exporter produces no output at all, the single newline character is discarded
+      expect(exportedFile).toEqual('');
+    });
+
     test('Parse very basic file with description', () => {
       const testOrgFile = '* Header\n'; // only one header line, no description
       const exportedFile = parseAndExportOrgFile(testOrgFile);
