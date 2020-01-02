@@ -906,12 +906,9 @@ export const setSearchFilterInformation = (state, action) => {
   }
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
+  // Only run filter if a filter is given and parsing was successfull
   if (searchFilterValid) {
-    let filteredHeaders = headers;
-    if (searchFilterExpr) {
-      // Only run filter if a filter is given and parsing was successfull
-      filteredHeaders = headers.filter(isMatch(searchFilterExpr));
-    }
+    const filteredHeaders = headers.filter(isMatch(searchFilterExpr));
     state.setIn(['search', 'filteredHeaders'], filteredHeaders);
   }
 
