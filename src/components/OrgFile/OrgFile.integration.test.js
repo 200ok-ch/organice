@@ -33,7 +33,7 @@ describe('Render all views', () => {
 
   const testOrgFile = `
 #+TODO: TODO | DONE
-#+TODO: START | FINISHED
+#+TODO: START(s!/!) | FINISHED(f@)
 
 * Top level header
 ** A nested header

@@ -716,7 +716,9 @@ export const parseTodoKeywordConfig = (line) => {
 
   const keywordsString = line.substr(line.indexOf(':') + 2);
   const keywordTokens = keywordsString.split(/\s/);
-  const keywords = keywordTokens.filter(keyword => keyword !== '|');
+  const keywords = keywordTokens
+        .filter(keyword => keyword !== '|')
+        .map(keyword => keyword.replace(/\(.[!@]?(\/[!@])?\)$/, ''));
 
   const pipeIndex = keywordTokens.indexOf('|');
   const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
