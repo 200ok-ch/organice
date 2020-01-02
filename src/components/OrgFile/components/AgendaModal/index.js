@@ -63,7 +63,7 @@ function AgendaModal(props) {
         setSelectedDate(subWeeks(selectedDate, 1));
         break;
       case 'Month':
-        setSelectedDate(subWeeks(selectedDate, 1));
+        setSelectedDate(subMonths(selectedDate, 1));
         break;
       default:
         return '';
