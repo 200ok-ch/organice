@@ -81,7 +81,7 @@ class TitleLine extends PureComponent {
   }
 
   calculateRawTitle(header) {
-    generateTitleLine(header.toJS(), false);
+    return generateTitleLine(header.toJS(), false);
   }
 
   handleTitleClick(event) {
