@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import './stylesheet.css';
 
 import classNames from 'classnames';
-import TaskListView from './components/TaskListView';
+import HeaderListView from './components/HeaderListView';
 import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser } from '../../../../lib/browser_utils';
@@ -15,7 +15,7 @@ import * as orgActions from '../../../../actions/org';
 // INFO: SearchModal, AgendaModal and TaskListModal are very similar
 // in structure and partially in logic. When changing one, consider
 // changing all.
-function TaskListModal(props) {
+function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
   function handleHeaderClick(headerId) {
@@ -27,21 +27,11 @@ function TaskListModal(props) {
     setdateDisplayType(dateDisplayType === 'absolute' ? 'relative' : 'absolute');
   }
 
-  function handleSearchAllCheckboxChange(event) {
-    props.org.setSearchAllHeadersFlag(event.target.checked);
-  }
-
   function handleFilterChange(event) {
     props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
   }
 
-  const {
-    onClose,
-    searchFilter,
-    searchFilterValid,
-    searchFilterSuggestions,
-    searchAllHeaders,
-  } = props;
+  const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions } = props;
 
   // On mobile devices, the Drawer already handles the touch event.
   // Hence, scrolling within the Drawers container does not work with
@@ -56,7 +46,7 @@ function TaskListModal(props) {
 
   return (
     <Drawer onClose={onClose} maxSize={true}>
-      <h2 className="agenda__title">Task list</h2>
+      <h2 className="agenda__title">Search</h2>
 
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
@@ -75,23 +65,10 @@ function TaskListModal(props) {
           list="task-list__datalist-filter"
           onChange={handleFilterChange}
         />
-        <div className="agenda__tab-container">
-          <input
-            type="checkbox"
-            className="checkbox"
-            checked={searchAllHeaders}
-            id="task-list__checkbox-search-all-headers"
-            data-testid="task-list__checkbox"
-            onChange={handleSearchAllCheckboxChange}
-          />
-          <label className="label-for-checkbox" htmlFor="task-list__checkbox-search-all-headers">
-            Search all headlines
-          </label>
-        </div>
       </div>
 
       <div className="task-list__headers-container" style={taskListViewStyle}>
-        <TaskListView
+        <HeaderListView
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
@@ -107,11 +84,10 @@ const mapStateToProps = state => ({
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
-  searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']) || false,
 });
 
 const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListModal);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchModal);
