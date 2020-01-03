@@ -90,7 +90,7 @@ function TaskListView(props) {
   // on every update of the headers state when not even looking at the
   // Agenda is certainly more inefficient. Hence, we're doing it on
   // every render.
-  function getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeyword }) {
+  function getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeywordSets }) {
     return headers
       .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
@@ -123,4 +123,7 @@ const mapDispatchToProps = dispatch => ({});
 const getTimeFromPlanningItem = planningItem =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskListView);
