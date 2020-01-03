@@ -12,8 +12,7 @@ import * as baseActions from '../../../../actions/base';
 
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
-import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
-
+import { titleLineWithoutStars } from '../../../../lib/export_org';
 import AttributedString from '../AttributedString';
 
 class TitleLine extends PureComponent {
@@ -81,6 +80,7 @@ class TitleLine extends PureComponent {
   }
 
   calculateRawTitle(header) {
+    // FIXME: Reuse org export function titleLineWithoutStars
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
     const tags = header.getIn(['titleLine', 'tags']);
 

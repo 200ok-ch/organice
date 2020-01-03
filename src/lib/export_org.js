@@ -222,6 +222,22 @@ export const attributedStringToRawText = parts => {
     .join('');
 };
 
+// Takes a plain JS object
+export const titleLineWithoutStars = (header, includeStars) => {
+  let contents = '';
+  if (includeStars) contents += '*'.repeat(header.nestingLevel);
+
+  if (header.titleLine.todoKeyword) {
+    contents += ` ${header.titleLine.todoKeyword}`;
+  }
+  contents += ` ${header.titleLine.rawTitle}`;
+
+  if (header.titleLine.tags.length) {
+    contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+  }
+  return contents;
+};
+
 export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) => {
   let configContent = '';
 
@@ -254,17 +270,7 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
       // Pad things like planning items and tables appropriately
       // considering the nestingLevel of the header.
       const indentation = ' '.repeat(header.nestingLevel + 1);
-      let contents = '';
-      contents += '*'.repeat(header.nestingLevel);
-
-      if (header.titleLine.todoKeyword) {
-        contents += ` ${header.titleLine.todoKeyword}`;
-      }
-      contents += ` ${header.titleLine.rawTitle}`;
-
-      if (header.titleLine.tags.length) {
-        contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
-      }
+      let contents = titleLineWithoutStars(header, true);
 
       if (header.planningItems.length) {
         const planningItemsContent = header.planningItems
