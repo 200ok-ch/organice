@@ -11,6 +11,7 @@ import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
 
 import { titleLineWithoutStars } from '../../../../lib/export_org';
 import AttributedString from '../AttributedString';
@@ -310,4 +311,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TitleLine);
