@@ -235,6 +235,8 @@ export const generateTitleLine = (header, includeStars) => {
   if (header.titleLine.tags.length) {
     contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
   }
+
+  if (!includeStars) contents = contents.substring(1);
   return contents;
 };
 
