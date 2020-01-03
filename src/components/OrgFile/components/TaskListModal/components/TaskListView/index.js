@@ -101,11 +101,15 @@ function TaskListView(props) {
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
+        console.log(todoKeywordSets);
+        const doneState = todoKeywordSets
+          .flatMap(x => x.get('completedKeywords'))
+          .includes(header.getIn(['titleLine', 'todoKeyword']));
         const timeAsSortCriterion = planningItem
           ? getTimeFromPlanningItem(planningItem)
           : Number.MAX_SAFE_INTEGER; // Sort tasks without timestamp last
         const title = header.getIn(['titleLine', 'rawTitle']);
-        return [timeAsSortCriterion, title];
+        return [doneState, timeAsSortCriterion, title];
       });
   }
 }
