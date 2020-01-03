@@ -416,11 +416,25 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           style="opacity: 1;"
           title="Show agenda"
         />
-        <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
-          style="opacity: 1;"
-          title="Show task list"
-        />
+        <div
+          class="action-drawer__capture-buttons-container"
+        >
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-search-plus"
+            style="opacity: 1; position: relative; z-index: 1;"
+            title="Show Search / Task List"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
+            style="position: absolute; z-index: 0; left: 0px; opacity: 1; box-shadow: none; bottom: 0px;"
+            title="Show search"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
+            style="position: absolute; z-index: 0; left: 0px; opacity: 1; box-shadow: none; bottom: 0px;"
+            title="Show task list"
+          />
+        </div>
         <div
           class="action-drawer__capture-buttons-container"
         >
