@@ -223,7 +223,7 @@ export const attributedStringToRawText = parts => {
 };
 
 // Takes a plain JS object
-export const titleLineWithoutStars = (header, includeStars) => {
+export const generateTitleLine = (header, includeStars) => {
   let contents = '';
   if (includeStars) contents += '*'.repeat(header.nestingLevel);
 
@@ -270,7 +270,7 @@ export default (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) 
       // Pad things like planning items and tables appropriately
       // considering the nestingLevel of the header.
       const indentation = ' '.repeat(header.nestingLevel + 1);
-      let contents = titleLineWithoutStars(header, true);
+      let contents = generateTitleLine(header, true);
 
       if (header.planningItems.length) {
         const planningItemsContent = header.planningItems
