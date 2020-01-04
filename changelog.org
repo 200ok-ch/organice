@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+
+** <2020-01-04 Sat>
+
+*** Added
+    - Ability to search headlines
+      - It has the same syntax as the search field in the Task List feature
+
 ** <2020-01-02 Thu>
 
 *** Added
