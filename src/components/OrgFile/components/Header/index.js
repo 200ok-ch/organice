@@ -50,6 +50,8 @@ class Header extends PureComponent {
       'handleClockInOutClick',
       'handleScheduledClick',
       'handleShareHeaderClick',
+      'handleRefileHeader',
+      'handleRefileHeaderRequest',
     ]);
 
     this.state = {
@@ -297,6 +299,14 @@ ${header.get('rawDescription')}
     // window.location.href = mailtoURI;
   }
 
+  handleRefileHeaderRequest() {
+    // TODO: Open Search Drawer
+    // TODO: Write Callack for Search Drawer
+    const { header } = this.props;
+
+    console.log(header);
+  }
+
   render() {
     const {
       header,
@@ -487,6 +497,7 @@ ${header.get('rawDescription')}
                   onScheduledClick={this.handleScheduledClick}
                   hasActiveClock={hasActiveClock}
                   onShareHeader={this.handleShareHeaderClick}
+                  onRefileHeader={this.handleRefileHeaderRequest}
                 />
               </Collapse>
 

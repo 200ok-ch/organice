@@ -446,6 +446,12 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
+export const refileSubtree = (state, action) => {
+  const { sourceHeaderId, targetHeaderId } = action;
+
+  console.log(sourceHeaderId, targetHeaderId);
+};
+
 const focusHeader = (state, action) => {
   return state.set('focusedHeaderId', action.headerId);
 };

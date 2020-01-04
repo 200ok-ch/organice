@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 
 import './stylesheet.css';
 
+import * as orgActions from '../../../../../../actions/org';
+
 export default class HeaderActionDrawer extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.
@@ -28,6 +30,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onScheduledClick,
       hasActiveClock,
       onShareHeader,
+      onRefileHeader,
     } = this.props;
 
     return (
@@ -56,6 +59,10 @@ export default class HeaderActionDrawer extends PureComponent {
           <span className="header-action-drawer__separator" />
 
           {this.iconWithFFClickCatcher('fas fa-plus fa-lg', onAddNewHeader, 'header-action-plus')}
+
+          <span className="header-action-drawer__separator" />
+
+          {this.iconWithFFClickCatcher('fas fa-file-export fa-lg', onRefileHeader)}
         </div>
         <div className="header-action-drawer__row">
           <div
