@@ -587,7 +587,7 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
 
 /**
  * Returns a function which takes a `todoKeyword` which then returns
- * if said `todoKeyword` is in `todoKeywordSets`.
+ * if said `todoKeyword` is in any `todoKeywordSets` states.
  * @param {Object} todoKeywordSets
  */
 export const createIsTodoKeywordInDoneState = todoKeywordSets => {
