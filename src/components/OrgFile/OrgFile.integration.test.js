@@ -298,16 +298,45 @@ Some description content
         });
       });
 
+      describe('Search', () => {
+        test('renders Search for an Org file', () => {
+          expect(queryByText('Search')).toBeFalsy();
+          expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
+
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toHaveTextContent('Search');
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        test('searches in all headers', () => {
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          // All kinds of headers are visible
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).toHaveTextContent('Another top level header');
+
+          // Filter down to headers with tag :tag1:
+          fireEvent.change(input, { target: { value: ':tag1' } });
+
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).not.toHaveTextContent('Another top level header');
+        });
+      });
+
       describe('TaskList', () => {
         test('renders TaskList for an Org file', () => {
           expect(queryByText('Task list')).toBeFalsy();
-          expect(queryByText('Search all headlines')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
 
           fireEvent.click(getByTitle('Show task list'));
           const drawerElem = getByTestId('drawer');
           expect(drawerElem).toHaveTextContent('Task list');
-          expect(drawerElem).toHaveTextContent('Search all headlines');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
         });
 
@@ -334,19 +363,6 @@ Some description content
             'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
           );
 
-          expect(drawerElem).not.toHaveTextContent('Another top level header');
-
-          // Enable searching for all headers
-          fireEvent.click(getByTestId('task-list__checkbox'));
-
-          // All kinds of headers are visible
-          expect(drawerElem).toHaveTextContent('A header with tags');
-          expect(drawerElem).toHaveTextContent('Another top level header');
-
-          // Filter down to headers with tag :tag1:
-          fireEvent.change(input, { target: { value: ':tag1' } });
-
-          expect(drawerElem).toHaveTextContent('A header with tags');
           expect(drawerElem).not.toHaveTextContent('Another top level header');
         });
       });

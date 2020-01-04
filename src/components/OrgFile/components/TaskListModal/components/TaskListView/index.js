@@ -15,17 +15,10 @@ function TaskListView(props) {
     return () => props.onHeaderClick(headerId);
   }
 
-  const {
-    dateDisplayType,
-    onToggleDateDisplayType,
-    headers,
-    searchAllHeaders,
-    todoKeywordSets,
-  } = props;
+  const { dateDisplayType, onToggleDateDisplayType, headers, todoKeywordSets } = props;
 
   const planningItemsAndHeaders = getPlanningItemsAndHeaders({
     headers,
-    searchAllHeaders,
     todoKeywordSets,
   });
 
@@ -90,9 +83,9 @@ function TaskListView(props) {
   // on every update of the headers state when not even looking at the
   // Agenda is certainly more inefficient. Hence, we're doing it on
   // every render.
-  function getPlanningItemsAndHeaders({ headers, searchAllHeaders, todoKeywordSets }) {
+  function getPlanningItemsAndHeaders({ headers, todoKeywordSets }) {
     return headers
-      .filter(header => searchAllHeaders || header.getIn(['titleLine', 'todoKeyword']))
+      .filter(header => header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
         const earliestPlanningItem = header
           .get('planningItems')
@@ -115,7 +108,6 @@ function TaskListView(props) {
 
 const mapStateToProps = state => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  searchAllHeaders: state.org.present.getIn(['search', 'searchAllHeaders']),
   // When no filtering has happened, yet (initial state), use all headers.
   headers:
     state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),

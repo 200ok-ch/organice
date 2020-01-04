@@ -946,11 +946,6 @@ export const setSearchFilterInformation = (state, action) => {
   return state.asImmutable();
 };
 
-export const setSearchAllHeadersFlag = (state, action) => {
-  const { searchAllHeaders } = action;
-  return state.setIn(['search', 'searchAllHeaders'], searchAllHeaders);
-};
-
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
 export default (state = Map(), action) => {
@@ -1065,8 +1060,6 @@ export default (state = Map(), action) => {
       return updateLogEntryTime(state, action);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
-    case 'SET_SEARCH_ALL_HEADERS_FLAG':
-      return setSearchAllHeadersFlag(state, action);
 
     default:
       return state;
