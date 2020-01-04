@@ -5,7 +5,7 @@ import './stylesheet.css';
 import { Motion, spring } from 'react-motion';
 import classNames from 'classnames';
 
-export default ({ children, shouldIncludeCloseButton, onClose }) => {
+export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [dragOffsetY, setDragOffsetY] = useState(null);
 
@@ -101,11 +101,18 @@ export default ({ children, shouldIncludeCloseButton, onClose }) => {
           transform: `translateY(${style.offsetY}px)`,
         };
 
+        // For maximized drawers, there's different rules:
+        if (maxSize) {
+          interpolatedStyle.height = '92%';
+          interpolatedStyle.overflow = 'none';
+        }
+
         return (
           <div className={outerClassName} onClick={!!onClose ? handleClose : null}>
             <div
               onClick={handleInnerContainerClick}
               className="drawer-inner-container nice-scroll"
+              data-testid="drawer"
               ref={innerContainer}
               style={interpolatedStyle}
             >

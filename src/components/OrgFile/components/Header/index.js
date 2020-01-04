@@ -457,6 +457,17 @@ ${header.get('rawDescription')}`;
                 }}
               </Motion>
 
+              <div style={{ marginLeft: -16, color }} className="header__bullet">
+                {bulletStyle === 'Fancy' ? '●' : '*'}
+              </div>
+              <TitleLine
+                header={header}
+                color={color}
+                hasContent={hasContent}
+                isSelected={isSelected}
+                shouldDisableActions={shouldDisableActions}
+              />
+
               <Collapse
                 isOpened={isSelected && !shouldDisableActions}
                 springConfig={{ stiffness: 300 }}
@@ -477,17 +488,6 @@ ${header.get('rawDescription')}`;
                   onShareHeader={this.handleShareHeaderClick}
                 />
               </Collapse>
-
-              <div style={{ marginLeft: -16, color }} className="header__bullet">
-                {bulletStyle === 'Fancy' ? '●' : '*'}
-              </div>
-              <TitleLine
-                header={header}
-                color={color}
-                hasContent={hasContent}
-                isSelected={isSelected}
-                shouldDisableActions={shouldDisableActions}
-              />
 
               <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
             </div>

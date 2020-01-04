@@ -1,16 +1,19 @@
+@import '../../../../colors.css';
+
 .attributed-string__cookie-part {
   font-weight: bold;
-  color: red;
+  color: var(--red);
 }
 
 .attributed-string__cookie-part--complete {
-  color: green;
+  color: var(--green);
 }
 
-.attributed-string__inline-markup--inline-code {
+.attributed-string__inline-markup--inline-code,
+.attributed-string__inline-markup--verbatim {
   color: black;
-  background-color: #eaeaea;
-  border: 1px solid gray;
+  background-color: var(--base2);
+  border: 1px solid var(--base1);
   padding: 2px;
 }
 

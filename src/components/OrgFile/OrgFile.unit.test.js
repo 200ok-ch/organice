@@ -387,6 +387,7 @@ ${description}`;
       });
     });
   });
+
   describe('Reducers and helper functions', () => {
     describe('"nologrepeat" configuration', () => {
       test('Detects "nologrepeat" when set in #+STARTUP as only option', () => {

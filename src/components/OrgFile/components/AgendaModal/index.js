@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -24,81 +24,57 @@ import {
 } from 'date-fns';
 import format from 'date-fns/format';
 
-class AgendaModal extends PureComponent {
-  constructor(props) {
-    super(props);
+function AgendaModal(props) {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [timeframeType, setTimeframeType] = useState('Week');
+  const [dateDisplayType, setDateDisplayType] = useState('absolute');
 
-    _.bindAll(this, [
-      'handleTimeframeTypeChange',
-      'handleNextDateClick',
-      'handlePreviousDateClick',
-      'handleHeaderClick',
-      'handleToggleDateDisplayType',
-    ]);
-
-    this.state = {
-      selectedDate: new Date(),
-      timeframeType: 'Week',
-      dateDisplayType: 'absolute',
-    };
+  function handleTimeframeTypeChange(timeframeType) {
+    setTimeframeType(timeframeType);
   }
 
-  handleTimeframeTypeChange(timeframeType) {
-    this.setState({ timeframeType });
-  }
-
-  handleNextDateClick() {
-    const { selectedDate, timeframeType } = this.state;
-
+  function handleNextDateClick() {
     switch (timeframeType) {
       case 'Day':
-        this.setState({ selectedDate: addDays(selectedDate, 1) });
+        setSelectedDate(addDays(selectedDate, 1));
         break;
       case 'Week':
-        this.setState({ selectedDate: addWeeks(selectedDate, 1) });
+        setSelectedDate(addWeeks(selectedDate, 1));
         break;
       case 'Month':
-        this.setState({ selectedDate: addMonths(selectedDate, 1) });
+        setSelectedDate(addMonths(selectedDate, 1));
         break;
       default:
         return '';
     }
   }
 
-  handleHeaderClick(headerId) {
-    this.props.onClose();
-    this.props.org.selectHeaderAndOpenParents(headerId);
+  function handleHeaderClick(headerId) {
+    props.onClose();
+    props.org.selectHeaderAndOpenParents(headerId);
   }
 
-  handlePreviousDateClick() {
-    const { selectedDate, timeframeType } = this.state;
-
+  function handlePreviousDateClick() {
     switch (timeframeType) {
       case 'Day':
-        this.setState({ selectedDate: subDays(selectedDate, 1) });
+        setSelectedDate(subDays(selectedDate, 1));
         break;
       case 'Week':
-        this.setState({ selectedDate: subWeeks(selectedDate, 1) });
+        setSelectedDate(subWeeks(selectedDate, 1));
         break;
       case 'Month':
-        this.setState({ selectedDate: subMonths(selectedDate, 1) });
+        setSelectedDate(subMonths(selectedDate, 1));
         break;
       default:
         return '';
     }
   }
 
-  handleToggleDateDisplayType() {
-    const { dateDisplayType } = this.state;
-
-    this.setState({
-      dateDisplayType: dateDisplayType === 'absolute' ? 'relative' : 'absolute',
-    });
+  function handleToggleDateDisplayType() {
+    setDateDisplayType(dateDisplayType === 'absolute' ? 'relative' : 'absolute');
   }
 
-  calculateTimeframeHeader() {
-    const { selectedDate, timeframeType } = this.state;
-
+  function calculateTimeframeHeader() {
     switch (timeframeType) {
       case 'Day':
         return format(selectedDate, 'MMMM do');
@@ -116,73 +92,70 @@ class AgendaModal extends PureComponent {
     }
   }
 
-  render() {
-    const {
-      onClose,
-      headers,
-      todoKeywordSets,
-      agendaDefaultDeadlineDelayValue,
-      agendaDefaultDeadlineDelayUnit,
-    } = this.props;
-    const { timeframeType, selectedDate, dateDisplayType } = this.state;
+  const {
+    onClose,
+    headers,
+    todoKeywordSets,
+    agendaDefaultDeadlineDelayValue,
+    agendaDefaultDeadlineDelayUnit,
+  } = props;
 
-    let dates = [];
-    switch (timeframeType) {
-      case 'Day':
-        dates = [selectedDate];
-        break;
-      case 'Week':
-        const weekStart = startOfWeek(selectedDate);
-        dates = _.range(7).map(daysAfter => addDays(weekStart, daysAfter));
-        break;
-      case 'Month':
-        const monthStart = startOfMonth(selectedDate);
-        dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
-          addDays(monthStart, daysAfter)
-        );
-        break;
-      default:
-    }
-
-    return (
-      <Drawer onClose={onClose}>
-        <h2 className="agenda__title">Agenda</h2>
-
-        <div className="agenda__tab-container">
-          <TabButtons
-            buttons={['Day', 'Week', 'Month']}
-            selectedButton={timeframeType}
-            onSelect={this.handleTimeframeTypeChange}
-            useEqualWidthTabs
-          />
-        </div>
-
-        <div className="agenda__timeframe-header-container">
-          <i className="fas fa-chevron-left fa-lg" onClick={this.handlePreviousDateClick} />
-          <div className="agenda__timeframe-header">{this.calculateTimeframeHeader()}</div>
-          <i className="fas fa-chevron-right fa-lg" onClick={this.handleNextDateClick} />
-        </div>
-
-        <div className="agenda__days-container">
-          {dates.map(date => (
-            <AgendaDay
-              key={format(date, 'yyyy MM dd')}
-              date={date}
-              headers={headers}
-              onHeaderClick={this.handleHeaderClick}
-              todoKeywordSets={todoKeywordSets}
-              dateDisplayType={dateDisplayType}
-              onToggleDateDisplayType={this.handleToggleDateDisplayType}
-              agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
-              agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
-            />
-          ))}
-        </div>
-
-        <br />
-      </Drawer>
-    );
+  let dates = [];
+  switch (timeframeType) {
+    case 'Day':
+      dates = [selectedDate];
+      break;
+    case 'Week':
+      const weekStart = startOfWeek(selectedDate);
+      dates = _.range(7).map(daysAfter => addDays(weekStart, daysAfter));
+      break;
+    case 'Month':
+      const monthStart = startOfMonth(selectedDate);
+      dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
+        addDays(monthStart, daysAfter)
+      );
+      break;
+    default:
   }
+
+  return (
+    <Drawer onClose={onClose} maxSize={true}>
+      <h2 className="agenda__title">Agenda</h2>
+
+      <div className="agenda__tab-container">
+        <TabButtons
+          buttons={['Day', 'Week', 'Month']}
+          selectedButton={timeframeType}
+          onSelect={handleTimeframeTypeChange}
+          useEqualWidthTabs
+        />
+      </div>
+
+      <div className="agenda__timeframe-header-container">
+        <i className="fas fa-chevron-left fa-lg" onClick={handlePreviousDateClick} />
+        <div className="agenda__timeframe-header">{calculateTimeframeHeader()}</div>
+        <i className="fas fa-chevron-right fa-lg" onClick={handleNextDateClick} />
+      </div>
+
+      <div className="agenda__days-container">
+        {dates.map(date => (
+          <AgendaDay
+            key={format(date, 'yyyy MM dd')}
+            date={date}
+            headers={headers}
+            onHeaderClick={handleHeaderClick}
+            todoKeywordSets={todoKeywordSets}
+            dateDisplayType={dateDisplayType}
+            onToggleDateDisplayType={handleToggleDateDisplayType}
+            agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
+            agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
+          />
+        ))}
+      </div>
+
+      <br />
+    </Drawer>
+  );
 }
 
 const mapStateToProps = state => ({

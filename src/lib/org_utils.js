@@ -500,7 +500,7 @@ export const newEmptyTableRowLikeRows = rows =>
       contents.map(cell =>
         cell
           .set('id', generateId())
-          .set('contents', new List())
+          .set('contents', List())
           .set('rawContents', '')
       )
     );
@@ -550,6 +550,12 @@ export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
     .get('completedKeywords')
     .includes(keyword);
 
+export const extractAllOrgTags = headers =>
+  headers
+    .flatMap(h => h.getIn(['titleLine', 'tags']))
+    .toSet()
+    .sort();
+
 export const extractAllOrgProperties = headers =>
   headers
     .map(h => {
@@ -589,3 +595,13 @@ export const createIsTodoKeywordInDoneState = todoKeywordSets => {
 };
 
 export const shouldRenderPlanningItem = x => x.type !== 'TIMESTAMP';
+
+export const getTodoKeywordSetsAsFlattenedArray = state => {
+  return state
+    .get('todoKeywordSets')
+    .flatMap(todoKeywordSet => {
+      return todoKeywordSet.get('keywords');
+    })
+    .toSet()
+    .toJS();
+};

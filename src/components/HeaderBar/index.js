@@ -21,7 +21,6 @@ class HeaderBar extends PureComponent {
 
     _.bindAll(this, [
       'handleChangelogClick',
-      'handleSettingsClick',
       'handleModalPageDoneClick',
       'handleSettingsSubPageBackClick',
       'handleUndoClick',
@@ -193,10 +192,6 @@ class HeaderBar extends PureComponent {
     this.props.base.pushModalPage('changelog');
   }
 
-  handleSettingsClick() {
-    this.props.base.pushModalPage('settings');
-  }
-
   handleModalPageDoneClick() {
     this.props.base.clearModalStack();
   }
@@ -279,11 +274,9 @@ class HeaderBar extends PureComponent {
           )}
 
           {isAuthenticated && (
-            <i
-              className={settingsIconClassName}
-              onClick={this.handleSettingsClick}
-              title="Settings"
-            />
+            <Link to="/settings">
+              <i className={settingsIconClassName} title="Settings" />
+            </Link>
           )}
         </div>
       );
@@ -324,9 +317,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(HeaderBar)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HeaderBar));

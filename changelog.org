@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
+** <2020-01-02 Thu>
+
+*** Added
+    - Place cursor after the TODO keyword when creating a new header
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/193][PR]] 🙏
+    - Highlight verbatim markup
+
+*** Changes
+    - Highlight cookies and cookie percentages according to Solarized
+      color scheme
+
+*** Fixed
+    - Don't update search results when using an invalid search filter
+    - On mobile: Styling of Search / Task List drawer when searching all
+      headlines
+    - On mobile: Ability to scroll Search / Task List
+    - Teach #+TODO parser to understand (..) suffix
+      - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/202][PR]] 🙏
+
+** <2020-01-01 Wed>
+
+*** Added
+    - Support single- and double-quoted strings in the search filter
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/176][PR]] 🙏
+    - Trim whitespace for entered or updated headlines
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/177][PR]] 🙏
+
+*** Fixed
+    - Capture templates in iOS 13.3 are positioned properly
+      - iOS 13 introduced a styling regression when setting focus
+        without user interaction. iOS 13.3 reverts to the way other
+        browsers do it.
+
+*** Changed
+    - Revert "Move HeaderActionDrawer before headline"
+      - As per #188, the changes introduced in #100 didn't fare well
+        with the community. Hence, as a first step to improve UX,
+        we're reverting to the previous state.
+
+** <2019-12-31 Tue>
+
+*** Added
+    - *Searching of headlines/todos with a composable query language*
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/154][PR]] 🙏
+    - Routing for Settings (/settings) and Sample (/sample)
+    - Routing for Agenda and TaskList
+
+*** Changes
+    - The action for capture templates now uses a more idiomatic
+      'plus' icon instead of a 'list' icon
+
 ** <2019-12-28 Sat>
 
 *** Added

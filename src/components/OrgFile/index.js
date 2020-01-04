@@ -16,6 +16,7 @@ import TagsEditorModal from './components/TagsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
 import AgendaModal from './components/AgendaModal';
+import TaskListModal from './components/TaskListModal';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -25,10 +26,15 @@ import { ActionCreators as undoActions } from 'redux-undo';
 
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
-import { timestampWithId, headerWithId, extractAllOrgProperties } from '../../lib/org_utils';
+import {
+  timestampWithId,
+  headerWithId,
+  extractAllOrgTags,
+  extractAllOrgProperties,
+} from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { fromJS, OrderedSet } from 'immutable';
+import { fromJS } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -77,6 +83,17 @@ class OrgFile extends PureComponent {
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
     } else if (!_.isEmpty(path) && path !== loadedPath) {
       this.props.syncBackend.downloadFile(path);
+    }
+
+    this.activatePopup();
+  }
+
+  // If a fragment is set in the URL (by the activatePopup base
+  // action), activate the appropriate pop-up
+  activatePopup() {
+    const urlFragment = window.location.hash.substr(1);
+    if (!_.isEmpty(urlFragment)) {
+      this.props.base.activatePopup(urlFragment);
     }
   }
 
@@ -261,12 +278,11 @@ class OrgFile extends PureComponent {
           />
         );
       case 'tags-editor':
+        const allTags = extractAllOrgTags(headers);
         return !!selectedHeader ? (
           <TagsEditorModal
             header={selectedHeader}
-            allTags={OrderedSet(
-              headers.flatMap(header => header.getIn(['titleLine', 'tags']))
-            ).sort()}
+            allTags={allTags}
             onClose={this.handlePopupClose}
             onChange={this.handleTagsChange}
           />
@@ -317,6 +333,8 @@ class OrgFile extends PureComponent {
         );
       case 'agenda':
         return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
+      case 'task-list':
+        return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
       default:
         return null;
     }

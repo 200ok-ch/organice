@@ -681,7 +681,10 @@ const asStrNoSlashs = regex => {
 };
 
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
-  const titleLine = rawText.split('\n')[0].replace(/^\**\s*/, '');
+  // This function is currently only used for capture templates.
+  // Hence, it's acceptable that it is opinionated on treating
+  // whitespace.
+  const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
   const description = rawText
     .split('\n')
     .slice(1)
@@ -702,13 +705,38 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .set('logBookEntries', logBookEntries);
 };
 
+export const parseTodoKeywordConfig = line => {
+  if (!line.startsWith('#+TODO: ') && !line.startsWith('#+TYP_TODO: ')) {
+    return null;
+  }
+
+  const keywordsString = line.substr(line.indexOf(':') + 2);
+  const keywordTokens = keywordsString.split(/\s/);
+  const keywords = keywordTokens
+    .filter(keyword => keyword !== '|')
+    // Remove fast access TODO states suffix from keyword, because
+    // there's no UI to handle those in organice
+    // https://orgmode.org/manual/Fast-access-to-TODO-states.html#Fast-access-to-TODO-states
+    .map(keyword => keyword.replace(/\(.[!@]?(\/[!@])?\)$/, ''));
+
+  const pipeIndex = keywordTokens.indexOf('|');
+  const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
+
+  return fromJS({
+    keywords,
+    completedKeywords,
+    configLine: line,
+    default: false,
+  });
+};
+
 export const parseOrg = fileContents => {
-  let headers = new List();
+  let headers = List();
   const lines = getLinesFromFileContents(fileContents);
 
-  let todoKeywordSets = new List();
-  let fileConfigLines = new List();
-  let linesBeforeHeadings = new List();
+  let todoKeywordSets = List();
+  let fileConfigLines = List();
+  let linesBeforeHeadings = List();
 
   lines.forEach(line => {
     // A header has to start with at least one consecutive asterisk
@@ -718,22 +746,9 @@ export const parseOrg = fileContents => {
       const title = line.substr(nestingLevel + 1);
       headers = headers.push(newHeaderWithTitle(title, nestingLevel, todoKeywordSets));
     } else if (headers.size === 0) {
-      if (line.startsWith('#+TODO: ') || line.startsWith('#+TYP_TODO: ')) {
-        const keywordsString = line.substr(line.indexOf(':') + 2);
-        const keywordTokens = keywordsString.split(/\s/);
-        const keywords = keywordTokens.filter(keyword => keyword !== '|');
-
-        const pipeIndex = keywordTokens.indexOf('|');
-        const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
-
-        todoKeywordSets = todoKeywordSets.push(
-          fromJS({
-            keywords,
-            completedKeywords,
-            configLine: line,
-            default: false,
-          })
-        );
+      const newKeywordSet = parseTodoKeywordConfig(line);
+      if (newKeywordSet) {
+        todoKeywordSets = todoKeywordSets.push(newKeywordSet);
       } else if (line.startsWith('#+')) {
         fileConfigLines = fileConfigLines.push(line);
       } else {

@@ -3,16 +3,17 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "12.13.1"
+    "node": "^12.13.1"
   },
   "dependencies": {
-    "bowser": "^2.6.1",
+    "bowser": "^2.7.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.6.0",
     "dotenv": "^8.2.0",
     "dropbox": "^4.0.30",
     "immutable": "^3.8.2",
     "lodash": "^4.17.15",
+    "pegjs": "^0.10.0",
     "react": "^16.8.3",
     "react-beautiful-dnd": "^12.0.0",
     "react-collapse": "^4.0.3",
@@ -28,15 +29,15 @@
     "webdav": "^2.10.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "start": "./bin/compile_search_parser.sh && react-scripts start",
+    "build": "./bin/compile_search_parser.sh && react-scripts build",
+    "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
-    "@testing-library/react": "^9.3.0",
     "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "9.4.0",
     "prettier": "^1.16.4",
     "raw.macro": "0.3.0",
     "react-test-renderer": "^16.4.2"

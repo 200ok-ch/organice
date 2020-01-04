@@ -26,6 +26,7 @@ class TitleLine extends PureComponent {
       'handleTextareaRef',
       'handleTitleClick',
       'handleTextareaBlur',
+      'handleTextareaFocus',
       'handleTitleChange',
       'handleTitleFieldClick',
       'handleTodoClick',
@@ -136,6 +137,16 @@ class TitleLine extends PureComponent {
     }, 0);
   }
 
+  handleTextareaFocus(event) {
+    const { header } = this.props;
+    const rawTitle = header.getIn(['titleLine', 'rawTitle']);
+    if (rawTitle === '') {
+      const text = event.target.value;
+      event.target.selectionStart = text.length;
+      event.target.selectionEnd = text.length;
+    }
+  }
+
   handleTitleChange(event) {
     // If the last character typed was a newline at the end, exit edit mode.
     const newTitle = event.target.value;
@@ -235,6 +246,7 @@ class TitleLine extends PureComponent {
               ref={this.handleTextareaRef}
               value={this.state.titleValue}
               onBlur={this.handleTextareaBlur}
+              onFocus={this.handleTextareaFocus}
               onChange={this.handleTitleChange}
               onClick={this.handleTitleFieldClick}
             />

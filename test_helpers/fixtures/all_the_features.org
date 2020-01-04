@@ -99,3 +99,14 @@ qui dolorem eum fugiat quo voluptas nulla pariatur?"
    CLOCK: [2019-11-11 Mon 13:12]--[2019-11-12 Tue 13:12] => 24:00
    CLOCK: [2019-10-13 Sun 12:15]--[2019-10-13 Sun 14:12] =>  1:57
    :END:
+** A messy headline with trailing whitespace                    
+
+organice's parser is build on the premise that it should not produce a
+diff on users Org files. Lets say there's a new user with a big file.
+She has loads of trailing whitespace in headers. She opens the file in
+organice, makes a one byte change and looks at the diff. She should
+only find the one byte change. Or, The one byte change plus trimmed
+whitespace on the headline she made the change to. She shouldn't have
+her file 'messed with', even if we think it's cleaner.
+
+NB: organice is opinionated about helping users, though. Hence, it does trim whitespace when entered in capture templates.

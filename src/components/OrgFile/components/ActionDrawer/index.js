@@ -128,7 +128,7 @@ const ActionDrawer = ({
         {style => (
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
-              iconName={isDisplayingCaptureButtons ? 'times' : 'list-ul'}
+              iconName={isDisplayingCaptureButtons ? 'times' : 'plus'}
               isDisabled={false}
               onClick={handleMainCaptureButtonClick}
               style={mainButtonStyle}
@@ -278,6 +278,7 @@ const ActionDrawer = ({
   };
 
   const handleAgendaClick = () => base.activatePopup('agenda');
+  const handleTaskListClick = () => base.activatePopup('task-list');
 
   return (
     <div className="action-drawer-container nice-scroll">
@@ -308,6 +309,15 @@ const ActionDrawer = ({
             tooltip="Show agenda"
           />
 
+          <ActionButton
+            iconName="tasks"
+            shouldSpinSubIcon={isLoading}
+            isDisabled={false}
+            onClick={handleTaskListClick}
+            style={{ opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1 }}
+            tooltip="Show task list"
+          />
+
           {renderCaptureButtons()}
         </Fragment>
       )}
@@ -322,7 +332,7 @@ const mapStateToProps = (state, props) => {
     isDirty: state.org.present.get('isDirty'),
     isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
-    captureTemplates: state.capture.get('captureTemplates', new List()),
+    captureTemplates: state.capture.get('captureTemplates', List()),
     path: state.org.present.get('path'),
     isLoading: state.base.get('isLoading'),
   };
