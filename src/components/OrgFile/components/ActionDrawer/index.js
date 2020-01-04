@@ -185,7 +185,7 @@ const ActionDrawer = ({
         {style => (
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
-              iconName={isDisplayingSearchButtons ? 'times' : 'search-plus'}
+              iconName={isDisplayingSearchButtons ? 'times' : 'search'}
               isDisabled={false}
               onClick={handleMainSearchButtonClick}
               style={mainButtonStyle}
