@@ -6,6 +6,7 @@ import './stylesheet.css';
 import TitleLine from '../../../TitleLine';
 
 import { dateForTimestamp } from '../../../../../../lib/timestamps';
+import { createIsTodoKeywordInDoneState } from '../../../../../../lib/org_utils';
 
 import { format, isPast, formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
@@ -83,7 +84,9 @@ function TaskListView(props) {
   // on every update of the headers state when not even looking at the
   // Agenda is certainly more inefficient. Hence, we're doing it on
   // every render.
-  function getPlanningItemsAndHeaders({ headers, todoKeyword }) {
+  function getPlanningItemsAndHeaders({ headers, todoKeywordSets }) {
+    const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
+
     return headers
       .filter(header => header.getIn(['titleLine', 'todoKeyword']))
       .map(header => {
@@ -94,11 +97,13 @@ function TaskListView(props) {
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
+        const doneState = isTodoKeywordInDoneState(header.getIn(['titleLine', 'todoKeyword']));
+
         const timeAsSortCriterion = planningItem
           ? getTimeFromPlanningItem(planningItem)
           : Number.MAX_SAFE_INTEGER; // Sort tasks without timestamp last
         const title = header.getIn(['titleLine', 'rawTitle']);
-        return [timeAsSortCriterion, title];
+        return [doneState, timeAsSortCriterion, title];
       });
   }
 }

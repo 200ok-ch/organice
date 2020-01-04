@@ -199,15 +199,19 @@ Once signed in, you can set up capture templates that specify header paths (and 
 ***** Work
 ****** Too!
 
-* Task list with search filter to find any headline
+* Search / Task List
 
-Below, there is a button to open up a task list.
+Below, there is a button to open up a generic search and a task list.
 
-Tap a header in the task list view to jump to it, and tap on the date to switch to a more readable relative date format.
-
-By default, only tasks, i.e. headlines with a TODO keyword are displayed. You can display all headlines by checking the checkbox.
+Tap a header in the view to jump to it.
 
 Using the filter input, you can search for headlines. Specifically, you can search for headline text, TODO keywords, tags, and [[https://orgmode.org/guide/Properties.html][orgmode properties]]. It also supports alternatives, and you can exclude headlines by negating a filter.
+
+** Differences Search and Task List
+
+- In the task list, you can tap on the date to switch to a more readable relative date format.
+- The task list shows only tasks - i.e. headlines with a TODO keyword are displayed.
+  - The tasks will be sorted by state and then date.
 
 ** Examples for the search syntax
 

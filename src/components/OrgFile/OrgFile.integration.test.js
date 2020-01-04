@@ -50,6 +50,11 @@ Some description content
   This is an e-mail foo.bar@baz.org in a line of text.
 
   +Don't+ call me on: +498025123456789.
+** PROJECT Foo
+*** DONE A headline that's done since a loong time
+   SCHEDULED: <2001-01-03 Wed>
+*** DONE A headline that's done a day earlier even
+   SCHEDULED: <2001-01-02 Tue>
 * FINISHED A header with a custom todo sequence in DONE state
 `;
 
@@ -338,6 +343,14 @@ Some description content
           const drawerElem = getByTestId('drawer');
           expect(drawerElem).toHaveTextContent('Task list');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        // Order by state first and then by date. Ergo TODO is before
+        // DONE and yesterday is before today.
+        test('orders tasks for an Org file', () => {
+          fireEvent.click(getByTitle('Show task list'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toMatchSnapshot();
         });
 
         test('search in TaskList filters headers (by default only with todoKeywords)', () => {
