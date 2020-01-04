@@ -7,7 +7,16 @@ All notable changes to this project will be documented in this file.
 
 *** Added
     - Ability to search headlines
-      - It has the same syntax as the search field in the Task List feature
+      - It has the same syntax as the search field in the Task List
+        feature
+
+*** Fixed
+    - Sort order in Task List
+      - Tasks were only ordered by their planning item dates. This
+        implied that tasks that were long DONE would be shown first.
+      - Now, tasks in the Task list are sorted by state and then date.
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/207][PR]] 🙏
+
 
 ** <2020-01-02 Thu>
 
