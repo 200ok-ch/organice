@@ -420,7 +420,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           class="action-drawer__capture-buttons-container"
         >
           <button
-            class="btn btn--circle action-drawer__btn fas fa-lg fa-search-plus"
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
             style="opacity: 1; position: relative; z-index: 1;"
             title="Show Search / Task List"
           />
