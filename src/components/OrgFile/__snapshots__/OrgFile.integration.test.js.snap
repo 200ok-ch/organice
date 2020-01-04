@@ -412,7 +412,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           />
         </div>
         <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-alt"
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-check"
           style="opacity: 1;"
           title="Show agenda"
         />
@@ -420,7 +420,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           class="action-drawer__capture-buttons-container"
         >
           <button
-            class="btn btn--circle action-drawer__btn fas fa-lg fa-search-plus"
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
             style="opacity: 1; position: relative; z-index: 1;"
             title="Show Search / Task List"
           />
