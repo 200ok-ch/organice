@@ -21,7 +21,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
     class="task-list__input-container"
   >
     <input
-      class="textfield task-list__filter-input task-list__filter-input-invalid"
+      class="textfield task-list__filter-input"
       list="task-list__datalist-filter"
       placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
       type="text"

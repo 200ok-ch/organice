@@ -59,7 +59,7 @@ function SearchModal(props) {
           type="text"
           value={searchFilter}
           className={classNames('textfield', 'task-list__filter-input', {
-            'task-list__filter-input-invalid': !searchFilterValid,
+            'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
           })}
           placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
           list="task-list__datalist-filter"
