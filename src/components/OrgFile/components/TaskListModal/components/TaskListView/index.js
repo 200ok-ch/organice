@@ -101,7 +101,6 @@ function TaskListView(props) {
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
-        console.log(todoKeywordSets);
         const doneState = todoKeywordSets
           .flatMap(x => x.get('completedKeywords'))
           .includes(header.getIn(['titleLine', 'todoKeyword']));
@@ -127,7 +126,4 @@ const mapDispatchToProps = dispatch => ({});
 const getTimeFromPlanningItem = planningItem =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
