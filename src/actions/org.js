@@ -483,8 +483,3 @@ export const setSearchFilterInformation = (searchFilter, cursorPosition) => ({
   searchFilter,
   cursorPosition,
 });
-
-export const setSearchAllHeadersFlag = searchAllHeaders => ({
-  type: 'SET_SEARCH_ALL_HEADERS_FLAG',
-  searchAllHeaders,
-});
