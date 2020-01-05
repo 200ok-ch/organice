@@ -6,7 +6,7 @@ import {
   _parsePlanningItems,
   parseMarkupAndCookies,
 } from './parse_org';
-import exportOrg from './export_org';
+import { exportOrg } from './export_org';
 import readFixture from '../../test_helpers/index';
 
 /**
