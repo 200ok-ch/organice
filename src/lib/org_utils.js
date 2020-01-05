@@ -585,6 +585,12 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
     .toSet()
     .sort();
 
+export const hasHeaderContent = header =>
+  !!header.get('rawDescription') ||
+  header.get('planningItems').size !== 0 ||
+  header.get('propertyListItems').size !== 0 ||
+  header.get('logBookEntries').size !== 0;
+
 /**
  * Returns a function which takes a `todoKeyword` which then returns
  * if said `todoKeyword` is in `todoKeywordSets`.
