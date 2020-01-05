@@ -448,11 +448,22 @@ const moveSubtreeRight = (state, action) => {
 
 const refileSubtree = (state, action) => {
   const { sourceHeaderId, targetHeaderId } = action;
+  let headers = state.get('headers');
+  const sourceHeader = headerWithId(headers, sourceHeaderId);
+  const targetHeader = headerWithId(headers, targetHeaderId);
+  const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
+  const targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+  const subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
 
-  // TODO: Actually refile the sourceHeader into the targetHeader
+  // TODO: Move the source to the target
+  // TODO: Indent the nesting according to the target nesting
+  // (including the subheaders of the sourceHeader)
+
   state = updateCookies(state, sourceHeaderId, action);
+  state = updateCookies(state, targetHeaderId, action);
 
-  return openDirectParent(state, sourceHeaderId);
+  // return openDirectParent(state, sourceHeaderId);
+  return state;
 };
 
 const focusHeader = (state, action) => {
