@@ -457,7 +457,22 @@ const refileSubtree = (state, action) => {
 
   // TODO: Move the source to the target
   // TODO: Indent the nesting according to the target nesting
-  // (including the subheaders of the sourceHeader)
+  // for the subheaders of the sourceHeader
+
+  // Delete the sourceHeader from it's current position
+  headers = headers.delete(sourceHeaderIndex);
+  state = state.set('headers', headers);
+
+  // Put the sourceHeader into the right slot after the targetHeader
+  state = state.setIn(['headers', targetHeaderIndex + 1], sourceHeader);
+  // How indented is the targetHeader?
+  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
+  console.log(nestingLevelTarget);
+  // Indent the newly placed sourceheader so that it fits underneath the targetHeader
+  state = state.updateIn(
+    ['headers', targetHeaderIndex + 1, 'nestingLevel'],
+    nestingLevel => nestingLevel + 1
+  );
 
   state = updateCookies(state, sourceHeaderId, action);
   state = updateCookies(state, targetHeaderId, action);
