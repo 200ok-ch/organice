@@ -36,6 +36,30 @@ describe('Test the parser', () => {
       expectType(result).toEqual(['text', 'inline-markup', 'text']);
     });
   });
+
+  describe('Parse an header with empty description', () => {
+    const parseFirstHeaderFromOrg = x => parseOrg(x).toJS().headers[0];
+    test('Parse headline without trailing newline', () => {
+      const result = parseFirstHeaderFromOrg('* headline');
+      expect(result.description).toEqual([]);
+      expect(result.rawDescription).toEqual('');
+    });
+    test('Parse headline with trailing newline but no description', () => {
+      const result = parseFirstHeaderFromOrg('* headline\n');
+      expect(result.description).toEqual([]);
+      expect(result.rawDescription).toEqual('');
+    });
+    test('Parse headline with an empty line of description', () => {
+      const result = parseFirstHeaderFromOrg('* headline\n\n');
+      expect(result.description.length).toEqual(1);
+      expect(result.rawDescription).toEqual('\n');
+    });
+    test('Parse headline directly followed by next headline', () => {
+      const result = parseFirstHeaderFromOrg('* headline\n* headline 2');
+      expect(result.description).toEqual([]);
+      expect(result.rawDescription).toEqual('');
+    });
+  });
 });
 
 describe('Parsing and exporting should not alter the original file', () => {
