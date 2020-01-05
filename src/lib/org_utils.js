@@ -585,6 +585,10 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
     .toSet()
     .sort();
 
+/**
+ * Returns `true` if the header has content, i.e. description.
+ * Subheaders do not count as content.
+ */
 export const hasHeaderContent = header =>
   !!header.get('rawDescription') ||
   header.get('planningItems').size !== 0 ||
