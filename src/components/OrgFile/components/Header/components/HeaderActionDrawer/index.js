@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 
 import './stylesheet.css';
 
-import * as orgActions from '../../../../../../actions/org';
-
 export default class HeaderActionDrawer extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.

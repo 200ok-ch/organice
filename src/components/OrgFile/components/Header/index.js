@@ -50,7 +50,6 @@ class Header extends PureComponent {
       'handleClockInOutClick',
       'handleScheduledClick',
       'handleShareHeaderClick',
-      'handleRefileHeader',
       'handleRefileHeaderRequest',
     ]);
 
@@ -299,12 +298,12 @@ ${header.get('rawDescription')}
     // window.location.href = mailtoURI;
   }
 
-  handleRefileHeaderRequest() {
-    // TODO: Open Search Drawer
-    // TODO: Write Callack for Search Drawer
-    const { header } = this.props;
+  handlePopupClose() {
+    this.props.base.closePopup();
+  }
 
-    console.log(header);
+  handleRefileHeaderRequest() {
+    this.props.base.activatePopup('refile');
   }
 
   render() {

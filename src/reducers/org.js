@@ -446,10 +446,13 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
-export const refileSubtree = (state, action) => {
+const refileSubtree = (state, action) => {
   const { sourceHeaderId, targetHeaderId } = action;
 
-  console.log(sourceHeaderId, targetHeaderId);
+  // TODO: Actually refile the sourceHeader into the targetHeader
+  state = updateCookies(state, sourceHeaderId, action);
+
+  return openDirectParent(state, sourceHeaderId);
 };
 
 const focusHeader = (state, action) => {
@@ -1004,6 +1007,8 @@ export default (state = Map(), action) => {
       return moveSubtreeLeft(state, action);
     case 'MOVE_SUBTREE_RIGHT':
       return moveSubtreeRight(state, action);
+    case 'REFILE_SUBTREE':
+      return refileSubtree(state, action);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
