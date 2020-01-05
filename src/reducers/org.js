@@ -449,33 +449,33 @@ const moveSubtreeRight = (state, action) => {
 const refileSubtree = (state, action) => {
   const { sourceHeaderId, targetHeaderId } = action;
   let headers = state.get('headers');
-  const sourceHeader = headerWithId(headers, sourceHeaderId);
+  let sourceHeader = headerWithId(headers, sourceHeaderId);
   const targetHeader = headerWithId(headers, targetHeaderId);
   const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
   const targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
-  const subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
+  let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
 
-  // TODO: Move the source to the target
-  // TODO: Indent the nesting according to the target nesting
-  // for the subheaders of the sourceHeader
+  const nestingLevelSource = state.getIn(['headers', sourceHeaderIndex, 'nestingLevel']);
+  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
 
-  // Delete the sourceHeader from it's current position
-  headers = headers.delete(sourceHeaderIndex);
-  state = state.set('headers', headers);
+  // TODO: Move the sourceHeaders subheaders to the target
+  // TODO: Indent the nesting for the subheaders of the sourceHeader
+
+  // Indent the newly placed sourceheader so that it fits underneath the targetHeader
+  sourceHeader = sourceHeader.set('nestingLevel', nestingLevelTarget + 1);
 
   // Put the sourceHeader into the right slot after the targetHeader
-  state = state.setIn(['headers', targetHeaderIndex + 1], sourceHeader);
-  // How indented is the targetHeader?
-  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
-  console.log(nestingLevelTarget);
-  // Indent the newly placed sourceheader so that it fits underneath the targetHeader
-  state = state.updateIn(
-    ['headers', targetHeaderIndex + 1, 'nestingLevel'],
-    nestingLevel => nestingLevel + 1
-  );
+  headers = headers.delete(sourceHeaderIndex).insert(targetHeaderIndex, sourceHeader);
+
+  // Put the subheaders of the sourceHeader right after
+  // subheadersOfSourceHeader.forEach((header, index) => {
+  //   state = state.setIn(['headers', targetHeaderIndex + index + 2, 'nestingLevel'], header);
+  // });
 
   state = updateCookies(state, sourceHeaderId, action);
   state = updateCookies(state, targetHeaderId, action);
+
+  state = state.set('headers', headers);
 
   // return openDirectParent(state, sourceHeaderId);
   return state;
