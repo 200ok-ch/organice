@@ -447,37 +447,73 @@ const moveSubtreeRight = (state, action) => {
 };
 
 const refileSubtree = (state, action) => {
+  /**
+   * Move an item in an immutablejs List from one index to another.
+   * @param {list} List
+   * @param {integer} fromIndex
+   * @param {integer} toIndex
+   * @param {any} integer
+   */
+  function moveItem({ list, fromIndex, toIndex, item }) {
+    const targetItem = list.get(toIndex);
+    list = list.delete(fromIndex);
+    const targetIndex = list.indexOf(targetItem);
+    return list.insert(targetIndex + 1, item);
+  }
+
   const { sourceHeaderId, targetHeaderId } = action;
   let headers = state.get('headers');
   let sourceHeader = headerWithId(headers, sourceHeaderId);
   const targetHeader = headerWithId(headers, targetHeaderId);
   const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
   const targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+
+  // Do not attempt to move a header to itself
+  if (sourceHeaderIndex == targetHeaderIndex) return state;
+
   let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
 
   const nestingLevelSource = state.getIn(['headers', sourceHeaderIndex, 'nestingLevel']);
   const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
 
-  // TODO: Move the sourceHeaders subheaders to the target
-  // TODO: Indent the nesting for the subheaders of the sourceHeader
-
   // Indent the newly placed sourceheader so that it fits underneath the targetHeader
   sourceHeader = sourceHeader.set('nestingLevel', nestingLevelTarget + 1);
 
   // Put the sourceHeader into the right slot after the targetHeader
-  headers = headers.delete(sourceHeaderIndex).insert(targetHeaderIndex, sourceHeader);
+  headers = moveItem({
+    list: headers,
+    fromIndex: sourceHeaderIndex,
+    toIndex: targetHeaderIndex,
+    item: sourceHeader,
+  });
 
   // Put the subheaders of the sourceHeader right after
-  // subheadersOfSourceHeader.forEach((header, index) => {
-  //   state = state.setIn(['headers', targetHeaderIndex + index + 2, 'nestingLevel'], header);
-  // });
+  subheadersOfSourceHeader.forEach((subheader, index) => {
+    subheader = subheader.set(
+      'nestingLevel',
+      // target
+      // 1
+      //   source
+      //   2 (1)
+      //     subheader
+      //      3 (2)
+      //       subheader
+      //       4 (3)
+      subheader.get('nestingLevel') - nestingLevelSource + nestingLevelTarget + 1
+    );
+    headers = moveItem({
+      list: headers,
+      fromIndex: indexOfHeaderWithId(headers, subheader.get('id')),
+      toIndex: targetHeaderIndex + index + 1,
+      item: subheader,
+    });
+  });
 
   state = updateCookies(state, sourceHeaderId, action);
   state = updateCookies(state, targetHeaderId, action);
 
   state = state.set('headers', headers);
 
-  // return openDirectParent(state, sourceHeaderId);
   return state;
 };
 
