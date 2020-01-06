@@ -466,7 +466,7 @@ const refileSubtree = (state, action) => {
   let sourceHeader = headerWithId(headers, sourceHeaderId);
   const targetHeader = headerWithId(headers, targetHeaderId);
   const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
-  const targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+  let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
 
   // Do not attempt to move a header to itself
   if (sourceHeaderIndex == targetHeaderIndex) return state;
@@ -501,10 +501,15 @@ const refileSubtree = (state, action) => {
       //       4 (3)
       subheader.get('nestingLevel') - nestingLevelSource + nestingLevelTarget + 1
     );
+    const fromIndex = indexOfHeaderWithId(headers, subheader.get('id'));
+
+    targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+    const toIndex = targetHeaderIndex + index + 1;
+
     headers = moveItem({
       list: headers,
-      fromIndex: indexOfHeaderWithId(headers, subheader.get('id')),
-      toIndex: targetHeaderIndex + index + 1,
+      fromIndex,
+      toIndex,
       item: subheader,
     });
   });
