@@ -59,6 +59,8 @@ class OrgFile extends PureComponent {
       'handleContainerRef',
       'handleCapture',
       'handlePopupClose',
+      'handleSearchPopupClose',
+      'handleRefilePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
@@ -201,6 +203,17 @@ class OrgFile extends PureComponent {
     this.props.base.closePopup();
   }
 
+  handleSearchPopupClose(headerId) {
+    this.props.base.closePopup();
+    this.props.org.selectHeaderAndOpenParents(headerId);
+  }
+
+  handleRefilePopupClose(targetHeaderId) {
+    const { selectedHeaderId } = this.props;
+    this.props.base.closePopup();
+    this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
+  }
+
   handleSyncConfirmationPull() {
     this.props.org.sync({ forceAction: 'pull' });
     this.props.base.closePopup();
@@ -337,7 +350,9 @@ class OrgFile extends PureComponent {
       case 'task-list':
         return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
       case 'search':
-        return <SearchModal onClose={this.handlePopupClose} headers={headers} />;
+        return <SearchModal onClose={this.handleSearchPopupClose} headers={headers} />;
+      case 'refile':
+        return <SearchModal onClose={this.handleRefilePopupClose} headers={headers} />;
       default:
         return null;
     }

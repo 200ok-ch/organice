@@ -446,6 +446,81 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
+const refileSubtree = (state, action) => {
+  /**
+   * Move an item in an immutablejs List from one index to another.
+   * @param {list} List
+   * @param {integer} fromIndex
+   * @param {integer} toIndex
+   * @param {any} integer
+   */
+  function moveItem({ list, fromIndex, toIndex, item }) {
+    const targetItem = list.get(toIndex);
+    list = list.delete(fromIndex);
+    const targetIndex = list.indexOf(targetItem);
+    return list.insert(targetIndex + 1, item);
+  }
+
+  const { sourceHeaderId, targetHeaderId } = action;
+  let headers = state.get('headers');
+  let sourceHeader = headerWithId(headers, sourceHeaderId);
+  const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
+  let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+
+  // Do not attempt to move a header to itself
+  if (sourceHeaderIndex === targetHeaderIndex) return state;
+
+  let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
+
+  const nestingLevelSource = state.getIn(['headers', sourceHeaderIndex, 'nestingLevel']);
+  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
+
+  // Indent the newly placed sourceheader so that it fits underneath the targetHeader
+  sourceHeader = sourceHeader.set('nestingLevel', nestingLevelTarget + 1);
+
+  // Put the sourceHeader into the right slot after the targetHeader
+  headers = moveItem({
+    list: headers,
+    fromIndex: sourceHeaderIndex,
+    toIndex: targetHeaderIndex,
+    item: sourceHeader,
+  });
+
+  // Put the subheaders of the sourceHeader right after
+  subheadersOfSourceHeader.forEach((subheader, index) => {
+    subheader = subheader.set(
+      'nestingLevel',
+      // target
+      // 1
+      //   source
+      //   2 (1)
+      //     subheader
+      //      3 (2)
+      //       subheader
+      //       4 (3)
+      subheader.get('nestingLevel') - nestingLevelSource + nestingLevelTarget + 1
+    );
+    const fromIndex = indexOfHeaderWithId(headers, subheader.get('id'));
+
+    targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+    const toIndex = targetHeaderIndex + index + 1;
+
+    headers = moveItem({
+      list: headers,
+      fromIndex,
+      toIndex,
+      item: subheader,
+    });
+  });
+
+  state = updateCookies(state, sourceHeaderId, action);
+  state = updateCookies(state, targetHeaderId, action);
+
+  state = state.set('headers', headers);
+
+  return state;
+};
+
 const focusHeader = (state, action) => {
   return state.set('focusedHeaderId', action.headerId);
 };
@@ -998,6 +1073,8 @@ export default (state = Map(), action) => {
       return moveSubtreeLeft(state, action);
     case 'MOVE_SUBTREE_RIGHT':
       return moveSubtreeRight(state, action);
+    case 'REFILE_SUBTREE':
+      return refileSubtree(state, action);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':

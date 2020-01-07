@@ -50,6 +50,7 @@ class Header extends PureComponent {
       'handleClockInOutClick',
       'handleScheduledClick',
       'handleShareHeaderClick',
+      'handleRefileHeaderRequest',
     ]);
 
     this.state = {
@@ -297,6 +298,14 @@ ${header.get('rawDescription')}
     // window.location.href = mailtoURI;
   }
 
+  handlePopupClose() {
+    this.props.base.closePopup();
+  }
+
+  handleRefileHeaderRequest() {
+    this.props.base.activatePopup('refile');
+  }
+
   render() {
     const {
       header,
@@ -487,6 +496,7 @@ ${header.get('rawDescription')}
                   onScheduledClick={this.handleScheduledClick}
                   hasActiveClock={hasActiveClock}
                   onShareHeader={this.handleShareHeaderClick}
+                  onRefileHeader={this.handleRefileHeaderRequest}
                 />
               </Collapse>
 

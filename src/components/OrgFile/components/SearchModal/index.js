@@ -19,8 +19,7 @@ function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
   function handleHeaderClick(headerId) {
-    props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.onClose(headerId);
   }
 
   function handleToggleDateDisplayType() {
