@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+** <2020-01-07 Tue>
+
+*** Added
+    - *Refile*
+      - When reviewing the captured data, you may want to refile or to
+        copy some of the entries into a different list, for example
+        into a project.
+
 ** <2020-01-04 Sat>
 
 *** Added
