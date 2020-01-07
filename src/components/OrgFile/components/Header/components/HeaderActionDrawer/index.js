@@ -57,7 +57,11 @@ export default class HeaderActionDrawer extends PureComponent {
             title: 'Modify tags',
           })}
 
-          {this.iconWithFFClickCatcher('fas fa-list fa-lg', onPropertiesClick)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-list fa-lg',
+            onClick: onPropertiesClick,
+            title: 'Modify properties',
+          })}
 
           {isFocused
             ? this.iconWithFFClickCatcher({
@@ -114,6 +118,13 @@ export default class HeaderActionDrawer extends PureComponent {
             className: 'fas fa-file-export fa-lg',
             onClick: onRefileHeader,
             title: 'Refile this header to another header',
+          })}
+
+          {/* Placeholder to align the other icons */}
+          {this.iconWithFFClickCatcher({
+            className: '',
+            onClick: () => {},
+            title: '',
           })}
         </div>
       </div>
