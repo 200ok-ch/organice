@@ -63,12 +63,10 @@ export default class HeaderActionDrawer extends PureComponent {
             Scheduled
           </div>
 
-          <div
-            className="header-action-drawer__deadline-scheduled-button"
-            onClick={onClockInOutClick}
-          >
-            Clock {hasActiveClock ? 'Out' : 'In'}
-          </div>
+          {hasActiveClock
+            ? this.iconWithFFClickCatcher('fas fa-hourglass-end fa-lg', onClockInOutClick)
+            : this.iconWithFFClickCatcher('fas fa-hourglass-start fa-lg', onClockInOutClick)}
+
           {this.iconWithFFClickCatcher('fas fa-file-export fa-lg', onRefileHeader)}
         </div>
       </div>
