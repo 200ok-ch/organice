@@ -464,12 +464,11 @@ const refileSubtree = (state, action) => {
   const { sourceHeaderId, targetHeaderId } = action;
   let headers = state.get('headers');
   let sourceHeader = headerWithId(headers, sourceHeaderId);
-  const targetHeader = headerWithId(headers, targetHeaderId);
   const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
   let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
 
   // Do not attempt to move a header to itself
-  if (sourceHeaderIndex == targetHeaderIndex) return state;
+  if (sourceHeaderIndex === targetHeaderIndex) return state;
 
   let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
 
