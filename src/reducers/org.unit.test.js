@@ -1,38 +1,16 @@
 import { Map, List, fromJS } from 'immutable';
+
 import reducer from './org';
-import { readInitialState } from '../util/settings_persister';
-import { parseOrg } from '../lib/parse_org';
 import * as types from '../actions/org';
+import { parseOrg } from '../lib/parse_org';
+import { readInitialState } from '../util/settings_persister';
+
+import readFixture from '../../test_helpers/index';
 
 describe('org reducer', () => {
   let state;
 
-  const testOrgFile = `
-#+TODO: TODO | DONE
-#+TODO: START(s!/!) | FINISHED(f@)
-
-* Top level header
-** A nested header
-** TODO A todo item with schedule and deadline
-   DEADLINE: <2018-10-05 Fri> SCHEDULED: <2019-09-19 Thu>
-* Another top level header
-Some description content
-* A header with tags                                              :tag1:tag2:
-* A header with [[https://organice.200ok.ch][a link]]
-* A header with a URL, mail address and phone number as content
-
-  This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.
-
-  This is an e-mail foo.bar@baz.org in a line of text.
-
-  +Don't+ call me on: +498025123456789.
-** PROJECT Foo
-*** DONE A headline that's done since a loong time
-   SCHEDULED: <2001-01-03 Wed>
-*** DONE A headline that's done a day earlier even
-   SCHEDULED: <2001-01-02 Tue>
-* FINISHED A header with a custom todo sequence in DONE state
-`;
+  const testOrgFile = readFixture('main_test_file');
 
   beforeEach(() => {
     state = fromJS(readInitialState());
@@ -83,6 +61,8 @@ Some description content
       types.refileSubtree(sourceHeaderId, targetHeaderId)
     );
 
+    // PROJECT Foo is now beneath "A nested header" and is
+    // appropriately indented.
     expect(extractTitleAndNesting(newState.get('headers'))).toEqual([
       ['Top level header', 1],
       ['A nested header', 2],
