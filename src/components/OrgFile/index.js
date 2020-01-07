@@ -233,10 +233,7 @@ class OrgFile extends PureComponent {
   }
 
   handlePropertyListItemsChange(newPropertyListItems) {
-    this.props.org.updatePropertyListItems(
-      this.props.activePopupData.get('headerId'),
-      newPropertyListItems
-    );
+    this.props.org.updatePropertyListItems(this.props.selectedHeaderId, newPropertyListItems);
   }
 
   handleTimestampChange(popupData) {
@@ -335,16 +332,14 @@ class OrgFile extends PureComponent {
 
       case 'property-list-editor':
         const allOrgProperties = extractAllOrgProperties(headers);
-        return (
+        return selectedHeader ? (
           <PropertyListEditorModal
             onClose={this.handlePopupClose}
             onChange={this.handlePropertyListItemsChange}
-            propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
-              'propertyListItems'
-            )}
+            propertyListItems={selectedHeader.get('propertyListItems')}
             allOrgProperties={allOrgProperties}
           />
-        );
+        ) : null;
       case 'agenda':
         return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
       case 'task-list':

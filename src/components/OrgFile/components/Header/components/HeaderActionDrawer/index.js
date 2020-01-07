@@ -19,6 +19,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onEnterTitleEditMode,
       onEnterDescriptionEditMode,
       onTagsClick,
+      onPropertiesClick,
       isFocused,
       onFocus,
       onUnfocus,
@@ -39,6 +40,8 @@ export default class HeaderActionDrawer extends PureComponent {
           {this.iconWithFFClickCatcher('fas fa-edit fa-lg', onEnterDescriptionEditMode)}
 
           {this.iconWithFFClickCatcher('fas fa-tags fa-lg', onTagsClick)}
+
+          {this.iconWithFFClickCatcher('fas fa-list fa-lg', onPropertiesClick)}
 
           {isFocused
             ? this.iconWithFFClickCatcher('fas fa-expand fa-lg', onUnfocus)
