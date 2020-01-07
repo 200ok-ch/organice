@@ -205,7 +205,7 @@ class Header extends PureComponent {
   }
 
   handleShowPropertyListEditorModal() {
-    this.props.base.activatePopup('property-list-editor-by-button');
+    this.props.base.activatePopup('property-list-editor');
   }
 
   handleFocus() {
