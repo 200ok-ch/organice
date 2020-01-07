@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
       - When reviewing the captured data, you may want to refile or to
         copy some of the entries into a different list, for example
         into a project.
+*** Changed
+    - All HeaderActionDrawer actions have icons. The icons are
+      documented in sample.org and have a mouseover title.
 
 ** <2020-01-04 Sat>
 
