@@ -5,9 +5,13 @@ import './stylesheet.css';
 export default class HeaderActionDrawer extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.
-  iconWithFFClickCatcher(className, onClick, testId = '') {
+  iconWithFFClickCatcher({ className, onClick, title, testId = '' }) {
     return (
-      <div onClick={onClick} className="header-action-drawer__ff-click-catcher-container">
+      <div
+        title={title}
+        onClick={onClick}
+        className="header-action-drawer__ff-click-catcher-container"
+      >
         <div className="header-action-drawer__ff-click-catcher" />
         <i className={className} data-testid={testId} />
       </div>
@@ -34,48 +38,80 @@ export default class HeaderActionDrawer extends PureComponent {
     return (
       <div className="header-action-drawer-container">
         <div className="header-action-drawer__row">
-          {this.iconWithFFClickCatcher('fas fa-pencil-alt fa-lg', onEnterTitleEditMode)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-pencil-alt fa-lg',
+            onClick: onEnterTitleEditMode,
+            title: 'Edit header title',
+          })}
 
-          {this.iconWithFFClickCatcher('fas fa-edit fa-lg', onEnterDescriptionEditMode)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-edit fa-lg',
+            onClick: onEnterDescriptionEditMode,
+            title: 'Edit header description',
+          })}
 
-          {this.iconWithFFClickCatcher('fas fa-tags fa-lg', onTagsClick)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-tags fa-lg',
+            onClick: onTagsClick,
+            title: 'Modify tags',
+          })}
 
           {isFocused
-            ? this.iconWithFFClickCatcher('fas fa-expand fa-lg', onUnfocus)
-            : this.iconWithFFClickCatcher('fas fa-compress fa-lg', onFocus)}
+            ? this.iconWithFFClickCatcher({
+                className: 'fas fa-expand fa-lg',
+                onClick: onUnfocus,
+                title: 'Focus on this header',
+              })
+            : this.iconWithFFClickCatcher({
+                className: 'fas fa-compress fa-lg',
+                onClick: onFocus,
+                title: 'Unfocus from this header',
+              })}
 
-          {this.iconWithFFClickCatcher('fas fa-plus fa-lg', onAddNewHeader, 'header-action-plus')}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-plus fa-lg',
+            onClick: onAddNewHeader,
+            testId: 'header-action-plus',
+            title: 'Create new header below',
+          })}
         </div>
 
         <div className="header-action-drawer__row">
-          {this.iconWithFFClickCatcher('fas fa-envelope fa-lg', onShareHeader, 'share')}
-          <div
-            className="header-action-drawer__deadline-scheduled-button"
-            onClick={onDeadlineClick}
-          >
-            Deadline
-          </div>
-
-          <div
-            className="header-action-drawer__deadline-scheduled-button"
-            onClick={onScheduledClick}
-          >
-            Scheduled
-          </div>
-
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-envelope fa-lg',
+            onClick: onShareHeader,
+            testId: 'share',
+            title: 'Share this header via email',
+          })}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-calendar-check fa-lg',
+            onClick: onDeadlineClick,
+            title: 'Set deadline datetime',
+          })}
+          {this.iconWithFFClickCatcher({
+            className: 'far fa-calendar-check fa-lg',
+            onClick: onScheduledClick,
+            title: 'Set scheduled datetime',
+          })}
           {hasActiveClock
-            ? this.iconWithFFClickCatcher(
-                'fas fa-hourglass-end fa-lg',
-                onClockInOutClick,
-                'org-clock-out'
-              )
-            : this.iconWithFFClickCatcher(
-                'fas fa-hourglass-start fa-lg',
-                onClockInOutClick,
-                'org-clock-in'
-              )}
+            ? this.iconWithFFClickCatcher({
+                className: 'fas fa-hourglass-end fa-lg',
+                onClick: onClockInOutClick,
+                testId: 'org-clock-out',
+                title: 'Clock out (Stop the clock)',
+              })
+            : this.iconWithFFClickCatcher({
+                className: 'fas fa-hourglass-start fa-lg',
+                onClick: onClockInOutClick,
+                testId: 'org-clock-in',
+                title: 'Clock in (Start the clock)',
+              })}
 
-          {this.iconWithFFClickCatcher('fas fa-file-export fa-lg', onRefileHeader)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-file-export fa-lg',
+            onClick: onRefileHeader,
+            title: 'Refile this header to another header',
+          })}
         </div>
       </div>
     );
