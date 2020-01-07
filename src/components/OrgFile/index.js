@@ -331,13 +331,13 @@ class OrgFile extends PureComponent {
         );
 
       case 'property-list-editor':
-        const allOrgProperties1 = extractAllOrgProperties(headers);
+        const allOrgProperties = extractAllOrgProperties(headers);
         return selectedHeader ? (
           <PropertyListEditorModal
             onClose={this.handlePopupClose}
             onChange={this.handlePropertyListItemsChange}
             propertyListItems={selectedHeader.get('propertyListItems')}
-            allOrgProperties={allOrgProperties1}
+            allOrgProperties={allOrgProperties}
           />
         ) : null;
       case 'agenda':
