@@ -209,9 +209,13 @@ class OrgFile extends PureComponent {
   }
 
   handleRefilePopupClose(targetHeaderId) {
-    const { selectedHeaderId } = this.props;
     this.props.base.closePopup();
-    this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
+    // When the user closes the drawer without selecting a header, do
+    // not trigger refiling.
+    if (targetHeaderId) {
+      const { selectedHeaderId } = this.props;
+      this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
+    }
   }
 
   handleSyncConfirmationPull() {
