@@ -36,36 +36,25 @@ export default class HeaderActionDrawer extends PureComponent {
         <div className="header-action-drawer__row">
           {this.iconWithFFClickCatcher('fas fa-pencil-alt fa-lg', onEnterTitleEditMode)}
 
-          <span className="header-action-drawer__separator" />
-
           {this.iconWithFFClickCatcher('fas fa-edit fa-lg', onEnterDescriptionEditMode)}
 
-          <span className="header-action-drawer__separator" />
-
           {this.iconWithFFClickCatcher('fas fa-tags fa-lg', onTagsClick)}
-
-          <span className="header-action-drawer__separator" />
 
           {isFocused
             ? this.iconWithFFClickCatcher('fas fa-expand fa-lg', onUnfocus)
             : this.iconWithFFClickCatcher('fas fa-compress fa-lg', onFocus)}
-          <span className="header-action-drawer__separator" />
 
           {this.iconWithFFClickCatcher('fas fa-plus fa-lg', onAddNewHeader, 'header-action-plus')}
         </div>
+
         <div className="header-action-drawer__row">
-          {this.iconWithFFClickCatcher('fas fa-file-export fa-lg', onRefileHeader)}
-
-          <span className="header-action-drawer__separator" />
-
+          {this.iconWithFFClickCatcher('fas fa-envelope fa-lg', onShareHeader, 'share')}
           <div
             className="header-action-drawer__deadline-scheduled-button"
             onClick={onDeadlineClick}
           >
             Deadline
           </div>
-
-          <span className="header-action-drawer__separator" />
 
           <div
             className="header-action-drawer__deadline-scheduled-button"
@@ -74,18 +63,28 @@ export default class HeaderActionDrawer extends PureComponent {
             Scheduled
           </div>
 
-          <span className="header-action-drawer__separator" />
           <div
             className="header-action-drawer__deadline-scheduled-button"
             onClick={onClockInOutClick}
           >
             Clock {hasActiveClock ? 'Out' : 'In'}
           </div>
-          <span className="header-action-drawer__separator" />
-
-          {this.iconWithFFClickCatcher('fas fa-envelope fa-lg', onShareHeader, 'share')}
+          {this.iconWithFFClickCatcher('fas fa-file-export fa-lg', onRefileHeader)}
         </div>
       </div>
     );
   }
 }
+
+// edit title
+// edit description
+// plus
+
+// tags
+// focus
+// mail
+// export
+
+// deadline
+// scheduled
+// clock-in
