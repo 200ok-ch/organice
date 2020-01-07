@@ -64,8 +64,16 @@ export default class HeaderActionDrawer extends PureComponent {
           </div>
 
           {hasActiveClock
-            ? this.iconWithFFClickCatcher('fas fa-hourglass-end fa-lg', onClockInOutClick)
-            : this.iconWithFFClickCatcher('fas fa-hourglass-start fa-lg', onClockInOutClick)}
+            ? this.iconWithFFClickCatcher(
+                'fas fa-hourglass-end fa-lg',
+                onClockInOutClick,
+                'org-clock-out'
+              )
+            : this.iconWithFFClickCatcher(
+                'fas fa-hourglass-start fa-lg',
+                onClockInOutClick,
+                'org-clock-in'
+              )}
 
           {this.iconWithFFClickCatcher('fas fa-file-export fa-lg', onRefileHeader)}
         </div>
@@ -73,16 +81,3 @@ export default class HeaderActionDrawer extends PureComponent {
     );
   }
 }
-
-// edit title
-// edit description
-// plus
-
-// tags
-// focus
-// mail
-// export
-
-// deadline
-// scheduled
-// clock-in

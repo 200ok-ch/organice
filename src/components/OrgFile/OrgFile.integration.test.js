@@ -147,20 +147,20 @@ describe('Render all views', () => {
 
         fireEvent.click(getByText('Top level header'));
 
-        expect(queryByText('Clock In')).toBeTruthy();
-        expect(queryByText('Clock Out')).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-out']")).toBeFalsy();
         expect(queryByText(':LOGBOOK:...')).toBeFalsy();
 
-        fireEvent.click(getByText('Clock In'));
+        fireEvent.click(container.querySelector("[data-testid='org-clock-in']"));
 
-        expect(queryByText('Clock In')).toBeFalsy();
-        expect(queryByText('Clock Out')).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-out']")).toBeTruthy();
         expect(queryByText(':LOGBOOK:...')).toBeTruthy();
 
-        fireEvent.click(getByText('Clock Out'));
+        fireEvent.click(container.querySelector("[data-testid='org-clock-out']"));
 
-        expect(queryByText('Clock In')).toBeTruthy();
-        expect(queryByText('Clock Out')).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-out']")).toBeFalsy();
         expect(queryByText(':LOGBOOK:...')).toBeTruthy();
 
         fireEvent.click(getByText(':LOGBOOK:...'));
