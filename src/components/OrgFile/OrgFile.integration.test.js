@@ -94,13 +94,11 @@ describe('Render all views', () => {
 
     describe('Actions within an Org file', () => {
       test('Can select a header in an org file', () => {
-        expect(queryByText('Scheduled')).toBeFalsy();
-        expect(queryByText('Deadline')).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeFalsy();
 
         fireEvent.click(getByText('Top level header'));
 
-        expect(queryByText('Scheduled')).toBeTruthy();
-        expect(queryByText('Deadline')).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeTruthy();
       });
 
       // Org Mode has keywords as workflow states and can cycle through
@@ -373,11 +371,12 @@ describe('Render all views', () => {
         });
 
         test('Clicking a TODO within the agenda highlights it in the main view', () => {
+          expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
           fireEvent.click(getByTitle('Show agenda'));
+          expect(queryByText('Agenda')).toBeTruthy();
           fireEvent.click(queryAllByText('A todo item with schedule and deadline')[0]);
           expect(queryByText('Agenda')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeTruthy();
-          expect(queryByText('Scheduled')).toBeTruthy();
         });
 
         test('Clicking the Timestamp in a TODO within the agenda toggles from the date to the time', () => {
