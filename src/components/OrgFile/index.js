@@ -17,6 +17,7 @@ import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
 import AgendaModal from './components/AgendaModal';
 import TaskListModal from './components/TaskListModal';
+import SearchModal from './components/SearchModal';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -58,6 +59,8 @@ class OrgFile extends PureComponent {
       'handleContainerRef',
       'handleCapture',
       'handlePopupClose',
+      'handleSearchPopupClose',
+      'handleRefilePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
@@ -198,6 +201,17 @@ class OrgFile extends PureComponent {
 
   handlePopupClose() {
     this.props.base.closePopup();
+  }
+
+  handleSearchPopupClose(headerId) {
+    this.props.base.closePopup();
+    this.props.org.selectHeaderAndOpenParents(headerId);
+  }
+
+  handleRefilePopupClose(targetHeaderId) {
+    const { selectedHeaderId } = this.props;
+    this.props.base.closePopup();
+    this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
   }
 
   handleSyncConfirmationPull() {
@@ -345,6 +359,10 @@ class OrgFile extends PureComponent {
         return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
       case 'task-list':
         return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
+      case 'search':
+        return <SearchModal onClose={this.handleSearchPopupClose} headers={headers} />;
+      case 'refile':
+        return <SearchModal onClose={this.handleRefilePopupClose} headers={headers} />;
       default:
         return null;
     }

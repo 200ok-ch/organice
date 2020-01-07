@@ -8,7 +8,7 @@ const indexOfTemplateWithId = (templates, templateId) =>
 
 const addNewEmptyCaptureTemplate = state => {
   if (!state.get('captureTemplates')) {
-    state = state.set('captureTemplates', new List());
+    state = state.set('captureTemplates', List());
   }
 
   return state.update('captureTemplates', templates =>
@@ -85,7 +85,7 @@ const reorderCaptureTemplate = (state, action) =>
     templates.splice(action.fromIndex, 1).splice(action.toIndex, 0, templates.get(action.fromIndex))
   );
 
-export default (state = new Map(), action) => {
+export default (state = Map(), action) => {
   switch (action.type) {
     case 'ADD_NEW_EMPTY_CAPTURE_TEMPLATE':
       return addNewEmptyCaptureTemplate(state, action);

@@ -8,6 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 import OrgFile from './';
 import HeaderBar from '../HeaderBar';
+import readFixture from '../../../test_helpers/index';
 
 import rootReducer from '../../reducers/';
 
@@ -31,39 +32,19 @@ describe('Render all views', () => {
     };
   });
 
-  const testOrgFile = `
-#+TODO: TODO | DONE
-#+TODO: START | FINISHED
-
-* Top level header
-** A nested header
-** TODO A todo item with schedule and deadline
-   DEADLINE: <2018-10-05 Fri> SCHEDULED: <2019-09-19 Thu>
-* Another top level header
-Some description content
-* A header with tags                                              :tag1:tag2:
-* A header with [[https://organice.200ok.ch][a link]]
-* A header with a URL, mail address and phone number as content
-
-  This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.
-
-  This is an e-mail foo.bar@baz.org in a line of text.
-
-  +Don't+ call me on: +498025123456789.
-* FINISHED A header with a custom todo sequence in DONE state
-`;
+  const testOrgFile = readFixture('main_test_file');
 
   let store;
 
   beforeEach(() => {
-    let capture = new Map();
+    let capture = Map();
     capture = capture.set('captureTemplates', []);
     store = createStore(
       rootReducer,
       {
         org: {
           past: [],
-          present: new Map(),
+          present: Map(),
           future: [],
         },
         syncBackend: Map({
@@ -298,17 +279,54 @@ Some description content
         });
       });
 
+      describe('Search', () => {
+        test('renders Search for an Org file', () => {
+          expect(queryByText('Search')).toBeFalsy();
+          expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
+
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toHaveTextContent('Search');
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        test('searches in all headers', () => {
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          // All kinds of headers are visible
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).toHaveTextContent('Another top level header');
+
+          // Filter down to headers with tag :tag1:
+          fireEvent.change(input, { target: { value: ':tag1' } });
+
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).not.toHaveTextContent('Another top level header');
+        });
+      });
+
       describe('TaskList', () => {
         test('renders TaskList for an Org file', () => {
           expect(queryByText('Task list')).toBeFalsy();
-          expect(queryByText('Search all headlines')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
 
           fireEvent.click(getByTitle('Show task list'));
           const drawerElem = getByTestId('drawer');
           expect(drawerElem).toHaveTextContent('Task list');
-          expect(drawerElem).toHaveTextContent('Search all headlines');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        // Order by state first and then by date. Ergo TODO is before
+        // DONE and yesterday is before today.
+        test('orders tasks for an Org file', () => {
+          fireEvent.click(getByTitle('Show task list'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toMatchSnapshot();
         });
 
         test('search in TaskList filters headers (by default only with todoKeywords)', () => {
@@ -334,19 +352,6 @@ Some description content
             'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
           );
 
-          expect(drawerElem).not.toHaveTextContent('Another top level header');
-
-          // Enable searching for all headers
-          fireEvent.click(getByTestId('task-list__checkbox'));
-
-          // All kinds of headers are visible
-          expect(drawerElem).toHaveTextContent('A header with tags');
-          expect(drawerElem).toHaveTextContent('Another top level header');
-
-          // Filter down to headers with tag :tag1:
-          fireEvent.change(input, { target: { value: ':tag1' } });
-
-          expect(drawerElem).toHaveTextContent('A header with tags');
           expect(drawerElem).not.toHaveTextContent('Another top level header');
         });
       });

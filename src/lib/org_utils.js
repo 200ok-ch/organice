@@ -500,7 +500,7 @@ export const newEmptyTableRowLikeRows = rows =>
       contents.map(cell =>
         cell
           .set('id', generateId())
-          .set('contents', new List())
+          .set('contents', List())
           .set('rawContents', '')
       )
     );
@@ -551,25 +551,30 @@ export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
     .includes(keyword);
 
 export const extractAllOrgTags = headers =>
-  headers.flatMap(h => h.getIn(['titleLine', 'tags'])).toSet().sort()
+  headers
+    .flatMap(h => h.getIn(['titleLine', 'tags']))
+    .toSet()
+    .sort();
 
 export const extractAllOrgProperties = headers =>
-  headers.map(h => {
-    const propertyList = h.get('propertyListItems');
-    return propertyList.map(property => {
-      const prop = property.get('property');
-      const valParts = property.get('value'); // lineParts, see parser
-      const val = attributedStringToRawText(valParts);
-      return [prop, val];
-    });
-  })
-  .filter(x => !x.isEmpty())
-  .flatten();
+  headers
+    .map(h => {
+      const propertyList = h.get('propertyListItems');
+      return propertyList.map(property => {
+        const prop = property.get('property');
+        const valParts = property.get('value'); // lineParts, see parser
+        const val = attributedStringToRawText(valParts);
+        return [prop, val];
+      });
+    })
+    .filter(x => !x.isEmpty())
+    .flatten();
 
 export const computeAllPropertyNames = allOrgProperties =>
   allOrgProperties
     .map(([x]) => x)
-    .toSet().sort();
+    .toSet()
+    .sort();
 
 export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
   // toLowerCase() because property names (keys) are case-insensitive:
@@ -582,9 +587,19 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
 
 /**
  * Returns a function which takes a `todoKeyword` which then returns
- * if said `todoKeyword` is in `todoKeywordSets`.
+ * if said `todoKeyword` is in any `todoKeywordSets` states.
  * @param {Object} todoKeywordSets
  */
 export const createIsTodoKeywordInDoneState = todoKeywordSets => {
   return todoKeyword => todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
+};
+
+export const getTodoKeywordSetsAsFlattenedArray = state => {
+  return state
+    .get('todoKeywordSets')
+    .flatMap(todoKeywordSet => {
+      return todoKeywordSet.get('keywords');
+    })
+    .toSet()
+    .toJS();
 };

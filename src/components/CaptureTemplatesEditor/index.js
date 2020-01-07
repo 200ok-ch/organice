@@ -86,7 +86,7 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
 
 const mapStateToProps = (state, props) => {
   return {
-    captureTemplates: state.capture.get('captureTemplates', new List()),
+    captureTemplates: state.capture.get('captureTemplates', List()),
     syncBackendType: state.syncBackend.get('client').type,
   };
 };

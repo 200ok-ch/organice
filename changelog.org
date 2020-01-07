@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file.
 
+
+** <2020-01-07 Tue>
+
+*** Added
+    - *Refile*
+      - When reviewing the captured data, you may want to refile or to
+        copy some of the entries into a different list, for example
+        into a project.
+
+** <2020-01-04 Sat>
+
+*** Added
+    - Ability to search headlines
+      - It has the same syntax as the search field in the Task List
+        feature
+
+*** Fixed
+    - Sort order in Task List
+      - Tasks were only ordered by their planning item dates. This
+        implied that tasks that were long DONE would be shown first.
+      - Now, tasks in the Task list are sorted by state and then date.
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/207][PR]] 🙏
+
+
+** <2020-01-02 Thu>
+
+*** Added
+    - Place cursor after the TODO keyword when creating a new header
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/193][PR]] 🙏
+    - Highlight verbatim markup
+
+*** Changes
+    - Highlight cookies and cookie percentages according to Solarized
+      color scheme
+
+*** Fixed
+    - Don't update search results when using an invalid search filter
+    - On mobile: Styling of Search / Task List drawer when searching all
+      headlines
+    - On mobile: Ability to scroll Search / Task List
+    - Teach #+TODO parser to understand (..) suffix
+      - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/202][PR]] 🙏
+
 ** <2020-01-01 Wed>
 
 *** Added

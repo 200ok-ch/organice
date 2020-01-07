@@ -4,7 +4,11 @@ import _ from 'lodash';
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
 
-import { extractAllOrgTags, extractAllOrgProperties } from '../lib/org_utils';
+import {
+  extractAllOrgTags,
+  extractAllOrgProperties,
+  getTodoKeywordSetsAsFlattenedArray,
+} from '../lib/org_utils';
 
 import {
   parseOrg,
@@ -440,6 +444,81 @@ const moveSubtreeRight = (state, action) => {
   state = updateCookies(state, previousParentHeaderId, action);
 
   return openDirectParent(state, action.headerId);
+};
+
+const refileSubtree = (state, action) => {
+  /**
+   * Move an item in an immutablejs List from one index to another.
+   * @param {list} List
+   * @param {integer} fromIndex
+   * @param {integer} toIndex
+   * @param {any} integer
+   */
+  function moveItem({ list, fromIndex, toIndex, item }) {
+    const targetItem = list.get(toIndex);
+    list = list.delete(fromIndex);
+    const targetIndex = list.indexOf(targetItem);
+    return list.insert(targetIndex + 1, item);
+  }
+
+  const { sourceHeaderId, targetHeaderId } = action;
+  let headers = state.get('headers');
+  let sourceHeader = headerWithId(headers, sourceHeaderId);
+  const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
+  let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+
+  // Do not attempt to move a header to itself
+  if (sourceHeaderIndex === targetHeaderIndex) return state;
+
+  let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
+
+  const nestingLevelSource = state.getIn(['headers', sourceHeaderIndex, 'nestingLevel']);
+  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
+
+  // Indent the newly placed sourceheader so that it fits underneath the targetHeader
+  sourceHeader = sourceHeader.set('nestingLevel', nestingLevelTarget + 1);
+
+  // Put the sourceHeader into the right slot after the targetHeader
+  headers = moveItem({
+    list: headers,
+    fromIndex: sourceHeaderIndex,
+    toIndex: targetHeaderIndex,
+    item: sourceHeader,
+  });
+
+  // Put the subheaders of the sourceHeader right after
+  subheadersOfSourceHeader.forEach((subheader, index) => {
+    subheader = subheader.set(
+      'nestingLevel',
+      // target
+      // 1
+      //   source
+      //   2 (1)
+      //     subheader
+      //      3 (2)
+      //       subheader
+      //       4 (3)
+      subheader.get('nestingLevel') - nestingLevelSource + nestingLevelTarget + 1
+    );
+    const fromIndex = indexOfHeaderWithId(headers, subheader.get('id'));
+
+    targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+    const toIndex = targetHeaderIndex + index + 1;
+
+    headers = moveItem({
+      list: headers,
+      fromIndex,
+      toIndex,
+      item: subheader,
+    });
+  });
+
+  state = updateCookies(state, sourceHeaderId, action);
+  state = updateCookies(state, targetHeaderId, action);
+
+  state = state.set('headers', headers);
+
+  return state;
 };
 
 const focusHeader = (state, action) => {
@@ -893,23 +972,25 @@ export const setSearchFilterInformation = (state, action) => {
   const headers = state.get('headers');
   state = state.asMutable();
 
+  let searchFilterValid = true;
   let searchFilterExpr;
   try {
     searchFilterExpr = headline_filter_parser.parse(searchFilter);
     state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
-  } catch {
-    // No need to print this parser exceptions.
-    // They are expected, see *.grammar.pegjs
+  } catch (e) {
+    // No need to print this parser exceptions. They are expected, see
+    // *.grammar.pegjs. However, we don't need to update the filtered
+    // headers when given an invalid search filter.
+    searchFilterValid = false;
   }
 
-  state.setIn(['search', 'searchFilterValid'], !!searchFilterExpr);
-
-  let filteredHeaders = headers;
-  if (searchFilterExpr) {
-    // Only run filter if a filter is given and parsing was successfull
-    filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+  state.setIn(['search', 'searchFilterValid'], searchFilterValid);
+  // Only run filter if a filter is given and parsing was successfull
+  if (searchFilterValid) {
+    const filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+    state.setIn(['search', 'filteredHeaders'], filteredHeaders);
   }
-  state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+
   state.setIn(['search', 'searchFilter'], searchFilter);
 
   // INFO: This is a POC draft of a future feature
@@ -940,14 +1021,9 @@ export const setSearchFilterInformation = (state, action) => {
   return state.asImmutable();
 };
 
-export const setSearchAllHeadersFlag = (state, action) => {
-  const { searchAllHeaders } = action;
-  return state.setIn(['search', 'searchAllHeaders'], searchAllHeaders);
-};
-
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-export default (state = new Map(), action) => {
+export default (state = Map(), action) => {
   if (action.dirtying) {
     state = state.set('isDirty', true);
   }
@@ -997,6 +1073,8 @@ export default (state = new Map(), action) => {
       return moveSubtreeLeft(state, action);
     case 'MOVE_SUBTREE_RIGHT':
       return moveSubtreeRight(state, action);
+    case 'REFILE_SUBTREE':
+      return refileSubtree(state, action);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
@@ -1059,23 +1137,11 @@ export default (state = new Map(), action) => {
       return updateLogEntryTime(state, action);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
-    case 'SET_SEARCH_ALL_HEADERS_FLAG':
-      return setSearchAllHeadersFlag(state, action);
 
     default:
       return state;
   }
 };
-
-function getTodoKeywordSetsAsFlattenedArray(state) {
-  return state
-    .get('todoKeywordSets')
-    .flatMap(todoKeywordSet => {
-      return todoKeywordSet.get('keywords');
-    })
-    .toSet()
-    .toJS();
-}
 
 /**
  * Updates Headlines with the next todoKeyword `newTodoState`. Also

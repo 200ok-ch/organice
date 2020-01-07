@@ -11,9 +11,9 @@ import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
-
 import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
 
+import { generateTitleLine } from '../../../../lib/export_org';
 import AttributedString from '../AttributedString';
 
 class TitleLine extends PureComponent {
@@ -26,6 +26,7 @@ class TitleLine extends PureComponent {
       'handleTextareaRef',
       'handleTitleClick',
       'handleTextareaBlur',
+      'handleTextareaFocus',
       'handleTitleChange',
       'handleTitleFieldClick',
       'handleTodoClick',
@@ -80,20 +81,7 @@ class TitleLine extends PureComponent {
   }
 
   calculateRawTitle(header) {
-    const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
-    const tags = header.getIn(['titleLine', 'tags']);
-
-    let titleValue = header.getIn(['titleLine', 'rawTitle']);
-
-    if (!!todoKeyword) {
-      titleValue = `${todoKeyword} ${titleValue}`;
-    }
-
-    if (!!tags && tags.size > 0) {
-      titleValue = `${titleValue} :${tags.join(':')}:`;
-    }
-
-    return titleValue;
+    return generateTitleLine(header.toJS(), false);
   }
 
   handleTitleClick(event) {
@@ -134,6 +122,16 @@ class TitleLine extends PureComponent {
         this.setState({ shouldIgnoreBlur: false });
       }
     }, 0);
+  }
+
+  handleTextareaFocus(event) {
+    const { header } = this.props;
+    const rawTitle = header.getIn(['titleLine', 'rawTitle']);
+    if (rawTitle === '') {
+      const text = event.target.value;
+      event.target.selectionStart = text.length;
+      event.target.selectionEnd = text.length;
+    }
   }
 
   handleTitleChange(event) {
@@ -235,6 +233,7 @@ class TitleLine extends PureComponent {
               ref={this.handleTextareaRef}
               value={this.state.titleValue}
               onBlur={this.handleTextareaBlur}
+              onFocus={this.handleTextareaFocus}
               onChange={this.handleTitleChange}
               onClick={this.handleTitleFieldClick}
             />
@@ -298,4 +297,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TitleLine);

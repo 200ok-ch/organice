@@ -2,7 +2,7 @@
 
 *organice organizes Org files nicely!*
 
-[[file:public/organice-small.png]]
+#+html: <p align="center"> <img src="public/organice-small.png"/> </p>
 
 Tests (CircleCI): [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
 
@@ -75,11 +75,24 @@ or bugs that you you wouldn’t have expected.
 **** Background information
 
 organice has [[src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
-has unit tests to prove it. However, writing a parser for a complex
-syntax like Org mode in custom code is hard. Therefore, we are in the
-process of implementing a proper BNF based parser and a set of tests
-behind that. If you're interested, please check it out:
-[[https://github.com/200ok-ch/org-parser]]
+has unit tests to prove it. One of the quality goals for the parser is
+that when it parses and re-exports an Org file, it should not change
+the original file. Not seeing unrelated diffs is important for the
+productivity of the user. It sounds trivial, but lots of alternative
+products do not live up to this expectation.
+
+Writing a parser for a complex syntax like Org mode in custom code is
+hard. Therefore, we are in the process of implementing a proper BNF
+based parser and a set of tests behind that. If you're interested,
+please check it out: [[https://github.com/200ok-ch/org-parser]]
+
+The strategy we're using with regards to the parser is this:
+
+- Keep improving the existing custom parser for new features and make
+  bugfixes as long as the new one isn't ready.
+- In parallel, when there's time, work on the new one until there's
+  feature parity with the old one from organice.
+- When the new one is finished, integrate it into organice.
 
 *** PWA / Offline Support
 
@@ -173,6 +186,19 @@ organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.or
 [[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
 The internal data structures are written as immutable persistent
 data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
+
+*** Prerequisites
+
+You will need a version of the Node.js engine installed which fulfills
+the requirement stated in =package.json=. If you don't already have
+this installed, it is recommended to install it via [[https://github.com/nvm-sh/nvm][nvm]]. The organice
+repository already contains an =.nvmrc= file, so once you have nvm
+installed, the following commands should be sufficient:
+
+#+BEGIN_SRC shell
+nvm install
+nvm use
+#+END_SRC
 
 *** Setup
 
@@ -323,7 +349,7 @@ docker-compose -f docker-compose-dev.yaml up
 If =docker-compose= is not installed the command looks like this:
 
 #+BEGIN_SRC shell
-docker run -p 5000:5000 -t organice twohundredok/organice:latest
+docker run -p 5000:5000 --name organice twohundredok/organice:latest
 #+END_SRC
 
 Again the webserver is listening on port 5000 and can be reached here:

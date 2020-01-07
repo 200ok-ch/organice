@@ -24,7 +24,9 @@
   }
 }
 
-html, body, #root {
+html,
+body,
+#root {
   color: var(--base00);
   background: var(--base3);
   height: 100%;
@@ -92,4 +94,19 @@ div[tabindex='-1']:focus {
 
 button {
   touch-action: manipulation;
+}
+
+.checkbox {
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
+
+  border: 2px solid var(--green);
+  border-radius: 2px;
+  box-sizing: border-box;
+
+  display: inline-block;
+
+  color: var(--base00);
 }

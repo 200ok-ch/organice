@@ -110,7 +110,7 @@ export const persistableFields = [
     name: 'captureTemplates',
     type: 'json',
     shouldStoreInConfig: true,
-    default: new List(),
+    default: List(),
   },
 ];
 
@@ -206,7 +206,7 @@ export const readInitialState = () => {
       value = value === 'true';
     } else if (field.type === 'json') {
       if (!value) {
-        value = field.default || new Map();
+        value = field.default || Map();
       } else {
         value = fromJS(JSON.parse(value));
       }

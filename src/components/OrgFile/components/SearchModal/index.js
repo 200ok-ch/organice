@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import './stylesheet.css';
 
 import classNames from 'classnames';
-import TaskListView from './components/TaskListView';
+import HeaderListView from './components/HeaderListView';
 import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser } from '../../../../lib/browser_utils';
@@ -15,12 +15,11 @@ import * as orgActions from '../../../../actions/org';
 // INFO: SearchModal, AgendaModal and TaskListModal are very similar
 // in structure and partially in logic. When changing one, consider
 // changing all.
-function TaskListModal(props) {
+function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
   function handleHeaderClick(headerId) {
-    props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.onClose(headerId);
   }
 
   function handleToggleDateDisplayType() {
@@ -46,7 +45,7 @@ function TaskListModal(props) {
 
   return (
     <Drawer onClose={onClose} maxSize={true}>
-      <h2 className="agenda__title">Task list</h2>
+      <h2 className="agenda__title">Search</h2>
 
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
@@ -68,7 +67,7 @@ function TaskListModal(props) {
       </div>
 
       <div className="task-list__headers-container" style={taskListViewStyle}>
-        <TaskListView
+        <HeaderListView
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
@@ -90,7 +89,4 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListModal);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchModal);

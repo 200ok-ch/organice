@@ -240,6 +240,13 @@ export const moveSubtreeRight = headerId => ({
   dirtying: true,
 });
 
+export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
+  type: 'REFILE_SUBTREE',
+  sourceHeaderId,
+  targetHeaderId,
+  dirtying: true,
+});
+
 export const focusHeader = headerId => ({
   type: 'FOCUS_HEADER',
   headerId,
@@ -482,9 +489,4 @@ export const setSearchFilterInformation = (searchFilter, cursorPosition) => ({
   type: 'SET_SEARCH_FILTER_INFORMATION',
   searchFilter,
   cursorPosition,
-});
-
-export const setSearchAllHeadersFlag = searchAllHeaders => ({
-  type: 'SET_SEARCH_ALL_HEADERS_FLAG',
-  searchAllHeaders,
 });
