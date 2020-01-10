@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
       - When reviewing the captured data, you may want to refile or to
         copy some of the entries into a different list, for example
         into a project.
+    - Add button in HeaderActionBar to open property editor
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/195][PR]] 🙏
+
 *** Changed
     - All HeaderActionDrawer actions have icons. The icons are
       documented in sample.org and have a mouseover title.
