@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
+** <2020-01-11 Sat>
+
+*** Fixed
+    - Parsing planning items followed by a a checkbox
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/222/files][PR]] 🙏
+
 ** <2020-01-07 Tue>
 
 *** Added
