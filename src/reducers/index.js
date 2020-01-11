@@ -28,6 +28,8 @@ const UNDOABLE_ACTIONS = [
   'REFILE_SUBTREE',
   'SET_HEADER_TAGS',
   'UPDATE_PROPERTY_LIST_ITEMS',
+  'ADD_NEW_PLANNING_ITEM',
+  'REMOVE_PLANNING_ITEM',
 ];
 
 export default combineReducers({
