@@ -27,6 +27,7 @@ const UNDOABLE_ACTIONS = [
   'INSERT_CAPTURE',
   'REFILE_SUBTREE',
   'SET_HEADER_TAGS',
+  'UPDATE_PROPERTY_LIST_ITEMS',
 ];
 
 export default combineReducers({
