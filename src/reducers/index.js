@@ -26,6 +26,7 @@ const UNDOABLE_ACTIONS = [
   'MOVE_TABLE_COLUMN_RIGHT',
   'INSERT_CAPTURE',
   'REFILE_SUBTREE',
+  'SET_HEADER_TAGS',
 ];
 
 export default combineReducers({
