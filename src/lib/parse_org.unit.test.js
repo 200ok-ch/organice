@@ -165,6 +165,21 @@ describe('Parsing and exporting should not alter the original file', () => {
           const parsedFile = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`);
           expect(parsedFile.strippedDescription).toEqual(testDescription);
         });
+
+        describe('Parses planning item with following checkmark', () => {
+          it('parses and exports without changes', () => {
+            const testOrgFile = readFixture('planning_item_with_following_checkmark');
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            expect(exportedFile).toEqual(testOrgFile);
+          });
+          test('Parsing a planning items followed by a checklist must work', () => {
+            const testDescription = '- [ ] foo\n- [ ] bar';
+            const parsed = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`);
+            const parsedPlanningItem = parsed.planningItems.toJS();
+            expect(parsedPlanningItem[0].timestamp.dayName).toEqual('Tue');
+            expect(parsed.strippedDescription).toEqual(testDescription);
+          });
+        });
       });
 
       describe('Planning items are formatted as is default Emacs', () => {

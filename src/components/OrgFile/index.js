@@ -17,6 +17,7 @@ import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
 import AgendaModal from './components/AgendaModal';
 import TaskListModal from './components/TaskListModal';
+import SearchModal from './components/SearchModal';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -58,6 +59,8 @@ class OrgFile extends PureComponent {
       'handleContainerRef',
       'handleCapture',
       'handlePopupClose',
+      'handleSearchPopupClose',
+      'handleRefilePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
@@ -200,6 +203,21 @@ class OrgFile extends PureComponent {
     this.props.base.closePopup();
   }
 
+  handleSearchPopupClose(headerId) {
+    this.props.base.closePopup();
+    this.props.org.selectHeaderAndOpenParents(headerId);
+  }
+
+  handleRefilePopupClose(targetHeaderId) {
+    this.props.base.closePopup();
+    // When the user closes the drawer without selecting a header, do
+    // not trigger refiling.
+    if (targetHeaderId) {
+      const { selectedHeaderId } = this.props;
+      this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
+    }
+  }
+
   handleSyncConfirmationPull() {
     this.props.org.sync({ forceAction: 'pull' });
     this.props.base.closePopup();
@@ -219,10 +237,7 @@ class OrgFile extends PureComponent {
   }
 
   handlePropertyListItemsChange(newPropertyListItems) {
-    this.props.org.updatePropertyListItems(
-      this.props.activePopupData.get('headerId'),
-      newPropertyListItems
-    );
+    this.props.org.updatePropertyListItems(this.props.selectedHeaderId, newPropertyListItems);
   }
 
   handleTimestampChange(popupData) {
@@ -321,20 +336,22 @@ class OrgFile extends PureComponent {
 
       case 'property-list-editor':
         const allOrgProperties = extractAllOrgProperties(headers);
-        return (
+        return selectedHeader ? (
           <PropertyListEditorModal
             onClose={this.handlePopupClose}
             onChange={this.handlePropertyListItemsChange}
-            propertyListItems={headerWithId(headers, activePopupData.get('headerId')).get(
-              'propertyListItems'
-            )}
+            propertyListItems={selectedHeader.get('propertyListItems')}
             allOrgProperties={allOrgProperties}
           />
-        );
+        ) : null;
       case 'agenda':
         return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
       case 'task-list':
         return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
+      case 'search':
+        return <SearchModal onClose={this.handleSearchPopupClose} headers={headers} />;
+      case 'refile':
+        return <SearchModal onClose={this.handleRefilePopupClose} headers={headers} />;
       default:
         return null;
     }

@@ -3,7 +3,8 @@
 /* Currently, the markup is the same as in the AgendaModal component.
  * Hence the CSS rules from there apply. */
 
-.task-list__filter-input {
+.task-list__filter-input,
+.task-list__filter-input-invalid {
   box-sizing: border-box;
   width: 100%;
 }
@@ -16,6 +17,6 @@
   flex-direction: column;
 }
 
-.task-list__filter-input--invalid {
+.task-list__filter-input-invalid {
   border: 2px solid var(--red);
 }

@@ -5,9 +5,13 @@ import './stylesheet.css';
 export default class HeaderActionDrawer extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.
-  iconWithFFClickCatcher(className, onClick, testId = '') {
+  iconWithFFClickCatcher({ className, onClick, title, testId = '' }) {
     return (
-      <div onClick={onClick} className="header-action-drawer__ff-click-catcher-container">
+      <div
+        title={title}
+        onClick={onClick}
+        className="header-action-drawer__ff-click-catcher-container"
+      >
         <div className="header-action-drawer__ff-click-catcher" />
         <i className={className} data-testid={testId} />
       </div>
@@ -19,6 +23,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onEnterTitleEditMode,
       onEnterDescriptionEditMode,
       onTagsClick,
+      onPropertiesClick,
       isFocused,
       onFocus,
       onUnfocus,
@@ -28,58 +33,100 @@ export default class HeaderActionDrawer extends PureComponent {
       onScheduledClick,
       hasActiveClock,
       onShareHeader,
+      onRefileHeader,
     } = this.props;
 
     return (
       <div className="header-action-drawer-container">
         <div className="header-action-drawer__row">
-          {this.iconWithFFClickCatcher('fas fa-pencil-alt fa-lg', onEnterTitleEditMode)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-pencil-alt fa-lg',
+            onClick: onEnterTitleEditMode,
+            title: 'Edit header title',
+          })}
 
-          <span className="header-action-drawer__separator" />
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-edit fa-lg',
+            onClick: onEnterDescriptionEditMode,
+            title: 'Edit header description',
+            testId: 'edit-header-title',
+          })}
 
-          {this.iconWithFFClickCatcher('fas fa-edit fa-lg', onEnterDescriptionEditMode)}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-tags fa-lg',
+            onClick: onTagsClick,
+            title: 'Modify tags',
+          })}
 
-          <span className="header-action-drawer__separator" />
-
-          {this.iconWithFFClickCatcher('fas fa-tags fa-lg', onTagsClick)}
-
-          <span className="header-action-drawer__separator" />
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-list fa-lg',
+            onClick: onPropertiesClick,
+            title: 'Modify properties',
+          })}
 
           {isFocused
-            ? this.iconWithFFClickCatcher('fas fa-expand fa-lg', onUnfocus)
-            : this.iconWithFFClickCatcher('fas fa-compress fa-lg', onFocus)}
+            ? this.iconWithFFClickCatcher({
+                className: 'fas fa-expand fa-lg',
+                onClick: onUnfocus,
+                title: 'Narrow to subtree (Focus on this header)',
+              })
+            : this.iconWithFFClickCatcher({
+                className: 'fas fa-compress fa-lg',
+                onClick: onFocus,
+                title: 'Widen (Unfocus from this header)',
+              })}
 
-          <span className="header-action-drawer__separator" />
-
-          {this.iconWithFFClickCatcher('fas fa-envelope fa-lg', onShareHeader, 'share')}
-
-          <span className="header-action-drawer__separator" />
-
-          {this.iconWithFFClickCatcher('fas fa-plus fa-lg', onAddNewHeader, 'header-action-plus')}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-plus fa-lg',
+            onClick: onAddNewHeader,
+            testId: 'header-action-plus',
+            title: 'Create new header below',
+          })}
         </div>
+
         <div className="header-action-drawer__row">
-          <div
-            className="header-action-drawer__deadline-scheduled-button"
-            onClick={onDeadlineClick}
-          >
-            Deadline
-          </div>
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-envelope fa-lg',
+            onClick: onShareHeader,
+            testId: 'share',
+            title: 'Share this header via email',
+          })}
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-calendar-check fa-lg',
+            onClick: onDeadlineClick,
+            title: 'Set deadline datetime',
+          })}
+          {this.iconWithFFClickCatcher({
+            className: 'far fa-calendar-check fa-lg',
+            onClick: onScheduledClick,
+            title: 'Set scheduled datetime',
+          })}
+          {hasActiveClock
+            ? this.iconWithFFClickCatcher({
+                className: 'fas fa-hourglass-end fa-lg',
+                onClick: onClockInOutClick,
+                testId: 'org-clock-out',
+                title: 'Clock out (Stop the clock)',
+              })
+            : this.iconWithFFClickCatcher({
+                className: 'fas fa-hourglass-start fa-lg',
+                onClick: onClockInOutClick,
+                testId: 'org-clock-in',
+                title: 'Clock in (Start the clock)',
+              })}
 
-          <span className="header-action-drawer__separator" />
-          <div
-            className="header-action-drawer__deadline-scheduled-button"
-            onClick={onClockInOutClick}
-          >
-            Clock {hasActiveClock ? 'Out' : 'In'}
-          </div>
-          <span className="header-action-drawer__separator" />
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-file-export fa-lg',
+            onClick: onRefileHeader,
+            title: 'Refile this header to another header',
+          })}
 
-          <div
-            className="header-action-drawer__deadline-scheduled-button"
-            onClick={onScheduledClick}
-          >
-            Scheduled
-          </div>
+          {/* Placeholder to align the other icons */}
+          {this.iconWithFFClickCatcher({
+            className: '',
+            onClick: () => {},
+            title: '',
+          })}
         </div>
       </div>
     );

@@ -42,6 +42,7 @@ class Header extends PureComponent {
       'handleEnterTitleEditMode',
       'handleEnterDescriptionEditMode',
       'handleShowTagsModal',
+      'handleShowPropertyListEditorModal',
       'handleFocus',
       'handleUnfocus',
       'handleAddNewHeader',
@@ -50,6 +51,7 @@ class Header extends PureComponent {
       'handleClockInOutClick',
       'handleScheduledClick',
       'handleShareHeaderClick',
+      'handleRefileHeaderRequest',
     ]);
 
     this.state = {
@@ -202,6 +204,10 @@ class Header extends PureComponent {
     this.props.base.activatePopup('tags-editor');
   }
 
+  handleShowPropertyListEditorModal() {
+    this.props.base.activatePopup('property-list-editor');
+  }
+
   handleFocus() {
     this.props.org.focusHeader(this.props.header.get('id'));
   }
@@ -294,6 +300,14 @@ ${header.get('rawDescription')}`;
     // slightly worse UX in favor of having a test is not optimal, as
     // well, of course.
     // window.location.href = mailtoURI;
+  }
+
+  handlePopupClose() {
+    this.props.base.closePopup();
+  }
+
+  handleRefileHeaderRequest() {
+    this.props.base.activatePopup('refile');
   }
 
   render() {
@@ -478,6 +492,7 @@ ${header.get('rawDescription')}`;
                   onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
                   isFocused={isFocused}
                   onTagsClick={this.handleShowTagsModal}
+                  onPropertiesClick={this.handleShowPropertyListEditorModal}
                   onFocus={this.handleFocus}
                   onUnfocus={this.handleUnfocus}
                   onAddNewHeader={this.handleAddNewHeader}
@@ -486,6 +501,7 @@ ${header.get('rawDescription')}`;
                   onScheduledClick={this.handleScheduledClick}
                   hasActiveClock={hasActiveClock}
                   onShareHeader={this.handleShareHeaderClick}
+                  onRefileHeader={this.handleRefileHeaderRequest}
                 />
               </Collapse>
 

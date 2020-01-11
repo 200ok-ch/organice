@@ -24,6 +24,9 @@ import {
 } from 'date-fns';
 import format from 'date-fns/format';
 
+// INFO: SearchModal, AgendaModal and TaskListModal are very similar
+// in structure and partially in logic. When changing one, consider
+// changing all.
 function AgendaModal(props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [timeframeType, setTimeframeType] = useState('Week');

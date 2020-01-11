@@ -7,6 +7,22 @@ This header has some description text and a couple subheaders. Look through the 
 ** This is a subheader
 ** This is a subheader too!
 * Actions
+** Editing headers
+When you select a header the "header action drawer" appears. The first two icons in this drawer edit the header and description respectively. Try editing this header.
+** All icons in the header action bar
+
+1. Pen: Edit header title
+2. Pen in square: Edit header description
+3. Tags: [[https://orgmode.org/manual/Tags.html][Modify tags]]
+4. Properties: [[https://orgmode.org/manual/Properties-and-columns.html][Modify properties]]
+5. Expand: [[https://orgmode.org/manual/Structure-editing.html][Narrow to subtree]] (Focus on this header)
+6. Plus: Create new header below
+7. Mail: Share this header via email
+8. Calendar 1: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set deadline datetime]]
+9. Calendar 2: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set scheduled datetime]]
+10. Hourglass: [[https://orgmode.org/manual/Clocking-commands.html][Clock in and out (Start and stop the clock)]]
+11. File Export: [[https://orgmode.org/manual/Refile-and-copy.html][Refile this header to another header]]
+
 ** Todos [1/4] [25%]
 This header has a few TODO items as subheaders.
 *** TODO Learn how to use TODOs in organice
@@ -21,8 +37,6 @@ organice also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow
 Note that when the cycle restarts, it defaults to the first set of todo states. Manually edit the header to get back to a different todo state cycle (more on editing headers below!)
 *** FINISHED See that custom TODO states are colored correctly
 Custom =org-todo-keywords= keyword sequences can have finish states. They are colored appropriately. You can see that TODO and START headlines are colored red whereas DONE and FINISHED headlines are colored green.
-** Editing headers
-When you select a header the "header action drawer" appears. The first two buttons in this drawer edit the header and description respectively. Try editing this header.
 ** Tags
 The next button in the header action drawer will bring up the tag editor.
 
@@ -199,15 +213,19 @@ Once signed in, you can set up capture templates that specify header paths (and 
 ***** Work
 ****** Too!
 
-* Task list with search filter to find any headline
+* Search / Task List
 
-Below, there is a button to open up a task list.
+Below, there is a button to open up a generic search and a task list.
 
-Tap a header in the task list view to jump to it, and tap on the date to switch to a more readable relative date format.
-
-By default, only tasks, i.e. headlines with a TODO keyword are displayed. You can display all headlines by checking the checkbox.
+Tap a header in the view to jump to it.
 
 Using the filter input, you can search for headlines. Specifically, you can search for headline text, TODO keywords, tags, and [[https://orgmode.org/guide/Properties.html][orgmode properties]]. It also supports alternatives, and you can exclude headlines by negating a filter.
+
+** Differences Search and Task List
+
+- In the task list, you can tap on the date to switch to a more readable relative date format.
+- The task list shows only tasks - i.e. headlines with a TODO keyword are displayed.
+  - The tasks will be sorted by state and then date.
 
 ** Examples for the search syntax
 

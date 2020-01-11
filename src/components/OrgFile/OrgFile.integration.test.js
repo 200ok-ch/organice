@@ -8,6 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 import OrgFile from './';
 import HeaderBar from '../HeaderBar';
+import readFixture from '../../../test_helpers/index';
 
 import rootReducer from '../../reducers/';
 
@@ -31,27 +32,7 @@ describe('Render all views', () => {
     };
   });
 
-  const testOrgFile = `
-#+TODO: TODO | DONE
-#+TODO: START(s!/!) | FINISHED(f@)
-
-* Top level header
-** A nested header
-** TODO A todo item with schedule and deadline
-   DEADLINE: <2018-10-05 Fri> SCHEDULED: <2019-09-19 Thu>
-* Another top level header
-Some description content
-* A header with tags                                              :tag1:tag2:
-* A header with [[https://organice.200ok.ch][a link]]
-* A header with a URL, mail address and phone number as content
-
-  This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.
-
-  This is an e-mail foo.bar@baz.org in a line of text.
-
-  +Don't+ call me on: +498025123456789.
-* FINISHED A header with a custom todo sequence in DONE state
-`;
+  const testOrgFile = readFixture('main_test_file');
 
   let store;
 
@@ -85,6 +66,7 @@ Some description content
       getByText,
       getAllByText,
       getByTitle,
+      getAllByTitle,
       getByAltText,
       getByTestId,
       queryByText,
@@ -105,6 +87,7 @@ Some description content
       getAllByText = res.getAllByText;
       getByAltText = res.getByAltText;
       getByTitle = res.getByTitle;
+      getAllByTitle = res.getAllByTitle;
       getByTestId = res.getByTestId;
       queryByText = res.queryByText;
       queryAllByText = res.queryAllByText;
@@ -113,13 +96,11 @@ Some description content
 
     describe('Actions within an Org file', () => {
       test('Can select a header in an org file', () => {
-        expect(queryByText('Scheduled')).toBeFalsy();
-        expect(queryByText('Deadline')).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeFalsy();
 
         fireEvent.click(getByText('Top level header'));
 
-        expect(queryByText('Scheduled')).toBeTruthy();
-        expect(queryByText('Deadline')).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeTruthy();
       });
 
       // Org Mode has keywords as workflow states and can cycle through
@@ -166,20 +147,20 @@ Some description content
 
         fireEvent.click(getByText('Top level header'));
 
-        expect(queryByText('Clock In')).toBeTruthy();
-        expect(queryByText('Clock Out')).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-out']")).toBeFalsy();
         expect(queryByText(':LOGBOOK:...')).toBeFalsy();
 
-        fireEvent.click(getByText('Clock In'));
+        fireEvent.click(container.querySelector("[data-testid='org-clock-in']"));
 
-        expect(queryByText('Clock In')).toBeFalsy();
-        expect(queryByText('Clock Out')).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-out']")).toBeTruthy();
         expect(queryByText(':LOGBOOK:...')).toBeTruthy();
 
-        fireEvent.click(getByText('Clock Out'));
+        fireEvent.click(container.querySelector("[data-testid='org-clock-out']"));
 
-        expect(queryByText('Clock In')).toBeTruthy();
-        expect(queryByText('Clock Out')).toBeFalsy();
+        expect(container.querySelector("[data-testid='org-clock-in']")).toBeTruthy();
+        expect(container.querySelector("[data-testid='org-clock-out']")).toBeFalsy();
         expect(queryByText(':LOGBOOK:...')).toBeTruthy();
 
         fireEvent.click(getByText(':LOGBOOK:...'));
@@ -215,30 +196,20 @@ Some description content
           );
         });
 
-        // FIXME: Why is this test not working?
-        test.skip('Undo becomes available on interaction', () => {
+        test('Undo becomes available on "edit header"', () => {
           fireEvent.click(queryByText('Top level header'));
           fireEvent.click(queryByText('TODO'));
-          // INFO: In the real app, the class is removed now
+
+          // Open the the title edit textarea
+          fireEvent.click(container.querySelector("[data-testid='edit-header-title']"));
+
+          // Close the title edit textarea
+          fireEvent.click(queryByText('DONE'));
+
+          // Undo should become available
           expect(getByTitle('Undo').classList.contains('header-bar__actions__item--disabled')).toBe(
             false
           );
-        });
-
-        // FIXME: Why is this test not working?
-        test.skip('Undo and redo do their respective task', () => {
-          fireEvent.click(queryByText('Top level header'));
-          expect(queryByText('TODO')).toBeTruthy();
-          fireEvent.click(queryByText('TODO'));
-          expect(queryByText('TODO')).toBeFalsy();
-
-          // Likely this is what is not working
-          fireEvent.click(getByTitle('Undo'));
-          // INFO: This is where the test stops working
-          expect(queryByText('TODO')).toBeTruthy();
-
-          // fireEvent.click(getByTitle('Redo'));
-          // expect(queryByText('TODO')).toBeFalsy();
         });
       });
 
@@ -298,17 +269,54 @@ Some description content
         });
       });
 
+      describe('Search', () => {
+        test('renders Search for an Org file', () => {
+          expect(queryByText('Search')).toBeFalsy();
+          expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
+
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toHaveTextContent('Search');
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        test('searches in all headers', () => {
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          // All kinds of headers are visible
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).toHaveTextContent('Another top level header');
+
+          // Filter down to headers with tag :tag1:
+          fireEvent.change(input, { target: { value: ':tag1' } });
+
+          expect(drawerElem).toHaveTextContent('A header with tags');
+          expect(drawerElem).not.toHaveTextContent('Another top level header');
+        });
+      });
+
       describe('TaskList', () => {
         test('renders TaskList for an Org file', () => {
           expect(queryByText('Task list')).toBeFalsy();
-          expect(queryByText('Search all headlines')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
 
           fireEvent.click(getByTitle('Show task list'));
           const drawerElem = getByTestId('drawer');
           expect(drawerElem).toHaveTextContent('Task list');
-          expect(drawerElem).toHaveTextContent('Search all headlines');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
+
+        // Order by state first and then by date. Ergo TODO is before
+        // DONE and yesterday is before today.
+        test('orders tasks for an Org file', () => {
+          fireEvent.click(getByTitle('Show task list'));
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).toMatchSnapshot();
         });
 
         test('search in TaskList filters headers (by default only with todoKeywords)', () => {
@@ -335,19 +343,6 @@ Some description content
           );
 
           expect(drawerElem).not.toHaveTextContent('Another top level header');
-
-          // Enable searching for all headers
-          fireEvent.click(getByTestId('task-list__checkbox'));
-
-          // All kinds of headers are visible
-          expect(drawerElem).toHaveTextContent('A header with tags');
-          expect(drawerElem).toHaveTextContent('Another top level header');
-
-          // Filter down to headers with tag :tag1:
-          fireEvent.change(input, { target: { value: ':tag1' } });
-
-          expect(drawerElem).toHaveTextContent('A header with tags');
-          expect(drawerElem).not.toHaveTextContent('Another top level header');
         });
       });
 
@@ -368,11 +363,12 @@ Some description content
         });
 
         test('Clicking a TODO within the agenda highlights it in the main view', () => {
+          expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
           fireEvent.click(getByTitle('Show agenda'));
+          expect(queryByText('Agenda')).toBeTruthy();
           fireEvent.click(queryAllByText('A todo item with schedule and deadline')[0]);
           expect(queryByText('Agenda')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeTruthy();
-          expect(queryByText('Scheduled')).toBeTruthy();
         });
 
         test('Clicking the Timestamp in a TODO within the agenda toggles from the date to the time', () => {

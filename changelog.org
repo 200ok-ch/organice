@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+
+** <2020-01-11 Sat>
+
+*** Added
+    - All HeaderActionItems are undoable and redoable
+
+*** Fixed
+    - Parsing planning items followed by a a checkbox
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/222/files][PR]] 🙏
+** <2020-01-07 Tue>
+
+*** Added
+    - *Refile*
+      - When reviewing the captured data, you may want to refile or to
+        copy some of the entries into a different list, for example
+        into a project.
+    - Add button in HeaderActionBar to open property editor
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/195][PR]] 🙏
+
+*** Changed
+    - All HeaderActionDrawer actions have icons. The icons are
+      documented in sample.org and have a mouseover title.
+
+** <2020-01-04 Sat>
+
+*** Added
+    - Ability to search headlines
+      - It has the same syntax as the search field in the Task List
+        feature
+
+*** Fixed
+    - Sort order in Task List
+      - Tasks were only ordered by their planning item dates. This
+        implied that tasks that were long DONE would be shown first.
+      - Now, tasks in the Task list are sorted by state and then date.
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/207][PR]] 🙏
+
+
 ** <2020-01-02 Thu>
 
 *** Added

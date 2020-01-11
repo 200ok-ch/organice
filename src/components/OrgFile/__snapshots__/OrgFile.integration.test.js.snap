@@ -1,5 +1,201 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Render all views Org Functionality Renders everything starting from an Org file TaskList orders tasks for an Org file 1`] = `
+<div
+  class="drawer-inner-container nice-scroll"
+  data-testid="drawer"
+  style="transform: translateY(768px); height: 92%; overflow: none;"
+>
+  <div
+    class="drawer__grabber"
+  />
+  <h2
+    class="agenda__title"
+  >
+    Task list
+  </h2>
+  <datalist
+    id="task-list__datalist-filter"
+  />
+  <div
+    class="task-list__input-container"
+  >
+    <input
+      class="textfield task-list__filter-input"
+      list="task-list__datalist-filter"
+      placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
+      type="text"
+      value=""
+    />
+  </div>
+  <div
+    class="task-list__headers-container"
+    style="overflow: auto;"
+  >
+    <div
+      class="agenda-day__container"
+    >
+      <div
+        class="agenda-day__headers-container"
+      >
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              <span
+                class="todo-keyword"
+              >
+                TODO
+              </span>
+              <div>
+                <span
+                  style="color: black; word-break: break-word;"
+                >
+                  <span>
+                    A todo item with schedule and deadline
+                  </span>
+                  
+                </span>
+              </div>
+            </div>
+            <div
+              class="agenda-day__header__planning-item-container"
+            >
+              <div
+                class="task-list__header-planning-type"
+              >
+                DEADLINE
+              </div>
+              <div
+                class="task-list__header-planning-date task-list__header-planning-date--overdue"
+              >
+                10/05
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              <span
+                class="todo-keyword todo-keyword--done-state"
+              >
+                FINISHED
+              </span>
+              <div>
+                <span
+                  style="color: black; word-break: break-word;"
+                >
+                  <span>
+                    A header with a custom todo sequence in DONE state
+                  </span>
+                  
+                </span>
+              </div>
+            </div>
+            <div />
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              <span
+                class="todo-keyword todo-keyword--done-state"
+              >
+                DONE
+              </span>
+              <div>
+                <span
+                  style="color: black; word-break: break-word;"
+                >
+                  <span>
+                    A headline that's done a day earlier even
+                  </span>
+                  
+                </span>
+              </div>
+            </div>
+            <div
+              class="agenda-day__header__planning-item-container"
+            >
+              <div
+                class="task-list__header-planning-type"
+              >
+                SCHEDULED
+              </div>
+              <div
+                class="task-list__header-planning-date task-list__header-planning-date--overdue"
+              >
+                01/02
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              <span
+                class="todo-keyword todo-keyword--done-state"
+              >
+                DONE
+              </span>
+              <div>
+                <span
+                  style="color: black; word-break: break-word;"
+                >
+                  <span>
+                    A headline that's done since a loong time
+                  </span>
+                  
+                </span>
+              </div>
+            </div>
+            <div
+              class="agenda-day__header__planning-item-container"
+            >
+              <div
+                class="task-list__header-planning-type"
+              >
+                SCHEDULED
+              </div>
+              <div
+                class="task-list__header-planning-date task-list__header-planning-date--overdue"
+              >
+                01/03
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+</div>
+`;
+
 exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
@@ -416,11 +612,25 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           style="opacity: 1;"
           title="Show agenda"
         />
-        <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
-          style="opacity: 1;"
-          title="Show task list"
-        />
+        <div
+          class="action-drawer__capture-buttons-container"
+        >
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
+            style="opacity: 1; position: relative; z-index: 1;"
+            title="Show Search / Task List"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
+            style="position: absolute; z-index: 0; left: 0px; opacity: 1; box-shadow: none; bottom: 0px;"
+            title="Show search"
+          />
+          <button
+            class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
+            style="position: absolute; z-index: 0; left: 0px; opacity: 1; box-shadow: none; bottom: 0px;"
+            title="Show task list"
+          />
+        </div>
         <div
           class="action-drawer__capture-buttons-container"
         >

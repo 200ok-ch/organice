@@ -223,6 +223,24 @@ export const attributedStringToRawText = parts => {
     .join('');
 };
 
+// Takes a plain JS object
+export const generateTitleLine = (header, includeStars) => {
+  let contents = '';
+  if (includeStars) contents += '*'.repeat(header.nestingLevel);
+
+  if (header.titleLine.todoKeyword) {
+    contents += ` ${header.titleLine.todoKeyword}`;
+  }
+  contents += ` ${header.titleLine.rawTitle}`;
+
+  if (header.titleLine.tags.length) {
+    contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+  }
+
+  if (!includeStars) contents = contents.substring(1);
+  return contents;
+};
+
 export const exportOrg = (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) => {
   let configContent = '';
 

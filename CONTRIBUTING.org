@@ -44,7 +44,7 @@ These are the steps we take to ensure a high quality in the backlog:
    behavior, we ask a question or link to the documentation. We also
    add a 'question' label to the issue. If the issue creator does not
    respond to the question within 14 days, we close the issue. If she
-   does chose to respond at some point, she can re-open the issue.
+   does choose to respond at some point, she can re-open the issue.
 
 *** Development collaboration
 
