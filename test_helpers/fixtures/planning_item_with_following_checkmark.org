@@ -1,0 +1,3 @@
+* WAITING Proofing "Announcement für EmacsConf"
+  SCHEDULED: <2019-09-16 Mon>
+- [X] Write draft announcement
