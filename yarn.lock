@@ -10005,10 +10005,10 @@ redux-thunk@^2.3.0:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
-redux-undo@1.0.0-beta9-9-7:
-  version "1.0.0-beta9-9-7"
-  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-1.0.0-beta9-9-7.tgz#fe3baa1b271423d7ddbbfc3a82c71b029a2db8ba"
-  integrity sha1-/juqGycUI9fdu/w6gscbApotuLo=
+redux-undo@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-1.0.0.tgz#7688f0ae3874e0da35077de4fb1753c5d2e66a7a"
+  integrity sha512-WhCbkQyzY3KgqR+3wF1wR/O9WhvTsYGxKhwX5H1nWLA0q9AHrtHWgj4WQhTIJr5HzUR5uJyHm/Dnu5fiSvqL7w==
 
 redux@^4.0.0, redux@^4.0.4:
   version "4.0.4"
