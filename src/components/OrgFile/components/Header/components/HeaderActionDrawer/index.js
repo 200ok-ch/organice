@@ -49,6 +49,7 @@ export default class HeaderActionDrawer extends PureComponent {
             className: 'fas fa-edit fa-lg',
             onClick: onEnterDescriptionEditMode,
             title: 'Edit header description',
+            testId: 'edit-header-title',
           })}
 
           {this.iconWithFFClickCatcher({

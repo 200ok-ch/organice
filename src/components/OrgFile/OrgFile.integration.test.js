@@ -66,6 +66,7 @@ describe('Render all views', () => {
       getByText,
       getAllByText,
       getByTitle,
+      getAllByTitle,
       getByAltText,
       getByTestId,
       queryByText,
@@ -86,6 +87,7 @@ describe('Render all views', () => {
       getAllByText = res.getAllByText;
       getByAltText = res.getByAltText;
       getByTitle = res.getByTitle;
+      getAllByTitle = res.getAllByTitle;
       getByTestId = res.getByTestId;
       queryByText = res.queryByText;
       queryAllByText = res.queryAllByText;
@@ -194,30 +196,20 @@ describe('Render all views', () => {
           );
         });
 
-        // FIXME: Why is this test not working?
-        test.skip('Undo becomes available on interaction', () => {
+        test('Undo becomes available on "edit header"', () => {
           fireEvent.click(queryByText('Top level header'));
           fireEvent.click(queryByText('TODO'));
-          // INFO: In the real app, the class is removed now
+
+          // Open the the title edit textarea
+          fireEvent.click(container.querySelector("[data-testid='edit-header-title']"));
+
+          // Close the title edit textarea
+          fireEvent.click(queryByText('DONE'));
+
+          // Undo should become available
           expect(getByTitle('Undo').classList.contains('header-bar__actions__item--disabled')).toBe(
             false
           );
-        });
-
-        // FIXME: Why is this test not working?
-        test.skip('Undo and redo do their respective task', () => {
-          fireEvent.click(queryByText('Top level header'));
-          expect(queryByText('TODO')).toBeTruthy();
-          fireEvent.click(queryByText('TODO'));
-          expect(queryByText('TODO')).toBeFalsy();
-
-          // Likely this is what is not working
-          fireEvent.click(getByTitle('Undo'));
-          // INFO: This is where the test stops working
-          expect(queryByText('TODO')).toBeTruthy();
-
-          // fireEvent.click(getByTitle('Redo'));
-          // expect(queryByText('TODO')).toBeFalsy();
         });
       });
 
