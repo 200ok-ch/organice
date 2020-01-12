@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 ** <2020-01-12 Sun>
 
 *** Fixed
-    - After undo/redo, synchronize Org file
+    - *Major synchronization improvements*
+      1. After undo/redo, synchronize Org file
+      2. Debounce Sync
+         1. When a user changes things quickly (which happens easily
+            when having 'live sync' enabled and using undo/redo for
+            example), multiple syncs ran in parallel. The back-ends
+            will either get confused or fail with errors (429 too many
+            write operations). In any case, likely the last written
+            state would not have been the state of the Org file in
+            organice.
+      3. Safeguard against concurrent sync requests to the back-end
+      4. In case of synchronization error, show the error to the user
+         and retry synchronization
+      5. Don't actually sync a whole Org file for an empty header.
+         When the user adds some data and triggers
+         UPDATE_HEADER_TITLE, then it makes sense to save it.
 
 ** <2020-01-11 Sat>
 
