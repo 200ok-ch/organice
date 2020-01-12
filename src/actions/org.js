@@ -45,16 +45,17 @@ const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)),
 
 export const sync = (...args) => dispatch => syncDebounced(dispatch, ...args);
 
-// Actual sync action doing the persistence. When 'live sync' is
-// enabled, there's potentailly loads of calls to 'sync' happening.
-// Hence, it needs to be debounced. If there's a really quick
-// succession of calls, only the first and last synchronization should
+// doSync is the actual sync action synchronizing/persisting the Org
+// file. When 'live sync' is enabled, there's potentailly a quick
+// succession of calls to 'sync' and therefore to the sync back-end
+// happening. These calls need to be debounced. If there's a really
+// succession of calls, only the first and last synchronization will
 // happen.
 // Note: This action is a redux-thunk action (because it returns a
 // function). This function is defined every time it is called. Hence,
-// wrapping it in `debounce` will not be good enough - since it would
-// be a new function every time, it would be called every time.
-// The solution is to define an inner function `sync` outside of the
+// wrapping it in `debounce` will not be good enough. Since it would
+// be a new function every time, it would be called every time. The
+// solution is to define an inner function `sync` outside of the
 // wrapping function `syncDebounced`. This will actually debounce
 // `doSync`, because the inner function `sync` will be created only
 // once.
@@ -66,6 +67,26 @@ const doSync = ({
   const client = getState().syncBackend.get('client');
   const path = getState().org.present.get('path');
   if (path === null) {
+    return;
+  }
+
+  // Calls do `doSync` are already debounced using a timer, but on big
+  // Org files or slow connections, it's still possible to have
+  // concurrent requests to `doSync` which has no merit. When
+  // `isLoading`, don't trigger another sync in parallel. Instead,
+  // call `syncDebounced` and return immediately. This will
+  // recursively enqueue the request to do a sync until the current
+  // sync is finished. Since it's a debounced call, enqueueing it
+  // recursively is efficient.
+  if (getState().base.get('isLoading')) {
+    // Since there is a quick succession of debounced requests to
+    // synchronize, the user likely is in a undo/redo workflow with
+    // potential new changes to the Org file in between. In such a
+    // situation, it is easy for the remote file to have a newer
+    // `lastModifiedAt` date than the `lastSyncAt` date. Hence,
+    // pushing is the right action - no need for the modal to ask the
+    // user for her request to pull/push or cancel.
+    dispatch(sync({ forceAction: 'push' }));
     return;
   }
 
