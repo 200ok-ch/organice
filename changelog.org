@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
         (before it was required to scroll all the way to the top)
     - Deselect headline by clicking into the title (or empty space) in
       the HeaderBar
+    - Show Org filename in Header
 
 *** Fixed
     - *Major synchronization improvements*

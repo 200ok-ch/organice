@@ -38,6 +38,18 @@ class HeaderBar extends PureComponent {
     return pathname.split('/')[1];
   }
 
+  getFilename() {
+    const {
+      location: { pathname },
+    } = this.props;
+    // only show a filename if it's a file and not a path
+    if (pathname.includes('.org')) {
+      return pathname.substring(pathname.lastIndexOf('/') + 1, pathname.lastIndexOf('.'));
+    } else {
+      return '';
+    }
+  }
+
   renderFileBrowserBackButton() {
     const {
       location: { pathname },
@@ -191,7 +203,7 @@ class HeaderBar extends PureComponent {
       default:
     }
 
-    return titleContainerWithText('');
+    return titleContainerWithText(this.getFilename());
   }
 
   handleChangelogClick() {
