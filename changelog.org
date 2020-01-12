@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ** <2020-01-12 Sun>
 
+*** Added
+    - Make HeaderBar sticky
+      - Making undo/redo, file browser and help always available
+        (before it was required to scroll all the way to the top)
+    - Deselect headline by clicking into the title (or empty space) in
+      the HeaderBar
+
 *** Fixed
     - *Major synchronization improvements*
       1. After undo/redo, synchronize Org file

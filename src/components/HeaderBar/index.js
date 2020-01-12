@@ -9,6 +9,7 @@ import logo from '../../images/organice.svg';
 import './stylesheet.css';
 
 import * as baseActions from '../../actions/base';
+import * as orgActions from '../../actions/org';
 import { ActionCreators as undoActions } from 'redux-undo';
 
 import { List } from 'immutable';
@@ -22,6 +23,7 @@ class HeaderBar extends PureComponent {
     _.bindAll(this, [
       'handleChangelogClick',
       'handleModalPageDoneClick',
+      'handleHeaderBarTitleClick',
       'handleSettingsSubPageBackClick',
       'handleUndoClick',
       'handleRedoClick',
@@ -161,7 +163,11 @@ class HeaderBar extends PureComponent {
   }
 
   renderTitle() {
-    const titleContainerWithText = text => <div className="header-bar__title">{text}</div>;
+    const titleContainerWithText = text => (
+      <div className="header-bar__title" onClick={this.handleHeaderBarTitleClick}>
+        {text}
+      </div>
+    );
 
     switch (this.props.activeModalPage) {
       case 'changelog':
@@ -194,6 +200,10 @@ class HeaderBar extends PureComponent {
 
   handleModalPageDoneClick() {
     this.props.base.clearModalStack();
+  }
+
+  handleHeaderBarTitleClick() {
+    this.props.org.selectHeader(null);
   }
 
   handleUndoClick() {
@@ -313,6 +323,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     base: bindActionCreators(baseActions, dispatch),
+    org: bindActionCreators(orgActions, dispatch),
     undo: bindActionCreators(undoActions, dispatch),
   };
 };
