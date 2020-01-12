@@ -1,4 +1,5 @@
 import { ActionCreators } from 'redux-undo';
+import { debounce } from 'lodash';
 import {
   setLoadingMessage,
   hideLoadingMessage,
@@ -37,7 +38,27 @@ export const stopDisplayingFile = () => {
   };
 };
 
-export const sync = ({
+const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)), 3000, {
+  leading: true,
+  trailing: true,
+});
+
+export const sync = (...args) => dispatch => syncDebounced(dispatch, ...args);
+
+// Actual sync action doing the persistence. When 'live sync' is
+// enabled, there's potentailly loads of calls to 'sync' happening.
+// Hence, it needs to be debounced. If there's a really quick
+// succession of calls, only the first and last synchronization should
+// happen.
+// Note: This action is a redux-thunk action (because it returns a
+// function). This function is defined every time it is called. Hence,
+// wrapping it in `debounce` will not be good enough - since it would
+// be a new function every time, it would be called every time.
+// The solution is to define an inner function `sync` outside of the
+// wrapping function `syncDebounced`. This will actually debounce
+// `doSync`, because the inner function `sync` will be created only
+// once.
+const doSync = ({
   forceAction = null,
   successMessage = 'Changes pushed',
   shouldSuppressMessages = false,
