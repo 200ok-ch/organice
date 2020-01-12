@@ -124,12 +124,13 @@ const doSync = ({
               dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
             })
             .catch(error => {
-              // TODO: It's possible to get here with a 429
-              // "too_many_write_operations" whilst pushing more than
-              // once at the same time. Let's prevent that properly.
-              // alert(`There was an error pushing the file: ${error.toString()}`);
+              const err = `There was an error pushing the file: ${error.toString()}`;
+              console.error(err);
+              dispatch(setDisappearingLoadingMessage(err, 5000));
               dispatch(hideLoadingMessage());
               dispatch(setIsLoading(false));
+              // Re-enqueue the file to be synchronized again
+              dispatch(sync());
             });
         } else {
           if (!shouldSuppressMessages) {
