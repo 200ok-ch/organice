@@ -216,7 +216,10 @@ export const updateHeaderDescription = (headerId, newRawDescription) => ({
 export const addHeader = headerId => ({
   type: 'ADD_HEADER',
   headerId,
-  dirtying: true,
+  // Performance optimization: Don't actually sync a whole Org file
+  // for an empty header. When the user adds some data and triggers
+  // UPDATE_HEADER_TITLE, then it makes sense to save it.
+  dirtying: false,
 });
 
 export const selectNextSiblingHeader = headerId => ({
