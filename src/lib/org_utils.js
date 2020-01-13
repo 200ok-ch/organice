@@ -174,7 +174,7 @@ export const headerWithPath = (headers, headerPath) => {
   }
 
   const subheaders = subheadersOfHeaderWithId(headers, firstHeader.get('id'));
-  return headerWithPath(subheaders, headerPath.skip(1));
+  return headerWithPath(subheaders, headerPath.rest());
 };
 
 export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => {
