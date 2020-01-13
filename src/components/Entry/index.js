@@ -40,15 +40,11 @@ class Entry extends PureComponent {
     const { lastSeenChangelogHeader, isAuthenticated } = this.props;
 
     const changelogFile = parseOrg(raw('../../../changelog.org'));
-    const firstHeaderTitle = changelogFile.getIn(['headers', 0, 'titleLine', 'rawTitle']);
-    if (
-      isAuthenticated &&
-      !!lastSeenChangelogHeader &&
-      firstHeaderTitle !== lastSeenChangelogHeader
-    ) {
+    const firstHeader = changelogFile.getIn(['headers', 0]);
+    if (isAuthenticated && !!lastSeenChangelogHeader && firstHeader !== lastSeenChangelogHeader) {
       this.props.base.setHasUnseenChangelog(true);
     }
-    this.props.base.setLastSeenChangelogHeader(firstHeaderTitle);
+    this.props.base.setLastSeenChangelogHeader(firstHeader);
   }
 
   componentDidUpdate() {
