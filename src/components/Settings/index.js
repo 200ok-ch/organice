@@ -112,7 +112,9 @@ const Settings = ({
       <div className="setting-container">
         <div className="setting-label">
           Show Org filename as Title
-          <div className="setting-label__description">TBD</div>
+          <div className="setting-label__description">
+            When in an Org file view, it shows the filename in the HeaderBar.
+          </div>
         </div>
         <Switch isEnabled={shouldShowTitleInOrgFile} onToggle={handleShouldShowTitleInOrgFile} />
       </div>

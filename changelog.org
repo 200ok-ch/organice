@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+
+** <2020-01-13 Mon>
+
+*** Added
+    - "Show Org filename in Header" is configurable in settings and
+      off by default
 ** <2020-01-12 Sun>
 
 *** Added
