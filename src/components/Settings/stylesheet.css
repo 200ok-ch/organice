@@ -73,6 +73,10 @@
   margin-top: 0.25em;
 }
 
+.changelog-icon--has-unseen-changelog {
+  color: var(--red);
+}
+
 .settings-button-help-text {
   color: var(--base1);
   padding-left: 20px;

@@ -6,7 +6,7 @@
   padding: 10px;
 
   display: grid;
-  grid-template-columns: minmax(2em, 2fr) minmax(1em, 3fr) 2fr;
+  grid-template-columns: minmax(2em, 2.8fr) minmax(1em, 3fr) minmax(1em, 2.8fr);
   grid-template-areas: 'back title actions';
   align-items: center;
 
@@ -73,10 +73,6 @@
   color: var(--base01);
 
   margin-left: 0.5em;
-}
-
-.settings-icon--has-unseen-changelog {
-  color: #ff5b5b;
 }
 
 .header-bar__actions__item--disabled {

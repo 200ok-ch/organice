@@ -259,9 +259,7 @@ class HeaderBar extends PureComponent {
         'header-bar__actions__item--disabled': !isRedoEnabled,
       });
 
-      const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item', {
-        'settings-icon--has-unseen-changelog': hasUnseenChangelog,
-      });
+      const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item');
 
       return (
         <div className="header-bar__actions">
@@ -296,9 +294,14 @@ class HeaderBar extends PureComponent {
           )}
 
           {isAuthenticated && (
-            <Link to="/settings">
-              <i className={settingsIconClassName} title="Settings" />
-            </Link>
+            <div>
+              {hasUnseenChangelog && (
+                <i className="changelog-icon--has-unseen-changelog header-bar__actions__item fas fa-gift" />
+              )}
+              <Link to="/settings">
+                <i className={settingsIconClassName} title="Settings" />
+              </Link>
+            </div>
           )}
         </div>
       );

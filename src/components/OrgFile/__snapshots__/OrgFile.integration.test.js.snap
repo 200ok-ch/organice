@@ -235,14 +235,16 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         class="fas fa-question-circle header-bar__actions__item"
         title="Help"
       />
-      <a
-        href="/settings"
-      >
-        <i
-          class="fas fa-cogs header-bar__actions__item"
-          title="Settings"
-        />
-      </a>
+      <div>
+        <a
+          href="/settings"
+        >
+          <i
+            class="fas fa-cogs header-bar__actions__item"
+            title="Settings"
+          />
+        </a>
+      </div>
     </div>
   </div>
   <div
