@@ -225,6 +225,7 @@ const updateHeaderTitle = (state, action) => {
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
   const newTitleLine = parseTitleLine(action.newRawTitle.trim(), state.get('todoKeywordSets'));
+  // TODO: add active timestamps from titleline to planning items
 
   state = state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
 
@@ -243,6 +244,7 @@ const updateHeaderDescription = (state, action) => {
       strippedDescription,
     } = parseDescriptionPrefixElements(action.newRawDescription, parsedTitle);
 
+    // TODO: add active timestamps from description to planning items
     return header
       .set('rawDescription', strippedDescription)
       .set('description', parseRawText(strippedDescription))

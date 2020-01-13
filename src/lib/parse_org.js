@@ -593,20 +593,10 @@ const parseLogbook = rawText => {
   };
 };
 
-// TODO: Active timestamps in the headline, and (at least) active
-// timestamps in the "descriptionPrefix" should go into the planning items.
-// Suggested fix:
-// - pass parsed titleLine to this function (and extract the active timestamps
-//   from it).
-// - recognize active timestamps in the "descriptionPrefix" also with out a
-//   "planning keyword".
-export const parseDescriptionPrefixElements = (rawText, parsedTitle) => {
+export const parseDescriptionPrefixElements = rawText => {
   const planningItemsParse = _parsePlanningItems(rawText);
-  const planningItemsFromTitle = parsedTitle
-    .filter(x => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
-    .map(x => createTimestamp({ type: 'TIMESTAMP', timestamp: x.get('firstTimestamp') })); // ignore second timestamp
 
-  const planningItems = planningItemsParse.planningItems.merge(planningItemsFromTitle);
+  const planningItems = planningItemsParse.planningItems;
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
   const logBookParse = parseLogbook(propertyListParse.strippedDescription);
 
@@ -695,7 +685,9 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     propertyListItems,
     strippedDescription,
     logBookEntries,
-  } = parseDescriptionPrefixElements(description, fromJS([])); // TODO: cannot pass parsed title here, as it is parsed only in the next line...
+  } = parseDescriptionPrefixElements(description);
+
+  // TODO: parse title and add active timestamps to planning items
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
@@ -776,15 +768,21 @@ export const parseOrg = fileContents => {
       propertyListItems,
       strippedDescription,
       logBookEntries,
-    } = parseDescriptionPrefixElements(
-      header.get('rawDescription'),
-      header.getIn(['titleLine', 'title'])
+    } = parseDescriptionPrefixElements(header.get('rawDescription'));
+
+    const parsedDescription = parseRawText(strippedDescription);
+
+    if (!planningItems) console.log(planningItems);
+    const mergedPlanningItems = mergePlanningItems(
+      planningItems,
+      extractActiveTimestampsForPlanningItemsFromParse(header.getIn(['titleLine', 'title'])),
+      extractActiveTimestampsForPlanningItemsFromParse(parsedDescription)
     );
 
     return header
       .set('rawDescription', strippedDescription)
-      .set('description', parseRawText(strippedDescription))
-      .set('planningItems', planningItems)
+      .set('description', parsedDescription)
+      .set('planningItems', mergedPlanningItems)
       .set('propertyListItems', propertyListItems)
       .set('logBookEntries', logBookEntries);
   });
@@ -795,6 +793,18 @@ export const parseOrg = fileContents => {
     fileConfigLines,
     linesBeforeHeadings,
   });
+};
+
+const extractActiveTimestampsForPlanningItemsFromParse = parsedData => {
+  // planningItems only accept a single timestamp -> ignore second timestamp
+  return parsedData
+    .filter(x => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
+    .map(x => createTimestamp({ type: 'TIMESTAMP', timestamp: x.get('firstTimestamp') }));
+};
+
+// Merge planningItems from parsed title, description, and planning keywords.
+const mergePlanningItems = (...planningItems) => {
+  return planningItems[0]; // TODO: .merge(planningItems.slice(1));
 };
 
 const computeNestingLevel = titleLineWithAsterisk => {
