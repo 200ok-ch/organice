@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
 *** Added
     - "Show Org filename in Header" is configurable in settings and
       off by default
+      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/229][PR]] 🙏
+
+*** Fixed
+    - Show error message when using a capture template with a badly
+      configured header path
+
+
 ** <2020-01-12 Sun>
 
 *** Added
