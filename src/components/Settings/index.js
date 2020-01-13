@@ -19,6 +19,7 @@ const Settings = ({
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
   shouldSyncOnBecomingVisibile,
+  shouldShowTitleInOrgFile,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   hasUnseenChangelog,
@@ -47,7 +48,11 @@ const Settings = ({
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
 
-  const handleShouldSyncOnBecomingVisibleChange = () => base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
+  const handleShouldSyncOnBecomingVisibleChange = () =>
+    base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
+
+  const handleShouldShowTitleInOrgFile = () =>
+    base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
 
   const handleShouldStoreSettingsInSyncBackendChange = () =>
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
@@ -93,10 +98,23 @@ const Settings = ({
         <div className="setting-label">
           Sync on application becoming visible
           <div className="setting-label__description">
-            If enabled, the current org file is pulled from the sync backend when the browser tab becomes visible. This prevents you from having a stale file before starting to make changes to it.
+            If enabled, the current org file is pulled from the sync backend when the browser tab
+            becomes visible. This prevents you from having a stale file before starting to make
+            changes to it.
           </div>
         </div>
-        <Switch isEnabled={shouldSyncOnBecomingVisibile} onToggle={handleShouldSyncOnBecomingVisibleChange} />
+        <Switch
+          isEnabled={shouldSyncOnBecomingVisibile}
+          onToggle={handleShouldSyncOnBecomingVisibleChange}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Show Org filename as Title
+          <div className="setting-label__description">TBD</div>
+        </div>
+        <Switch isEnabled={shouldShowTitleInOrgFile} onToggle={handleShouldShowTitleInOrgFile} />
       </div>
 
       <div className="setting-container">
@@ -182,6 +200,7 @@ const mapStateToProps = (state, props) => {
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
+    shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };
@@ -193,9 +212,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Settings)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Settings));

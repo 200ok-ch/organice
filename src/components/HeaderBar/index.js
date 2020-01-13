@@ -203,7 +203,7 @@ class HeaderBar extends PureComponent {
       default:
     }
 
-    return titleContainerWithText(this.getFilename());
+    return titleContainerWithText(this.props.shouldShowTitleInOrgFile ? this.getFilename() : '');
   }
 
   handleChangelogClick() {
@@ -325,6 +325,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
+    shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     path: state.org.present.get('path'),
     isUndoEnabled: state.org.past.length > 0,
     isRedoEnabled: state.org.future.length > 0,
