@@ -1,6 +1,8 @@
 * General
 
-All notable changes to this project will be documented in this file.
+All user visible changes to organice will be documented in this file.
+
+When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 * <2020-01-13 Mon>
 
