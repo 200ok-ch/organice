@@ -12,7 +12,10 @@ All notable changes to this project will be documented in this file.
 ** Fixed
    - Show error message when using a capture template with a badly
      configured header path
-
+   - Notify on changes for changelog
+     - This is done with a similar UX than other productivity apps
+       (like Slack) do it. The user will see a 'gift' icon whenever
+       there's a change to the changelog she has not seen, yet.
 
 * <2020-01-12 Sun>
 
