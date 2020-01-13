@@ -65,18 +65,12 @@
 }
 
 .changelog-badge-container {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-
-  border-radius: 50%;
-  background-color: red;
-  width: 35px;
-  height: 35px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-style: ;
+  font-weight: bold;
+  color: var(--red);
+  background-color: var(--base2);
+  padding: 0.25em;
+  margin-top: 0.25em;
 }
 
 .settings-button-help-text {

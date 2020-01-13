@@ -168,6 +168,7 @@ const Settings = ({
           {hasUnseenChangelog && (
             <div className="changelog-badge-container">
               <i className="fas fa-gift" />
+              &nbsp; What's New?
             </div>
           )}
         </button>

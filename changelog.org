@@ -1,304 +1,306 @@
-* Changelog
+* General
 
 All notable changes to this project will be documented in this file.
 
+* <2020-01-13 Mon>
+
+** Added
+   - "Show Org filename in Header" is configurable in settings and
+     off by default
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/229][PR]] 🙏
+
+** Fixed
+   - Show error message when using a capture template with a badly
+     configured header path
+   - Notify on changes for changelog
+     - This is done with a similar UX than other productivity apps
+       (like Slack) do it. The user will see a 'gift' icon whenever
+       there's a change to the changelog she has not seen, yet.
+
+* <2020-01-12 Sun>
+
+** Added
+   - Make HeaderBar sticky
+     - Making undo/redo, file browser and help always available
+       (before it was required to scroll all the way to the top)
+   - Deselect headline by clicking into the title (or empty space) in
+     the HeaderBar
+   - Show Org filename in Header
+
+** Fixed
+   - *Major synchronization improvements*
+     1. After undo/redo, synchronize Org file
+     2. Debounce Sync
+        1. When a user changes things quickly (which happens easily
+           when having 'live sync' enabled and using undo/redo for
+           example), multiple syncs ran in parallel. The back-ends
+           will either get confused or fail with errors (429 too many
+           write operations). In any case, likely the last written
+           state would not have been the state of the Org file in
+           organice.
+     3. Safeguard against concurrent sync requests to the back-end
+     4. In case of synchronization error, show the error to the user
+        and retry synchronization
+     5. Don't actually sync a whole Org file for an empty header.
+        When the user adds some data and triggers
+        UPDATE_HEADER_TITLE, then it makes sense to save it.
+
+* <2020-01-11 Sat>
+
+** Added
+   - All HeaderActionItems are undoable and redoable
+
+** Fixed
+   - Parsing planning items followed by a a checkbox
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/222/files][PR]] 🙏
+* <2020-01-07 Tue>
+
+** Added
+   - *Refile*
+     - When reviewing the captured data, you may want to refile or to
+       copy some of the entries into a different list, for example
+       into a project.
+   - Add button in HeaderActionBar to open property editor
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/195][PR]] 🙏
+
+** Changed
+   - All HeaderActionDrawer actions have icons. The icons are
+     documented in sample.org and have a mouseover title.
+
+* <2020-01-04 Sat>
+
+** Added
+   - Ability to search headlines
+     - It has the same syntax as the search field in the Task List
+       feature
+
+** Fixed
+   - Sort order in Task List
+     - Tasks were only ordered by their planning item dates. This
+       implied that tasks that were long DONE would be shown first.
+     - Now, tasks in the Task list are sorted by state and then date.
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/207][PR]] 🙏
+
+
+* <2020-01-02 Thu>
+
+** Added
+   - Place cursor after the TODO keyword when creating a new header
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/193][PR]] 🙏
+   - Highlight verbatim markup
+
+** Changes
+   - Highlight cookies and cookie percentages according to Solarized
+     color scheme
+
+** Fixed
+   - Don't update search results when using an invalid search filter
+   - On mobile: Styling of Search / Task List drawer when searching all
+     headlines
+   - On mobile: Ability to scroll Search / Task List
+   - Teach #+TODO parser to understand (..) suffix
+     - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/202][PR]] 🙏
+
+* <2020-01-01 Wed>
+
+** Added
+   - Support single- and double-quoted strings in the search filter
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/176][PR]] 🙏
+   - Trim whitespace for entered or updated headlines
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/177][PR]] 🙏
 
-** <2020-01-13 Mon>
-
-*** Added
-    - "Show Org filename in Header" is configurable in settings and
-      off by default
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/229][PR]] 🙏
-
-*** Fixed
-    - Show error message when using a capture template with a badly
-      configured header path
-
-
-** <2020-01-12 Sun>
-
-*** Added
-    - Make HeaderBar sticky
-      - Making undo/redo, file browser and help always available
-        (before it was required to scroll all the way to the top)
-    - Deselect headline by clicking into the title (or empty space) in
-      the HeaderBar
-    - Show Org filename in Header
-
-*** Fixed
-    - *Major synchronization improvements*
-      1. After undo/redo, synchronize Org file
-      2. Debounce Sync
-         1. When a user changes things quickly (which happens easily
-            when having 'live sync' enabled and using undo/redo for
-            example), multiple syncs ran in parallel. The back-ends
-            will either get confused or fail with errors (429 too many
-            write operations). In any case, likely the last written
-            state would not have been the state of the Org file in
-            organice.
-      3. Safeguard against concurrent sync requests to the back-end
-      4. In case of synchronization error, show the error to the user
-         and retry synchronization
-      5. Don't actually sync a whole Org file for an empty header.
-         When the user adds some data and triggers
-         UPDATE_HEADER_TITLE, then it makes sense to save it.
-
-** <2020-01-11 Sat>
-
-*** Added
-    - All HeaderActionItems are undoable and redoable
-
-*** Fixed
-    - Parsing planning items followed by a a checkbox
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/222/files][PR]] 🙏
-** <2020-01-07 Tue>
-
-*** Added
-    - *Refile*
-      - When reviewing the captured data, you may want to refile or to
-        copy some of the entries into a different list, for example
-        into a project.
-    - Add button in HeaderActionBar to open property editor
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/195][PR]] 🙏
-
-*** Changed
-    - All HeaderActionDrawer actions have icons. The icons are
-      documented in sample.org and have a mouseover title.
-
-** <2020-01-04 Sat>
-
-*** Added
-    - Ability to search headlines
-      - It has the same syntax as the search field in the Task List
-        feature
-
-*** Fixed
-    - Sort order in Task List
-      - Tasks were only ordered by their planning item dates. This
-        implied that tasks that were long DONE would be shown first.
-      - Now, tasks in the Task list are sorted by state and then date.
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/207][PR]] 🙏
-
-
-** <2020-01-02 Thu>
-
-*** Added
-    - Place cursor after the TODO keyword when creating a new header
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/193][PR]] 🙏
-    - Highlight verbatim markup
-
-*** Changes
-    - Highlight cookies and cookie percentages according to Solarized
-      color scheme
-
-*** Fixed
-    - Don't update search results when using an invalid search filter
-    - On mobile: Styling of Search / Task List drawer when searching all
-      headlines
-    - On mobile: Ability to scroll Search / Task List
-    - Teach #+TODO parser to understand (..) suffix
-      - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/202][PR]] 🙏
-
-** <2020-01-01 Wed>
-
-*** Added
-    - Support single- and double-quoted strings in the search filter
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/176][PR]] 🙏
-    - Trim whitespace for entered or updated headlines
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/177][PR]] 🙏
+** Fixed
+   - Capture templates in iOS 13.3 are positioned properly
+     - iOS 13 introduced a styling regression when setting focus
+       without user interaction. iOS 13.3 reverts to the way other
+       browsers do it.
 
-*** Fixed
-    - Capture templates in iOS 13.3 are positioned properly
-      - iOS 13 introduced a styling regression when setting focus
-        without user interaction. iOS 13.3 reverts to the way other
-        browsers do it.
+** Changed
+   - Revert "Move HeaderActionDrawer before headline"
+     - As per #188, the changes introduced in #100 didn't fare well
+       with the community. Hence, as a first step to improve UX,
+       we're reverting to the previous state.
 
-*** Changed
-    - Revert "Move HeaderActionDrawer before headline"
-      - As per #188, the changes introduced in #100 didn't fare well
-        with the community. Hence, as a first step to improve UX,
-        we're reverting to the previous state.
+* <2019-12-31 Tue>
 
-** <2019-12-31 Tue>
+** Added
+   - *Searching of headlines/todos with a composable query language*
+     - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/154][PR]] 🙏
+   - Routing for Settings (/settings) and Sample (/sample)
+   - Routing for Agenda and TaskList
 
-*** Added
-    - *Searching of headlines/todos with a composable query language*
-      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/154][PR]] 🙏
-    - Routing for Settings (/settings) and Sample (/sample)
-    - Routing for Agenda and TaskList
+** Changes
+   - The action for capture templates now uses a more idiomatic
+     'plus' icon instead of a 'list' icon
 
-*** Changes
-    - The action for capture templates now uses a more idiomatic
-      'plus' icon instead of a 'list' icon
+* <2019-12-28 Sat>
 
-** <2019-12-28 Sat>
+** Added
+   - Proper coloring of DONE todoKeywords from custom todo sequences
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/165][PR]]!
+   - Place TODO keyword of previous header in the new header
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/164][PR]]!
 
-*** Added
-    - Proper coloring of DONE todoKeywords from custom todo sequences
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/165][PR]]!
-    - Place TODO keyword of previous header in the new header
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/164][PR]]!
+** Changed
+   - Refactor current Org parser and regex
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/161][PR]]!
 
-*** Changed
-    - Refactor current Org parser and regex
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/161][PR]]!
+* <2019-12-26 Thu>
 
-** <2019-12-26 Thu>
+** Added
 
-*** Added
+   - "Share" button for headlines (sharing via email)
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/145][PR]]!
+   - Automatically render links for URLs with www prefix, but without
+     protocol
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/159][PR]]!
 
-    - "Share" button for headlines (sharing via email)
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/145][PR]]!
-    - Automatically render links for URLs with www prefix, but without
-      protocol
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/159][PR]]!
+* <2019-12-25 Wed>
 
-** <2019-12-25 Wed>
+** Added
 
-*** Added
+   - Suggestion list for inputs in property editor
+     - To minimize typing and typos, add smart completion for property
+       names and values in the PropertyListEditorModal.
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/144][PR]]!
 
-    - Suggestion list for inputs in property editor
-      - To minimize typing and typos, add smart completion for property
-        names and values in the PropertyListEditorModal.
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/144][PR]]!
+* <2019-12-24 Tue>
+** Added
 
-** <2019-12-24 Tue>
-*** Added
+   - *Automatically render links for URLs, e-mail addresses and phone
+     numbers*
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/147][PR]]!
 
-    - *Automatically render links for URLs, e-mail addresses and phone
-      numbers*
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/147][PR]]!
+   - Suggestion list for inputs in tag editor
+     - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/149][PR]]!
 
-    - Suggestion list for inputs in tag editor
-      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/149][PR]]!
+* <2019-12-17 Tue>
+** Changed
+   - Improve webdav url input
+     - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/139][PR]]!
+** Fixed
+   - Make "privacy policy" sticky to the bottom of the landing page
+     - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/140][PR]]!
 
-** <2019-12-17 Tue>
-*** Changed
-    - Improve webdav url input
-      - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/139][PR]]!
-*** Fixed
-    - Make "privacy policy" sticky to the bottom of the landing page
-      - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/140][PR]]!
+* <2019-12-15 Sun>
 
-** <2019-12-15 Sun>
+** Changed
+   - UX: Move Org header actions before selected headline
+   - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/136][PR]]!
 
-*** Changed
-    - UX: Move Org header actions before selected headline
-    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/136][PR]]!
+** Fixed
+   - Android PWA implementation was broken (issue [[https://github.com/200ok-ch/organice/issues/134][#134]])
+     - It required two more icon sizes
+   - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/135][PR]]!
 
-*** Fixed
-    - Android PWA implementation was broken (issue [[https://github.com/200ok-ch/organice/issues/134][#134]])
-      - It required two more icon sizes
-    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/135][PR]]!
+* <2019-12-10 Tue>
 
-** <2019-12-10 Tue>
+** Added
 
-*** Added
+   - *Docker Support*
+   - The CI/CD workflow now also builds a Docker container which is
+     then published to
+     https://hub.docker.com/repository/docker/twohundredok/organice
+   - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/133][PR]]!
 
-    - *Docker Support*
-    - The CI/CD workflow now also builds a Docker container which is
-      then published to
-      https://hub.docker.com/repository/docker/twohundredok/organice
-    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/133][PR]]!
+* <2019-12-08 Sun>
 
-** <2019-12-08 Sun>
+** Added
 
-*** Added
+   - As a user, when I'm on a headline with a planning item (schedule
+     or deadline), I want to be able to remove it.
 
-    - As a user, when I'm on a headline with a planning item (schedule
-      or deadline), I want to be able to remove it.
+* <2019-11-29 Fri>
 
-** <2019-11-29 Fri>
+** Fixed
 
-*** Fixed
+   - Clicking the Timestamp in a TODO within the agenda toggles from
+     the date to a human readable timespan
 
-    - Clicking the Timestamp in a TODO within the agenda toggles from
-      the date to a human readable timespan
+* <2019-11-27 Wed>
 
-** <2019-11-27 Wed>
+** Added
 
-*** Added
+   - Instructions on configuring Nextcloud+haproxy to allow WebDAV
+   - Documentation on how to share from Nextcloud using WebDAV
+   - Thank you [[https://github.com/runejuhl][runejuhl]] for your [[https://github.com/200ok-ch/organice/pull/122][PR]]!
 
-    - Instructions on configuring Nextcloud+haproxy to allow WebDAV
-    - Documentation on how to share from Nextcloud using WebDAV
-    - Thank you [[https://github.com/runejuhl][runejuhl]] for your [[https://github.com/200ok-ch/organice/pull/122][PR]]!
+* <2019-11-25 Mon>
 
-** <2019-11-25 Mon>
+** Added
+   - Honor the 'nologrepeat' option
+     - It can be set via =#+STARTUP:= or as a property
+     - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/119][PR]]!
 
-*** Added
-    - Honor the 'nologrepeat' option
-      - It can be set via =#+STARTUP:= or as a property
-      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/119][PR]]!
+* <2019-11-22 Fri>
 
-** <2019-11-22 Fri>
+** Fixed
 
-*** Fixed
+   - Handle non-clock entries in =:LOGBOOK:= drawers
+     - Fixes [[https://github.com/200ok-ch/organice/issues/111][issue #111]], [[https://github.com/200ok-ch/organice/issues/108][issue #108]] and [[https://github.com/200ok-ch/organice/issues/110][issue #110]]
+     - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/112][PR]]!
 
-    - Handle non-clock entries in =:LOGBOOK:= drawers
-      - Fixes [[https://github.com/200ok-ch/organice/issues/111][issue #111]], [[https://github.com/200ok-ch/organice/issues/108][issue #108]] and [[https://github.com/200ok-ch/organice/issues/110][issue #110]]
-      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/112][PR]]!
+* <2019-11-21 Thu>
 
-** <2019-11-21 Thu>
+** Fixed
 
-*** Fixed
+   - Safeguard against potential Dropbox SDK Bug
+     - More information in [[https://github.com/200ok-ch/organice/issues/108][issue #108]]
 
-    - Safeguard against potential Dropbox SDK Bug
-      - More information in [[https://github.com/200ok-ch/organice/issues/108][issue #108]]
+* <2019-11-19 Tue>
 
-** <2019-11-19 Tue>
+** Changed
 
-*** Changed
+   - Don't put newlines after headers with no content, add newline at EOF
+     - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/106][PR]]!
 
-    - Don't put newlines after headers with no content, add newline at EOF
-      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/106][PR]]!
+* <2019-11-14 Thu>
 
-** <2019-11-14 Thu>
+** Added
 
-*** Added
+   - *Clocking work time*
+     - Org mode allows you to clock the time you spend on specific
+       tasks in a project:
+       https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
+     - organice is compatible with logbook clocking, now
+     - You can 'clock in' and 'clock out' to a header
+     - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/103][PR]]!
 
-    - *Clocking work time*
-      - Org mode allows you to clock the time you spend on specific
-        tasks in a project:
-        https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
-      - organice is compatible with logbook clocking, now
-      - You can 'clock in' and 'clock out' to a header
-      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/103][PR]]!
+* <2019-10-31 Thu>
 
-** <2019-10-31 Thu>
+** Fixed
+   - Keep all in-file settings and content lines from top of file
+     - Thank you [[https://github.com/andersjohansson][@andersjohansson]] for your [[https://github.com/200ok-ch/organice/pull/90][PR]]!
 
-*** Fixed
-    - Keep all in-file settings and content lines from top of file
-      - Thank you [[https://github.com/andersjohansson][@andersjohansson]] for your [[https://github.com/200ok-ch/organice/pull/90][PR]]!
+* <2019-10-29 Tue>
 
-** <2019-10-29 Tue>
+** Added
+   - Show login options as clickable links with cursor pointer
+   - Also improve wording with regards to login options
+     - Thank you [[https://github.com/rodrigomaia17][@rodrigomaia17]] for your [[https://github.com/200ok-ch/organice/pull/88][PR]]!
 
-*** Added
-    - Show login options as clickable links with cursor pointer
-    - Also improve wording with regards to login options
-      - Thank you [[https://github.com/rodrigomaia17][@rodrigomaia17]] for your [[https://github.com/200ok-ch/organice/pull/88][PR]]!
 
+* <2019-10-26 Sat>
 
-** <2019-10-26 Sat>
+** Added
+   - *WebDAV as a sync backend!*
+     - Thank you [[https://github.com/TristanCacqueray][@TristanCacqueray]] for your [[https://github.com/200ok-ch/organice/pull/82][PR]]!
 
-*** Added
-    - *WebDAV as a sync backend!*
-      - Thank you [[https://github.com/TristanCacqueray][@TristanCacqueray]] for your [[https://github.com/200ok-ch/organice/pull/82][PR]]!
+   - As a user, when I swipe a header, I want the icon to contrast
+     the background, so that better see the action taken
+     - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/78][PR]]!
 
-    - As a user, when I swipe a header, I want the icon to contrast
-      the background, so that better see the action taken
-      - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/78][PR]]!
+   - As a user, when I hover a clickable element, I want my cursor to
+   change, so that I can see that it is clickable.
+     - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/79][PR]]!
 
-    - As a user, when I hover a clickable element, I want my cursor to
-    change, so that I can see that it is clickable.
-      - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/79][PR]]!
+** Fixed
+   - Do not throw an error when clearing a planning item
+     - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/81][PR]]!
 
-*** Fixed
-    - Do not throw an error when clearing a planning item
-      - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/81][PR]]!
+* <2019-10-02 Wed>
 
-** <2019-10-02 Wed>
-
-*** Fixed
+** Fixed
 
 - On iOS 13, fix the regression which made capture input fields hide
   under the keyboard
@@ -310,34 +312,34 @@ All notable changes to this project will be documented in this file.
     looks like and I'll add the dimensions for your form factor right
     away!
 
-** <2019-09-28 Sat>
+* <2019-09-28 Sat>
 
-*** Added
+** Added
 
 - Implemented a =redo= Button next to the =undo= button
 
-** <2019-09-21 Sat>
+* <2019-09-21 Sat>
 
-*** Fixed
+** Fixed
 
 - Parser bug which would interpret *bold* statements in the beginning
   of a line as a header.
 - Parser bug which would delete newlines between headers and items
 
-*** Changed
+** Changed
 
 - @MTrost [[https://github.com/200ok-ch/organice/pull/45][introduced]] a new testing library called [[https://testing-library.com/docs/intro][React Testing
   Library]] which greatly simplified writing interaction tests.
 
-** <2019-09-19 Thu>
+* <2019-09-19 Thu>
 
-*** Changed
+** Changed
 
 - Constraining to a max width and centering for tablets and bigger
 
-** <2019-09-15 Sun>
+* <2019-09-15 Sun>
 
-*** Fixed
+** Fixed
 
 - The 'Sync on application becoming visible' feature works on iOS and
   Safari
@@ -345,29 +347,29 @@ All notable changes to this project will be documented in this file.
     when the browser tab becomes visible. This prevents you from
     having a stale file before starting to make changes to it.
 
-** <2019-09-08 Sun>
-*** Added
+* <2019-09-08 Sun>
+** Added
 
 - Documented how to use organice from a bookmarklet using the capture
   template feature
 
-** <2019-09-06 Fri>
-*** Fixed
+* <2019-09-06 Fri>
+** Fixed
 
 - Removed Google Analytics tracking, because it has no place here
 
-** <2019-09-02 Mon>
+* <2019-09-02 Mon>
 
-*** Added
+** Added
 
 - Configure Google Drive for the free community version of organice at
   https://organice.200ok.ch
 - Documented SPA routing for self-hosting
 - Wrote and publicized a Privacy Policy
 
-** <2019-08-27 Tue>
+* <2019-08-27 Tue>
 
-*** Changed
+** Changed
 
 - Color scheme has been ported to the popular [[https://ethanschoonover.com/solarized/][Solarized]] (light mode)
   - Whilst doing so, CSS variables have been introduced, so that
@@ -375,17 +377,17 @@ All notable changes to this project will be documented in this file.
   - The logo has been adapted, too
 - The landing page and settings screens have been de-cluttered
 
-** <2019-08-26 Mon>
+* <2019-08-26 Mon>
 
-*** Added
+** Added
 
 - Continuous deployment: Merging to =master= triggers a build on CI
   and when successful, it triggers a deploy to https://org.200ok.ch
 - Add a new temporary™ logo: [[file:public/organice.png][organice.png]]
 
-** <2019-08-25 Sun>
+* <2019-08-25 Sun>
 
-*** Added
+** Added
 
 - Since we want organice to be a community driven project, we have added:
   - [[file:CODE_OF_CONDUCT.org][Code of conduct]]
@@ -400,40 +402,40 @@ All notable changes to this project will be documented in this file.
 
 - Add [[https://codeclimate.com][Codeclimate]] for automated maintainability analysis
 
-*** Changed
+** Changed
 
 - Upgraded to Node 12.9
 
-** <2019-08-12 Mon>
+* <2019-08-12 Mon>
 
-*** Changed
+** Changed
 
 - The default keybindings (when used from a desktop browser) are now
   more in line with the defaults in Emacs itself
 
-*** Fixed
+** Fixed
 
 - The keybindings work on non-macOS operating systems
 
-** <2019-08-10 Sat>
+* <2019-08-10 Sat>
 
-*** Added
+** Added
 
 - As a user, when in a directory listing, I want the folders and files
   to be sorted alphabetically. Furthermore, I only want to see files
   that organice can open (that is org and org archive files).
 - Note: This is only implemented for the Dropbox back-end at this time.
 
-*** Changed
+** Changed
 
 - Filters files from a directory listing down to org files.
 - Sorts folders atop of files.
 - Sorts both folders and files alphabetically.
 
 
-** <2019-08-05 Mon>
+* <2019-08-05 Mon>
 
-*** Added
+** Added
 
 - When the browser tab becomes visible, pull the latest version of the
   Org file
@@ -458,9 +460,9 @@ All notable changes to this project will be documented in this file.
     it that a new version of the org-file is pulled from the server.
     It's therefore much harder for the user to create conflicts.
 
-** <2019-08-04 Sun>
+* <2019-08-04 Sun>
 
-*** Fixed
+** Fixed
 
 - Parser doesn't break indentation of existing files in fewer places
 - Planning Items are formatted as in Emacs Org mode
@@ -468,9 +470,9 @@ All notable changes to this project will be documented in this file.
 - Tags are formatted as in Emacs Org mode
 
 
-** <2019-08-03 Sat>
+* <2019-08-03 Sat>
 
-*** Added
+** Added
 
 - Documented deployment options
   - People have been asking for tighter access restrictions.
@@ -480,7 +482,7 @@ All notable changes to this project will be documented in this file.
     two that will (potentially) be cost-free to the users and which
     are very easy and quick to set up: Ftp and Heroku.
 
-*** Fixed
+** Fixed
 
 - Tests on =master= were red
   - Partly due to obsolete tests
