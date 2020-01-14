@@ -43,6 +43,19 @@ You can watch it on:
 - [[https://www.youtube.com/watch?v=aQKc0hcFXCk][Youtube]]
 - [[https://media.emacsconf.org/2019/05.html][emacsconf.org]]
 
+** Installation
+
+organice is a web application. You can use it from any browser. On iOS
+and Android, you can install organice to your homescreen. When
+started from there, it will run in full-screen and add some [[#pwa--offline-support][offline
+capabilities]].
+
+Installing to the homescreen on:
+
+- iOS: Open organice in Mobile Safari. Tap the "share" button and
+  select "Add to Home Screen".
+- Android: Open organice in Chrome or Firefox. Tap the "menu" button
+  and select "Add to homescreen".
 
 ** Usage
 *** Current restrictions/expectations of organice
@@ -59,11 +72,11 @@ restrictions and expectations.
   but invisible and currently not editable with organice.
 - After potential in-buffer settings, your Org file _has to_ begin
   with a headline.
-- In treating all the rest of the content beyond the first headline
-  organice is actually very robust in reading and editing your Org
-  file and not breaking any of it. We've had users with 10k LOC Org
-  files with all kinds of native Org features (of which organice only
-  has partial understanding) and they just work fine!
+
+Apart from these restrictions, organice is very robust in reading and
+editing your Org file and not breaking any of it. We're having users
+with 10'000 lines in their files including all kinds of native Org
+functionality - and even these files work just fine in organice!
 
 Generally, when working with distributed Org files, we're recommending
 to put them under version control and to check for bugs and racing
@@ -90,19 +103,19 @@ The strategy we're using with regards to the parser is this:
 
 - Keep improving the existing custom parser for new features and make
   bugfixes as long as the new one isn't ready.
-- In parallel, when there's time, work on the new one until there's
-  feature parity with the old one from organice.
+- In parallel, work on the new one until there is feature parity
+  between both parsers.
 - When the new one is finished, integrate it into organice.
 
-*** PWA / Offline Support
+*** Progressive Web App / Offline Support
 
-organice can run as a PWA and does have offline Support. On iOS and
-Android, you can install the web app to your home screen [[[https://www.howtogeek.com/196087/how-to-add-websites-to-the-home-screen-on-any-smartphone-or-tablet/][tutorial]]].
-From your home screen, organice will start up in full screen and it
-will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]] to cache the application. On a desktop
-browser, the Service Worker will be used automatically. This is
-implemented using the Create React App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]]
-functionality which enables the following features:
+organice can run as a PWA (Progressive Web App) - see the [[#installation ][installation
+instructions]] and does have offline support. From your home screen,
+organice will start up in full screen and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]]
+to cache the application. On a desktop browser, the Service Worker
+will be used automatically. This is implemented using the Create React
+App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]] functionality which enables the following
+features:
 
 - All static assets are cached so that organice loads fast on
   subsequent visits, regardless of network connectivity.
@@ -148,7 +161,7 @@ organice implements this customization strategy:
 
 - Use in-buffer settings where appropriate
 - Build custom and mobile friendly user interfaces where appropriate
-  - For example [[#capture-templates][#capture-templates]]
+  - For example [[#capture-templates][capture templates]]
 
 **** Supported in-buffer configuration
 
