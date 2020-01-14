@@ -4,6 +4,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* <2020-01-14 Tue>
+
+** Added
+   - Notify on changes for changelog
+     - This is done with a similar UX than other productivity apps
+       (like Slack) do it. The user will see a 'gift' icon whenever
+       there's a change to the changelog she has not seen, yet.
+
 * <2020-01-13 Mon>
 
 ** Added
@@ -14,10 +22,6 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Fixed
    - Show error message when using a capture template with a badly
      configured header path
-   - Notify on changes for changelog
-     - This is done with a similar UX than other productivity apps
-       (like Slack) do it. The user will see a 'gift' icon whenever
-       there's a change to the changelog she has not seen, yet.
 
 * <2020-01-12 Sun>
 
