@@ -6,7 +6,7 @@
   padding: 10px;
 
   display: grid;
-  grid-template-columns: minmax(2em, 2.8fr) minmax(1em, 3fr) minmax(1em, 2.8fr);
+  grid-template-columns: minmax(2em, 3fr) minmax(1em, 3fr) minmax(1em, 3fr);
   grid-template-areas: 'back title actions';
   align-items: center;
 

@@ -135,9 +135,9 @@ export const setHasUnseenChangelog = newHasUnseenChangelog => ({
   newHasUnseenChangelog,
 });
 
-export const setLastSeenChangelogHeader = newLastSeenChangelogHeader => ({
+export const setLastSeenChangelogHeader = newLastSeenChangelogHash => ({
   type: 'SET_LAST_SEEN_CHANGELOG_HEADER',
-  newLastSeenChangelogHeader,
+  newLastSeenChangelogHash,
 });
 
 export const setCustomKeybinding = (keybindingName, keybinding) => ({

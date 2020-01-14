@@ -1,7 +1,34 @@
-import generateId from './id_generator';
-
 import { List, fromJS } from 'immutable';
+import _ from 'lodash';
+import raw from 'raw.macro';
+
+import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
+
+function generateHash(list) {
+  return new Promise((resolve, reject) => {
+    crypto.subtle
+      .digest(
+        {
+          name: 'SHA-256',
+        },
+        new Uint8Array(list)
+      )
+      .then(hashArray => {
+        resolve(_.values(new Uint8Array(hashArray)).join(''));
+      });
+  });
+}
+
+export const changelogHash = () => {
+  return new Promise((resolve, reject) => {
+    const changelogFile = raw('../../changelog.org');
+
+    generateHash(changelogFile.split('').map(c => c.charCodeAt(0))).then(hash => {
+      resolve(hash);
+    });
+  });
+};
 
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
