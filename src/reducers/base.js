@@ -34,7 +34,7 @@ const setHasUnseenChangelog = (state, action) =>
   state.set('hasUnseenChangelog', action.newHasUnseenChangelog);
 
 const setLastSeenChangelogHeader = (state, action) =>
-  state.set('lastSeenChangelogHeader', action.newLastSeenChangelogHeader);
+  state.set('lastSeenChangelogHash', action.newLastSeenChangelogHash);
 
 const setLastViewedFile = (state, action) =>
   state

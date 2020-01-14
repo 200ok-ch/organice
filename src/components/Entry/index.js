@@ -10,10 +10,7 @@ import { List } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-import { parseOrg } from '../../lib/parse_org';
-
-import raw from 'raw.macro';
-
+import { changelogHash } from '../../lib/org_utils';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -33,18 +30,30 @@ class Entry extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['renderChangelogFile', 'renderSampleFile', 'renderFileBrowser', 'renderFile']);
+    _.bindAll(this, [
+      'renderChangelogFile',
+      'renderSampleFile',
+      'renderFileBrowser',
+      'renderFile',
+      'setChangelogUnseenChanges',
+    ]);
   }
 
   componentDidMount() {
-    const { lastSeenChangelogHeader, isAuthenticated } = this.props;
+    this.setChangelogUnseenChanges();
+  }
 
-    const changelogFile = parseOrg(raw('../../../changelog.org'));
-    const firstHeader = changelogFile.getIn(['headers', 0]);
-    if (isAuthenticated && !!lastSeenChangelogHeader && firstHeader !== lastSeenChangelogHeader) {
-      this.props.base.setHasUnseenChangelog(true);
-    }
-    this.props.base.setLastSeenChangelogHeader(firstHeader);
+  // TODO: Should this maybe done on init of the application and not in the component?
+  setChangelogUnseenChanges() {
+    const { lastSeenChangelogHash, isAuthenticated } = this.props;
+    changelogHash().then(changelogHash => {
+      const hasChanged =
+        isAuthenticated &&
+        lastSeenChangelogHash &&
+        !_.isEqual(changelogHash, lastSeenChangelogHash);
+
+      this.props.base.setHasUnseenChangelog(hasChanged);
+    });
   }
 
   componentDidUpdate() {
@@ -191,7 +200,7 @@ const mapStateToProps = (state, props) => {
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
-    lastSeenChangelogHeader: state.base.get('lastSeenChangelogHeader'),
+    lastSeenChangelogHash: state.base.get('lastSeenChangelogHash'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
     isDirty: state.org.present.get('isDirty'),

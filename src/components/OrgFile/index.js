@@ -32,6 +32,7 @@ import {
   headerWithId,
   extractAllOrgTags,
   extractAllOrgProperties,
+  changelogHash,
 } from '../../lib/org_utils';
 
 import _ from 'lodash';
@@ -81,6 +82,9 @@ class OrgFile extends PureComponent {
 
       if (staticFile === 'changelog') {
         this.props.base.setHasUnseenChangelog(false);
+        changelogHash().then(hash => {
+          this.props.base.setLastSeenChangelogHeader(hash);
+        });
       }
 
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
@@ -119,7 +123,6 @@ class OrgFile extends PureComponent {
 
   componentDidCatch(error) {
     // TODO: Track the `error` into a bug tracker
-
     this.setState({ hasUncaughtError: true });
   }
 
