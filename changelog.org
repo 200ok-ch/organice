@@ -4,7 +4,7 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
-* <2020-01-14 Tue>
+* [2020-01-14 Tue]
 
 ** Added
    - Notify on changes for changelog
@@ -12,7 +12,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
        (like Slack) do it. The user will see a 'gift' icon whenever
        there's a change to the changelog she has not seen, yet.
 
-* <2020-01-13 Mon>
+* [2020-01-13 Mon]
 
 ** Added
    - "Show Org filename in Header" is configurable in settings and
@@ -23,7 +23,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Show error message when using a capture template with a badly
      configured header path
 
-* <2020-01-12 Sun>
+* [2020-01-12 Sun]
 
 ** Added
    - Make HeaderBar sticky
@@ -51,7 +51,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
         When the user adds some data and triggers
         UPDATE_HEADER_TITLE, then it makes sense to save it.
 
-* <2020-01-11 Sat>
+* [2020-01-11 Sat]
 
 ** Added
    - All HeaderActionItems are undoable and redoable
@@ -59,7 +59,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Fixed
    - Parsing planning items followed by a a checkbox
      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/222/files][PR]] 🙏
-* <2020-01-07 Tue>
+* [2020-01-07 Tue]
 
 ** Added
    - *Refile*
@@ -73,7 +73,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - All HeaderActionDrawer actions have icons. The icons are
      documented in sample.org and have a mouseover title.
 
-* <2020-01-04 Sat>
+* [2020-01-04 Sat]
 
 ** Added
    - Ability to search headlines
@@ -88,7 +88,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/207][PR]] 🙏
 
 
-* <2020-01-02 Thu>
+* [2020-01-02 Thu]
 
 ** Added
    - Place cursor after the TODO keyword when creating a new header
@@ -107,7 +107,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Teach #+TODO parser to understand (..) suffix
      - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/202][PR]] 🙏
 
-* <2020-01-01 Wed>
+* [2020-01-01 Wed]
 
 ** Added
    - Support single- and double-quoted strings in the search filter
@@ -127,7 +127,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
        with the community. Hence, as a first step to improve UX,
        we're reverting to the previous state.
 
-* <2019-12-31 Tue>
+* [2019-12-31 Tue]
 
 ** Added
    - *Searching of headlines/todos with a composable query language*
@@ -139,7 +139,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - The action for capture templates now uses a more idiomatic
      'plus' icon instead of a 'list' icon
 
-* <2019-12-28 Sat>
+* [2019-12-28 Sat]
 
 ** Added
    - Proper coloring of DONE todoKeywords from custom todo sequences
@@ -151,7 +151,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Refactor current Org parser and regex
      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/161][PR]]!
 
-* <2019-12-26 Thu>
+* [2019-12-26 Thu]
 
 ** Added
 
@@ -161,7 +161,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      protocol
      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/159][PR]]!
 
-* <2019-12-25 Wed>
+* [2019-12-25 Wed]
 
 ** Added
 
@@ -170,7 +170,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
        names and values in the PropertyListEditorModal.
      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/144][PR]]!
 
-* <2019-12-24 Tue>
+* [2019-12-24 Tue]
 ** Added
 
    - *Automatically render links for URLs, e-mail addresses and phone
@@ -180,7 +180,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Suggestion list for inputs in tag editor
      - Thank you [[https://github.com/schoettl][schoettl]] for your [[https://github.com/200ok-ch/organice/pull/149][PR]]!
 
-* <2019-12-17 Tue>
+* [2019-12-17 Tue]
 ** Changed
    - Improve webdav url input
      - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/139][PR]]!
@@ -188,7 +188,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Make "privacy policy" sticky to the bottom of the landing page
      - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/140][PR]]!
 
-* <2019-12-15 Sun>
+* [2019-12-15 Sun]
 
 ** Changed
    - UX: Move Org header actions before selected headline
@@ -199,7 +199,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      - It required two more icon sizes
    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/135][PR]]!
 
-* <2019-12-10 Tue>
+* [2019-12-10 Tue]
 
 ** Added
 
@@ -209,21 +209,21 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      https://hub.docker.com/repository/docker/twohundredok/organice
    - Thank you [[https://github.com/dotcs][dotcs]] for your [[https://github.com/200ok-ch/organice/pull/133][PR]]!
 
-* <2019-12-08 Sun>
+* [2019-12-08 Sun]
 
 ** Added
 
    - As a user, when I'm on a headline with a planning item (schedule
      or deadline), I want to be able to remove it.
 
-* <2019-11-29 Fri>
+* [2019-11-29 Fri]
 
 ** Fixed
 
    - Clicking the Timestamp in a TODO within the agenda toggles from
      the date to a human readable timespan
 
-* <2019-11-27 Wed>
+* [2019-11-27 Wed]
 
 ** Added
 
@@ -231,14 +231,14 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Documentation on how to share from Nextcloud using WebDAV
    - Thank you [[https://github.com/runejuhl][runejuhl]] for your [[https://github.com/200ok-ch/organice/pull/122][PR]]!
 
-* <2019-11-25 Mon>
+* [2019-11-25 Mon]
 
 ** Added
    - Honor the 'nologrepeat' option
      - It can be set via =#+STARTUP:= or as a property
      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/119][PR]]!
 
-* <2019-11-22 Fri>
+* [2019-11-22 Fri]
 
 ** Fixed
 
@@ -246,21 +246,21 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      - Fixes [[https://github.com/200ok-ch/organice/issues/111][issue #111]], [[https://github.com/200ok-ch/organice/issues/108][issue #108]] and [[https://github.com/200ok-ch/organice/issues/110][issue #110]]
      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/112][PR]]!
 
-* <2019-11-21 Thu>
+* [2019-11-21 Thu]
 
 ** Fixed
 
    - Safeguard against potential Dropbox SDK Bug
      - More information in [[https://github.com/200ok-ch/organice/issues/108][issue #108]]
 
-* <2019-11-19 Tue>
+* [2019-11-19 Tue]
 
 ** Changed
 
    - Don't put newlines after headers with no content, add newline at EOF
      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/106][PR]]!
 
-* <2019-11-14 Thu>
+* [2019-11-14 Thu]
 
 ** Added
 
@@ -272,13 +272,13 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      - You can 'clock in' and 'clock out' to a header
      - Thank you [[https://github.com/jamesnvc][@jamesnvc]] for your [[https://github.com/200ok-ch/organice/pull/103][PR]]!
 
-* <2019-10-31 Thu>
+* [2019-10-31 Thu]
 
 ** Fixed
    - Keep all in-file settings and content lines from top of file
      - Thank you [[https://github.com/andersjohansson][@andersjohansson]] for your [[https://github.com/200ok-ch/organice/pull/90][PR]]!
 
-* <2019-10-29 Tue>
+* [2019-10-29 Tue]
 
 ** Added
    - Show login options as clickable links with cursor pointer
@@ -286,7 +286,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      - Thank you [[https://github.com/rodrigomaia17][@rodrigomaia17]] for your [[https://github.com/200ok-ch/organice/pull/88][PR]]!
 
 
-* <2019-10-26 Sat>
+* [2019-10-26 Sat]
 
 ** Added
    - *WebDAV as a sync backend!*
@@ -304,7 +304,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Do not throw an error when clearing a planning item
      - Thank you [[https://github.com/ragone][@ragone]] for your [[https://github.com/200ok-ch/organice/pull/81][PR]]!
 
-* <2019-10-02 Wed>
+* [2019-10-02 Wed]
 
 ** Fixed
 
@@ -318,13 +318,13 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
     looks like and I'll add the dimensions for your form factor right
     away!
 
-* <2019-09-28 Sat>
+* [2019-09-28 Sat]
 
 ** Added
 
 - Implemented a =redo= Button next to the =undo= button
 
-* <2019-09-21 Sat>
+* [2019-09-21 Sat]
 
 ** Fixed
 
@@ -337,13 +337,13 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 - @MTrost [[https://github.com/200ok-ch/organice/pull/45][introduced]] a new testing library called [[https://testing-library.com/docs/intro][React Testing
   Library]] which greatly simplified writing interaction tests.
 
-* <2019-09-19 Thu>
+* [2019-09-19 Thu]
 
 ** Changed
 
 - Constraining to a max width and centering for tablets and bigger
 
-* <2019-09-15 Sun>
+* [2019-09-15 Sun]
 
 ** Fixed
 
@@ -353,18 +353,18 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
     when the browser tab becomes visible. This prevents you from
     having a stale file before starting to make changes to it.
 
-* <2019-09-08 Sun>
+* [2019-09-08 Sun]
 ** Added
 
 - Documented how to use organice from a bookmarklet using the capture
   template feature
 
-* <2019-09-06 Fri>
+* [2019-09-06 Fri]
 ** Fixed
 
 - Removed Google Analytics tracking, because it has no place here
 
-* <2019-09-02 Mon>
+* [2019-09-02 Mon]
 
 ** Added
 
@@ -373,7 +373,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 - Documented SPA routing for self-hosting
 - Wrote and publicized a Privacy Policy
 
-* <2019-08-27 Tue>
+* [2019-08-27 Tue]
 
 ** Changed
 
@@ -383,7 +383,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
   - The logo has been adapted, too
 - The landing page and settings screens have been de-cluttered
 
-* <2019-08-26 Mon>
+* [2019-08-26 Mon]
 
 ** Added
 
@@ -391,7 +391,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
   and when successful, it triggers a deploy to https://org.200ok.ch
 - Add a new temporary™ logo: [[file:public/organice.png][organice.png]]
 
-* <2019-08-25 Sun>
+* [2019-08-25 Sun]
 
 ** Added
 
@@ -412,7 +412,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 - Upgraded to Node 12.9
 
-* <2019-08-12 Mon>
+* [2019-08-12 Mon]
 
 ** Changed
 
@@ -423,7 +423,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 - The keybindings work on non-macOS operating systems
 
-* <2019-08-10 Sat>
+* [2019-08-10 Sat]
 
 ** Added
 
@@ -439,7 +439,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 - Sorts both folders and files alphabetically.
 
 
-* <2019-08-05 Mon>
+* [2019-08-05 Mon]
 
 ** Added
 
@@ -466,7 +466,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
     it that a new version of the org-file is pulled from the server.
     It's therefore much harder for the user to create conflicts.
 
-* <2019-08-04 Sun>
+* [2019-08-04 Sun]
 
 ** Fixed
 
@@ -476,7 +476,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 - Tags are formatted as in Emacs Org mode
 
 
-* <2019-08-03 Sat>
+* [2019-08-03 Sat]
 
 ** Added
 
