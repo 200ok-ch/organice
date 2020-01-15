@@ -66,7 +66,7 @@ const doSync = ({
 } = {}) => (dispatch, getState) => {
   const client = getState().syncBackend.get('client');
   const path = getState().org.present.get('path');
-  if (path === null) {
+  if (!path) {
     return;
   }
 
