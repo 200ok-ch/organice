@@ -4,6 +4,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+
+* [2020-01-15 Wed]
+
+** Fixed
+   - Put Floating Action Button "Move a header" into the middle of the
+     screen, so that it has enough space to render all arrows on
+     mobile devices.
+
 * [2020-01-14 Tue]
 
 ** Added

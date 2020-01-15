@@ -569,6 +569,11 @@ exports[`Render all views Org Functionality Renders everything starting from an 
             class="fas fa-xs fa-sync-alt action-drawer__btn__sub-icon"
           />
         </button>
+        <button
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-alt"
+          style="opacity: 1;"
+          title="Show agenda"
+        />
         <div
           class="action-drawer__arrow-buttons-container"
           style="left: 0px;"
@@ -609,11 +614,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
             title="Show movement buttons"
           />
         </div>
-        <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-alt"
-          style="opacity: 1;"
-          title="Show agenda"
-        />
         <div
           class="action-drawer__capture-buttons-container"
         >

@@ -371,8 +371,6 @@ const ActionDrawer = ({
             tooltip="Sync changes"
           />
 
-          {renderMovementButtons()}
-
           <ActionButton
             iconName="calendar-alt"
             shouldSpinSubIcon={isLoading}
@@ -386,6 +384,8 @@ const ActionDrawer = ({
             }}
             tooltip="Show agenda"
           />
+
+          {renderMovementButtons()}
 
           {renderSearchButtons()}
           {renderCaptureButtons()}
