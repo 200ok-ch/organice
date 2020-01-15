@@ -1,14 +1,11 @@
-* organice - /'ɔ:gənaɪz/
+#+html: <h1 align="center">organice - /'ɔ:gənaɪz/</h1>
 
-*organice organizes Org files nicely!*
+#+html: <p align="center"><b>organice organizes Org files nicely!</b></p>
 
 #+html: <p align="center"> <img src="public/organice-small.png"/> </p>
 
-Tests (CircleCI): [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
 
-Maintainability (Codeclimate): [[https://codeclimate.com/github/200ok-ch/organice/maintainability][https://api.codeclimate.com/v1/badges/41d614b1f85c8b261067/maintainability.png]]
-
-Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
+Tests: [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]] Maintainability: [[https://codeclimate.com/github/200ok-ch/organice/maintainability][https://api.codeclimate.com/v1/badges/41d614b1f85c8b261067/maintainability.png]] Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
 
 ** What does this project do?
 
