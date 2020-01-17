@@ -18,6 +18,7 @@ import {
   parseMarkupAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
+  updatePlanningItems,
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
 import {
@@ -223,11 +224,15 @@ const exitEditMode = state => state.set('editMode', null);
 const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const todoKeywordSets = state.get('todoKeywordSets');
 
-  const newTitleLine = parseTitleLine(action.newRawTitle.trim(), state.get('todoKeywordSets'));
-  // TODO: add active timestamps from titleline to planning items
+  const newTitleLine = parseTitleLine(action.newRawTitle.trim(), todoKeywordSets);
 
   state = state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
+
+  state = state.updateIn(['headers', headerIndex, 'planningItems'], planningItems =>
+    updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', newTitleLine.get('title'))
+  );
 
   return updateCookiesOfParentOfHeaderWithId(state, action.headerId);
 };
@@ -244,11 +249,18 @@ const updateHeaderDescription = (state, action) => {
       strippedDescription,
     } = parseDescriptionPrefixElements(action.newRawDescription, parsedTitle);
 
-    // TODO: add active timestamps from description to planning items
+    const description = parseRawText(strippedDescription);
+    console.log('description');
+    const updatedPlanningItems = updatePlanningItems(
+      planningItems,
+      'TIMESTAMP_DESCRIPTION',
+      description
+    );
+
     return header
       .set('rawDescription', strippedDescription)
-      .set('description', parseRawText(strippedDescription))
-      .set('planningItems', planningItems)
+      .set('description', description)
+      .set('planningItems', updatedPlanningItems)
       .set('propertyListItems', propertyListItems);
   });
 };

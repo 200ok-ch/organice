@@ -675,24 +675,28 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
   // Hence, it's acceptable that it is opinionated on treating
   // whitespace.
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
-  const description = rawText
+  const descriptionText = rawText
     .split('\n')
     .slice(1)
     .join('\n');
+
+  // TODO: possible addition: allow subheaders in description!
 
   const {
     planningItems,
     propertyListItems,
     strippedDescription,
     logBookEntries,
-  } = parseDescriptionPrefixElements(description);
+  } = parseDescriptionPrefixElements(descriptionText);
 
-  // TODO: parse title and add active timestamps to planning items
+  const description = parseRawText(strippedDescription);
+  const title = parseTitleLine(titleLine, defaultKeywordSets); // FIXME: how to pass keywordset?
+  const mergedPlanningItems = mergePlanningItems(planningItems, description, title.title);
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
-    .set('description', parseRawText(strippedDescription))
-    .set('planningItems', planningItems)
+    .set('description', description)
+    .set('planningItems', mergedPlanningItems)
     .set('propertyListItems', propertyListItems)
     .set('logBookEntries', logBookEntries);
 };
@@ -772,11 +776,13 @@ export const parseOrg = fileContents => {
 
     const parsedDescription = parseRawText(strippedDescription);
 
-    if (!planningItems) console.log(planningItems);
     const mergedPlanningItems = mergePlanningItems(
       planningItems,
-      extractActiveTimestampsForPlanningItemsFromParse(header.getIn(['titleLine', 'title'])),
-      extractActiveTimestampsForPlanningItemsFromParse(parsedDescription)
+      extractActiveTimestampsForPlanningItemsFromParse(
+        'TIMESTAMP_TITLE',
+        header.getIn(['titleLine', 'title'])
+      ),
+      extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription)
     );
 
     return header
@@ -795,17 +801,22 @@ export const parseOrg = fileContents => {
   });
 };
 
-const extractActiveTimestampsForPlanningItemsFromParse = parsedData => {
+const extractActiveTimestampsForPlanningItemsFromParse = (type, parsedData) => {
   // planningItems only accept a single timestamp -> ignore second timestamp
   return parsedData
     .filter(x => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
-    .map(x => createTimestamp({ type: 'TIMESTAMP', timestamp: x.get('firstTimestamp') }));
+    .map(x => createTimestamp({ type: type, timestamp: x.get('firstTimestamp') }));
 };
 
 // Merge planningItems from parsed title, description, and planning keywords.
 const mergePlanningItems = (...planningItems) => {
-  return planningItems[0]; // TODO: .merge(planningItems.slice(1));
+  return planningItems[0].merge(...planningItems.slice(1));
 };
+
+export const updatePlanningItems = (planningItems, type, parsed) =>
+  planningItems
+    .filter(x => x.get('type') !== type)
+    .merge(extractActiveTimestampsForPlanningItemsFromParse(type, parsed));
 
 const computeNestingLevel = titleLineWithAsterisk => {
   const nestingLevel = titleLineWithAsterisk.indexOf(' ');

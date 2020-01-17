@@ -604,7 +604,8 @@ export const createIsTodoKeywordInDoneState = todoKeywordSets => {
   return todoKeyword => todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
 };
 
-export const shouldRenderPlanningItem = x => x.type !== 'TIMESTAMP';
+export const shouldRenderPlanningItem = x =>
+  x.type !== 'TIMESTAMP_TITLE' && x.type !== 'TIMESTAMP_DESCRIPTION';
 
 export const getTodoKeywordSetsAsFlattenedArray = state => {
   return state
