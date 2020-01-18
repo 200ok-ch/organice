@@ -6,9 +6,12 @@ import './stylesheet.css';
 import TitleLine from '../../../TitleLine';
 
 import { dateForTimestamp } from '../../../../../../lib/timestamps';
-import { createIsTodoKeywordInDoneState } from '../../../../../../lib/org_utils';
+import {
+  createIsTodoKeywordInDoneState,
+  customFormatDistanceToNow,
+} from '../../../../../../lib/org_utils';
 
-import { format, isPast, formatDistanceToNow } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import classNames from 'classnames';
 
 function TaskListView(props) {
@@ -45,7 +48,7 @@ function TaskListView(props) {
                 <div className={dateClassName} onClick={onToggleDateDisplayType}>
                   {dateDisplayType === 'absolute'
                     ? format(planningItemDate, 'MM/dd')
-                    : `${formatDistanceToNow(planningItemDate)} ago`}
+                    : customFormatDistanceToNow(planningItemDate)}
 
                   {!!planningItem.getIn(['timestamp', 'startHour']) && (
                     <Fragment>

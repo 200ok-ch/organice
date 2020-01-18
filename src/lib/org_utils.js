@@ -1,6 +1,7 @@
 import { List, fromJS } from 'immutable';
 import _ from 'lodash';
 import raw from 'raw.macro';
+import { formatDistanceToNow } from 'date-fns';
 
 import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
@@ -567,6 +568,10 @@ export const timestampWithId = (headers, timestampId) =>
           .first()
     )
     .find(result => !!result);
+
+export const customFormatDistanceToNow = datetime => {
+  return formatDistanceToNow(datetime, { addSuffix: true });
+};
 
 export const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
   todoKeywordSets.find(keywordSet => keywordSet.get('keywords').contains(keyword)) ||
