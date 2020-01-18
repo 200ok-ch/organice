@@ -250,7 +250,6 @@ const updateHeaderDescription = (state, action) => {
     } = parseDescriptionPrefixElements(action.newRawDescription, parsedTitle);
 
     const description = parseRawText(strippedDescription);
-    console.log('description');
     const updatedPlanningItems = updatePlanningItems(
       planningItems,
       'TIMESTAMP_DESCRIPTION',

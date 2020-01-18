@@ -691,7 +691,11 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 
   const description = parseRawText(strippedDescription);
   const title = parseTitleLine(titleLine, defaultKeywordSets); // FIXME: how to pass keywordset?
-  const mergedPlanningItems = mergePlanningItems(planningItems, description, title.title);
+  const mergedPlanningItems = mergePlanningItems(
+    planningItems,
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_TITLE', title.get('title')),
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', description)
+  );
 
   return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
     .set('rawDescription', strippedDescription)
@@ -810,7 +814,7 @@ const extractActiveTimestampsForPlanningItemsFromParse = (type, parsedData) => {
 
 // Merge planningItems from parsed title, description, and planning keywords.
 const mergePlanningItems = (...planningItems) => {
-  return planningItems[0].merge(...planningItems.slice(1));
+  return planningItems[0].concat(...planningItems.slice(1));
 };
 
 export const updatePlanningItems = (planningItems, type, parsed) =>

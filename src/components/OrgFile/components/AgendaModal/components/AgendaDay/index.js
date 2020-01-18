@@ -167,8 +167,8 @@ export default class AgendaDay extends PureComponent {
                 return true;
               }
               return isWithinInterval(appearDate, { start: dateStart, end: dateEnd });
-            case 'TIMESTAMP':
-              console.log(planningItemDate.toString());
+            case 'TIMESTAMP_TITLE':
+            case 'TIMESTAMP_DESCRIPTION':
               return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
             default:
               return false;

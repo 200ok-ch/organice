@@ -1,0 +1,4 @@
+* <2020-01-18 Sat> Spec header
+  SCHEDULED: <2019-09-22 Sun>
+
+  Description contains <2020-01-19 Sun>

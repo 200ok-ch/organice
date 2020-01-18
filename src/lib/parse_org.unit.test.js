@@ -180,11 +180,26 @@ describe('Parsing and exporting should not alter the original file', () => {
             expect(parsed.strippedDescription).toEqual(testDescription);
           });
         });
+
+        test('Planning items should contain active timestamps from title and description as well', () => {
+          const testOrgFile = readFixture('schedule_and_timestamps');
+          const parsedFile = parseOrg(testOrgFile);
+          const headers = parsedFile.get('headers').toJS();
+          expect(headers.length).toEqual(1);
+          const header = headers[0];
+          expect(header.planningItems.length).toEqual(3);
+        });
       });
 
       describe('Planning items are formatted as is default Emacs', () => {
         test('For basic files', () => {
           const testOrgFile = readFixture('schedule');
+          const exportedFile = parseAndExportOrgFile(testOrgFile);
+          expect(exportedFile).toEqual(testOrgFile);
+        });
+
+        test('For files with timestamps in title and description', () => {
+          const testOrgFile = readFixture('schedule_and_timestamps');
           const exportedFile = parseAndExportOrgFile(testOrgFile);
           expect(exportedFile).toEqual(testOrgFile);
         });

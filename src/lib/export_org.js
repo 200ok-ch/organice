@@ -296,7 +296,7 @@ export const createRawDescriptionText = (header, includeTitle) => {
   // Special case: do not render planning items that are normal active timestamps
   const planningItemsToRender = header.planningItems.filter(shouldRenderPlanningItem);
   if (planningItemsToRender.length) {
-    const planningItemsContent = header.planningItems
+    const planningItemsContent = planningItemsToRender
       .map(planningItem => {
         const timestampString = renderAsText(fromJS(planningItem.timestamp));
         return `${planningItem.type}: ${timestampString}`;
