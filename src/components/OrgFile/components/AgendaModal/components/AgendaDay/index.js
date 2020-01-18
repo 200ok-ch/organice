@@ -4,7 +4,7 @@ import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
 
-import { isTodoKeywordCompleted } from '../../../../../../lib/org_utils';
+import { isTodoKeywordCompleted, getPlanningItemTypeText } from '../../../../../../lib/org_utils';
 import {
   dateForTimestamp,
   subtractTimestampUnitFromDate,
@@ -75,7 +75,9 @@ export default class AgendaDay extends PureComponent {
             return (
               <div key={planningItem.get('id')} className="agenda-day__header-container">
                 <div className="agenda-day__header__planning-item-container">
-                  <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
+                  <div className="agenda-day__header-planning-type">
+                    {getPlanningItemTypeText(planningItem)}
+                  </div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
                       ? format(planningItemDate, 'MM/dd')

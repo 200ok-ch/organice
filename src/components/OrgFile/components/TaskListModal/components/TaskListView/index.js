@@ -6,7 +6,10 @@ import './stylesheet.css';
 import TitleLine from '../../../TitleLine';
 
 import { dateForTimestamp } from '../../../../../../lib/timestamps';
-import { createIsTodoKeywordInDoneState } from '../../../../../../lib/org_utils';
+import {
+  createIsTodoKeywordInDoneState,
+  getPlanningItemTypeText,
+} from '../../../../../../lib/org_utils';
 
 import { format, isPast, formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
@@ -41,7 +44,9 @@ function TaskListView(props) {
           if (planningItemDate) {
             planningInformation = (
               <div className="agenda-day__header__planning-item-container">
-                <div className="task-list__header-planning-type">{planningItem.get('type')}</div>
+                <div className="task-list__header-planning-type">
+                  {getPlanningItemTypeText(planningItem)}
+                </div>
                 <div className={dateClassName} onClick={onToggleDateDisplayType}>
                   {dateDisplayType === 'absolute'
                     ? format(planningItemDate, 'MM/dd')

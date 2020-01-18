@@ -607,6 +607,17 @@ export const createIsTodoKeywordInDoneState = todoKeywordSets => {
 export const shouldRenderPlanningItem = x =>
   x.type !== 'TIMESTAMP_TITLE' && x.type !== 'TIMESTAMP_DESCRIPTION';
 
+export const getPlanningItemTypeText = planningItem => {
+  const text = planningItem.get('type');
+  switch (text) {
+    case 'TIMESTAMP_TITLE':
+    case 'TIMESTAMP_DESCRIPTION':
+      return 'TIMESTAMP';
+    default:
+      return text;
+  }
+};
+
 export const getTodoKeywordSetsAsFlattenedArray = state => {
   return state
     .get('todoKeywordSets')
