@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import * as orgActions from '../../../../../../actions/org';
 import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
 
 function HeaderListView(props) {
+  const { context } = props;
   function handleHeaderClick(headerId) {
     return () => props.onHeaderClick(headerId);
   }
+
+  // Populate filteredHeaders
+  useEffect(() => {
+    // No specific searchFilter and cursorPosition, but set the
+    // context (like 'search' or 'refile')
+    props.org.setSearchFilterInformation('', 0, context);
+  }, [context, props.org]);
 
   const { headers } = props;
 
@@ -43,6 +53,8 @@ const mapStateToProps = state => ({
     state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  org: bindActionCreators(orgActions, dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderListView);

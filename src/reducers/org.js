@@ -968,7 +968,7 @@ export const updateLogEntryTime = (state, action) => {
 };
 
 export const setSearchFilterInformation = (state, action) => {
-  const { searchFilter, cursorPosition } = action;
+  const { searchFilter, cursorPosition, context } = action;
   const headers = state.get('headers');
   state = state.asMutable();
 
@@ -987,7 +987,21 @@ export const setSearchFilterInformation = (state, action) => {
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successfull
   if (searchFilterValid) {
-    const filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+    let filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+
+    // Filter selectedHeader and its subheaders from `headers`,
+    // because you don't want to refile a header to itself or to one
+    // of it's subheaders.
+    if (context === 'refile') {
+      const selectedHeaderId = state.get('selectedHeaderId');
+      const subheaders = subheadersOfHeaderWithId(headers, selectedHeaderId);
+      let filterIds = subheaders.map(s => s.get('id')).toJS();
+      filterIds.push(selectedHeaderId);
+      filteredHeaders = filteredHeaders.filter(h => {
+        return !filterIds.includes(h.get('id'));
+      });
+    }
+
     state.setIn(['search', 'filteredHeaders'], filteredHeaders);
   }
 
@@ -1016,6 +1030,7 @@ export const setSearchFilterInformation = (state, action) => {
       cursorPosition
     );
   }
+
   state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
 
   return state.asImmutable();
