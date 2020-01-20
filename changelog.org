@@ -8,6 +8,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 * [2020-01-20 Mon]
 
 ** Fixed
+   - When refiling a header, don't show subheaders in the refile drawer
    - In the agenda view, fix relative time distance for future dates
      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/240][PR]] 🙏
 
