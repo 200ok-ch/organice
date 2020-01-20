@@ -9,6 +9,8 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 ** Fixed
    - When refiling a header, don't show subheaders in the refile drawer
+   - When doing a 'Search' or 'Refile', the action is reflected in the
+     name of the opening drawer.
    - In the agenda view, fix relative time distance for future dates
      - Thank you [[https://github.com/schoettl][@schoettl]] for the [[https://github.com/200ok-ch/organice/pull/240][PR]] 🙏
 
