@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { capitalize } from 'lodash';
 
 import './stylesheet.css';
 
@@ -44,7 +45,7 @@ function SearchModal(props) {
 
   return (
     <Drawer onClose={onClose} maxSize={true}>
-      <h2 className="agenda__title">Search</h2>
+      <h2 className="agenda__title">{capitalize(context)}</h2>
 
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
