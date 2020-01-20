@@ -82,12 +82,12 @@ export const dateForTimestamp = timestamp => {
   const { year, month, day, startHour, startMinute } = timestamp.toJS();
 
   let timestampString = `${year}-${month}-${day}`;
-  if (!!startHour && !!startMinute) {
+  if (startHour && startMinute) {
     timestampString += ` ${startHour.padStart(2, '0')}:${startMinute}`;
-    return parse(timestampString, 'yyyy-MM-dd HH:mm', new Date());
   } else {
-    return parse(timestampString, 'yyyy-MM-dd', new Date());
+    timestampString += ' 12:00';
   }
+  return parse(timestampString, 'yyyy-MM-dd HH:mm', new Date());
 };
 
 export const addTimestampUnitToDate = (date, numUnits, timestampUnit) =>
