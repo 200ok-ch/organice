@@ -43,7 +43,7 @@ These are the steps we take to ensure a high quality in the backlog:
    to the maintainers or is likely not a bug, but known and documented
    behavior, we ask a question or link to the documentation. We also
    add a 'question' label to the issue. If the issue creator does not
-   respond to the question within 14 days, we close the issue. If she
+   respond to the question within 5 days, we close the issue. If she
    does choose to respond at some point, she can re-open the issue.
 
 *** Development collaboration
