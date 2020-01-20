@@ -300,6 +300,17 @@ describe('Render all views', () => {
         });
       });
 
+      describe('Refile', () => {
+        test('removes selected header and subheader from search', () => {
+          fireEvent.click(queryByText('Top level header'));
+          fireEvent.click(getByTestId('org-refile'));
+
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).not.toHaveTextContent('Top level header');
+          expect(drawerElem).toHaveTextContent('Another top level header');
+        });
+      });
+
       describe('TaskList', () => {
         test('renders TaskList for an Org file', () => {
           expect(queryByText('Task list')).toBeFalsy();

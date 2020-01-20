@@ -352,9 +352,9 @@ class OrgFile extends PureComponent {
       case 'task-list':
         return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
       case 'search':
-        return <SearchModal onClose={this.handleSearchPopupClose} headers={headers} />;
+        return <SearchModal onClose={this.handleSearchPopupClose} context="search" />;
       case 'refile':
-        return <SearchModal onClose={this.handleRefilePopupClose} headers={headers} />;
+        return <SearchModal onClose={this.handleRefilePopupClose} context="refile" />;
       default:
         return null;
     }

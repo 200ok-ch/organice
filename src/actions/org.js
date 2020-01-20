@@ -531,8 +531,9 @@ export const updateLogEntryTime = (headerId, entryIndex, entryType, newTime) => 
   dirtying: true,
 });
 
-export const setSearchFilterInformation = (searchFilter, cursorPosition) => ({
+export const setSearchFilterInformation = (searchFilter, cursorPosition, context) => ({
   type: 'SET_SEARCH_FILTER_INFORMATION',
   searchFilter,
   cursorPosition,
+  context,
 });
