@@ -623,6 +623,21 @@ export const parseDescriptionPrefixElements = rawText => {
   };
 };
 
+function _updateHeaderFromDescription(header, description) {
+  const {
+    planningItems,
+    propertyListItems,
+    strippedDescription,
+    logBookEntries,
+  } = parseDescriptionPrefixElements(description);
+  return header
+    .set('rawDescription', strippedDescription)
+    .set('description', parseRawText(strippedDescription))
+    .set('planningItems', planningItems)
+    .set('propertyListItems', propertyListItems)
+    .set('logBookEntries', logBookEntries);
+}
+
 const defaultKeywordSets = fromJS([
   {
     keywords: ['TODO', 'DONE'],
@@ -694,19 +709,8 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
     .slice(1)
     .join('\n');
 
-  const {
-    planningItems,
-    propertyListItems,
-    strippedDescription,
-    logBookEntries,
-  } = parseDescriptionPrefixElements(description);
-
-  return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
-    .set('rawDescription', strippedDescription)
-    .set('description', parseRawText(strippedDescription))
-    .set('planningItems', planningItems)
-    .set('propertyListItems', propertyListItems)
-    .set('logBookEntries', logBookEntries);
+  const newHeader = newHeaderWithTitle(titleLine, 1, todoKeywordSets);
+  return _updateHeaderFromDescription(newHeader, description);
 };
 
 export const parseTodoKeywordConfig = line => {
@@ -787,19 +791,8 @@ export const parseOrg = fileContents => {
   }
 
   headers = headers.map(header => {
-    const {
-      planningItems,
-      propertyListItems,
-      strippedDescription,
-      logBookEntries,
-    } = parseDescriptionPrefixElements(header.get('rawDescription'));
-
-    return header
-      .set('rawDescription', strippedDescription)
-      .set('description', parseRawText(strippedDescription))
-      .set('planningItems', planningItems)
-      .set('propertyListItems', propertyListItems)
-      .set('logBookEntries', logBookEntries);
+    const description = header.get('rawDescription');
+    return _updateHeaderFromDescription(header, description);
   });
 
   return fromJS({

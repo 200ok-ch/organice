@@ -4,6 +4,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-01-27 Mon]
+
+** Fixed
+   - When editing a =:LOGBOOK:= drawer within a headers description,
+     the relevant logbook entries are updated (which might entail them
+     being deleted).
 
 * [2020-01-20 Mon]
 
