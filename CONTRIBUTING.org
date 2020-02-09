@@ -1,9 +1,9 @@
-** How to contribute to organice
+* How to contribute to organice
 
 First off, thank you for considering contributing to organice. It's
 people like you that make organice such a great tool!
 
-*** Did you find a bug or do you want to implement a new feature?
+** Did you find a bug or do you want to implement a new feature?
 
 What do we consider a bug? A bug is when an existing feature is
 broken.
@@ -26,7 +26,7 @@ organice lacks, this is a feature request, not a bug.
   - If your request is neither about a bug nor feature, please do open
     a blank issue.
 
-*** How we work with issues
+** How we work with issues
 
 One of our quality goals is to keep the amount of issues manageable.
 This means that a single person has to be able to groom the backlog
@@ -46,7 +46,7 @@ These are the steps we take to ensure a high quality in the backlog:
    respond to the question within 5 days, we close the issue. If she
    does choose to respond at some point, she can re-open the issue.
 
-*** Development collaboration
+** Development collaboration
 
 We have good quality assurance and an established workflow. This is it:
 
@@ -68,7 +68,7 @@ We have good quality assurance and an established workflow. This is it:
 8. Core Team: Merge to =master=, deploy and accept the Issue on
    Github
 
-**** Definition of Done
+*** Definition of Done
 
 An issue is done when:
 
@@ -94,7 +94,7 @@ An issue is done when:
   - Extract methods or functions to separate responsibilities
   - Do one thing
 
-Thanks! :heart: :heart: :heart:
+Thanks! 🙏 🙇
 
 organice Team
 

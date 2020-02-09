@@ -2,10 +2,13 @@
 
 #+html: <p align="center"><b>organice organizes Org files nicely!</b></p>
 
-#+html: <p align="center"> <img src="public/organice-small.png"/> </p>
+#+html: <p align="center"> <img src="https://raw.githubusercontent.com/200ok-ch/organice/master/public/organice-small.png"/> </p>
 
+* Documentation
 
 Tests: [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]] Maintainability: [[https://codeclimate.com/github/200ok-ch/organice/maintainability][https://api.codeclimate.com/v1/badges/41d614b1f85c8b261067/maintainability.png]] Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
+
+Documentation: https://organice.200ok.ch/documentation.html
 
 ** What does this project do?
 
@@ -19,7 +22,7 @@ which is open for anyone to use! organice does not have a back-end
 Drive or WebDAV as back-end storage). We don't store any kind of data
 on our servers - we also don't use analytics on organice.200ok.ch.
 
-[[./images/screenshot-overview.png]]
+[[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-overview.png]]
 
 ** Why is this project useful
 
@@ -33,7 +36,7 @@ If you prefer a video to some text, we've got you covered! For
 [[https://emacsconf.org/2019/][EmacsConf 2019]], we've created a 10 minute introductory video into the
 rationale and usability of organice.
 
-[[./images/screenshot-introduction.png]]
+[[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-introduction.png]]
 
 You can watch it on:
 
@@ -41,10 +44,11 @@ You can watch it on:
 - [[https://media.emacsconf.org/2019/05.html][emacsconf.org]]
 
 ** Installation
+   <<installation>>
 
 organice is a web application. You can use it from any browser. On iOS
 and Android, you can install organice to your homescreen. When
-started from there, it will run in full-screen and add some [[#pwa--offline-support][offline
+started from there, it will run in full-screen and add some [[offline_support][offline
 capabilities]].
 
 Installing to the homescreen on:
@@ -60,7 +64,7 @@ Installing to the homescreen on:
 "Current" means we're working hard on removing the following
 restrictions and expectations.
 
-- organice understands only a few in-buffer settings (see [[#supported-in-buffer-configuration][Supported
+- organice understands only a few in-buffer settings (see [[in_buffer_settings][Supported
   in-buffer configuration]])
   - Other in-buffer settings are imported and re-exported but are not
     editable with organice.
@@ -84,7 +88,7 @@ or bugs that you you wouldn’t have expected.
 
 **** Background information
 
-organice has [[src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
+organice has [[https://github.com/200ok-ch/organice/blob/master/src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
 has unit tests to prove it. One of the quality goals for the parser is
 that when it parses and re-exports an Org file, it should not change
 the original file. Not seeing unrelated diffs is important for the
@@ -105,8 +109,9 @@ The strategy we're using with regards to the parser is this:
 - When the new one is finished, integrate it into organice.
 
 *** Progressive Web App / Offline Support
+    <<offline_support>>
 
-organice can run as a PWA (Progressive Web App) - see the [[#installation ][installation
+organice can run as a PWA (Progressive Web App) - see the [[installation][installation
 instructions]] and does have offline support. From your home screen,
 organice will start up in full screen and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]]
 to cache the application. On a desktop browser, the Service Worker
@@ -158,9 +163,10 @@ organice implements this customization strategy:
 
 - Use in-buffer settings where appropriate
 - Build custom and mobile friendly user interfaces where appropriate
-  - For example [[#capture-templates][capture templates]]
+  - For example [[capture_templates][capture templates]]
 
 **** Supported in-buffer configuration
+     <<in_buffer_settings>>
 
 ***** In-buffer settings
 
@@ -188,7 +194,7 @@ For some customizations, organice exposes a mobile friendly user
 interface. Please find them in the 'settings' view (cogs icon in the
 header on the right).
 
-[[./images/screenshot-settings.png]]
+[[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-settings.png]]
 
 ** Development
 
@@ -306,7 +312,7 @@ Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox
-or Google Drive, please read the section on [[#synchronization-back-ends][Synchronization back-ends]].
+or Google Drive, please read the section on [[synchronization_back_ends][Synchronization back-ends]].
 
 *** FTP
 
@@ -376,6 +382,7 @@ git push heroku master
 #+END_SRC
 
 *** Synchronization back-ends
+    <<synchronization_back_ends>>
 
 Note that logging in to Dropbox will only work if you're running the
 app on ~http://localhost:3000~, because all redirect URIs must be
@@ -459,6 +466,7 @@ RewriteRule ^ /index.html [L]
 #+END_EXAMPLE
 
 ** Capture templates
+   <<capture_templates>>
 
 organice supports capture templates by implementing a flexible
 mechanism using URL parameters. These three of the following
@@ -493,8 +501,8 @@ This makes for a good "Inbox" capture template:
 *Capture Template*
 
 #+BEGIN_EXAMPLE
-* TODO %?
-%U
+  ,* TODO %?
+  %U
 #+END_EXAMPLE
 
 *Example URL*
@@ -504,8 +512,8 @@ https://organice.200ok.ch?captureTemplateName=Inbox&captureContent=Read+up+on+ca
 *Result*
 
 #+BEGIN_EXAMPLE
-* TODO Read up on capture templates
-[2019-09-08 Sun 20:54]
+  ,* TODO Read up on capture templates
+  [2019-09-08 Sun 20:54]
 #+END_EXAMPLE
 
 **** With custom variable
@@ -517,10 +525,10 @@ capture date and a URL), this would be a good starting point:
 *Capture Template*
 
 #+BEGIN_EXAMPLE
-* %?
-%u
+  ,* %?
+  %u
 
-- URL: %mediaURL
+  - URL: %mediaURL
 #+END_EXAMPLE
 
 *Example URL*
@@ -530,10 +538,10 @@ https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+li
 *Result*
 
 #+BEGIN_EXAMPLE
-* Play Emacs like an instrument
-[2019-09-08 Sun]
+  ,* Play Emacs like an instrument
+  [2019-09-08 Sun]
 
-- URL: https://200ok.ch/posts/2018-04-27_Play_Emacs_like_an_Instrument.html
+  - URL: https://200ok.ch/posts/2018-04-27_Play_Emacs_like_an_Instrument.html
 #+END_EXAMPLE
 
 *** Bookmarklets
@@ -541,7 +549,7 @@ https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+li
 Since organice is a web application, you can use the capture templates
 feature to create bookmarklets, of course! For example, if you want a
 bookmarklet to add the current page (title, capture date and URL) to
-your reading queue using [[#with-custom-variable][this capture template]], all you need is a
+your reading queue using [[media_capture][this capture template]], all you need is a
 little bit of JavaScript:
 
 #+BEGIN_SRC javascript
