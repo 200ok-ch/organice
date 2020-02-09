@@ -178,6 +178,16 @@ const Settings = ({
         </Link>
 
         <button className="btn settings-btn">
+          <a
+            href="https://organice.200ok.ch/documentation.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation <i className="fas fa-external-link-alt fa-sm" />
+          </a>
+        </button>
+
+        <button className="btn settings-btn">
           <a href="https://github.com/200ok-ch/organice" target="_blank" rel="noopener noreferrer">
             Github repo <i className="fas fa-external-link-alt fa-sm" />
           </a>
