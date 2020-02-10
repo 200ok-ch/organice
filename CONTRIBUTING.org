@@ -1,4 +1,4 @@
-* How to contribute to organice
+* Contribute to organice
 
 First off, thank you for considering contributing to organice. It's
 people like you that make organice such a great tool!

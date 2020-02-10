@@ -4,11 +4,13 @@
 
 #+html: <p align="center"> <img src="https://raw.githubusercontent.com/200ok-ch/organice/master/public/organice-small.png"/> </p>
 
-* Documentation
+* General
 
 Tests: [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]] Maintainability: [[https://codeclimate.com/github/200ok-ch/organice/maintainability][https://api.codeclimate.com/v1/badges/41d614b1f85c8b261067/maintainability.png]] Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
 
 Documentation: https://organice.200ok.ch/documentation.html
+
+# REPO_PLACEHOLDER
 
 ** What does this project do?
 
@@ -43,7 +45,7 @@ You can watch it on:
 - [[https://www.youtube.com/watch?v=aQKc0hcFXCk][Youtube]]
 - [[https://media.emacsconf.org/2019/05.html][emacsconf.org]]
 
-** Installation
+* Installation
    <<installation>>
 
 organice is a web application. You can use it from any browser. On iOS
@@ -58,8 +60,8 @@ Installing to the homescreen on:
 - Android: Open organice in Chrome or Firefox. Tap the "menu" button
   and select "Add to homescreen".
 
-** Usage
-*** Current restrictions/expectations of organice
+* Usage
+** Current restrictions/expectations of organice
 
 "Current" means we're working hard on removing the following
 restrictions and expectations.
@@ -86,7 +88,7 @@ conditions between clients.
 Please [[https://github.com/200ok-ch/organice/issues/new][file an issue]] if you find additional restrictions, expectations
 or bugs that you you wouldn’t have expected.
 
-**** Background information
+*** Background information
 
 organice has [[https://github.com/200ok-ch/organice/blob/master/src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
 has unit tests to prove it. One of the quality goals for the parser is
@@ -108,7 +110,7 @@ The strategy we're using with regards to the parser is this:
   between both parsers.
 - When the new one is finished, integrate it into organice.
 
-*** Progressive Web App / Offline Support
+** Progressive Web App / Offline Support
     <<offline_support>>
 
 organice can run as a PWA (Progressive Web App) - see the [[installation][installation
@@ -139,9 +141,9 @@ the meantime. For this, we recommend to put your Org file under
 version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
 
-*** Customization
+* Customization
 
-**** General
+** General
 
 Since organice implements Org mode, one might wonder if we plan to
 duplicate the Emacs configuration strategy. In Emacs Org mode, there's
@@ -165,19 +167,19 @@ organice implements this customization strategy:
 - Build custom and mobile friendly user interfaces where appropriate
   - For example [[capture_templates][capture templates]]
 
-**** Supported in-buffer configuration
-     <<in_buffer_settings>>
+** Supported in-buffer configuration
+   <<in_buffer_settings>>
 
-***** In-buffer settings
+*** In-buffer settings
 
- - =#+TODO=
- - =#+TYP_TODO=
+- =#+TODO=
+- =#+TYP_TODO=
 
-***** =#+STARTUP:= options
+*** =#+STARTUP:= options
 
- - =nologrepeat=: Do not record when reinstating repeating item
+- =nologrepeat=: Do not record when reinstating repeating item
 
-***** Drawer properties
+*** Drawer properties
 
 - =logrepeat= and =nologrepeat=: Whether to record when reinstating repeating item
 
@@ -188,7 +190,7 @@ organice implements this customization strategy:
 #+END_EXAMPLE
 
 
-**** Other customizations
+** Other customizations
 
 For some customizations, organice exposes a mobile friendly user
 interface. Please find them in the 'settings' view (cogs icon in the
@@ -196,14 +198,14 @@ header on the right).
 
 [[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-settings.png]]
 
-** Development
+* Development
 
 organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.org/][Redux]]. It was bootstrapped with
 [[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
 The internal data structures are written as immutable persistent
 data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
 
-*** Prerequisites
+** Prerequisites
 
 You will need a version of the Node.js engine installed which fulfills
 the requirement stated in =package.json=. If you don't already have
@@ -216,7 +218,7 @@ nvm install
 nvm use
 #+END_SRC
 
-*** Setup
+** Setup
 
 To install the necessary packages, run:
 
@@ -252,19 +254,19 @@ you can manually generate it with:
 ./bin/compile_search_parser.sh
 #+END_SRC
 
-*** Testing
+** Testing
 
 When you're developing a new feature and you want to manually test it,
 it's best to check it out in a Desktop browser and on your smartphone.
 This is how you do that:
 
-**** Desktop
+*** Desktop
 
 Run the application with =yarn start= which will open organice in your
 configured default browser. Alternatively, visit
 =http://localhost:3000= in the browser of your choice.
 
-**** Smartphone
+*** Smartphone
 
 There are multiple options on how you can connect from your smartphone
 to your computer running organice.
@@ -302,11 +304,11 @@ ssh -L 3000:localhost:3000 user-dev-machine
 If you don't have a shell on your phone, you can use a dedicated SSH
 application (like [[https://www.termius.com/][Terminus]]).
 
-*** Contributions
+** Contributions
 
 Please see our [[file:CONTRIBUTING.org][contributer guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
-** Deployment
+* Deployment
 
 Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
@@ -314,7 +316,7 @@ deployed to any server capable of serving a static application.
 Please note: If you want the hosted application to connect to Dropbox
 or Google Drive, please read the section on [[synchronization_back_ends][Synchronization back-ends]].
 
-*** FTP
+** FTP
 
 First create the production build locally: =yarn run build=
 Note: Creating a build will actually make your =REACT_APP_*= variables
@@ -337,11 +339,11 @@ END_SCRIPT
 exit 0
 #+END_SRC
 
-*** Docker
+** Docker
 
 organice is also available as a Docker image.
 
-**** With =docker-compose=
+*** With =docker-compose=
 
 If [[https://docs.docker.com/compose/][docker-compose]] is installed, the following command downloads and
 runs the latest image automatically.
@@ -360,7 +362,7 @@ If you want to build the image yourself, use the
 docker-compose -f docker-compose-dev.yaml up
 #+END_SRC
 
-**** Without docker-compose
+*** Without docker-compose
 
 If =docker-compose= is not installed the command looks like this:
 
@@ -371,7 +373,7 @@ docker run -p 5000:5000 --name organice twohundredok/organice:latest
 Again the webserver is listening on port 5000 and can be reached here:
 http://localhost:5000
 
-*** Heroku
+** Heroku
 Assuming, you have an account and have installed the [[https://devcenter.heroku.com/articles/heroku-cli][command line
 tools]], deployment is as easy as:
 
@@ -381,7 +383,7 @@ heroku config:set ON_HEROKU=1
 git push heroku master
 #+END_SRC
 
-*** Synchronization back-ends
+** Synchronization back-ends
     <<synchronization_back_ends>>
 
 Note that logging in to Dropbox will only work if you're running the
@@ -395,9 +397,9 @@ URL as =Redirect URI=.
 To configure your own application on Google Drive, please generate an
 API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
 
-**** WebDAV
+*** WebDAV
 
-***** General
+**** General
 
 With WebDAV support, organice can potentially be used with a multitude
 of synchronization backends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
@@ -420,7 +422,7 @@ easily debug it yourself by looking into the JavaScript console. No
 worries, you don't have to be a (JavaScript) developer to find out
 about that - here's a [[https://github.com/200ok-ch/organice/wiki#missing-cors-headers][screencast in the Wiki]] to show you how to do it.
 
-***** More information
+**** More information
 
 In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find lots more information regarding WebDAV:
 
@@ -432,7 +434,7 @@ In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find l
     WebDAV
   - Documentation on Nextcloud sharing
 
-*** Routing
+** Routing
 
 Whilst organice is a true SPA and therefore has no back-end
 whatsoever, this does have an implication for deployment with regard
@@ -465,7 +467,7 @@ RewriteRule ^ - [L]
 RewriteRule ^ /index.html [L]
 #+END_EXAMPLE
 
-** Capture templates
+* Capture templates
    <<capture_templates>>
 
 organice supports capture templates by implementing a flexible
@@ -489,8 +491,8 @@ they'd show up as ~%<your custom variable>~.
 Important: At this point, organice assumes that you'll capture your
 entries into a header - hence, you'll have to specify a "header path".
 
-*** Examples
-**** Simple: Capture a string
+** Examples
+*** Simple: Capture a string
 
 Say, you want to capture thoughts/todos as they occur to you. You
 might want to have a capture template to just get these things out of
@@ -516,7 +518,7 @@ https://organice.200ok.ch?captureTemplateName=Inbox&captureContent=Read+up+on+ca
   [2019-09-08 Sun 20:54]
 #+END_EXAMPLE
 
-**** With custom variable
+*** With custom variable
      <<media_capture>>
 
 If you want to add web pages to a reading queue (with a title, a
@@ -544,7 +546,7 @@ https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+li
   - URL: https://200ok.ch/posts/2018-04-27_Play_Emacs_like_an_Instrument.html
 #+END_EXAMPLE
 
-*** Bookmarklets
+* Bookmarklets
 
 Since organice is a web application, you can use the capture templates
 feature to create bookmarklets, of course! For example, if you want a
@@ -562,7 +564,15 @@ little bit of JavaScript:
   })()
 #+END_SRC
 
-*** Siri integration
+** Bookmarklets Demo
+
+*** iOS
+
+This is what using a bookmarklet to capture a website looks like in iOS:
+
+[[https://github.com/200ok-ch/organice/wiki/videos/demo-bookmarklet-iOS.gif]]
+
+* Siri integration
 
 The organice capture mechanism integrates very nicely with the [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
 Shortcuts]] feature in iOS, allowing you to use Siri to execute capture
@@ -574,9 +584,9 @@ Shortcut". Then open up the Shortcuts app and edit the template by
 following the directions in the comments. Then [[https://support.apple.com/en-us/HT209055][record a Siri trigger]]
 and you're good to go!
 
-** Comparison
+* Comparison
 
-*** Beorg
+** Beorg
 
 Before starting work on organice, I did use Beorg and donated to it
 multiple times, because I was very happy to have a good option to
@@ -591,7 +601,7 @@ The important differences to me are:
 - Beorg currently has better offline support
 
 
-*** org-web
+** org-web
 organice has a shared history with [[https://github.com/DanielDe/org-web][org-web]]. In fact, it is a friendly
 fork.
 
@@ -612,12 +622,12 @@ organice differs from org-web in that:
 - It is a project with equal focus on mobile as desktop browsers.
 - org-web [[https://github.com/DanielDe/org-web/issues/75][tracks users]] with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].
 
-**** What's new?
+*** What's new?
 
 To see how organice differs from org-web, please consult the [[file:changelog.org][changelog]]
 which contains the user visible changes since forking.
 
-**** Acknowledgment
+*** Acknowledgment
 
 We are extraordinarily grateful to DanielDe the original creator!
 
@@ -631,8 +641,8 @@ around it.
 
 Thank you for all, DanielDe!
 
-** Attributions
+* Attributions
 
-*** Logo
+** Logo
 
 Illustration credit: [[https://www.vecteezy.com/][Vecteezy.com]]

@@ -1,6 +1,9 @@
-** WebDAV
+# NOTE: This file holds additional documentation which doesn't need to
+# be in the main README which also get's displayed on Github.
 
-*** Demo
+* Notes on WebDAV
+
+** Demo
 
 Here's a demo of how organice works when logging in to a WebDAV
 server.
@@ -13,14 +16,14 @@ change has also been synchronized to my local machine.
 
 [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav.gif]]
 
-*** Missing CORS headers
+** Missing CORS headers
 
 If your back-end doesn't have the necessary CORS headers set (more
 info in the [[https://github.com/200ok-ch/organice/blob/master/README.org][README]], this is what the error will look like:
 
 [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav-failing-cors.gif]]
 
-*** Setup your own WebDAV Server with Apache2 on Debian
+** Setup your own WebDAV Server with Apache2 on Debian
 
 For testing purposes, here are the instructions to setup WebDAV
 locally on your machine using Apache2 using Debian. These instructions
@@ -85,7 +88,7 @@ sudo apt -y install cadaver
 cadaver http://localhost/webdav/
 #+END_SRC
 
-*** Configuring Nextcloud behind haproxy to allow WebDAV
+** Configuring Nextcloud behind haproxy to allow WebDAV
 If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
 Organice using WebDAV. ...it's just a little bit convoluted.
 
@@ -144,13 +147,13 @@ RFC!
   Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
   Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
   Access-Control-Allow-Credentials: true
-  
+
   <html><body><h1>200 Stuff is good!</h1>
   Something something dark side.
   </body></html>
 #+END_SRC
 
-*** Nextcloud sharing
+** Nextcloud sharing
 In order to share a document using WebDAV you might be inclined to try to follow
 the [[https://docs.nextcloud.com/server/16/user_manual/files/access_webdav.html#accessing-public-shares-over-webdav][official documentation]], but it can be a tad confusing. Here's the executive
 summary for how to share things from Nextcloud using WebDAV:
@@ -165,10 +168,11 @@ summary for how to share things from Nextcloud using WebDAV:
   + Password :: if you've set a password for the shared folder, here's where you
                 input it
 
-** Bookmarklets Demo
+* Building this documentation
 
-*** iOS
+This comprehensive documentation is an aggregation of multiple files
+which all reside in the [[https://github.com/200ok-ch/organice][organice code repository]] (README.org,
+WIKI.org, CONTRIBUTING.org and CODE_OF_CONDUCT.md).
 
-This is what using a bookmarklet to capture a website looks like in iOS:
-
-[[https://github.com/200ok-ch/organice/wiki/videos/demo-bookmarklet-iOS.gif]]
+Building this documentation is part of the [[https://github.com/200ok-ch/organice/blob/master/.circleci/config.yml][CI/CD workflow]]. The actual
+compilation happens [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc_and_upload.sh][here]].
