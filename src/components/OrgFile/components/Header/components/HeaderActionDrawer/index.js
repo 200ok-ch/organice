@@ -34,7 +34,6 @@ export default class HeaderActionDrawer extends PureComponent {
       hasActiveClock,
       onShareHeader,
       onRefileHeader,
-      onRemoveHeader
     } = this.props;
 
     return (
