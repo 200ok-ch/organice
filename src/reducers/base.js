@@ -13,6 +13,9 @@ const setBulletStyle = (state, action) => state.set('bulletStyle', action.newBul
 const setShouldTapTodoToAdvance = (state, action) =>
   state.set('shouldTapTodoToAdvance', action.newShouldTapTodoToAdvance);
 
+const setShouldDoubleTapToEdit = (state, action) =>
+  state.set('shouldDoubleTapToEdit', action.newShouldDoubleTapToEdit);
+
 const setAgendaDefaultDeadlineDelayUnit = (state, action) =>
   state.set('agendaDefaultDeadlineDelayUnit', action.newAgendaDefaultDeadlineDelayUnit);
 
@@ -109,6 +112,8 @@ export default (state = Map(), action) => {
       return setBulletStyle(state, action);
     case 'SET_SHOULD_TAP_TODO_TO_ADVANCE':
       return setShouldTapTodoToAdvance(state, action);
+    case 'SET_SHOULD_DOUBLE_TAP_TO_EDIT':
+      return setShouldDoubleTapToEdit(state, action);
     case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_UNIT':
       return setAgendaDefaultDeadlineDelayUnit(state, action);
     case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_VALUE':

@@ -61,7 +61,12 @@ export const persistableFields = [
     type: 'boolean',
     shouldStoreInConfig: true,
   },
-
+  {
+    category: 'base',
+    name: 'shouldDoubleTapToEdit',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
   {
     category: 'base',
     name: 'agendaDefaultDeadlineDelayUnit',

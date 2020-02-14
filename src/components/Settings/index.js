@@ -16,6 +16,7 @@ const Settings = ({
   fontSize,
   bulletStyle,
   shouldTapTodoToAdvance,
+  shouldDoubleTapToEdit,
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
   shouldSyncOnBecomingVisibile,
@@ -39,6 +40,9 @@ const Settings = ({
 
   const handleShouldTapTodoToAdvanceChange = () =>
     base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
+
+  const handleShouldDoubleTapToEdit = () =>
+    base.setShouldDoubleTapToEdit(!shouldDoubleTapToEdit);
 
   const handleAgendaDefaultDeadlineDelayValueChange = event =>
     base.setAgendaDefaultDeadlineDelayValue(event.target.value);
@@ -82,6 +86,11 @@ const Settings = ({
       <div className="setting-container">
         <div className="setting-label">Tap TODO to advance state</div>
         <Switch isEnabled={shouldTapTodoToAdvance} onToggle={handleShouldTapTodoToAdvanceChange} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">Double tap title or description to edit</div>
+        <Switch isEnabled={shouldDoubleTapToEdit} onToggle={handleShouldDoubleTapToEdit} />
       </div>
 
       <div className="setting-container">
@@ -208,6 +217,7 @@ const mapStateToProps = (state, props) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle') || 'Classic',
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    shouldDoubleTapToEdit: state.base.get('shouldDoubleTapToEdit'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),

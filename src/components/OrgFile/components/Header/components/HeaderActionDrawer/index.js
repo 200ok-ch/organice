@@ -34,6 +34,7 @@ export default class HeaderActionDrawer extends PureComponent {
       hasActiveClock,
       onShareHeader,
       onRefileHeader,
+      onRemoveHeader
     } = this.props;
 
     return (
@@ -120,13 +121,6 @@ export default class HeaderActionDrawer extends PureComponent {
             onClick: onRefileHeader,
             testId: 'org-refile',
             title: 'Refile this header to another header',
-          })}
-
-          {/* Placeholder to align the other icons */}
-          {this.iconWithFFClickCatcher({
-            className: '',
-            onClick: () => {},
-            title: '',
           })}
         </div>
       </div>

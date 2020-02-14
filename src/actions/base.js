@@ -72,6 +72,11 @@ export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
   newShouldTapTodoToAdvance,
 });
 
+export const setShouldDoubleTapToEdit = newShouldDoubleTapToEdit => ({
+  type: 'SET_SHOULD_DOUBLE_TAP_TO_EDIT',
+  newShouldDoubleTapToEdit,
+});
+
 export const setAgendaDefaultDeadlineDelayUnit = newAgendaDefaultDeadlineDelayUnit => ({
   type: 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_UNIT',
   newAgendaDefaultDeadlineDelayUnit,
