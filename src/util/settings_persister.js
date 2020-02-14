@@ -66,6 +66,7 @@ export const persistableFields = [
     name: 'shouldDoubleTapToEdit',
     type: 'boolean',
     shouldStoreInConfig: true,
+    default: true
   },
   {
     category: 'base',
