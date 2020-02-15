@@ -118,6 +118,7 @@ export default class HeaderActionDrawer extends PureComponent {
           {this.iconWithFFClickCatcher({
             className: 'fas fa-file-export fa-lg',
             onClick: onRefileHeader,
+            testId: 'org-refile',
             title: 'Refile this header to another header',
           })}
 

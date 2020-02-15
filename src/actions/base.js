@@ -92,6 +92,11 @@ export const setShouldSyncOnBecomingVisibile = shouldSyncOnBecomingVisibile => (
   shouldSyncOnBecomingVisibile,
 });
 
+export const setShouldShowTitleInOrgFile = shouldShowTitleInOrgFile => ({
+  type: 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE',
+  shouldShowTitleInOrgFile,
+});
+
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
     dispatch({
@@ -106,13 +111,12 @@ export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncB
         case 'WebDAV':
           client
             .deleteFile('/.organice-config.json')
-            .catch(
-              (doesFileNotExist, error) =>
-                doesFileNotExist
-                  ? null
-                  : alert(
-                      `There was an error trying to delete the .organice-config.json file: ${error}`
-                    )
+            .catch((doesFileNotExist, error) =>
+              doesFileNotExist
+                ? null
+                : alert(
+                    `There was an error trying to delete the .organice-config.json file: ${error}`
+                  )
             );
           break;
         case 'Google Drive':
@@ -131,9 +135,9 @@ export const setHasUnseenChangelog = newHasUnseenChangelog => ({
   newHasUnseenChangelog,
 });
 
-export const setLastSeenChangelogHeader = newLastSeenChangelogHeader => ({
+export const setLastSeenChangelogHeader = newLastSeenChangelogHash => ({
   type: 'SET_LAST_SEEN_CHANGELOG_HEADER',
-  newLastSeenChangelogHeader,
+  newLastSeenChangelogHash,
 });
 
 export const setCustomKeybinding = (keybindingName, keybinding) => ({

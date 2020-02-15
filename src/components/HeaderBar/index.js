@@ -9,6 +9,7 @@ import logo from '../../images/organice.svg';
 import './stylesheet.css';
 
 import * as baseActions from '../../actions/base';
+import * as orgActions from '../../actions/org';
 import { ActionCreators as undoActions } from 'redux-undo';
 
 import { List } from 'immutable';
@@ -22,6 +23,7 @@ class HeaderBar extends PureComponent {
     _.bindAll(this, [
       'handleChangelogClick',
       'handleModalPageDoneClick',
+      'handleHeaderBarTitleClick',
       'handleSettingsSubPageBackClick',
       'handleUndoClick',
       'handleRedoClick',
@@ -34,6 +36,18 @@ class HeaderBar extends PureComponent {
       location: { pathname },
     } = this.props;
     return pathname.split('/')[1];
+  }
+
+  getFilename() {
+    const {
+      location: { pathname },
+    } = this.props;
+    // only show a filename if it's a file and not a path
+    if (pathname.includes('.org')) {
+      return pathname.substring(pathname.lastIndexOf('/') + 1, pathname.lastIndexOf('.'));
+    } else {
+      return '';
+    }
   }
 
   renderFileBrowserBackButton() {
@@ -161,7 +175,11 @@ class HeaderBar extends PureComponent {
   }
 
   renderTitle() {
-    const titleContainerWithText = text => <div className="header-bar__title">{text}</div>;
+    const titleContainerWithText = text => (
+      <div className="header-bar__title" onClick={this.handleHeaderBarTitleClick}>
+        {text}
+      </div>
+    );
 
     switch (this.props.activeModalPage) {
       case 'changelog':
@@ -185,7 +203,7 @@ class HeaderBar extends PureComponent {
       default:
     }
 
-    return titleContainerWithText('');
+    return titleContainerWithText(this.props.shouldShowTitleInOrgFile ? this.getFilename() : '');
   }
 
   handleChangelogClick() {
@@ -194,6 +212,10 @@ class HeaderBar extends PureComponent {
 
   handleModalPageDoneClick() {
     this.props.base.clearModalStack();
+  }
+
+  handleHeaderBarTitleClick() {
+    this.props.org.selectHeader(null);
   }
 
   handleUndoClick() {
@@ -237,9 +259,7 @@ class HeaderBar extends PureComponent {
         'header-bar__actions__item--disabled': !isRedoEnabled,
       });
 
-      const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item', {
-        'settings-icon--has-unseen-changelog': hasUnseenChangelog,
-      });
+      const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item');
 
       return (
         <div className="header-bar__actions">
@@ -274,9 +294,17 @@ class HeaderBar extends PureComponent {
           )}
 
           {isAuthenticated && (
-            <Link to="/settings">
-              <i className={settingsIconClassName} title="Settings" />
-            </Link>
+            <div>
+              {hasUnseenChangelog && (
+                <i
+                  className="changelog-icon--has-unseen-changelog header-bar__actions__item fas fa-gift"
+                  onClick={this.handleChangelogClick}
+                />
+              )}
+              <Link to="/settings">
+                <i className={settingsIconClassName} title="Settings" />
+              </Link>
+            </div>
           )}
         </div>
       );
@@ -303,6 +331,7 @@ const mapStateToProps = (state, props) => {
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
+    shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     path: state.org.present.get('path'),
     isUndoEnabled: state.org.past.length > 0,
     isRedoEnabled: state.org.future.length > 0,
@@ -313,6 +342,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     base: bindActionCreators(baseActions, dispatch),
+    org: bindActionCreators(orgActions, dispatch),
     undo: bindActionCreators(undoActions, dispatch),
   };
 };

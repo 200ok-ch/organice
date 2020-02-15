@@ -9,9 +9,10 @@ import { dateForTimestamp } from '../../../../../../lib/timestamps';
 import {
   createIsTodoKeywordInDoneState,
   getPlanningItemTypeText,
+  customFormatDistanceToNow,
 } from '../../../../../../lib/org_utils';
 
-import { format, isPast, formatDistanceToNow } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import classNames from 'classnames';
 
 function TaskListView(props) {
@@ -50,7 +51,7 @@ function TaskListView(props) {
                 <div className={dateClassName} onClick={onToggleDateDisplayType}>
                   {dateDisplayType === 'absolute'
                     ? format(planningItemDate, 'MM/dd')
-                    : `${formatDistanceToNow(planningItemDate)} ago`}
+                    : customFormatDistanceToNow(planningItemDate)}
 
                   {!!planningItem.getIn(['timestamp', 'startHour']) && (
                     <Fragment>
@@ -125,4 +126,7 @@ const mapDispatchToProps = dispatch => ({});
 const getTimeFromPlanningItem = planningItem =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskListView);

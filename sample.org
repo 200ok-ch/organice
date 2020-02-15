@@ -43,13 +43,13 @@ The next button in the header action drawer will bring up the tag editor.
 This editor lets you add, modify, and reorder tags, as well as giving you easy access to all tags in the file.
 
 Try it out on these headers:
-*** Dogs:
-**** Eloise                                         :cute:middleaged:tiny:
-**** Clooney                                             :cute:young:tiny:
-**** Murphy                                             :cute:young:small:
-**** Starla                                              :cute:old:medium:
-**** Rex                                                 :cute:old:medium:
-**** Maz                                           :cute:middleaged:large:
+*** Dogs
+**** Eloise                                        :cute:middleaged:tiny:dog:
+**** Clooney                                            :cute:young:tiny:dog:
+**** Murphy                                            :cute:young:small:dog:
+**** Starla                                             :cute:old:medium:dog:
+**** Rex                                                :cute:old:medium:dog:
+**** Maz                                          :cute:middleaged:large:dog:
 ** Focusing
 The next button in the header action drawer "focuses" on a header, hiding all others and promoting it to the top level. Press the button again to "unfocus".
 

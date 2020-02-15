@@ -251,6 +251,7 @@ export default () => {
 
   const getFileContentsAndMetadata = fileId =>
     new Promise((resolve, reject) => {
+      if (!fileId) return reject();
       getAPIClient().then(gapi => {
         fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
 

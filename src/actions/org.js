@@ -1,4 +1,5 @@
 import { ActionCreators } from 'redux-undo';
+import { debounce } from 'lodash';
 import {
   setLoadingMessage,
   hideLoadingMessage,
@@ -37,14 +38,55 @@ export const stopDisplayingFile = () => {
   };
 };
 
-export const sync = ({
+const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)), 3000, {
+  leading: true,
+  trailing: true,
+});
+
+export const sync = (...args) => dispatch => syncDebounced(dispatch, ...args);
+
+// doSync is the actual sync action synchronizing/persisting the Org
+// file. When 'live sync' is enabled, there's potentailly a quick
+// succession of calls to 'sync' and therefore to the sync back-end
+// happening. These calls need to be debounced. If there's a really
+// succession of calls, only the first and last synchronization will
+// happen.
+// Note: This action is a redux-thunk action (because it returns a
+// function). This function is defined every time it is called. Hence,
+// wrapping it in `debounce` will not be good enough. Since it would
+// be a new function every time, it would be called every time. The
+// solution is to define an inner function `sync` outside of the
+// wrapping function `syncDebounced`. This will actually debounce
+// `doSync`, because the inner function `sync` will be created only
+// once.
+const doSync = ({
   forceAction = null,
   successMessage = 'Changes pushed',
   shouldSuppressMessages = false,
 } = {}) => (dispatch, getState) => {
   const client = getState().syncBackend.get('client');
   const path = getState().org.present.get('path');
-  if (path === null) {
+  if (!path) {
+    return;
+  }
+
+  // Calls do `doSync` are already debounced using a timer, but on big
+  // Org files or slow connections, it's still possible to have
+  // concurrent requests to `doSync` which has no merit. When
+  // `isLoading`, don't trigger another sync in parallel. Instead,
+  // call `syncDebounced` and return immediately. This will
+  // recursively enqueue the request to do a sync until the current
+  // sync is finished. Since it's a debounced call, enqueueing it
+  // recursively is efficient.
+  if (getState().base.get('isLoading')) {
+    // Since there is a quick succession of debounced requests to
+    // synchronize, the user likely is in a undo/redo workflow with
+    // potential new changes to the Org file in between. In such a
+    // situation, it is easy for the remote file to have a newer
+    // `lastModifiedAt` date than the `lastSyncAt` date. Hence,
+    // pushing is the right action - no need for the modal to ask the
+    // user for her request to pull/push or cancel.
+    dispatch(sync({ forceAction: 'push' }));
     return;
   }
 
@@ -82,12 +124,13 @@ export const sync = ({
               dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
             })
             .catch(error => {
-              // TODO: It's possible to get here with a 429
-              // "too_many_write_operations" whilst pushing more than
-              // once at the same time. Let's prevent that properly.
-              // alert(`There was an error pushing the file: ${error.toString()}`);
+              const err = `There was an error pushing the file: ${error.toString()}`;
+              console.error(err);
+              dispatch(setDisappearingLoadingMessage(err, 5000));
               dispatch(hideLoadingMessage());
               dispatch(setIsLoading(false));
+              // Re-enqueue the file to be synchronized again
+              dispatch(sync());
             });
         } else {
           if (!shouldSuppressMessages) {
@@ -174,7 +217,10 @@ export const updateHeaderDescription = (headerId, newRawDescription) => ({
 export const addHeader = headerId => ({
   type: 'ADD_HEADER',
   headerId,
-  dirtying: true,
+  // Performance optimization: Don't actually sync a whole Org file
+  // for an empty header. When the user adds some data and triggers
+  // UPDATE_HEADER_TITLE, then it makes sense to save it.
+  dirtying: false,
 });
 
 export const selectNextSiblingHeader = headerId => ({
@@ -485,8 +531,9 @@ export const updateLogEntryTime = (headerId, entryIndex, entryType, newTime) => 
   dirtying: true,
 });
 
-export const setSearchFilterInformation = (searchFilter, cursorPosition) => ({
+export const setSearchFilterInformation = (searchFilter, cursorPosition, context) => ({
   type: 'SET_SEARCH_FILTER_INFORMATION',
   searchFilter,
   cursorPosition,
+  context,
 });

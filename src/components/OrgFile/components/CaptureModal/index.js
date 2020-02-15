@@ -84,9 +84,9 @@ export default ({ template, onCapture, headers, onClose }) => {
   useEffect(() => {
     if (textarea.current) {
       textarea.current.focus();
+      // Set Cursor position to the %? part of the template.
+      textarea.current.setSelectionRange(initialCursorIndex, initialCursorIndex);
     }
-    // Set Cursor position to the %? part of the template.
-    textarea.current.setSelectionRange(initialCursorIndex, initialCursorIndex);
   }, [textarea, initialCursorIndex]);
 
   const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend);
@@ -111,7 +111,7 @@ export default ({ template, onCapture, headers, onClose }) => {
 
       <div className="capture-modal-header-path">{template.get('headerPaths').join(' > ')}</div>
 
-      {!!targetHeader ? (
+      {targetHeader ? (
         <Fragment>
           <textarea
             className="textarea capture-modal-textarea"

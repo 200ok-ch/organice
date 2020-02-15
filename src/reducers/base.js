@@ -27,11 +27,14 @@ const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.
 const setShouldSyncOnBecomingVisibile = (state, action) =>
   state.set('shouldSyncOnBecomingVisibile', action.shouldSyncOnBecomingVisibile);
 
+const setShouldShowTitleInOrgFile = (state, action) =>
+  state.set('shouldShowTitleInOrgFile', action.shouldShowTitleInOrgFile);
+
 const setHasUnseenChangelog = (state, action) =>
   state.set('hasUnseenChangelog', action.newHasUnseenChangelog);
 
 const setLastSeenChangelogHeader = (state, action) =>
-  state.set('lastSeenChangelogHeader', action.newLastSeenChangelogHeader);
+  state.set('lastSeenChangelogHash', action.newLastSeenChangelogHash);
 
 const setLastViewedFile = (state, action) =>
   state
@@ -116,6 +119,8 @@ export default (state = Map(), action) => {
       return setShouldLiveSync(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
       return setShouldSyncOnBecomingVisibile(state, action);
+    case 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE':
+      return setShouldShowTitleInOrgFile(state, action);
     case 'SET_HAS_UNSEEN_CHANGELOG':
       return setHasUnseenChangelog(state, action);
     case 'SET_LAST_SEEN_CHANGELOG_HEADER':

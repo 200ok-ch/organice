@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { capitalize } from 'lodash';
 
 import './stylesheet.css';
 
@@ -17,6 +18,7 @@ import * as orgActions from '../../../../actions/org';
 // changing all.
 function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
+  const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions, context } = props;
 
   function handleHeaderClick(headerId) {
     props.onClose(headerId);
@@ -27,10 +29,8 @@ function SearchModal(props) {
   }
 
   function handleFilterChange(event) {
-    props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
+    props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart, context);
   }
-
-  const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions } = props;
 
   // On mobile devices, the Drawer already handles the touch event.
   // Hence, scrolling within the Drawers container does not work with
@@ -45,7 +45,7 @@ function SearchModal(props) {
 
   return (
     <Drawer onClose={onClose} maxSize={true}>
-      <h2 className="agenda__title">Search</h2>
+      <h2 className="agenda__title">{capitalize(context)}</h2>
 
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
@@ -71,6 +71,7 @@ function SearchModal(props) {
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
+          context={context}
         />
       </div>
 

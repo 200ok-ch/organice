@@ -608,6 +608,30 @@ export const parseDescriptionPrefixElements = rawText => {
   };
 };
 
+function _updateHeaderFromDescription(header, rawUnstrippedDescription) {
+  const {
+    planningItems,
+    propertyListItems,
+    strippedDescription,
+    logBookEntries,
+  } = parseDescriptionPrefixElements(rawUnstrippedDescription);
+  const parsedDescription = parseRawText(strippedDescription);
+
+  const parsedTitle = header.getIn(['titleLine', 'title']);
+  const mergedPlanningItems = mergePlanningItems(
+    planningItems,
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_TITLE', parsedTitle),
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription)
+  );
+
+  return header
+    .set('rawDescription', strippedDescription)
+    .set('description', parsedDescription)
+    .set('planningItems', mergedPlanningItems)
+    .set('propertyListItems', propertyListItems)
+    .set('logBookEntries', logBookEntries);
+}
+
 const defaultKeywordSets = fromJS([
   {
     keywords: ['TODO', 'DONE'],
@@ -682,27 +706,8 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 
   // TODO: possible addition: allow subheaders in description!
 
-  const {
-    planningItems,
-    propertyListItems,
-    strippedDescription,
-    logBookEntries,
-  } = parseDescriptionPrefixElements(descriptionText);
-
-  const description = parseRawText(strippedDescription);
-  const title = parseTitleLine(titleLine, defaultKeywordSets); // FIXME: how to pass keywordset?
-  const mergedPlanningItems = mergePlanningItems(
-    planningItems,
-    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_TITLE', title.get('title')),
-    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', description)
-  );
-
-  return newHeaderWithTitle(titleLine, 1, todoKeywordSets)
-    .set('rawDescription', strippedDescription)
-    .set('description', description)
-    .set('planningItems', mergedPlanningItems)
-    .set('propertyListItems', propertyListItems)
-    .set('logBookEntries', logBookEntries);
+  const newHeader = newHeaderWithTitle(titleLine, 1, todoKeywordSets);
+  return _updateHeaderFromDescription(newHeader, descriptionText);
 };
 
 export const parseTodoKeywordConfig = line => {
@@ -771,30 +776,13 @@ export const parseOrg = fileContents => {
   }
 
   headers = headers.map(header => {
-    const {
-      planningItems,
-      propertyListItems,
-      strippedDescription,
-      logBookEntries,
-    } = parseDescriptionPrefixElements(header.get('rawDescription'));
-
-    const parsedDescription = parseRawText(strippedDescription);
-
-    const mergedPlanningItems = mergePlanningItems(
-      planningItems,
-      extractActiveTimestampsForPlanningItemsFromParse(
-        'TIMESTAMP_TITLE',
-        header.getIn(['titleLine', 'title'])
-      ),
-      extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription)
-    );
-
-    return header
-      .set('rawDescription', strippedDescription)
-      .set('description', parsedDescription)
-      .set('planningItems', mergedPlanningItems)
-      .set('propertyListItems', propertyListItems)
-      .set('logBookEntries', logBookEntries);
+    // Normally, rawDescription contains the "stripped" raw description text,
+    // i.e. no log book, properties, or planning items.
+    // In this case (parsing the complete org file), rawDescription contains
+    // the full raw description text. Only after _updateHeaderFromDescription(),
+    // the contents of rawDescription are correct.
+    const description = header.get('rawDescription');
+    return _updateHeaderFromDescription(header, description);
   });
 
   return fromJS({

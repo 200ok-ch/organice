@@ -1,7 +1,35 @@
-import generateId from './id_generator';
-
 import { List, fromJS } from 'immutable';
+import _ from 'lodash';
+import raw from 'raw.macro';
+import { formatDistanceToNow } from 'date-fns';
+
+import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
+
+function generateHash(list) {
+  return new Promise((resolve, reject) => {
+    crypto.subtle
+      .digest(
+        {
+          name: 'SHA-256',
+        },
+        new Uint8Array(list)
+      )
+      .then(hashArray => {
+        resolve(_.values(new Uint8Array(hashArray)).join(''));
+      });
+  });
+}
+
+export const changelogHash = () => {
+  return new Promise((resolve, reject) => {
+    const changelogFile = raw('../../changelog.org');
+
+    generateHash(changelogFile.split('').map(c => c.charCodeAt(0))).then(hash => {
+      resolve(hash);
+    });
+  });
+};
 
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex(header => header.get('id') === headerId);
@@ -174,7 +202,7 @@ export const headerWithPath = (headers, headerPath) => {
   }
 
   const subheaders = subheadersOfHeaderWithId(headers, firstHeader.get('id'));
-  return headerWithPath(subheaders, headerPath.skip(1));
+  return headerWithPath(subheaders, headerPath.rest());
 };
 
 export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => {
@@ -540,6 +568,10 @@ export const timestampWithId = (headers, timestampId) =>
           .first()
     )
     .find(result => !!result);
+
+export const customFormatDistanceToNow = datetime => {
+  return formatDistanceToNow(datetime, { addSuffix: true });
+};
 
 export const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
   todoKeywordSets.find(keywordSet => keywordSet.get('keywords').contains(keyword)) ||

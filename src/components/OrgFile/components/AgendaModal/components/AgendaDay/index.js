@@ -4,7 +4,11 @@ import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
 
-import { isTodoKeywordCompleted, getPlanningItemTypeText } from '../../../../../../lib/org_utils';
+import {
+  isTodoKeywordCompleted,
+  customFormatDistanceToNow,
+  getPlanningItemTypeText,
+} from '../../../../../../lib/org_utils';
 import {
   dateForTimestamp,
   subtractTimestampUnitFromDate,
@@ -21,7 +25,6 @@ import {
   isEqual,
   isWithinInterval,
   isPast,
-  formatDistanceToNow,
 } from 'date-fns';
 import classNames from 'classnames';
 
@@ -81,7 +84,7 @@ export default class AgendaDay extends PureComponent {
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
                       ? format(planningItemDate, 'MM/dd')
-                      : `${formatDistanceToNow(planningItemDate)} ago`}
+                      : customFormatDistanceToNow(planningItemDate)}
 
                     {!!planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>
