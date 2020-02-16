@@ -810,6 +810,20 @@ export const updatePlanningItems = (planningItems, type, parsed) =>
     .filter(x => x.get('type') !== type)
     .merge(extractActiveTimestampsForPlanningItemsFromParse(type, parsed));
 
+export const updatePlanningItemsFromTitleAndDescription = (
+  planningItems,
+  parsedTitle,
+  parsedDescription
+) => {
+  const tempPlanningItems = updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', parsedTitle);
+  const resultingPlanningItems = updatePlanningItems(
+    tempPlanningItems,
+    'TIMESTAMP_DESCRIPTION',
+    parsedDescription
+  );
+  return resultingPlanningItems;
+};
+
 const computeNestingLevel = titleLineWithAsterisk => {
   const nestingLevel = titleLineWithAsterisk.indexOf(' ');
   if (nestingLevel === -1) return titleLineWithAsterisk.trimRight().length;

@@ -18,6 +18,7 @@ import {
   newHeaderWithTitle,
   newHeaderFromText,
   updatePlanningItems,
+  updatePlanningItemsFromTitleAndDescription,
   _updateHeaderFromDescription,
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
@@ -884,17 +885,23 @@ const updateTimestampWithId = (state, action) => {
 
   return state
     .setIn(['headers'].concat(path), action.newTimestamp)
-    .updateIn(['headers', headerIndex], header =>
-      header.set('rawDescription', attributedStringToRawText(header.get('description')))
-    )
-    .updateIn(['headers', headerIndex], header =>
-      header.setIn(
-        ['titleLine', 'rawTitle'],
-        attributedStringToRawText(header.getIn(['titleLine', 'title']))
-      )
-    );
+    .updateIn(['headers', headerIndex], header => {
+      const description = header.get('description');
+      const title = header.getIn(['titleLine', 'title']);
+      const planningItems = header.get('planningItems');
+
+      return header
+        .setIn(['titleLine', 'rawTitle'], attributedStringToRawText(title))
+        .set('rawDescription', attributedStringToRawText(description))
+        .set(
+          'planningItems',
+          updatePlanningItemsFromTitleAndDescription(planningItems, title, description)
+        );
+    });
 };
 
+// This is for special planning items like SCHEDULED: and DEADLINE:; but not
+// for normal active timestamps (which are also added to planning items).
 const updatePlanningItemTimestamp = (state, action) => {
   const { headerId, planningItemIndex, newTimestamp } = action;
   const headerIndex = indexOfHeaderWithId(state.get('headers'), headerId);
