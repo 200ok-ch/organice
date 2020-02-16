@@ -14,11 +14,11 @@ import {
   parseOrg,
   parseTitleLine,
   parseRawText,
-  parseDescriptionPrefixElements,
   parseMarkupAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
   updatePlanningItems,
+  _updateHeaderFromDescription,
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
 import {
@@ -241,28 +241,9 @@ const updateHeaderDescription = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
-  return state.updateIn(['headers', headerIndex], header => {
-    const {
-      planningItems,
-      propertyListItems,
-      strippedDescription,
-      logBookEntries,
-    } = parseDescriptionPrefixElements(action.newRawDescription);
-
-    const description = parseRawText(strippedDescription);
-    const updatedPlanningItems = updatePlanningItems(
-      planningItems,
-      'TIMESTAMP_DESCRIPTION',
-      description
-    );
-
-    return header
-      .set('rawDescription', strippedDescription)
-      .set('description', description)
-      .set('planningItems', updatedPlanningItems)
-      .set('propertyListItems', propertyListItems)
-      .set('logBookEntries', logBookEntries);
-  });
+  return state.updateIn(['headers', headerIndex], header =>
+    _updateHeaderFromDescription(header, action.newRawDescription)
+  );
 };
 
 const addHeader = (state, action) => {

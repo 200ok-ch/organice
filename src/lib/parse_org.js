@@ -608,7 +608,7 @@ export const parseDescriptionPrefixElements = rawText => {
   };
 };
 
-function _updateHeaderFromDescription(header, rawUnstrippedDescription) {
+export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) => {
   const {
     planningItems,
     propertyListItems,
@@ -630,7 +630,7 @@ function _updateHeaderFromDescription(header, rawUnstrippedDescription) {
     .set('planningItems', mergedPlanningItems)
     .set('propertyListItems', propertyListItems)
     .set('logBookEntries', logBookEntries);
-}
+};
 
 const defaultKeywordSets = fromJS([
   {
