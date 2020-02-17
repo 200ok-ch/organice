@@ -16,8 +16,8 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run:
-          name: Install lftp
-          command: sudo apt install lftp pandoc emacs
+          name: Install dependencies
+          command: sudo apt-get update -yq && apt install -yq lftp pandoc emacs
       - run:
           name: Deploy to https://org.200ok.ch
           command: ./bin/compile_and_upload.sh
