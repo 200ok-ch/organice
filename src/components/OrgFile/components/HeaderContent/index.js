@@ -93,15 +93,24 @@ class HeaderContent extends PureComponent {
     this.setState({ descriptionValue: event.target.value });
   }
 
+  // Exits from edit mode if a 'blur' happens. One exception: If an
+  // 'insert timestamp' event happened before, this actually also
+  // triggered a 'blur'. Since the 'blur' and 'click' events are
+  // non-deterministic in their order, the only option to prevent the
+  // blur is to mark it as 'should be ignored' in the 'click' event.
+  // However, sufficient time needs to pass for this workaround to be
+  // consistent. Hence, the functionality is wrapped in a setTimeout.
+  // Original workaround taken from an old blog post:
+  // https://medium.com/@jessebeach/dealing-with-focus-and-blur-in-a-composite-widget-in-react-90d3c3b49a9b
+  // The same workaround is used in TitleLine/index.js
   handleTextareaBlur() {
-    // Give the "Insert timestamp" button click a chance to tell us to ignore the blur event.
     setTimeout(() => {
       if (!this.state.shouldIgnoreBlur) {
         this.props.org.exitEditMode();
       } else {
         this.setState({ shouldIgnoreBlur: false });
       }
-    }, 0);
+    }, 200);
   }
 
   handleTableCellSelect(cellId) {
@@ -278,7 +287,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HeaderContent);
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderContent);
