@@ -7,8 +7,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 * [2020-02-17 Mon]
 
 ** Added
-   - *Headers with active timestamps in the header or description
-     appear in agenda*
+   - *Headers with active timestamps in the header or description appear in agenda*
 
 ** Fixed
    - 'Insert timestamp' for headers and descriptions
