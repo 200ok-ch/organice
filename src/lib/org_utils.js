@@ -618,12 +618,36 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
     .sort();
 
 /**
+ * Returns `true` if the header has content, i.e. description.
+ * Subheaders do not count as content.
+ */
+export const hasHeaderContent = header =>
+  !!header.get('rawDescription') ||
+  header.get('planningItems').size !== 0 ||
+  header.get('propertyListItems').size !== 0 ||
+  header.get('logBookEntries').size !== 0;
+
+/**
  * Returns a function which takes a `todoKeyword` which then returns
  * if said `todoKeyword` is in any `todoKeywordSets` states.
  * @param {Object} todoKeywordSets
  */
 export const createIsTodoKeywordInDoneState = todoKeywordSets => {
   return todoKeyword => todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
+};
+
+export const shouldRenderPlanningItem = x =>
+  x.type !== 'TIMESTAMP_TITLE' && x.type !== 'TIMESTAMP_DESCRIPTION';
+
+export const getPlanningItemTypeText = planningItem => {
+  const text = planningItem.get('type');
+  switch (text) {
+    case 'TIMESTAMP_TITLE':
+    case 'TIMESTAMP_DESCRIPTION':
+      return 'TIMESTAMP';
+    default:
+      return text;
+  }
 };
 
 export const getTodoKeywordSetsAsFlattenedArray = state => {

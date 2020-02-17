@@ -5,7 +5,7 @@ import './stylesheet.css';
 
 import Header from '../Header';
 
-import { numSubheadersOfHeaderWithId } from '../../../../lib/org_utils';
+import { numSubheadersOfHeaderWithId, hasHeaderContent } from '../../../../lib/org_utils';
 
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -45,11 +45,7 @@ class HeaderList extends PureComponent {
         return {
           header,
           displayed: false,
-          hasContent:
-            !!header.get('rawDescription') ||
-            header.get('planningItems').size !== 0 ||
-            header.get('propertyListItems').size !== 0 ||
-            header.get('logBookEntries').size !== 0,
+          hasContent: hasHeaderContent(header),
         };
       })
       .toArray();

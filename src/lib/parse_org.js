@@ -456,36 +456,26 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
 };
 
 export const _parsePlanningItems = rawText => {
-  const singlePlanningItemRegex = concatRegexes(/(DEADLINE|SCHEDULED|CLOSED):\s*/, timestampRegex);
   const optionalSinglePlanningItemRegex = RegExp(
-    '(' +
-      singlePlanningItemRegex
-        .toString()
-        .substring(1, singlePlanningItemRegex.toString().length - 1) +
-      ')?'
+    `((DEADLINE|SCHEDULED|CLOSED):\\s*${asStrNoSlashs(timestampRegex)})?`
   );
 
-  // FIXME: The whitespace part of the regex matches `rawText` inputs
-  //        like " - indented list\n - Foo".
-  //        This is a mistake, because the input isn't really a
-  //        planning item. If the regexp could be adapted, we could
-  //        return earlier after the regexp check.
-  //        Before this can get cleaned up, this function needs loads
-  //        more tests, because currently it matches too many things.
-  //        It does work well for planning items, though.
+  // If there are any planning items, consume not more
+  // than one newline after the last planning item.
   const planningRegex = concatRegexes(
     /^\s*/,
     optionalSinglePlanningItemRegex,
-    /\s*/,
+    /[ \t]*/,
     optionalSinglePlanningItemRegex,
-    /\s*/,
+    /[ \t]*/,
     optionalSinglePlanningItemRegex,
-    /\s*/
+    /[ \t]*\n?/
   );
+  const planningRegexCaptureGroupsOfType = [2, 17, 32]; // depends on timestampRegex
   const planningMatch = rawText.match(planningRegex);
 
   const planningItems = fromJS(
-    [2, 17, 32]
+    planningRegexCaptureGroupsOfType
       .map(planningTypeIndex => {
         const type = planningMatch[planningTypeIndex];
         if (!type) {
@@ -497,28 +487,21 @@ export const _parsePlanningItems = rawText => {
           _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
         );
 
-        return { type, timestamp, id: generateId() };
+        return createTimestamp({ type, timestamp });
       })
       .filter(item => !!item)
   );
 
-  if (planningItems.size > 0) {
-    // The `rawText` can look like:
-    // `SCHEDULED: <2019-07-30 Tue>
-    //   - indented list
-    //      - Foo`
-    // For the remaining description, filter the planning item out
-    const remainingDescriptionWithoutPlanningItem = rawText
-      .split('\n')
-      .filter(line => {
-        return !line.includes(planningMatch[0].trim());
-      })
-      .join('\n');
-    return { planningItems, strippedDescription: remainingDescriptionWithoutPlanningItem };
-  } else {
+  if (planningItems.size === 0) {
+    // If there are no matches for planning items, return the original rawText.
     return { planningItems: fromJS([]), strippedDescription: rawText };
+  } else {
+    const remainingDescriptionWithoutPlanningItem = rawText.replace(planningRegex, '');
+    return { planningItems, strippedDescription: remainingDescriptionWithoutPlanningItem };
   }
 };
+
+const createTimestamp = ({ type, timestamp }) => fromJS({ type, timestamp, id: generateId() });
 
 const parsePropertyList = rawText => {
   const lines = rawText.split('\n');
@@ -612,31 +595,42 @@ const parseLogbook = rawText => {
 
 export const parseDescriptionPrefixElements = rawText => {
   const planningItemsParse = _parsePlanningItems(rawText);
+
+  const planningItems = planningItemsParse.planningItems;
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
   const logBookParse = parseLogbook(propertyListParse.strippedDescription);
 
   return {
-    planningItems: planningItemsParse.planningItems,
+    planningItems: planningItems,
     propertyListItems: propertyListParse.propertyListItems,
     strippedDescription: logBookParse.strippedDescription,
     logBookEntries: logBookParse.logBookEntries,
   };
 };
 
-function _updateHeaderFromDescription(header, description) {
+export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) => {
   const {
     planningItems,
     propertyListItems,
     strippedDescription,
     logBookEntries,
-  } = parseDescriptionPrefixElements(description);
+  } = parseDescriptionPrefixElements(rawUnstrippedDescription);
+  const parsedDescription = parseRawText(strippedDescription);
+
+  const parsedTitle = header.getIn(['titleLine', 'title']);
+  const mergedPlanningItems = mergePlanningItems(
+    planningItems,
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_TITLE', parsedTitle),
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription)
+  );
+
   return header
     .set('rawDescription', strippedDescription)
-    .set('description', parseRawText(strippedDescription))
-    .set('planningItems', planningItems)
+    .set('description', parsedDescription)
+    .set('planningItems', mergedPlanningItems)
     .set('propertyListItems', propertyListItems)
     .set('logBookEntries', logBookEntries);
-}
+};
 
 const defaultKeywordSets = fromJS([
   {
@@ -692,25 +686,28 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
 };
 
 const concatRegexes = (...regexes) =>
-  regexes.reduce((prev, curr) =>
-    RegExp(
-      prev.toString().substring(1, prev.toString().length - 1) +
-        curr.toString().substring(1, curr.toString().length - 1)
-    )
-  );
+  regexes.reduce((prev, curr) => RegExp(asStrNoSlashs(prev) + asStrNoSlashs(curr)));
+
+// Converts RegExp or strings like '/regex/' to a string without these slashs.
+const asStrNoSlashs = regex => {
+  const s = regex.toString();
+  return s.substring(1, s.length - 1);
+};
 
 export const newHeaderFromText = (rawText, todoKeywordSets) => {
   // This function is currently only used for capture templates.
   // Hence, it's acceptable that it is opinionated on treating
   // whitespace.
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
-  const description = rawText
+  const descriptionText = rawText
     .split('\n')
     .slice(1)
     .join('\n');
 
+  // TODO: possible addition: allow subheaders in description!
+
   const newHeader = newHeaderWithTitle(titleLine, 1, todoKeywordSets);
-  return _updateHeaderFromDescription(newHeader, description);
+  return _updateHeaderFromDescription(newHeader, descriptionText);
 };
 
 export const parseTodoKeywordConfig = line => {
@@ -740,7 +737,7 @@ export const parseTodoKeywordConfig = line => {
 
 export const parseOrg = fileContents => {
   let headers = List();
-  const lines = fileContents.split('\n');
+  const lines = getLinesFromFileContents(fileContents);
 
   let todoKeywordSets = List();
   let fileConfigLines = List();
@@ -749,40 +746,28 @@ export const parseOrg = fileContents => {
   lines.forEach(line => {
     // A header has to start with at least one consecutive asterisk
     // followed by a blank
-    // eslint-disable-next-line no-useless-escape
-    if (line.match(/^\*+\ /)) {
-      let nestingLevel = line.indexOf(' ');
-      if (nestingLevel === -1) {
-        nestingLevel = line.length;
-      }
+    if (line.match(/^\*+ /)) {
+      const nestingLevel = computeNestingLevel(line);
       const title = line.substr(nestingLevel + 1);
       headers = headers.push(newHeaderWithTitle(title, nestingLevel, todoKeywordSets));
-    } else {
-      if (headers.size === 0) {
-        const newKeywordSet = parseTodoKeywordConfig(line);
-        if (newKeywordSet) {
-          todoKeywordSets = todoKeywordSets.push(newKeywordSet);
-        } else if (line.startsWith('#+')) {
-          fileConfigLines = fileConfigLines.push(line);
-        } else {
-          linesBeforeHeadings = linesBeforeHeadings.push(line);
-        }
+    } else if (headers.size === 0) {
+      const newKeywordSet = parseTodoKeywordConfig(line);
+      if (newKeywordSet) {
+        todoKeywordSets = todoKeywordSets.push(newKeywordSet);
+      } else if (line.startsWith('#+')) {
+        fileConfigLines = fileConfigLines.push(line);
       } else {
-        headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
-          // In the beginning of the `parseOrg` function, the original
-          // fileContent lines are split by '\n'. Therefore, if the
-          // original line was a newline, it will show up here as an
-          // empty `line` with an empty `rawDescription`. Add a
-          // newline here to the list, so that the exported file will
-          // have newlines in the same places as the originally parsed
-          // file.
-          if (!line && !rawDescription) return '\n';
-
-          if (rawDescription.length === 0) return line;
-
-          return rawDescription + '\n' + line;
-        });
+        linesBeforeHeadings = linesBeforeHeadings.push(line);
       }
+    } else {
+      headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
+        // In the beginning of the parseOrg function, the original
+        // fileContent lines are split by '\n'. Therefore, the newline
+        // has to be added again to the line:
+        const lineToAdd = line + '\n';
+        rawDescription = rawDescription ? rawDescription : '';
+        return rawDescription + lineToAdd;
+      });
     }
   });
 
@@ -791,6 +776,11 @@ export const parseOrg = fileContents => {
   }
 
   headers = headers.map(header => {
+    // Normally, rawDescription contains the "stripped" raw description text,
+    // i.e. no log book, properties, or planning items.
+    // In this case (parsing the complete org file), rawDescription contains
+    // the full raw description text. Only after _updateHeaderFromDescription(),
+    // the contents of rawDescription are correct.
     const description = header.get('rawDescription');
     return _updateHeaderFromDescription(header, description);
   });
@@ -801,4 +791,53 @@ export const parseOrg = fileContents => {
     fileConfigLines,
     linesBeforeHeadings,
   });
+};
+
+const extractActiveTimestampsForPlanningItemsFromParse = (type, parsedData) => {
+  // planningItems only accept a single timestamp -> ignore second timestamp
+  return parsedData
+    .filter(x => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
+    .map(x => createTimestamp({ type: type, timestamp: x.get('firstTimestamp') }));
+};
+
+// Merge planningItems from parsed title, description, and planning keywords.
+const mergePlanningItems = (...planningItems) => {
+  return planningItems[0].concat(...planningItems.slice(1));
+};
+
+export const updatePlanningItems = (planningItems, type, parsed) =>
+  planningItems
+    .filter(x => x.get('type') !== type)
+    .merge(extractActiveTimestampsForPlanningItemsFromParse(type, parsed));
+
+export const updatePlanningItemsFromTitleAndDescription = (
+  planningItems,
+  parsedTitle,
+  parsedDescription
+) => {
+  const tempPlanningItems = updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', parsedTitle);
+  const resultingPlanningItems = updatePlanningItems(
+    tempPlanningItems,
+    'TIMESTAMP_DESCRIPTION',
+    parsedDescription
+  );
+  return resultingPlanningItems;
+};
+
+const computeNestingLevel = titleLineWithAsterisk => {
+  const nestingLevel = titleLineWithAsterisk.indexOf(' ');
+  if (nestingLevel === -1) return titleLineWithAsterisk.trimRight().length;
+  return nestingLevel;
+};
+
+const getLinesFromFileContents = fileContents => {
+  // We expect a newline at EOF (from the last line of fileContents).
+  // After split(), this results in an empty string at the last position of the
+  // array => Remove that last array item.
+  const lines = fileContents.split('\n');
+
+  // Special case when last line did not end with a newline character:
+  if (lines.length > 0 && lines[lines.length - 1] !== '') return lines;
+
+  return lines.slice(0, lines.length - 1);
 };

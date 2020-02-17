@@ -4,6 +4,15 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-02-17 Mon]
+
+** Added
+   - *Headers with active timestamps in the header or description
+     appear in agenda*
+
+** Fixed
+   - 'Insert timestamp' for headers and descriptions
+
 * [2020-02-09 Sun]
 
 ** Added

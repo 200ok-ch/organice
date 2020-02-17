@@ -6,7 +6,7 @@ import {
   _parsePlanningItems,
   parseMarkupAndCookies,
 } from './parse_org';
-import exportOrg from './export_org';
+import { exportOrg } from './export_org';
 import readFixture from '../../test_helpers/index';
 
 /**
@@ -34,6 +34,30 @@ describe('Test the parser', () => {
     test('Parses inline-markup surrounded by text', () => {
       const result = parseMarkupAndCookies(' *bold*;');
       expectType(result).toEqual(['text', 'inline-markup', 'text']);
+    });
+  });
+
+  describe('Parse an header with empty description', () => {
+    const parseFirstHeaderFromOrg = x => parseOrg(x).toJS().headers[0];
+    test('Parse headline without trailing newline', () => {
+      const result = parseFirstHeaderFromOrg('* headline');
+      expect(result.description).toEqual([]);
+      expect(result.rawDescription).toEqual('');
+    });
+    test('Parse headline with trailing newline but no description', () => {
+      const result = parseFirstHeaderFromOrg('* headline\n');
+      expect(result.description).toEqual([]);
+      expect(result.rawDescription).toEqual('');
+    });
+    test('Parse headline with an empty line of description', () => {
+      const result = parseFirstHeaderFromOrg('* headline\n\n');
+      expect(result.description.length).toEqual(1);
+      expect(result.rawDescription).toEqual('\n');
+    });
+    test('Parse headline directly followed by next headline', () => {
+      const result = parseFirstHeaderFromOrg('* headline\n* headline 2');
+      expect(result.description).toEqual([]);
+      expect(result.rawDescription).toEqual('');
     });
   });
 });
@@ -156,11 +180,26 @@ describe('Parsing and exporting should not alter the original file', () => {
             expect(parsed.strippedDescription).toEqual(testDescription);
           });
         });
+
+        test('Planning items should contain active timestamps from title and description as well', () => {
+          const testOrgFile = readFixture('schedule_and_timestamps');
+          const parsedFile = parseOrg(testOrgFile);
+          const headers = parsedFile.get('headers').toJS();
+          expect(headers.length).toEqual(1);
+          const header = headers[0];
+          expect(header.planningItems.length).toEqual(3);
+        });
       });
 
       describe('Planning items are formatted as is default Emacs', () => {
         test('For basic files', () => {
           const testOrgFile = readFixture('schedule');
+          const exportedFile = parseAndExportOrgFile(testOrgFile);
+          expect(exportedFile).toEqual(testOrgFile);
+        });
+
+        test('For files with timestamps in title and description', () => {
+          const testOrgFile = readFixture('schedule_and_timestamps');
           const exportedFile = parseAndExportOrgFile(testOrgFile);
           expect(exportedFile).toEqual(testOrgFile);
         });

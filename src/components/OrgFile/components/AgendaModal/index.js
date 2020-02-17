@@ -171,4 +171,7 @@ const mapDispatchToProps = dispatch => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AgendaModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgendaModal);

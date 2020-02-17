@@ -113,15 +113,15 @@ class TitleLine extends PureComponent {
     }
   }
 
+  // Rationale for setTimeout documented in HeaderContent/index.js
   handleTextareaBlur(event) {
-    // Give the "Insert timestamp" button click a chance to tell us to ignore the blur event.
     setTimeout(() => {
       if (!this.state.shouldIgnoreBlur) {
         this.props.org.exitEditMode();
       } else {
         this.setState({ shouldIgnoreBlur: false });
       }
-    }, 0);
+    }, 200);
   }
 
   handleTextareaFocus(event) {
@@ -158,8 +158,6 @@ class TitleLine extends PureComponent {
   }
 
   handleInsertTimestamp(event) {
-    // Clicking this button will unfocus the textarea, but we don't want to exit edit mode,
-    // so instruct the blur handler to ignore the event.
     this.setState({ shouldIgnoreBlur: true });
 
     const { titleValue } = this.state;
@@ -297,7 +295,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TitleLine);
+export default connect(mapStateToProps, mapDispatchToProps)(TitleLine);

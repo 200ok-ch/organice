@@ -44,8 +44,8 @@ describe('Unit Tests for AgendaDay', () => {
             todoKeyword: 'START',
             tags: [],
           },
-          rawDescription: '',
-          description: [],
+          rawDescription: '\n',
+          description: [{ type: 'text', contents: '\n' }],
           opened: false,
           id: 4,
           nestingLevel: 1,
@@ -61,7 +61,7 @@ describe('Unit Tests for AgendaDay', () => {
         },
       ],
     ];
-    const testOrgFile = readFixture('multiple_headlines_with_timestamps');
+    const testOrgFile = readFixture('multiple_headlines_with_timestamps_simple');
     const parsedOrgFile = parseOrgFile(testOrgFile);
     input.headers = parsedOrgFile.headers;
     input.todoKeywordSets = parsedOrgFile.todoKeywordSets;

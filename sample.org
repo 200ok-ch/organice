@@ -269,11 +269,14 @@ organice has a basic agenda view that you can access by tapping the calendar but
 
 Tap a header in this view to jump to it, and tap on the date to switch to a more readable relative date format.
 
-These overdue items with deadlines should show up on today's entry:
-** TODO check out the organice agenda view
+Overdue items with deadlines should show up on today's entry. Entries with just an active timestamp are shown only on exactly the day of the timestamp.
+** TODO Check out the organice agenda view
 DEADLINE: <2018-09-10 Mon>
-** TODO install organice to your phones homescreen
+** TODO Install organice to the homescreen on my mobile phone
 SCHEDULED: <2018-09-17 Mon>
+** This entry shows only exactly on <2020-02-17 Mon> in the agenda
+** This entry also only shows on exactly one day
+   <2020-02-17 Mon>
 * Syncing
 organice pulls down your org files from Dropbox, Google Drive or
 WebDAV. Click the "Sign in" button in the upper right hand corner to

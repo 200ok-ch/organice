@@ -1,10 +1,21 @@
 #+TODO: TODO | DONE
 #+TODO: START INPROGRESS STALLED | FINISHED
 
+* INPROGRESS This is a header without timestamp
+
 * DONE This is a scheduled header
   SCHEDULED: <2019-08-04 Sun>
 
 * START This is a deadline header
   DEADLINE: <2019-08-27 Tue>
 
-* INPROGRESS This is a header without timestamp
+* START This is a header with both
+  SCHEDULED: <2019-08-04 Sun> DEADLINE: <2019-08-27 Tue>
+
+* START This is a header with all three
+  SCHEDULED: <2019-08-04 Sun> DEADLINE: <2019-08-27 Tue> CLOSED: [2019-08-27 Tue]
+
+* TODO <2020-01-01 Wed> This is a header with timestamp
+
+* TODO This is a header with timestamp in the text
+  <2020-01-01 Wed 00:00>

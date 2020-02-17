@@ -8,7 +8,7 @@ import {
   activatePopup,
   closePopup,
 } from './base';
-import exportOrg from '../lib/export_org';
+import { exportOrg } from '../lib/export_org';
 import substituteTemplateVariables from '../lib/capture_template_substitution';
 import { headerWithPath } from '../lib/org_utils';
 

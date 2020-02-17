@@ -14,10 +14,12 @@ import {
   parseOrg,
   parseTitleLine,
   parseRawText,
-  parseDescriptionPrefixElements,
   parseMarkupAndCookies,
   newHeaderWithTitle,
   newHeaderFromText,
+  updatePlanningItems,
+  updatePlanningItemsFromTitleAndDescription,
+  _updateHeaderFromDescription,
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
 import {
@@ -223,10 +225,15 @@ const exitEditMode = state => state.set('editMode', null);
 const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const todoKeywordSets = state.get('todoKeywordSets');
 
-  const newTitleLine = parseTitleLine(action.newRawTitle.trim(), state.get('todoKeywordSets'));
+  const newTitleLine = parseTitleLine(action.newRawTitle.trim(), todoKeywordSets);
 
   state = state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
+
+  state = state.updateIn(['headers', headerIndex, 'planningItems'], planningItems =>
+    updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', newTitleLine.get('title'))
+  );
 
   return updateCookiesOfParentOfHeaderWithId(state, action.headerId);
 };
@@ -235,21 +242,9 @@ const updateHeaderDescription = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
-  return state.updateIn(['headers', headerIndex], header => {
-    const {
-      planningItems,
-      propertyListItems,
-      strippedDescription,
-      logBookEntries,
-    } = parseDescriptionPrefixElements(action.newRawDescription);
-
-    return header
-      .set('rawDescription', strippedDescription)
-      .set('description', parseRawText(strippedDescription))
-      .set('planningItems', planningItems)
-      .set('propertyListItems', propertyListItems)
-      .set('logBookEntries', logBookEntries);
-  });
+  return state.updateIn(['headers', headerIndex], header =>
+    _updateHeaderFromDescription(header, action.newRawDescription)
+  );
 };
 
 const addHeader = (state, action) => {
@@ -890,17 +885,23 @@ const updateTimestampWithId = (state, action) => {
 
   return state
     .setIn(['headers'].concat(path), action.newTimestamp)
-    .updateIn(['headers', headerIndex], header =>
-      header.set('rawDescription', attributedStringToRawText(header.get('description')))
-    )
-    .updateIn(['headers', headerIndex], header =>
-      header.setIn(
-        ['titleLine', 'rawTitle'],
-        attributedStringToRawText(header.getIn(['titleLine', 'title']))
-      )
-    );
+    .updateIn(['headers', headerIndex], header => {
+      const description = header.get('description');
+      const title = header.getIn(['titleLine', 'title']);
+      const planningItems = header.get('planningItems');
+
+      return header
+        .setIn(['titleLine', 'rawTitle'], attributedStringToRawText(title))
+        .set('rawDescription', attributedStringToRawText(description))
+        .set(
+          'planningItems',
+          updatePlanningItemsFromTitleAndDescription(planningItems, title, description)
+        );
+    });
 };
 
+// This is for special planning items like SCHEDULED: and DEADLINE:; but not
+// for normal active timestamps (which are also added to planning items).
 const updatePlanningItemTimestamp = (state, action) => {
   const { headerId, planningItemIndex, newTimestamp } = action;
   const headerIndex = indexOfHeaderWithId(state.get('headers'), headerId);

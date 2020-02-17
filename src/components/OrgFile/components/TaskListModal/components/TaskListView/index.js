@@ -8,6 +8,7 @@ import TitleLine from '../../../TitleLine';
 import { dateForTimestamp } from '../../../../../../lib/timestamps';
 import {
   createIsTodoKeywordInDoneState,
+  getPlanningItemTypeText,
   customFormatDistanceToNow,
 } from '../../../../../../lib/org_utils';
 
@@ -44,7 +45,9 @@ function TaskListView(props) {
           if (planningItemDate) {
             planningInformation = (
               <div className="agenda-day__header__planning-item-container">
-                <div className="task-list__header-planning-type">{planningItem.get('type')}</div>
+                <div className="task-list__header-planning-type">
+                  {getPlanningItemTypeText(planningItem)}
+                </div>
                 <div className={dateClassName} onClick={onToggleDateDisplayType}>
                   {dateDisplayType === 'absolute'
                     ? format(planningItemDate, 'MM/dd')
@@ -123,4 +126,7 @@ const mapDispatchToProps = dispatch => ({});
 const getTimeFromPlanningItem = planningItem =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskListView);

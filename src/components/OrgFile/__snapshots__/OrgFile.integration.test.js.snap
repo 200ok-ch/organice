@@ -550,7 +550,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 <span>
                   A header with a custom todo sequence in DONE state
                 </span>
-                ...
+                
               </span>
             </div>
           </div>

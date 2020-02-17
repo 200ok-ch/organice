@@ -4,7 +4,11 @@ import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
 
-import { isTodoKeywordCompleted, customFormatDistanceToNow } from '../../../../../../lib/org_utils';
+import {
+  isTodoKeywordCompleted,
+  customFormatDistanceToNow,
+  getPlanningItemTypeText,
+} from '../../../../../../lib/org_utils';
 import {
   dateForTimestamp,
   subtractTimestampUnitFromDate,
@@ -74,7 +78,9 @@ export default class AgendaDay extends PureComponent {
             return (
               <div key={planningItem.get('id')} className="agenda-day__header-container">
                 <div className="agenda-day__header__planning-item-container">
-                  <div className="agenda-day__header-planning-type">{planningItem.get('type')}</div>
+                  <div className="agenda-day__header-planning-type">
+                    {getPlanningItemTypeText(planningItem)}
+                  </div>
                   <div className={dateClassName} onClick={onToggleDateDisplayType}>
                     {dateDisplayType === 'absolute'
                       ? format(planningItemDate, 'MM/dd')
@@ -130,43 +136,47 @@ export default class AgendaDay extends PureComponent {
           if (isCompletedTodo) {
             return false;
           }
-          if (planningItem.get('type') === 'DEADLINE') {
-            if (isToday(date)) {
-              if (isBefore(planningItemDate, new Date())) {
+          switch (planningItem.get('type')) {
+            case 'DEADLINE':
+              if (isToday(date)) {
+                if (isBefore(planningItemDate, new Date())) {
+                  return true;
+                }
+                const [delayValue, delayUnit] = !!timestamp.get('delayType')
+                  ? [timestamp.get('delayValue'), timestamp.get('delayUnit')]
+                  : [agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit];
+                const appearDate = subtractTimestampUnitFromDate(
+                  planningItemDate,
+                  delayValue,
+                  delayUnit
+                );
+                return isAfter(date, appearDate) || isEqual(date, appearDate);
+              } else {
+                return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
+              }
+            case 'SCHEDULED':
+              let appearDate = planningItemDate;
+              if (!!timestamp.get('delayType')) {
+                const hasBeenRepeated = header
+                  .get('propertyListItems')
+                  .some(propertyListItem => propertyListItem.get('property') === 'LAST_REPEAT');
+                if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
+                  appearDate = addTimestampUnitToDate(
+                    planningItemDate,
+                    timestamp.get('delayValue'),
+                    timestamp.get('delayUnit')
+                  );
+                }
+              }
+              if (isToday(date) && isAfter(date, appearDate)) {
                 return true;
               }
-              const [delayValue, delayUnit] = !!timestamp.get('delayType')
-                ? [timestamp.get('delayValue'), timestamp.get('delayUnit')]
-                : [agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit];
-              const appearDate = subtractTimestampUnitFromDate(
-                planningItemDate,
-                delayValue,
-                delayUnit
-              );
-              return isAfter(date, appearDate) || isEqual(date, appearDate);
-            } else {
+              return isWithinInterval(appearDate, { start: dateStart, end: dateEnd });
+            case 'TIMESTAMP_TITLE':
+            case 'TIMESTAMP_DESCRIPTION':
               return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
-            }
-          } else if (planningItem.get('type') === 'SCHEDULED') {
-            let appearDate = planningItemDate;
-            if (!!timestamp.get('delayType')) {
-              const hasBeenRepeated = header
-                .get('propertyListItems')
-                .some(propertyListItem => propertyListItem.get('property') === 'LAST_REPEAT');
-              if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
-                appearDate = addTimestampUnitToDate(
-                  planningItemDate,
-                  timestamp.get('delayValue'),
-                  timestamp.get('delayUnit')
-                );
-              }
-            }
-            if (isToday(date) && isAfter(date, appearDate)) {
-              return true;
-            }
-            return isWithinInterval(appearDate, { start: dateStart, end: dateEnd });
-          } else {
-            return false;
+            default:
+              return false;
           }
         });
         return planningItemsforDate.map(planningItem => [planningItem, header]);
