@@ -17,7 +17,7 @@ jobs:
             - v1-dependencies-
       - run:
           name: Install dependencies
-          command: sudo apt-get update -yq && apt install -yq lftp pandoc emacs
+          command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc emacs
       - run:
           name: Deploy to https://org.200ok.ch
           command: ./bin/compile_and_upload.sh
