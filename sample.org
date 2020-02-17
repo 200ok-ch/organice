@@ -269,7 +269,12 @@ organice has a basic agenda view that you can access by tapping the calendar but
 
 Tap a header in this view to jump to it, and tap on the date to switch to a more readable relative date format.
 
-Overdue items with deadlines should show up on today's entry. Entries with just an active timestamp are shown only on exactly the day of the timestamp.
+Due and overdue items with deadlines and a schedule show up on today's entry. Entries with just an active timestamp are shown only on exactly the day of the timestamp. Hence, a 'meeting' or an 'appointment' should get an active timestamp whereas a TODO often will be scheduled or even has a deadline.
+
+More information on that in the [[https://orgmode.org/manual/Deadlines-and-Scheduling.html][org manual]].
+
+Examples:
+
 ** TODO Check out the organice agenda view
 DEADLINE: <2018-09-10 Mon>
 ** TODO Install organice to the homescreen on my mobile phone
