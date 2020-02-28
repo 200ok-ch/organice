@@ -40,7 +40,7 @@
     "@testing-library/react": "9.4.0",
     "prettier": "1.19.1",
     "raw.macro": "0.3.0",
-    "react-test-renderer": "^16.4.2"
+    "react-test-renderer": "^16.13.0"
   },
   "browserslist": [
     ">0.2%",
