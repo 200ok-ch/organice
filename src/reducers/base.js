@@ -74,7 +74,7 @@ const activatePopup = (state, action) => {
   // identifiable (aka not related to a single header like tags,
   // properties or timestamps).
   if (['search', 'task-list', 'agenda'].includes(popupType)) {
-    window.location.hash = popupType;
+    window.history.replaceState({}, '', `${window.location.pathname}#${popupType}`);
   }
 
   return state.set(
