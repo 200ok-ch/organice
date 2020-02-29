@@ -4,6 +4,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+
+* [2020-02-29 Sat]
+
+** Fixed
+   - As a user, when I visit Search, Task List or Agenda whilst having
+     a dirty file, I'm not getting a pop up a dialogue notifying me
+     about unpushed changes
+
 * [2020-02-17 Mon]
 
 ** Added
