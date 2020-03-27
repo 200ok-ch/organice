@@ -5,6 +5,11 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 
+* [2020-03-27 Fri]
+** Fixed
+   - Help texts for widen/narrow were reversed
+     - Thank you [[https://github.com/obar][@obar]] for the [[https://github.com/200ok-ch/organice/pull/270][PR]] 🙏
+
 * [2020-02-29 Sat]
 
 ** Fixed
