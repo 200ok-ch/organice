@@ -68,12 +68,12 @@ export default class HeaderActionDrawer extends PureComponent {
             ? this.iconWithFFClickCatcher({
                 className: 'fas fa-expand fa-lg',
                 onClick: onUnfocus,
-                title: 'Narrow to subtree (Focus on this header)',
+                title: 'Widen (Unfocus from this header)',
               })
             : this.iconWithFFClickCatcher({
                 className: 'fas fa-compress fa-lg',
                 onClick: onFocus,
-                title: 'Widen (Unfocus from this header)',
+                title: 'Narrow to subtree (Focus on this header)',
               })}
 
           {this.iconWithFFClickCatcher({
