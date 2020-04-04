@@ -20,6 +20,7 @@ const Settings = ({
   shouldLiveSync,
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
+  shouldLogIntoDrawer,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   hasUnseenChangelog,
@@ -53,6 +54,8 @@ const Settings = ({
 
   const handleShouldShowTitleInOrgFile = () =>
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
+
+  const handleShouldLogIntoDrawer = () => base.setShouldLogIntoDrawer(!shouldLogIntoDrawer);
 
   const handleShouldStoreSettingsInSyncBackendChange = () =>
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
@@ -117,6 +120,20 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={shouldShowTitleInOrgFile} onToggle={handleShouldShowTitleInOrgFile} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          org-log-into-drawer
+          <div className="setting-label__description">
+            Log TODO state changes into the LOGBOOK drawer. See the Orgmode documentation on{' '}
+            <a href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
+              org-log-into-drawer
+            </a>{' '}
+            for more information.
+          </div>
+        </div>
+        <Switch isEnabled={shouldLogIntoDrawer} onToggle={handleShouldLogIntoDrawer} />
       </div>
 
       <div className="setting-container">
@@ -214,6 +231,7 @@ const mapStateToProps = (state, props) => {
     shouldLiveSync: state.base.get('shouldLiveSync'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
+    shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };
