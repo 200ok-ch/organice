@@ -143,7 +143,7 @@ class OrgFile extends PureComponent {
   }
 
   handleAdvanceTodoHotKey() {
-    this.props.org.advanceTodoState();
+    this.props.org.advanceTodoState(null, this.props.shouldLogIntoDrawer);
   }
 
   handleEditTitleHotKey() {
@@ -505,6 +505,7 @@ const mapStateToProps = (state, props) => {
     loadedPath: state.org.present.get('path'),
     selectedHeader: headers && headers.find(header => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
+    shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     inEditMode: !!state.org.present.get('editMode'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,

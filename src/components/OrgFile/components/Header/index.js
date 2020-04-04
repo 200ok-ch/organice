@@ -120,7 +120,10 @@ class Header extends PureComponent {
       const swipeDistance = currentDragX - dragStartX;
 
       if (swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
-        this.props.org.advanceTodoState(this.props.header.get('id'));
+        this.props.org.advanceTodoState(
+          this.props.header.get('id'),
+          this.props.shouldLogIntoDrawer
+        );
       }
 
       if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
@@ -521,6 +524,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     bulletStyle: state.base.get('bulletStyle'),
+    shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     focusedHeader,
     isFocused: !!focusedHeader && focusedHeader.get('id') === props.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
@@ -532,7 +536,4 @@ const mapDispatchToProps = dispatch => ({
   base: bindActionCreators(baseActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
