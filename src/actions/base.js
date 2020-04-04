@@ -97,6 +97,11 @@ export const setShouldShowTitleInOrgFile = shouldShowTitleInOrgFile => ({
   shouldShowTitleInOrgFile,
 });
 
+export const setShouldLogIntoDrawer = shouldLogIntoDrawer => ({
+  type: 'SET_SHOULD_LOG_INTO_DRAWER',
+  shouldLogIntoDrawer,
+});
+
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
     dispatch({
