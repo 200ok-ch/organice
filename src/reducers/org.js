@@ -188,6 +188,8 @@ const advanceTodoState = (state, action) => {
     return state;
   }
 
+  const logIntoDrawer = action.logIntoDrawer;
+
   const headers = state.get('headers');
   const header = headerWithId(headers, headerId);
   const headerIndex = indexOfHeaderWithId(headers, headerId);
@@ -210,7 +212,8 @@ const advanceTodoState = (state, action) => {
     indexedPlanningItemsWithRepeaters,
     state,
     headerIndex,
-    currentTodoState
+    currentTodoState,
+    logIntoDrawer
   );
 
   state = updateCookiesOfParentOfHeaderWithId(state, headerId);
@@ -1177,7 +1180,8 @@ function updateHeadlines(
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
-  currentTodoState
+  currentTodoState,
+  logIntoDrawer
 ) {
   if (
     currentTodoSet.get('completedKeywords').includes(newTodoState) &&
@@ -1189,7 +1193,8 @@ function updateHeadlines(
       headerIndex,
       currentTodoSet,
       newTodoState,
-      currentTodoState
+      currentTodoState,
+      logIntoDrawer
     );
   else {
     // Update simple headline (without repeaters)
@@ -1204,7 +1209,8 @@ function updatePlanningItemsWithRepeaters(
   headerIndex,
   currentTodoSet,
   newTodoState,
-  currentTodoState
+  currentTodoState,
+  logIntoDrawer
 ) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
@@ -1247,13 +1253,29 @@ function updatePlanningItemsWithRepeaters(
       if (rawDescription.startsWith('\n')) {
         rawDescription = rawDescription.slice(1);
       }
-      rawDescription =
-        `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
-          fromJS(lastRepeatTimestamp)
-        )}\n` + rawDescription;
-      return header
-        .set('rawDescription', rawDescription)
-        .set('description', parseRawText(rawDescription));
+      // this is how the TODO state change will be logged
+      const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+        fromJS(lastRepeatTimestamp)
+      )}\n`;
+
+      if (logIntoDrawer) {
+        // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
+        // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
+        const newEntry = fromJS({
+          id: generateId(),
+          raw: newStateChangeLogText,
+        });
+        return header.updateIn(['logBookEntries'], entries =>
+          !!entries ? entries.unshift(newEntry) : List([newEntry])
+        );
+      } else {
+        // previous default: when org-log-into-drawer not set,
+        // we have to prepend state change log text to the existing contents
+        rawDescription = '\n' + newStateChangeLogText + rawDescription;
+        return header
+          .set('rawDescription', rawDescription)
+          .set('description', parseRawText(rawDescription));
+      }
     });
   }
   return state;
