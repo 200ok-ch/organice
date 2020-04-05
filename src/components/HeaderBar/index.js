@@ -51,33 +51,23 @@ class HeaderBar extends PureComponent {
   }
 
   renderFileBrowserBackButton() {
-    const {
-      location: { pathname },
-      syncBackendType,
-    } = this.props;
-    if (syncBackendType === 'Google Drive') {
-      return <div />;
+    let backPath = 'Back';
+    const fileParts = window.location.href.split('/').map(e => decodeURIComponent(e));
+    if (_.includes(fileParts, 'files')) {
+      backPath = _.last(fileParts);
     }
 
-    let directoryPath = pathname.substr('/files'.length);
-    if (directoryPath.endsWith('/')) {
-      directoryPath = directoryPath.substring(0, directoryPath.length - 1);
-    }
-
-    if (directoryPath === '') {
-      return <div />;
-    } else {
-      const pathParts = directoryPath.split('/');
-      const parentDirectoryName = pathParts[pathParts.length - 2];
-      const parentPath = pathParts.slice(0, pathParts.length - 1).join('/');
-
-      return (
-        <Link to={`/files${parentPath}`} className="header-bar__back-button">
-          <i className="fas fa-chevron-left" />
-          <span className="header-bar__back-button__directory-path">{parentDirectoryName}/</span>
-        </Link>
-      );
-    }
+    return (
+      <div
+        onClick={() => {
+          window.history.back();
+        }}
+        className="header-bar__back-button"
+      >
+        <i className="fas fa-chevron-left" />
+        <span className="header-bar__back-button__directory-path">{backPath}</span>
+      </div>
+    );
   }
 
   renderOrgFileBackButton() {
@@ -110,7 +100,7 @@ class HeaderBar extends PureComponent {
     );
   }
 
-  renderSampleFileBackButton() {
+  renderHomeFileBackButton() {
     return (
       <Link to={`/`} className="header-bar__back-button">
         <i className="fas fa-chevron-left" />
@@ -153,8 +143,6 @@ class HeaderBar extends PureComponent {
         return this.renderSettingsSubPageBackButton();
       case 'sample':
         return this.renderSettingsSubPageBackButton();
-      case 'settings':
-        return <div />;
       default:
     }
 
@@ -166,9 +154,11 @@ class HeaderBar extends PureComponent {
       case 'file':
         return this.renderOrgFileBackButton();
       case 'sample':
-        return this.renderSampleFileBackButton();
+        return this.renderHomeFileBackButton();
       case 'sign_in':
         return this.renderSignInBackButton();
+      case 'settings':
+        return this.renderFileBrowserBackButton();
       default:
         return <div />;
     }
@@ -200,6 +190,8 @@ class HeaderBar extends PureComponent {
         return titleContainerWithText('Sample');
       case 'sign_in':
         return titleContainerWithText('Sign in');
+      case 'settings':
+        return titleContainerWithText('Settings');
       default:
     }
 
@@ -251,7 +243,7 @@ class HeaderBar extends PureComponent {
           Done
         </div>
       );
-    } else {
+    } else if (this.getPathRoot() !== 'settings') {
       const undoIconClassName = classNames('fas fa-undo header-bar__actions__item', {
         'header-bar__actions__item--disabled': !isUndoEnabled,
       });
