@@ -99,7 +99,7 @@ class TitleLine extends PureComponent {
   }
 
   handleTodoClick(event) {
-    const { header, shouldTapTodoToAdvance, onClick } = this.props;
+    const { header, shouldTapTodoToAdvance, setShouldLogIntoDrawer, onClick } = this.props;
 
     if (!!onClick) {
       onClick();
@@ -108,7 +108,7 @@ class TitleLine extends PureComponent {
       this.props.org.selectHeader(header.get('id'));
 
       if (shouldTapTodoToAdvance) {
-        this.props.org.advanceTodoState(null, baseActions.setShouldLogIntoDrawer);
+        this.props.org.advanceTodoState(null, setShouldLogIntoDrawer);
       }
     }
   }
