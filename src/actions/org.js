@@ -112,7 +112,8 @@ const doSync = ({
                 getState().org.present.get('headers'),
                 getState().org.present.get('todoKeywordSets'),
                 getState().org.present.get('fileConfigLines'),
-                getState().org.present.get('linesBeforeHeadings')
+                getState().org.present.get('linesBeforeHeadings'),
+                getState().base.get('shouldNotIndentOnExport')
               )
             )
             .then(() => {
