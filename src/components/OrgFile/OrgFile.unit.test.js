@@ -20,7 +20,9 @@ function parseAndExportOrgFile(testOrgFile) {
   const todoKeywordSets = parsedFile.get('todoKeywordSets');
   const fileConfigLines = parsedFile.get('fileConfigLines');
   const linesBeforeHeadings = parsedFile.get('linesBeforeHeadings');
-  const exportedFile = exportOrg(headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings);
+  // we keep the default behaviour of indenting the element body according to nesting depth
+  const exportedFile = exportOrg(
+    headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings, false);
   return exportedFile;
 }
 
@@ -40,25 +42,25 @@ describe('Tests for export', () => {
   test('Simple description export of empty description works', () => {
     const description = '';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(description);
+    expect(createRawDescriptionText(header, false, false)).toEqual(description);
   });
 
   test('Simple description export of empty line works', () => {
     const description = '\n';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(description);
+    expect(createRawDescriptionText(header, false, false)).toEqual(description);
   });
 
   test('Simple description export of non-empty line works', () => {
     const description = 'abc\n';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(description);
+    expect(createRawDescriptionText(header, false, false)).toEqual(description);
   });
 
   test('Simple description export of non-empty line without trailing newline works (newline will be added)', () => {
     const description = 'abc';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(`${description}\n`);
+    expect(createRawDescriptionText(header, false, false)).toEqual(`${description}\n`);
   });
 });
 

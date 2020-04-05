@@ -20,7 +20,8 @@ function parseAndExportOrgFile(testOrgFile) {
   const todoKeywordSets = parsedFile.get('todoKeywordSets');
   const fileConfigLines = parsedFile.get('fileConfigLines');
   const linesBeforeHeadings = parsedFile.get('linesBeforeHeadings');
-  const exportedFile = exportOrg(headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings);
+  const exportedFile = exportOrg(
+    headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings, false);
   return exportedFile;
 }
 
