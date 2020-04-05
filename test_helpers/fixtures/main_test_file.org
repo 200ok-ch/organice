@@ -7,7 +7,7 @@
    DEADLINE: <2018-10-05 Fri> SCHEDULED: <2019-09-19 Thu>
 * Another top level header
 Some description content
-** TODO Another todo
+** TODO A repeating todo
    SCHEDULED: <2020-04-05 Sun +1d>
 
 * A header with tags                                              :tag1:tag2:

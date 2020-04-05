@@ -98,7 +98,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   style="color: black; word-break: break-word;"
                 >
                   <span>
-                    Another todo
+                    A repeating todo
                   </span>
                   
                 </span>
