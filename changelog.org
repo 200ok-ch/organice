@@ -9,6 +9,8 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Added
    - Support for org-log-into-drawer TODO state logging
      - Thank you [[https://github.com/cpbotha][cpbotha]] for your [[https://github.com/200ok-ch/organice/pull/271][PR]] 🙏
+** Fixed
+   - Settings screen has proper title and "back" button
 
 * [2020-03-27 Fri]
 ** Fixed
