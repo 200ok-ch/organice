@@ -1212,10 +1212,6 @@ function updateHeadlines(
  * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
  */
 function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer) {
-  let rawDescription = header.get('rawDescription');
-  if (rawDescription.startsWith('\n')) {
-    rawDescription = rawDescription.slice(1);
-  }
   // this is how the TODO state change will be logged
   const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
     fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
@@ -1234,6 +1230,12 @@ function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIn
   } else {
     // previous default: when org-log-into-drawer not set,
     // we have to prepend state change log text to the existing contents
+    // 1. get the existing rawDescription
+    let rawDescription = header.get('rawDescription');
+    if (rawDescription.startsWith('\n')) {
+      rawDescription = rawDescription.slice(1);
+    }
+    // 2. prepend the new bullet and write it out again
     rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
     return header
       .set('rawDescription', rawDescription)
