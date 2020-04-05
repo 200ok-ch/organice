@@ -1256,7 +1256,7 @@ function updatePlanningItemsWithRepeaters(
       // this is how the TODO state change will be logged
       const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
         fromJS(lastRepeatTimestamp)
-      )}\n`;
+      )}`;
 
       if (logIntoDrawer) {
         // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
@@ -1271,7 +1271,7 @@ function updatePlanningItemsWithRepeaters(
       } else {
         // previous default: when org-log-into-drawer not set,
         // we have to prepend state change log text to the existing contents
-        rawDescription = '\n' + newStateChangeLogText + rawDescription;
+        rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
         return header
           .set('rawDescription', rawDescription)
           .set('description', parseRawText(rawDescription));
