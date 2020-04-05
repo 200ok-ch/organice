@@ -124,9 +124,10 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
-          org-log-into-drawer
+          Log into LOGBOOK drawer when item repeats
           <div className="setting-label__description">
-            Log TODO state changes into the LOGBOOK drawer. See the Orgmode documentation on{' '}
+            Log TODO state changes (currently only for repeating items) into the LOGBOOK drawer
+            instead of into the body of the heading (default). See the Orgmode documentation on{' '}
             <a href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
               org-log-into-drawer
             </a>{' '}
