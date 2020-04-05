@@ -1203,6 +1203,44 @@ function updateHeadlines(
   return state;
 }
 
+/**
+ * Add a TODO state change log item either to the heading body or LOGBOOK drawer.
+ *
+ * @param {*} header State of the header where the state change log item should be added.
+ * @param {string} newTodoState New TODO state, e.g. DONE.
+ * @param {string} currentTodoState Current TODO state, e.g. TODO or DONE.
+ * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
+ */
+function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer) {
+  let rawDescription = header.get('rawDescription');
+  if (rawDescription.startsWith('\n')) {
+    rawDescription = rawDescription.slice(1);
+  }
+  // this is how the TODO state change will be logged
+  const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+    fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
+  )}`;
+
+  if (logIntoDrawer) {
+    // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
+    // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
+    const newEntry = fromJS({
+      id: generateId(),
+      raw: newStateChangeLogText,
+    });
+    return header.updateIn(['logBookEntries'], entries =>
+      !!entries ? entries.unshift(newEntry) : List([newEntry])
+    );
+  } else {
+    // previous default: when org-log-into-drawer not set,
+    // we have to prepend state change log text to the existing contents
+    rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
+    return header
+      .set('rawDescription', rawDescription)
+      .set('description', parseRawText(rawDescription));
+  }
+}
+
 function updatePlanningItemsWithRepeaters(
   indexedPlanningItemsWithRepeaters,
   state,
@@ -1248,35 +1286,9 @@ function updatePlanningItemsWithRepeaters(
             })
           )
     );
-    state = state.updateIn(['headers', headerIndex], header => {
-      let rawDescription = header.get('rawDescription');
-      if (rawDescription.startsWith('\n')) {
-        rawDescription = rawDescription.slice(1);
-      }
-      // this is how the TODO state change will be logged
-      const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
-        fromJS(lastRepeatTimestamp)
-      )}`;
-
-      if (logIntoDrawer) {
-        // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
-        // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
-        const newEntry = fromJS({
-          id: generateId(),
-          raw: newStateChangeLogText,
-        });
-        return header.updateIn(['logBookEntries'], entries =>
-          !!entries ? entries.unshift(newEntry) : List([newEntry])
-        );
-      } else {
-        // previous default: when org-log-into-drawer not set,
-        // we have to prepend state change log text to the existing contents
-        rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
-        return header
-          .set('rawDescription', rawDescription)
-          .set('description', parseRawText(rawDescription));
-      }
-    });
+    state = state.updateIn(['headers', headerIndex], header =>
+      addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer)
+    );
   }
   return state;
 }
