@@ -78,7 +78,8 @@ class HeaderContent extends PureComponent {
   }
 
   calculateRawDescription(header) {
-    return createRawDescriptionText(header, false);
+    // this is for display only, se we keep the default indentation behaviour
+    return createRawDescriptionText(header, false, false);
   }
 
   handleTextareaRef(textarea) {
