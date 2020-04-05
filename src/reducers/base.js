@@ -30,6 +30,9 @@ const setShouldSyncOnBecomingVisibile = (state, action) =>
 const setShouldShowTitleInOrgFile = (state, action) =>
   state.set('shouldShowTitleInOrgFile', action.shouldShowTitleInOrgFile);
 
+const setShouldLogIntoDrawer = (state, action) =>
+  state.set('shouldLogIntoDrawer', action.shouldLogIntoDrawer);
+
 const setHasUnseenChangelog = (state, action) =>
   state.set('hasUnseenChangelog', action.newHasUnseenChangelog);
 
@@ -97,6 +100,9 @@ const closePopup = state => {
 
 const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
 
+/**
+ * Reducer that is responsible for the "base" state slice.
+ */
 export default (state = Map(), action) => {
   switch (action.type) {
     case 'SET_LOADING_MESSAGE':
@@ -121,6 +127,8 @@ export default (state = Map(), action) => {
       return setShouldSyncOnBecomingVisibile(state, action);
     case 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE':
       return setShouldShowTitleInOrgFile(state, action);
+    case 'SET_SHOULD_LOG_INTO_DRAWER':
+      return setShouldLogIntoDrawer(state, action);
     case 'SET_HAS_UNSEEN_CHANGELOG':
       return setHasUnseenChangelog(state, action);
     case 'SET_LAST_SEEN_CHANGELOG_HEADER':

@@ -99,7 +99,7 @@ class TitleLine extends PureComponent {
   }
 
   handleTodoClick(event) {
-    const { header, shouldTapTodoToAdvance, onClick } = this.props;
+    const { header, shouldTapTodoToAdvance, setShouldLogIntoDrawer, onClick } = this.props;
 
     if (!!onClick) {
       onClick();
@@ -108,7 +108,7 @@ class TitleLine extends PureComponent {
       this.props.org.selectHeader(header.get('id'));
 
       if (shouldTapTodoToAdvance) {
-        this.props.org.advanceTodoState();
+        this.props.org.advanceTodoState(null, setShouldLogIntoDrawer);
       }
     }
   }
@@ -282,6 +282,7 @@ const mapStateToProps = (state, props) => {
     inEditMode:
       state.org.present.get('editMode') === 'title' &&
       state.org.present.get('selectedHeaderId') === props.header.get('id'),
+    setShouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),

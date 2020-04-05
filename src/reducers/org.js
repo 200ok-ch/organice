@@ -188,6 +188,8 @@ const advanceTodoState = (state, action) => {
     return state;
   }
 
+  const logIntoDrawer = action.logIntoDrawer;
+
   const headers = state.get('headers');
   const header = headerWithId(headers, headerId);
   const headerIndex = indexOfHeaderWithId(headers, headerId);
@@ -210,7 +212,8 @@ const advanceTodoState = (state, action) => {
     indexedPlanningItemsWithRepeaters,
     state,
     headerIndex,
-    currentTodoState
+    currentTodoState,
+    logIntoDrawer
   );
 
   state = updateCookiesOfParentOfHeaderWithId(state, headerId);
@@ -1177,7 +1180,8 @@ function updateHeadlines(
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
-  currentTodoState
+  currentTodoState,
+  logIntoDrawer
 ) {
   if (
     currentTodoSet.get('completedKeywords').includes(newTodoState) &&
@@ -1189,7 +1193,8 @@ function updateHeadlines(
       headerIndex,
       currentTodoSet,
       newTodoState,
-      currentTodoState
+      currentTodoState,
+      logIntoDrawer
     );
   else {
     // Update simple headline (without repeaters)
@@ -1198,13 +1203,54 @@ function updateHeadlines(
   return state;
 }
 
+/**
+ * Add a TODO state change log item either to the heading body or LOGBOOK drawer.
+ *
+ * @param {*} header State of the header where the state change log item should be added.
+ * @param {string} newTodoState New TODO state, e.g. DONE.
+ * @param {string} currentTodoState Current TODO state, e.g. TODO or DONE.
+ * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
+ */
+function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer) {
+  // this is how the TODO state change will be logged
+  const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+    fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
+  )}`;
+
+  if (logIntoDrawer) {
+    // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
+    // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
+    const newEntry = fromJS({
+      id: generateId(),
+      raw: newStateChangeLogText,
+    });
+    return header.updateIn(['logBookEntries'], entries =>
+      !!entries ? entries.unshift(newEntry) : List([newEntry])
+    );
+  } else {
+    // previous default: when org-log-into-drawer not set,
+    // we have to prepend state change log text to the existing contents
+    // 1. get the existing rawDescription
+    let rawDescription = header.get('rawDescription');
+    if (rawDescription.startsWith('\n')) {
+      rawDescription = rawDescription.slice(1);
+    }
+    // 2. prepend the new bullet and write it out again
+    rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
+    return header
+      .set('rawDescription', rawDescription)
+      .set('description', parseRawText(rawDescription));
+  }
+}
+
 function updatePlanningItemsWithRepeaters(
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
   currentTodoSet,
   newTodoState,
-  currentTodoState
+  currentTodoState,
+  logIntoDrawer
 ) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
@@ -1242,19 +1288,9 @@ function updatePlanningItemsWithRepeaters(
             })
           )
     );
-    state = state.updateIn(['headers', headerIndex], header => {
-      let rawDescription = header.get('rawDescription');
-      if (rawDescription.startsWith('\n')) {
-        rawDescription = rawDescription.slice(1);
-      }
-      rawDescription =
-        `\n- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
-          fromJS(lastRepeatTimestamp)
-        )}\n` + rawDescription;
-      return header
-        .set('rawDescription', rawDescription)
-        .set('description', parseRawText(rawDescription));
-    });
+    state = state.updateIn(['headers', headerIndex], header =>
+      addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer)
+    );
   }
   return state;
 }

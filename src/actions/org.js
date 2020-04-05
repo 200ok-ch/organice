@@ -185,9 +185,16 @@ export const selectHeaderAndOpenParents = headerId => dispatch => {
   dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });
 };
 
-export const advanceTodoState = (headerId = null) => ({
+/**
+ * Action to advance the state, e.g. TODO -> DONE, of the header specified in headerId.
+ *
+ * @param {*} headerId headerId to advance, or null if you want the currently focused header.
+ * @param {*} logIntoDrawer false to log state change into body, true to log into :LOGBOOK: drawer.
+ */
+export const advanceTodoState = (headerId, logIntoDrawer) => ({
   type: 'ADVANCE_TODO_STATE',
   headerId,
+  logIntoDrawer,
   dirtying: true,
 });
 

@@ -112,6 +112,12 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
+    category: 'base',
+    name: 'shouldLogIntoDrawer',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
+  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',

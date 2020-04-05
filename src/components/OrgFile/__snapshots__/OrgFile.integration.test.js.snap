@@ -89,6 +89,47 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               class="title-line"
             >
               <span
+                class="todo-keyword"
+              >
+                TODO
+              </span>
+              <div>
+                <span
+                  style="color: black; word-break: break-word;"
+                >
+                  <span>
+                    A repeating todo
+                  </span>
+                  
+                </span>
+              </div>
+            </div>
+            <div
+              class="agenda-day__header__planning-item-container"
+            >
+              <div
+                class="task-list__header-planning-type"
+              >
+                SCHEDULED
+              </div>
+              <div
+                class="task-list__header-planning-date task-list__header-planning-date--overdue"
+              >
+                04/05
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              <span
                 class="todo-keyword todo-keyword--done-state"
               >
                 FINISHED

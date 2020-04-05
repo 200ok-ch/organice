@@ -170,6 +170,21 @@ describe('Render all views', () => {
       });
     });
 
+    describe('Tracking TODO state changes', () => {
+      describe('Default settings', () => {
+        test('Does not track TODO state change for repeating todos', () => {
+          expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+
+          fireEvent.click(getByText('Another top level header'));
+          fireEvent.click(getByText('A repeating todo'));
+
+          fireEvent.click(queryByText('TODO'));
+
+          expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+        });
+      });
+    });
+
     describe('Renders everything starting from an Org file', () => {
       test('renders an Org file', () => {
         expect(getAllByText(/\*/)).toHaveLength(6);
