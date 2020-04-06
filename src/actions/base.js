@@ -102,6 +102,11 @@ export const setShouldLogIntoDrawer = shouldLogIntoDrawer => ({
   shouldLogIntoDrawer,
 });
 
+export const setShouldNotIndentOnExport = shouldNotIndentOnExport => ({
+  type: 'SET_SHOULD_NOT_INDENT_ON_EXPORT',
+  shouldNotIndentOnExport,
+});
+
 export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
   return (dispatch, getState) => {
     dispatch({

@@ -21,6 +21,7 @@ const Settings = ({
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
+  shouldNotIndentOnExport,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   hasUnseenChangelog,
@@ -56,6 +57,9 @@ const Settings = ({
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
 
   const handleShouldLogIntoDrawer = () => base.setShouldLogIntoDrawer(!shouldLogIntoDrawer);
+
+  const handleShouldNotIndentOnExport = () =>
+    base.setShouldNotIndentOnExport(!shouldNotIndentOnExport);
 
   const handleShouldStoreSettingsInSyncBackendChange = () =>
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
@@ -135,6 +139,22 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={shouldLogIntoDrawer} onToggle={handleShouldLogIntoDrawer} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Disable hard indent on Org export
+          <div className="setting-label__description">
+            By default, the metadata body (including deadlines and drawers) of an exported org
+            heading is indented according to its level. If instead you prefer to keep your body text
+            flush-left, i.e.{' '}
+            <a href="https://orgmode.org/manual/Hard-indentation.html">
+              <code>(setq org-adapt-indentation nil)</code>
+            </a>
+            , then activate this setting. The raw content text is left unchanged.
+          </div>
+        </div>
+        <Switch isEnabled={shouldNotIndentOnExport} onToggle={handleShouldNotIndentOnExport} />
       </div>
 
       <div className="setting-container">
@@ -233,6 +253,7 @@ const mapStateToProps = (state, props) => {
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };
 };

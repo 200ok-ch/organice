@@ -13,14 +13,21 @@ import { fromJS } from 'immutable';
  * This is a convenience wrapper around parsing an org file using
  * `parseOrg` and then export it using `exportOrg`.
  * @param {String} testOrgFile - contents of an org file
+ * @param {Boolean} dontIndent - by default false, so indent drawers
  */
-function parseAndExportOrgFile(testOrgFile) {
+function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
   const parsedFile = parseOrg(testOrgFile);
   const headers = parsedFile.get('headers');
   const todoKeywordSets = parsedFile.get('todoKeywordSets');
   const fileConfigLines = parsedFile.get('fileConfigLines');
   const linesBeforeHeadings = parsedFile.get('linesBeforeHeadings');
-  const exportedFile = exportOrg(headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings);
+  const exportedFile = exportOrg(
+    headers,
+    todoKeywordSets,
+    fileConfigLines,
+    linesBeforeHeadings,
+    dontIndent
+  );
   return exportedFile;
 }
 
@@ -40,25 +47,25 @@ describe('Tests for export', () => {
   test('Simple description export of empty description works', () => {
     const description = '';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(description);
+    expect(createRawDescriptionText(header, false, false)).toEqual(description);
   });
 
   test('Simple description export of empty line works', () => {
     const description = '\n';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(description);
+    expect(createRawDescriptionText(header, false, false)).toEqual(description);
   });
 
   test('Simple description export of non-empty line works', () => {
     const description = 'abc\n';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(description);
+    expect(createRawDescriptionText(header, false, false)).toEqual(description);
   });
 
   test('Simple description export of non-empty line without trailing newline works (newline will be added)', () => {
     const description = 'abc';
     const header = createSimpleHeaderWithDescription(description);
-    expect(createRawDescriptionText(header, false)).toEqual(`${description}\n`);
+    expect(createRawDescriptionText(header, false, false)).toEqual(`${description}\n`);
   });
 });
 
@@ -372,6 +379,12 @@ ${description}`;
           expect(exportedFile).toEqual(testOrgFile);
         });
 
+        test('Properties are flush-left when dontIndent is true', () => {
+          const testOrgFile = readFixture('properties');
+          const exportedLines = parseAndExportOrgFile(testOrgFile, true).split('\n');
+          expect(exportedLines[2]).toEqual(':PROPERTIES:');
+        });
+
         test('Tags are formatted as is default in Emacs', () => {
           const testOrgFile = readFixture('tags');
           const exportedFile = parseAndExportOrgFile(testOrgFile);
@@ -384,6 +397,18 @@ ${description}`;
         const testOrgFile = readFixture('logbook');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
+      });
+      test('Logbook entries are indented by default', () => {
+        const testOrgFile = readFixture('logbook');
+        const exportedLines = parseAndExportOrgFile(testOrgFile).split('\n');
+        expect(exportedLines[1]).toEqual('  :LOGBOOK:');
+        expect(exportedLines[2].startsWith('  CLOCK:')).toBeTruthy();
+      });
+      test('Logbook entries are not indented when dontIndent', () => {
+        const testOrgFile = readFixture('logbook');
+        const exportedLines = parseAndExportOrgFile(testOrgFile, true).split('\n');
+        expect(exportedLines[1]).toEqual(':LOGBOOK:');
+        expect(exportedLines[2].startsWith('CLOCK:')).toBeTruthy();
       });
     });
   });

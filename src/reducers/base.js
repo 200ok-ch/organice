@@ -33,6 +33,14 @@ const setShouldShowTitleInOrgFile = (state, action) =>
 const setShouldLogIntoDrawer = (state, action) =>
   state.set('shouldLogIntoDrawer', action.shouldLogIntoDrawer);
 
+/**
+ * When enabled, keep all heading body text flush-left. When disabled (the
+ * default) indent the body text of headings according to the nesting level of
+ * the heading.
+ */
+const setShouldNotIndentOnExport = (state, action) =>
+  state.set('shouldNotIndentOnExport', action.shouldNotIndentOnExport);
+
 const setHasUnseenChangelog = (state, action) =>
   state.set('hasUnseenChangelog', action.newHasUnseenChangelog);
 
@@ -129,6 +137,8 @@ export default (state = Map(), action) => {
       return setShouldShowTitleInOrgFile(state, action);
     case 'SET_SHOULD_LOG_INTO_DRAWER':
       return setShouldLogIntoDrawer(state, action);
+    case 'SET_SHOULD_NOT_INDENT_ON_EXPORT':
+      return setShouldNotIndentOnExport(state, action);
     case 'SET_HAS_UNSEEN_CHANGELOG':
       return setHasUnseenChangelog(state, action);
     case 'SET_LAST_SEEN_CHANGELOG_HEADER':

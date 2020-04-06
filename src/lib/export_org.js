@@ -241,7 +241,23 @@ export const generateTitleLine = (header, includeStars) => {
   return contents;
 };
 
-export const exportOrg = (headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings) => {
+/**
+ * Convert state data into a fully rendered Orgmode file text.
+ *
+ * @param {*} headers Full list of org headings from redux state.
+ * @param {*} todoKeywordSets
+ * @param {*} fileConfigLines List of all "#+VAR:" config lines in the file.
+ * @param {*} linesBeforeHeadings Text that occurs before the first heading.
+ * @param {boolean} dontIndent Default false means indent drawers according to
+ * nesting level, else keep everything flush-left. Description is kept as is.
+ */
+export const exportOrg = (
+  headers,
+  todoKeywordSets,
+  fileConfigLines,
+  linesBeforeHeadings,
+  dontIndent
+) => {
   let configContent = '';
 
   if (fileConfigLines.size > 0) {
@@ -267,18 +283,25 @@ export const exportOrg = (headers, todoKeywordSets, fileConfigLines, linesBefore
     configContent = configContent + '\n';
   }
 
-  const headerContent = headers.map(x => createRawDescriptionText(x, true)).join('');
+  const headerContent = headers.map(x => createRawDescriptionText(x, true, dontIndent)).join('');
 
   return configContent + headerContent;
 };
 
-export const createRawDescriptionText = (header, includeTitle) => {
+/**
+ * Transform state data of complete org element / header into rendered text.
+ *
+ * @param {*} header Immutable map with header data
+ * @param {boolean} includeTitle Render the full orgmode title
+ * @param {boolean} dontIndent If true keep all text flush-left, else (DEFAULT) indent according to nesting level
+ */
+export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   // To simplify access to properties:
   header = header.toJS();
 
   // Pad things like planning items and tables appropriately
-  // considering the nestingLevel of the header.
-  const indentation = ' '.repeat(header.nestingLevel + 1);
+  // considering the nestingLevel of the header, unless that is explicitly disabled
+  const indentation = dontIndent ? '' : ' '.repeat(header.nestingLevel + 1);
   let contents = '';
 
   if (includeTitle) {
