@@ -5,6 +5,13 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 
+* [2020-04-06 Mon]
+
+** Added
+   - Support org-adapt-indentation
+     - By default, the metadata body (including deadlines and drawers) of an exported org heading is indented according to its level. If instead you prefer to keep your body text flush-left, i.e.{' '}
+     - Thank you [[https://github.com/cpbotha][cpbotha]] for your [[https://github.com/200ok-ch/organice/pull/272][PR]] 🙏
+
 * [2020-04-05 Sun]
 ** Added
    - Support for org-log-into-drawer TODO state logging
