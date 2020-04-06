@@ -13,11 +13,14 @@ import readFixture from '../../../test_helpers/index';
 import rootReducer from '../../reducers/';
 
 import { displayFile } from '../../actions/org';
+import { setShouldLogIntoDrawer } from '../../actions/base';
 
 import { Map, fromJS } from 'immutable';
 import { formatDistanceToNow } from 'date-fns';
 
-import { render, fireEvent, cleanup, wait } from '@testing-library/react';
+import { render, fireEvent, cleanup, wait, prettyDOM } from '@testing-library/react';
+// Debugging help:
+// console.log(prettyDOM(container, 999999999999999999999999));
 import '@testing-library/jest-dom/extend-expect';
 
 afterEach(cleanup);
@@ -174,13 +177,39 @@ describe('Render all views', () => {
       describe('Default settings', () => {
         test('Does not track TODO state change for repeating todos', () => {
           expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+          expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeFalsy();
 
           fireEvent.click(getByText('Another top level header'));
           fireEvent.click(getByText('A repeating todo'));
 
           fireEvent.click(queryByText('TODO'));
+          fireEvent.click(getByText('A repeating todo'));
 
           expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+        });
+      });
+      describe('Feature enabled', () => {
+        test('Does track TODO state change for repeating todos', () => {
+          expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeFalsy();
+          store.dispatch(setShouldLogIntoDrawer(true));
+          expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeTruthy();
+
+          fireEvent.click(getByText('Another top level header'));
+          fireEvent.click(getByText('A repeating todo'));
+          expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+
+          expect(queryByText('<2020-04-05 Sun +1d>')).toBeTruthy();
+          fireEvent.click(queryByText('TODO'));
+          fireEvent.click(getByText('A repeating todo'));
+
+          // After the TODO is toggled, it's still just TODO, because
+          // the state got tracked
+          expect(queryByText('DONE')).toBeFalsy();
+          // TODO has been scheduled one day into the future
+          expect(queryByText('<2020-04-05 Sun +1d>')).toBeFalsy();
+          expect(queryByText('<2020-04-06 Mon +1d>')).toBeTruthy();
+
+          expect(queryByText(':LOGBOOK:...')).toBeTruthy();
         });
       });
     });
