@@ -248,7 +248,8 @@ export const generateTitleLine = (header, includeStars) => {
  * @param {*} todoKeywordSets
  * @param {*} fileConfigLines List of all "#+VAR:" config lines in the file.
  * @param {*} linesBeforeHeadings Text that occurs before the first heading.
- * @param {boolean} dontIndent Default false means indent heading body according to nesting level, else keep everything flush-left.
+ * @param {boolean} dontIndent Default false means indent drawers according to
+ * nesting level, else keep everything flush-left. Description is kept as is.
  */
 export const exportOrg = (
   headers,
