@@ -23,7 +23,7 @@ export const displayFile = (path, contents) => ({
   contents,
 });
 
-export const setLastSyncAt = lastSyncAt => ({
+export const setLastSyncAt = (lastSyncAt) => ({
   type: 'SET_LAST_SYNC_AT',
   lastSyncAt,
 });
@@ -43,15 +43,15 @@ const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)),
   trailing: true,
 });
 
-export const sync = (...args) => dispatch => syncDebounced(dispatch, ...args);
+export const sync = (...args) => (dispatch) => syncDebounced(dispatch, ...args);
 
 // doSync is the actual sync action synchronizing/persisting the Org
 // file. When 'live sync' is enabled, there's potentailly a quick
 // succession of calls to 'sync' and therefore to the sync back-end
-// happening. These calls need to be debounced. If there's a really
+// happening. These calls need to be debounced. If there's a quick
 // succession of calls, only the first and last synchronization will
 // happen.
-// Note: This action is a redux-thunk action (because it returns a
+// INFO: This action is a redux-thunk action (because it returns a
 // function). This function is defined every time it is called. Hence,
 // wrapping it in `debounce` will not be good enough. Since it would
 // be a new function every time, it would be called every time. The
@@ -70,7 +70,7 @@ const doSync = ({
     return;
   }
 
-  // Calls do `doSync` are already debounced using a timer, but on big
+  // Calls to `doSync` are already debounced using a timer, but on big
   // Org files or slow connections, it's still possible to have
   // concurrent requests to `doSync` which has no merit. When
   // `isLoading`, don't trigger another sync in parallel. Instead,
@@ -124,7 +124,7 @@ const doSync = ({
               dispatch(setDirty(false));
               dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
             })
-            .catch(error => {
+            .catch((error) => {
               const err = `There was an error pushing the file: ${error.toString()}`;
               console.error(err);
               dispatch(setDisappearingLoadingMessage(err, 5000));
@@ -163,17 +163,17 @@ const doSync = ({
     });
 };
 
-export const openHeader = headerId => ({
+export const openHeader = (headerId) => ({
   type: 'OPEN_HEADER',
   headerId,
 });
 
-export const toggleHeaderOpened = headerId => ({
+export const toggleHeaderOpened = (headerId) => ({
   type: 'TOGGLE_HEADER_OPENED',
   headerId,
 });
 
-export const selectHeader = headerId => dispatch => {
+export const selectHeader = (headerId) => (dispatch) => {
   dispatch({ type: 'SELECT_HEADER', headerId });
 
   if (!!headerId) {
@@ -181,7 +181,7 @@ export const selectHeader = headerId => dispatch => {
   }
 };
 
-export const selectHeaderAndOpenParents = headerId => dispatch => {
+export const selectHeaderAndOpenParents = (headerId) => (dispatch) => {
   dispatch(selectHeader(headerId));
   dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });
 };
@@ -199,7 +199,7 @@ export const advanceTodoState = (headerId, logIntoDrawer) => ({
   dirtying: true,
 });
 
-export const enterEditMode = editModeType => ({
+export const enterEditMode = (editModeType) => ({
   type: 'ENTER_EDIT_MODE',
   editModeType,
 });
@@ -222,7 +222,7 @@ export const updateHeaderDescription = (headerId, newRawDescription) => ({
   dirtying: true,
 });
 
-export const addHeader = headerId => ({
+export const addHeader = (headerId) => ({
   type: 'ADD_HEADER',
   headerId,
   // Performance optimization: Don't actually sync a whole Org file
@@ -231,64 +231,64 @@ export const addHeader = headerId => ({
   dirtying: false,
 });
 
-export const selectNextSiblingHeader = headerId => ({
+export const selectNextSiblingHeader = (headerId) => ({
   type: 'SELECT_NEXT_SIBLING_HEADER',
   headerId,
 });
 
-export const addHeaderAndEdit = headerId => dispatch => {
+export const addHeaderAndEdit = (headerId) => (dispatch) => {
   dispatch(addHeader(headerId));
   dispatch(selectNextSiblingHeader(headerId));
   dispatch(enterEditMode('title'));
 };
 
-export const selectNextVisibleHeader = headerId => ({
+export const selectNextVisibleHeader = (headerId) => ({
   type: 'SELECT_NEXT_VISIBLE_HEADER',
   headerId,
 });
 
-export const selectPreviousVisibleHeader = headerId => ({
+export const selectPreviousVisibleHeader = (headerId) => ({
   type: 'SELECT_PREVIOUS_VISIBLE_HEADER',
   headerId,
 });
 
-export const removeHeader = headerId => ({
+export const removeHeader = (headerId) => ({
   type: 'REMOVE_HEADER',
   headerId,
   dirtying: true,
 });
 
-export const moveHeaderUp = headerId => ({
+export const moveHeaderUp = (headerId) => ({
   type: 'MOVE_HEADER_UP',
   headerId,
   dirtying: true,
 });
 
-export const moveHeaderDown = headerId => ({
+export const moveHeaderDown = (headerId) => ({
   type: 'MOVE_HEADER_DOWN',
   headerId,
   dirtying: true,
 });
 
-export const moveHeaderLeft = headerId => ({
+export const moveHeaderLeft = (headerId) => ({
   type: 'MOVE_HEADER_LEFT',
   headerId,
   dirtying: true,
 });
 
-export const moveHeaderRight = headerId => ({
+export const moveHeaderRight = (headerId) => ({
   type: 'MOVE_HEADER_RIGHT',
   headerId,
   dirtying: true,
 });
 
-export const moveSubtreeLeft = headerId => ({
+export const moveSubtreeLeft = (headerId) => ({
   type: 'MOVE_SUBTREE_LEFT',
   headerId,
   dirtying: true,
 });
 
-export const moveSubtreeRight = headerId => ({
+export const moveSubtreeRight = (headerId) => ({
   type: 'MOVE_SUBTREE_RIGHT',
   headerId,
   dirtying: true,
@@ -301,7 +301,7 @@ export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
   dirtying: true,
 });
 
-export const focusHeader = headerId => ({
+export const focusHeader = (headerId) => ({
   type: 'FOCUS_HEADER',
   headerId,
 });
@@ -314,12 +314,12 @@ export const applyOpennessState = () => ({
   type: 'APPLY_OPENNESS_STATE',
 });
 
-export const setDirty = isDirty => ({
+export const setDirty = (isDirty) => ({
   type: 'SET_DIRTY',
   isDirty,
 });
 
-export const setSelectedTableCellId = cellId => dispatch => {
+export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
 
   if (!!cellId) {
@@ -380,7 +380,7 @@ export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, 
   const template = getState()
     .capture.get('captureTemplates')
     .concat(sampleCaptureTemplates)
-    .find(template => template.get('id') === templateId);
+    .find((template) => template.get('id') === templateId);
   dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
 };
 
@@ -400,11 +400,11 @@ export const insertPendingCapture = () => (dispatch, getState) => {
   const template = getState()
     .capture.get('captureTemplates')
     .filter(
-      template =>
+      (template) =>
         template.get('isAvailableInAllOrgFiles') ||
         template.get('orgFilesWhereAvailable').includes(getState().org.present.get('path'))
     )
-    .find(template => template.get('description').trim() === templateName.trim());
+    .find((template) => template.get('description').trim() === templateName.trim());
   if (!template) {
     dispatch(
       setDisappearingLoadingMessage(
@@ -445,7 +445,7 @@ export const insertPendingCapture = () => (dispatch, getState) => {
   dispatch(sync({ successMessage: 'Item captured' }));
 };
 
-export const advanceCheckboxState = listItemId => ({
+export const advanceCheckboxState = (listItemId) => ({
   type: 'ADVANCE_CHECKBOX_STATE',
   listItemId,
   dirtying: true,
@@ -510,7 +510,7 @@ export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   dirtying: true,
 });
 
-export const setOrgFileErrorMessage = message => ({
+export const setOrgFileErrorMessage = (message) => ({
   type: 'SET_ORG_FILE_ERROR_MESSAGE',
   message,
 });

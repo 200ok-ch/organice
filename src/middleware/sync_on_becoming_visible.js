@@ -1,30 +1,15 @@
 import { sync } from '../actions/org';
+import { getHiddenProp, isBrowserHidden } from '../lib/browser_utils';
 import { debounce } from 'lodash';
 
-const dispatchSync = store => store.dispatch(sync({ shouldSuppressMessages: true }));
+const dispatchSync = (store) => store.dispatch(sync({ shouldSuppressMessages: true }));
 
 // The 'visibilitychange' event might get triggered in some browsers many times for one 'real'
 // event of the browser becoming visible to the user. Debouncing through lodash ensures that
 // it is called at maximum once every second.
 const debouncedDispatchSync = debounce(dispatchSync, 1000);
 
-// Dealing with vendor prefixes
-function getHiddenProp() {
-  const prefixes = ['webkit', 'moz', 'ms', 'o'];
-
-  // if 'hidden' is natively supported just return it
-  if ('hidden' in document) return 'hidden';
-
-  // otherwise loop over all the known prefixes until we find one
-  for (let i = 0; i < prefixes.length; i++) {
-    if (prefixes[i] + 'Hidden' in document) return prefixes[i] + 'Hidden';
-  }
-
-  // otherwise it's not supported
-  return null;
-}
-
-export default store => next => action => {
+export default (store) => (next) => (action) => {
   let visProp = getHiddenProp();
   if (visProp) {
     const evtname = visProp.replace(/[H|h]idden/, '') + 'visibilitychange';
@@ -33,6 +18,11 @@ export default store => next => action => {
         store.getState().syncBackend.get('client') &&
         store.getState().base.get('shouldSyncOnBecomingVisibile')
       ) {
+        if (isBrowserHidden()) {
+          // TODO: Remember that the browser was in the background
+        }
+        // TODO: If the browser previously was in the background, the
+        // sync might be stuck, hence: Force the sync.
         debouncedDispatchSync(store);
       }
     });

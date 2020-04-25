@@ -46,3 +46,24 @@ export const isRunningAsPWA = 'standalone' in window.navigator && window.navigat
 export function isInLandscapeMode() {
   return [90, -90].includes(window.orientation);
 }
+
+// Dealing with vendor prefixes
+export function getHiddenProp() {
+  const prefixes = ['webkit', 'moz', 'ms', 'o'];
+
+  // if 'hidden' is natively supported just return it
+  if ('hidden' in document) return 'hidden';
+
+  // otherwise loop over all the known prefixes until we find one
+  for (let i = 0; i < prefixes.length; i++) {
+    if (prefixes[i] + 'Hidden' in document) return prefixes[i] + 'Hidden';
+  }
+
+  // otherwise it's not supported
+  return null;
+}
+
+/** Return `true` if the browser is hidden/in the background */
+export function isBrowserHidden() {
+  return document[getHiddenProp()];
+}
