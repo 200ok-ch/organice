@@ -991,7 +991,7 @@ export const setSearchFilterInformation = (state, action) => {
   }
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
-  // Only run filter if a filter is given and parsing was successfull
+  // Only run filter if a filter is given and parsing was successful
   if (searchFilterValid) {
     let filteredHeaders = headers.filter(isMatch(searchFilterExpr));
 

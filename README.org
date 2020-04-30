@@ -308,7 +308,7 @@ application (like [[https://www.termius.com/][Terminus]]).
 
 ** Contributions
 
-Please see our [[file:CONTRIBUTING.org][contributer guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
+Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
 * Deployment
 
