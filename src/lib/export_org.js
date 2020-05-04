@@ -225,20 +225,28 @@ export const attributedStringToRawText = parts => {
 
 // Takes a plain JS object
 export const generateTitleLine = (header, includeStars) => {
-  let contents = '';
-  if (includeStars) contents += '*'.repeat(header.nestingLevel);
+  // Remove stars afterwards if not includeStars - because of :tag: alignment
+  let titleLine = '*'.repeat(header.nestingLevel);
 
   if (header.titleLine.todoKeyword) {
-    contents += ` ${header.titleLine.todoKeyword}`;
+    titleLine += ` ${header.titleLine.todoKeyword}`;
   }
-  contents += ` ${header.titleLine.rawTitle}`;
+  titleLine += ` ${header.titleLine.rawTitle}`;
 
   if (header.titleLine.tags.length) {
-    contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
+    // TODO: filter()? Why would we add empty tags in the first place?
+    let tagsString = `:${header.titleLine.tags.filter((x) => x).join(':')}:`;
+    if (!titleLine.match(/\s$/)) {
+      // Insert as many spaces as orgmode auto-formatting does:
+      let n = 77 - titleLine.length - tagsString.length;
+      let space = ' '.repeat(n > 0 ? n : 1);
+      titleLine += space;
+    }
+    titleLine += tagsString;
   }
 
-  if (!includeStars) contents = contents.substring(1);
-  return contents;
+  if (!includeStars) titleLine = titleLine.substring(1 + header.nestingLevel);
+  return titleLine;
 };
 
 /**
@@ -305,15 +313,7 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   let contents = '';
 
   if (includeTitle) {
-    contents += '*'.repeat(header.nestingLevel);
-    if (header.titleLine.todoKeyword) {
-      contents += ` ${header.titleLine.todoKeyword}`;
-    }
-    contents += ` ${header.titleLine.rawTitle}`;
-    if (header.titleLine.tags.length) {
-      contents += `:${header.titleLine.tags.filter(tag => !!tag).join(':')}:`;
-    }
-    contents += '\n'; // Newline after title line
+    contents += generateTitleLine(header, true) + '\n';
   }
 
   // Special case: do not render planning items that are normal active timestamps
