@@ -55,7 +55,7 @@ const FileBrowser = ({
           </Link>
         )}
 
-        {(listing || []).map(file => {
+        {(listing || []).map((file) => {
           const isDirectory = file.get('isDirectory');
           const isBackupFile = file.get('name').endsWith('.organice-bak');
           const isOrgFile = file.get('name').endsWith('.org');
@@ -127,13 +127,10 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     syncBackend: bindActionCreators(syncBackendActions, dispatch),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FileBrowser);
+export default connect(mapStateToProps, mapDispatchToProps)(FileBrowser);

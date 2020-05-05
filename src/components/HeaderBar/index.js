@@ -52,7 +52,7 @@ class HeaderBar extends PureComponent {
 
   renderFileBrowserBackButton() {
     let backPath = 'Back';
-    const fileParts = window.location.href.split('/').map(e => decodeURIComponent(e));
+    const fileParts = window.location.href.split('/').map((e) => decodeURIComponent(e));
     if (_.includes(fileParts, 'files')) {
       backPath = _.last(fileParts);
     }
@@ -165,7 +165,7 @@ class HeaderBar extends PureComponent {
   }
 
   renderTitle() {
-    const titleContainerWithText = text => (
+    const titleContainerWithText = (text) => (
       <div className="header-bar__title" onClick={this.handleHeaderBarTitleClick}>
         {text}
       </div>
@@ -331,7 +331,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     base: bindActionCreators(baseActions, dispatch),
     org: bindActionCreators(orgActions, dispatch),

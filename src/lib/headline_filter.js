@@ -4,7 +4,7 @@ import { fromJS } from 'immutable';
 import { attributedStringToRawText } from './export_org.js';
 import { computeAllPropertyNames, computeAllPropertyValuesFor } from './org_utils';
 
-export const isMatch = filterExpr => header => {
+export const isMatch = (filterExpr) => (header) => {
   const headLine = header.get('titleLine');
   const tags = headLine.get('tags');
   const todoKeyword = headLine.get('todoKeyword');
@@ -12,34 +12,34 @@ export const isMatch = filterExpr => header => {
   const headlineText = todoKeyword ? `${todoKeyword} ${rawTitle}` : rawTitle;
   const properties = header
     .get('propertyListItems')
-    .map(p => [p.get('property'), attributedStringToRawText(p.get('value'))]);
+    .map((p) => [p.get('property'), attributedStringToRawText(p.get('value'))]);
 
-  const filterFilter = (type, exclude) => x => x.type === type && x.exclude === exclude;
-  const words = x => x.words;
-  const wordsLowerCase = x => x.words.map(y => y.toLowerCase());
+  const filterFilter = (type, exclude) => (x) => x.type === type && x.exclude === exclude;
+  const words = (x) => x.words;
+  const wordsLowerCase = (x) => x.words.map((y) => y.toLowerCase());
 
   const filterTags = filterExpr.filter(filterFilter('tag', false)).map(words);
   const filterCS = filterExpr.filter(filterFilter('case-sensitive', false)).map(words);
   const filterIC = filterExpr.filter(filterFilter('ignore-case', false)).map(wordsLowerCase);
   const filterProps = filterExpr
     .filter(filterFilter('property', false))
-    .map(x => [x.property, x.words]);
+    .map((x) => [x.property, x.words]);
 
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
   const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(wordsLowerCase);
   const filterPropsExcl = filterExpr
     .filter(filterFilter('property', true))
-    .map(x => [x.property, x.words]);
+    .map((x) => [x.property, x.words]);
 
-  const orChain = source => xs => xs.some(x => source.includes(x));
+  const orChain = (source) => (xs) => xs.some((x) => source.includes(x));
   const propertyFilter = ([x, ys]) =>
     !properties
       .filter(([key, val]) => {
         // Property names (keys) are case-insensitive
         // https://orgmode.org/manual/Property-Syntax.html
         const nameMatch = key.toLowerCase() === x.toLowerCase();
-        const valueMatch = ys.some(y => val.includes(y));
+        const valueMatch = ys.some((y) => val.includes(y));
         return nameMatch && valueMatch;
       })
       .isEmpty();
@@ -74,7 +74,7 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
     tagNames,
     computeAllPropertyNames(fromJS(allProperties))
       .toJS()
-      .map(x => x + ':')
+      .map((x) => x + ':')
   );
 
   const logicalCursorPosition = filterExpr
@@ -91,8 +91,8 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
     if (charBeforeCursor.match(/[A-Z]/)) {
       const textBeforeCursor = charBeforeCursor;
       const filteredTodoKeywords = todoKeywords
-        .filter(x => x.startsWith(textBeforeCursor))
-        .map(x => x.substring(textBeforeCursor.length));
+        .filter((x) => x.startsWith(textBeforeCursor))
+        .map((x) => x.substring(textBeforeCursor.length));
       if ([' ', '', '|', '-'].includes(charTwoBeforeCursor)) {
         return filteredTodoKeywords;
       }
@@ -111,7 +111,7 @@ export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
         // Either property name or text filter
         const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
         const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-        const quoteStringIfPossible = x => {
+        const quoteStringIfPossible = (x) => {
           if (x.match(/ /)) {
             if (!x.match(/"/)) return [`"${x}"`];
             if (!x.match(/'/)) return [`'${x}'`];
@@ -161,7 +161,7 @@ export const computeCompletionsForDatalist = (todoKeywords, tagNames, allPropert
     curserPosition
   );
   return completions.map(
-    x => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
+    (x) => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
   );
 };
 

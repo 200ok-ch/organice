@@ -15,7 +15,7 @@ import {
   differenceInMinutes,
 } from 'date-fns';
 
-export const renderAsText = timestamp => {
+export const renderAsText = (timestamp) => {
   const {
     isActive,
     year,
@@ -78,7 +78,7 @@ export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } =
 
 export const getCurrentTimestampAsText = () => `<${format(new Date(), 'yyyy-MM-dd eee')}>`;
 
-export const dateForTimestamp = timestamp => {
+export const dateForTimestamp = (timestamp) => {
   const { year, month, day, startHour, startMinute } = timestamp.toJS();
 
   let timestampString = `${year}-${month}-${day}`;

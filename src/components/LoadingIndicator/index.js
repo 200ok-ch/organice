@@ -7,15 +7,12 @@ export default ({ message }) => {
   const [shouldRenderIndicator, setShouldRenderIndicator] = useState(true);
   const [lastMessage, setLastMessage] = useState(message);
 
-  useEffect(
-    () => {
-      if (!!message) {
-        setLastMessage(message);
-        setShouldRenderIndicator(true);
-      }
-    },
-    [message]
-  );
+  useEffect(() => {
+    if (!!message) {
+      setLastMessage(message);
+      setShouldRenderIndicator(true);
+    }
+  }, [message]);
 
   const handleAnimationRest = () => {
     if (!!message) {
@@ -38,7 +35,7 @@ export default ({ message }) => {
 
   return (
     <Motion style={style} onRest={handleAnimationRest}>
-      {style => (
+      {(style) => (
         <div className="loading-indicator" style={style} onClick={handleClick}>
           {lastMessage}
         </div>

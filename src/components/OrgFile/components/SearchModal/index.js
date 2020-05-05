@@ -80,13 +80,13 @@ function SearchModal(props) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 

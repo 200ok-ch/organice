@@ -69,14 +69,14 @@ const restoreBaseSettings = (state, action) => {
 };
 
 const pushModalPage = (state, action) =>
-  state.update('modalPageStack', stack =>
+  state.update('modalPageStack', (stack) =>
     !!stack ? stack.push(action.modalPage) : List([action.modalPage])
   );
 
-const popModalPage = state =>
-  state.update('modalPageStack', stack => (!!stack ? stack.pop() : stack));
+const popModalPage = (state) =>
+  state.update('modalPageStack', (stack) => (!!stack ? stack.pop() : stack));
 
-const clearModalStack = state => state.set('modalPageStack', List());
+const clearModalStack = (state) => state.set('modalPageStack', List());
 
 const activatePopup = (state, action) => {
   const { data, popupType } = action;
@@ -97,7 +97,7 @@ const activatePopup = (state, action) => {
   );
 };
 
-const closePopup = state => {
+const closePopup = (state) => {
   window.history.replaceState(
     '',
     document.title,

@@ -32,7 +32,7 @@ function WebDAVForm() {
     <div id="webdavLogin">
       <h2>WebDAV</h2>
       <form
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
           persistField('authenticatedSyncService', 'WebDAV');
           persistField('webdavEndpoint', url);
@@ -47,7 +47,7 @@ function WebDAVForm() {
             type="url"
             value={url}
             className="textfield"
-            onChange={e => {
+            onChange={(e) => {
               setUrl(e.target.value);
             }}
           />
@@ -58,7 +58,7 @@ function WebDAVForm() {
             type="text"
             className="textfield"
             value={username}
-            onChange={e => {
+            onChange={(e) => {
               setUsername(e.target.value);
             }}
           />
@@ -69,7 +69,7 @@ function WebDAVForm() {
             type="password"
             className="textfield"
             value={password}
-            onChange={e => {
+            onChange={(e) => {
               setPassword(e.target.value);
             }}
           />

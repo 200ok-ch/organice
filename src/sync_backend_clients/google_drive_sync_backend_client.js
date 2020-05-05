@@ -31,7 +31,7 @@ export default () => {
             isIniting = true;
             initGoogleDriveAPIClient().then(() => {
               isInited = true;
-              afterInitCallbacks.forEach(callback => callback(window.gapi));
+              afterInitCallbacks.forEach((callback) => callback(window.gapi));
               resolve(window.gapi);
             });
           } else {
@@ -52,12 +52,12 @@ export default () => {
 
   const isSignedIn = () =>
     new Promise((resolve, reject) =>
-      getAPIClient().then(gapi => resolve(gapi.auth2.getAuthInstance().isSignedIn.get()))
+      getAPIClient().then((gapi) => resolve(gapi.auth2.getAuthInstance().isSignedIn.get()))
     );
 
-  const transformDirectoryListing = listing =>
+  const transformDirectoryListing = (listing) =>
     fromJS(
-      listing.map(entry => ({
+      listing.map((entry) => ({
         id: entry.id,
         name: entry.name,
         isDirectory: entry.mimeType === 'application/vnd.google-apps.folder',
@@ -67,7 +67,7 @@ export default () => {
 
   const getFiles = (directoryId, nextPageToken = null) => {
     const fileListPromise = new Promise((resolve, reject) => {
-      getAPIClient().then(gapi => {
+      getAPIClient().then((gapi) => {
         gapi.client.drive.files
           .list({
             pageSize: 30,
@@ -75,7 +75,7 @@ export default () => {
             q: `'${directoryId === '' ? 'root' : directoryId}' in parents and trashed = false`,
             pageToken: nextPageToken,
           })
-          .then(response => {
+          .then((response) => {
             resolve({
               listing: transformDirectoryListing(response.result.files),
               hasMore: !!response.result.nextPageToken,
@@ -94,13 +94,13 @@ export default () => {
         resolve(null);
       } else {
         getAPIClient()
-          .then(gapi =>
+          .then((gapi) =>
             gapi.client.drive.files.get({
               fileId: directoryId,
               fields: 'parents',
             })
           )
-          .then(response => {
+          .then((response) => {
             if (!response.result.parents) {
               resolve(null);
             } else {
@@ -116,13 +116,13 @@ export default () => {
         resolve(window.rootFolderId);
       } else {
         getAPIClient()
-          .then(gapi =>
+          .then((gapi) =>
             gapi.client.drive.files.get({
               fileId: 'root',
               fields: 'id',
             })
           )
-          .then(response => {
+          .then((response) => {
             window.rootFolderId = response.result.id;
             resolve(response.result.id);
           })
@@ -144,10 +144,10 @@ export default () => {
     });
   };
 
-  const getDirectoryListing = directoryId =>
+  const getDirectoryListing = (directoryId) =>
     getFiles(directoryId.startsWith('/') ? directoryId.substr(1) : directoryId);
 
-  const getMoreDirectoryListing = additionalSyncBackendState => {
+  const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const directoryId = additionalSyncBackendState.get('currentDirectoryId');
     const nextPageToken = additionalSyncBackendState.get('nextPageToken');
     return getFiles(directoryId, nextPageToken);
@@ -156,14 +156,14 @@ export default () => {
   const fileIdByNameAndParent = (name, parentId) =>
     new Promise((resolve, reject) => {
       getAPIClient()
-        .then(gapi =>
+        .then((gapi) =>
           gapi.client.drive.files.list({
             pageSize: 1,
             fields: 'files(id)',
             q: `'${parentId}' in parents and trashed = false and name = '${name}'`,
           })
         )
-        .then(response =>
+        .then((response) =>
           resolve(response.result.files.length > 0 ? response.result.files[0].id : null)
         )
         .catch(reject);
@@ -172,7 +172,7 @@ export default () => {
   const updateFile = (fileId, contents) => {
     fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
 
-    return getAPIClient().then(gapi => {
+    return getAPIClient().then((gapi) => {
       fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
         method: 'PATCH',
         headers: {
@@ -186,18 +186,16 @@ export default () => {
   const createFile = (name, parentId, contents) => {
     return new Promise((resolve, reject) => {
       fileIdByNameAndParent(name, parentId)
-        .then(fileId =>
+        .then((fileId) =>
           !!fileId
-            ? updateFile(fileId, contents)
-                .then(resolve)
-                .catch(reject)
-            : getAPIClient().then(gapi => {
+            ? updateFile(fileId, contents).then(resolve).catch(reject)
+            : getAPIClient().then((gapi) => {
                 gapi.client.drive.files
                   .create({
                     name,
                     parents: parentId,
                   })
-                  .then(response => updateFile(response.result.id, contents))
+                  .then((response) => updateFile(response.result.id, contents))
                   .then(resolve)
                   .catch(reject);
               })
@@ -208,19 +206,19 @@ export default () => {
 
   const duplicateFile = (fileId, fileNameCallback) => {
     return new Promise((resolve, reject) => {
-      getAPIClient().then(gapi => {
+      getAPIClient().then((gapi) => {
         gapi.client.drive.files
           .get({
             fileId,
             fields: 'name, parents',
           })
-          .then(getResponse => {
+          .then((getResponse) => {
             if (!getResponse.result.name) {
               reject();
             } else {
               const newFileName = fileNameCallback(getResponse.result.name);
               const parents = getResponse.result.parents[0];
-              fileIdByNameAndParent(newFileName, parents).then(backupFileId => {
+              fileIdByNameAndParent(newFileName, parents).then((backupFileId) => {
                 const makeCopy = () => {
                   gapi.client.drive.files
                     .copy({
@@ -228,7 +226,7 @@ export default () => {
                       parents,
                       name: newFileName,
                     })
-                    .then(copyResponse => {
+                    .then((copyResponse) => {
                       resolve();
                     })
                     .catch(reject);
@@ -249,36 +247,36 @@ export default () => {
     });
   };
 
-  const getFileContentsAndMetadata = fileId =>
+  const getFileContentsAndMetadata = (fileId) =>
     new Promise((resolve, reject) => {
       if (!fileId) return reject();
-      getAPIClient().then(gapi => {
+      getAPIClient().then((gapi) => {
         fileId = fileId.startsWith('/') ? fileId.substr(1) : fileId;
 
-        const fileContentsPromise = new Promise(resolve => {
+        const fileContentsPromise = new Promise((resolve) => {
           gapi.client.drive.files
             .get({
               fileId,
               alt: 'media',
             })
-            .then(response => resolve(decodeURIComponent(escape(response.body))))
-            .catch(error => {
+            .then((response) => resolve(decodeURIComponent(escape(response.body))))
+            .catch((error) => {
               if (error.body && JSON.parse(error.body).error.errors[0].reason === 'notFound') {
                 reject();
               }
             });
         });
 
-        const fileModifiedTimePromise = new Promise(resolve => {
+        const fileModifiedTimePromise = new Promise((resolve) => {
           gapi.client.drive.files
             .get({
               fileId,
               fields: 'modifiedTime',
             })
-            .then(response => {
+            .then((response) => {
               resolve(response.result.modifiedTime);
             })
-            .catch(error => {
+            .catch((error) => {
               if (error.body && JSON.parse(error.body).error.errors[0].reason === 'notFound') {
                 reject();
               }
@@ -296,7 +294,7 @@ export default () => {
       });
     });
 
-  const getFileContents = fileId => {
+  const getFileContents = (fileId) => {
     return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(fileId)
         .then(({ contents }) => resolve(contents))
@@ -306,7 +304,7 @@ export default () => {
 
   const getFileContentsByNameAndParent = (name, parentId) => {
     return new Promise((resolve, reject) =>
-      fileIdByNameAndParent(name, parentId).then(fileId => {
+      fileIdByNameAndParent(name, parentId).then((fileId) => {
         if (fileId) {
           getFileContents(fileId).then(resolve);
         } else {
@@ -318,14 +316,14 @@ export default () => {
 
   const deleteFileByNameAndParent = (name, parentId) =>
     new Promise((resolve, reject) => {
-      getAPIClient().then(gapi =>
+      getAPIClient().then((gapi) =>
         gapi.client.drive.files
           .list({
             pageSize: 1,
             fields: 'files(id)',
             q: `'${parentId}' in parents and trashed = false and name = '${name}'`,
           })
-          .then(listResponse => {
+          .then((listResponse) => {
             if (listResponse.result.files.length > 0) {
               gapi.client.drive.files
                 .delete({

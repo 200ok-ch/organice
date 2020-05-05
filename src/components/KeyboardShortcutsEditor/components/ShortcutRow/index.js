@@ -115,7 +115,7 @@ export default class ShortcutRow extends PureComponent {
           className={rebindAreaClassName}
           onClick={this.handleRebindClick}
           tabIndex="-1"
-          ref={div => (this.rebindArea = div)}
+          ref={(div) => (this.rebindArea = div)}
         >
           {isEditMode ? '...' : this.symbolizeKeybinding(binding)}
         </div>

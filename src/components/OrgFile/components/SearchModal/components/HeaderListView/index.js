@@ -25,7 +25,7 @@ function HeaderListView(props) {
   return (
     <div className="agenda-day__container">
       <div className="agenda-day__headers-container">
-        {headers.map(header => {
+        {headers.map((header) => {
           return (
             <div key={header.get('id')} className="agenda-day__header-container">
               <div className="agenda-day__header__header-container">
@@ -47,13 +47,13 @@ function HeaderListView(props) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   // When no filtering has happened, yet (initial state), use all headers.
   headers:
     state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 

@@ -82,7 +82,7 @@ class OrgFile extends PureComponent {
 
       if (staticFile === 'changelog') {
         this.props.base.setHasUnseenChangelog(false);
-        changelogHash().then(hash => {
+        changelogHash().then((hash) => {
           this.props.base.setLastSeenChangelogHeader(hash);
         });
       }
@@ -245,10 +245,10 @@ class OrgFile extends PureComponent {
 
   handleTimestampChange(popupData) {
     if (!!popupData.get('timestampId')) {
-      return newTimestamp =>
+      return (newTimestamp) =>
         this.props.org.updateTimestampWithId(popupData.get('timestampId'), newTimestamp);
     } else if (popupData.get('logEntryIndex') !== undefined) {
-      return newTimestamp =>
+      return (newTimestamp) =>
         this.props.org.updateLogEntryTime(
           popupData.get('headerId'),
           popupData.get('logEntryIndex'),
@@ -256,7 +256,7 @@ class OrgFile extends PureComponent {
           newTimestamp.get('firstTimestamp')
         );
     } else {
-      return newTimestamp =>
+      return (newTimestamp) =>
         this.props.org.updatePlanningItemTimestamp(
           popupData.get('headerId'),
           popupData.get('planningItemIndex'),
@@ -288,7 +288,7 @@ class OrgFile extends PureComponent {
         return (
           <CaptureModal
             template={captureTemplates.find(
-              template => template.get('id') === activePopupData.get('templateId')
+              (template) => template.get('id') === activePopupData.get('templateId')
             )}
             headers={headers}
             onCapture={this.handleCapture}
@@ -411,7 +411,7 @@ class OrgFile extends PureComponent {
 
     // Automatically call preventDefault on all the keyboard events that come through for
     // these hotkeys.
-    const preventDefaultAndHandleEditMode = (callback, ignoreInEditMode = false) => event => {
+    const preventDefaultAndHandleEditMode = (callback, ignoreInEditMode = false) => (event) => {
       if (ignoreInEditMode && inEditMode) {
         return;
       }
@@ -503,7 +503,7 @@ const mapStateToProps = (state, props) => {
     selectedHeaderId,
     isDirty: state.org.present.get('isDirty'),
     loadedPath: state.org.present.get('path'),
-    selectedHeader: headers && headers.find(header => header.get('id') === selectedHeaderId),
+    selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     inEditMode: !!state.org.present.get('editMode'),
@@ -515,7 +515,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     base: bindActionCreators(baseActions, dispatch),
     syncBackend: bindActionCreators(syncBackendActions, dispatch),

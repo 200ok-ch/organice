@@ -17,7 +17,7 @@ export default class TimestampEditorModal extends PureComponent {
   }
 
   handleChange(key) {
-    return newTimestamp => this.props.onChange(this.props.timestamp.set(key, newTimestamp));
+    return (newTimestamp) => this.props.onChange(this.props.timestamp.set(key, newTimestamp));
   }
 
   handleAddEndTimestamp() {

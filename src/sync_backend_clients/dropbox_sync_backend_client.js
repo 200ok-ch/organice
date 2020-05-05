@@ -10,8 +10,8 @@ import { fromJS, Map } from 'immutable';
  *  - Sorts both folders and files alphabetically.
  * @param {Array} listing
  */
-export const filterAndSortDirectoryListing = listing => {
-  const filteredListing = listing.filter(file => {
+export const filterAndSortDirectoryListing = (listing) => {
+  const filteredListing = listing.filter((file) => {
     // Show all folders
     if (file['.tag'] === 'folder') return true;
     // Filter out all non-org files
@@ -28,15 +28,15 @@ export const filterAndSortDirectoryListing = listing => {
   });
 };
 
-export default accessToken => {
+export default (accessToken) => {
   const dropboxClient = new Dropbox({ accessToken, fetch });
 
-  const isSignedIn = () => new Promise(resolve => resolve(true));
+  const isSignedIn = () => new Promise((resolve) => resolve(true));
 
-  const transformDirectoryListing = listing => {
+  const transformDirectoryListing = (listing) => {
     const sortedListing = filterAndSortDirectoryListing(listing);
     return fromJS(
-      sortedListing.map(entry => ({
+      sortedListing.map((entry) => ({
         id: entry.id,
         name: entry.name,
         isDirectory: entry['.tag'] === 'folder',
@@ -45,11 +45,11 @@ export default accessToken => {
     );
   };
 
-  const getDirectoryListing = path =>
+  const getDirectoryListing = (path) =>
     new Promise((resolve, reject) => {
       dropboxClient
         .filesListFolder({ path })
-        .then(response =>
+        .then((response) =>
           resolve({
             listing: transformDirectoryListing(response.entries),
             hasMore: response.has_more,
@@ -61,10 +61,10 @@ export default accessToken => {
         .catch(reject);
     });
 
-  const getMoreDirectoryListing = additionalSyncBackendState => {
+  const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const cursor = additionalSyncBackendState.get('cursor');
     return new Promise((resolve, reject) =>
-      dropboxClient.filesListFolderContinue({ cursor }).then(response =>
+      dropboxClient.filesListFolderContinue({ cursor }).then((response) =>
         resolve({
           listing: transformDirectoryListing(response.entries),
           hasMore: response.has_more,
@@ -94,11 +94,11 @@ export default accessToken => {
   const updateFile = uploadFile;
   const createFile = uploadFile;
 
-  const getFileContentsAndMetadata = path =>
+  const getFileContentsAndMetadata = (path) =>
     new Promise((resolve, reject) =>
       dropboxClient
         .filesDownload({ path })
-        .then(response => {
+        .then((response) => {
           const reader = new FileReader();
           reader.addEventListener('loadend', () =>
             resolve({
@@ -108,7 +108,7 @@ export default accessToken => {
           );
           reader.readAsText(response.fileBlob);
         })
-        .catch(error => {
+        .catch((error) => {
           // INFO: It's possible organice is using the Dropbox API
           // wrongly. In any case, for some files and only sometimes,
           // when a file is requested, there's either:
@@ -121,7 +121,7 @@ export default accessToken => {
           // might prevail.
           // More debug information in this issue:
           // https://github.com/200ok-ch/organice/issues/108
-          const objectContainsTagErrorP = (function() {
+          const objectContainsTagErrorP = (function () {
             try {
               return JSON.parse(error.error).error.path['.tag'] === 'not_found';
             } catch (e) {
@@ -137,7 +137,7 @@ export default accessToken => {
         })
     );
 
-  const getFileContents = path => {
+  const getFileContents = (path) => {
     if (isEmpty(path)) return Promise.reject('No path given');
     return new Promise((resolve, reject) =>
       getFileContentsAndMetadata(path)
@@ -146,12 +146,12 @@ export default accessToken => {
     );
   };
 
-  const deleteFile = path =>
+  const deleteFile = (path) =>
     new Promise((resolve, reject) =>
       dropboxClient
         .filesDelete({ path })
         .then(resolve)
-        .catch(error => reject(error.error.error['.tag'] === 'path_lookup', error))
+        .catch((error) => reject(error.error.error['.tag'] === 'path_lookup', error))
     );
 
   return {

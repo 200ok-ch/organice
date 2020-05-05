@@ -94,8 +94,8 @@ function TaskListView(props) {
     const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
 
     return headers
-      .filter(header => header.getIn(['titleLine', 'todoKeyword']))
-      .map(header => {
+      .filter((header) => header.getIn(['titleLine', 'todoKeyword']))
+      .map((header) => {
         const earliestPlanningItem = header
           .get('planningItems')
           .sortBy(getTimeFromPlanningItem)
@@ -114,19 +114,16 @@ function TaskListView(props) {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
   // When no filtering has happened, yet (initial state), use all headers.
   headers:
     state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch) => ({});
 
-const getTimeFromPlanningItem = planningItem =>
+const getTimeFromPlanningItem = (planningItem) =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskListView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);

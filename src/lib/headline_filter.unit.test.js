@@ -5,23 +5,24 @@ import headline_filter_parser from './headline_filter_parser';
 
 // Helper functions
 // Generate tag filter
-const gtag = tag => [{ type: 'tag', words: [tag], exclude: false }];
-const gtags = tags => tags.map(x => ({ type: 'tag', words: [x], exclude: false }));
-const gtagsOr = tagsArr => tagsArr.map(x => ({ type: 'tag', words: x, exclude: false }));
+const gtag = (tag) => [{ type: 'tag', words: [tag], exclude: false }];
+const gtags = (tags) => tags.map((x) => ({ type: 'tag', words: [x], exclude: false }));
+const gtagsOr = (tagsArr) => tagsArr.map((x) => ({ type: 'tag', words: x, exclude: false }));
 // Generate case-sensitive filter
-const gcs = word => [{ type: 'case-sensitive', words: [word], exclude: false }];
-const gcss = words => words.map(x => ({ type: 'case-sensitive', words: [x], exclude: false }));
-const gcssOr = wordsArr =>
-  wordsArr.map(x => ({ type: 'case-sensitive', words: x, exclude: false }));
+const gcs = (word) => [{ type: 'case-sensitive', words: [word], exclude: false }];
+const gcss = (words) => words.map((x) => ({ type: 'case-sensitive', words: [x], exclude: false }));
+const gcssOr = (wordsArr) =>
+  wordsArr.map((x) => ({ type: 'case-sensitive', words: x, exclude: false }));
 // Generate ignore-case filter
-const gic = word => [{ type: 'ignore-case', words: [word], exclude: false }];
-const gics = words => words.map(x => ({ type: 'ignore-case', words: [x], exclude: false }));
-const gicsOr = wordsArr => wordsArr.map(x => ({ type: 'ignore-case', words: x, exclude: false }));
+const gic = (word) => [{ type: 'ignore-case', words: [word], exclude: false }];
+const gics = (words) => words.map((x) => ({ type: 'ignore-case', words: [x], exclude: false }));
+const gicsOr = (wordsArr) =>
+  wordsArr.map((x) => ({ type: 'ignore-case', words: x, exclude: false }));
 // Generate property filter
 const gprop = (key, word) => [{ type: 'property', property: key, words: [word], exclude: false }];
-const gprops = props =>
+const gprops = (props) =>
   props.map(([x, y]) => ({ type: 'property', property: x, words: [y], exclude: false }));
-const gpropsOr = props =>
+const gpropsOr = (props) =>
   props.map(([x, ys]) => ({ type: 'property', property: x, words: ys, exclude: false }));
 
 describe('Match function for headline filter', () => {
@@ -30,7 +31,7 @@ describe('Match function for headline filter', () => {
   const headers = parsedFile.get('headers');
   const header = headers.get(0);
 
-  const expectMatch = filterExpr => expect(isMatch(filterExpr)(header));
+  const expectMatch = (filterExpr) => expect(isMatch(filterExpr)(header));
 
   describe('Tests for tag matching', () => {
     test('Matches if no filter is given', () => {
@@ -58,7 +59,10 @@ describe('Match function for headline filter', () => {
       expectMatch(filterExpr).toBe(true);
     });
     test('Match (tag1 OR tag2) AND (tag3 OR tag4)', () => {
-      const filterExpr = gtagsOr([['nonexisting', 'spec_tag'], ['tag2', 'nonexisting2']]);
+      const filterExpr = gtagsOr([
+        ['nonexisting', 'spec_tag'],
+        ['tag2', 'nonexisting2'],
+      ]);
       expectMatch(filterExpr).toBe(true);
     });
   });
@@ -127,15 +131,24 @@ describe('Match function for headline filter', () => {
       expectMatch(filterExpr).toBe(false);
     });
     test('Match two properties (AND)', () => {
-      const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xyz']]);
+      const filterExpr = gprops([
+        ['prop1', 'abc'],
+        ['prop2', 'xyz'],
+      ]);
       expectMatch(filterExpr).toBe(true);
     });
     test('Match two properties but one is wrong', () => {
-      const filterExpr = gprops([['prop1', 'abc'], ['prop2', 'xxx']]);
+      const filterExpr = gprops([
+        ['prop1', 'abc'],
+        ['prop2', 'xxx'],
+      ]);
       expectMatch(filterExpr).toBe(false);
     });
     test('Match two times the same property with different values (see example org)', () => {
-      const filterExpr = gprops([['prop1', 'abc'], ['prop1', 'def']]);
+      const filterExpr = gprops([
+        ['prop1', 'abc'],
+        ['prop1', 'def'],
+      ]);
       expectMatch(filterExpr).toBe(true);
     });
     test('Match property with no value', () => {
@@ -157,8 +170,8 @@ describe('Match function for headline filter', () => {
   });
 
   describe('Tests for exclude matching', () => {
-    const makeExclude = xs =>
-      xs.map(x => {
+    const makeExclude = (xs) =>
+      xs.map((x) => {
         x.exclude = true;
         return x;
       });
@@ -221,7 +234,11 @@ describe('Match function for headline filter', () => {
 describe('Computation of completions and suggestions for task filter', () => {
   const todoKeywords = ['TODO', 'DONE'];
   const tagNames = ['t1', 't2'];
-  const allProperties = [['prop1', 'val1'], ['prop1', 'val2'], ['prop3', 'val 3']];
+  const allProperties = [
+    ['prop1', 'val1'],
+    ['prop1', 'val2'],
+    ['prop3', 'val 3'],
+  ];
   const tagAndPropNames = [].concat(tagNames, ['prop1:', 'prop3:']);
   const propValsForProp1 = ['val1', 'val2'];
   const propValsForProp3 = ['"val 3"'];
@@ -386,16 +403,16 @@ describe('Computation of completions and suggestions for task filter', () => {
       expectComputation('', 0).toEqual(todoKeywords);
     });
     test('After :', () => {
-      expectComputation(': ', 1).toEqual(tagAndPropNames.map(x => `:${x} `));
+      expectComputation(': ', 1).toEqual(tagAndPropNames.map((x) => `:${x} `));
     });
     test('After space', () => {
-      expectComputation('a ', 2).toEqual(todoKeywords.map(x => `a ${x}`));
+      expectComputation('a ', 2).toEqual(todoKeywords.map((x) => `a ${x}`));
     });
     test('After | in a text filter', () => {
-      expectComputation('a| b', 2).toEqual(todoKeywords.map(x => `a|${x} b`));
+      expectComputation('a| b', 2).toEqual(todoKeywords.map((x) => `a|${x} b`));
     });
     test('After : in a tag filter', () => {
-      expectComputation(':a| ', 3).toEqual(tagNames.map(x => `:a|${x} `));
+      expectComputation(':a| ', 3).toEqual(tagNames.map((x) => `:a|${x} `));
     });
   });
 });

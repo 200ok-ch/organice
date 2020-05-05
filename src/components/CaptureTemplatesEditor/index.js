@@ -18,18 +18,19 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
   const handleFieldPathUpdate = (templateId, fieldPath, newValue) =>
     capture.updateTemplateFieldPathValue(templateId, fieldPath, newValue);
 
-  const handleAddNewTemplateOrgFileAvailability = templateId =>
+  const handleAddNewTemplateOrgFileAvailability = (templateId) =>
     capture.addNewTemplateOrgFileAvailability(templateId);
 
   const handleRemoveTemplateOrgFileAvailability = (templateId, orgFileAvailabilityIndex) =>
     capture.removeTemplateOrgFileAvailability(templateId, orgFileAvailabilityIndex);
 
-  const handleAddNewTemplateHeaderPath = templateId => capture.addNewTemplateHeaderPath(templateId);
+  const handleAddNewTemplateHeaderPath = (templateId) =>
+    capture.addNewTemplateHeaderPath(templateId);
 
   const handleRemoveTemplateHeaderPath = (templateId, headerPathIndex) =>
     capture.removeTemplateHeaderPath(templateId, headerPathIndex);
 
-  const handleDeleteTemplate = templateId => capture.deleteTemplate(templateId);
+  const handleDeleteTemplate = (templateId) => capture.deleteTemplate(templateId);
 
   const handleReorderTemplate = (fromIndex, toIndex) =>
     capture.reorderCaptureTemplate(fromIndex, toIndex);
@@ -91,13 +92,10 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     capture: bindActionCreators(captureActions, dispatch),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CaptureTemplatesEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(CaptureTemplatesEditor);

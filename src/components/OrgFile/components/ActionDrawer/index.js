@@ -63,7 +63,7 @@ const ActionDrawer = ({
 
   const handleDoneClick = () => org.exitEditMode();
 
-  const handleCaptureButtonClick = templateId => () => {
+  const handleCaptureButtonClick = (templateId) => () => {
     setIsDisplayingCaptureButtons(false);
     base.activatePopup('capture', { templateId });
   };
@@ -74,11 +74,11 @@ const ActionDrawer = ({
     staticFile === 'sample'
       ? getSampleCaptureTemplates()
       : captureTemplates.filter(
-          template =>
+          (template) =>
             template.get('isAvailableInAllOrgFiles') ||
             template
               .get('orgFilesWhereAvailable')
-              .map(availablePath =>
+              .map((availablePath) =>
                 availablePath.trim().startsWith('/')
                   ? availablePath.trim()
                   : '/' + availablePath.trim()
@@ -130,7 +130,7 @@ const ActionDrawer = ({
 
     return (
       <Motion style={animatedStyle}>
-        {style => (
+        {(style) => (
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
               iconName={isDisplayingCaptureButtons ? 'times' : 'plus'}
@@ -182,7 +182,7 @@ const ActionDrawer = ({
 
     return (
       <Motion style={animatedStyle}>
-        {style => (
+        {(style) => (
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
               iconName={isDisplayingSearchButtons ? 'times' : 'search'}
@@ -244,7 +244,7 @@ const ActionDrawer = ({
 
     return (
       <Motion style={animatedStyles}>
-        {style => (
+        {(style) => (
           <div
             className="action-drawer__arrow-buttons-container"
             style={{ left: style.centerXOffset }}
@@ -408,7 +408,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     org: bindActionCreators(orgActions, dispatch),
     capture: bindActionCreators(captureActions, dispatch),
