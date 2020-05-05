@@ -5,6 +5,13 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 
+* [2020-05-05 Tue]
+
+** Fixed
+   - Append new tags correctly to title.
+     - If a header didn't have tags before, the first tags were
+       erroneously appended without a space.
+
 * [2020-04-06 Mon]
 
 ** Added
