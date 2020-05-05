@@ -24,7 +24,7 @@ export default ({
   const [isCollapsed, setIsCollapsed] = useState(!!template.get('description'));
   const handleHeaderBarClick = () => setIsCollapsed(!isCollapsed);
 
-  const updateField = fieldName => event =>
+  const updateField = (fieldName) => (event) =>
     onFieldPathUpdate(template.get('id'), [fieldName], event.target.value);
 
   const toggleAvailabilityInAllOrgFiles = () =>
@@ -41,10 +41,10 @@ export default ({
     onAddNewTemplateOrgFileAvailability(template.get('id'));
   };
 
-  const handleRemoveOrgFileAvailability = index => () =>
+  const handleRemoveOrgFileAvailability = (index) => () =>
     onRemoveTemplateOrgFileAvailability(template.get('id'), index);
 
-  const handleOrgFileAvailabilityChange = orgFileAvailabilityIndex => event =>
+  const handleOrgFileAvailabilityChange = (orgFileAvailabilityIndex) => (event) =>
     onFieldPathUpdate(
       template.get('id'),
       ['orgFilesWhereAvailable', orgFileAvailabilityIndex],
@@ -53,10 +53,10 @@ export default ({
 
   const handleAddNewHeaderPath = () => onAddNewTemplateHeaderPath(template.get('id'));
 
-  const handleRemoveHeaderPath = headerPathIndex => () =>
+  const handleRemoveHeaderPath = (headerPathIndex) => () =>
     onRemoveTemplateHeaderPath(template.get('id'), headerPathIndex);
 
-  const handleHeaderPathChange = headerPathIndex => event =>
+  const handleHeaderPathChange = (headerPathIndex) => (event) =>
     onFieldPathUpdate(template.get('id'), ['headerPaths', headerPathIndex], event.target.value);
 
   const handleDeleteClick = () => {
@@ -69,7 +69,7 @@ export default ({
     }
   };
 
-  const renderDescriptionField = template => (
+  const renderDescriptionField = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field">
         <div>Description:</div>
@@ -83,7 +83,7 @@ export default ({
     </div>
   );
 
-  const renderIconField = template => (
+  const renderIconField = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field">
         <div>Letter:</div>
@@ -130,7 +130,7 @@ export default ({
     </div>
   );
 
-  const renderOrgFileAvailability = template => (
+  const renderOrgFileAvailability = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field">
         <div>Available in all org files?</div>
@@ -195,7 +195,7 @@ export default ({
     </div>
   );
 
-  const renderHeaderPaths = template => (
+  const renderHeaderPaths = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field" style={{ marginTop: 7 }}>
         <div>Header path</div>
@@ -233,7 +233,7 @@ export default ({
     </div>
   );
 
-  const renderPrependField = template => (
+  const renderPrependField = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field">
         <div>Prepend?</div>
@@ -247,7 +247,7 @@ export default ({
     </div>
   );
 
-  const renderTemplateField = template => (
+  const renderTemplateField = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field" style={{ marginTop: 7 }}>
         <div>Template</div>
@@ -291,7 +291,7 @@ export default ({
     </div>
   );
 
-  const renderDeleteButton = template => (
+  const renderDeleteButton = (template) => (
     <div className="capture-template__field-container capture-template__delete-button-container">
       <button
         className="btn settings-btn capture-template__delete-button"

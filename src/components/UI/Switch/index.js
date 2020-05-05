@@ -19,7 +19,7 @@ export default ({ isEnabled, onToggle }) => {
 
   return (
     <Motion style={switchStyle}>
-      {style => {
+      {(style) => {
         const backgroundColor = rgbaString(
           interpolateColors(disabledColor, enabledColor, style.colorFactor)
         );
@@ -27,7 +27,7 @@ export default ({ isEnabled, onToggle }) => {
         return (
           <div className="switch" style={{ backgroundColor }} onClick={onToggle}>
             <Motion style={grabberStyle}>
-              {style => <div className="switch__grabber" style={style} />}
+              {(style) => <div className="switch__grabber" style={style} />}
             </Motion>
           </div>
         );

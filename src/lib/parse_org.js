@@ -27,7 +27,7 @@ const timestampFromRegexMatch = (match, partIndices) => {
     secondDelayRepeatType,
     secondDelayRepeatValue,
     secondDelayRepeatUnit,
-  ] = partIndices.map(partIndex => match[partIndex]);
+  ] = partIndices.map((partIndex) => match[partIndex]);
 
   if (!year) {
     return null;
@@ -175,7 +175,7 @@ export const parseMarkupAndCookies = (
 
   const lineParts = [];
   let startIndex = 0;
-  matches.forEach(match => {
+  matches.forEach((match) => {
     let index = match.index;
 
     // Get the part before the first match:
@@ -262,7 +262,7 @@ const computeParseResults = (rawText, match) => {
   }
 };
 
-const parseTable = tableLines => {
+const parseTable = (tableLines) => {
   const table = {
     id: generateId(),
     type: 'table',
@@ -271,8 +271,8 @@ const parseTable = tableLines => {
   };
 
   tableLines
-    .map(line => line.trim())
-    .forEach(line => {
+    .map((line) => line.trim())
+    .forEach((line) => {
       if (line.startsWith('|-')) {
         table.contents.push([]);
       } else {
@@ -280,7 +280,7 @@ const parseTable = tableLines => {
         const lineCells = line.substr(1, line.length - 2).split('|');
 
         if (lastRow.length === 0) {
-          lineCells.forEach(cell => lastRow.push(cell));
+          lineCells.forEach((cell) => lastRow.push(cell));
         } else {
           lineCells.forEach((cellContents, cellIndex) => {
             lastRow[cellIndex] += `\n${cellContents}`;
@@ -290,9 +290,9 @@ const parseTable = tableLines => {
     });
 
   // Parse the contents of each cell.
-  table.contents = table.contents.map(row => ({
+  table.contents = table.contents.map((row) => ({
     id: generateId(),
-    contents: row.map(rawContents => ({
+    contents: row.map((rawContents) => ({
       id: generateId(),
       contents: parseMarkupAndCookies(rawContents, { excludeCookies: true }),
       rawContents,
@@ -305,8 +305,8 @@ const parseTable = tableLines => {
   }
 
   // Make sure each row has the same number of columns.
-  const maxNumColumns = Math.max(...table.contents.map(row => row.contents.length));
-  table.contents.forEach(row => {
+  const maxNumColumns = Math.max(...table.contents.map((row) => row.contents.length));
+  table.contents.forEach((row) => {
     if (row.contents.length < maxNumColumns) {
       _.times(maxNumColumns - row.contents.length, () => {
         row.contents.push({
@@ -376,8 +376,8 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
     if (linePart.type === 'raw-table') {
       const tableLines = _.takeWhile(
         rawLineParts.slice(partIndex),
-        part => part.type === 'raw-table'
-      ).map(part => part.line);
+        (part) => part.type === 'raw-table'
+      ).map((part) => part.line);
 
       processedLineParts.push(parseTable(tableLines));
 
@@ -386,10 +386,10 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
       const numLeadingSpaces = linePart.line.match(/^( *)/)[0].length;
       const contentLines = _.takeWhile(
         rawLineParts.slice(partIndex + 1),
-        part => part.type === 'raw-list-content'
+        (part) => part.type === 'raw-list-content'
       )
-        .map(part => part.line)
-        .map(line =>
+        .map((part) => part.line)
+        .map((line) =>
           line.startsWith(' '.repeat(numLeadingSpaces + 2))
             ? line.substr(numLeadingSpaces + 2)
             : line.substr(numLeadingSpaces + 1)
@@ -455,7 +455,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
   return fromJS(processedLineParts);
 };
 
-export const _parsePlanningItems = rawText => {
+export const _parsePlanningItems = (rawText) => {
   const optionalSinglePlanningItemRegex = RegExp(
     `((DEADLINE|SCHEDULED|CLOSED):\\s*${asStrNoSlashs(timestampRegex)})?`
   );
@@ -476,7 +476,7 @@ export const _parsePlanningItems = rawText => {
 
   const planningItems = fromJS(
     planningRegexCaptureGroupsOfType
-      .map(planningTypeIndex => {
+      .map((planningTypeIndex) => {
         const type = planningMatch[planningTypeIndex];
         if (!type) {
           return null;
@@ -489,7 +489,7 @@ export const _parsePlanningItems = rawText => {
 
         return createTimestamp({ type, timestamp });
       })
-      .filter(item => !!item)
+      .filter((item) => !!item)
   );
 
   if (planningItems.size === 0) {
@@ -503,10 +503,10 @@ export const _parsePlanningItems = rawText => {
 
 const createTimestamp = ({ type, timestamp }) => fromJS({ type, timestamp, id: generateId() });
 
-const parsePropertyList = rawText => {
+const parsePropertyList = (rawText) => {
   const lines = rawText.split('\n');
-  const propertiesLineIndex = lines.findIndex(line => line.trim() === ':PROPERTIES:');
-  const endLineIndex = lines.findIndex(line => line.trim() === ':END:');
+  const propertiesLineIndex = lines.findIndex((line) => line.trim() === ':PROPERTIES:');
+  const endLineIndex = lines.findIndex((line) => line.trim() === ':END:');
 
   if (
     propertiesLineIndex === -1 ||
@@ -522,7 +522,7 @@ const parsePropertyList = rawText => {
   const propertyListItems = fromJS(
     lines
       .slice(propertiesLineIndex + 1, endLineIndex)
-      .map(line => {
+      .map((line) => {
         const match = line.match(/:([^\s]*):(?: (.*))?/);
         if (!match) {
           return null;
@@ -536,7 +536,7 @@ const parsePropertyList = rawText => {
           id: generateId(),
         };
       })
-      .filter(result => !!result)
+      .filter((result) => !!result)
   );
 
   return {
@@ -545,10 +545,10 @@ const parsePropertyList = rawText => {
   };
 };
 
-const parseLogbook = rawText => {
+const parseLogbook = (rawText) => {
   const lines = rawText.split('\n');
-  const logbookLineIndex = lines.findIndex(line => line.trim() === ':LOGBOOK:');
-  const endLineIndex = lines.findIndex(line => line.trim() === ':END:');
+  const logbookLineIndex = lines.findIndex((line) => line.trim() === ':LOGBOOK:');
+  const endLineIndex = lines.findIndex((line) => line.trim() === ':END:');
 
   if (logbookLineIndex === -1 || endLineIndex === -1 || !rawText.trim().startsWith(':LOGBOOK:')) {
     return {
@@ -566,7 +566,7 @@ const parseLogbook = rawText => {
     /\s*=>\s*\S+$/
   );
   const logBookEntries = fromJS(
-    lines.slice(logbookLineIndex + 1, endLineIndex).map(line => {
+    lines.slice(logbookLineIndex + 1, endLineIndex).map((line) => {
       const lineFullMatch = line.trim().match(logBookEntryFullRegex);
       if (lineFullMatch) {
         return {
@@ -593,7 +593,7 @@ const parseLogbook = rawText => {
   };
 };
 
-export const parseDescriptionPrefixElements = rawText => {
+export const parseDescriptionPrefixElements = (rawText) => {
   const planningItemsParse = _parsePlanningItems(rawText);
 
   const planningItems = planningItemsParse.planningItems;
@@ -641,10 +641,10 @@ const defaultKeywordSets = fromJS([
 ]);
 
 export const parseTitleLine = (titleLine, todoKeywordSets) => {
-  const allKeywords = todoKeywordSets.flatMap(todoKeywordSet => {
+  const allKeywords = todoKeywordSets.flatMap((todoKeywordSet) => {
     return todoKeywordSet.get('keywords');
   });
-  const todoKeyword = allKeywords.filter(keyword => titleLine.startsWith(keyword + ' ')).first();
+  const todoKeyword = allKeywords.filter((keyword) => titleLine.startsWith(keyword + ' ')).first();
   let rawTitle = titleLine;
   if (todoKeyword) {
     rawTitle = rawTitle.substr(todoKeyword.length + 1);
@@ -657,7 +657,7 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
     const possibleTags = titleParts[titleParts.length - 1];
     if (/^:[^\s]+:$/.test(possibleTags)) {
       rawTitle = rawTitle.substr(0, rawTitle.length - possibleTags.length);
-      tags = possibleTags.split(':').filter(tag => tag !== '');
+      tags = possibleTags.split(':').filter((tag) => tag !== '');
     }
   }
 
@@ -689,7 +689,7 @@ const concatRegexes = (...regexes) =>
   regexes.reduce((prev, curr) => RegExp(asStrNoSlashs(prev) + asStrNoSlashs(curr)));
 
 // Converts RegExp or strings like '/regex/' to a string without these slashs.
-const asStrNoSlashs = regex => {
+const asStrNoSlashs = (regex) => {
   const s = regex.toString();
   return s.substring(1, s.length - 1);
 };
@@ -699,10 +699,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
   // Hence, it's acceptable that it is opinionated on treating
   // whitespace.
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
-  const descriptionText = rawText
-    .split('\n')
-    .slice(1)
-    .join('\n');
+  const descriptionText = rawText.split('\n').slice(1).join('\n');
 
   // TODO: possible addition: allow subheaders in description!
 
@@ -710,7 +707,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
   return _updateHeaderFromDescription(newHeader, descriptionText);
 };
 
-export const parseTodoKeywordConfig = line => {
+export const parseTodoKeywordConfig = (line) => {
   if (!line.startsWith('#+TODO: ') && !line.startsWith('#+TYP_TODO: ')) {
     return null;
   }
@@ -718,11 +715,11 @@ export const parseTodoKeywordConfig = line => {
   const keywordsString = line.substr(line.indexOf(':') + 2);
   const keywordTokens = keywordsString.split(/\s/);
   const keywords = keywordTokens
-    .filter(keyword => keyword !== '|')
+    .filter((keyword) => keyword !== '|')
     // Remove fast access TODO states suffix from keyword, because
     // there's no UI to handle those in organice
     // https://orgmode.org/manual/Fast-access-to-TODO-states.html#Fast-access-to-TODO-states
-    .map(keyword => keyword.replace(/\(.[!@]?(\/[!@])?\)$/, ''));
+    .map((keyword) => keyword.replace(/\(.[!@]?(\/[!@])?\)$/, ''));
 
   const pipeIndex = keywordTokens.indexOf('|');
   const completedKeywords = pipeIndex >= 0 ? keywords.slice(pipeIndex) : [];
@@ -735,7 +732,7 @@ export const parseTodoKeywordConfig = line => {
   });
 };
 
-export const parseOrg = fileContents => {
+export const parseOrg = (fileContents) => {
   let headers = List();
   const lines = getLinesFromFileContents(fileContents);
 
@@ -743,7 +740,7 @@ export const parseOrg = fileContents => {
   let fileConfigLines = List();
   let linesBeforeHeadings = List();
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     // A header has to start with at least one consecutive asterisk
     // followed by a blank
     if (line.match(/^\*+ /)) {
@@ -760,7 +757,7 @@ export const parseOrg = fileContents => {
         linesBeforeHeadings = linesBeforeHeadings.push(line);
       }
     } else {
-      headers = headers.updateIn([headers.size - 1, 'rawDescription'], rawDescription => {
+      headers = headers.updateIn([headers.size - 1, 'rawDescription'], (rawDescription) => {
         // In the beginning of the parseOrg function, the original
         // fileContent lines are split by '\n'. Therefore, the newline
         // has to be added again to the line:
@@ -775,7 +772,7 @@ export const parseOrg = fileContents => {
     todoKeywordSets = defaultKeywordSets;
   }
 
-  headers = headers.map(header => {
+  headers = headers.map((header) => {
     // Normally, rawDescription contains the "stripped" raw description text,
     // i.e. no log book, properties, or planning items.
     // In this case (parsing the complete org file), rawDescription contains
@@ -796,8 +793,8 @@ export const parseOrg = fileContents => {
 const extractActiveTimestampsForPlanningItemsFromParse = (type, parsedData) => {
   // planningItems only accept a single timestamp -> ignore second timestamp
   return parsedData
-    .filter(x => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
-    .map(x => createTimestamp({ type: type, timestamp: x.get('firstTimestamp') }));
+    .filter((x) => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
+    .map((x) => createTimestamp({ type: type, timestamp: x.get('firstTimestamp') }));
 };
 
 // Merge planningItems from parsed title, description, and planning keywords.
@@ -807,7 +804,7 @@ const mergePlanningItems = (...planningItems) => {
 
 export const updatePlanningItems = (planningItems, type, parsed) =>
   planningItems
-    .filter(x => x.get('type') !== type)
+    .filter((x) => x.get('type') !== type)
     .merge(extractActiveTimestampsForPlanningItemsFromParse(type, parsed));
 
 export const updatePlanningItemsFromTitleAndDescription = (
@@ -824,13 +821,13 @@ export const updatePlanningItemsFromTitleAndDescription = (
   return resultingPlanningItems;
 };
 
-const computeNestingLevel = titleLineWithAsterisk => {
+const computeNestingLevel = (titleLineWithAsterisk) => {
   const nestingLevel = titleLineWithAsterisk.indexOf(' ');
   if (nestingLevel === -1) return titleLineWithAsterisk.trimRight().length;
   return nestingLevel;
 };
 
-const getLinesFromFileContents = fileContents => {
+const getLinesFromFileContents = (fileContents) => {
   // We expect a newline at EOF (from the last line of fileContents).
   // After split(), this results in an empty string at the last position of the
   // array => Remove that last array item.

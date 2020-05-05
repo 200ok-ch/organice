@@ -13,7 +13,7 @@ export default ({ parts, subPartDataAndHandlers }) => {
 
   return (
     <span>
-      {parts.map(part => {
+      {parts.map((part) => {
         switch (part.get('type')) {
           case 'text':
             return part.get('contents');

@@ -9,7 +9,7 @@ export const updateTemplateFieldPathValue = (templateId, fieldPath, newValue) =>
   newValue,
 });
 
-export const addNewTemplateOrgFileAvailability = templateId => ({
+export const addNewTemplateOrgFileAvailability = (templateId) => ({
   type: 'ADD_NEW_TEMPLATE_ORG_FILE_AVAILABILITY',
   templateId,
 });
@@ -20,7 +20,7 @@ export const removeTemplateOrgFileAvailability = (templateId, orgFileAvailabilit
   orgFileAvailabilityIndex,
 });
 
-export const addNewTemplateHeaderPath = templateId => ({
+export const addNewTemplateHeaderPath = (templateId) => ({
   type: 'ADD_NEW_TEMPLATE_HEADER_PATH',
   templateId,
 });
@@ -31,12 +31,12 @@ export const removeTemplateHeaderPath = (templateId, headerPathIndex) => ({
   headerPathIndex,
 });
 
-export const deleteTemplate = templateId => ({
+export const deleteTemplate = (templateId) => ({
   type: 'DELETE_TEMPLATE',
   templateId,
 });
 
-export const restoreCaptureSettings = newSettings => ({
+export const restoreCaptureSettings = (newSettings) => ({
   type: 'RESTORE_CAPTURE_SETTINGS',
   newSettings,
 });

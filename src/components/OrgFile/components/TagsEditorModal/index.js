@@ -31,7 +31,7 @@ export default class TagsEditorModal extends PureComponent {
   }
 
   handleTagChange(tagIndex) {
-    return event => {
+    return (event) => {
       const tags = this.props.header.getIn(['titleLine', 'tags']);
       this.props.onChange(tags.set(tagIndex, event.target.value.replace(/(\s+|:)/g, '')));
     };
@@ -53,7 +53,7 @@ export default class TagsEditorModal extends PureComponent {
     return () => {
       const tags = this.props.header.getIn(['titleLine', 'tags']);
       if (tags.includes(newTag)) {
-        this.props.onChange(tags.filter(tag => tag !== newTag));
+        this.props.onChange(tags.filter((tag) => tag !== newTag));
       } else {
         this.props.onChange(tags.push(newTag));
       }
@@ -104,7 +104,7 @@ export default class TagsEditorModal extends PureComponent {
                             className="textfield tag-container__textfield"
                             value={tag}
                             onChange={this.handleTagChange(index)}
-                            ref={textfield => (this.lastTextfield = textfield)}
+                            ref={(textfield) => (this.lastTextfield = textfield)}
                             list="drawer-modal__datalist-tag-names"
                           />
                           <div className="tag-container__actions-container">
@@ -139,8 +139,8 @@ export default class TagsEditorModal extends PureComponent {
 
         <div className="all-tags-container">
           {allTags
-            .filter(tag => !!tag)
-            .map(tag => {
+            .filter((tag) => !!tag)
+            .map((tag) => {
               const className = classNames('all-tags__tag', {
                 'all-tags__tag--in-use': headerTags.includes(tag),
               });

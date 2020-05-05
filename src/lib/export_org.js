@@ -4,7 +4,7 @@ import { fromJS } from 'immutable';
 import { shouldRenderPlanningItem } from './org_utils';
 import { renderAsText, timestampDuration } from './timestamps';
 
-const linkPartToRawText = linkPart => {
+const linkPartToRawText = (linkPart) => {
   if (!!linkPart.getIn(['contents', 'title'])) {
     return `[[${linkPart.getIn(['contents', 'uri'])}][${linkPart.getIn(['contents', 'title'])}]]`;
   } else {
@@ -12,9 +12,9 @@ const linkPartToRawText = linkPart => {
   }
 };
 
-const formattedAttributedStringText = parts => {
+const formattedAttributedStringText = (parts) => {
   return parts
-    .map(part => {
+    .map((part) => {
       switch (part.get('type')) {
         case 'text':
           return part.get('contents');
@@ -33,23 +33,23 @@ const formattedAttributedStringText = parts => {
     .join('');
 };
 
-const tablePartToRawText = tablePart => {
+const tablePartToRawText = (tablePart) => {
   const rowHeights = tablePart
     .get('contents')
-    .map(row =>
+    .map((row) =>
       Math.max(
-        ...row.get('contents').map(cell => (_.countBy(cell.get('rawContents'))['\n'] || 0) + 1)
+        ...row.get('contents').map((cell) => (_.countBy(cell.get('rawContents'))['\n'] || 0) + 1)
       )
     )
     .toJS();
 
   const numColumns = tablePart.getIn(['contents', 0, 'contents']).size;
-  const columnWidths = _.times(numColumns).map(columnIndex =>
+  const columnWidths = _.times(numColumns).map((columnIndex) =>
     Math.max(
-      ...tablePart.get('contents').map(row => {
+      ...tablePart.get('contents').map((row) => {
         const content = row.getIn(['contents', columnIndex, 'contents']);
         const formattedText = formattedAttributedStringText(content);
-        const lineLengths = formattedText.split('\n').map(line => line.trim().length);
+        const lineLengths = formattedText.split('\n').map((line) => line.trim().length);
         return Math.max(...lineLengths);
       })
     )
@@ -63,7 +63,7 @@ const tablePartToRawText = tablePart => {
           const rowHeight = rowHeights[rowIndex];
 
           const contentRows = _.times(rowHeight)
-            .map(lineIndex =>
+            .map((lineIndex) =>
               row
                 .get('contents')
                 .map((cell, columnIndex) => {
@@ -71,7 +71,7 @@ const tablePartToRawText = tablePart => {
                   const formattedText = formattedAttributedStringText(content);
                   const formattedLineLengths = formattedText
                     .split('\n')
-                    .map(line => line.trim().length);
+                    .map((line) => line.trim().length);
                   const line = (cell.get('rawContents').split('\n')[lineIndex] || '').trim();
 
                   const padCount = columnWidths[columnIndex] - formattedLineLengths[lineIndex];
@@ -81,10 +81,10 @@ const tablePartToRawText = tablePart => {
                 .toJS()
                 .join(' | ')
             )
-            .map(contentRow => `| ${contentRow} |`);
+            .map((contentRow) => `| ${contentRow} |`);
 
           const separator =
-            '|' + columnWidths.map(columnWidth => '-'.repeat(columnWidth + 2)).join('+') + '|';
+            '|' + columnWidths.map((columnWidth) => '-'.repeat(columnWidth + 2)).join('+') + '|';
 
           return contentRows.concat(separator);
         })
@@ -95,13 +95,13 @@ const tablePartToRawText = tablePart => {
   return rowStrings.join('\n');
 };
 
-const listPartToRawText = listPart => {
+const listPartToRawText = (listPart) => {
   const bulletCharacter = listPart.get('bulletCharacter');
 
   let previousNumber = 0;
   return listPart
     .get('items')
-    .map(item => {
+    .map((item) => {
       const optionalLeadingSpace = !listPart.get('isOrdered') && bulletCharacter === '*' ? ' ' : '';
 
       const titleText = attributedStringToRawText(item.get('titleLine'));
@@ -109,7 +109,7 @@ const listPartToRawText = listPart => {
       const contentText = attributedStringToRawText(item.get('contents'));
       const indentedContentText = contentText
         .split('\n')
-        .map(line => (!!line.trim() ? `${optionalLeadingSpace}  ${line}` : ''))
+        .map((line) => (!!line.trim() ? `${optionalLeadingSpace}  ${line}` : ''))
         .join('\n');
 
       let listItemText = null;
@@ -163,7 +163,7 @@ const listPartToRawText = listPart => {
     .join('\n');
 };
 
-const timestampPartToRawText = part => {
+const timestampPartToRawText = (part) => {
   let text = renderAsText(part.get('firstTimestamp'));
   if (part.get('secondTimestamp')) {
     text += `--${renderAsText(part.get('secondTimestamp'))}`;
@@ -172,12 +172,12 @@ const timestampPartToRawText = part => {
   return text;
 };
 
-export const attributedStringToRawText = parts => {
+export const attributedStringToRawText = (parts) => {
   if (!parts) {
     return '';
   }
 
-  const prevPartTypes = parts.map(part => part.get('type')).unshift(null);
+  const prevPartTypes = parts.map((part) => part.get('type')).unshift(null);
 
   return parts
     .zip(prevPartTypes)
@@ -276,7 +276,7 @@ export const exportOrg = (
     configContent =
       configContent +
       todoKeywordSets
-        .map(todoKeywordSet => {
+        .map((todoKeywordSet) => {
           return todoKeywordSet.get('configLine');
         })
         .join('\n') +
@@ -291,7 +291,7 @@ export const exportOrg = (
     configContent = configContent + '\n';
   }
 
-  const headerContent = headers.map(x => createRawDescriptionText(x, true, dontIndent)).join('');
+  const headerContent = headers.map((x) => createRawDescriptionText(x, true, dontIndent)).join('');
 
   return configContent + headerContent;
 };
@@ -320,7 +320,7 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   const planningItemsToRender = header.planningItems.filter(shouldRenderPlanningItem);
   if (planningItemsToRender.length) {
     const planningItemsContent = planningItemsToRender
-      .map(planningItem => {
+      .map((planningItem) => {
         const timestampString = renderAsText(fromJS(planningItem.timestamp));
         return `${planningItem.type}: ${timestampString}`;
       })
@@ -331,7 +331,7 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
 
   if (header.propertyListItems.length) {
     const propertyListItemsContent = header.propertyListItems
-      .map(propertyListItem => {
+      .map((propertyListItem) => {
         return `${indentation}:${propertyListItem.property}: ${attributedStringToRawText(
           fromJS(propertyListItem.value)
         )}`;
@@ -344,7 +344,7 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
 
   if (header.logBookEntries.length) {
     const logBookEntriesContent = header.logBookEntries
-      .map(entry => {
+      .map((entry) => {
         if (entry.raw !== undefined) {
           return entry.raw ? `${indentation}${entry.raw}` : '';
         } else if (entry.end === null) {

@@ -18,7 +18,7 @@ export default ({ propertyListItems, shouldDisableActions, onTimestampClick, onE
 
       {!isDrawerCollapsed && (
         <Fragment>
-          {propertyListItems.map(propertyListItem => (
+          {propertyListItems.map((propertyListItem) => (
             <div className="property-list__item-container" key={propertyListItem.get('id')}>
               <div
                 className="property-list__property"

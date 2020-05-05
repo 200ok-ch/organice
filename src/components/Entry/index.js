@@ -46,7 +46,7 @@ class Entry extends PureComponent {
   // TODO: Should this maybe done on init of the application and not in the component?
   setChangelogUnseenChanges() {
     const { lastSeenChangelogHash, isAuthenticated } = this.props;
-    changelogHash().then(changelogHash => {
+    changelogHash().then((changelogHash) => {
       const hasChanged =
         isAuthenticated &&
         lastSeenChangelogHash &&
@@ -207,7 +207,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     syncBackend: bindActionCreators(syncBackendActions, dispatch),
     org: bindActionCreators(orgActions, dispatch),

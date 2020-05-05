@@ -15,7 +15,7 @@ function generateHash(list) {
         },
         new Uint8Array(list)
       )
-      .then(hashArray => {
+      .then((hashArray) => {
         resolve(_.values(new Uint8Array(hashArray)).join(''));
       });
   });
@@ -25,14 +25,14 @@ export const changelogHash = () => {
   return new Promise((resolve, reject) => {
     const changelogFile = raw('../../changelog.org');
 
-    generateHash(changelogFile.split('').map(c => c.charCodeAt(0))).then(hash => {
+    generateHash(changelogFile.split('').map((c) => c.charCodeAt(0))).then((hash) => {
       resolve(hash);
     });
   });
 };
 
 export const indexOfHeaderWithId = (headers, headerId) => {
-  return headers.findIndex(header => header.get('id') === headerId);
+  return headers.findIndex((header) => header.get('id') === headerId);
 };
 
 export const headerWithId = (headers, headerId) => {
@@ -44,7 +44,7 @@ export const subheadersOfHeaderWithId = (headers, headerId) => {
   const headerIndex = indexOfHeaderWithId(headers, headerId);
 
   const afterHeaders = headers.slice(headerIndex + 1);
-  const nextSiblingHeaderIndex = afterHeaders.findIndex(siblingHeader => {
+  const nextSiblingHeaderIndex = afterHeaders.findIndex((siblingHeader) => {
     return siblingHeader.get('nestingLevel') <= header.get('nestingLevel');
   });
 
@@ -83,7 +83,7 @@ export const parentIdOfHeaderWithId = (headers, headerId) => {
 
   const previousHeaders = headers.slice(0, headerIndex).reverse();
   const parentHeader = previousHeaders.find(
-    previousHeader => previousHeader.get('nestingLevel') < header.get('nestingLevel')
+    (previousHeader) => previousHeader.get('nestingLevel') < header.get('nestingLevel')
   );
 
   if (!parentHeader) {
@@ -96,7 +96,7 @@ export const parentIdOfHeaderWithId = (headers, headerId) => {
 export const inheritedValueOfProperty = (headers, headerIndex, property) => {
   const headerProp = headers
     .getIn([headerIndex, 'propertyListItems'])
-    .find(item => item.get('property') === property);
+    .find((item) => item.get('property') === property);
   if (headerProp) {
     return headerProp.get('value');
   }
@@ -138,12 +138,12 @@ const isHeaderVisible = (headers, headerId) => {
 
 export const nextVisibleHeaderAfterIndex = (headers, headerIndex) => {
   const followingHeaders = headers.slice(headerIndex + 1);
-  return followingHeaders.find(header => isHeaderVisible(headers, header.get('id')));
+  return followingHeaders.find((header) => isHeaderVisible(headers, header.get('id')));
 };
 
 export const previousVisibleHeaderAfterIndex = (headers, headerIndex) => {
   const previousHeaders = headers.slice(0, headerIndex).reverse();
-  return previousHeaders.find(header => isHeaderVisible(headers, header.get('id')));
+  return previousHeaders.find((header) => isHeaderVisible(headers, header.get('id')));
 };
 
 export const openDirectParent = (state, headerId) => {
@@ -156,7 +156,7 @@ export const openDirectParent = (state, headerId) => {
   return state;
 };
 
-export const getOpenHeaderPaths = headers => {
+export const getOpenHeaderPaths = (headers) => {
   let openedHeaders = [];
   for (let i = 0; i < headers.size; ++i) {
     const header = headers.get(i);
@@ -170,7 +170,7 @@ export const getOpenHeaderPaths = headers => {
     const openSubheaderPaths = getOpenHeaderPaths(subheaders);
 
     if (openSubheaderPaths.length > 0) {
-      openSubheaderPaths.forEach(openedSubheaderPath => {
+      openSubheaderPaths.forEach((openedSubheaderPath) => {
         openedHeaders.push([title].concat(openedSubheaderPath));
       });
     } else {
@@ -189,7 +189,7 @@ export const headerWithPath = (headers, headerPath) => {
   }
 
   const firstHeader = headers.find(
-    header =>
+    (header) =>
       parentIdOfHeaderWithId(headers, header.get('id')) === null &&
       header.getIn(['titleLine', 'rawTitle']).trim() === headerPath.first().trim()
   );
@@ -211,7 +211,7 @@ export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => 
   }
 
   const firstTitle = headerPath.first();
-  const headerIndex = headers.findIndex(header => {
+  const headerIndex = headers.findIndex((header) => {
     const rawTitle = header.getIn(['titleLine', 'rawTitle']);
     const nestingLevel = header.get('nestingLevel');
     return rawTitle === firstTitle && nestingLevel <= maxNestingLevel;
@@ -220,7 +220,7 @@ export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => 
     return headers;
   }
 
-  headers = headers.update(headerIndex, header => header.set('opened', true));
+  headers = headers.update(headerIndex, (header) => header.set('opened', true));
 
   let subheaders = subheadersOfHeaderWithId(headers, headers.getIn([headerIndex, 'id']));
   subheaders = openHeaderWithPath(subheaders, headerPath.rest(), maxNestingLevel + 1);
@@ -236,21 +236,23 @@ export const openHeaderWithPath = (headers, headerPath, maxNestingLevel = 1) => 
 const tablePartContainsCellId = (tablePart, cellId) =>
   tablePart
     .get('contents')
-    .some(row => row.get('contents').some(cell => cell.get('id') === cellId));
+    .some((row) => row.get('contents').some((cell) => cell.get('id') === cellId));
 
 const doesAttributedStringContainTableCellId = (parts, cellId) =>
   parts
-    .filter(part => ['table', 'list'].includes(part.get('type')))
-    .some(part =>
+    .filter((part) => ['table', 'list'].includes(part.get('type')))
+    .some((part) =>
       part.get('type') === 'table'
         ? tablePartContainsCellId(part, cellId)
         : part
             .get('items')
-            .some(item => doesAttributedStringContainTableCellId(item.get('contents'), cellId))
+            .some((item) => doesAttributedStringContainTableCellId(item.get('contents'), cellId))
     );
 
 export const headerThatContainsTableCellId = (headers, cellId) =>
-  headers.find(header => doesAttributedStringContainTableCellId(header.get('description'), cellId));
+  headers.find((header) =>
+    doesAttributedStringContainTableCellId(header.get('description'), cellId)
+  );
 
 export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timestampId) =>
   parts
@@ -290,7 +292,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
               }
             }
           })
-          .filter(result => !!result)
+          .filter((result) => !!result)
           .first();
       } else if (part.get('type') === 'table') {
         return part
@@ -320,16 +322,16 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                   return null;
                 }
               })
-              .filter(result => !!result)
+              .filter((result) => !!result)
               .first();
           })
-          .filter(result => !!result)
+          .filter((result) => !!result)
           .first();
       } else {
         return null;
       }
     })
-    .filter(result => !!result)
+    .filter((result) => !!result)
     .first();
 
 export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId) =>
@@ -360,13 +362,13 @@ export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId)
               }
             }
           })
-          .filter(result => !!result)
+          .filter((result) => !!result)
           .first();
       } else {
         return null;
       }
     })
-    .filter(result => !!result)
+    .filter((result) => !!result)
     .first();
 
 export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cellId) =>
@@ -396,13 +398,13 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
               return null;
             }
           })
-          .filter(result => !!result)
+          .filter((result) => !!result)
           .first();
       } else {
         return null;
       }
     })
-    .filter(result => !!result)
+    .filter((result) => !!result)
     .first();
 
 export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) =>
@@ -453,7 +455,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
 
           return null;
         })
-        .filter(result => !!result)
+        .filter((result) => !!result)
         .first();
       if (!!pathAndPart) {
         return pathAndPart;
@@ -461,7 +463,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
 
       return null;
     })
-    .filter(result => !!result)
+    .filter((result) => !!result)
     .first();
 
 export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) =>
@@ -481,7 +483,7 @@ export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) =>
         listItemPart,
       };
     })
-    .filter(result => !!result)
+    .filter((result) => !!result)
     .first();
 
 export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) =>
@@ -501,7 +503,7 @@ export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) =>
         tablePart,
       };
     })
-    .filter(result => !!result)
+    .filter((result) => !!result)
     .first();
 
 export const updateTableContainingCellId = (headers, cellId, updaterCallbackGenerator) => {
@@ -509,10 +511,10 @@ export const updateTableContainingCellId = (headers, cellId, updaterCallbackGene
 
   const rowIndexContainingCellId = tablePart
     .get('contents')
-    .findIndex(row => row.get('contents').some(cell => cell.get('id') === cellId));
+    .findIndex((row) => row.get('contents').some((cell) => cell.get('id') === cellId));
   const columnIndexContainingCellId = tablePart
     .getIn(['contents', rowIndexContainingCellId, 'contents'])
-    .findIndex(cell => cell.get('id') === cellId);
+    .findIndex((cell) => cell.get('id') === cellId);
 
   return headers.updateIn(
     path.concat(['contents']),
@@ -520,16 +522,13 @@ export const updateTableContainingCellId = (headers, cellId, updaterCallbackGene
   );
 };
 
-export const newEmptyTableRowLikeRows = rows =>
+export const newEmptyTableRowLikeRows = (rows) =>
   rows
     .get(0)
     .set('id', generateId())
-    .update('contents', contents =>
-      contents.map(cell =>
-        cell
-          .set('id', generateId())
-          .set('contents', List())
-          .set('rawContents', '')
+    .update('contents', (contents) =>
+      contents.map((cell) =>
+        cell.set('id', generateId()).set('contents', List()).set('rawContents', '')
       )
     );
 
@@ -556,53 +555,51 @@ export const timestampWithIdInAttributedString = (parts, timestampId) => {
 export const timestampWithId = (headers, timestampId) =>
   headers
     .map(
-      header =>
+      (header) =>
         timestampWithIdInAttributedString(header.getIn(['titleLine', 'title']), timestampId) ||
         timestampWithIdInAttributedString(header.get('description'), timestampId) ||
         header
           .get('propertyListItems')
-          .map(propertyListItem =>
+          .map((propertyListItem) =>
             timestampWithIdInAttributedString(propertyListItem.get('value'), timestampId)
           )
-          .filter(result => !!result)
+          .filter((result) => !!result)
           .first()
     )
-    .find(result => !!result);
+    .find((result) => !!result);
 
-export const customFormatDistanceToNow = datetime => {
+export const customFormatDistanceToNow = (datetime) => {
   return formatDistanceToNow(datetime, { addSuffix: true });
 };
 
 export const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
-  todoKeywordSets.find(keywordSet => keywordSet.get('keywords').contains(keyword)) ||
+  todoKeywordSets.find((keywordSet) => keywordSet.get('keywords').contains(keyword)) ||
   todoKeywordSets.first();
 
 export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
-  todoKeywordSetForKeyword(todoKeywordSets, keyword)
-    .get('completedKeywords')
-    .includes(keyword);
+  todoKeywordSetForKeyword(todoKeywordSets, keyword).get('completedKeywords').includes(keyword);
 
-export const extractAllOrgTags = headers =>
+export const extractAllOrgTags = (headers) =>
   headers
-    .flatMap(h => h.getIn(['titleLine', 'tags']))
+    .flatMap((h) => h.getIn(['titleLine', 'tags']))
     .toSet()
     .sort();
 
-export const extractAllOrgProperties = headers =>
+export const extractAllOrgProperties = (headers) =>
   headers
-    .map(h => {
+    .map((h) => {
       const propertyList = h.get('propertyListItems');
-      return propertyList.map(property => {
+      return propertyList.map((property) => {
         const prop = property.get('property');
         const valParts = property.get('value'); // lineParts, see parser
         const val = attributedStringToRawText(valParts);
         return [prop, val];
       });
     })
-    .filter(x => !x.isEmpty())
+    .filter((x) => !x.isEmpty())
     .flatten();
 
-export const computeAllPropertyNames = allOrgProperties =>
+export const computeAllPropertyNames = (allOrgProperties) =>
   allOrgProperties
     .map(([x]) => x)
     .toSet()
@@ -621,7 +618,7 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
  * Returns `true` if the header has content, i.e. description.
  * Subheaders do not count as content.
  */
-export const hasHeaderContent = header =>
+export const hasHeaderContent = (header) =>
   !!header.get('rawDescription') ||
   header.get('planningItems').size !== 0 ||
   header.get('propertyListItems').size !== 0 ||
@@ -632,14 +629,15 @@ export const hasHeaderContent = header =>
  * if said `todoKeyword` is in any `todoKeywordSets` states.
  * @param {Object} todoKeywordSets
  */
-export const createIsTodoKeywordInDoneState = todoKeywordSets => {
-  return todoKeyword => todoKeywordSets.some(x => x.get('completedKeywords').includes(todoKeyword));
+export const createIsTodoKeywordInDoneState = (todoKeywordSets) => {
+  return (todoKeyword) =>
+    todoKeywordSets.some((x) => x.get('completedKeywords').includes(todoKeyword));
 };
 
-export const shouldRenderPlanningItem = x =>
+export const shouldRenderPlanningItem = (x) =>
   x.type !== 'TIMESTAMP_TITLE' && x.type !== 'TIMESTAMP_DESCRIPTION';
 
-export const getPlanningItemTypeText = planningItem => {
+export const getPlanningItemTypeText = (planningItem) => {
   const text = planningItem.get('type');
   switch (text) {
     case 'TIMESTAMP_TITLE':
@@ -650,10 +648,10 @@ export const getPlanningItemTypeText = planningItem => {
   }
 };
 
-export const getTodoKeywordSetsAsFlattenedArray = state => {
+export const getTodoKeywordSetsAsFlattenedArray = (state) => {
   return state
     .get('todoKeywordSets')
-    .flatMap(todoKeywordSet => {
+    .flatMap((todoKeywordSet) => {
       return todoKeywordSet.get('keywords');
     })
     .toSet()

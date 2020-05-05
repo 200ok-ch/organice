@@ -16,7 +16,7 @@ import { addSeconds } from 'date-fns';
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
     case 'WebDAV':
-      ['Endpoint', 'Username', 'Password'].forEach(e => {
+      ['Endpoint', 'Username', 'Password'].forEach((e) => {
         persistField('webdav' + e, null);
       });
       break;
@@ -47,12 +47,12 @@ export const setCurrentFileBrowserDirectoryListing = (
   additionalSyncBackendState,
 });
 
-export const setIsLoadingMoreDirectoryListing = isLoadingMore => ({
+export const setIsLoadingMoreDirectoryListing = (isLoadingMore) => ({
   type: 'SET_IS_LOADING_MORE_DIRECTORY_LISTING',
   isLoadingMore,
 });
 
-export const getDirectoryListing = path => (dispatch, getState) => {
+export const getDirectoryListing = (path) => (dispatch, getState) => {
   dispatch(setLoadingMessage('Getting listing...'));
 
   const client = getState().syncBackend.get('client');
@@ -62,7 +62,7 @@ export const getDirectoryListing = path => (dispatch, getState) => {
       dispatch(setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState));
       dispatch(hideLoadingMessage());
     })
-    .catch(error => {
+    .catch((error) => {
       alert('There was an error retrieving files!');
       console.error(error);
       dispatch(hideLoadingMessage());
@@ -97,21 +97,21 @@ export const pushBackup = (pathOrFileId, contents) => {
         break;
       case 'Google Drive':
         pathOrFileId = pathOrFileId.startsWith('/') ? pathOrFileId.substr(1) : pathOrFileId;
-        client.duplicateFile(pathOrFileId, fileName => `${fileName}.organice-bak`);
+        client.duplicateFile(pathOrFileId, (fileName) => `${fileName}.organice-bak`);
         break;
       default:
     }
   };
 };
 
-export const downloadFile = path => {
+export const downloadFile = (path) => {
   return (dispatch, getState) => {
     dispatch(setLoadingMessage('Downloading file...'));
 
     getState()
       .syncBackend.get('client')
       .getFileContents(path)
-      .then(fileContents => {
+      .then((fileContents) => {
         dispatch(setDirty(false));
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));

@@ -24,14 +24,14 @@ const debouncedPushConfigToSyncBackend = _.debounce(
       case 'WebDAV':
         syncBackendClient
           .createFile('/.organice-config.json', contents)
-          .catch(error =>
+          .catch((error) =>
             alert(`There was an error trying to push settings to your sync backend: ${error}`)
           );
         break;
       case 'Google Drive':
         syncBackendClient
           .createFile('.organice-config.json', 'root', contents)
-          .catch(error =>
+          .catch((error) =>
             alert(`There was an error trying to push settings to your sync backend: ${error}`)
           );
         break;
@@ -139,14 +139,14 @@ export const readOpennessState = () => {
 
 const getFieldsToPersist = (state, fields) =>
   fields
-    .filter(field => !field.depreacted)
-    .filter(field => field.category === 'org')
-    .map(field => field.name)
-    .map(field => [field, state.org.present.get(field)])
+    .filter((field) => !field.depreacted)
+    .filter((field) => field.category === 'org')
+    .map((field) => field.name)
+    .map((field) => [field, state.org.present.get(field)])
     .concat(
       persistableFields
-        .filter(field => field.category !== 'org')
-        .map(field =>
+        .filter((field) => field.category !== 'org')
+        .map((field) =>
           field.type === 'json'
             ? [
                 field.name,
@@ -156,14 +156,14 @@ const getFieldsToPersist = (state, fields) =>
         )
     );
 
-const getConfigFileContents = fieldsToPersist =>
+const getConfigFileContents = (fieldsToPersist) =>
   JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
   persistableFields
-    .filter(field => field.category === category)
-    .filter(field => field.shouldStoreInConfig)
-    .forEach(field => {
+    .filter((field) => field.category === category)
+    .filter((field) => field.shouldStoreInConfig)
+    .forEach((field) => {
       field.type === 'json'
         ? (state = state.set(field.name, fromJS(JSON.parse(config[field.name]))))
         : (state = state.set(field.name, config[field.name]));
@@ -173,7 +173,7 @@ export const applyCategorySettingsFromConfig = (state, config, category) => {
 };
 
 export const applyCaptureSettingsFromConfig = (state, config) => {
-  const captureTemplates = fromJS(JSON.parse(config.captureTemplates)).map(template =>
+  const captureTemplates = fromJS(JSON.parse(config.captureTemplates)).map((template) =>
     template.set('id', generateId())
   );
 
@@ -201,7 +201,7 @@ export const readInitialState = () => {
     capture: Map(),
   };
 
-  persistableFields.forEach(field => {
+  persistableFields.forEach((field) => {
     let value = localStorage.getItem(field.name);
 
     if (field.type === 'nullable') {
@@ -230,8 +230,8 @@ export const readInitialState = () => {
 
   // Assign new ids to the capture templates.
   if (initialState.capture.get('captureTemplates')) {
-    initialState.capture = initialState.capture.update('captureTemplates', templates =>
-      templates.map(template => template.set('id', generateId()))
+    initialState.capture = initialState.capture.update('captureTemplates', (templates) =>
+      templates.map((template) => template.set('id', generateId()))
     );
   }
 
@@ -270,7 +270,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   }
 
   fileContentsPromise
-    .then(configFileContents => {
+    .then((configFileContents) => {
       try {
         const config = JSON.parse(configFileContents);
         dispatch(restoreBaseSettings(config));
@@ -283,7 +283,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
     .catch(() => {});
 };
 
-export const subscribeToChanges = store => {
+export const subscribeToChanges = (store) => {
   if (!isLocalStorageAvailable()) {
     return () => {};
   } else {

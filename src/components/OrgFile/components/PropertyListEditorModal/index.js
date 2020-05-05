@@ -32,9 +32,9 @@ export default class PropertyListEditorModal extends PureComponent {
   }
 
   handlePropertyChange(propertyListItemId) {
-    return event => {
+    return (event) => {
       const propertyListItemIndex = this.props.propertyListItems.findIndex(
-        propertyListItem => propertyListItem.get('id') === propertyListItemId
+        (propertyListItem) => propertyListItem.get('id') === propertyListItemId
       );
       this.props.onChange(
         this.props.propertyListItems.setIn([propertyListItemIndex, 'property'], event.target.value)
@@ -43,11 +43,11 @@ export default class PropertyListEditorModal extends PureComponent {
   }
 
   handleValueChange(propertyListItemId) {
-    return event => {
+    return (event) => {
       const { propertyListItems, onChange } = this.props;
 
       const propertyListItemIndex = propertyListItems.findIndex(
-        propertyListItem => propertyListItem.get('id') === propertyListItemId
+        (propertyListItem) => propertyListItem.get('id') === propertyListItemId
       );
       onChange(
         propertyListItems.setIn(
@@ -62,7 +62,7 @@ export default class PropertyListEditorModal extends PureComponent {
     return () =>
       this.props.onChange(
         this.props.propertyListItems.filter(
-          propertyListItem => propertyListItem.get('id') !== propertyListItemId
+          (propertyListItem) => propertyListItem.get('id') !== propertyListItemId
         )
       );
   }
@@ -83,7 +83,7 @@ export default class PropertyListEditorModal extends PureComponent {
     const { onClose, propertyListItems, allOrgProperties } = this.props;
     const allPropertyNames = computeAllPropertyNames(allOrgProperties);
 
-    const propertyListItemsWithAllPropVals = propertyListItems.map(p => {
+    const propertyListItemsWithAllPropVals = propertyListItems.map((p) => {
       const propertyName = p.get('property');
       const allPropertyValues = computeAllPropertyValuesFor(allOrgProperties, propertyName);
       return [p, allPropertyValues];
@@ -136,7 +136,7 @@ export default class PropertyListEditorModal extends PureComponent {
                                 className="textfield item-container__textfield"
                                 value={propertyListItem.get('property')}
                                 onChange={this.handlePropertyChange(propertyListItem.get('id'))}
-                                ref={textfield => (this.lastTextfield = textfield)}
+                                ref={(textfield) => (this.lastTextfield = textfield)}
                                 list="drawer-modal__datalist-property-names"
                               />
                               <input

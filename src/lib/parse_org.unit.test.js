@@ -21,12 +21,17 @@ function parseAndExportOrgFile(testOrgFile) {
   const fileConfigLines = parsedFile.get('fileConfigLines');
   const linesBeforeHeadings = parsedFile.get('linesBeforeHeadings');
   const exportedFile = exportOrg(
-    headers, todoKeywordSets, fileConfigLines, linesBeforeHeadings, false);
+    headers,
+    todoKeywordSets,
+    fileConfigLines,
+    linesBeforeHeadings,
+    false
+  );
   return exportedFile;
 }
 
 describe('Test the parser', () => {
-  const expectType = result => expect(result.map(x => x.type));
+  const expectType = (result) => expect(result.map((x) => x.type));
   describe('Parsing inline-markup', () => {
     test('Parses inline-markup where closing delim is followed by ;', () => {
       const result = parseMarkupAndCookies('*bold*;');
@@ -39,7 +44,7 @@ describe('Test the parser', () => {
   });
 
   describe('Parse an header with empty description', () => {
-    const parseFirstHeaderFromOrg = x => parseOrg(x).toJS().headers[0];
+    const parseFirstHeaderFromOrg = (x) => parseOrg(x).toJS().headers[0];
     test('Parse headline without trailing newline', () => {
       const result = parseFirstHeaderFromOrg('* headline');
       expect(result.description).toEqual([]);
@@ -117,7 +122,7 @@ describe('Parsing and exporting should not alter the original file', () => {
     test('Parses all valid URLs starting with www', () => {
       const parsedFile = parseOrg(testOrgFile);
       const firstHeader = parsedFile.get('headers').first();
-      const parsedUrls = firstHeader.get('description').filter(x => x.get('type') === 'www-url');
+      const parsedUrls = firstHeader.get('description').filter((x) => x.get('type') === 'www-url');
       expect(parsedUrls.size).toEqual(2);
     });
   });
@@ -250,9 +255,9 @@ describe('Parse in-buffer TODO keyword settings', () => {
     expect(result).toBeNull();
   });
 
-  ['#+TODO', '#+TYP_TODO'].forEach(t => {
+  ['#+TODO', '#+TYP_TODO'].forEach((t) => {
     describe(t, () => {
-      const expectNewSetFromLine = line => {
+      const expectNewSetFromLine = (line) => {
         const result = parseTodoKeywordConfig(line);
         const expectedNewSet = {
           completedKeywords: ['FINISHED'],

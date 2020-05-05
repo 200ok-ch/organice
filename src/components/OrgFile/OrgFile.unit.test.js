@@ -32,7 +32,7 @@ function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
 }
 
 describe('Tests for export', () => {
-  const createSimpleHeaderWithDescription = description =>
+  const createSimpleHeaderWithDescription = (description) =>
     fromJS({
       titleLine: undefined, // not needed
       rawDescription: description,
@@ -71,7 +71,7 @@ describe('Tests for export', () => {
 
 describe('Unit Tests for Org file', () => {
   describe('Test the parser', () => {
-    const expectType = result => expect(result.map(x => x.type));
+    const expectType = (result) => expect(result.map((x) => x.type));
     describe('Parsing inline-markup', () => {
       test('Parses inline-markup where closing delim is followed by ;', () => {
         const result = parseMarkupAndCookies('*bold*;');
@@ -85,7 +85,7 @@ describe('Unit Tests for Org file', () => {
   });
 
   describe('Parsing and export should not alter the description part', () => {
-    const expectStrippedDescription = description => {
+    const expectStrippedDescription = (description) => {
       const {
         planningItems,
         propertyListItems,
@@ -251,7 +251,9 @@ ${text}`;
       test('Parses all valid URLs starting with www', () => {
         const parsedFile = parseOrg(testOrgFile);
         const firstHeader = parsedFile.get('headers').first();
-        const parsedUrls = firstHeader.get('description').filter(x => x.get('type') === 'www-url');
+        const parsedUrls = firstHeader
+          .get('description')
+          .filter((x) => x.get('type') === 'www-url');
         expect(parsedUrls.size).toEqual(2);
       });
     });

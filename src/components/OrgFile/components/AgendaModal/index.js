@@ -110,11 +110,11 @@ function AgendaModal(props) {
       break;
     case 'Week':
       const weekStart = startOfWeek(selectedDate);
-      dates = _.range(7).map(daysAfter => addDays(weekStart, daysAfter));
+      dates = _.range(7).map((daysAfter) => addDays(weekStart, daysAfter));
       break;
     case 'Month':
       const monthStart = startOfMonth(selectedDate);
-      dates = _.range(getDaysInMonth(selectedDate)).map(daysAfter =>
+      dates = _.range(getDaysInMonth(selectedDate)).map((daysAfter) =>
         addDays(monthStart, daysAfter)
       );
       break;
@@ -141,7 +141,7 @@ function AgendaModal(props) {
       </div>
 
       <div className="agenda__days-container">
-        {dates.map(date => (
+        {dates.map((date) => (
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
             date={date}
@@ -161,17 +161,14 @@ function AgendaModal(props) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
   agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
   agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgendaModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AgendaModal);

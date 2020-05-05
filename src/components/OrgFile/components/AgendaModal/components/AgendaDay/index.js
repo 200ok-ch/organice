@@ -123,8 +123,8 @@ export default class AgendaDay extends PureComponent {
     dateEnd,
   }) {
     return headers
-      .flatMap(header => {
-        const planningItemsforDate = header.get('planningItems').filter(planningItem => {
+      .flatMap((header) => {
+        const planningItemsforDate = header.get('planningItems').filter((planningItem) => {
           const timestamp = planningItem.get('timestamp');
           if (!timestamp.get('isActive')) {
             return false;
@@ -159,7 +159,7 @@ export default class AgendaDay extends PureComponent {
               if (!!timestamp.get('delayType')) {
                 const hasBeenRepeated = header
                   .get('propertyListItems')
-                  .some(propertyListItem => propertyListItem.get('property') === 'LAST_REPEAT');
+                  .some((propertyListItem) => propertyListItem.get('property') === 'LAST_REPEAT');
                 if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
                   appearDate = addTimestampUnitToDate(
                     planningItemDate,
@@ -179,7 +179,7 @@ export default class AgendaDay extends PureComponent {
               return false;
           }
         });
-        return planningItemsforDate.map(planningItem => [planningItem, header]);
+        return planningItemsforDate.map((planningItem) => [planningItem, header]);
       })
       .sortBy(([planningItem, header]) => {
         const { startHour, startMinute, endHour, endMinute, month, day } = planningItem

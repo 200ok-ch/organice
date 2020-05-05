@@ -22,7 +22,7 @@ export default ({ state, onClick }) => {
 
   return (
     <Motion style={checkboxStyle}>
-      {style => {
+      {(style) => {
         const backgroundColor = rgbaString(
           interpolateColors(uncheckedColor, checkedColor, style.colorFactor)
         );

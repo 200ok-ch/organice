@@ -51,7 +51,7 @@ export default class TablePart extends PureComponent {
     return Map(
       table
         .get('contents')
-        .map(row => row.get('contents').map(cell => [cell.get('id'), cell.get('rawContents')]))
+        .map((row) => row.get('contents').map((cell) => [cell.get('id'), cell.get('rawContents')]))
         .flatten()
     );
   }
@@ -118,15 +118,15 @@ export default class TablePart extends PureComponent {
 
     const isTableSelected = table
       .get('contents')
-      .some(row => row.get('contents').some(cell => cell.get('id') === selectedTableCellId));
+      .some((row) => row.get('contents').some((cell) => cell.get('id') === selectedTableCellId));
 
     return (
       <Fragment>
         <table className="table-part">
           <tbody>
-            {table.get('contents').map(row => (
+            {table.get('contents').map((row) => (
               <tr key={row.get('id')}>
-                {row.get('contents').map(cell => {
+                {row.get('contents').map((cell) => {
                   const isCellSelected = cell.get('id') === selectedTableCellId;
 
                   const className = classNames('table-part__cell', {

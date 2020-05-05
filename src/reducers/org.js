@@ -58,7 +58,7 @@ const displayFile = (state, action) => {
     .set('linesBeforeHeadings', parsedFile.get('linesBeforeHeadings'));
 };
 
-const stopDisplayingFile = state =>
+const stopDisplayingFile = (state) =>
   state
     .set('path', null)
     .set('contents', null)
@@ -87,7 +87,7 @@ const toggleHeaderOpened = (state, action) => {
 
   if (isOpened) {
     const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
-    subheaders.forEach(index => {
+    subheaders.forEach((index) => {
       state = state.setIn(['headers', headerIndex + index + 1, 'opened'], false);
     });
   }
@@ -114,10 +114,10 @@ const openParentsOfHeader = (state, action) => {
 };
 
 const updateCookiesInAttributedStringWithChildCompletionStates = (parts, completionStates) => {
-  const doneCount = completionStates.filter(isDone => isDone).length;
+  const doneCount = completionStates.filter((isDone) => isDone).length;
   const totalCount = completionStates.length;
 
-  return parts.map(part => {
+  return parts.map((part) => {
     switch (part.get('type')) {
       case 'fraction-cookie':
         return part.set('fraction', List([doneCount, totalCount]));
@@ -144,9 +144,9 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
   }
 
   let completionStates = directChildren
-    .map(header => header.getIn(['titleLine', 'todoKeyword']))
-    .filter(todoKeyword => !!todoKeyword)
-    .map(todoKeyword =>
+    .map((header) => header.getIn(['titleLine', 'todoKeyword']))
+    .filter((todoKeyword) => !!todoKeyword)
+    .map((todoKeyword) =>
       todoKeywordSetForKeyword(state.get('todoKeywordSets'), todoKeyword)
         .get('completedKeywords')
         .contains(todoKeyword)
@@ -157,18 +157,18 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
     completionStates = headers
       .get(headerIndex)
       .get('description')
-      .filter(part => part.get('type') === 'list')
-      .flatMap(listPart => listPart.get('items'))
-      .filter(item => item.get('isCheckbox'))
-      .map(item => item.get('checkboxState') === 'checked')
+      .filter((part) => part.get('type') === 'list')
+      .flatMap((listPart) => listPart.get('items'))
+      .filter((item) => item.get('isCheckbox'))
+      .map((item) => item.get('checkboxState') === 'checked')
       .toJS();
   }
 
   return state
-    .updateIn(['headers', headerIndex, 'titleLine', 'title'], title =>
+    .updateIn(['headers', headerIndex, 'titleLine', 'title'], (title) =>
       updateCookiesInAttributedStringWithChildCompletionStates(title, completionStates)
     )
-    .updateIn(['headers', headerIndex, 'titleLine'], titleLine =>
+    .updateIn(['headers', headerIndex, 'titleLine'], (titleLine) =>
       titleLine.set('rawTitle', attributedStringToRawText(titleLine.get('title')))
     );
 };
@@ -223,7 +223,7 @@ const advanceTodoState = (state, action) => {
 
 const enterEditMode = (state, action) => state.set('editMode', action.editModeType);
 
-const exitEditMode = state => state.set('editMode', null);
+const exitEditMode = (state) => state.set('editMode', null);
 
 const updateHeaderTitle = (state, action) => {
   const headers = state.get('headers');
@@ -234,7 +234,7 @@ const updateHeaderTitle = (state, action) => {
 
   state = state.setIn(['headers', headerIndex, 'titleLine'], newTitleLine);
 
-  state = state.updateIn(['headers', headerIndex, 'planningItems'], planningItems =>
+  state = state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) =>
     updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', newTitleLine.get('title'))
   );
 
@@ -245,7 +245,7 @@ const updateHeaderDescription = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
 
-  return state.updateIn(['headers', headerIndex], header =>
+  return state.updateIn(['headers', headerIndex], (header) =>
     _updateHeaderFromDescription(header, action.newRawDescription)
   );
 };
@@ -269,7 +269,7 @@ const addHeader = (state, action) => {
     state = state.set('focusedHeaderId', null);
   }
 
-  return state.update('headers', headers =>
+  return state.update('headers', (headers) =>
     headers.insert(headerIndex + subheaders.size + 1, newHeader)
   );
 };
@@ -289,7 +289,7 @@ const selectNextSiblingHeader = (state, action) => {
   return state.set('selectedHeaderId', nextSibling.get('id'));
 };
 
-const selectNextVisibleHeader = state => {
+const selectNextVisibleHeader = (state) => {
   const headers = state.get('headers');
 
   if (state.get('selectedHeaderId') === undefined) {
@@ -307,7 +307,7 @@ const selectNextVisibleHeader = state => {
   return state.set('selectedHeaderId', nextVisibleHeader.get('id'));
 };
 
-const selectPreviousVisibleHeader = state => {
+const selectPreviousVisibleHeader = (state) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, state.get('selectedHeaderId'));
 
@@ -525,9 +525,9 @@ const focusHeader = (state, action) => {
   return state.set('focusedHeaderId', action.headerId);
 };
 
-const unfocusHeader = state => state.set('focusedHeaderId', null);
+const unfocusHeader = (state) => state.set('focusedHeaderId', null);
 
-const applyOpennessState = state => {
+const applyOpennessState = (state) => {
   const opennessState = state.get('opennessState');
   if (!opennessState) {
     return state;
@@ -539,7 +539,7 @@ const applyOpennessState = state => {
   }
 
   let headers = state.get('headers');
-  fileOpennessState.forEach(openHeaderPath => {
+  fileOpennessState.forEach((openHeaderPath) => {
     headers = openHeaderWithPath(headers, openHeaderPath);
   });
 
@@ -557,19 +557,19 @@ const updateDescriptionOfHeaderContainingTableCell = (state, cellId, header = nu
   }
   const headerIndex = indexOfHeaderWithId(headers, header.get('id'));
 
-  return state.updateIn(['headers', headerIndex], header =>
+  return state.updateIn(['headers', headerIndex], (header) =>
     header.set('rawDescription', attributedStringToRawText(header.get('description')))
   );
 };
 
-const addNewTableRow = state => {
+const addNewTableRow = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
       rows.insert(rowIndex + 1, newEmptyTableRowLikeRows(rows))
     )
   );
@@ -577,7 +577,7 @@ const addNewTableRow = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const removeTableRow = state => {
+const removeTableRow = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -585,8 +585,8 @@ const removeTableRow = state => {
 
   const containingHeader = headerThatContainsTableCellId(state.get('headers'), selectedTableCellId);
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
       rows.delete(rowIndex)
     )
   );
@@ -596,16 +596,16 @@ const removeTableRow = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
 
-const addNewTableColumn = state => {
+const addNewTableColumn = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows =>
-      rows.map(row =>
-        row.update('contents', contents => contents.insert(colIndex + 1, newEmptyTableCell()))
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => (rows) =>
+      rows.map((row) =>
+        row.update('contents', (contents) => contents.insert(colIndex + 1, newEmptyTableCell()))
       )
     )
   );
@@ -613,7 +613,7 @@ const addNewTableColumn = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const removeTableColumn = state => {
+const removeTableColumn = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
@@ -621,9 +621,9 @@ const removeTableColumn = state => {
 
   const containingHeader = headerThatContainsTableCellId(state.get('headers'), selectedTableCellId);
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => rows =>
-      rows.map(row => row.update('contents', contents => contents.delete(colIndex)))
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => (rows) =>
+      rows.map((row) => row.update('contents', (contents) => contents.delete(colIndex)))
     )
   );
 
@@ -632,14 +632,14 @@ const removeTableColumn = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId, containingHeader);
 };
 
-const moveTableRowDown = state => {
+const moveTableRowDown = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
       rowIndex + 1 === rows.size
         ? rows
         : rows.insert(rowIndex, rows.get(rowIndex + 1)).delete(rowIndex + 2)
@@ -649,14 +649,14 @@ const moveTableRowDown = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const moveTableRowUp = state => {
+const moveTableRowUp = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, rowIndex => rows =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
       rowIndex === 0 ? rows : rows.insert(rowIndex - 1, rows.get(rowIndex)).delete(rowIndex + 1)
     )
   );
@@ -664,18 +664,18 @@ const moveTableRowUp = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const moveTableColumnLeft = state => {
+const moveTableColumnLeft = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => rows =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => (rows) =>
       columnIndex === 0
         ? rows
-        : rows.map(row =>
-            row.update('contents', contents =>
+        : rows.map((row) =>
+            row.update('contents', (contents) =>
               contents.size === 0
                 ? contents
                 : contents
@@ -689,18 +689,18 @@ const moveTableColumnLeft = state => {
   return updateDescriptionOfHeaderContainingTableCell(state, selectedTableCellId);
 };
 
-const moveTableColumnRight = state => {
+const moveTableColumnRight = (state) => {
   const selectedTableCellId = state.get('selectedTableCellId');
   if (!selectedTableCellId) {
     return state;
   }
 
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => rows =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => (rows) =>
       columnIndex + 1 >= rows.getIn([0, 'contents']).size
         ? rows
-        : rows.map(row =>
-            row.update('contents', contents =>
+        : rows.map((row) =>
+            row.update('contents', (contents) =>
               contents.size === 0
                 ? contents
                 : contents
@@ -715,9 +715,9 @@ const moveTableColumnRight = state => {
 };
 
 const updateTableCellValue = (state, action) => {
-  state = state.update('headers', headers =>
-    updateTableContainingCellId(headers, action.cellId, (rowIndex, colIndex) => rows =>
-      rows.updateIn([rowIndex, 'contents', colIndex], cell =>
+  state = state.update('headers', (headers) =>
+    updateTableContainingCellId(headers, action.cellId, (rowIndex, colIndex) => (rows) =>
+      rows.updateIn([rowIndex, 'contents', colIndex], (cell) =>
         cell
           .set('rawContents', action.newValue)
           .set('contents', fromJS(parseMarkupAndCookies(action.newValue, { excludeCookies: true })))
@@ -746,14 +746,14 @@ const insertCapture = (state, action) => {
   const numSubheaders = numSubheadersOfHeaderWithId(headers, parentHeader.get('id'));
   const newIndex = parentHeaderIndex + 1 + (shouldPrepend ? 0 : numSubheaders);
 
-  state = state.update('headers', headers => headers.insert(newIndex, newHeader));
+  state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
 
   state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
 
   return state;
 };
 
-const clearPendingCapture = state => state.set('pendingCapture', null);
+const clearPendingCapture = (state) => state.set('pendingCapture', null);
 
 const updateParentListCheckboxes = (state, itemPath) => {
   const parentListItemPath = itemPath.slice(0, itemPath.length - 4);
@@ -764,24 +764,24 @@ const updateParentListCheckboxes = (state, itemPath) => {
 
   const childrenCheckedStates = parentListItem
     .get('contents')
-    .filter(part => part.get('type') === 'list')
-    .flatMap(listPart =>
+    .filter((part) => part.get('type') === 'list')
+    .flatMap((listPart) =>
       listPart
         .get('items')
-        .filter(item => item.get('isCheckbox'))
-        .map(checkboxItem => checkboxItem.get('checkboxState'))
+        .filter((item) => item.get('isCheckbox'))
+        .map((checkboxItem) => checkboxItem.get('checkboxState'))
     );
 
-  if (childrenCheckedStates.every(state => state === 'checked')) {
+  if (childrenCheckedStates.every((state) => state === 'checked')) {
     state = state.setIn(parentListItemPath.concat(['checkboxState']), 'checked');
-  } else if (childrenCheckedStates.every(state => state === 'unchecked')) {
+  } else if (childrenCheckedStates.every((state) => state === 'unchecked')) {
     state = state.setIn(parentListItemPath.concat(['checkboxState']), 'unchecked');
   } else {
     state = state.setIn(parentListItemPath.concat(['checkboxState']), 'partial');
   }
 
   const childCompletionStates = childrenCheckedStates
-    .map(state => {
+    .map((state) => {
       switch (state) {
         case 'checked':
           return true;
@@ -795,7 +795,7 @@ const updateParentListCheckboxes = (state, itemPath) => {
     })
     .toJS();
 
-  state = state.updateIn(parentListItemPath.concat('titleLine'), titleLine =>
+  state = state.updateIn(parentListItemPath.concat('titleLine'), (titleLine) =>
     updateCookiesInAttributedStringWithChildCompletionStates(titleLine, childCompletionStates)
   );
 
@@ -812,8 +812,8 @@ const advanceCheckboxState = (state, action) => {
 
   const hasDirectCheckboxChildren = listItemPart
     .get('contents')
-    .filter(part => part.get('type') === 'list')
-    .some(listPart => listPart.get('items').some(item => item.get('isCheckbox')));
+    .filter((part) => part.get('type') === 'list')
+    .some((listPart) => listPart.get('items').some((item) => item.get('isCheckbox')));
   if (hasDirectCheckboxChildren) {
     return state;
   }
@@ -829,7 +829,7 @@ const advanceCheckboxState = (state, action) => {
 
   const headerIndex = path[0];
   state = updateCookiesOfHeaderWithId(state, state.getIn(['headers', headerIndex, 'id']));
-  state = state.updateIn(['headers', headerIndex], header =>
+  state = state.updateIn(['headers', headerIndex], (header) =>
     header.set('rawDescription', attributedStringToRawText(header.get('description')))
   );
 
@@ -855,7 +855,7 @@ const reorderTags = (state, action) => {
   }
   const headerIndex = indexOfHeaderWithId(state.get('headers'), selectedHeaderId);
 
-  return state.updateIn(['headers', headerIndex, 'titleLine', 'tags'], tags =>
+  return state.updateIn(['headers', headerIndex, 'titleLine', 'tags'], (tags) =>
     tags.splice(action.fromIndex, 1).splice(action.toIndex, 0, tags.get(action.fromIndex))
   );
 };
@@ -867,7 +867,7 @@ const reorderPropertyList = (state, action) => {
   }
   const headerIndex = indexOfHeaderWithId(state.get('headers'), headerId);
 
-  return state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
+  return state.updateIn(['headers', headerIndex, 'propertyListItems'], (propertyListItems) =>
     propertyListItems
       .splice(action.fromIndex, 1)
       .splice(action.toIndex, 0, propertyListItems.get(action.fromIndex))
@@ -888,7 +888,7 @@ const updateTimestampWithId = (state, action) => {
 
   return state
     .setIn(['headers'].concat(path), action.newTimestamp)
-    .updateIn(['headers', headerIndex], header => {
+    .updateIn(['headers', headerIndex], (header) => {
       const description = header.get('description');
       const title = header.getIn(['titleLine', 'title']);
       const planningItems = header.get('planningItems');
@@ -924,7 +924,7 @@ const addNewPlanningItem = (state, action) => {
     timestamp: getCurrentTimestamp(),
   });
 
-  return state.updateIn(['headers', headerIndex, 'planningItems'], planningItems =>
+  return state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) =>
     !!planningItems ? planningItems.push(newPlanningItem) : List([newPlanningItem])
   );
 };
@@ -947,7 +947,7 @@ export const setLogEntryStop = (state, action) => {
   const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
   const entryIndex = state
     .getIn(['headers', headerIdx, 'logBookEntries'])
-    .findIndex(entry => entry.get('id') === entryId);
+    .findIndex((entry) => entry.get('id') === entryId);
   return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
 };
 
@@ -959,7 +959,7 @@ export const createLogEntryStart = (state, action) => {
     start: time,
     end: null,
   });
-  return state.updateIn(['headers', headerIdx, 'logBookEntries'], entries =>
+  return state.updateIn(['headers', headerIdx, 'logBookEntries'], (entries) =>
     !!entries ? entries.unshift(newEntry) : List([newEntry])
   );
 };
@@ -1001,9 +1001,9 @@ export const setSearchFilterInformation = (state, action) => {
     if (context === 'refile') {
       const selectedHeaderId = state.get('selectedHeaderId');
       const subheaders = subheadersOfHeaderWithId(headers, selectedHeaderId);
-      let filterIds = subheaders.map(s => s.get('id')).toJS();
+      let filterIds = subheaders.map((s) => s.get('id')).toJS();
       filterIds.push(selectedHeaderId);
-      filteredHeaders = filteredHeaders.filter(h => {
+      filteredHeaders = filteredHeaders.filter((h) => {
         return !filterIds.includes(h.get('id'));
       });
     }
@@ -1224,7 +1224,7 @@ function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIn
       id: generateId(),
       raw: newStateChangeLogText,
     });
-    return header.updateIn(['logBookEntries'], entries =>
+    return header.updateIn(['logBookEntries'], (entries) =>
       !!entries ? entries.unshift(newEntry) : List([newEntry])
     );
   } else {
@@ -1273,9 +1273,9 @@ function updatePlanningItemsWithRepeaters(
       },
     ];
 
-    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], propertyListItems =>
-      propertyListItems.some(item => item.get('property') === 'LAST_REPEAT')
-        ? propertyListItems.map(item =>
+    state = state.updateIn(['headers', headerIndex, 'propertyListItems'], (propertyListItems) =>
+      propertyListItems.some((item) => item.get('property') === 'LAST_REPEAT')
+        ? propertyListItems.map((item) =>
             item.get('property') === 'LAST_REPEAT'
               ? item.set('value', fromJS(newLastRepeatValue))
               : item
@@ -1288,7 +1288,7 @@ function updatePlanningItemsWithRepeaters(
             })
           )
     );
-    state = state.updateIn(['headers', headerIndex], header =>
+    state = state.updateIn(['headers', headerIndex], (header) =>
       addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer)
     );
   }
@@ -1303,13 +1303,13 @@ function updatePlanningItemsWithRepeaters(
 export function noLogRepeatEnabledP({ state, headerIndex }) {
   const startupOptNoLogRepeat = state
     .get('fileConfigLines')
-    .some(elt => elt.match(/^#\+STARTUP:.*nologrepeat.*/));
+    .some((elt) => elt.match(/^#\+STARTUP:.*nologrepeat.*/));
   const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
   return !!(
     startupOptNoLogRepeat ||
     (loggingProp &&
       loggingProp.some(
-        v => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
+        (v) => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
       ))
   );
 }
@@ -1345,7 +1345,7 @@ function shiftTreeNestingLevel({ state, headerIndex, subheaders = [] }, directio
   return state;
 
   function calculateNestingLevel() {
-    return nestingLevel => {
+    return (nestingLevel) => {
       if (direction === '-') {
         // Don't move a header further to the left than the first
         // column

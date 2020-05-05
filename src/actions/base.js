@@ -2,7 +2,7 @@ import { displayFile, stopDisplayingFile } from './org';
 
 import raw from 'raw.macro';
 
-export const setLoadingMessage = loadingMessage => ({
+export const setLoadingMessage = (loadingMessage) => ({
   type: 'SET_LOADING_MESSAGE',
   loadingMessage,
 });
@@ -11,12 +11,12 @@ export const hideLoadingMessage = () => ({
   type: 'HIDE_LOADING_MESSAGE',
 });
 
-export const setIsLoading = isLoading => ({
+export const setIsLoading = (isLoading) => ({
   type: 'SET_IS_LOADING',
   isLoading,
 });
 
-export const setDisappearingLoadingMessage = (loadingMessage, delay) => dispatch => {
+export const setDisappearingLoadingMessage = (loadingMessage, delay) => (dispatch) => {
   dispatch(setLoadingMessage(loadingMessage));
   setTimeout(() => dispatch(hideLoadingMessage()), delay);
 };
@@ -27,7 +27,7 @@ export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
   lastViewedContents,
 });
 
-export const loadStaticFile = staticFile => {
+export const loadStaticFile = (staticFile) => {
   return (dispatch, getState) => {
     dispatch(
       setLastViewedFile(getState().org.present.get('path'), getState().org.present.get('contents'))
@@ -57,57 +57,57 @@ export const unloadStaticFile = () => {
   };
 };
 
-export const setFontSize = newFontSize => ({
+export const setFontSize = (newFontSize) => ({
   type: 'SET_FONT_SIZE',
   newFontSize,
 });
 
-export const setBulletStyle = newBulletStyle => ({
+export const setBulletStyle = (newBulletStyle) => ({
   type: 'SET_BULLET_STYLE',
   newBulletStyle,
 });
 
-export const setShouldTapTodoToAdvance = newShouldTapTodoToAdvance => ({
+export const setShouldTapTodoToAdvance = (newShouldTapTodoToAdvance) => ({
   type: 'SET_SHOULD_TAP_TODO_TO_ADVANCE',
   newShouldTapTodoToAdvance,
 });
 
-export const setAgendaDefaultDeadlineDelayUnit = newAgendaDefaultDeadlineDelayUnit => ({
+export const setAgendaDefaultDeadlineDelayUnit = (newAgendaDefaultDeadlineDelayUnit) => ({
   type: 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_UNIT',
   newAgendaDefaultDeadlineDelayUnit,
 });
 
-export const setAgendaDefaultDeadlineDelayValue = newAgendaDefaultDeadlineDelayValue => ({
+export const setAgendaDefaultDeadlineDelayValue = (newAgendaDefaultDeadlineDelayValue) => ({
   type: 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_VALUE',
   newAgendaDefaultDeadlineDelayValue,
 });
 
-export const setShouldLiveSync = shouldLiveSync => ({
+export const setShouldLiveSync = (shouldLiveSync) => ({
   type: 'SET_SHOULD_LIVE_SYNC',
   shouldLiveSync,
 });
 
-export const setShouldSyncOnBecomingVisibile = shouldSyncOnBecomingVisibile => ({
+export const setShouldSyncOnBecomingVisibile = (shouldSyncOnBecomingVisibile) => ({
   type: 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE',
   shouldSyncOnBecomingVisibile,
 });
 
-export const setShouldShowTitleInOrgFile = shouldShowTitleInOrgFile => ({
+export const setShouldShowTitleInOrgFile = (shouldShowTitleInOrgFile) => ({
   type: 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE',
   shouldShowTitleInOrgFile,
 });
 
-export const setShouldLogIntoDrawer = shouldLogIntoDrawer => ({
+export const setShouldLogIntoDrawer = (shouldLogIntoDrawer) => ({
   type: 'SET_SHOULD_LOG_INTO_DRAWER',
   shouldLogIntoDrawer,
 });
 
-export const setShouldNotIndentOnExport = shouldNotIndentOnExport => ({
+export const setShouldNotIndentOnExport = (shouldNotIndentOnExport) => ({
   type: 'SET_SHOULD_NOT_INDENT_ON_EXPORT',
   shouldNotIndentOnExport,
 });
 
-export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncBackend => {
+export const setShouldStoreSettingsInSyncBackend = (newShouldStoreSettingsInSyncBackend) => {
   return (dispatch, getState) => {
     dispatch({
       type: 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND',
@@ -140,12 +140,12 @@ export const setShouldStoreSettingsInSyncBackend = newShouldStoreSettingsInSyncB
   };
 };
 
-export const setHasUnseenChangelog = newHasUnseenChangelog => ({
+export const setHasUnseenChangelog = (newHasUnseenChangelog) => ({
   type: 'SET_HAS_UNSEEN_CHANGELOG',
   newHasUnseenChangelog,
 });
 
-export const setLastSeenChangelogHeader = newLastSeenChangelogHash => ({
+export const setLastSeenChangelogHeader = (newLastSeenChangelogHash) => ({
   type: 'SET_LAST_SEEN_CHANGELOG_HEADER',
   newLastSeenChangelogHash,
 });
@@ -156,12 +156,12 @@ export const setCustomKeybinding = (keybindingName, keybinding) => ({
   keybinding,
 });
 
-export const restoreBaseSettings = newSettings => ({
+export const restoreBaseSettings = (newSettings) => ({
   type: 'RESTORE_BASE_SETTINGS',
   newSettings,
 });
 
-export const pushModalPage = modalPage => ({
+export const pushModalPage = (modalPage) => ({
   type: 'PUSH_MODAL_PAGE',
   modalPage,
 });

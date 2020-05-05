@@ -16,6 +16,6 @@ export const rgbaObject = (r, g, b, a) => {
   return { r, g, b, a };
 };
 
-export const rgbaString = rgba => {
+export const rgbaString = (rgba) => {
   return `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 };

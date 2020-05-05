@@ -49,16 +49,16 @@ const UNDOABLE_ACTIONS = [
 // the future (which in real life might have been seconds ago).
 
 // Implementation: Override the redux-undo `undo` and `redo` action creators. Additionally to the redux `undo`, they will force a sync, always.
-ActionCreators.undo = function() {
-  return dispatch => {
+ActionCreators.undo = function () {
+  return (dispatch) => {
     dispatch({ type: ActionTypes.UNDO });
     dispatch(setDirty(true));
     dispatch(sync({ forceAction: 'push' }));
   };
 };
 
-ActionCreators.redo = function() {
-  return dispatch => {
+ActionCreators.redo = function () {
+  return (dispatch) => {
     dispatch({ type: ActionTypes.REDO });
     dispatch(setDirty(true));
     dispatch(sync({ forceAction: 'push' }));

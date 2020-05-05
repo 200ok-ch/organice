@@ -46,7 +46,7 @@ describe('org reducer', () => {
       // Given some `headers`, return their `title`s and `nestingLevel`s.
       function extractTitleAndNesting(headers) {
         return headers
-          .map(header => {
+          .map((header) => {
             return [header.getIn(['titleLine', 'rawTitle']), header.get('nestingLevel')];
           })
           .toJS();

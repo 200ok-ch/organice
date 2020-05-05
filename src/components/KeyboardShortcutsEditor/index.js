@@ -48,15 +48,10 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     base: bindActionCreators(baseActions, dispatch),
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(KeyboardShortcutsEditor)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(KeyboardShortcutsEditor));

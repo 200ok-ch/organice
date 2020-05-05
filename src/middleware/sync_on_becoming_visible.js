@@ -1,7 +1,7 @@
 import { sync } from '../actions/org';
 import { debounce } from 'lodash';
 
-const dispatchSync = store => store.dispatch(sync({ shouldSuppressMessages: true }));
+const dispatchSync = (store) => store.dispatch(sync({ shouldSuppressMessages: true }));
 
 // The 'visibilitychange' event might get triggered in some browsers many times for one 'real'
 // event of the browser becoming visible to the user. Debouncing through lodash ensures that
@@ -24,7 +24,7 @@ function getHiddenProp() {
   return null;
 }
 
-export default store => next => action => {
+export default (store) => (next) => (action) => {
   let visProp = getHiddenProp();
   if (visProp) {
     const evtname = visProp.replace(/[H|h]idden/, '') + 'visibilitychange';

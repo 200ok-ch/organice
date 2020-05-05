@@ -6,7 +6,7 @@ import rootReducer from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export default initialState =>
+export default (initialState) =>
   createStore(
     rootReducer,
     initialState,

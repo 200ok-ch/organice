@@ -102,7 +102,7 @@ export default class App extends PureComponent {
 
             return null;
           })
-          .filter(item => !!item)
+          .filter((item) => !!item)
       );
       initialState.org.present = initialState.org.present.set(
         'pendingCapture',
@@ -119,7 +119,7 @@ export default class App extends PureComponent {
     this.store.subscribe(subscribeToChanges(this.store));
 
     if (!!client) {
-      client.isSignedIn().then(isSignedIn => {
+      client.isSignedIn().then((isSignedIn) => {
         if (isSignedIn) {
           loadSettingsFromConfigFile(this.store.dispatch, this.store.getState);
         } else {

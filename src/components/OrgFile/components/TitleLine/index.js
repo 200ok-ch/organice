@@ -262,8 +262,8 @@ class TitleLine extends PureComponent {
                   .getIn(['titleLine', 'tags'])
                   .toSet()
                   .toList()
-                  .filter(tag => !!tag)
-                  .map(tag => (
+                  .filter((tag) => !!tag)
+                  .map((tag) => (
                     <div className="header-tag" key={tag}>
                       {tag}
                     </div>
@@ -289,7 +289,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     org: bindActionCreators(orgActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),

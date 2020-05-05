@@ -35,17 +35,17 @@ const Settings = ({
 
   const handleCaptureTemplatesClick = () => base.pushModalPage('capture_templates_editor');
 
-  const handleFontSizeChange = newFontSize => base.setFontSize(newFontSize);
+  const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
-  const handleBulletStyleChange = newBulletStyle => base.setBulletStyle(newBulletStyle);
+  const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
   const handleShouldTapTodoToAdvanceChange = () =>
     base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
 
-  const handleAgendaDefaultDeadlineDelayValueChange = event =>
+  const handleAgendaDefaultDeadlineDelayValueChange = (event) =>
     base.setAgendaDefaultDeadlineDelayValue(event.target.value);
 
-  const handleAgendaDefaultDeadlineDelayUnitChange = newDelayUnit =>
+  const handleAgendaDefaultDeadlineDelayUnitChange = (newDelayUnit) =>
     base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
@@ -258,7 +258,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     syncBackend: bindActionCreators(syncBackendActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),

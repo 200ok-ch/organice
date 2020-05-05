@@ -21,15 +21,15 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
     innerContainerHeight.current = innerContainer.current.offsetHeight;
   });
 
-  const handleInnerContainerClick = event => event.stopPropagation();
+  const handleInnerContainerClick = (event) => event.stopPropagation();
 
   const handleClose = () => setIsVisible(false);
 
   const handleAnimationRest = () => (!isVisible && !!onClose ? onClose() : void 0);
 
-  const handleTouchStart = event => (initialClientY.current = event.targetTouches[0].clientY);
+  const handleTouchStart = (event) => (initialClientY.current = event.targetTouches[0].clientY);
 
-  const handleTouchMove = event => {
+  const handleTouchMove = (event) => {
     if (event.target.classList.contains('drag-handle')) {
       return;
     }
@@ -54,7 +54,7 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
       setIsVisible(dragOffsetY <= innerContainerHeight.current * 0.3);
       setDragOffsetY(null);
     };
-    const handleTouchEndOrCancel = event => endInnerContainerDrag();
+    const handleTouchEndOrCancel = (event) => endInnerContainerDrag();
 
     if (!!innerContainer.current) {
       // Super annoying logic for disabling scrolling of the body when a slide up is active.
@@ -96,7 +96,7 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
 
   return (
     <Motion style={innerStyle} onRest={handleAnimationRest}>
-      {style => {
+      {(style) => {
         const interpolatedStyle = {
           transform: `translateY(${style.offsetY}px)`,
         };

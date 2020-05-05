@@ -234,7 +234,7 @@ class Header extends PureComponent {
 
     const existingDeadlinePlanningItemIndex = header
       .get('planningItems', [])
-      .findIndex(planningItem => planningItem.get('type') === planningType);
+      .findIndex((planningItem) => planningItem.get('type') === planningType);
 
     if (existingDeadlinePlanningItemIndex === -1) {
       this.props.org.addNewPlanningItem(header.get('id'), planningType);
@@ -259,7 +259,7 @@ class Header extends PureComponent {
   handleClockInOutClick() {
     const { header } = this.props;
     const logBook = header.get('logBookEntries', []);
-    const existingClockIndex = logBook.findIndex(entry => entry.get('end') === null);
+    const existingClockIndex = logBook.findIndex((entry) => entry.get('end') === null);
     const now = getCurrentTimestamp({ isActive: false, withStartTime: true });
     if (existingClockIndex !== -1) {
       this.props.org.setLogEntryStop(
@@ -356,13 +356,13 @@ ${header.get('rawDescription')}`;
 
     const logBookEntries = header
       .get('logBookEntries')
-      .filter(entry => entry.get('raw') === undefined);
+      .filter((entry) => entry.get('raw') === undefined);
     const hasActiveClock =
-      logBookEntries.size !== 0 && logBookEntries.filter(entry => !entry.get('end')).size !== 0;
+      logBookEntries.size !== 0 && logBookEntries.filter((entry) => !entry.get('end')).size !== 0;
 
     return (
       <Motion style={style} onRest={this.handleRest}>
-        {interpolatedStyle => {
+        {(interpolatedStyle) => {
           const swipedDistance = interpolatedStyle.marginLeft;
           const isLeftActionActivated = swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
           const isRightActionActivated =
@@ -406,7 +406,7 @@ ${header.get('rawDescription')}`;
               onTouchCancel={this.handleTouchCancel}
             >
               <Motion style={leftSwipeActionContainerStyle}>
-                {leftInterpolatedStyle => {
+                {(leftInterpolatedStyle) => {
                   const leftStyle = {
                     width: leftInterpolatedStyle.width,
                     backgroundColor: rgbaString(
@@ -440,7 +440,7 @@ ${header.get('rawDescription')}`;
                 }}
               </Motion>
               <Motion style={rightSwipeActionContainerStyle}>
-                {rightInterpolatedStyle => {
+                {(rightInterpolatedStyle) => {
                   const rightStyle = {
                     width: rightInterpolatedStyle.width,
                     backgroundColor: rgbaString(
@@ -531,7 +531,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
   base: bindActionCreators(baseActions, dispatch),
 });

@@ -36,7 +36,7 @@ class TimestampEditor extends PureComponent {
   }
 
   handleActiveToggle() {
-    this.props.onChange(this.props.timestamp.update('isActive', isActive => !isActive));
+    this.props.onChange(this.props.timestamp.update('isActive', (isActive) => !isActive));
   }
 
   handleDateChange(event, planningItemIndex) {
@@ -87,7 +87,7 @@ class TimestampEditor extends PureComponent {
   }
 
   handleTimeChange(startOrEnd) {
-    return event => {
+    return (event) => {
       const { onChange, timestamp } = this.props;
 
       const [hourKey, minuteKey] =
@@ -323,10 +323,10 @@ class TimestampEditor extends PureComponent {
                 data-testid="timestamp-selector"
                 type="date"
                 className="timestamp-editor__date-input"
-                onChange={event => this.handleDateChange(event, planningItemIndex)}
+                onChange={(event) => this.handleDateChange(event, planningItemIndex)}
                 // Needed for iOS due to React bug
                 // https://github.com/facebook/react/issues/8938#issuecomment-519074141
-                onFocus={event => (event.nativeEvent.target.defaultValue = '')}
+                onFocus={(event) => (event.nativeEvent.target.defaultValue = '')}
                 value={`${year}-${month}-${day}`}
               />
             </div>
@@ -343,14 +343,14 @@ class TimestampEditor extends PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
   return {
     selectedHeaderId,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 

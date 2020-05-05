@@ -66,7 +66,7 @@ describe('Headline filter parser', () => {
   });
 
   describe('Parsing of exclude-terms', () => {
-    const expectFirstParseResultExclude = s => expect(parser.parse(s)[0].exclude);
+    const expectFirstParseResultExclude = (s) => expect(parser.parse(s)[0].exclude);
     test('Parses text filter', () => {
       expectFirstParseResultExclude('-text').toBe(true);
       expectFirstParseResultExclude('text').toBe(false);
@@ -82,7 +82,7 @@ describe('Headline filter parser', () => {
   });
 
   describe('Parsing of quoted strings', () => {
-    const expectStrings = s => expect(parser.parse(s)[0].words);
+    const expectStrings = (s) => expect(parser.parse(s)[0].words);
     test('Parses a double-quoted string', () => {
       expectStrings('"a b"').toEqual(['a b']);
     });

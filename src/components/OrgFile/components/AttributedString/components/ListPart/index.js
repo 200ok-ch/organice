@@ -8,10 +8,10 @@ import Checkbox from '../../../../../UI/Checkbox/';
 import classNames from 'classnames';
 
 export default ({ part, subPartDataAndHandlers }) => {
-  const handleCheckboxClick = itemId => () => subPartDataAndHandlers.onCheckboxClick(itemId);
+  const handleCheckboxClick = (itemId) => () => subPartDataAndHandlers.onCheckboxClick(itemId);
 
   const renderContent = () => {
-    return part.get('items').map(item => {
+    return part.get('items').map((item) => {
       const lineContainerClass = classNames({
         'list-part__checkbox-container': item.get('isCheckbox'),
       });

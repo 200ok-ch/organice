@@ -15,13 +15,13 @@ const DEFAULT_BINDINGS = [
   ['Undo', 'undo', 'ctrl+/'],
 ];
 
-export const calculateNamedKeybindings = customKeybindings =>
+export const calculateNamedKeybindings = (customKeybindings) =>
   DEFAULT_BINDINGS.map(([bindingName, _bindingAction, binding]) => [
     bindingName,
     customKeybindings.get(bindingName, binding),
   ]);
 
-export const calculateActionedKeybindings = customKeybindings =>
+export const calculateActionedKeybindings = (customKeybindings) =>
   DEFAULT_BINDINGS.map(([bindingName, bindingAction, binding]) => [
     bindingAction,
     customKeybindings.get(bindingName, binding),

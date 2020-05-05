@@ -91,7 +91,7 @@ export default ({ template, onCapture, headers, onClose }) => {
 
   const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend);
 
-  const handleTextareaChange = event => setTextareaValue(event.target.value);
+  const handleTextareaChange = (event) => setTextareaValue(event.target.value);
 
   const handlePrependSwitchToggle = () => setShouldPrepend(!shouldPrepend);
 

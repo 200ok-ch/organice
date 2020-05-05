@@ -34,14 +34,14 @@ class HeaderList extends PureComponent {
   }
 
   handleHeaderRef(headerId) {
-    return div => (this.headerRefs[headerId] = div);
+    return (div) => (this.headerRefs[headerId] = div);
   }
 
   render() {
     const { headers, selectedHeaderId, focusedHeaderId, shouldDisableActions } = this.props;
 
     const headerRenderData = headers
-      .map(header => {
+      .map((header) => {
         return {
           header,
           displayed: false,
@@ -56,7 +56,7 @@ class HeaderList extends PureComponent {
       const hasNoParents = headerRenderData
         .slice(0, index)
         .every(
-          previousRenderDatum => previousRenderDatum.header.get('nestingLevel') >= nestingLevel
+          (previousRenderDatum) => previousRenderDatum.header.get('nestingLevel') >= nestingLevel
         );
       if (hasNoParents) {
         headerRenderDatum.displayed = true;
@@ -82,15 +82,15 @@ class HeaderList extends PureComponent {
 
     if (!!focusedHeaderId) {
       const focusedHeaderIndex = headerRenderData.findIndex(
-        headerRenderDatum => headerRenderDatum.header.get('id') === focusedHeaderId
+        (headerRenderDatum) => headerRenderDatum.header.get('id') === focusedHeaderId
       );
 
       const previousHeaders = headerRenderData.slice(0, focusedHeaderIndex);
-      previousHeaders.forEach(headerRenderDatum => (headerRenderDatum.displayed = false));
+      previousHeaders.forEach((headerRenderDatum) => (headerRenderDatum.displayed = false));
 
       const numSubheaders = numSubheadersOfHeaderWithId(headers, focusedHeaderId);
       const followingHeaders = headerRenderData.slice(focusedHeaderIndex + numSubheaders + 1);
-      followingHeaders.forEach(headerRenderDatum => (headerRenderDatum.displayed = false));
+      followingHeaders.forEach((headerRenderDatum) => (headerRenderDatum.displayed = false));
     }
 
     const headerColors = [
@@ -105,7 +105,7 @@ class HeaderList extends PureComponent {
     ];
 
     const displayedHeaderRenderData = headerRenderData.filter(
-      headerRenderDatum => headerRenderDatum.displayed
+      (headerRenderDatum) => headerRenderDatum.displayed
     );
 
     const className = classNames('header-list-container', {
@@ -142,11 +142,8 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HeaderList);
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderList);

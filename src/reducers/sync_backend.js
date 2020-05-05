@@ -14,10 +14,8 @@ const setCurrentFileBrowserDirectoryListing = (state, action) =>
 
 const setIsLoadingMoreDirectoryListing = (state, action) =>
   state
-    .update(
-      'currentFileBrowserDirectoryListing',
-      currentFileBrowserDirectoryListing =>
-        !!currentFileBrowserDirectoryListing ? currentFileBrowserDirectoryListing : Map()
+    .update('currentFileBrowserDirectoryListing', (currentFileBrowserDirectoryListing) =>
+      !!currentFileBrowserDirectoryListing ? currentFileBrowserDirectoryListing : Map()
     )
     .setIn(['currentFileBrowserDirectoryListing', 'isLoadingMore'], action.isLoadingMore);
 

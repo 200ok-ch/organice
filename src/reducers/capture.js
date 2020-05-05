@@ -4,14 +4,14 @@ import generateId from '../lib/id_generator';
 import { applyCaptureSettingsFromConfig } from '../util/settings_persister';
 
 const indexOfTemplateWithId = (templates, templateId) =>
-  templates.findIndex(template => template.get('id') === templateId);
+  templates.findIndex((template) => template.get('id') === templateId);
 
-const addNewEmptyCaptureTemplate = state => {
+const addNewEmptyCaptureTemplate = (state) => {
   if (!state.get('captureTemplates')) {
     state = state.set('captureTemplates', List());
   }
 
-  return state.update('captureTemplates', templates =>
+  return state.update('captureTemplates', (templates) =>
     templates.push(
       fromJS({
         id: generateId(),
@@ -37,7 +37,7 @@ const updateTemplateFieldPathValue = (state, action) => {
 const addNewTemplateOrgFileAvailability = (state, action) => {
   const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
 
-  return state.updateIn(['captureTemplates', templateIndex, 'orgFilesWhereAvailable'], orgFiles =>
+  return state.updateIn(['captureTemplates', templateIndex, 'orgFilesWhereAvailable'], (orgFiles) =>
     orgFiles.push('')
   );
 };
@@ -45,7 +45,7 @@ const addNewTemplateOrgFileAvailability = (state, action) => {
 const removeTemplateOrgFileAvailability = (state, action) => {
   const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
 
-  return state.updateIn(['captureTemplates', templateIndex, 'orgFilesWhereAvailable'], orgFiles =>
+  return state.updateIn(['captureTemplates', templateIndex, 'orgFilesWhereAvailable'], (orgFiles) =>
     orgFiles.delete(action.orgFileAvailabilityIndex)
   );
 };
@@ -53,7 +53,7 @@ const removeTemplateOrgFileAvailability = (state, action) => {
 const addNewTemplateHeaderPath = (state, action) => {
   const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
 
-  return state.updateIn(['captureTemplates', templateIndex, 'headerPaths'], headerPaths =>
+  return state.updateIn(['captureTemplates', templateIndex, 'headerPaths'], (headerPaths) =>
     headerPaths.push('')
   );
 };
@@ -61,7 +61,7 @@ const addNewTemplateHeaderPath = (state, action) => {
 const removeTemplateHeaderPath = (state, action) => {
   const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
 
-  return state.updateIn(['captureTemplates', templateIndex, 'headerPaths'], headerPaths =>
+  return state.updateIn(['captureTemplates', templateIndex, 'headerPaths'], (headerPaths) =>
     headerPaths.delete(action.headerPathIndex)
   );
 };
@@ -69,7 +69,7 @@ const removeTemplateHeaderPath = (state, action) => {
 const deleteTemplate = (state, action) => {
   const templateIndex = indexOfTemplateWithId(state.get('captureTemplates'), action.templateId);
 
-  return state.update('captureTemplates', templates => templates.delete(templateIndex));
+  return state.update('captureTemplates', (templates) => templates.delete(templateIndex));
 };
 
 const restoreCaptureSettings = (state, action) => {
@@ -81,7 +81,7 @@ const restoreCaptureSettings = (state, action) => {
 };
 
 const reorderCaptureTemplate = (state, action) =>
-  state.update('captureTemplates', templates =>
+  state.update('captureTemplates', (templates) =>
     templates.splice(action.fromIndex, 1).splice(action.toIndex, 0, templates.get(action.fromIndex))
   );
 

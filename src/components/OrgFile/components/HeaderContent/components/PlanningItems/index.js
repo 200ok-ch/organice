@@ -21,7 +21,7 @@ export default class PlanningItems extends PureComponent {
   render() {
     const { planningItems } = this.props;
 
-    const planningItemsToRender = planningItems.filter(x => shouldRenderPlanningItem(x.toJS()));
+    const planningItemsToRender = planningItems.filter((x) => shouldRenderPlanningItem(x.toJS()));
     if (planningItemsToRender.isEmpty()) return null;
 
     return (

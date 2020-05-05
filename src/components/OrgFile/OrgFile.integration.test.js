@@ -295,7 +295,7 @@ describe('Render all views', () => {
         let windowSpy;
         beforeEach(() => {
           windowSpy = jest.spyOn(global, 'open');
-          windowSpy.mockImplementation(x => x);
+          windowSpy.mockImplementation((x) => x);
         });
 
         afterEach(() => {
