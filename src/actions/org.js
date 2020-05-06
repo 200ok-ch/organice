@@ -64,10 +64,8 @@ const doSync = ({
   successMessage = 'Changes pushed',
   shouldSuppressMessages = false,
 } = {}) => (dispatch, getState) => {
-  const state = getState();
-  const presentOrgState = state.org.present;
-  const client = state.syncBackend.get('client');
-  const path = presentOrgState.get('path');
+  const client = getState().syncBackend.get('client');
+  const path = getState().org.present.get('path');
   if (!path) {
     return;
   }
@@ -80,7 +78,7 @@ const doSync = ({
   // recursively enqueue the request to do a sync until the current
   // sync is finished. Since it's a debounced call, enqueueing it
   // recursively is efficient.
-  if (state.base.get('isLoading')) {
+  if (getState().base.get('isLoading')) {
     // Since there is a quick succession of debounced requests to
     // synchronize, the user likely is in a undo/redo workflow with
     // potential new changes to the Org file in between. In such a
@@ -101,9 +99,9 @@ const doSync = ({
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
-      const isDirty = presentOrgState.get('isDirty');
+      const isDirty = getState().org.present.get('isDirty');
       const lastServerModifiedAt = parseISO(lastModifiedAt);
-      const lastSyncAt = presentOrgState.get('lastSyncAt');
+      const lastSyncAt = getState().org.present.get('lastSyncAt');
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
@@ -111,11 +109,11 @@ const doSync = ({
             .updateFile(
               path,
               exportOrg({
-                headers: presentOrgState.get('headers'),
-                todoKeywordSets: presentOrgState.get('todoKeywordSets'),
-                fileConfigLines: presentOrgState.get('fileConfigLines'),
-                linesBeforeHeadings: presentOrgState.get('linesBeforeHeadings'),
-                dontIndent: state.base.get('shouldNotIndentOnExport'),
+                headers: getState().org.present.get('headers'),
+                todoKeywordSets: getState().org.present.get('todoKeywordSets'),
+                fileConfigLines: getState().org.present.get('fileConfigLines'),
+                linesBeforeHeadings: getState().org.present.get('linesBeforeHeadings'),
+                dontIndent: getState().base.get('shouldNotIndentOnExport'),
               })
             )
             .then(() => {
