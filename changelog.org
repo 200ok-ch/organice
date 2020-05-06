@@ -5,6 +5,12 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 
+
+* [2020-05-06 Wed]
+
+** Fixed
+   - Planning items now respect the new hard-indent setting.
+
 * [2020-05-05 Tue]
 
 ** Fixed
