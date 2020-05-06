@@ -259,13 +259,13 @@ export const generateTitleLine = (header, includeStars) => {
  * @param {boolean} dontIndent Default false means indent drawers according to
  * nesting level, else keep everything flush-left. Description is kept as is.
  */
-export const exportOrg = (
+export const exportOrg = ({
   headers,
   todoKeywordSets,
   fileConfigLines,
   linesBeforeHeadings,
-  dontIndent
-) => {
+  dontIndent,
+}) => {
   let configContent = '';
 
   if (fileConfigLines.size > 0) {

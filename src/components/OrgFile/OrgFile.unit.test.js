@@ -17,17 +17,13 @@ import { fromJS } from 'immutable';
  */
 function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
   const parsedFile = parseOrg(testOrgFile);
-  const headers = parsedFile.get('headers');
-  const todoKeywordSets = parsedFile.get('todoKeywordSets');
-  const fileConfigLines = parsedFile.get('fileConfigLines');
-  const linesBeforeHeadings = parsedFile.get('linesBeforeHeadings');
-  const exportedFile = exportOrg(
-    headers,
-    todoKeywordSets,
-    fileConfigLines,
-    linesBeforeHeadings,
-    dontIndent
-  );
+  const exportedFile = exportOrg({
+    headers: parsedFile.get('headers'),
+    todoKeywordSets: parsedFile.get('todoKeywordSets'),
+    fileConfigLines: parsedFile.get('fileConfigLines'),
+    linesBeforeHeadings: parsedFile.get('linesBeforeHeadings'),
+    dontIndent: dontIndent,
+  });
   return exportedFile;
 }
 

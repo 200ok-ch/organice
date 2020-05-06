@@ -64,8 +64,10 @@ const doSync = ({
   successMessage = 'Changes pushed',
   shouldSuppressMessages = false,
 } = {}) => (dispatch, getState) => {
-  const client = getState().syncBackend.get('client');
-  const path = getState().org.present.get('path');
+  const state = getState();
+  const presentOrgState = state.org.present;
+  const client = state.syncBackend.get('client');
+  const path = presentOrgState.get('path');
   if (!path) {
     return;
   }
@@ -78,7 +80,7 @@ const doSync = ({
   // recursively enqueue the request to do a sync until the current
   // sync is finished. Since it's a debounced call, enqueueing it
   // recursively is efficient.
-  if (getState().base.get('isLoading')) {
+  if (state.base.get('isLoading')) {
     // Since there is a quick succession of debounced requests to
     // synchronize, the user likely is in a undo/redo workflow with
     // potential new changes to the Org file in between. In such a
@@ -99,22 +101,22 @@ const doSync = ({
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
-      const isDirty = getState().org.present.get('isDirty');
+      const isDirty = presentOrgState.get('isDirty');
       const lastServerModifiedAt = parseISO(lastModifiedAt);
-      const lastSyncAt = getState().org.present.get('lastSyncAt');
+      const lastSyncAt = presentOrgState.get('lastSyncAt');
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
           client
             .updateFile(
               path,
-              exportOrg(
-                getState().org.present.get('headers'),
-                getState().org.present.get('todoKeywordSets'),
-                getState().org.present.get('fileConfigLines'),
-                getState().org.present.get('linesBeforeHeadings'),
-                getState().base.get('shouldNotIndentOnExport')
-              )
+              exportOrg({
+                headers: presentOrgState.get('headers'),
+                todoKeywordSets: presentOrgState.get('todoKeywordSets'),
+                fileConfigLines: presentOrgState.get('fileConfigLines'),
+                linesBeforeHeadings: presentOrgState.get('linesBeforeHeadings'),
+                dontIndent: state.base.get('shouldNotIndentOnExport'),
+              })
             )
             .then(() => {
               if (!shouldSuppressMessages) {
