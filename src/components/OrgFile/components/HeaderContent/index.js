@@ -78,8 +78,9 @@ class HeaderContent extends PureComponent {
   }
 
   calculateRawDescription(header) {
-    // this is for display only, se we keep the default indentation behaviour
-    return createRawDescriptionText(header, false, false);
+    // This generates the text that appears in the description text field.
+    const dontIndent = this.props.dontIndent;
+    return createRawDescriptionText(header, false, dontIndent);
   }
 
   handleTextareaRef(textarea) {
@@ -278,6 +279,7 @@ const mapStateToProps = (state, props) => {
     isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     inTableEditMode: state.org.present.get('editMode') === 'table',
+    dontIndent: state.base.get('shouldNotIndentOnExport'),
   };
 };
 

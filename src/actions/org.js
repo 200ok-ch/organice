@@ -108,13 +108,13 @@ const doSync = ({
           client
             .updateFile(
               path,
-              exportOrg(
-                getState().org.present.get('headers'),
-                getState().org.present.get('todoKeywordSets'),
-                getState().org.present.get('fileConfigLines'),
-                getState().org.present.get('linesBeforeHeadings'),
-                getState().base.get('shouldNotIndentOnExport')
-              )
+              exportOrg({
+                headers: getState().org.present.get('headers'),
+                todoKeywordSets: getState().org.present.get('todoKeywordSets'),
+                fileConfigLines: getState().org.present.get('fileConfigLines'),
+                linesBeforeHeadings: getState().org.present.get('linesBeforeHeadings'),
+                dontIndent: getState().base.get('shouldNotIndentOnExport'),
+              })
             )
             .then(() => {
               if (!shouldSuppressMessages) {
