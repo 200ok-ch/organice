@@ -3,8 +3,8 @@ import './stylesheet.css';
 const PrivacyPolicy = () => {
   return (
     <div className="privacy-policy-container">
-      <h1>Privacy Policy</h1>
-      <p>Last updated: September 6nd, 2019</p>
+      <h1>organice privacy policy</h1>
+      <p>Last updated: May 9th, 2020</p>
 
       <p>
         <a href="https://200ok.ch/">200ok llc</a> operates the https://organice.200ok.ch website and
@@ -47,6 +47,16 @@ const PrivacyPolicy = () => {
         you visit, the time and date of your visit, the time spent on those pages, and other
         statistics.
       </p>
+      <p>
+        <strong>User data</strong>
+      </p>
+      <p>
+        No user data, including user data from third-party services such as Dropbox or Google, will
+        be stored or monitored by our Service. All access to user data is done through the proper
+        APIs of the respective services, and all data is only processed by the browser. No data will
+        be shared with any other service.
+      </p>
+
       <p>
         <strong>Cookies</strong>
       </p>

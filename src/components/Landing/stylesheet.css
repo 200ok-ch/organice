@@ -59,6 +59,11 @@ footer a {
   text-align: center;
 }
 
+.landing-description {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 .landing-logo {
   height: 7em;
 }

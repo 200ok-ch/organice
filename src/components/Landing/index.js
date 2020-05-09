@@ -19,6 +19,12 @@ export default () => {
           <br /> Google Drive and WebDAV.
         </h2>
 
+        <p className="landing-description">
+          organice allows you to view and edit Org files from cloud storage directly on your device!
+          No Org file or other user-data will be stored on our servers; the entire app is
+          browser-based.
+        </p>
+
         <Link to="/sample">
           <div className="btn landing-button view-sample-button">View sample</div>
         </Link>
