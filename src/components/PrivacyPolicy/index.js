@@ -3,8 +3,8 @@ import './stylesheet.css';
 const PrivacyPolicy = () => {
   return (
     <div className="privacy-policy-container">
-      <h1>Privacy Policy</h1>
-      <p>Last updated: September 6nd, 2019</p>
+      <h1>Organice Privacy Policy</h1>
+      <p>Last updated: May 9th, 2020</p>
 
       <p>
         <a href="https://200ok.ch/">200ok llc</a> operates the https://organice.200ok.ch website and
