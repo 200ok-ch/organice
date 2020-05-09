@@ -3,7 +3,7 @@ import './stylesheet.css';
 const PrivacyPolicy = () => {
   return (
     <div className="privacy-policy-container">
-      <h1>Organice Privacy Policy</h1>
+      <h1>organice privacy policy</h1>
       <p>Last updated: May 9th, 2020</p>
 
       <p>
