@@ -52,9 +52,9 @@ const PrivacyPolicy = () => {
       </p>
       <p>
         No user data, including user data from third-party services such as Dropbox or Google, will
-        be stored or monitored in any way. All access to user data is done through the proper APIs
-        of the respective services, and all data is only processed by the browser. No data will be
-        shared with any other service.
+        be stored or monitored by our Service. All access to user data is done through the proper
+        APIs of the respective services, and all data is only processed by the browser. No data will
+        be shared with any other service.
       </p>
 
       <p>
