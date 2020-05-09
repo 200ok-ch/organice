@@ -46,7 +46,18 @@ const PrivacyPolicy = () => {
         your computer’s Internet Protocol (“IP”) address, browser version, pages of our Service that
         you visit, the time and date of your visit, the time spent on those pages, and other
         statistics.
+          </p>
+       <p>
+        <strong>User data</strong>
       </p>
+      <p>
+        No user data, including user data from third-party services such as
+        Dropbox or Google, will be stored or monitored in any way. All access to
+        user data is done through the proper APIs of the respective servies, and
+        all data is only processed by the browser. No data will be shared with
+        any other service.
+      </p>
+
       <p>
         <strong>Cookies</strong>
       </p>
