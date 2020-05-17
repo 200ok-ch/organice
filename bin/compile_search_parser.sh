@@ -8,6 +8,9 @@ npx pegjs -o src/lib/headline_filter_parser.{js,grammar.pegjs}
 PARSER_FILE=src/lib/headline_filter_parser.js
 
 # Prepend the generated parser code with a `eslint-disable` comment.
-# We don't use sed or ex because some Linux/UNIX distros don't support them.
+# We don't use `sed` or `ex` because some Linux/UNIX distros don't
+# support them. For example MacOS ships with BSD sed which doesn't
+# support `-i` and some barebones Linux distros don't ship `ex.
+# `mktemp` works under Linux and MacOS, though.
 tmp=$(mktemp)
 echo '/* eslint-disable */' > "$tmp" && cat "$PARSER_FILE" >> "$tmp" && mv "$tmp" "$PARSER_FILE"
