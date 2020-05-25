@@ -1,4 +1,4 @@
-#+title: Organice documentation
+#+title: organice documentation
 
 #+html: <h1 align="center">organice - /'ɔ:gənaɪz/</h1>
 

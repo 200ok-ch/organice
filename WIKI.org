@@ -90,7 +90,7 @@ cadaver http://localhost/webdav/
 
 ** Configuring Nextcloud behind haproxy to allow WebDAV
 If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
-Organice using WebDAV. ...it's just a little bit convoluted.
+organice using WebDAV. ...it's just a little bit convoluted.
 
 The first part is the haproxy config. It should look a little bit like this:
 
@@ -102,7 +102,7 @@ The first part is the haproxy config. It should look a little bit like this:
     # Because we need to inspect the path in the backend section we set a variable
     # containing the path.
     http-request set-var(txn.path) path
-    # Because the OPTIONS requests from Organice doesn't include authentication we
+    # Because the OPTIONS requests from organice doesn't include authentication we
     # need to fake it. We can do that by redirecting all requests that satisfy these conditions:
     #
     # + host is Nextcloud

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if ! [ -e README.org ]; then
-    echo >&2 "Error: Please run this script from top of the Organice repository."
+    echo >&2 "Error: Please run this script from top of the organice repository."
     exit 1
 fi
 
