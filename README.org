@@ -1,3 +1,5 @@
+#+title: Organice documentation
+
 #+html: <h1 align="center">organice - /'ɔ:gənaɪz/</h1>
 
 #+html: <p align="center"><b>organice organizes Org files nicely!</b></p>

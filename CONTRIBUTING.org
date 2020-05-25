@@ -45,6 +45,10 @@ These are the steps we take to ensure a high quality in the backlog:
    add a 'question' label to the issue. If the issue creator does not
    respond to the question within 5 days, we close the issue. If she
    does choose to respond at some point, she can re-open the issue.
+** Contributing to the documentation
+
+The documentation is generated from =README.org= and various other files.
+The section on [[building_docs][building documentation]] explains how it is assembled.
 
 ** Development collaboration
 
