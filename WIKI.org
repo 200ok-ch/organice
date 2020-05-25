@@ -172,8 +172,8 @@ summary for how to share things from Nextcloud using WebDAV:
   <<building_docs>>
 
 This comprehensive documentation is an aggregation of multiple files
-which all reside in the [[https://github.com/200ok-ch/organice][organice code repository]] (README.org,
-WIKI.org, CONTRIBUTING.org and CODE_OF_CONDUCT.md).
+which all reside in the [[https://github.com/200ok-ch/organice][organice code repository]] (=README.org=,
+=WIKI.org=, =CONTRIBUTING.org=, and =CODE_OF_CONDUCT.md=).
 
 Building this documentation is part of the [[https://github.com/200ok-ch/organice/blob/master/.circleci/config.yml][CI/CD workflow]]. The actual
 compilation happens [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc.sh][here]] and the result gets uploaded [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc_and_upload.sh][here]].
