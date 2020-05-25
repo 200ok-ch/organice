@@ -1,5 +1,5 @@
 # NOTE: This file holds additional documentation which doesn't need to
-# be in the main README which also get's displayed on Github.
+# be in the main README which also gets displayed on Github.
 
 * Notes on WebDAV
 
