@@ -169,6 +169,7 @@ summary for how to share things from Nextcloud using WebDAV:
                 input it
 
 * Building this documentation
+  <<building_docs>>
 
 This comprehensive documentation is an aggregation of multiple files
 which all reside in the [[https://github.com/200ok-ch/organice][organice code repository]] (README.org,
