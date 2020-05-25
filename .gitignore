@@ -25,3 +25,6 @@ yarn-error.log*
 
 .env
 /src/lib/headline_filter_parser.js
+
+/documentation.html
+/documentation.org
