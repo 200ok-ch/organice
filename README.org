@@ -62,7 +62,7 @@ Installing to the homescreen on:
 - iOS: Open organice in Mobile Safari. Tap the "share" button and
   select "Add to Home Screen".
 - Android: Open organice in Chrome or Firefox. Tap the "menu" button
-  and select "Add to homescreen".
+  and select "Add to homescreen" or "Install". 
 
 * Usage
 ** Current restrictions/expectations of organice
