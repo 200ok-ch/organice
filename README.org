@@ -65,6 +65,11 @@ Installing to the homescreen on:
   and select "Add to homescreen" or "Install". Some browsers may also
   present a popup banner with the option to "Add to homescreen" or
   "Install".
+  Note: Any file can be added as a separate icon on the homescreen, so 
+  several organice app icons can be added to get direct access to individual 
+  files.
+
+ 
 
 * Usage
 ** Current restrictions/expectations of organice
