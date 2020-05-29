@@ -31,10 +31,11 @@ describe('org reducer', () => {
       // The target is to refile "PROJECT Foo" into "A nested header".
       // They have both subheadlines, so it's not the trivial case.
 
-      // "PROJECT Foo" is the 9th item, "A nested header" the 2nd.
+      // "PROJECT Foo" is the 10th item, "A nested header" the 2nd,
+      // but we count from 0 not 1.
       sourceHeaderId = state
         .getIn(['org', 'present', 'headers'])
-        .get(8)
+        .get(9)
         .get('id');
       targetHeaderId = state
         .getIn(['org', 'present', 'headers'])
@@ -62,6 +63,7 @@ describe('org reducer', () => {
         ['A repeating todo', 2],
         ['A header with tags                                              ', 1],
         ['A header with [[https://organice.200ok.ch][a link]]', 1],
+        ['A header with a link to a local .org file as content', 1],
         ['A header with a URL, mail address and phone number as content', 1],
         ['PROJECT Foo', 2],
         ["A headline that's done since a loong time", 3],
@@ -87,6 +89,7 @@ describe('org reducer', () => {
         ['A repeating todo', 2],
         ['A header with tags                                              ', 1],
         ['A header with [[https://organice.200ok.ch][a link]]', 1],
+        ['A header with a link to a local .org file as content', 1],
         ['A header with a URL, mail address and phone number as content', 1],
         ['A header with a custom todo sequence in DONE state', 1],
       ]);

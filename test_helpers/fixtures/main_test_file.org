@@ -12,6 +12,9 @@ Some description content
 
 * A header with tags                                              :tag1:tag2:
 * A header with [[https://organice.200ok.ch][a link]]
+* A header with a link to a local .org file as content
+
+  [[file:schedule_and_timestamps.org][a local .org file]]
 * A header with a URL, mail address and phone number as content
 
   This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.

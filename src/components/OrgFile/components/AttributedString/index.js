@@ -20,9 +20,14 @@ export default ({ parts, subPartDataAndHandlers }) => {
           case 'link':
             const uri = part.getIn(['contents', 'uri']);
             const title = part.getIn(['contents', 'title']) || uri;
-
+            const isFileLink = uri.startsWith("file:");
             return (
-              <a key={part.get('id')} href={uri} target="_blank" rel="noopener noreferrer">
+              <a
+                key={part.get('id')} 
+                href={isFileLink ? uri.substr(5) : uri}
+                target={isFileLink ? "" : "_blank"}
+                rel="noopener noreferrer"
+              >
                 {title}
               </a>
             );
