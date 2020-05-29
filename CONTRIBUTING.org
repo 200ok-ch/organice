@@ -1,4 +1,7 @@
 * Contribute to organice
+  :PROPERTIES:
+  :CUSTOM_ID: contributing
+  :END:
 
 First off, thank you for considering contributing to organice. It's
 people like you that make organice such a great tool!
