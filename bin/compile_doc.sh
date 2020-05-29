@@ -5,6 +5,11 @@ if ! [ -e README.org ]; then
     exit 1
 fi
 
+if ! which pandoc >/dev/null 2>&1; then
+    echo >&2 "Error: You need pandoc installed to build the docs."
+    exit 1
+fi
+
 echo "#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup" > documentation.org
 cat README.org | grep -v api.codeclimate | grep -v "https://organice.200ok.ch/documentation.html" >> documentation.org
 sed -i 's/# REPO_PLACEHOLDER/Code repository: https:\/\/github.com\/200ok-ch\/organice/' documentation.org
