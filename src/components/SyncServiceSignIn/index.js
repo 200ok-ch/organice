@@ -44,6 +44,7 @@ function WebDAVForm() {
         <p>
           <label>Url:</label>
           <input
+            name="url"
             type="url"
             value={url}
             className="textfield"
