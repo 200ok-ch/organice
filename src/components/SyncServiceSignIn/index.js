@@ -42,7 +42,7 @@ function WebDAVForm() {
         }}
       >
         <p>
-          <label>Url:</label>
+          <label>URL:</label>
           <input
             name="url"
             type="url"
