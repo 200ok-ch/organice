@@ -19,3 +19,11 @@ pandoc CODE_OF_CONDUCT.md -o CODE_OF_CONDUCT.org
 cat CODE_OF_CONDUCT.org >> documentation.org
 rm CODE_OF_CONDUCT.org
 emacs documentation.org -l ./doc/org2html/init.el --batch  --funcall org-html-export-to-html
+
+html="`pwd`/documentation.html"
+if [ -e "$html" ]; then
+    echo "Documentation written to file://$html"
+else
+    echo >&2 "Error: failed to build documentation"
+    exit 1
+fi
