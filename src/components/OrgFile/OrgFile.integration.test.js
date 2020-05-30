@@ -216,7 +216,7 @@ describe('Render all views', () => {
 
     describe('Renders everything starting from an Org file', () => {
       test('renders an Org file', () => {
-        expect(getAllByText(/\*/)).toHaveLength(6);
+        expect(getAllByText(/\*/)).toHaveLength(7);
         expect(container).toMatchSnapshot();
       });
 
@@ -449,6 +449,7 @@ describe('Render all views', () => {
           expect(elem[0]).toHaveAttribute('href', 'tel:+498025123456789');
           expect(elem[0]).toHaveTextContent('+498025123456789');
         });
+
         test('recognizes URLs', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')
@@ -460,6 +461,19 @@ describe('Render all views', () => {
           expect(elem[0]).toHaveAttribute('href', 'https://foo.bar.baz/xyz?a=b&d#foo');
           expect(elem[0]).toHaveTextContent('https://foo.bar.baz/xyz?a=b&d#foo');
         });
+
+        test('recognizes file: links', () => {
+          fireEvent.click(
+            queryByText('A header with a link to a local .org file as content')
+          );
+          const elem = getAllByText('a local .org file');
+          // There's exactly one such URL
+          expect(elem.length).toEqual(1);
+          // And it renders as such
+          expect(elem[0]).toHaveAttribute('href', 'schedule_and_timestamps.org');
+          expect(elem[0]).toHaveTextContent('a local .org file');
+        });
+
         test('recognizes email addresses', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')
