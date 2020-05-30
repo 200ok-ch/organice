@@ -6,6 +6,12 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 
 
+* [2020-05-30 Sat]
+
+** Added
+   - Make local =file:...= links navigate to the relevant file
+     - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/307][PR]] 🙏
+
 * [2020-05-06 Wed]
 
 ** Fixed
