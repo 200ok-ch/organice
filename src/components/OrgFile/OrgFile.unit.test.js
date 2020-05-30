@@ -19,8 +19,6 @@ function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
   const parsedFile = parseOrg(testOrgFile);
   const exportedFile = exportOrg({
     headers: parsedFile.get('headers'),
-    todoKeywordSets: parsedFile.get('todoKeywordSets'),
-    fileConfigLines: parsedFile.get('fileConfigLines'),
     linesBeforeHeadings: parsedFile.get('linesBeforeHeadings'),
     dontIndent: dontIndent,
   });
@@ -175,8 +173,7 @@ ${text}`;
     test('Parse file with one empty line', () => {
       const testOrgFile = '\n';
       const exportedFile = parseAndExportOrgFile(testOrgFile);
-      // if the exporter produces no output at all, the single newline character is discarded
-      expect(exportedFile).toEqual('');
+      expect(exportedFile).toEqual('\n');
     });
 
     test('Parse very basic file with description', () => {
@@ -436,6 +433,14 @@ ${description}`;
         expect(noLogRepeatEnabledP({ state, headerIndex: 5 })).toBe(false);
         expect(noLogRepeatEnabledP({ state, headerIndex: 7 })).toBe(true);
       });
+    });
+  });
+
+  describe('TODO keywords at EOF', () => {
+    test('formatted as in default emacs', () => {
+      const testOrgFile = readFixture('todo_keywords_interspersed');
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
     });
   });
 });

@@ -18,8 +18,6 @@ function parseAndExportOrgFile(testOrgFile) {
   const parsedFile = parseOrg(testOrgFile);
   const exportedFile = exportOrg({
     headers: parsedFile.get('headers'),
-    todoKeywordSets: parsedFile.get('todoKeywordSets'),
-    fileConfigLines: parsedFile.get('fileConfigLines'),
     linesBeforeHeadings: parsedFile.get('linesBeforeHeadings'),
     dontIndent: false,
   });
@@ -304,5 +302,22 @@ describe('Parse in-buffer TODO keyword settings', () => {
         expectNewSetFromLine(line);
       });
     });
+  });
+
+  describe('TODO keywords at EOF parsed correctly', () => {
+    const testOrgFile = readFixture('todo_keywords_interspersed');
+    const parsedFile = parseOrg(testOrgFile);
+    const headers = parsedFile.get('headers').toJS();
+    expect(headers.length).toEqual(15);
+    expect(headers[7].titleLine.rawTitle).toEqual('orgmode settings in middle of file');
+    expect(headers[14].titleLine.rawTitle).toEqual('orgmode settings at end of file');
+    const todoKeywordSets = parsedFile.get('todoKeywordSets').toJS();
+    expect(todoKeywordSets.length).toEqual(3);
+    expect(todoKeywordSets[0].keywords).toEqual(['NEXT', 'DONE']);
+    expect(todoKeywordSets[0].completedKeywords).toEqual(['DONE']);
+    expect(todoKeywordSets[1].keywords).toEqual(['START', 'FINISHED']);
+    expect(todoKeywordSets[1].completedKeywords).toEqual(['FINISHED']);
+    expect(todoKeywordSets[2].keywords).toEqual(['PROJECT', 'PROJDONE']);
+    expect(todoKeywordSets[2].completedKeywords).toEqual(['PROJDONE']);
   });
 });

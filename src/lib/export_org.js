@@ -253,46 +253,17 @@ export const generateTitleLine = (header, includeStars) => {
  * Convert state data into a fully rendered Orgmode file text.
  *
  * @param {*} headers Full list of org headings from redux state.
- * @param {*} todoKeywordSets
- * @param {*} fileConfigLines List of all "#+VAR:" config lines in the file.
  * @param {*} linesBeforeHeadings Text that occurs before the first heading.
  * @param {boolean} dontIndent Default false means indent drawers according to
  * nesting level, else keep everything flush-left. Description is kept as is.
  */
 export const exportOrg = ({
   headers,
-  todoKeywordSets,
-  fileConfigLines,
   linesBeforeHeadings,
   dontIndent,
 }) => {
-  let configContent = '';
-
-  if (fileConfigLines.size > 0) {
-    configContent = fileConfigLines.join('\n') + '\n';
-  }
-
-  if (!todoKeywordSets.get(0).get('default')) {
-    configContent =
-      configContent +
-      todoKeywordSets
-        .map((todoKeywordSet) => {
-          return todoKeywordSet.get('configLine');
-        })
-        .join('\n') +
-      '\n';
-  }
-
-  if (linesBeforeHeadings.size > 0) {
-    configContent = configContent + linesBeforeHeadings.join('\n');
-  }
-
-  if (configContent.length > 0) {
-    configContent = configContent + '\n';
-  }
-
+  let configContent = linesBeforeHeadings.map(x => x + '\n').join('');
   const headerContent = headers.map((x) => createRawDescriptionText(x, true, dontIndent)).join('');
-
   return configContent + headerContent;
 };
 
