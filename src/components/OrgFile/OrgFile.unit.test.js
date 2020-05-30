@@ -366,7 +366,7 @@ ${description}`;
             expect(exportedFile).toEqual(testOrgFile);
           });
 
-          test('For basic files', () => {
+          test('For files with multiple headlines with timestamps', () => {
             const testOrgFile = readFixture('multiple_headlines_with_timestamps');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
             expect(exportedFile).toEqual(testOrgFile);
