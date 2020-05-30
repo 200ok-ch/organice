@@ -88,6 +88,34 @@ sudo apt -y install cadaver
 cadaver http://localhost/webdav/
 #+END_SRC
 
+** Gotchas with WebDAV
+
+*** =preflight request doesn't pass access control check= error
+
+If you are getting an error like
+
+#+BEGIN_EXAMPLE
+Access to XMLHttpRequest at 'https://my.site/dav/' from origin
+'https://organice.200ok.ch' has been blocked by CORS policy: Response
+to preflight request doesn't pass access control check: It does not
+have HTTP ok status.
+#+END_EXAMPLE
+
+then the =RewriteRule= in the above example is either missing from, or ineffective in your webserver config.
+
+*** Symlinks don't work
+
+Unfortunately, [[https://serverfault.com/questions/453807/best-practice-to-link-with-webdav-as-followsymlinks-doesn-t-allow-to-show-symli][symlink support never made it into Apache's =mod_dav=]].
+
+*** Bind-mounts of individual files don't work
+
+In an Apache =mod_dav= context, unfortunately you can't use [[https://unix.stackexchange.com/questions/198590/what-is-a-bind-mount][bind
+mounts]] of a single file instead of symlinks, because =mod_dav=
+attempts to write any changes to a file atomically, by first writing
+to a temporary file and then [[https://github.com/apache/httpd/blob/c3db73ca8a5aa7b79231a11fe2eb15de3ce943dc/modules/dav/fs/repos.c#L991][atomically renaming it to the target
+file]], and Linux prevents renaming to bind mounts with a =Device or
+resource busy= error.
+
 ** Configuring Nextcloud behind haproxy to allow WebDAV
 If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
 organice using WebDAV. ...it's just a little bit convoluted.
