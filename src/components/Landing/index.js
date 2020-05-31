@@ -31,6 +31,13 @@ export default () => {
         <Link to="/sign_in">
           <div className="btn landing-button">Sign in</div>
         </Link>
+        <a
+          href="https://organice.200ok.ch/documentation.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div className="btn landing-button">Documentation</div>
+        </a>
       </div>
       <footer>
         <Link to="/privacy-policy">Privacy Policy</Link>
