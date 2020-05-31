@@ -91,7 +91,7 @@ Installing to the homescreen on:
   organice".  Firefox allows creation of multiple home screen icons,
   but when opening any of these, organice does not jump directly to
   the specific file which was open when the icon was created.
- 
+
   Therefore if you want multiple organice bookmark icons on your
   homescreen which jump straight to particular files, you may have
   better luck using another technique.  For example, you can use a
@@ -222,6 +222,8 @@ organice implements this customization strategy:
 - =nologrepeat=: Do not record when reinstating repeating item
 
 *** Drawer properties
+    :PROPERTIES:
+    :END:
 
 - =logrepeat= and =nologrepeat=: Whether to record when reinstating repeating item
 
@@ -351,6 +353,9 @@ application (like [[https://www.termius.com/][Terminus]]).
 Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
 * Deployment
+  :PROPERTIES:
+  :CUSTOM_ID: deployment
+  :END:
 
 Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
