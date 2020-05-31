@@ -3,6 +3,9 @@
 
 * FAQ synchronization back-ends
 ** Dropbox
+   :PROPERTIES:
+   :CUSTOM_ID: faq_dropbox
+   :END:
 *** Permissions ("Full Dropbox" vs. "App folder")
 
 The reference organice host [[https://organice.200ok.ch/]] has the
