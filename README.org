@@ -483,16 +483,16 @@ In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find l
 
 ** Routing
 
-Whilst organice is a true SPA and therefore has no back-end
-whatsoever, this does have an implication for deployment with regard
-to routing. For routes like =example.com/foo= to work, we need a
-little something extra. Within the context of a running SPA, =/foo=
-would be matched by the React Router and the proper page would be
-rendered by JavaScript. When initially requesting a route like that
-from the web server itself, the SPA is not running yet and the web
-server itself wouldn't find a file called =/foo=. It would return
-a 404. The whole topic is explained in depth in this SO answer:
-https://stackoverflow.com/a/36623117
+Whilst organice is a true Single Page Application (SPA) and therefore
+has no back-end whatsoever, this does have an implication for
+deployment with regard to routing. For routes like =example.com/foo=
+to work, we need a little something extra. Within the context of a
+running SPA, =/foo= would be matched by the React Router and the
+proper page would be rendered by JavaScript. When initially requesting
+a route like that from the web server itself, the SPA is not running
+yet and the web server itself wouldn't find a file called =/foo=. It
+would return a 404. The whole topic is explained in depth in this SO
+answer: https://stackoverflow.com/a/36623117
 
 For https://organice.200ok.ch we've opted to:
 
