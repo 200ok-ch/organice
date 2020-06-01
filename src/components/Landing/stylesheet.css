@@ -68,8 +68,9 @@ footer a {
   height: 7em;
 }
 
-.view-sample-button {
+.doc-button {
   margin-top: 20px;
+  background-color: var(--green);
 }
 
 .mailing-list-signup-container {

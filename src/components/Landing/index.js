@@ -25,18 +25,14 @@ export default () => {
           browser-based.
         </p>
 
-        <Link to="/sample">
-          <div className="btn landing-button view-sample-button">View sample</div>
-        </Link>
         <Link to="/sign_in">
           <div className="btn landing-button">Sign in</div>
         </Link>
-        <a
-          href="https://organice.200ok.ch/documentation.html"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <div className="btn landing-button">Documentation</div>
+        <Link to="/sample">
+          <div className="btn landing-button doc-button">View sample</div>
+        </Link>
+        <a href="/documentation.html" target="_blank" rel="noopener noreferrer">
+          <div className="btn landing-button doc-button">Documentation</div>
         </a>
       </div>
       <footer>
