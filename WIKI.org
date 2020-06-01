@@ -181,6 +181,12 @@ about that - here's a screencast showing you how to do it:
  file]], and Linux prevents renaming to bind mounts with a =Device or
  resource busy= error.
 
+**** =HTTP PUT= requests fail with =403 Forbidden=
+
+ As mentioned in [[#routing][the section routing]], you should avoid having
+ =mod_rewrite= rules apply to (=PUT=) requests in the WebDAV
+ directories.
+
 *** Configuring Nextcloud behind haproxy to allow WebDAV
  If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
  organice using WebDAV. ...it's just a little bit convoluted.

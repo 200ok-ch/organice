@@ -485,6 +485,9 @@ In the [[https://organice.200ok.ch/documentation.html#faq_webdav][FAQ]], you'll 
   - Documentation on Nextcloud sharing
 
 ** Routing
+   :PROPERTIES:
+   :CUSTOM_ID: routing
+   :END:
 
 Whilst organice is a true [[https://developer.mozilla.org/en-US/docs/Glossary/SPA][Single Page Application]] (SPA) and therefore
 has no back-end whatsoever, this does have an implication for
@@ -514,7 +517,29 @@ RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
 RewriteRule ^ - [L]
 
+# N.B. If this next rule is allowed to apply to a WebDAV directory, it
+# will break PUT requests to upload new files!
 RewriteRule ^ /index.html [L]
+#+END_EXAMPLE
+
+If your WebDAV directory happens to be not only on the same webserver,
+but also within a subdirectory of the directory containing this
+=.htaccess= file, then you will need to create another =.htaccess=
+file in the top-level WebDAV directory containing this:
+
+#+BEGIN_EXAMPLE
+RewriteEngine Off
+#+END_EXAMPLE
+
+Otherwise any attempts to use WebDAV to upload new files via =HTTP
+PUT= requests will fall foul of the =/index.html= rewrite rule above,
+resulting in a =403 Forbidden= response.
+
+Another way to avoid this more selectively is to precede that rule
+with:
+
+#+BEGIN_EXAMPLE
+RewriteCond %{REQUEST_METHOD} !PUT
 #+END_EXAMPLE
 
 * Capture templates
