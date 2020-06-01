@@ -36,7 +36,7 @@ footer a {
   text-align: center;
 
   font-size: 20px;
-  margin-top: 30px;
+  margin-top: 20px;
   width: 200px;
 }
 
@@ -68,8 +68,9 @@ footer a {
   height: 7em;
 }
 
-.view-sample-button {
-  margin-top: 40px;
+.doc-button {
+  margin-top: 20px;
+  background-color: var(--green);
 }
 
 .mailing-list-signup-container {
