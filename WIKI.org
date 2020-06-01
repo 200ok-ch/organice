@@ -142,7 +142,31 @@ about that - here's a screencast showing you how to do it:
  have HTTP ok status.
  #+END_EXAMPLE
 
- then the =RewriteRule= in the above example is either missing from, or ineffective in your webserver config.
+ then something is wrong with your webserver config.  You can check
+ whether a CORS preflight check is returning the right headers via:
+
+ #+BEGIN_EXAMPLE
+ curl -v -X OPTIONS https://my.server/webdav
+ #+END_EXAMPLE
+
+ The output should include lines like this:
+
+ #+BEGIN_EXAMPLE
+ < HTTP/1.1 200 OK
+ ...
+ < Access-Control-Allow-Origin: *
+ < Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
+ < Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
+ < Access-Control-Allow-Credentials: true
+ < Allow: OPTIONS,GET,HEAD,POST,DELETE,TRACE,PROPFIND,PROPPATCH,COPY,MOVE,LOCK,UNLOCK
+ #+END_EXAMPLE
+
+ If your server doesn't give a =200 OK= response, or if the
+ =Access-Control-Allow-*= headers are missing, you may find these
+ articles helpful:
+
+ - https://stackoverflow.com/questions/27703871/return-empty-response-from-apache/
+ - https://serverfault.com/questions/231766/returning-200-ok-in-apache-on-http-options-requests/
 
 **** Symlinks don't work
 
