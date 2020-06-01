@@ -240,24 +240,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
 exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
-    class="header-bar header-bar--with-logo"
+    class="header-bar"
   >
-    <div
-      class="header-bar__logo-container"
+    <a
+      class="header-bar__back-button"
+      href="/files/foo"
     >
-      <img
-        alt="Logo"
-        class="header-bar__logo"
-        height="30"
-        src="organice.svg"
-        width="30"
+      <i
+        class="fas fa-chevron-left"
       />
-      <h2
-        class="header-bar__app-name"
+      <span
+        class="header-bar__back-button__directory-path"
       >
-        organice
-      </h2>
-    </div>
+        File browser
+      </span>
+    </a>
     <div
       class="header-bar__title"
     />
@@ -539,7 +536,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="word-break: break-word;"
               >
                 <span>
-                  A header with a link to a local .org file as content
+                  A header with various links as content
                 </span>
                 ...
               </span>

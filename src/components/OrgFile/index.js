@@ -114,10 +114,15 @@ class OrgFile extends PureComponent {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { headers, pendingCapture } = this.props;
     if (!!pendingCapture && !!headers && headers.size > 0) {
       this.props.org.insertPendingCapture();
+    }
+
+    const { path } = this.props;
+    if (!_.isEmpty(path) && path !== prevProps.path) {
+      this.props.syncBackend.downloadFile(path);
     }
   }
 

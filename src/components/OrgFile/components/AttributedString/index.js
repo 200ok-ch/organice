@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Link, useLocation } from 'react-router-dom';
+
 import './stylesheet.css';
 
 import TablePart from './components/TablePart';
@@ -11,6 +13,38 @@ import classNames from 'classnames';
 export default ({ parts, subPartDataAndHandlers }) => {
   let className;
 
+  let location = useLocation();
+
+  const renderLink = (part) => {
+    const id = part.get('id');
+    const uri = part.getIn(['contents', 'uri']);
+    const title = part.getIn(['contents', 'title']) || uri;
+    if (uri.startsWith("file:")) {
+      const target = uri.substr(5);
+      const isRelativeOrgFileLink =
+        !target.startsWith("/") &&
+        !target.startsWith("~") &&
+        !target.startsWith("../") &&
+        uri.endsWith(".org");
+      if (isRelativeOrgFileLink) {
+        const dir = location.pathname.match(/.*\//);
+        return (
+          <Link key={id} to={dir + target}>
+            {title}
+          </Link>
+        );
+      } else {
+        return title;
+      }
+    } else {
+      return (
+        <a key={id} href={uri} target="_blank" rel="noopener noreferrer">
+          {title}
+        </a>
+      );
+    }
+  };
+
   return (
     <span>
       {parts.map((part) => {
@@ -18,19 +52,7 @@ export default ({ parts, subPartDataAndHandlers }) => {
           case 'text':
             return part.get('contents');
           case 'link':
-            const uri = part.getIn(['contents', 'uri']);
-            const title = part.getIn(['contents', 'title']) || uri;
-            const isFileLink = uri.startsWith("file:");
-            return (
-              <a
-                key={part.get('id')} 
-                href={isFileLink ? uri.substr(5) : uri}
-                target={isFileLink ? "" : "_blank"}
-                rel="noopener noreferrer"
-              >
-                {title}
-              </a>
-            );
+            return renderLink(part);
           case 'percentage-cookie':
             className = classNames('attributed-string__cookie-part', {
               'attributed-string__cookie-part--complete':

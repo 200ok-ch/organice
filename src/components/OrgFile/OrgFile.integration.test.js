@@ -77,7 +77,7 @@ describe('Render all views', () => {
       getByPlaceholderText;
     beforeEach(() => {
       let res = render(
-        <MemoryRouter keyLength={0}>
+        <MemoryRouter keyLength={0} initialEntries={["/file/foo/fixtureTestFile.org"]}>
           <Provider store={store}>
             <HeaderBar />
             <OrgFile path="fixtureTestFile.org" />
@@ -462,16 +462,45 @@ describe('Render all views', () => {
           expect(elem[0]).toHaveTextContent('https://foo.bar.baz/xyz?a=b&d#foo');
         });
 
-        test('recognizes file: links', () => {
-          fireEvent.click(
-            queryByText('A header with a link to a local .org file as content')
-          );
-          const elem = getAllByText('a local .org file');
-          // There's exactly one such URL
-          expect(elem.length).toEqual(1);
-          // And it renders as such
-          expect(elem[0]).toHaveAttribute('href', 'schedule_and_timestamps.org');
-          expect(elem[0]).toHaveTextContent('a local .org file');
+        describe('recognizes file: links', () => {
+          beforeEach(() => {
+            fireEvent.click(
+              queryByText('A header with various links as content')
+            );
+          });
+
+          test('relative link to .org file', () => {
+            const elem = getAllByText('an existing .org file in the same directory');
+            // There's exactly one such URL
+            expect(elem.length).toEqual(1);
+            // And it renders as such
+            expect(elem[0]).toHaveAttribute('href', '/file/foo/schedule_and_timestamps.org');
+            expect(elem[0]).toHaveTextContent('an existing .org file in the same directory');
+          });
+
+          test('relative link to fictitious .org file in subdir', () => {
+            const elem = getAllByText('a fictitious .org file in a sub-directory');
+            // There's exactly one such URL
+            expect(elem.length).toEqual(1);
+            // And it renders as such
+            expect(elem[0]).toHaveAttribute('href', '/file/foo/subdir/foo.org');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file in a sub-directory');
+          });
+
+          test('absolute link to fictitious .org file in a parent directory', () => {
+            const elem = queryByText('a fictitious .org file in a parent directory');
+            expect(elem).toBeNull();
+          });
+
+          test('absolute link to fictitious .org file in home directory', () => {
+            const elem = queryByText('a fictitious .org file in home directory');
+            expect(elem).toBeNull();
+          });
+
+          test('absolute link to fictitious .org file', () => {
+            const elem = queryByText('a fictitious .org file');
+            expect(elem).toBeNull();
+          });
         });
 
         test('recognizes email addresses', () => {
