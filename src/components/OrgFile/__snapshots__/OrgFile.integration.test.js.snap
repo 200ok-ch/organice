@@ -244,7 +244,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
   >
     <a
       class="header-bar__back-button"
-      href="/files/foo"
+      href="/files/dir1/dir2"
     >
       <i
         class="fas fa-chevron-left"

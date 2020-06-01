@@ -15,8 +15,10 @@ Some description content
 * A header with various links as content
   Relative link to [[file:schedule_and_timestamps.org][an existing .org file in the same directory]]
   Relative link to [[file:subdir/foo.org][a fictitious .org file in a sub-directory]]
-  Relative link to [[file:~/.GIT/3rd-party/organice/test_helpers/foo.org][a fictitious .org file in a parent directory]]
-  Absolute link to [[file:/foo/bar/baz.org][a fictitious .org file in home directory]]
+  Relative link to [[file:../foo.org][a fictitious .org file in a parent directory]]
+  Relative link to [[file:../../foo.org][a fictitious .org file in a grand-parent directory]]
+  Relative link to [[file:../../../../too-high.org][a fictitious .org file in a too-high ancestor directory]]
+  Absolute link to [[file:~/foo/bar/baz.org][a fictitious .org file in home directory]]
   Absolute link to [[file:/foo/bar/baz.org][a fictitious .org file]]
 * A header with a URL, mail address and phone number as content
 

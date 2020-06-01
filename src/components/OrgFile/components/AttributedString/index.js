@@ -21,31 +21,49 @@ export default ({ parts, subPartDataAndHandlers }) => {
     const id = part.get('id');
     const uri = part.getIn(['contents', 'uri']);
     const title = part.getIn(['contents', 'title']) || uri;
+    let target = uri;
     if (uri.startsWith('file:')) {
-      const target = uri.substr(5);
+      target = uri.substr(5);
       const isRelativeOrgFileLink =
         !target.startsWith('/') &&
         !target.startsWith('~') &&
-        !target.startsWith('../') &&
         uri.match(orgFileExtensions);
       if (isRelativeOrgFileLink) {
-        const dir = location.pathname.match(/.*\//);
-        return (
-          <Link key={id} to={dir + target}>
-            {title}
-          </Link>
-        );
-      } else {
-        return title;
+        target = normalisePath(target);
+        if (!target.includes('/../')) {
+          // Normalisation succeeded, so we can safely return a <Link>
+          return (
+              <Link key={id} to={target}>{title}</Link>
+          );
+        }
       }
-    } else {
-      return (
-        <a key={id} href={uri} target="_blank" rel="noopener noreferrer">
-          {title}
-        </a>
-      );
+
+      // Best effort in other cases; the file:// href may or may not work,
+      // but either way it should help show the user what's going on.
+      target = 'file://' + target;
     }
+
+    return (
+        <a key={id} href={target} target="_blank" rel="noopener noreferrer">
+        {title}
+      </a>
+    );
   };
+
+  const normalisePath = target => {
+    let dir = location.pathname.match(/(.*)\//)[1];
+    let normalised = target;
+    while (normalised.startsWith("../")) {
+      if (!dir.match(/^\/file\/.+/)) {
+        // We're already at the top; can't break out of the area accessible
+        // via HTTP, so just the original non-normalised path
+        return target;
+      }
+      normalised = normalised.substr(3);
+      dir = dir.match(/(.*)\//)[1];
+    }
+    return dir + '/' + normalised;
+  }
 
   return (
     <span>
