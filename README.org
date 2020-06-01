@@ -474,7 +474,7 @@ like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https:/
 
 **** More information
 
-In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find lots more information regarding WebDAV:
+In the [[https://organice.200ok.ch/documentation.html#faq_webdav][FAQ]], you'll find lots more information regarding WebDAV:
 
   - A screencast of how organice works when logging in to a WebDAV
     server
