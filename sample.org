@@ -288,9 +288,9 @@ WebDAV. Click the "Sign in" button in the upper right hand corner to
 sign in with either of them and authenticate organice.
 
 ** Backups
-The first time you push changes from organice back up to your chosen
-sync service, organice will make a backup of the original file first.
-It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive
+Whenever organice loads a file from your chosen sync service, before
+you can make any changes it will first make and push a backup of the
+file, named ={your-file-name}.organice-bak=. Dropbox and Google Drive
 also both keep a full version history of your files for you, but this
 is an additional precaution in case something goes wrong pushing the
 file back up.
