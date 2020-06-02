@@ -27,6 +27,8 @@ const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.
 const setShouldSyncOnBecomingVisibile = (state, action) =>
   state.set('shouldSyncOnBecomingVisibile', action.shouldSyncOnBecomingVisibile);
 
+const setShouldBackup = (state, action) => state.set('shouldBackup', action.shouldBackup);
+
 const setShouldShowTitleInOrgFile = (state, action) =>
   state.set('shouldShowTitleInOrgFile', action.shouldShowTitleInOrgFile);
 
@@ -133,6 +135,8 @@ export default (state = Map(), action) => {
       return setShouldLiveSync(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
       return setShouldSyncOnBecomingVisibile(state, action);
+    case 'SET_SHOULD_BACKUP':
+      return setShouldBackup(state, action);
     case 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE':
       return setShouldShowTitleInOrgFile(state, action);
     case 'SET_SHOULD_LOG_INTO_DRAWER':

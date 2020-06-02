@@ -19,6 +19,7 @@ const Settings = ({
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
   shouldSyncOnBecomingVisibile,
+  shouldBackup,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
   shouldNotIndentOnExport,
@@ -52,6 +53,8 @@ const Settings = ({
 
   const handleShouldSyncOnBecomingVisibleChange = () =>
     base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
+
+  const handleShouldBackup = () => base.setShouldBackup(!shouldBackup);
 
   const handleShouldShowTitleInOrgFile = () =>
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
@@ -114,6 +117,19 @@ const Settings = ({
           isEnabled={shouldSyncOnBecomingVisibile}
           onToggle={handleShouldSyncOnBecomingVisibleChange}
         />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Backup before editing
+          <div className="setting-label__description">
+            If enabled, whenever Organice loads a file from the sync backend,
+            a backup is automatically made by appending{' '}
+            <code>.organice-bak</code> to the filename and pushing it to the
+            backend.
+          </div>
+        </div>
+        <Switch isEnabled={shouldBackup} onToggle={handleShouldBackup} />
       </div>
 
       <div className="setting-container">
@@ -251,6 +267,7 @@ const mapStateToProps = (state, props) => {
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
+    shouldBackup: state.base.get('shouldBackup'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),

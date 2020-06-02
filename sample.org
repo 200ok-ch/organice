@@ -297,7 +297,8 @@ file back up.
 
 Generally, when working with distributed Org files, we're recommending
 to put them under version control and to check for bugs and racing
-conditions between clients.
+conditions between clients. There is a setting available to disable
+backups in case you do not need them.
 * organice operates completely client side
 You don't log in to organice directly because organice doesn't have a
 back end - it operates completely client side using Dropbox, Google

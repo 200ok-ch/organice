@@ -92,6 +92,11 @@ export const setShouldSyncOnBecomingVisibile = (shouldSyncOnBecomingVisibile) =>
   shouldSyncOnBecomingVisibile,
 });
 
+export const setShouldBackup = (shouldBackup) => ({
+  type: 'SET_SHOULD_BACKUP',
+  shouldBackup,
+});
+
 export const setShouldShowTitleInOrgFile = (shouldShowTitleInOrgFile) => ({
   type: 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE',
   shouldShowTitleInOrgFile,

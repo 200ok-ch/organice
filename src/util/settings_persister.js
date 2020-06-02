@@ -107,6 +107,13 @@ export const persistableFields = [
   },
   {
     category: 'base',
+    name: 'shouldBackup',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+    default: true,
+  },
+  {
+    category: 'base',
     name: 'shouldShowTitleInOrgFile',
     type: 'boolean',
     shouldStoreInConfig: true,
@@ -209,7 +216,11 @@ export const readInitialState = () => {
         value = null;
       }
     } else if (field.type === 'boolean') {
-      value = value === 'true';
+      if (!value && field.default !== null) {
+        value = field.default;
+      } else {
+        value = value === 'true';
+      }
     } else if (field.type === 'json') {
       if (!value) {
         value = field.default || Map();
