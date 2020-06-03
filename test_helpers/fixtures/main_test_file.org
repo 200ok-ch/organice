@@ -17,7 +17,7 @@ Some description content
   Relative link to [[file:subdir][subdir]]
   Relative link to [[file:subdir/][subdir/]]
   Relative link to [[file:subdir/foo.org][a fictitious .org file in a sub-directory]]
-  Relative link to [[file:../foo.org][a fictitious .org file in a parent directory]]
+  Relative link to [[file:../foo.org_archive][a fictitious .org file in a parent directory]]
   Relative link to [[file:../subdir][../subdir]]
   Relative link to [[file:../subdir/][../subdir/]]
   Relative link to [[file:../../foo.org][a fictitious .org file in a grand-parent directory]]

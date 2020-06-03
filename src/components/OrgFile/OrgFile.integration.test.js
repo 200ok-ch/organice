@@ -502,7 +502,7 @@ describe('Render all views', () => {
           test('relative link to fictitious .org file in a parent directory', () => {
             const elem = getAllByText('a fictitious .org file in a parent directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', '/file/dir1/foo.org');
+            expect(elem[0]).toHaveAttribute('href', '/file/dir1/foo.org_archive');
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a parent directory');
           });
 
