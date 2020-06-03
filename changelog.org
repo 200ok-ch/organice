@@ -6,6 +6,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 
 
+* [2020-06-03 Wed]
+** Added
+   - =TODO= keyword sets can now be anywhere in the file
+     - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/310][PR]] 🙏
 * [2020-05-30 Sat]
 
 ** Added
