@@ -108,11 +108,10 @@ Installing to the homescreen on:
 "Current" means we're working hard on removing the following
 restrictions and expectations.
 
-- organice understands only a few in-buffer settings (see [[in_buffer_settings][Supported
+- organice understands only a few in-buffer settings (see [[#in_buffer_settings][Supported
   in-buffer configuration]])
   - Other in-buffer settings are imported and re-exported but are not
     editable with organice.
-  - In-buffer settings have to be declared before the first headline.
 - Other content before the first headline is imported and re-exported,
   but invisible and currently not editable with organice.
 - After potential in-buffer settings, your Org file _has to_ begin
@@ -210,7 +209,9 @@ organice implements this customization strategy:
   - For example [[capture_templates][capture templates]]
 
 ** Supported in-buffer configuration
-   <<in_buffer_settings>>
+   :PROPERTIES:
+   :CUSTOM_ID: in_buffer_settings
+   :END:
 
 *** In-buffer settings
 

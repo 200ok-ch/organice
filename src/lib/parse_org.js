@@ -707,8 +707,14 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
   return _updateHeaderFromDescription(newHeader, descriptionText);
 };
 
+export const lineIsTodoKeywordConfig = (line) => {
+  return (line.startsWith('#+TODO: ') ||
+          line.startsWith('#+TYP_TODO: ') ||
+          line.startsWith('#+SEQ_TODO: '));
+}
+
 export const parseTodoKeywordConfig = (line) => {
-  if (!line.startsWith('#+TODO: ') && !line.startsWith('#+TYP_TODO: ')) {
+  if (!lineIsTodoKeywordConfig(line)) {
     return null;
   }
 
@@ -732,14 +738,39 @@ export const parseTodoKeywordConfig = (line) => {
   });
 };
 
+export const parseFileConfig = (lines) => {
+  let todoKeywordSets = List();
+  let fileConfigLines = List();
+
+  lines.forEach((line) => {
+    const newKeywordSet = parseTodoKeywordConfig(line);
+    if (newKeywordSet) {
+      todoKeywordSets = todoKeywordSets.push(newKeywordSet);
+    } else if (line.startsWith('#+')) {
+      fileConfigLines = fileConfigLines.push(line);
+    }
+  });
+
+  if (todoKeywordSets.size === 0) {
+    todoKeywordSets = defaultKeywordSets;
+  }
+
+  return {
+    todoKeywordSets,
+    fileConfigLines,
+  };
+};
+
 export const parseOrg = (fileContents) => {
   let headers = List();
   const lines = getLinesFromFileContents(fileContents);
 
-  let todoKeywordSets = List();
-  let fileConfigLines = List();
   let linesBeforeHeadings = List();
 
+  // This is the first pass over the whole file
+  const {todoKeywordSets, fileConfigLines} = parseFileConfig(lines);
+
+  // This is the second pass over the whole file
   lines.forEach((line) => {
     // A header has to start with at least one consecutive asterisk
     // followed by a blank
@@ -748,14 +779,7 @@ export const parseOrg = (fileContents) => {
       const title = line.substr(nestingLevel + 1);
       headers = headers.push(newHeaderWithTitle(title, nestingLevel, todoKeywordSets));
     } else if (headers.size === 0) {
-      const newKeywordSet = parseTodoKeywordConfig(line);
-      if (newKeywordSet) {
-        todoKeywordSets = todoKeywordSets.push(newKeywordSet);
-      } else if (line.startsWith('#+')) {
-        fileConfigLines = fileConfigLines.push(line);
-      } else {
-        linesBeforeHeadings = linesBeforeHeadings.push(line);
-      }
+      linesBeforeHeadings = linesBeforeHeadings.push(line);
     } else {
       headers = headers.updateIn([headers.size - 1, 'rawDescription'], (rawDescription) => {
         // In the beginning of the parseOrg function, the original
@@ -767,10 +791,6 @@ export const parseOrg = (fileContents) => {
       });
     }
   });
-
-  if (todoKeywordSets.size === 0) {
-    todoKeywordSets = defaultKeywordSets;
-  }
 
   headers = headers.map((header) => {
     // Normally, rawDescription contains the "stripped" raw description text,

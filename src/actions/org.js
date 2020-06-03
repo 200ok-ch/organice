@@ -110,8 +110,6 @@ const doSync = ({
               path,
               exportOrg({
                 headers: getState().org.present.get('headers'),
-                todoKeywordSets: getState().org.present.get('todoKeywordSets'),
-                fileConfigLines: getState().org.present.get('fileConfigLines'),
                 linesBeforeHeadings: getState().org.present.get('linesBeforeHeadings'),
                 dontIndent: getState().base.get('shouldNotIndentOnExport'),
               })
