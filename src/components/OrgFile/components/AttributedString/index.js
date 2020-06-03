@@ -8,6 +8,8 @@ import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';
 import TimestampPart from './components/TimestampPart';
 
+import { orgFileExtensions } from '../../../../lib/org_utils';
+
 import classNames from 'classnames';
 
 export default ({ parts, subPartDataAndHandlers }) => {
@@ -19,13 +21,13 @@ export default ({ parts, subPartDataAndHandlers }) => {
     const id = part.get('id');
     const uri = part.getIn(['contents', 'uri']);
     const title = part.getIn(['contents', 'title']) || uri;
-    if (uri.startsWith("file:")) {
+    if (uri.startsWith('file:')) {
       const target = uri.substr(5);
       const isRelativeOrgFileLink =
-        !target.startsWith("/") &&
-        !target.startsWith("~") &&
-        !target.startsWith("../") &&
-        uri.endsWith(".org");
+        !target.startsWith('/') &&
+        !target.startsWith('~') &&
+        !target.startsWith('../') &&
+        uri.match(orgFileExtensions);
       if (isRelativeOrgFileLink) {
         const dir = location.pathname.match(/.*\//);
         return (
