@@ -24,14 +24,22 @@ export default ({ parts, subPartDataAndHandlers }) => {
     let target = uri;
     if (uri.startsWith('file:')) {
       target = uri.substr(5);
-      const isRelativeOrgFileLink =
+      const isRelativeFileLink =
         !target.startsWith('/') &&
-        !target.startsWith('~') &&
-        uri.match(orgFileExtensions);
-      if (isRelativeOrgFileLink) {
+        !target.startsWith('~');
+      if (isRelativeFileLink) {
+        // N.B. Later on we may improve this conditional by performing
+        // an existence check on the backend if it allows that
+        // operation.
+
         target = normalisePath(target);
         if (!target.includes('/../')) {
           // Normalisation succeeded, so we can safely return a <Link>
+          if (!uri.match(orgFileExtensions)) {
+            // Optimistically assume that the link is pointing to a
+            // directory.
+            target = target.replace(/^\/file\//, '/files/');
+          }
           return (
               <Link key={id} to={target}>{title}</Link>
           );

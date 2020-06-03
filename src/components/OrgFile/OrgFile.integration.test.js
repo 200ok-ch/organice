@@ -478,6 +478,20 @@ describe('Render all views', () => {
             expect(elem[0]).toHaveTextContent('an existing .org file in the same directory');
           });
 
+          test('relative link to subdir', () => {
+            const elem = getAllByText('subdir');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/dir2/subdir');
+            expect(elem[0]).toHaveTextContent('subdir');
+          });
+
+          test('relative link to subdir/', () => {
+            const elem = getAllByText('subdir/');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/dir2/subdir/');
+            expect(elem[0]).toHaveTextContent('subdir/');
+          });
+
           test('relative link to fictitious .org file in subdir', () => {
             const elem = getAllByText('a fictitious .org file in a sub-directory');
             expect(elem.length).toEqual(1);
@@ -492,6 +506,20 @@ describe('Render all views', () => {
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a parent directory');
           });
 
+          test('relative link to subdir', () => {
+            const elem = getAllByText('../subdir');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/subdir');
+            expect(elem[0]).toHaveTextContent('../subdir');
+          });
+
+          test('relative link to subdir/', () => {
+            const elem = getAllByText('../subdir/');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/subdir/');
+            expect(elem[0]).toHaveTextContent('../subdir/');
+          });
+
           test('relative link to fictitious .org file in a grand-parent directory', () => {
             const elem = getAllByText('a fictitious .org file in a grand-parent directory');
             expect(elem.length).toEqual(1);
@@ -504,6 +532,13 @@ describe('Render all views', () => {
             expect(elem.length).toEqual(1);
             expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high.org');
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a too-high ancestor directory');
+          });
+
+          test('relative link to too-high ancestor directory', () => {
+            const elem = getAllByText('a too-high ancestor directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high');
+            expect(elem[0]).toHaveTextContent('a too-high ancestor directory');
           });
 
           test('absolute link to fictitious .org file in home directory', () => {
