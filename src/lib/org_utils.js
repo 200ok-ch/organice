@@ -81,8 +81,8 @@ export const parentIdOfHeaderWithId = (headers, headerId) => {
   const header = headerWithId(headers, headerId);
   const headerIndex = indexOfHeaderWithId(headers, headerId);
 
-  const previousHeaders = headers.slice(0, headerIndex).reverse();
-  const parentHeader = previousHeaders.find(
+  const previousHeaders = headers.slice(0, headerIndex);
+  const parentHeader = previousHeaders.findLast(
     (previousHeader) => previousHeader.get('nestingLevel') < header.get('nestingLevel')
   );
 
