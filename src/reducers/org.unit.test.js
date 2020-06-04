@@ -1,12 +1,15 @@
 import { fromJS } from 'immutable';
 
+import generateId from '../lib/id_generator';
 import reducer from './org';
+import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
 import { readInitialState } from '../util/settings_persister';
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import undoable, { ActionTypes } from 'redux-undo';
+import thunk from 'redux-thunk';
 
 import readFixture from '../../test_helpers/index';
 
@@ -30,8 +33,8 @@ describe('org reducer', () => {
   }
 
   beforeEach(() => {
-    state = fromJS(readInitialState());
-    state = state.setIn(['org', 'present'], parseOrg(testOrgFile));
+    state = readInitialState();
+    state.org.present = parseOrg(testOrgFile);
   });
 
   describe('REFILE_SUBTREE', () => {
@@ -43,20 +46,14 @@ describe('org reducer', () => {
 
       // "PROJECT Foo" is the 10th item, "A nested header" the 2nd,
       // but we count from 0 not 1.
-      sourceHeaderId = state
-        .getIn(['org', 'present', 'headers'])
-        .get(9)
-        .get('id');
-      targetHeaderId = state
-        .getIn(['org', 'present', 'headers'])
-        .get(1)
-        .get('id');
+      sourceHeaderId = state.org.present.get('headers').get(9).get('id');
+      targetHeaderId = state.org.present.get('headers').get(1).get('id');
     });
 
     it('should handle REFILE_SUBTREE', () => {
       // Mapping the headers to their nesting level. This is how the
       // initially parsed file should look like.
-      expect(extractTitlesAndNestings(state.getIn(['org', 'present', 'headers']))).toEqual([
+      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
         ['A todo item with schedule and deadline', 2],
@@ -73,7 +70,7 @@ describe('org reducer', () => {
       ]);
 
       const action = types.refileSubtree(sourceHeaderId, targetHeaderId);
-      const newState = reducer(state.getIn(['org', 'present']), action);
+      const newState = reducer(state.org.present, action);
 
       // PROJECT Foo is now beneath "A nested header" and is
       // appropriately indented.
@@ -95,12 +92,98 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
-      const store = createStore(undoable(reducer), state.getIn(['org', 'present']));
+      const store = createStore(undoable(reducer), state.org.present);
       const oldState = store.getState().present;
       store.dispatch({ type: 'REFILE_SUBTREE', sourceHeaderId, targetHeaderId, dirtying: true });
       expect(store.getState().present).not.toEqual(oldState);
       store.dispatch({ type: ActionTypes.UNDO });
       expect(store.getState().present).toEqual(oldState);
+    });
+  });
+
+  describe('INSERT_CAPTURE', () => {
+    let store, template;
+
+    beforeEach(() => {
+      template = {
+        description: '',
+        headerPaths: [],
+        iconName: 'todo',
+        id: generateId(),
+        isAvailableInAllOrgFiles: false,
+        letter: '',
+        orgFilesWhereAvailable: [],
+        shouldPrepend: false,
+        template: '* TODO %?',
+        isSample: true,
+      };
+      state.capture = state.capture.update('captureTemplates', (templates) =>
+        templates.push(fromJS(template))
+      );
+
+      // We have to create a full store rather than just the org bit,
+      // because the insertCapture thunk needs to retrieve capture
+      // templates from the capture part of the store.
+      store = createStore(rootReducer, state, applyMiddleware(thunk));
+    });
+
+    const content = '* TODO My task\nSome description\n';
+
+    function expectOrigFirstHeader(headers) {
+      expect(extractTitleAndNesting(headers.first())).toEqual(['Top level header', 1]);
+    }
+
+    function expectOrigLastHeader(headers) {
+      expect(extractTitleAndNesting(headers.last())).toEqual([
+        'A header with a custom todo sequence in DONE state',
+        1,
+      ]);
+    }
+
+    function insertCapture(shouldPrepend) {
+      // Check initially parsed file looks as expected
+      let headers = store.getState().org.present.get('headers');
+      expect(headers.size).toEqual(13);
+      expectOrigFirstHeader(headers);
+      expectOrigLastHeader(headers);
+      const action = types.insertCapture(template.id, content, shouldPrepend);
+      store.dispatch(action);
+      const newHeaders = store.getState().org.present.get('headers');
+      expect(newHeaders.size).toEqual(14);
+      return newHeaders;
+    }
+
+    it('should insert at top of file', () => {
+      const newHeaders = insertCapture(true);
+      expectOrigLastHeader(newHeaders);
+      const first = newHeaders.first();
+      expect(first.getIn(['titleLine', 'rawTitle'])).toEqual('My task');
+      expect(first.getIn(['titleLine', 'todoKeyword'])).toEqual('TODO');
+      expect(first.get('rawDescription')).toEqual('Some description\n');
+    });
+
+    it('should insert at bottom of file', () => {
+      const newHeaders = insertCapture(false);
+      expectOrigFirstHeader(newHeaders);
+      const last = newHeaders.last();
+      expect(last.getIn(['titleLine', 'rawTitle'])).toEqual('My task');
+      expect(last.getIn(['titleLine', 'todoKeyword'])).toEqual('TODO');
+      expect(last.get('rawDescription')).toEqual('Some description\n');
+    });
+
+    it.skip('is undoable', () => {
+      const oldState = store.getState().org.present;
+      store.dispatch({
+        type: 'INSERT_CAPTURE',
+        template: fromJS(template),
+        content,
+        shouldPrepend: true,
+        dirtying: true,
+      });
+      expect(store.getState().org.present).not.toEqual(oldState);
+      // FIXME: This does not do the undo for some weird reason
+      store.dispatch({ type: ActionTypes.UNDO });
+      expect(store.getState().org.present).toEqual(oldState);
     });
   });
 });

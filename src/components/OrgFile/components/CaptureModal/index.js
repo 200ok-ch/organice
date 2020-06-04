@@ -22,10 +22,13 @@ export default ({ template, onCapture, headers, onClose }) => {
     [template]
   );
 
-  const targetHeader = useMemo(() => headerWithPath(headers, template.get('headerPaths')), [
-    headers,
-    template,
-  ]);
+  const targetHeader = useMemo(
+    () =>
+      template.get('headerPaths').size === 0
+        ? 'FILE'
+        : headerWithPath(headers, template.get('headerPaths')),
+    [headers, template]
+  );
 
   const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
   const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
