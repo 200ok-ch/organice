@@ -31,6 +31,11 @@ export const changelogHash = () => {
   });
 };
 
+export const indexAndHeaderWithId = (headers, headerId) => {
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  return { headerIndex, header: headers.get(headerIndex) };
+};
+
 export const indexOfHeaderWithId = (headers, headerId) => {
   return headers.findIndex((header) => header.get('id') === headerId);
 };
@@ -40,8 +45,7 @@ export const headerWithId = (headers, headerId) => {
 };
 
 export const subheadersOfHeaderWithId = (headers, headerId) => {
-  const header = headerWithId(headers, headerId);
-  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
 
   const afterHeaders = headers.slice(headerIndex + 1);
   const nextSiblingHeaderIndex = afterHeaders.findIndex((siblingHeader) => {
@@ -59,8 +63,7 @@ export const numSubheadersOfHeaderWithId = (headers, headerId) =>
   subheadersOfHeaderWithId(headers, headerId).size;
 
 export const directParentIdOfHeaderWithId = (headers, headerId) => {
-  const header = headerWithId(headers, headerId);
-  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
 
   for (let i = headerIndex - 1; i >= 0; --i) {
     const previousHeader = headers.get(i);
@@ -78,8 +81,7 @@ export const directParentIdOfHeaderWithId = (headers, headerId) => {
 };
 
 export const parentIdOfHeaderWithId = (headers, headerId) => {
-  const header = headerWithId(headers, headerId);
-  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
 
   const previousHeaders = headers.slice(0, headerIndex).reverse();
   const parentHeader = previousHeaders.find(
