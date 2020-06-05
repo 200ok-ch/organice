@@ -63,7 +63,7 @@ describe('org reducer', () => {
         ['A repeating todo', 2],
         ['A header with tags                                              ', 1],
         ['A header with [[https://organice.200ok.ch][a link]]', 1],
-        ['A header with a link to a local .org file as content', 1],
+        ['A header with various links as content', 1],
         ['A header with a URL, mail address and phone number as content', 1],
         ['PROJECT Foo', 2],
         ["A headline that's done since a loong time", 3],
@@ -89,7 +89,7 @@ describe('org reducer', () => {
         ['A repeating todo', 2],
         ['A header with tags                                              ', 1],
         ['A header with [[https://organice.200ok.ch][a link]]', 1],
-        ['A header with a link to a local .org file as content', 1],
+        ['A header with various links as content', 1],
         ['A header with a URL, mail address and phone number as content', 1],
         ['A header with a custom todo sequence in DONE state', 1],
       ]);

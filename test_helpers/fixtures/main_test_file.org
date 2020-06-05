@@ -12,9 +12,19 @@ Some description content
 
 * A header with tags                                              :tag1:tag2:
 * A header with [[https://organice.200ok.ch][a link]]
-* A header with a link to a local .org file as content
-
-  [[file:schedule_and_timestamps.org][a local .org file]]
+* A header with various links as content
+  Relative link to [[file:schedule_and_timestamps.org][an existing .org file in the same directory]]
+  Relative link to [[file:subdir][subdir]]
+  Relative link to [[file:subdir/][subdir/]]
+  Relative link to [[file:subdir/foo.org][a fictitious .org file in a sub-directory]]
+  Relative link to [[file:../foo.org_archive][a fictitious .org file in a parent directory]]
+  Relative link to [[file:../subdir][../subdir]]
+  Relative link to [[file:../subdir/][../subdir/]]
+  Relative link to [[file:../../foo.org][a fictitious .org file in a grand-parent directory]]
+  Relative link to [[file:../../../../too-high.org][a fictitious .org file in a too-high ancestor directory]]
+  Relative link to [[file:../../../../too-high][a too-high ancestor directory]]
+  Absolute link to [[file:~/foo/bar/baz.org][a fictitious .org file in home directory]]
+  Absolute link to [[file:/foo/bar/baz.org][a fictitious .org file]]
 * A header with a URL, mail address and phone number as content
 
   This is a URL https://foo.bar.baz/xyz?a=b&d#foo in a line of text.

@@ -10,6 +10,12 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Added
    - =TODO= keyword sets can now be anywhere in the file
      - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/310][PR]] 🙏
+** Fixed
+   - =file:= links are sanity checked before opened
+     - Only relative file links are linked and can be opened, since absolute and back-looking (as in starting with =../=) might not be accessible to organice.
+     - =file:= links opened in iOS from the PWA view will not open Mobile Safari
+     - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/311][PR]] 🙏
+
 * [2020-05-30 Sat]
 
 ** Added

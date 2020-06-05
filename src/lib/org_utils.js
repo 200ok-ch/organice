@@ -657,3 +657,6 @@ export const getTodoKeywordSetsAsFlattenedArray = (state) => {
     .toSet()
     .toJS();
 };
+
+/** Regular expression of file extensions to validate a filename. */
+export const orgFileExtensions = /\.org(_archive)?$/;

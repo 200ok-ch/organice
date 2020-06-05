@@ -1,5 +1,6 @@
 import { Dropbox } from 'dropbox';
 import { isEmpty } from 'lodash';
+import { orgFileExtensions } from '../lib/org_utils';
 
 import { fromJS, Map } from 'immutable';
 
@@ -15,7 +16,7 @@ export const filterAndSortDirectoryListing = (listing) => {
     // Show all folders
     if (file['.tag'] === 'folder') return true;
     // Filter out all non-org files
-    return file.name.match(/org$|org_archive$/);
+    return file.name.match(orgFileExtensions);
   });
   return filteredListing.sort((a, b) => {
     // Folders before files
