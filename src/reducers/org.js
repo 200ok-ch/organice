@@ -24,7 +24,7 @@ import {
 import { attributedStringToRawText } from '../lib/export_org';
 import {
   indexOfHeaderWithId,
-  headerWithId,
+  indexAndHeaderWithId,
   parentIdOfHeaderWithId,
   subheadersOfHeaderWithId,
   numSubheadersOfHeaderWithId,
@@ -78,8 +78,8 @@ const openHeader = (state, action) => {
 const toggleHeaderOpened = (state, action) => {
   const headers = state.get('headers');
 
-  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
-  const isOpened = headerWithId(headers, action.headerId).get('opened');
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
+  const isOpened = header.get('opened');
 
   if (isOpened && state.get('focusedHeaderId') === action.headerId) {
     return state;
@@ -191,8 +191,7 @@ const advanceTodoState = (state, action) => {
   const logIntoDrawer = action.logIntoDrawer;
 
   const headers = state.get('headers');
-  const header = headerWithId(headers, headerId);
-  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
 
   const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
   const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
@@ -252,8 +251,7 @@ const updateHeaderDescription = (state, action) => {
 
 const addHeader = (state, action) => {
   const headers = state.get('headers');
-  const header = headerWithId(headers, action.headerId);
-  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
 
@@ -276,8 +274,7 @@ const addHeader = (state, action) => {
 
 const selectNextSiblingHeader = (state, action) => {
   const headers = state.get('headers');
-  const header = headerWithId(headers, action.headerId);
-  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
 
   const nextSibling = headers.get(headerIndex + subheaders.size + 1);
@@ -366,8 +363,7 @@ const moveHeaderUp = (state, action) => {
 
 const moveHeaderDown = (state, action) => {
   let headers = state.get('headers');
-  const header = headerWithId(headers, action.headerId);
-  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
   const nextSiblingIndex = headerIndex + subheaders.size + 1;
@@ -415,8 +411,7 @@ const moveHeaderRight = (state, action) => {
 
 const moveSubtreeLeft = (state, action) => {
   const headers = state.get('headers');
-  const header = headerWithId(headers, action.headerId);
-  const headerIndex = indexOfHeaderWithId(headers, action.headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
 
   const previousParentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
 
@@ -463,8 +458,10 @@ const refileSubtree = (state, action) => {
 
   const { sourceHeaderId, targetHeaderId } = action;
   let headers = state.get('headers');
-  let sourceHeader = headerWithId(headers, sourceHeaderId);
-  const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
+  let { header: sourceHeader, headerIndex: sourceHeaderIndex } = indexAndHeaderWithId(
+    headers,
+    sourceHeaderId
+  );
   let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
 
   // Do not attempt to move a header to itself
