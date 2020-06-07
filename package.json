@@ -20,7 +20,7 @@
     "react-dom": "^16.7.0-alpha.0",
     "react-hotkeys": "^2.0.0",
     "react-motion": "^0.5.2",
-    "react-redux": "^7.1.0",
+    "react-redux": "^7.2.0",
     "react-router-dom": "5.1.1",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
