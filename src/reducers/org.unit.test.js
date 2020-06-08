@@ -1,4 +1,4 @@
-import { Map, List, fromJS } from 'immutable';
+import { Map, fromJS } from 'immutable';
 
 import reducer from './org';
 import * as types from '../actions/org';
@@ -6,7 +6,7 @@ import { parseOrg } from '../lib/parse_org';
 import { readInitialState } from '../util/settings_persister';
 
 import { createStore } from 'redux';
-import undoable, { includeAction } from 'redux-undo';
+import undoable from 'redux-undo';
 
 import readFixture from '../../test_helpers/index';
 
