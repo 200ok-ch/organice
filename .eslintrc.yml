@@ -3,6 +3,7 @@ env:
   es6: true
 extends:
   - 'eslint:recommended'
+  - 'plugin:jest/recommended'
   - 'plugin:react/recommended'
 globals:
   Atomics: readonly
@@ -14,6 +15,7 @@ parserOptions:
   ecmaVersion: 2018
   sourceType: module
 plugins:
+  - jest
   - react
 rules:
   no-extra-boolean-cast: off
