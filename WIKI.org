@@ -233,7 +233,9 @@ to your Dropbox, here are your options:
                  input it
 
 * Building this documentation
-  <<building_docs>>
+  :PROPERTIES:
+  :CUSTOM_ID: building_docs
+  :END:
 
 This comprehensive documentation is an aggregation of multiple files
 which all reside in the [[https://github.com/200ok-ch/organice][organice code repository]] (=README.org=,

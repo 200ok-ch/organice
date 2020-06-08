@@ -51,7 +51,7 @@ These are the steps we take to ensure a high quality in the backlog:
 ** Contributing to the documentation
 
 The documentation is generated from =README.org= and various other files.
-The section on [[building_docs][building documentation]] explains how it is assembled.
+The section on [[#building_docs][building documentation]] explains how it is assembled.
 
 ** Development collaboration
 
