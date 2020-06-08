@@ -70,6 +70,9 @@ We have good quality assurance and an established workflow. This is it:
      options that Prettier will use automatically.
    - If you're using Emacs, you can autoformat your source files:
      https://github.com/munen/emacs.d/#auto-formatting
+   - Please use ~eslint~ to ensure that your changes conform with
+     our linting rules. You can run ~yarn eslint~ to check for rule
+     violations.
 7. Create Pull Request on Github to =master=
    - Check that the tests also pass on CI
 8. Core Team: Merge to =master=, deploy and accept the Issue on

@@ -32,12 +32,15 @@
     "start": "./bin/compile_search_parser.sh && react-scripts start",
     "build": "./bin/compile_search_parser.sh && react-scripts build",
     "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
+    "eslint": "./node_modules/.bin/eslint --cache .",
     "eject": "react-scripts eject",
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.9.0",
     "@testing-library/react": "10.0.5",
+    "eslint": "^6.6.0",
+    "eslint-plugin-react": "^7.20.0",
     "prettier": "1.19.1",
     "raw.macro": "0.3.0",
     "react-test-renderer": "^16.13.0"
