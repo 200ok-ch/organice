@@ -1,3 +1,5 @@
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectComputation", "expectMatch"] }] */
+
 import { parseOrg } from './parse_org';
 import readFixture from '../../test_helpers/index';
 import { isMatch, computeCompletions, computeCompletionsForDatalist } from './headline_filter';

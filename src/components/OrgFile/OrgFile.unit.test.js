@@ -1,3 +1,5 @@
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectStrippedDescription", "expectType"] }] */
+
 import {
   parseOrg,
   parseDescriptionPrefixElements,
