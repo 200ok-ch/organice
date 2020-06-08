@@ -291,6 +291,7 @@ describe('Render all views', () => {
         });
       });
 
+      /* global global */
       describe('Sharing', () => {
         let windowSpy;
         beforeEach(() => {
