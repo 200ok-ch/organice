@@ -77,49 +77,49 @@ describe('Unit Tests for Org file', () => {
       return expect(strippedDescription);
     };
 
-    test('Parse simple description', () => {
+    test('Parse empty description', () => {
       const description = '';
       expectStrippedDescription(description).toEqual(description);
     });
 
-    test('Parse simple description', () => {
+    test('Parse newline description', () => {
       const description = '\n';
       expectStrippedDescription(description).toEqual(description);
     });
 
-    test('Parse simple description', () => {
+    test('Parse simple description prefixed with newline', () => {
       const description = '\nfoo';
       expectStrippedDescription(description).toEqual(description);
     });
 
-    test('Parse simple description', () => {
+    test('Parse simple description surrounded by newlines', () => {
       const description = '\nfoo\n';
       expectStrippedDescription(description).toEqual(description);
     });
 
-    test('Parse simple description with planning item', () => {
+    test('Parse simple deadline description', () => {
       const description = 'DEADLINE: <2020-01-01 Mon>';
       expectStrippedDescription(description).toEqual('');
     });
 
-    test('Parse simple description with planning item', () => {
+    test('Parse simple deadilne description with newline', () => {
       const description = 'DEADLINE: <2020-01-01 Mon> \n';
       expectStrippedDescription(description).toEqual('');
     });
 
-    test('Parse simple description with planning item', () => {
+    test('Parse simple description with deadline', () => {
       const description = 'DEADLINE: <2020-01-01 Mon> \nfoo\n';
       expectStrippedDescription(description).toEqual('foo\n');
     });
 
-    test('Parse simple description with properties', () => {
+    test('Parse empty description with empty properties', () => {
       const description = `:PROPERTIES:
 :END:
 `;
       expectStrippedDescription(description).toEqual('');
     });
 
-    test('Parse simple description with properties', () => {
+    test('Parse empty line description with properties', () => {
       const text = '\n';
       const description = `:PROPERTIES:
 :END:
@@ -127,7 +127,7 @@ ${text}`;
       expectStrippedDescription(description).toEqual(text);
     });
 
-    test('Parse simple description with properties', () => {
+    test('Parse simple description with empty properties', () => {
       const text = 'abc\n';
       const description = `:PROPERTIES:
 :END:
@@ -164,20 +164,20 @@ ${text}`;
       expect(exportedFile).toEqual('\n');
     });
 
-    test('Parse very basic file with description', () => {
-      const testOrgFile = '* Header\n'; // only one header line, no description
+    test('Parse very basic file with one header, no description', () => {
+      const testOrgFile = '* Header\n';
       const exportedFile = parseAndExportOrgFile(testOrgFile);
       expect(exportedFile).toEqual(testOrgFile);
     });
 
-    test('Parse very basic file with description', () => {
-      const testOrgFile = '* Header\n\n'; // one empty line of description
+    test('Parse very basic file with one header, empty line of description', () => {
+      const testOrgFile = '* Header\n\n';
       const exportedFile = parseAndExportOrgFile(testOrgFile);
       expect(exportedFile).toEqual(testOrgFile);
     });
 
-    test('Parse very basic file with description', () => {
-      const testOrgFile = '* Header\nabc\n'; // header with one line of description
+    test('Parse very basic file with one header, one line of description', () => {
+      const testOrgFile = '* Header\nabc\n';
       const exportedFile = parseAndExportOrgFile(testOrgFile);
       expect(exportedFile).toEqual(testOrgFile);
     });
@@ -287,17 +287,19 @@ ${text}`;
             expect(parsedFile.strippedDescription).toEqual(testDescription);
           });
 
-          test('Parsing planning items must not consume leading spaces in description', () => {
-            const description = '  - list item';
-            const { strippedDescription } = _parsePlanningItems(description);
-            expect(strippedDescription).toEqual(description);
-          });
+          describe('Parsing planning items must not consume leading spaces in description', () => {
+            test('Basic', () => {
+              const description = '  - list item';
+              const { strippedDescription } = _parsePlanningItems(description);
+              expect(strippedDescription).toEqual(description);
+            });
 
-          test('Parsing planning items must not consume leading spaces in description', () => {
-            const description = '  - list item';
-            const completeDescription = `SCHEDULED: <2020-01-01> \n${description}`;
-            const { strippedDescription } = _parsePlanningItems(completeDescription);
-            expect(strippedDescription).toEqual(description);
+            test('Scheduled', () => {
+              const description = '  - list item';
+              const completeDescription = `SCHEDULED: <2020-01-01> \n${description}`;
+              const { strippedDescription } = _parsePlanningItems(completeDescription);
+              expect(strippedDescription).toEqual(description);
+            });
           });
 
           test('Parsing planning items must only consume one trailing newline', () => {

@@ -506,14 +506,14 @@ describe('Render all views', () => {
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a parent directory');
           });
 
-          test('relative link to subdir', () => {
+          test('relative link to ../subdir', () => {
             const elem = getAllByText('../subdir');
             expect(elem.length).toEqual(1);
             expect(elem[0]).toHaveAttribute('href', '/files/dir1/subdir');
             expect(elem[0]).toHaveTextContent('../subdir');
           });
 
-          test('relative link to subdir/', () => {
+          test('relative link to ../subdir/', () => {
             const elem = getAllByText('../subdir/');
             expect(elem.length).toEqual(1);
             expect(elem[0]).toHaveAttribute('href', '/files/dir1/subdir/');
