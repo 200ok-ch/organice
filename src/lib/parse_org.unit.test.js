@@ -136,7 +136,7 @@ describe('Parse in-buffer TODO keyword settings', () => {
     });
   });
 
-  describe('TODO keywords at EOF parsed correctly', () => {
+  test('TODO keywords at EOF parsed correctly', () => {
     const testOrgFile = readFixture('todo_keywords_interspersed');
     const parsedFile = parseOrg(testOrgFile);
     const headers = parsedFile.get('headers').toJS();
