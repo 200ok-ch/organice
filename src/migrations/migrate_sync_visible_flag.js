@@ -7,9 +7,6 @@ export default () => {
   }
 
   const shouldSyncOnBecomingVisible = localStorage.getItem('shouldSyncOnBecomingVisibile');
-  if (!shouldSyncOnBecomingVisible) {
-    return;
-  }
 
   localStorage.setItem('shouldSyncOnBecomingVisible', shouldSyncOnBecomingVisible);
   localStorage.removeItem('shouldSyncOnBecomingVisibile');
