@@ -16,6 +16,20 @@ describe('org reducer', () => {
 
   const testOrgFile = readFixture('main_test_file');
 
+  // Given a `header`, return its `title` and `nestingLevel`.
+  function extractTitleAndNesting(header) {
+    return [header.getIn(['titleLine', 'rawTitle']), header.get('nestingLevel')];
+  }
+
+  // Given some `headers`, return their `title`s and `nestingLevel`s.
+  function extractTitlesAndNestings(headers) {
+    return headers
+      .map((header) => {
+        return extractTitleAndNesting(header);
+      })
+      .toJS();
+  }
+
   beforeEach(() => {
     state = fromJS(readInitialState());
     state = state.setIn(['org', 'present'], parseOrg(testOrgFile));
@@ -44,18 +58,9 @@ describe('org reducer', () => {
     });
 
     it('should handle REFILE_SUBTREE', () => {
-      // Given some `headers`, return their `title`s and `nestingLevel`s.
-      function extractTitleAndNesting(headers) {
-        return headers
-          .map((header) => {
-            return [header.getIn(['titleLine', 'rawTitle']), header.get('nestingLevel')];
-          })
-          .toJS();
-      }
-
       // Mapping the headers to their nesting level. This is how the
       // initially parsed file should look like.
-      expect(extractTitleAndNesting(state.getIn(['org', 'present', 'headers']))).toEqual([
+      expect(extractTitlesAndNestings(state.getIn(['org', 'present', 'headers']))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
         ['A todo item with schedule and deadline', 2],
@@ -78,7 +83,7 @@ describe('org reducer', () => {
 
       // PROJECT Foo is now beneath "A nested header" and is
       // appropriately indented.
-      expect(extractTitleAndNesting(newState.get('headers'))).toEqual([
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
         ['PROJECT Foo', 3],
