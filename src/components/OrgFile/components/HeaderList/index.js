@@ -142,8 +142,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderList);
+export default connect(mapStateToProps)(HeaderList);
