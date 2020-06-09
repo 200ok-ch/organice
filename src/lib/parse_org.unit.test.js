@@ -8,6 +8,22 @@ import {
 } from './parse_org';
 import readFixture from '../../test_helpers/index';
 
+/**
+ * This is a convenience wrapper around parsing an org file using
+ * `parseOrg` and then export it using `exportOrg`.
+ * @param {String} testOrgFile - contents of an org file
+ * @param {Boolean} dontIndent - by default false, so indent drawers
+ */
+function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
+  const parsedFile = parseOrg(testOrgFile);
+  const exportedFile = exportOrg({
+    headers: parsedFile.get('headers'),
+    linesBeforeHeadings: parsedFile.get('linesBeforeHeadings'),
+    dontIndent: dontIndent,
+  });
+  return exportedFile;
+}
+
 describe('Test the parser', () => {
   const expectType = (result) => expect(result.map((x) => x.type));
   describe('Parsing inline-markup', () => {
@@ -132,5 +148,22 @@ describe('Parse in-buffer TODO keyword settings', () => {
         expectNewSetFromLine(line);
       });
     });
+  });
+
+  describe('TODO keywords at EOF parsed correctly', () => {
+    const testOrgFile = readFixture('todo_keywords_interspersed');
+    const parsedFile = parseOrg(testOrgFile);
+    const headers = parsedFile.get('headers').toJS();
+    expect(headers.length).toEqual(15);
+    expect(headers[7].titleLine.rawTitle).toEqual('orgmode settings in middle of file');
+    expect(headers[14].titleLine.rawTitle).toEqual('orgmode settings at end of file');
+    const todoKeywordSets = parsedFile.get('todoKeywordSets').toJS();
+    expect(todoKeywordSets.length).toEqual(3);
+    expect(todoKeywordSets[0].keywords).toEqual(['NEXT', 'DONE']);
+    expect(todoKeywordSets[0].completedKeywords).toEqual(['DONE']);
+    expect(todoKeywordSets[1].keywords).toEqual(['START', 'FINISHED']);
+    expect(todoKeywordSets[1].completedKeywords).toEqual(['FINISHED']);
+    expect(todoKeywordSets[2].keywords).toEqual(['PROJECT', 'PROJDONE']);
+    expect(todoKeywordSets[2].completedKeywords).toEqual(['PROJDONE']);
   });
 });

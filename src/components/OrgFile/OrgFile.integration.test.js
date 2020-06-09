@@ -77,7 +77,7 @@ describe('Render all views', () => {
       getByPlaceholderText;
     beforeEach(() => {
       let res = render(
-        <MemoryRouter keyLength={0}>
+        <MemoryRouter keyLength={0} initialEntries={["/file/dir1/dir2/fixtureTestFile.org"]}>
           <Provider store={store}>
             <HeaderBar />
             <OrgFile path="fixtureTestFile.org" />
@@ -216,7 +216,7 @@ describe('Render all views', () => {
 
     describe('Renders everything starting from an Org file', () => {
       test('renders an Org file', () => {
-        expect(getAllByText(/\*/)).toHaveLength(6);
+        expect(getAllByText(/\*/)).toHaveLength(7);
         expect(container).toMatchSnapshot();
       });
 
@@ -449,6 +449,7 @@ describe('Render all views', () => {
           expect(elem[0]).toHaveAttribute('href', 'tel:+498025123456789');
           expect(elem[0]).toHaveTextContent('+498025123456789');
         });
+
         test('recognizes URLs', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')
@@ -460,6 +461,101 @@ describe('Render all views', () => {
           expect(elem[0]).toHaveAttribute('href', 'https://foo.bar.baz/xyz?a=b&d#foo');
           expect(elem[0]).toHaveTextContent('https://foo.bar.baz/xyz?a=b&d#foo');
         });
+
+        describe('recognizes file: links', () => {
+          beforeEach(() => {
+            fireEvent.click(
+              queryByText('A header with various links as content')
+            );
+          });
+
+          test('relative link to .org file', () => {
+            const elem = getAllByText('an existing .org file in the same directory');
+            // There's exactly one such URL
+            expect(elem.length).toEqual(1);
+            // And it renders as such
+            expect(elem[0]).toHaveAttribute('href', '/file/dir1/dir2/schedule_and_timestamps.org');
+            expect(elem[0]).toHaveTextContent('an existing .org file in the same directory');
+          });
+
+          test('relative link to subdir', () => {
+            const elem = getAllByText('subdir');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/dir2/subdir');
+            expect(elem[0]).toHaveTextContent('subdir');
+          });
+
+          test('relative link to subdir/', () => {
+            const elem = getAllByText('subdir/');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/dir2/subdir/');
+            expect(elem[0]).toHaveTextContent('subdir/');
+          });
+
+          test('relative link to fictitious .org file in subdir', () => {
+            const elem = getAllByText('a fictitious .org file in a sub-directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/file/dir1/dir2/subdir/foo.org');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file in a sub-directory');
+          });
+
+          test('relative link to fictitious .org file in a parent directory', () => {
+            const elem = getAllByText('a fictitious .org file in a parent directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/file/dir1/foo.org_archive');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file in a parent directory');
+          });
+
+          test('relative link to subdir', () => {
+            const elem = getAllByText('../subdir');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/subdir');
+            expect(elem[0]).toHaveTextContent('../subdir');
+          });
+
+          test('relative link to subdir/', () => {
+            const elem = getAllByText('../subdir/');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/files/dir1/subdir/');
+            expect(elem[0]).toHaveTextContent('../subdir/');
+          });
+
+          test('relative link to fictitious .org file in a grand-parent directory', () => {
+            const elem = getAllByText('a fictitious .org file in a grand-parent directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', '/file/foo.org');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file in a grand-parent directory');
+          });
+
+          test('relative link to fictitious .org file in a too-high ancestor directory', () => {
+            const elem = getAllByText('a fictitious .org file in a too-high ancestor directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high.org');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file in a too-high ancestor directory');
+          });
+
+          test('relative link to too-high ancestor directory', () => {
+            const elem = getAllByText('a too-high ancestor directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high');
+            expect(elem[0]).toHaveTextContent('a too-high ancestor directory');
+          });
+
+          test('absolute link to fictitious .org file in home directory', () => {
+            const elem = getAllByText('a fictitious .org file in home directory');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', 'file://~/foo/bar/baz.org');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file in home directory');
+          });
+
+          test('absolute link to fictitious .org file', () => {
+            const elem = getAllByText('a fictitious .org file');
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', 'file:///foo/bar/baz.org');
+            expect(elem[0]).toHaveTextContent('a fictitious .org file');
+          });
+        });
+
         test('recognizes email addresses', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')

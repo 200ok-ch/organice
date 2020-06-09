@@ -6,7 +6,7 @@
     "node": "^12.13.1"
   },
   "dependencies": {
-    "bowser": "^2.7.0",
+    "bowser": "^2.9.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.12.0",
     "dotenv": "^8.2.0",
@@ -20,10 +20,10 @@
     "react-dom": "^16.7.0-alpha.0",
     "react-hotkeys": "^2.0.0",
     "react-motion": "^0.5.2",
-    "react-redux": "^7.1.0",
-    "react-router-dom": "5.1.1",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "5.2.0",
     "react-scripts": "3.4.1",
-    "redux": "^4.0.0",
+    "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.0",
     "webdav": "^2.10.0"
@@ -36,11 +36,11 @@
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.0.0",
-    "@testing-library/react": "10.0.4",
+    "@testing-library/jest-dom": "^5.9.0",
+    "@testing-library/react": "10.0.5",
     "prettier": "1.19.1",
     "raw.macro": "0.3.0",
-    "react-test-renderer": "^16.4.2"
+    "react-test-renderer": "^16.13.0"
   },
   "browserslist": [
     ">0.2%",

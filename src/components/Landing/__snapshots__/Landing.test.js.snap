@@ -36,21 +36,32 @@ exports[`<Landing /> renders 1`] = `
         organice allows you to view and edit Org files from cloud storage directly on your device! No Org file or other user-data will be stored on our servers; the entire app is browser-based.
       </p>
       <a
-        href="/sample"
-      >
-        <div
-          class="btn landing-button view-sample-button"
-        >
-          View sample
-        </div>
-      </a>
-      <a
         href="/sign_in"
       >
         <div
           class="btn landing-button"
         >
           Sign in
+        </div>
+      </a>
+      <a
+        href="/sample"
+      >
+        <div
+          class="btn landing-button doc-button"
+        >
+          View sample
+        </div>
+      </a>
+      <a
+        href="/documentation.html"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <div
+          class="btn landing-button doc-button"
+        >
+          Documentation
         </div>
       </a>
     </div>

@@ -1,15 +1,77 @@
 import React from 'react';
 
+import { Link, useLocation } from 'react-router-dom';
+
 import './stylesheet.css';
 
 import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';
 import TimestampPart from './components/TimestampPart';
 
+import { orgFileExtensions } from '../../../../lib/org_utils';
+
 import classNames from 'classnames';
 
 export default ({ parts, subPartDataAndHandlers }) => {
   let className;
+
+  let location = useLocation();
+
+  const renderLink = (part) => {
+    const id = part.get('id');
+    const uri = part.getIn(['contents', 'uri']);
+    const title = part.getIn(['contents', 'title']) || uri;
+    let target = uri;
+    if (uri.startsWith('file:')) {
+      target = uri.substr(5);
+      const isRelativeFileLink =
+        !target.startsWith('/') &&
+        !target.startsWith('~');
+      if (isRelativeFileLink) {
+        // N.B. Later on we may improve this conditional by performing
+        // an existence check on the backend if it allows that
+        // operation.
+
+        target = normalisePath(target);
+        if (!target.includes('/../')) {
+          // Normalisation succeeded, so we can safely return a <Link>
+          if (!uri.match(orgFileExtensions)) {
+            // Optimistically assume that the link is pointing to a
+            // directory.
+            target = target.replace(/^\/file\//, '/files/');
+          }
+          return (
+              <Link key={id} to={target}>{title}</Link>
+          );
+        }
+      }
+
+      // Best effort in other cases; the file:// href may or may not work,
+      // but either way it should help show the user what's going on.
+      target = 'file://' + target;
+    }
+
+    return (
+        <a key={id} href={target} target="_blank" rel="noopener noreferrer">
+        {title}
+      </a>
+    );
+  };
+
+  const normalisePath = target => {
+    let dir = location.pathname.match(/(.*)\//)[1];
+    let normalised = target;
+    while (normalised.startsWith("../")) {
+      if (!dir.match(/^\/file\/.+/)) {
+        // We're already at the top; can't break out of the area accessible
+        // via HTTP, so just the original non-normalised path
+        return target;
+      }
+      normalised = normalised.substr(3);
+      dir = dir.match(/(.*)\//)[1];
+    }
+    return dir + '/' + normalised;
+  }
 
   return (
     <span>
@@ -18,14 +80,7 @@ export default ({ parts, subPartDataAndHandlers }) => {
           case 'text':
             return part.get('contents');
           case 'link':
-            const uri = part.getIn(['contents', 'uri']);
-            const title = part.getIn(['contents', 'title']) || uri;
-
-            return (
-              <a key={part.get('id')} href={uri} target="_blank" rel="noopener noreferrer">
-                {title}
-              </a>
-            );
+            return renderLink(part);
           case 'percentage-cookie':
             className = classNames('attributed-string__cookie-part', {
               'attributed-string__cookie-part--complete':

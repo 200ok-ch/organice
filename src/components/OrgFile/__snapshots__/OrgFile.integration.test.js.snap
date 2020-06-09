@@ -240,24 +240,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
 exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
-    class="header-bar header-bar--with-logo"
+    class="header-bar"
   >
-    <div
-      class="header-bar__logo-container"
+    <a
+      class="header-bar__back-button"
+      href="/files/dir1/dir2"
     >
-      <img
-        alt="Logo"
-        class="header-bar__logo"
-        height="30"
-        src="organice.svg"
-        width="30"
+      <i
+        class="fas fa-chevron-left"
       />
-      <h2
-        class="header-bar__app-name"
+      <span
+        class="header-bar__back-button__directory-path"
       >
-        organice
-      </h2>
-    </div>
+        File browser
+      </span>
+    </a>
     <div
       class="header-bar__title"
     />
@@ -496,6 +493,52 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </a>
                 </span>
                 
+              </span>
+            </div>
+          </div>
+          <div />
+        </div>
+        <div
+          class="header"
+          style="padding-left: 20px; margin-left: 0px;"
+        >
+          <div
+            class="left-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="right-swipe-action-container"
+            style="width: 0px; background-color: rgb(211, 211, 211);"
+          >
+            <i
+              class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+              style="display: none; color: rgb(0, 0, 0);"
+            />
+          </div>
+          <div
+            class="header__bullet"
+            style="margin-left: -16px;"
+          >
+            *
+          </div>
+          <div
+            class="title-line"
+            style="width: 0px;"
+          >
+            
+            <div>
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with various links as content
+                </span>
+                ...
               </span>
             </div>
           </div>

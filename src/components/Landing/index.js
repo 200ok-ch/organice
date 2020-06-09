@@ -25,12 +25,15 @@ export default () => {
           browser-based.
         </p>
 
-        <Link to="/sample">
-          <div className="btn landing-button view-sample-button">View sample</div>
-        </Link>
         <Link to="/sign_in">
           <div className="btn landing-button">Sign in</div>
         </Link>
+        <Link to="/sample">
+          <div className="btn landing-button doc-button">View sample</div>
+        </Link>
+        <a href="/documentation.html" target="_blank" rel="noopener noreferrer">
+          <div className="btn landing-button doc-button">Documentation</div>
+        </a>
       </div>
       <footer>
         <Link to="/privacy-policy">Privacy Policy</Link>
