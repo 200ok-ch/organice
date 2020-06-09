@@ -6,7 +6,7 @@
     "node": "^12.13.1"
   },
   "dependencies": {
-    "bowser": "^2.7.0",
+    "bowser": "^2.9.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.12.0",
     "dotenv": "^8.2.0",
