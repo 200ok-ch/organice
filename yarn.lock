@@ -3458,10 +3458,10 @@ buffer@^4.3.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-buffer@^5.0.8:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.4.3.tgz#3fbc9c69eb713d323e3fc1a895eee0710c072115"
-  integrity sha512-zvj65TkFeIt3i6aj5bIvJDzjjQQGs4o/sNoezg1F1kYap9Nu2jcUdpwzRSJTHMMzG0H7bZkn4rNQpImhuxWX2A==
+buffer@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
+  integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
   dependencies:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
@@ -4840,13 +4840,13 @@ dotenv@8.2.0, dotenv@^8.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
-dropbox@^4.0.30:
-  version "4.0.30"
-  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-4.0.30.tgz#747247b5088e26ab143db39afed8c66f0887d670"
-  integrity sha512-qmSeT8rhjARDHj3vxOTKQjc6IQ46AlRwJS8dqE26R323fikkjC4EXzocV12PsO7DOrjaqbOH3FjEdEEnrFraJw==
+dropbox@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-5.0.0.tgz#77149e386cf58fd2b23b38205ffd8a1f1415ffa1"
+  integrity sha512-U4kLG3QUHR6xcEXIqyWAKoAKUUIiNC1sFjfjcGJLyuPQ0+a4Y1LqkJZ3jZls21Ch1mohoEMEg9u3B9Gz72iGjA==
   dependencies:
-    buffer "^5.0.8"
-    moment "^2.19.3"
+    buffer "^5.6.0"
+    moment "^2.25.3"
 
 duplexer@^0.1.1:
   version "0.1.1"
@@ -8188,10 +8188,10 @@ mkdirp@^0.5.3:
   dependencies:
     minimist "^1.2.5"
 
-moment@^2.19.3:
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
-  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+moment@^2.25.3:
+  version "2.26.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
+  integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
