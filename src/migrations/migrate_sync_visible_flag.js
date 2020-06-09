@@ -11,6 +11,6 @@ export default () => {
     return;
   }
 
-  localStorage.setItem('shouldSyncOnBecomingVisibile', shouldSyncOnBecomingVisible);
+  localStorage.setItem('shouldSyncOnBecomingVisible', shouldSyncOnBecomingVisible);
   localStorage.removeItem('shouldSyncOnBecomingVisibile');
 };
