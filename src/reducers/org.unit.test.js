@@ -74,10 +74,8 @@ describe('org reducer', () => {
         ['A header with a custom todo sequence in DONE state', 1],
       ]);
 
-      const newState = reducer(
-        state.getIn(['org', 'present']),
-        types.refileSubtree(sourceHeaderId, targetHeaderId)
-      );
+      const action = types.refileSubtree(sourceHeaderId, targetHeaderId);
+      const newState = reducer(state.getIn(['org', 'present']), action);
 
       // PROJECT Foo is now beneath "A nested header" and is
       // appropriately indented.
