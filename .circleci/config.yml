@@ -52,6 +52,8 @@ jobs:
           paths:
             - ~/.cache/yarn
 
+      - run: yarn eslint
+
       - run: yarn test
 
   push-image:
