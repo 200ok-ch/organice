@@ -9,6 +9,22 @@ import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
 import { fromJS } from 'immutable';
 
+/**
+ * This is a convenience wrapper around parsing an org file using
+ * `parseOrg` and then export it using `exportOrg`.
+ * @param {String} testOrgFile - contents of an org file
+ * @param {Boolean} dontIndent - by default false, so indent drawers
+ */
+function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
+  const parsedFile = parseOrg(testOrgFile);
+  const exportedFile = exportOrg({
+    headers: parsedFile.get('headers'),
+    linesBeforeHeadings: parsedFile.get('linesBeforeHeadings'),
+    dontIndent: dontIndent,
+  });
+  return exportedFile;
+}
+
 describe('Tests for export', () => {
   const createSimpleHeaderWithDescription = (description) =>
     fromJS({
