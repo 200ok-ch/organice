@@ -12,7 +12,6 @@ import readFixture from '../../test_helpers/index';
 
 describe('org reducer', () => {
   let state;
-  let store;
 
   const testOrgFile = readFixture('main_test_file');
 
@@ -33,7 +32,6 @@ describe('org reducer', () => {
   beforeEach(() => {
     state = fromJS(readInitialState());
     state = state.setIn(['org', 'present'], parseOrg(testOrgFile));
-    store = createStore(undoable(reducer), state.getIn(['org', 'present']));
   });
 
   describe('undo/redo', () => {});
@@ -101,6 +99,7 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
+      const store = createStore(undoable(reducer), state.getIn(['org', 'present']));
       const oldState = store.getState().present;
       store.dispatch({ type: 'REFILE_SUBTREE', sourceHeaderId, targetHeaderId, dirtying: true });
       expect(store.getState().present).not.toEqual(oldState);
