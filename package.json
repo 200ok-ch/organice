@@ -34,6 +34,7 @@
     "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
+    "prettier-eslint": "./node_modules/.bin/prettier-eslint \"`pwd`/**/*.js\"",
     "eject": "react-scripts eject",
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
@@ -48,6 +49,7 @@
     "eslint-plugin-react-redux": "^3.0.3",
     "prettier": "1.19.1",
     "prettier-eslint": "^11.0.0",
+    "prettier-eslint-cli": "^5.0.0",
     "raw.macro": "0.3.0",
     "react-test-renderer": "^16.13.0"
   },

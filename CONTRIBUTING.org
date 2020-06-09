@@ -74,6 +74,8 @@ We have good quality assurance and an established workflow. This is it:
      our linting rules. You can run ~yarn eslint~ to check for rule
      violations, and also ~yarn nibble~ to tackle them one category
      at a time.
+   - ~yarn prettier-eslint~ will combine both ~prettier~ and ~eslint
+     --fix~ for the best of both worlds.
 7. Create Pull Request on Github to =master=
    - Check that the tests also pass on CI
 8. Core Team: Merge to =master=, deploy and accept the Issue on
