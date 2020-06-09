@@ -34,8 +34,6 @@ describe('org reducer', () => {
     state = state.setIn(['org', 'present'], parseOrg(testOrgFile));
   });
 
-  describe('undo/redo', () => {});
-
   describe('REFILE_SUBTREE', () => {
     let sourceHeaderId, targetHeaderId;
 
