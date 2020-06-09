@@ -113,7 +113,7 @@ class HeaderList extends PureComponent {
     });
     return (
       <div className={className}>
-        {displayedHeaderRenderData.map((headerRenderDatum, index) => {
+        {displayedHeaderRenderData.map((headerRenderDatum) => {
           const header = headerRenderDatum.header;
           const color = headerColors[(header.get('nestingLevel') - 1) % headerColors.length];
 

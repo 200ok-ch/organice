@@ -1,4 +1,5 @@
 /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectComputation", "expectMatch"] }] */
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^gics(Or)?$" }] */
 
 import { parseOrg } from './parse_org';
 import readFixture from '../../test_helpers/index';

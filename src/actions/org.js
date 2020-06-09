@@ -29,7 +29,7 @@ export const setLastSyncAt = (lastSyncAt) => ({
 });
 
 export const stopDisplayingFile = () => {
-  return (dispatch, getState) => {
+  return (dispatch, _getState) => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
     dispatch(ActionCreators.clearHistory());
     dispatch(unfocusHeader());

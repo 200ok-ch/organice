@@ -181,7 +181,7 @@ export default class AgendaDay extends PureComponent {
         });
         return planningItemsforDate.map((planningItem) => [planningItem, header]);
       })
-      .sortBy(([planningItem, header]) => {
+      .sortBy(([planningItem, _header]) => {
         const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
           .get('timestamp')
           .toJS();

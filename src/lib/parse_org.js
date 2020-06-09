@@ -79,7 +79,7 @@ const timestampFromRegexMatch = (match, partIndices) => {
 
 export const parseMarkupAndCookies = (
   rawText,
-  { shouldAppendNewline = false, excludeCookies = true } = {}
+  { shouldAppendNewline = false, _excludeCookies = true } = {}
 ) => {
   const matches = [];
   let match = markupAndCookieRegex.exec(rawText);

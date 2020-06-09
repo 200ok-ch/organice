@@ -69,9 +69,9 @@ describe('Unit Tests for Org file', () => {
   describe('Parsing and export should not alter the description part', () => {
     const expectStrippedDescription = (description) => {
       const {
-        planningItems,
-        propertyListItems,
-        logBookEntries,
+        _planningItems,
+        _propertyListItems,
+        _logBookEntries,
         strippedDescription,
       } = parseDescriptionPrefixElements(description, fromJS([]));
       return expect(strippedDescription);

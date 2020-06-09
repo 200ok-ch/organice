@@ -23,6 +23,11 @@ rules:
   no-extra-boolean-cast: off
   no-empty: off
   no-case-declarations: off
+  no-unused-vars:
+    - error
+    -
+      varsIgnorePattern: '_.+'
+      argsIgnorePattern: '_.*|reject'
   react/no-unescaped-entities: off
   react/display-name: off
   react/prop-types: off

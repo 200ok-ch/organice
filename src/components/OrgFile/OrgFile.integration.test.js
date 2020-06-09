@@ -1,6 +1,5 @@
 import React from 'react';
 import thunk from 'redux-thunk';
-import _ from 'lodash';
 
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -18,7 +17,7 @@ import { setShouldLogIntoDrawer } from '../../actions/base';
 import { Map, fromJS } from 'immutable';
 import { formatDistanceToNow } from 'date-fns';
 
-import { render, fireEvent, cleanup, wait, prettyDOM } from '@testing-library/react';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 // Debugging help:
 // console.log(prettyDOM(container, 999999999999999999999999));
 import '@testing-library/jest-dom/extend-expect';
@@ -69,8 +68,8 @@ describe('Render all views', () => {
       getByText,
       getAllByText,
       getByTitle,
-      getAllByTitle,
-      getByAltText,
+      _getAllByTitle,
+      _getByAltText,
       getByTestId,
       queryByText,
       queryAllByText,
@@ -88,9 +87,9 @@ describe('Render all views', () => {
       container = res.container;
       getByText = res.getByText;
       getAllByText = res.getAllByText;
-      getByAltText = res.getByAltText;
+      // getByAltText = res.getByAltText;
       getByTitle = res.getByTitle;
-      getAllByTitle = res.getAllByTitle;
+      // getAllByTitle = res.getAllByTitle;
       getByTestId = res.getByTestId;
       queryByText = res.queryByText;
       queryAllByText = res.queryAllByText;
@@ -389,12 +388,12 @@ describe('Render all views', () => {
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
         });
 
-        // More rigerous testing of the search parser is here:
+        // More rigorous testing of the search parser is here:
         // headline_filter_parser.unit.test.js
         test('search in TaskList filters headers (on demand without todoKeywords)', () => {
           fireEvent.click(getByTitle('Show task list'));
           const drawerElem = getByTestId('drawer');
-          const input = getByPlaceholderText(
+          getByPlaceholderText(
             'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
           );
 

@@ -38,7 +38,7 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
   return (
     <div>
       <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
-        {(provided, snapshot) => (
+        {(provided, _snapshot) => (
           <div
             className="capture-templates-container"
             ref={provided.innerRef}

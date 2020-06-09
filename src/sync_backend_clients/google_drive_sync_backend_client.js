@@ -226,7 +226,7 @@ export default () => {
                       parents,
                       name: newFileName,
                     })
-                    .then((copyResponse) => {
+                    .then((_copyResponse) => {
                       resolve();
                     })
                     .catch(reject);

@@ -84,7 +84,7 @@ class TitleLine extends PureComponent {
     return generateTitleLine(header.toJS(), false);
   }
 
-  handleTitleClick(event) {
+  handleTitleClick(_event) {
     const { header, hasContent, isSelected, onClick } = this.props;
 
     if (!!onClick) {
@@ -114,7 +114,7 @@ class TitleLine extends PureComponent {
   }
 
   // Rationale for setTimeout documented in HeaderContent/index.js
-  handleTextareaBlur(event) {
+  handleTextareaBlur(_event) {
     setTimeout(() => {
       if (!this.state.shouldIgnoreBlur) {
         this.props.org.exitEditMode();

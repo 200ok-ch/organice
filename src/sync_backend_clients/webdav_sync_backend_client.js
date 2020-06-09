@@ -37,7 +37,7 @@ export default (url, login, password) => {
         .then(() => {
           resolve(true);
         })
-        .catch((error) => {
+        .catch((_error) => {
           console.log("Login didn't work");
           resolve(false);
         });
@@ -67,7 +67,7 @@ export default (url, login, password) => {
         .catch(reject);
     });
 
-  const getMoreDirectoryListing = (additionalSyncBackendState) => {
+  const getMoreDirectoryListing = (_additionalSyncBackendState) => {
     // TODO
     return new Promise((resolve, reject) => resolve());
   };

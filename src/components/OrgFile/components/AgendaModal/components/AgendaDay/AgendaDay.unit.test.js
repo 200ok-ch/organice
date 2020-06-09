@@ -1,4 +1,4 @@
-import { parseOrg, _parsePlanningItems } from '../../../../../../lib/parse_org';
+import { parseOrg } from '../../../../../../lib/parse_org';
 
 import AgendaDay from './index';
 

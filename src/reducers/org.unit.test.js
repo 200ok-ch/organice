@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 
 import reducer from './org';
 import * as types from '../actions/org';
