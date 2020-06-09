@@ -6,7 +6,7 @@ import { parseOrg } from '../lib/parse_org';
 import { readInitialState } from '../util/settings_persister';
 
 import { createStore } from 'redux';
-import undoable from 'redux-undo';
+import undoable, { ActionTypes } from 'redux-undo';
 
 import readFixture from '../../test_helpers/index';
 
@@ -101,7 +101,7 @@ describe('org reducer', () => {
       const oldState = store.getState().present;
       store.dispatch({ type: 'REFILE_SUBTREE', sourceHeaderId, targetHeaderId, dirtying: true });
       expect(store.getState().present).not.toEqual(oldState);
-      store.dispatch({ type: '@@redux-undo/UNDO' });
+      store.dispatch({ type: ActionTypes.UNDO });
       expect(store.getState().present).toEqual(oldState);
     });
   });
