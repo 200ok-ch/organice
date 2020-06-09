@@ -5,6 +5,7 @@ extends:
   - 'eslint:recommended'
   - 'plugin:jest/recommended'
   - 'plugin:react/recommended'
+  - 'plugin:react-redux/recommended'
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
@@ -17,6 +18,7 @@ parserOptions:
 plugins:
   - jest
   - react
+  - react-redux
 rules:
   no-extra-boolean-cast: off
   no-empty: off
@@ -24,6 +26,7 @@ rules:
   react/no-unescaped-entities: off
   react/display-name: off
   react/prop-types: off
+  react-redux/prefer-separate-component-file: off
 settings:
   react:
     version: detect
