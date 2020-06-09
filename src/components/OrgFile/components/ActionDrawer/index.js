@@ -395,7 +395,7 @@ const ActionDrawer = ({
   );
 };
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     inEditMode: !!state.org.present.get('editMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),

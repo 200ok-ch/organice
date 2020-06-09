@@ -42,7 +42,7 @@ const KeyboardShortcutsEditor = ({ customKeybindings, base }) => {
   );
 };
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     customKeybindings: state.base.get('customKeybindings') || Map(),
   };

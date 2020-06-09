@@ -107,7 +107,7 @@ const FileBrowser = ({
   );
 };
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   const currentFileBrowserDirectoryListing = state.syncBackend.get(
     'currentFileBrowserDirectoryListing'
   );

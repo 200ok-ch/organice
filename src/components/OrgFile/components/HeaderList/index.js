@@ -134,7 +134,7 @@ class HeaderList extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     headers: state.org.present.get('headers'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),

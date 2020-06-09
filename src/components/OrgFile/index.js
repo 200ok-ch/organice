@@ -498,7 +498,7 @@ class OrgFile extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   const headers = state.org.present.get('headers');
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
   const activePopup = state.base.get('activePopup');
