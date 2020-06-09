@@ -64,20 +64,6 @@ describe('Tests for export', () => {
 });
 
 describe('Unit Tests for Org file', () => {
-  describe('Test the parser', () => {
-    const expectType = (result) => expect(result.map((x) => x.type));
-    describe('Parsing inline-markup', () => {
-      test('Parses inline-markup where closing delim is followed by ;', () => {
-        const result = parseMarkupAndCookies('*bold*;');
-        expectType(result).toEqual(['inline-markup', 'text']);
-      });
-      test('Parses inline-markup surrounded by text', () => {
-        const result = parseMarkupAndCookies(' *bold*;');
-        expectType(result).toEqual(['text', 'inline-markup', 'text']);
-      });
-    });
-  });
-
   describe('Parsing and export should not alter the description part', () => {
     const expectStrippedDescription = (description) => {
       const {
@@ -241,6 +227,7 @@ ${text}`;
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
       });
+
       test('Parses all valid URLs starting with www', () => {
         const parsedFile = parseOrg(testOrgFile);
         const firstHeader = parsedFile.get('headers').first();
@@ -346,16 +333,37 @@ ${description}`;
             const exportedFile = parseAndExportOrgFile(testOrgFile);
             expect(exportedFile).toEqual(testOrgFile);
           });
+
+          describe('Parses planning item with following checkmark', () => {
+            it('parses and exports without changes', () => {
+              const testOrgFile = readFixture('planning_item_with_following_checkmark');
+              const exportedFile = parseAndExportOrgFile(testOrgFile);
+              expect(exportedFile).toEqual(testOrgFile);
+            });
+            test('Parsing a planning items followed by a checklist must work', () => {
+              const testDescription = '- [ ] foo\n- [ ] bar';
+              const parsed = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`);
+              const parsedPlanningItem = parsed.planningItems.toJS();
+              expect(parsedPlanningItem[0].timestamp.dayName).toEqual('Tue');
+              expect(parsed.strippedDescription).toEqual(testDescription);
+            });
+          });
         });
 
         describe('Planning items are formatted as is default Emacs', () => {
+          test('For files with timestamps in title and description', () => {
+            const testOrgFile = readFixture('schedule_and_timestamps');
+            const exportedFile = parseAndExportOrgFile(testOrgFile);
+            expect(exportedFile).toEqual(testOrgFile);
+          });
+
           test('For basic files', () => {
             const testOrgFile = readFixture('schedule');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
             expect(exportedFile).toEqual(testOrgFile);
           });
 
-          test('For basic files', () => {
+          test('For files with multiple headlines with timestamps', () => {
             const testOrgFile = readFixture('multiple_headlines_with_timestamps');
             const exportedFile = parseAndExportOrgFile(testOrgFile);
             expect(exportedFile).toEqual(testOrgFile);
