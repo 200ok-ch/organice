@@ -37,8 +37,8 @@ export default (url, login, password) => {
         .then(() => {
           resolve(true);
         })
-        .catch((_error) => {
-          console.log("Login didn't work");
+        .catch((error) => {
+          console.error("Login didn't work, error: ", JSON.stringify(error));
           resolve(false);
         });
     });
@@ -74,7 +74,10 @@ export default (url, login, password) => {
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
-      webdavClient.putFileContents(path, contents, { overwrite: true }).then(resolve).catch(reject)
+      webdavClient
+        .putFileContents(path, contents, { overwrite: true })
+        .then(resolve)
+        .catch(reject)
     );
 
   const updateFile = uploadFile;

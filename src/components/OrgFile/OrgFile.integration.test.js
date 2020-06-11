@@ -68,15 +68,13 @@ describe('Render all views', () => {
       getByText,
       getAllByText,
       getByTitle,
-      _getAllByTitle,
-      _getByAltText,
       getByTestId,
       queryByText,
       queryAllByText,
       getByPlaceholderText;
     beforeEach(() => {
       let res = render(
-        <MemoryRouter keyLength={0} initialEntries={["/file/dir1/dir2/fixtureTestFile.org"]}>
+        <MemoryRouter keyLength={0} initialEntries={['/file/dir1/dir2/fixtureTestFile.org']}>
           <Provider store={store}>
             <HeaderBar />
             <OrgFile path="fixtureTestFile.org" />
@@ -87,9 +85,7 @@ describe('Render all views', () => {
       container = res.container;
       getByText = res.getByText;
       getAllByText = res.getAllByText;
-      // getByAltText = res.getByAltText;
       getByTitle = res.getByTitle;
-      // getAllByTitle = res.getAllByTitle;
       getByTestId = res.getByTestId;
       queryByText = res.queryByText;
       queryAllByText = res.queryAllByText;
@@ -393,11 +389,12 @@ describe('Render all views', () => {
         test('search in TaskList filters headers (on demand without todoKeywords)', () => {
           fireEvent.click(getByTitle('Show task list'));
           const drawerElem = getByTestId('drawer');
-          getByPlaceholderText(
-            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
-          );
+          getByPlaceholderText('e.g. -DONE doc|man :simple|easy :assignee:nobody|none');
 
+          // Is a regular header without TODO keyword
           expect(drawerElem).not.toHaveTextContent('Another top level header');
+          // Is a header with TODO keyword
+          expect(drawerElem).toHaveTextContent('A repeating todo');
         });
       });
 
@@ -464,9 +461,7 @@ describe('Render all views', () => {
 
         describe('recognizes file: links', () => {
           beforeEach(() => {
-            fireEvent.click(
-              queryByText('A header with various links as content')
-            );
+            fireEvent.click(queryByText('A header with various links as content'));
           });
 
           test('relative link to .org file', () => {
@@ -531,7 +526,9 @@ describe('Render all views', () => {
             const elem = getAllByText('a fictitious .org file in a too-high ancestor directory');
             expect(elem.length).toEqual(1);
             expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high.org');
-            expect(elem[0]).toHaveTextContent('a fictitious .org file in a too-high ancestor directory');
+            expect(elem[0]).toHaveTextContent(
+              'a fictitious .org file in a too-high ancestor directory'
+            );
           });
 
           test('relative link to too-high ancestor directory', () => {

@@ -126,7 +126,7 @@ class OrgFile extends PureComponent {
     }
   }
 
-  componentDidCatch(_error) {
+  componentDidCatch() {
     // TODO: Track the `error` into a bug tracker
     this.setState({ hasUncaughtError: true });
   }

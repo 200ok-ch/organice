@@ -68,12 +68,7 @@ describe('Tests for export', () => {
 describe('Unit Tests for Org file', () => {
   describe('Parsing and export should not alter the description part', () => {
     const expectStrippedDescription = (description) => {
-      const {
-        _planningItems,
-        _propertyListItems,
-        _logBookEntries,
-        strippedDescription,
-      } = parseDescriptionPrefixElements(description, fromJS([]));
+      const { strippedDescription } = parseDescriptionPrefixElements(description, fromJS([]));
       return expect(strippedDescription);
     };
 
@@ -97,17 +92,17 @@ describe('Unit Tests for Org file', () => {
       expectStrippedDescription(description).toEqual(description);
     });
 
-    test('Parse simple deadline description', () => {
+    test('Parse simple description with planning item', () => {
       const description = 'DEADLINE: <2020-01-01 Mon>';
       expectStrippedDescription(description).toEqual('');
     });
 
-    test('Parse simple deadilne description with newline', () => {
+    test('Parse simple description with planning item with newline', () => {
       const description = 'DEADLINE: <2020-01-01 Mon> \n';
       expectStrippedDescription(description).toEqual('');
     });
 
-    test('Parse simple description with deadline', () => {
+    test('Parse simple description with planning item and more content', () => {
       const description = 'DEADLINE: <2020-01-01 Mon> \nfoo\n';
       expectStrippedDescription(description).toEqual('foo\n');
     });

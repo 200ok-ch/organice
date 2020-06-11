@@ -188,7 +188,9 @@ export default () => {
       fileIdByNameAndParent(name, parentId)
         .then((fileId) =>
           !!fileId
-            ? updateFile(fileId, contents).then(resolve).catch(reject)
+            ? updateFile(fileId, contents)
+                .then(resolve)
+                .catch(reject)
             : getAPIClient().then((gapi) => {
                 gapi.client.drive.files
                   .create({
@@ -226,7 +228,7 @@ export default () => {
                       parents,
                       name: newFileName,
                     })
-                    .then((_copyResponse) => {
+                    .then(() => {
                       resolve();
                     })
                     .catch(reject);
