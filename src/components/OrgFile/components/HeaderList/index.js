@@ -113,7 +113,7 @@ class HeaderList extends PureComponent {
     });
     return (
       <div className={className}>
-        {displayedHeaderRenderData.map((headerRenderDatum, index) => {
+        {displayedHeaderRenderData.map((headerRenderDatum) => {
           const header = headerRenderDatum.header;
           const color = headerColors[(header.get('nestingLevel') - 1) % headerColors.length];
 
@@ -134,7 +134,7 @@ class HeaderList extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     headers: state.org.present.get('headers'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
@@ -142,8 +142,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderList);
+export default connect(mapStateToProps)(HeaderList);

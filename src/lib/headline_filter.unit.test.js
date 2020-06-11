@@ -1,3 +1,6 @@
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectComputation", "expectMatch"] }] */
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^gics(Or)?$" }] */
+
 import { parseOrg } from './parse_org';
 import readFixture from '../../test_helpers/index';
 import { isMatch, computeCompletions, computeCompletionsForDatalist } from './headline_filter';
@@ -266,7 +269,7 @@ describe('Computation of completions and suggestions for task filter', () => {
       test('Suggests keywords after | when it is a text filter', () => {
         expectComputation('a|', 2).toEqual(todoKeywords);
       });
-      test('Suggests keywords after | when it is a text filter', () => {
+      test('Suggests keywords after | when it is a text filter after space', () => {
         expectComputation(' a| ', 3).toEqual(todoKeywords);
       });
     });
@@ -290,7 +293,7 @@ describe('Computation of completions and suggestions for task filter', () => {
       test('No completions after [A-Z] after :', () => {
         expectComputation('x:T', 3).toEqual([]);
       });
-      test('Completions after [A-Z] after space', () => {
+      test('Completions after space after [A-Z] after space', () => {
         expectComputation(':a D ', 4).toEqual(['ONE']);
       });
       test('No completions after [A-Z]{2}', () => {

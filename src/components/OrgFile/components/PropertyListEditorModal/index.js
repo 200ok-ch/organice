@@ -108,7 +108,7 @@ export default class PropertyListEditorModal extends PureComponent {
           </div>
         ) : (
           <Droppable droppableId="property-list-editor-droppable" type="PROPERTY-LIST">
-            {(provided, snapshot) => (
+            {(provided) => (
               <div
                 className="property-list-editor__items-container"
                 ref={provided.innerRef}

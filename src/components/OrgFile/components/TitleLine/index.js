@@ -84,7 +84,7 @@ class TitleLine extends PureComponent {
     return generateTitleLine(header.toJS(), false);
   }
 
-  handleTitleClick(event) {
+  handleTitleClick() {
     const { header, hasContent, isSelected, onClick } = this.props;
 
     if (!!onClick) {
@@ -114,7 +114,7 @@ class TitleLine extends PureComponent {
   }
 
   // Rationale for setTimeout documented in HeaderContent/index.js
-  handleTextareaBlur(event) {
+  handleTextareaBlur() {
     setTimeout(() => {
       if (!this.state.shouldIgnoreBlur) {
         this.props.org.exitEditMode();
@@ -277,14 +277,14 @@ class TitleLine extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     inEditMode:
       state.org.present.get('editMode') === 'title' &&
-      state.org.present.get('selectedHeaderId') === props.header.get('id'),
+      state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     setShouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
-    isSelected: state.org.present.get('selectedHeaderId') === props.header.get('id'),
+    isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),
   };
 };

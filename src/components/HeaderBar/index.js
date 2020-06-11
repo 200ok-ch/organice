@@ -318,7 +318,7 @@ class HeaderBar extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),

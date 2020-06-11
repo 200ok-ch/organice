@@ -86,7 +86,7 @@ export default class TagsEditorModal extends PureComponent {
           </div>
         ) : (
           <Droppable droppableId="tags-editor-droppable" type="TAG">
-            {(provided, snapshot) => (
+            {(provided, _snapshot) => (
               <div className="tags-container" ref={provided.innerRef} {...provided.droppableProps}>
                 <Fragment>
                   {headerTags.map((tag, index) => (

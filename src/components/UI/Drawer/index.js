@@ -54,7 +54,7 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
       setIsVisible(dragOffsetY <= innerContainerHeight.current * 0.3);
       setDragOffsetY(null);
     };
-    const handleTouchEndOrCancel = (event) => endInnerContainerDrag();
+    const handleTouchEndOrCancel = () => endInnerContainerDrag();
 
     if (!!innerContainer.current) {
       // Super annoying logic for disabling scrolling of the body when a slide up is active.

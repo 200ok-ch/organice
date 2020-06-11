@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-const signOut = (state, action) => state.set('isAuthenticated', false).set('client', null);
+const signOut = (state) => state.set('isAuthenticated', false).set('client', null);
 
 const setCurrentFileBrowserDirectoryListing = (state, action) =>
   state.set(
@@ -22,7 +22,7 @@ const setIsLoadingMoreDirectoryListing = (state, action) =>
 export default (state = Map(), action) => {
   switch (action.type) {
     case 'SIGN_OUT':
-      return signOut(state, action);
+      return signOut(state);
     case 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING':
       return setCurrentFileBrowserDirectoryListing(state, action);
     case 'SET_IS_LOADING_MORE_DIRECTORY_LISTING':

@@ -291,7 +291,7 @@ export default ({
     </div>
   );
 
-  const renderDeleteButton = (template) => (
+  const renderDeleteButton = () => (
     <div className="capture-template__field-container capture-template__delete-button-container">
       <button
         className="btn settings-btn capture-template__delete-button"
@@ -344,7 +344,7 @@ export default ({
               {renderHeaderPaths(template)}
               {renderPrependField(template)}
               {renderTemplateField(template)}
-              {renderDeleteButton(template)}
+              {renderDeleteButton()}
             </div>
           </Collapse>
         </div>

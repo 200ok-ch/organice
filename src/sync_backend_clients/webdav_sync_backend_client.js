@@ -38,7 +38,7 @@ export default (url, login, password) => {
           resolve(true);
         })
         .catch((error) => {
-          console.log("Login didn't work");
+          console.error("Login didn't work, error: ", JSON.stringify(error));
           resolve(false);
         });
     });
@@ -67,14 +67,17 @@ export default (url, login, password) => {
         .catch(reject);
     });
 
-  const getMoreDirectoryListing = (additionalSyncBackendState) => {
+  const getMoreDirectoryListing = (_additionalSyncBackendState) => {
     // TODO
     return new Promise((resolve, reject) => resolve());
   };
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
-      webdavClient.putFileContents(path, contents, { overwrite: true }).then(resolve).catch(reject)
+      webdavClient
+        .putFileContents(path, contents, { overwrite: true })
+        .then(resolve)
+        .catch(reject)
     );
 
   const updateFile = uploadFile;

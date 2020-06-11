@@ -121,9 +121,7 @@ const mapStateToProps = (state) => ({
     state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
 });
 
-const mapDispatchToProps = (dispatch) => ({});
-
 const getTimeFromPlanningItem = (planningItem) =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
+export default connect(mapStateToProps)(TaskListView);

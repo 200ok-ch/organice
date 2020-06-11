@@ -1,4 +1,4 @@
-import peg from 'pegjs';
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectFirstParseResultExclude", "expectStrings"] }] */
 
 import parser from './headline_filter_parser';
 

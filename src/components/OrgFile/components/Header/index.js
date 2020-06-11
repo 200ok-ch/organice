@@ -517,7 +517,7 @@ ${header.get('rawDescription')}`;
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, ownProps) => {
   const focusedHeader = !!state.org.present.get('focusedHeaderId')
     ? headerWithId(state.org.present.get('headers'), state.org.present.get('focusedHeaderId'))
     : null;
@@ -526,7 +526,7 @@ const mapStateToProps = (state, props) => {
     bulletStyle: state.base.get('bulletStyle'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     focusedHeader,
-    isFocused: !!focusedHeader && focusedHeader.get('id') === props.header.get('id'),
+    isFocused: !!focusedHeader && focusedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
   };
 };

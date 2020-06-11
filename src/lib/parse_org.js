@@ -77,10 +77,7 @@ const timestampFromRegexMatch = (match, partIndices) => {
   };
 };
 
-export const parseMarkupAndCookies = (
-  rawText,
-  { shouldAppendNewline = false, excludeCookies = true } = {}
-) => {
+export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false } = {}) => {
   const matches = [];
   let match = markupAndCookieRegex.exec(rawText);
   while (match) {
@@ -699,7 +696,10 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
   // Hence, it's acceptable that it is opinionated on treating
   // whitespace.
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
-  const descriptionText = rawText.split('\n').slice(1).join('\n');
+  const descriptionText = rawText
+    .split('\n')
+    .slice(1)
+    .join('\n');
 
   // TODO: possible addition: allow subheaders in description!
 
@@ -708,10 +708,12 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 };
 
 export const lineIsTodoKeywordConfig = (line) => {
-  return (line.startsWith('#+TODO: ') ||
-          line.startsWith('#+TYP_TODO: ') ||
-          line.startsWith('#+SEQ_TODO: '));
-}
+  return (
+    line.startsWith('#+TODO: ') ||
+    line.startsWith('#+TYP_TODO: ') ||
+    line.startsWith('#+SEQ_TODO: ')
+  );
+};
 
 export const parseTodoKeywordConfig = (line) => {
   if (!lineIsTodoKeywordConfig(line)) {
@@ -768,7 +770,7 @@ export const parseOrg = (fileContents) => {
   let linesBeforeHeadings = List();
 
   // This is the first pass over the whole file
-  const {todoKeywordSets, fileConfigLines} = parseFileConfig(lines);
+  const { todoKeywordSets, fileConfigLines } = parseFileConfig(lines);
 
   // This is the second pass over the whole file
   lines.forEach((line) => {

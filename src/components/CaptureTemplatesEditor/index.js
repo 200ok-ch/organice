@@ -38,7 +38,7 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
   return (
     <div>
       <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
-        {(provided, snapshot) => (
+        {(provided) => (
           <div
             className="capture-templates-container"
             ref={provided.innerRef}
@@ -85,7 +85,7 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
   );
 };
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     captureTemplates: state.capture.get('captureTemplates', List()),
     syncBackendType: state.syncBackend.get('client').type,
