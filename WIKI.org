@@ -2,6 +2,10 @@
 # be in the main README which also gets displayed on Github.
 
 * FAQ synchronization back-ends
+  :PROPERTIES:
+  :CUSTOM_ID: sync_backends
+  :END:
+
 ** Dropbox
    :PROPERTIES:
    :CUSTOM_ID: faq_dropbox
