@@ -46,13 +46,29 @@ jobs:
           name: Install Dependencies
           command: yarn install --frozen-lockfile
 
+      - run:
+          name: Show Dependencies
+          command: yarn list
+
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
 
-      - run: yarn eslint
+      - run:
+          name: eslint
+          command: yarn eslint
+
+      - run:
+          name: prettier-eslint
+          # Make the build output more useful by immediately showing full details of
+          # any style violations.
+          command: |
+            yarn prettier-eslint --write
+            GIT_PAGER= git diff
+            git reset --hard HEAD
+            yarn prettier-eslint --list-different
 
       - run: yarn test
 
