@@ -24,9 +24,7 @@ export default ({ parts, subPartDataAndHandlers }) => {
     let target = uri;
     if (uri.startsWith('file:')) {
       target = uri.substr(5);
-      const isRelativeFileLink =
-        !target.startsWith('/') &&
-        !target.startsWith('~');
+      const isRelativeFileLink = !target.startsWith('/') && !target.startsWith('~');
       if (isRelativeFileLink) {
         // N.B. Later on we may improve this conditional by performing
         // an existence check on the backend if it allows that
@@ -41,7 +39,9 @@ export default ({ parts, subPartDataAndHandlers }) => {
             target = target.replace(/^\/file\//, '/files/');
           }
           return (
-              <Link key={id} to={target}>{title}</Link>
+            <Link key={id} to={target}>
+              {title}
+            </Link>
           );
         }
       }
@@ -52,16 +52,16 @@ export default ({ parts, subPartDataAndHandlers }) => {
     }
 
     return (
-        <a key={id} href={target} target="_blank" rel="noopener noreferrer">
+      <a key={id} href={target} target="_blank" rel="noopener noreferrer">
         {title}
       </a>
     );
   };
 
-  const normalisePath = target => {
+  const normalisePath = (target) => {
     let dir = location.pathname.match(/(.*)\//)[1];
     let normalised = target;
-    while (normalised.startsWith("../")) {
+    while (normalised.startsWith('../')) {
       if (!dir.match(/^\/file\/.+/)) {
         // We're already at the top; can't break out of the area accessible
         // via HTTP, so just the original non-normalised path
@@ -71,7 +71,7 @@ export default ({ parts, subPartDataAndHandlers }) => {
       dir = dir.match(/(.*)\//)[1];
     }
     return dir + '/' + normalised;
-  }
+  };
 
   return (
     <span>

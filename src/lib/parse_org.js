@@ -696,10 +696,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
   // Hence, it's acceptable that it is opinionated on treating
   // whitespace.
   const titleLine = rawText.split('\n')[0].replace(/^\**\s*|\s*$/g, '');
-  const descriptionText = rawText
-    .split('\n')
-    .slice(1)
-    .join('\n');
+  const descriptionText = rawText.split('\n').slice(1).join('\n');
 
   // TODO: possible addition: allow subheaders in description!
 

@@ -46,14 +46,8 @@ describe('org reducer', () => {
 
       // "PROJECT Foo" is the 10th item, "A nested header" the 2nd,
       // but we count from 0 not 1.
-      sourceHeaderId = state.org.present
-        .get('headers')
-        .get(9)
-        .get('id');
-      targetHeaderId = state.org.present
-        .get('headers')
-        .get(1)
-        .get('id');
+      sourceHeaderId = state.org.present.get('headers').get(9).get('id');
+      targetHeaderId = state.org.present.get('headers').get(1).get('id');
     });
 
     it('should handle REFILE_SUBTREE', () => {
