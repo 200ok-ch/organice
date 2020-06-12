@@ -43,7 +43,7 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}
 
       - run:
-          name: Install Dependencies
+          name: Install Javascript Dependencies
           command: yarn install --frozen-lockfile
 
       - run:
@@ -71,6 +71,14 @@ jobs:
             yarn prettier-eslint --list-different
 
       - run: yarn test
+
+      - run:
+          name: Install Documentation Dependencies
+          command: sudo apt-get update -yq && sudo apt install -yq pandoc emacs
+
+      - run:
+          name: Compile documentation
+          command: ./bin/compile_doc.sh
 
   push-image:
     machine: true
