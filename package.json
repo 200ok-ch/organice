@@ -36,6 +36,7 @@
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
     "prettier-eslint": "./node_modules/.bin/prettier-eslint \"`pwd`/**/*.js\"",
+    "lint": "yarn eslint && yarn prettier-eslint --list-different",
     "eject": "react-scripts eject",
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
