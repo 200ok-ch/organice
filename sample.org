@@ -205,7 +205,7 @@ organice supports something like org-capture in the form of customizable, quickl
 
 Click the button in the bottom right corner of the screen to see some examples. The first button, the lemon, will create a new entry in the "Groceries" list below this. The second button adds an entry to a more deeply nested header.
 
-Once signed in, you can set up capture templates that specify header paths (and various other configurations). These capture templates can also sync between your devices (if you enable settings sync).
+Once signed in, you can set up capture templates that specify header paths (and various other configurations). If the list is empty, the content will be inserted at the end of the file, or the beginning if the prepend option is selected. These capture templates will sync between your devices if you enable settings sync.
 ** Groceries
 ** Deeply
 *** Nested

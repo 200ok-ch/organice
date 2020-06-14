@@ -729,25 +729,55 @@ const insertCapture = (state, action) => {
   const headers = state.get('headers');
   const { template, content, shouldPrepend } = action;
 
-  const parentHeader = headerWithPath(headers, template.get('headerPaths'));
-  if (!parentHeader) {
+  const { newIndex, nestingLevel, parentHeader } = insertCapturePosition(
+    template,
+    headers,
+    shouldPrepend
+  );
+  if (newIndex === undefined) {
+    // Should never happen; see comment in insertCapturePosition below.
     return state;
   }
 
   const newHeader = newHeaderFromText(content, state.get('todoKeywordSets')).set(
     'nestingLevel',
-    parentHeader.get('nestingLevel') + 1
+    nestingLevel
   );
 
+  state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
+  if (parentHeader !== undefined) {
+    // We inserted the new header under a parent rather than at the top or
+    // bottom of the file.
+    state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+  }
+
+  return state;
+};
+
+const insertCapturePosition = (template, headers, shouldPrepend) => {
+  const headerPaths = template.get('headerPaths');
+  if (headerPaths.size === 0) {
+    if (shouldPrepend) {
+      // Insert at beginning of file
+      return { newIndex: 0, nestingLevel: 1 };
+    } else {
+      // Insert at end of file
+      return { newIndex: headers.size + 1, nestingLevel: 1 };
+    }
+  }
+
+  const parentHeader = headerWithPath(headers, headerPaths);
+  if (parentHeader == null) {
+    // No parent header found.  In theory this shouldn't happen since
+    // CaptureModal already checks whether a valid targetHeader can be
+    // found if headerPaths is non-empty.
+    return {};
+  }
   const parentHeaderIndex = indexOfHeaderWithId(headers, parentHeader.get('id'));
   const numSubheaders = numSubheadersOfHeaderWithId(headers, parentHeader.get('id'));
   const newIndex = parentHeaderIndex + 1 + (shouldPrepend ? 0 : numSubheaders);
-
-  state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
-
-  state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
-
-  return state;
+  const nestingLevel = parentHeader.get('nestingLevel') + 1;
+  return { newIndex, nestingLevel, parentHeader };
 };
 
 const clearPendingCapture = (state) => state.set('pendingCapture', null);
