@@ -6,6 +6,11 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 
 
+
+* [2020-06-14 Sun]
+** Added
+   - Allow capture templates to insert at beginning or end of file
+     - Thank you [[https://github.com/aspiers][aspiers]] for your [[https://github.com/200ok-ch/organice/pull/324][PR]] 🙏
 * [2020-06-05 Fri]
 ** Fixed
    - =file:= links are sanity checked before opened
