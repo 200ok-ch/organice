@@ -474,7 +474,7 @@ like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https:/
 
 **** More information
 
-In the [[file:WIKI.org::#faq_webdav][WebDAV]], you'll find lots more information regarding WebDAV:
+In the [[file:WIKI.org::#faq_webdav][WebDAV FAQ]], you'll find lots more information regarding WebDAV:
 
   - A screencast of how organice works when logging in to a WebDAV
     server
@@ -662,7 +662,7 @@ and you're good to go!
 
 ** Beorg
 
-Before starting work on organice, [[github.com/munen/][@munen]] (the original maintainer)
+Before starting work on organice, [[https://github.com/munen/][@munen]] (the original maintainer)
 used Beorg and donated to it multiple times, because he was very happy
 to have a good option to access Org files on my phone with it.
 
@@ -698,7 +698,7 @@ fork. organice differs from org-web in that:
 - organice initially focused on becoming bug free - for example on
   parsing and exporting org files correctly.
 - organice continues to evolve independently with it's own feature
-  set. For example, it has [[#faq_webdav][WebDAV]] support.
+  set. For example, it has [[file:WIKI.org::#faq_webdav][WebDAV]] support.
 - organice is a project with equal focus on mobile as desktop
   browsers.
 - org-web [[https://github.com/DanielDe/org-web/issues/75][tracks users]] with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].

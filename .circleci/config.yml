@@ -17,10 +17,10 @@ jobs:
           name: Install dependencies
           command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc emacs
       - run:
-          name: Deploy to https://org.200ok.ch
+          name: Deploy to https://organice.200ok.ch
           command: ./bin/compile_and_upload.sh
       - run:
-          name: Deploy documentation to https://org.200ok.ch/documentation.html
+          name: Deploy documentation to https://organice.200ok.ch/documentation.html
           command: ./bin/compile_doc_and_upload.sh
 
   build:
