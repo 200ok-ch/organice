@@ -15,7 +15,7 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc emacs
+          command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc gvfs emacs
       - run:
           name: Deploy to https://organice.200ok.ch
           command: ./bin/compile_and_upload.sh
