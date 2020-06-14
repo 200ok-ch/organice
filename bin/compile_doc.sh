@@ -21,7 +21,7 @@ cat CONTRIBUTING.org >> documentation.org
 pandoc CODE_OF_CONDUCT.md -o CODE_OF_CONDUCT.org
 cat CODE_OF_CONDUCT.org >> documentation.org
 rm CODE_OF_CONDUCT.org
-emacs documentation.org -l ./doc/org2html/init.el --batch  --funcall org-html-export-to-html
+emacs documentation.org -l ./doc/org2html/init.el --batch  --funcall org-html-export-to-html --kill
 
 html="`pwd`/documentation.html"
 if [ -e "$html" ]; then

@@ -83,7 +83,9 @@ testing right away.
 For testing WebDAV outside of organice, and you're an Emacs user, you
 can open [[/dav:localhost#8080:/webdav/][this]] link (=C-c C-o=). Then, you will get a [[https://www.gnu.org/software/tramp/][TRAMP]] session
 with [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] open and you'll see the sample file. You can interact with
-it like in any other dired buffer.
+it like in any other dired buffer. Obviously, this link will not work
+when looking at the documentation in the browser, you'll have to open
+the file [[https://github.com/200ok-ch/organice/blob/master/WIKI.org][WIKI.org]] in Emacs.
 
 If you prefer a command line client, you could use [[https://linux.die.net/man/1/cadaver][cadaver]]. Install and use
 it like this:
