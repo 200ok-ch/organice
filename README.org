@@ -474,7 +474,7 @@ like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https:/
 
 **** More information
 
-In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find lots more information regarding WebDAV:
+In the [[https://organice.200ok.ch/documentation.html#faq_webdav][FAQ]], you'll find lots more information regarding WebDAV:
 
   - A screencast of how organice works when logging in to a WebDAV
     server
@@ -485,6 +485,9 @@ In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find l
   - Documentation on Nextcloud sharing
 
 ** Routing
+   :PROPERTIES:
+   :CUSTOM_ID: routing
+   :END:
 
 Whilst organice is a true [[https://developer.mozilla.org/en-US/docs/Glossary/SPA][Single Page Application]] (SPA) and therefore
 has no back-end whatsoever, this does have an implication for
@@ -516,6 +519,11 @@ RewriteRule ^ - [L]
 
 RewriteRule ^ /index.html [L]
 #+END_EXAMPLE
+
+N.B.: If you're using WebDAV as a sync back-end, and the =RewriteRule= is
+allowed to apply to a WebDAV directory, it will break PUT requests to
+upload new files! [[#webdav_apache_rewrite_engine][Here's documentation]] on how to configure both
+features together correctly.
 
 * Capture templates
   :PROPERTIES:

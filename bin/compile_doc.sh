@@ -11,7 +11,10 @@ if ! which pandoc >/dev/null 2>&1; then
 fi
 
 echo "#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup" > documentation.org
-cat README.org | grep -v api.codeclimate | grep -v "https://organice.200ok.ch/documentation.html" >> documentation.org
+cat README.org | \
+    grep -v api.codeclimate | \
+    grep -v "^Documentation: https://organice.200ok.ch/documentation.html" \
+    >> documentation.org
 sed -i 's/# REPO_PLACEHOLDER/Code repository: https:\/\/github.com\/200ok-ch\/organice/' documentation.org
 cat WIKI.org >> documentation.org
 cat CONTRIBUTING.org >> documentation.org
