@@ -20,7 +20,7 @@ cat CODE_OF_CONDUCT.org >> documentation.org
 rm CODE_OF_CONDUCT.org
 emacs documentation.org -l ./doc/org2html/init.el --batch  --funcall org-html-export-to-html
 
-html="`pwd`/documentation.html"
+html="`pwd`/BREAK_ME.html"
 if [ -e "$html" ]; then
     echo "Documentation written to file://$html"
 else
