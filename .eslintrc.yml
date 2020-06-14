@@ -25,13 +25,13 @@ rules:
   no-case-declarations: off
   no-unused-vars:
     - error
-    -
-      varsIgnorePattern: '_.+'
+    - varsIgnorePattern: '_.+'
       argsIgnorePattern: '_.*|reject'
   react/no-unescaped-entities: off
   react/display-name: off
   react/prop-types: off
   react-redux/prefer-separate-component-file: off
+  jest/no-disabled-tests: off
 settings:
   react:
     version: detect

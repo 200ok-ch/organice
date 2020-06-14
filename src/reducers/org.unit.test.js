@@ -46,8 +46,14 @@ describe('org reducer', () => {
 
       // "PROJECT Foo" is the 10th item, "A nested header" the 2nd,
       // but we count from 0 not 1.
-      sourceHeaderId = state.org.present.get('headers').get(9).get('id');
-      targetHeaderId = state.org.present.get('headers').get(1).get('id');
+      sourceHeaderId = state.org.present
+        .get('headers')
+        .get(9)
+        .get('id');
+      targetHeaderId = state.org.present
+        .get('headers')
+        .get(1)
+        .get('id');
     });
 
     it('should handle REFILE_SUBTREE', () => {
@@ -171,6 +177,9 @@ describe('org reducer', () => {
       expect(last.get('rawDescription')).toEqual('Some description\n');
     });
 
+    // FIXME: This test works, but only when run with `.only`. There
+    // must be some racing condition or some mutable state involved,
+    // because it does not run together with the other tests.
     it.skip('is undoable', () => {
       const oldState = store.getState().org.present;
       store.dispatch({
@@ -181,7 +190,6 @@ describe('org reducer', () => {
         dirtying: true,
       });
       expect(store.getState().org.present).not.toEqual(oldState);
-      // FIXME: This does not do the undo for some weird reason
       store.dispatch({ type: ActionTypes.UNDO });
       expect(store.getState().org.present).toEqual(oldState);
     });
