@@ -472,22 +472,6 @@ of synchronization backends: Client/Server services [[https://doc.owncloud.com/s
 [[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
 like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
 
-Since organice is a front-end application, it will login with
-JavaScript from within the browser - in turn the [[https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS][Cross-Origin Resource
-Sharing (CORS)]] headers must be set appropriately. If they are not set,
-you will not be able to login to your service from a browser.
-Alternatively, if you're using a server like Apache or Nginx, you can
-simply get around CORS by hosting organice on the same domain as your
-service.
-
-Please note, that when your back-end does not set the correct CORS
-headers, organice cannot show you a really semantic error message on
-that. The reason is that browsers [[https://www.w3.org/TR/cors/#handling-a-response-to-a-cross-origin-request][hide this information]] from
-JavaScript. You will simply get a network error. However, you can
-easily debug it yourself by looking into the JavaScript console. No
-worries, you don't have to be a (JavaScript) developer to find out
-about that - here's a [[https://github.com/200ok-ch/organice/wiki#missing-cors-headers][screencast in the Wiki]] to show you how to do it.
-
 **** More information
 
 In the [[https://github.com/200ok-ch/organice/wiki#webdav][Wiki]], you'll find lots more information regarding WebDAV:
