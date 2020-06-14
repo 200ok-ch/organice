@@ -7,6 +7,9 @@
 #+html: <p align="center"> <img src="https://raw.githubusercontent.com/200ok-ch/organice/master/public/organice-small.png"/> </p>
 
 * General
+  :PROPERTIES:
+  :CUSTOM_ID: general
+  :END:
 
 Tests: [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]] Maintainability: [[https://codeclimate.com/github/200ok-ch/organice/maintainability][https://api.codeclimate.com/v1/badges/41d614b1f85c8b261067/maintainability.png]] Dependency management: [[https://greenkeeper.io/][file:https://badges.greenkeeper.io/200ok-ch/organice.svg]]
 
@@ -105,6 +108,9 @@ Installing to the homescreen on:
   to the organice icon, or whatever other icon you choose.
 
 * Usage
+  :PROPERTIES:
+  :CUSTOM_ID: usage
+  :END:
 ** Current restrictions/expectations of organice
 
 "Current" means we're working hard on removing the following
@@ -187,6 +193,9 @@ version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
 
 * Customization
+  :PROPERTIES:
+  :CUSTOM_ID: customization
+  :END:
 
 ** General
 
@@ -248,6 +257,9 @@ header on the right).
 [[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-settings.png]]
 
 * Development
+  :PROPERTIES:
+  :CUSTOM_ID: development
+  :END:
 
 organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.org/][Redux]]. It was bootstrapped with
 [[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
@@ -607,6 +619,9 @@ https://organice.200ok.ch?captureTemplateName=Media&captureContent=Play+Emacs+li
 #+END_EXAMPLE
 
 * Bookmarklets
+  :PROPERTIES:
+  :CUSTOM_ID: bookmarklets
+  :END:
 
 Since organice is a web application, you can use the capture templates
 feature to create bookmarklets, of course! For example, if you want a
@@ -633,6 +648,9 @@ This is what using a bookmarklet to capture a website looks like in iOS:
 [[https://github.com/200ok-ch/organice/wiki/videos/demo-bookmarklet-iOS.gif]]
 
 * Siri integration
+  :PROPERTIES:
+  :CUSTOM_ID: siri_integration
+  :END:
 
 The organice capture mechanism integrates very nicely with the [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri
 Shortcuts]] feature in iOS, allowing you to use Siri to execute capture
@@ -645,6 +663,9 @@ following the directions in the comments. Then [[https://support.apple.com/en-us
 and you're good to go!
 
 * Comparison
+  :PROPERTIES:
+  :CUSTOM_ID: comparison
+  :END:
 
 ** Beorg
 
@@ -702,6 +723,9 @@ around it.
 Thank you for all, DanielDe!
 
 * Attributions
+  :PROPERTIES:
+  :CUSTOM_ID: attributions
+  :END:
 
 ** Logo
 
