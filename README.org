@@ -544,7 +544,7 @@ templates. They should be in the format ~captureVariable_<your custom
 variable>~, and should also be URL encoded. In your capture template
 they'd show up as ~%<your custom variable>~.
 
-Organice allows you to specify where the captured content will be
+organice allows you to specify where the captured content will be
 inserted, via a "header path" which is a list of headers to match.  If
 the list is empty, the content will be inserted at the end of the
 file, or the beginning if the prepend option is selected.
