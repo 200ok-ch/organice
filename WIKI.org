@@ -146,12 +146,16 @@ about that - here's a screencast showing you how to do it:
  whether a CORS preflight check is returning the right headers via:
 
  #+BEGIN_EXAMPLE
- curl -v -X OPTIONS https://my.server/webdav
+ curl -v -X OPTIONS https://my.server/webdav/
+
+ # For the official organice Apache2 WebDAV test server:
+ # curl -v -X OPTIONS http://localhost:8080/webdav/
  #+END_EXAMPLE
 
  The output should include lines like this:
 
  #+BEGIN_EXAMPLE
+ ...
  < HTTP/1.1 200 OK
  ...
  < Access-Control-Allow-Origin: *
@@ -167,6 +171,33 @@ about that - here's a screencast showing you how to do it:
 
  - https://stackoverflow.com/questions/27703871/return-empty-response-from-apache/
  - https://serverfault.com/questions/231766/returning-200-ok-in-apache-on-http-options-requests/
+
+**** Using Apache =RewriteEngine=
+     :PROPERTIES:
+     :CUSTOM_ID: webdav_apache_rewrite_engine
+     :END:
+
+If your WebDAV directory happens to be not only on the same webserver,
+but also within a subdirectory of the directory containing a
+=.htaccess= file containing a =RewriteRule= that also applies to the
+WebDAV directory (for example like [[#routing][this]]), then you will need to create
+another =.htaccess= file in the top-level WebDAV directory containing
+this:
+
+#+BEGIN_EXAMPLE
+RewriteEngine Off
+#+END_EXAMPLE
+
+Otherwise any attempts to use WebDAV to upload new files via =HTTP
+PUT= requests will fall foul of the =/index.html= rewrite rule above,
+resulting in a =403 Forbidden= response.
+
+Another way to avoid this more selectively is to precede that rule
+with:
+
+#+BEGIN_EXAMPLE
+RewriteCond %{REQUEST_METHOD} !PUT
+#+END_EXAMPLE
 
 **** Symlinks don't work
 
