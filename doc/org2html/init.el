@@ -5,10 +5,8 @@
 (require 'org)
 (org-babel-do-load-languages
  'org-babel-load-languages
- '(
-   (shell . t)
-   (emacs-lisp . t)
-   ))
+ '((shell . t)
+   (emacs-lisp . t)))
 
 ;; Don’t ask to execute a code block.
 (setq org-confirm-babel-evaluate nil)
