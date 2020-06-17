@@ -43,7 +43,7 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}
 
       - run:
-          name: Install Dependencies
+          name: Install Javascript Dependencies
           command: yarn install --frozen-lockfile
 
       - run:
@@ -72,6 +72,27 @@ jobs:
 
       - run: yarn test
 
+  build-docs:
+    docker:
+      - image: circleci/node:12.13-stretch
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Documentation Dependencies
+          command: sudo apt-get update -yq && sudo apt install -yq pandoc emacs
+
+      - run:
+          name: Compile documentation
+          command: ./bin/compile_doc.sh
+
   push-image:
     machine: true
     steps:
@@ -89,15 +110,18 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - build-docs
       - deploy:
           requires:
             - build
+            - build-docs
           filters:
             branches:
               only: master
       - push-image:
           requires:
             - build # because of tests
+            - build-docs
           filters:
             branches:
               only: master
