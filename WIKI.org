@@ -56,79 +56,82 @@ to your Dropbox, here are your options:
 
  [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav.gif]]
 
-*** Missing CORS headers
+*** WebDAV test server
 
- If your back-end doesn't have the necessary CORS headers set (more
- info in the [[https://github.com/200ok-ch/organice/blob/master/README.org][README]], this is what the error will look like:
+For testing purposes, we use a Docker image with a proven and well
+documented server: Apache2 running on Debian. You can build the Docker
+image yourself - and customize the Apache configuration to your needs:
 
- [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav-failing-cors.gif]]
+#+BEGIN_SRC shell
+docker build -f doc/webdav/Dockerfile -t apache-webdav .
+#+END_SRC
 
-*** Setup your own WebDAV Server with Apache2 on Debian
+Then run the Apache2 WebDAV server with:
 
- For testing purposes, here are the instructions to setup WebDAV
- locally on your machine using Apache2 using Debian. These instructions
- are not meant to be used in production, though.
+#+BEGIN_SRC shell
+docker run -dit --name apache-webdav-app -p 8080:80 apache-webdav
+#+END_SRC
 
- *Initial package installation*
+On your host machine, you can now login with any WebDAV client using
+the URL =http://localhost:8080/webdav=. There is no authentication
+configuration, so any user account works (including omitted user
+accounts). It goes without saying that if you wanted to use this for
+production, please enable authentication. Within the test image,
+you'll find the [[file:sample.org][sample.org]] file, so you can get started developing and
+testing right away.
 
- #+BEGIN_SRC shell
- sudo apt -y install apache2-utils apache2
- #+END_SRC
+For testing WebDAV outside of organice, and you're an Emacs user, you
+can open [[/dav:localhost#8080:/webdav/][this]] link (=C-c C-o=). Then, you will get a [[https://www.gnu.org/software/tramp/][TRAMP]] session
+with [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] open and you'll see the sample file. You can interact with
+it like in any other dired buffer. Obviously, this link will not work
+when looking at the documentation in the browser, you'll have to open
+the file [[https://github.com/200ok-ch/organice/blob/master/WIKI.org][WIKI.org]] in Emacs.
 
- *Set up a new vhost for webdav*
+If you prefer a command line client, you could use [[https://linux.die.net/man/1/cadaver][cadaver]]. Install and use
+it like this:
 
- =/etc/apache2/sites-available/webdav.conf=
+#+BEGIN_SRC shell
+sudo apt -y install cadaver
+cadaver http://localhost:8080/webdav/
+#+END_SRC
 
- #+BEGIN_EXAMPLE
- Alias /webdav /srv/dav/
+**** Bug reports
+     :PROPERTIES:
+     :CUSTOM_ID: webdav_bug_reports
+     :END:
 
- RewriteEngine On
- RewriteCond %{REQUEST_METHOD} OPTIONS
- RewriteRule ^(.*)$ $1 [R=200,L]
+If you have any trouble connecting to WebDAV using organice, it could
+be your setup (please consult [[#webdav_cors][CORS]] and [[#webdav_gotchas][Gotchas with WebDAV]]). In any
+case, if you want to open a bug report, please document your issue by
+referencing how it doesn't work using the official WebDAV test server.
 
- <Location /webdav>
-     Options Indexes
-     DAV On
-     AuthType Basic
-     AuthName "webdav"
-     AuthUserFile /srv/dav/.htpasswd
-     Require valid-user
+*** CORS
+    :PROPERTIES:
+    :CUSTOM_ID: webdav_cors
+    :END:
 
-     Header always set Access-Control-Allow-Origin "*"
-     Header always set Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT,PROPFIND"
-     Header always set Access-Control-Allow-Headers "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth"
-     Header always set Access-Control-Allow-Credentials true
+Since organice is a front-end application, it will login with
+JavaScript from within the browser - in turn the [[https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS][Cross-Origin Resource
+Sharing (CORS)]] headers must be set appropriately. If they are not set,
+you will not be able to login to your service from a browser.
+Alternatively, if you're using a server like Apache or Nginx, you can
+simply get around CORS by hosting organice on the same domain as your
+service.
 
-     Require all granted
- </location>
- #+END_EXAMPLE
+Please note, that when your back-end does not set the correct CORS
+headers, organice cannot show you a really semantic error message on
+that. The reason is that browsers [[https://www.w3.org/TR/cors/#handling-a-response-to-a-cross-origin-request][hide this information]] from
+JavaScript. You will simply get a network error. However, you can
+easily debug it yourself by looking into the JavaScript console. No
+worries, you don't have to be a (JavaScript) developer to find out
+about that - here's a screencast showing you how to do it:
 
- *Enable Apache modules*
-
- #+BEGIN_SRC shell
- sudo a2enmod headers
- sudo a2enmod dav*
- sudo a2enmod rewrite
- sudo a2ensite webdav
- #+END_SRC
-
- *Setup folder, password and rights*
-
- #+BEGIN_SRC shell
- sudo mkdir /srv/dav
- sudo htpasswd -c /srv/dav/.htpasswd webdav
- sudo chmod 770 /srv/dav; sudo chown www-data. /srv/dav
- sudo service apache2 restart
- #+END_SRC
-
- *Test webdav access using a commandline tool*
-
- #+BEGIN_SRC shell
- sudo apt -y install cadaver
- cadaver http://localhost/webdav/
- #+END_SRC
+[[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav-failing-cors.gif]]
 
 *** Gotchas with WebDAV
+    :PROPERTIES:
+    :CUSTOM_ID: webdav_gotchas
+    :END:
 
 **** =preflight request doesn't pass access control check= error
 
@@ -141,7 +144,62 @@ to your Dropbox, here are your options:
  have HTTP ok status.
  #+END_EXAMPLE
 
- then the =RewriteRule= in the above example is either missing from, or ineffective in your webserver config.
+ then something is wrong with your webserver config.  You can check
+ whether a CORS preflight check is returning the right headers via:
+
+ #+BEGIN_EXAMPLE
+ curl -v -X OPTIONS https://my.server/webdav/
+
+ # For the official organice Apache2 WebDAV test server:
+ # curl -v -X OPTIONS http://localhost:8080/webdav/
+ #+END_EXAMPLE
+
+ The output should include lines like this:
+
+ #+BEGIN_EXAMPLE
+ ...
+ < HTTP/1.1 200 OK
+ ...
+ < Access-Control-Allow-Origin: *
+ < Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
+ < Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
+ < Access-Control-Allow-Credentials: true
+ < Allow: OPTIONS,GET,HEAD,POST,DELETE,TRACE,PROPFIND,PROPPATCH,COPY,MOVE,LOCK,UNLOCK
+ #+END_EXAMPLE
+
+ If your server doesn't give a =200 OK= response, or if the
+ =Access-Control-Allow-*= headers are missing, you may find these
+ articles helpful:
+
+ - https://stackoverflow.com/questions/27703871/return-empty-response-from-apache/
+ - https://serverfault.com/questions/231766/returning-200-ok-in-apache-on-http-options-requests/
+
+**** Using Apache =RewriteEngine=
+     :PROPERTIES:
+     :CUSTOM_ID: webdav_apache_rewrite_engine
+     :END:
+
+If your WebDAV directory happens to be not only on the same webserver,
+but also within a subdirectory of the directory containing a
+=.htaccess= file containing a =RewriteRule= that also applies to the
+WebDAV directory (for example like [[#routing][this]]), then you will need to create
+another =.htaccess= file in the top-level WebDAV directory containing
+this:
+
+#+BEGIN_EXAMPLE
+RewriteEngine Off
+#+END_EXAMPLE
+
+Otherwise any attempts to use WebDAV to upload new files via =HTTP
+PUT= requests will fall foul of the =/index.html= rewrite rule above,
+resulting in a =403 Forbidden= response.
+
+Another way to avoid this more selectively is to precede that rule
+with:
+
+#+BEGIN_EXAMPLE
+RewriteCond %{REQUEST_METHOD} !PUT
+#+END_EXAMPLE
 
 **** Symlinks don't work
 
@@ -155,6 +213,12 @@ to your Dropbox, here are your options:
  to a temporary file and then [[https://github.com/apache/httpd/blob/c3db73ca8a5aa7b79231a11fe2eb15de3ce943dc/modules/dav/fs/repos.c#L991][atomically renaming it to the target
  file]], and Linux prevents renaming to bind mounts with a =Device or
  resource busy= error.
+
+**** =HTTP PUT= requests fail with =403 Forbidden=
+
+ As mentioned in [[#routing][the section routing]], you should avoid having
+ =mod_rewrite= rules apply to (=PUT=) requests in the WebDAV
+ directories.
 
 *** Configuring Nextcloud behind haproxy to allow WebDAV
  If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
