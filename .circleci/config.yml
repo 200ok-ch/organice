@@ -15,17 +15,17 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc emacs
+          command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc gvfs emacs
       - run:
-          name: Deploy to https://org.200ok.ch
+          name: Deploy to https://organice.200ok.ch
           command: ./bin/compile_and_upload.sh
       - run:
-          name: Deploy documentation to https://org.200ok.ch/documentation.html
+          name: Deploy documentation to https://organice.200ok.ch/documentation.html
           command: ./bin/compile_doc_and_upload.sh
 
   build:
     docker:
-      - image: circleci/node:12.13-stretch
+      - image: circleci/node:12.13-buster
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -43,8 +43,12 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}
 
       - run:
-          name: Install Dependencies
+          name: Install Javascript Dependencies
           command: yarn install --frozen-lockfile
+
+      - run:
+          name: Show Dependencies
+          command: yarn list
 
       - save_cache:
           name: Save Yarn Package Cache
@@ -52,9 +56,42 @@ jobs:
           paths:
             - ~/.cache/yarn
 
-      - run: yarn eslint
+      - run:
+          name: eslint
+          command: yarn eslint
+
+      - run:
+          name: prettier-eslint
+          # Make the build output more useful by immediately showing full details of
+          # any style violations.
+          command: |
+            yarn prettier-eslint --write
+            GIT_PAGER= git diff
+            git reset --hard HEAD
+            yarn prettier-eslint --list-different
 
       - run: yarn test
+
+  build-docs:
+    docker:
+      - image: circleci/node:12.13-buster
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Documentation Dependencies
+          command: sudo apt-get update -yq && sudo apt install -yq pandoc emacs
+
+      - run:
+          name: Compile documentation
+          command: ./bin/compile_doc.sh
 
   push-image:
     machine: true
@@ -73,15 +110,18 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - build-docs
       - deploy:
           requires:
             - build
+            - build-docs
           filters:
             branches:
               only: master
       - push-image:
           requires:
             - build # because of tests
+            - build-docs
           filters:
             branches:
               only: master

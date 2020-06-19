@@ -48,6 +48,7 @@ These are the steps we take to ensure a high quality in the backlog:
    add a 'question' label to the issue. If the issue creator does not
    respond to the question within 5 days, we close the issue. If she
    does choose to respond at some point, she can re-open the issue.
+
 ** Contributing to the documentation
 
 The documentation is generated from =README.org= and various other files.
@@ -65,17 +66,20 @@ We have good quality assurance and an established workflow. This is it:
 4. New Branch in Git
 5. Naming: =(feature|fix|chore)/issue-id/short-description=
 6. Develop / Test locally until tests pass
-   - Please install [[https://prettier.io/][Prettier]] and use it to format your code. This
-     repository includes a ~.prettierrc.json~ with some configuration
-     options that Prettier will use automatically.
+   - We use [[https://github.com/prettier/prettier-eslint][prettier-eslint]] to format code, which combines both
+     ~prettier~ and ~eslint --fix~ for the best of both worlds. This
+     repository includes ~.prettierrc.json~ and ~.eslintrc.yml~ with
+     some configuration options that Prettier will use automatically.
+   - Run ~yarn prettier-eslint --write~ to automatically format the
+     whole codebase, or ~yarn prettier-eslint --list-different~ to see
+     which files don't currently match the repository's style.
    - If you're using Emacs, you can autoformat your source files:
      https://github.com/munen/emacs.d/#auto-formatting
    - Please use ~eslint~ to ensure that your changes conform with
      our linting rules. You can run ~yarn eslint~ to check for rule
      violations, and also ~yarn nibble~ to tackle them one category
      at a time.
-   - ~yarn prettier-eslint~ will combine both ~prettier~ and ~eslint
-     --fix~ for the best of both worlds.
+   - ~yarn lint~ will run both sets of linters.
 7. Create Pull Request on Github to =master=
    - Check that the tests also pass on CI
 8. Core Team: Merge to =master=, deploy and accept the Issue on
