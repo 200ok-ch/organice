@@ -41,7 +41,7 @@
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.10.1",
+    "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/react": "10.3.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.6.0",
