@@ -44,7 +44,7 @@
     "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/react": "10.4.3",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.6.0",
+    "eslint": "^7.3.1",
     "eslint-nibble": "^5.1.0",
     "eslint-plugin-jest": "^23.17.1",
     "eslint-plugin-react": "^7.20.0",
