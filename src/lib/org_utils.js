@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
+import substituteTemplateVariables from './capture_template_substitution';
 
 function generateHash(list) {
   return new Promise((resolve, reject) => {
@@ -193,7 +194,7 @@ export const headerWithPath = (headers, headerPath) => {
   const firstHeader = headers.find(
     (header) =>
       parentIdOfHeaderWithId(headers, header.get('id')) === null &&
-      header.getIn(['titleLine', 'rawTitle']).trim() === headerPath.first().trim()
+      header.getIn(['titleLine', 'rawTitle']).trim() === substituteTemplateVariables(headerPath.first())[0].trim()
   );
   if (!firstHeader) {
     return null;
