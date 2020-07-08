@@ -287,6 +287,7 @@ export default ({
             for more details.
           </li>
         </ul>
+        You can also use <code>%u</code> and <code>%t</code> as part of the header path.
       </div>
     </div>
   );
