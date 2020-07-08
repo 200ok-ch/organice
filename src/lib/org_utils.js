@@ -194,7 +194,8 @@ export const headerWithPath = (headers, headerPath) => {
   const firstHeader = headers.find(
     (header) =>
       parentIdOfHeaderWithId(headers, header.get('id')) === null &&
-      header.getIn(['titleLine', 'rawTitle']).trim() === substituteTemplateVariables(headerPath.first())[0].trim()
+      header.getIn(['titleLine', 'rawTitle']).trim() ===
+        substituteTemplateVariables(headerPath.first())[0].trim()
   );
   if (!firstHeader) {
     return null;

@@ -112,7 +112,12 @@ export default ({ template, onCapture, headers, onClose }) => {
         <span>{template.get('description')}</span>
       </div>
 
-      <div className="capture-modal-header-path">{template.get('headerPaths').map(hP => substituteTemplateVariables(hP)[0]).join(' > ')}</div>
+      <div className="capture-modal-header-path">
+        {template
+          .get('headerPaths')
+          .map((hP) => substituteTemplateVariables(hP)[0])
+          .join(' > ')}
+      </div>
 
       {targetHeader ? (
         <Fragment>

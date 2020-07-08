@@ -45,115 +45,120 @@ describe('Find the headline at the end of the headline-path', () => {
     // path to be traced: [today] > <today> > test
     const today = new Date();
     const inactiveTimestampAsHeadline = {
-      'planningItems': [],
-      'logBookEntries': [],
-      'opened': true,
-      'titleLine': {
-        'title': [
+      planningItems: [],
+      logBookEntries: [],
+      opened: true,
+      titleLine: {
+        title: [
           {
-            'id': 7,
-            'type': 'timestamp',
-            'firstTimestamp': {
-              'month': format(today, 'MM'),
-              'dayName': format(today, 'eee'),
-              'isActive': false,
-              'day': format(today, 'dd'),
-              'year': format(today, 'yyyy'),
+            id: 7,
+            type: 'timestamp',
+            firstTimestamp: {
+              month: format(today, 'MM'),
+              dayName: format(today, 'eee'),
+              isActive: false,
+              day: format(today, 'dd'),
+              year: format(today, 'yyyy'),
             },
-            'secondTimestamp': null,
+            secondTimestamp: null,
           },
         ],
-        'rawTitle': `[${format(today, 'yyyy-MM-dd eee')}]`,
-        'tags': [],
+        rawTitle: `[${format(today, 'yyyy-MM-dd eee')}]`,
+        tags: [],
       },
-      'propertyListItems': [],
-      'rawDescription': '',
-      'nestingLevel': 1,
-      'id': 8,
-      'description': [],
+      propertyListItems: [],
+      rawDescription: '',
+      nestingLevel: 1,
+      id: 8,
+      description: [],
     };
     const activeTimestampAsHeadline = {
-      'planningItems': [
+      planningItems: [
         {
-          'type': 'TIMESTAMP_TITLE',
-          'timestamp': {
-            'month': format(today, 'MM'),
-            'dayName': format(today, 'eee'),
-            'isActive': true,
-            'day': format(today, 'dd'),
-            'year': format(today, 'yyyy'),
+          type: 'TIMESTAMP_TITLE',
+          timestamp: {
+            month: format(today, 'MM'),
+            dayName: format(today, 'eee'),
+            isActive: true,
+            day: format(today, 'dd'),
+            year: format(today, 'yyyy'),
           },
-          'id': 147,
+          id: 147,
         },
       ],
-      'logBookEntries': [],
-      'opened': true,
-      'titleLine': {
-        'title': [
+      logBookEntries: [],
+      opened: true,
+      titleLine: {
+        title: [
           {
-            'id': 9,
-            'type': 'timestamp',
-            'firstTimestamp': {
-              'month': format(today, 'MM'),
-              'dayName': format(today, 'eee'),
-              'isActive': true,
-              'day': format(today, 'dd'),
-              'year': format(today, 'yyyy'),
+            id: 9,
+            type: 'timestamp',
+            firstTimestamp: {
+              month: format(today, 'MM'),
+              dayName: format(today, 'eee'),
+              isActive: true,
+              day: format(today, 'dd'),
+              year: format(today, 'yyyy'),
             },
-            'secondTimestamp': null,
+            secondTimestamp: null,
           },
         ],
-        'rawTitle': `<${format(today, 'yyyy-MM-dd eee')}>`,
-        'tags': [],
+        rawTitle: `<${format(today, 'yyyy-MM-dd eee')}>`,
+        tags: [],
       },
-      'propertyListItems': [],
-      'rawDescription': '',
-      'nestingLevel': 2,
-      'id': 10,
-      'description': [],
+      propertyListItems: [],
+      rawDescription: '',
+      nestingLevel: 2,
+      id: 10,
+      description: [],
     };
     const expectedHeadline = {
-      'planningItems': [],
-      'logBookEntries': [],
-      'opened': false,
-      'titleLine': {
-        'title': [
+      planningItems: [],
+      logBookEntries: [],
+      opened: false,
+      titleLine: {
+        title: [
           {
-            'type': 'text',
-            'contents': 'test',
+            type: 'text',
+            contents: 'test',
           },
         ],
-        'rawTitle': 'test',
-        'tags': [],
+        rawTitle: 'test',
+        tags: [],
       },
-      'propertyListItems': [],
-      'rawDescription': '',
-      'nestingLevel': 3,
-      'id': 11,
-      'description': [],
+      propertyListItems: [],
+      rawDescription: '',
+      nestingLevel: 3,
+      id: 11,
+      description: [],
     };
     const extraSiblingHeadline = {
-      'planningItems': [],
-      'logBookEntries': [],
-      'opened': false,
-      'titleLine': {
-        'title': [
+      planningItems: [],
+      logBookEntries: [],
+      opened: false,
+      titleLine: {
+        title: [
           {
-            'type': 'text',
-            'contents': 'testnot',
+            type: 'text',
+            contents: 'testnot',
           },
         ],
-        'rawTitle': 'testnot',
-        'tags': [],
+        rawTitle: 'testnot',
+        tags: [],
       },
-      'propertyListItems': [],
-      'rawDescription': '',
-      'nestingLevel': 3,
-      'id': 200,
-      'description': [],
+      propertyListItems: [],
+      rawDescription: '',
+      nestingLevel: 3,
+      id: 200,
+      description: [],
     };
 
-    const headers = fromJS([inactiveTimestampAsHeadline, activeTimestampAsHeadline, expectedHeadline, extraSiblingHeadline]);
+    const headers = fromJS([
+      inactiveTimestampAsHeadline,
+      activeTimestampAsHeadline,
+      expectedHeadline,
+      extraSiblingHeadline,
+    ]);
     const headerPath = fromJS(['%u', '%t', 'test']);
 
     expect(headerWithPath(headers, headerPath).toJS()).toStrictEqual(expectedHeadline);
