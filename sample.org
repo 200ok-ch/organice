@@ -201,7 +201,7 @@ organice has native support for adding and editing DEADLINE and SCHEDULED items.
    :END:
    - State "DONE"       from "TODO"       [2019-12-08 Sun 11:19]
 * Capture
-organice supports something like org-capture in the form of customizable, quickly accessible buttons for creating new headers.
+organice supports something like [[https://orgmode.org/manual/Capture.html][Org capture]] in the form of customizable, quickly accessible buttons for creating new headers.
 
 Click the button in the bottom right corner of the screen to see some examples. The first button, the lemon, will create a new entry in the "Groceries" list below this. The second button adds an entry to a more deeply nested header.
 
