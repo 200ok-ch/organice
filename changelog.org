@@ -7,6 +7,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 
 
+* [2020-07-08 Wed]
+** Added
+   - Allow template-variables in the header-path in a capture template
+     - Thank you [[https://github.com/jayesh-bhoot][jayesh-bhoot]] for your [[https://github.com/200ok-ch/organice/pull/387/][PR]] 🙏
 * [2020-06-14 Sun]
 ** Added
    - Allow capture templates to insert at beginning or end of file
