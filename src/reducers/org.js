@@ -1024,7 +1024,7 @@ export const setSearchFilterInformation = (state, action) => {
 
     // Filter selectedHeader and its subheaders from `headers`,
     // because you don't want to refile a header to itself or to one
-    // of it's subheaders.
+    // of its subheaders.
     if (context === 'refile') {
       const selectedHeaderId = state.get('selectedHeaderId');
       const subheaders = subheadersOfHeaderWithId(headers, selectedHeaderId);

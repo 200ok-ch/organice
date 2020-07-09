@@ -42,7 +42,7 @@ export const isIphone678 = window.matchMedia
 /** Is running in standalone mode (not in Mobile Safari) */
 export const isRunningAsPWA = 'standalone' in window.navigator && window.navigator.standalone;
 
-/** Is running in Landscape Mode (as opposed to Portait Mode) */
+/** Is running in Landscape Mode (as opposed to Portrait Mode) */
 export function isInLandscapeMode() {
   return [90, -90].includes(window.orientation);
 }

@@ -246,7 +246,7 @@ RewriteCond %{REQUEST_METHOD} !PUT
    # you want to drop down to Lua. There's no need for that, though, as this works
    # perfectly fine. This backend doesn't have any servers attached, so it'll
    # always result in a 503. We override the 503 by setting a custom errorfile,
-   # which incidentally looks just like a HTTP 200 response and contains all the
+   # which incidentally looks just like an HTTP 200 response and contains all the
    # headers we need to satisfy a CORS request.
    backend always200ok
      mode http

@@ -697,7 +697,7 @@ fork. organice differs from org-web in that:
 
 - organice initially focused on becoming bug free - for example on
   parsing and exporting org files correctly.
-- organice continues to evolve independently with it's own feature
+- organice continues to evolve independently with its own feature
   set. For example, it has [[file:WIKI.org::#faq_webdav][WebDAV]] support.
 - organice is a project with equal focus on mobile as desktop
   browsers.
@@ -713,7 +713,7 @@ which contains the user visible changes since forking.
 
 *** Acknowledgment
 
-We are extraordinarily grateful to DanielDe the original creator!
+We are extraordinarily grateful to DanielDe, the original creator!
 
 We forked the project, because we have different visions on how to go
 forward. He envisions a mobile only solution, we think it's great to

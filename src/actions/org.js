@@ -46,7 +46,7 @@ const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)),
 export const sync = (...args) => (dispatch) => syncDebounced(dispatch, ...args);
 
 // doSync is the actual sync action synchronizing/persisting the Org
-// file. When 'live sync' is enabled, there's potentailly a quick
+// file. When 'live sync' is enabled, there's potentially a quick
 // succession of calls to 'sync' and therefore to the sync back-end
 // happening. These calls need to be debounced. If there's a really
 // succession of calls, only the first and last synchronization will
