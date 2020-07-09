@@ -685,7 +685,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
 const concatRegexes = (...regexes) =>
   regexes.reduce((prev, curr) => RegExp(asStrNoSlashs(prev) + asStrNoSlashs(curr)));
 
-// Converts RegExp or strings like '/regex/' to a string without these slashs.
+// Converts RegExp or strings like '/regex/' to a string without these slashes.
 const asStrNoSlashs = (regex) => {
   const s = regex.toString();
   return s.substring(1, s.length - 1);
