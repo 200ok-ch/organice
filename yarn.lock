@@ -4933,10 +4933,10 @@ dotenv@8.2.0, dotenv@^8.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
-dropbox@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-5.1.0.tgz#c6109639a2b91225d1adbdc53a87a9dec586f7ee"
-  integrity sha512-2aVdBW+5LpbxVo6bkJTcUY2PcfDJKzAzFQlJKnYZ09b4O33gfEJQtaeTH8yAHUdC1Eb78VK9lzjhnuYpjrSNXQ==
+dropbox@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-5.2.0.tgz#dac7ce165ef8a0190f9c218932c90cf2e7e5cc14"
+  integrity sha512-9IdBQYQF/gY7fZ4fteTjkyID/2nz7XBpCfYvRqhd7RPKfi7EggaeXtZ0Rwiqy+iUN1QJoK03ufYILIWftSl/DQ==
   dependencies:
     buffer "^5.6.0"
     moment "^2.25.3"
