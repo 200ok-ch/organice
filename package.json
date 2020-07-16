@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.1",
-    "@testing-library/react": "10.4.6",
+    "@testing-library/react": "10.4.7",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.6.0",
     "eslint-nibble": "^5.1.0",
