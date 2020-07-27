@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: organice-ingress
+spec:
+  rules:
+  - host: org.johnhame.link
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: organice
+          servicePort: 5000

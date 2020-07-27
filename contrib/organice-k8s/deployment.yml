@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: organice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: organice
+  template:
+    metadata:
+      labels:
+        name: organice
+    spec:
+      containers:
+      - name: organice
+        imagePullPolicy: Always
+        image: twohundredok/organice:latest
+        ports:
+          - containerPort: 5000
