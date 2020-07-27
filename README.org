@@ -404,6 +404,9 @@ exit 0
 #+END_SRC
 
 ** Docker
+   :PROPERTIES:
+   :CUSTOM_ID: docker
+   :END:
 
 organice is also available as a Docker image.
 
@@ -524,6 +527,24 @@ N.B.: If you're using WebDAV as a sync back-end, and the =RewriteRule= is
 allowed to apply to a WebDAV directory, it will break PUT requests to
 upload new files! [[#webdav_apache_rewrite_engine][Here's documentation]] on how to configure both
 features together correctly.
+
+* Contrib
+
+organice aims to follow the 'batteries included' philosophy. For
+example, the documentation is rather extensive and includes wider
+topics than just its own functionality - for example it includes
+documentation on various tested [[https://organice.200ok.ch/documentation.html#deployment][deployment strategies]].
+
+However, the community regularly comes up with a whole range of
+options on how to use organice more effectively for specific
+use-cases. Sometimes, these options are generic enough so that the
+maintainers take the functionality into core. Sometimes, it's not that
+well suited to be added into core, but still is potentially very well
+suited to a wider range of users. For that, organice follows the
+=contrib= model which many bigger projects use (i.e. [[https://orgmode.org/worg/org-contrib/][Org mode]]) for
+such contributions.
+
+The please see the [[file:contrib][contrib folder]] for details.
 
 * Capture templates
   :PROPERTIES:
