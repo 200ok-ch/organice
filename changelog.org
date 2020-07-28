@@ -10,6 +10,13 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 * [2020-07-28 Tue]
 ** Fixed
+   - On iOS >13.1, when organice is used in SPA mode (as a bookmark on
+     the homescreen), and the user navigates away from the original
+     bookmark, a huge URL Bar would show up with a "Done" button. This
+     is a regression in how iOS handles full-screen SPAs. These are
+     the relevant APIs:
+     - https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html
+     - https://developer.mozilla.org/en-US/docs/Web/Manifest/display
    - Feature detection for =crypto.subtle= module
      - This is used for change detection in the changelog. The module
        is only available in secure contexts. Hence, when used locally
