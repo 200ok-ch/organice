@@ -86,7 +86,7 @@ const ActionDrawer = ({
               .includes((path || '').trim())
         );
 
-  const handleSync = () => org.sync();
+  const handleSync = () => org.sync({ forceAction: 'manual' });
 
   const handleMainArrowButtonClick = () => setIsDisplayingArrowButtons(!isDisplayingArrowButtons);
 
