@@ -43,7 +43,17 @@ const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)),
   trailing: true,
 });
 
-export const sync = (...args) => (dispatch) => syncDebounced(dispatch, ...args);
+export const sync = (...args) => (dispatch) => {
+  // If the user hits the 'sync' button, no matter if there's a sync
+  // in progress or if the sync 'should' be debounced, listen to the
+  // user and start a sync.
+  if (args[0].forceAction === 'manual') {
+    console.log('forcing sync');
+    dispatch(doSync(...args));
+  } else {
+    syncDebounced(dispatch, ...args);
+  }
+};
 
 // doSync is the actual sync action synchronizing/persisting the Org
 // file. When 'live sync' is enabled, there's potentially a quick
@@ -78,7 +88,10 @@ const doSync = ({
   // recursively enqueue the request to do a sync until the current
   // sync is finished. Since it's a debounced call, enqueueing it
   // recursively is efficient.
-  if (getState().base.get('isLoading')) {
+  // That is, unless the user manually hits the 'sync' button
+  // (indicated by `forceAction === 'manual'`). Then, do what the user
+  // requests.
+  if (getState().base.get('isLoading') && forceAction !== 'manual') {
     // Since there is a quick succession of debounced requests to
     // synchronize, the user likely is in a undo/redo workflow with
     // potential new changes to the Org file in between. In such a

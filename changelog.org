@@ -10,18 +10,18 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 * [2020-07-28 Tue]
 ** Fixed
-   - On iOS >13.1, when organice is used in SPA mode (as a bookmark on
-     the homescreen), and the user navigates away from the original
-     bookmark, a huge URL Bar would show up with a "Done" button. This
-     is a regression in how iOS handles full-screen SPAs. These are
-     the relevant APIs:
+   - Sync stuck when working in the background
+     - When the user put organice into the background during a sync and comes back, organice was stuck in sync mode, but doesn't actually sync anymore. This means that any new changes to the Org file will not be persisted. This is due to mobile browsers cutting off most resources to browser apps in the background, so organice cannot guarantee that a sync happens properly in the background.
+     - It's not trivial to find out if the job is stuck
+       - Time is not a good indicator as bigger files on slower connections will always take longer.
+       - There's no JS API to reliably find out if the browser just got back from the background or is put into the foreground. The [[https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API][=visibilitychange= API]] just triggers for both these events.
+     - Hence, the implementation is generic in nature: Whenever the user hits the 'sync' button, an actual 'sync' is forced - even if organice thinks there's currently a sync in progress or that it should be debounced. That makes sense, because manual actions by the user should always be obeyed.
+     - Closes issue https://github.com/200ok-ch/organice/issues/252
+   - On iOS >13.1, when organice is used in SPA mode (as a bookmark on the homescreen), and the user navigates away from the original bookmark, a huge URL Bar would show up with a "Done" button. This is a regression in how iOS handles full-screen SPAs. These are the relevant APIs:
      - https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html
      - https://developer.mozilla.org/en-US/docs/Web/Manifest/display
    - Feature detection for =crypto.subtle= module
-     - This is used for change detection in the changelog. The module
-       is only available in secure contexts. Hence, when used locally
-       and on a private IP range, depending on the browser, it might
-       not be available.
+     - This is used for change detection in the changelog. The module is only available in secure contexts. Hence, when used locally and on a private IP range, depending on the browser, it might not be available.
 
 * [2020-07-08 Wed]
 ** Added
