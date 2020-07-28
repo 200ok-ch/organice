@@ -9,16 +9,21 @@ import substituteTemplateVariables from './capture_template_substitution';
 
 function generateHash(list) {
   return new Promise((resolve, reject) => {
-    crypto.subtle
-      .digest(
-        {
-          name: 'SHA-256',
-        },
-        new Uint8Array(list)
-      )
-      .then((hashArray) => {
-        resolve(_.values(new Uint8Array(hashArray)).join(''));
-      });
+    if (crypto.subtle) {
+      crypto.subtle
+        .digest(
+          {
+            name: 'SHA-256',
+          },
+          new Uint8Array(list)
+        )
+        .then((hashArray) => {
+          resolve(_.values(new Uint8Array(hashArray)).join(''));
+        });
+    } else {
+      console.warn('crypto.subtle module is not available, returning an empty bogus hash.');
+      resolve('');
+    }
   });
 }
 
