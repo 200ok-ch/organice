@@ -1,6 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
-import * as moment from 'moment';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
@@ -521,18 +520,16 @@ const refileSubtree = (state, action) => {
 
 const addNote = (state, action) => {
   // See org-add-note (C-c C-z) and variable org-log-note-headings
-  const input = prompt('Enter a note to add to the header:');
-  if (input === null || !input.trim()) return;
-  console.log(input);
-  const { header } = this.props;
-  const content = ''; //header.get('contents');
-  const dontIndent = this.props.dontIndent;
-  const indentation = dontIndent ? '' : ' '.repeat(header.nestingLevel + 1);
-  const timestamp = moment().format('YYYY-MM-DD HH:MM');
-  let content1 =
-    `${indentation}- Note taken on [${timestamp}] \\\\
-${indentation}  ${input}` + content;
-  console.log(content1);
+  const {noteText} = action;
+
+  const headerId = state.get('selectedHeaderId')
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  return state.updateIn(['headers', headerIndex], (header) =>
+      // TODO: Don't do it like this, because this overwrites the
+      //       complete body of the header.
+      header.set('rawDescription', noteText)
+  );
 };
 
 const focusHeader = (state, action) => {

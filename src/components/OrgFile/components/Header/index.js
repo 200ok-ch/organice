@@ -21,6 +21,8 @@ import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
 import { getCurrentTimestamp } from '../../../../lib/timestamps';
 
+import * as moment from 'moment';
+
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
   FREE_DRAG_ACTIVATION_DISTANCE = 10;
@@ -307,7 +309,25 @@ ${header.get('rawDescription')}`;
   }
 
   handleAddNoteClick() {
-    // TODO trigger HEDAER_ADD_NOTE action (reducers/org.js)
+    const input = prompt('Enter a note to add to the header:');
+    if (input === null || !input.trim()) return;
+    const { header } = this.props;
+
+    // TODO: I don't think it works like this. Probably it's a good
+    //       idea to extend `_updateHeaderFromDescription` from
+    //       lib/parse_org.js.
+    const content = ''; //header.get('contents');
+    const dontIndent = this.props.dontIndent;
+
+    // TODO: It's best to do the actual composition of the 'note' in
+    //       the reducer and to require `moment` there as well.
+    const indentation = dontIndent ? '' : ' '.repeat(header.nestingLevel + 1);
+    const timestamp = moment().format('YYYY-MM-DD HH:MM');
+    let content1 =
+        `${indentation}- Note taken on [${timestamp}] \\\\
+       ${indentation}  ${input}` + content;
+
+    this.props.org.addNote(content1);
   }
 
   handlePopupClose() {
@@ -534,6 +554,7 @@ const mapStateToProps = (state, ownProps) => {
     focusedHeader,
     isFocused: !!focusedHeader && focusedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
+    dontIndent: state.base.get('shouldNotIndentOnExport'),
   };
 };
 
