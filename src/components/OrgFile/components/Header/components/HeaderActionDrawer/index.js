@@ -34,6 +34,7 @@ export default class HeaderActionDrawer extends PureComponent {
       hasActiveClock,
       onShareHeader,
       onRefileHeader,
+      onAddNote,
     } = this.props;
 
     return (
@@ -121,7 +122,11 @@ export default class HeaderActionDrawer extends PureComponent {
             testId: 'org-refile',
             title: 'Refile this header to another header',
           })}
-
+          {this.iconWithFFClickCatcher({
+            className: 'far fa-sticky-note fa-lg',
+            onClick: onAddNote,
+            title: 'Add a note',
+          })}
           {/* Placeholder to align the other icons */}
           {this.iconWithFFClickCatcher({
             className: '',

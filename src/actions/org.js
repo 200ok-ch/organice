@@ -312,6 +312,12 @@ export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
   dirtying: true,
 });
 
+export const addNote = (headerId) => ({
+  type: 'HEADER_ADD_NOTE',
+  headerId,
+  dirtying: true,
+});
+
 export const focusHeader = (headerId) => ({
   type: 'FOCUS_HEADER',
   headerId,

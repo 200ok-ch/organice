@@ -1,5 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
+import * as moment from 'moment';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
@@ -516,6 +517,22 @@ const refileSubtree = (state, action) => {
   state = state.set('headers', headers);
 
   return state;
+};
+
+const addNote = (state, action) => {
+  // See org-add-note (C-c C-z) and variable org-log-note-headings
+  const input = prompt('Enter a note to add to the header:');
+  if (input === null || !input.trim()) return;
+  console.log(input);
+  const { header } = this.props;
+  const content = ''; //header.get('contents');
+  const dontIndent = this.props.dontIndent;
+  const indentation = dontIndent ? '' : ' '.repeat(header.nestingLevel + 1);
+  const timestamp = moment().format('YYYY-MM-DD HH:MM');
+  let content1 =
+    `${indentation}- Note taken on [${timestamp}] \\\\
+${indentation}  ${input}` + content;
+  console.log(content1);
 };
 
 const focusHeader = (state, action) => {
@@ -1119,6 +1136,8 @@ export default (state = Map(), action) => {
       return moveSubtreeRight(state, action);
     case 'REFILE_SUBTREE':
       return refileSubtree(state, action);
+    case 'HEADER_ADD_NOTE':
+      return addNote(state, action);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
