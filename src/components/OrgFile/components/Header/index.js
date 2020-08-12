@@ -309,25 +309,23 @@ ${header.get('rawDescription')}`;
   }
 
   handleAddNoteClick() {
-    const input = prompt('Enter a note to add to the header:');
-    if (input === null || !input.trim()) return;
+    let input = prompt('Enter a note to add to the header:');
+    if (input !== null) input = input.trim();
+    if (!input) return;
     const { header } = this.props;
 
-    // TODO: I don't think it works like this. Probably it's a good
-    //       idea to extend `_updateHeaderFromDescription` from
-    //       lib/parse_org.js.
-    const content = ''; //header.get('contents');
     const dontIndent = this.props.dontIndent;
 
-    // TODO: It's best to do the actual composition of the 'note' in
-    //       the reducer and to require `moment` there as well.
+    // Getting indentation, timestamp, and template string is impure, hence do it here:
     const indentation = dontIndent ? '' : ' '.repeat(header.nestingLevel + 1);
     const timestamp = moment().format('YYYY-MM-DD HH:MM');
-    let content1 =
-        `${indentation}- Note taken on [${timestamp}] \\\\
-       ${indentation}  ${input}` + content;
+    // Generate note based on a template string (as defined in org-log-note-headings):
+    const noteText = `${indentation}- Note taken on [${timestamp}] \\\\
+${indentation}  ${input}`;
+    // TODO: wrap input; sth. like this https://codereview.stackexchange.com/a/171857
 
-    this.props.org.addNote(content1);
+    console.log(noteText);
+    this.props.org.addNote({ noteText });
   }
 
   handlePopupClose() {
