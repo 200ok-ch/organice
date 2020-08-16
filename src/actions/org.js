@@ -312,7 +312,7 @@ export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
   dirtying: true,
 });
 
-export const addNote = (headerId, noteText) => ({
+export const addNote = (noteText) => ({
   type: 'HEADER_ADD_NOTE',
   noteText,
   dirtying: true,
