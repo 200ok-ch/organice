@@ -171,10 +171,18 @@ describe('org reducer', () => {
       expect(last.get('rawDescription')).toEqual('Some description\n');
     });
 
-    // FIXME: This test works, but only when run with `.only`. There
-    // must be some racing condition or some mutable state involved,
-    // because it does not run together with the other tests.
-    it.skip('is undoable', () => {
+    it('is undoable', () => {
+      // Perform an undoable action to warm up the redux-undo history.
+      // Without this action, and without the
+      // syncFilter: true flag in the undoable config,
+      // the _lastUnfiltered field will be empty, and so will
+      // be the 'past' after the INSERT_CAPTURE action.
+      // The ADD_HEADER action is undoable so it gets saved
+      // in _lastUnfiltered and then gets into the 'past' only to
+      // be successfuly restored when we perform the UNDO.
+      const firstHeader = state.org.present.get('headers').get(0).get('id');
+      store.dispatch({ type: 'ADD_HEADER', headerId: firstHeader });
+
       const oldState = store.getState().org.present;
       store.dispatch({
         type: 'INSERT_CAPTURE',
