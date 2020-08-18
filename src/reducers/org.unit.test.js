@@ -648,4 +648,62 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
     });
   });
+
+  describe('UPDATE_TIMESTAMP_WITH_ID', () => {
+    let state;
+    let headerId;
+    const testOrgFile = readFixture('schedule_and_timestamps');
+    const date = new Date(98, 1);
+    const ts = timestampForDate(date, { isActive: true, withStartTime: true });
+    let headerTsId;
+    let bodyTsId;
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(0).get('id');
+      headerTsId = state.org.present.getIn(['headers', 0, 'titleLine', 'title', 0, 'id']);
+      bodyTsId = state.org.present.getIn(['headers', 0, 'description', 2, 'id']);
+    });
+
+    it('should update timestamp in a header', () => {
+      const oldState = state.org.present;
+      const newState = reducer(
+        oldState,
+        types.updateTimestampWithId(
+          headerTsId,
+          fromJS({ id: headerTsId, type: 'timestamp', firstTimestamp: ts, secondTimestamp: null })
+        )
+      );
+      expect(
+        headerWithId(newState.get('headers'), headerId)
+          .getIn(['titleLine', 'title', 0, 'firstTimestamp'])
+          .toJS()
+      ).toEqual(ts);
+
+      const check_kept = check_kept_factory(oldState, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('description'));
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('rawDescription'));
+    });
+
+    it('should update timestamp in a description', () => {
+      const oldState = state.org.present;
+      const newState = reducer(
+        oldState,
+        types.updateTimestampWithId(
+          bodyTsId,
+          fromJS({ id: bodyTsId, type: 'timestamp', firstTimestamp: ts, secondTimestamp: null })
+        )
+      );
+      expect(
+        headerWithId(newState.get('headers'), headerId)
+          .getIn(['description', 2, 'firstTimestamp'])
+          .toJS()
+      ).toEqual(ts);
+      const check_kept = check_kept_factory(oldState, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('titleLine'));
+    });
+  });
 });
