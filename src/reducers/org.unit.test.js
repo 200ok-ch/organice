@@ -576,4 +576,37 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
     });
   });
+
+  describe('ADD_NEW_PLANNING_ITEM', () => {
+    let headerId;
+    let state;
+    const testOrgFile = readFixture('schedule');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(0).get('id');
+    });
+
+    it('should handle ADD_NEW_PLANNING_ITEM', () => {
+      const newState = reducer(state.org.present, types.addNewPlanningItem(headerId, 'DEADLINE'));
+      expect(headerWithId(newState.get('headers'), headerId).get('planningItems').size).toEqual(2);
+      expect(
+        headerWithId(newState.get('headers'), headerId).get('planningItems').get(0).get('type')
+      ).toEqual('SCHEDULED');
+      expect(
+        headerWithId(newState.get('headers'), headerId).get('planningItems').get(1).get('type')
+      ).toEqual('DEADLINE');
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      );
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'todoKeyword'])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
+    });
+  });
 });
