@@ -780,4 +780,30 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('description'));
     });
   });
+
+  describe('SET_HEADER_TAGS', () => {
+    let irrelevantHeaderId;
+    let state;
+    const testOrgFile = readFixture('more_tags');
+    const tags = fromJS(['ta', 't1', 'spec_tag']);
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      irrelevantHeaderId = state.org.present.get('headers').get(0).get('id');
+    });
+
+    it('should handle SET_HEADER_TAGS', () => {
+      const stateInserted = reducer(state.org.present, types.addHeader(0));
+      const headerId = stateInserted.get('headers').get(0).get('id');
+      const newState = reducer(stateInserted, types.setHeaderTags(headerId, tags));
+
+      expect(headerWithId(newState.get('headers'), headerId).getIn(['titleLine', 'tags'])).toEqual(
+        tags
+      );
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+    });
+  });
 });
