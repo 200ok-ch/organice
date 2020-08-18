@@ -706,4 +706,45 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('titleLine'));
     });
   });
+
+  describe('REORDER_PROPERTY_LIST', () => {
+    let headerId;
+    let irrelevantHeaderId;
+    let state;
+    const testOrgFile = readFixture('properties_extended');
+    const fromIndex = 1;
+    const toIndex = 3;
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(0).get('id');
+      irrelevantHeaderId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle REORDER_PROPERTY_LIST', () => {
+      const newState = reducer(state.org.present, {
+        type: 'REORDER_PROPERTY_LIST',
+        fromIndex,
+        toIndex,
+        headerId,
+        dirtying: true,
+      });
+
+      expect(
+        headerWithId(newState.get('headers'), headerId)
+          .get('propertyListItems')
+          .toJS()
+          .map((x) => x.property)
+      ).toEqual(['foo', 'baz', 'bay', 'bar']);
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
+    });
+  });
 });
