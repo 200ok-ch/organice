@@ -609,4 +609,43 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
     });
   });
+
+  describe('UPDATE_PLANING_ITEM_TIMESTAMP', () => {
+    let headerId;
+    let state;
+    const testOrgFile = readFixture('schedule');
+    const date = new Date(98, 1);
+    const ts = timestampForDate(date, { isActive: true, withStartTime: true });
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(0).get('id');
+    });
+
+    it('should handle UPDATE_PLANING_ITEM_TIMESTAMP', () => {
+      const newState = reducer(
+        state.org.present,
+        types.updatePlanningItemTimestamp(headerId, 0, ts)
+      );
+      expect(
+        headerWithId(newState.get('headers'), headerId).get('planningItems').get(0).get('type')
+      ).toEqual('SCHEDULED');
+
+      expect(
+        headerWithId(newState.get('headers'), headerId).get('planningItems').get(0).get('timestamp')
+      ).toEqual(ts);
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('planningItems').size);
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      );
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'todoKeyword'])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
+    });
+  });
 });
