@@ -14,10 +14,6 @@ import thunk from 'redux-thunk';
 import readFixture from '../../test_helpers/index';
 
 describe('org reducer', () => {
-  let state;
-
-  const testOrgFile = readFixture('main_test_file');
-
   // Given a `header`, return its `title` and `nestingLevel`.
   function extractTitleAndNesting(header) {
     return [header.getIn(['titleLine', 'rawTitle']), header.get('nestingLevel')];
@@ -32,17 +28,38 @@ describe('org reducer', () => {
       .toJS();
   }
 
-  beforeEach(() => {
-    state = readInitialState();
-    state.org.present = parseOrg(testOrgFile);
-  });
+  function check_is_undoable(state, action) {
+    const store = createStore(undoable(reducer), state.org.present);
+
+    // Perform an undoable action to warm up the redux-undo history.
+    // Without this action, and without the
+    // syncFilter: true flag in the undoable config,
+    // the _lastUnfiltered field will be empty, and so will
+    // be the 'past' after the INSERT_CAPTURE action.
+    // The ADD_HEADER action is undoable so it gets saved
+    // in _lastUnfiltered and then gets into the 'past' only to
+    // be successfuly restored when we perform the UNDO.
+    const firstHeader = state.org.present.get('headers').get(0).get('id');
+    store.dispatch({ type: 'ADD_HEADER', headerId: firstHeader });
+
+    const oldState = store.getState().present;
+    store.dispatch(action);
+    expect(store.getState().present).not.toEqual(oldState);
+    store.dispatch({ type: ActionTypes.UNDO });
+    expect(store.getState().present).toEqual(oldState);
+  }
 
   describe('REFILE_SUBTREE', () => {
+    let state;
+    const testOrgFile = readFixture('main_test_file');
     let sourceHeaderId, targetHeaderId;
 
     beforeEach(() => {
       // The target is to refile "PROJECT Foo" into "A nested header".
       // They have both subheadlines, so it's not the trivial case.
+
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
 
       // "PROJECT Foo" is the 10th item, "A nested header" the 2nd,
       // but we count from 0 not 1.
@@ -92,17 +109,19 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
-      const store = createStore(undoable(reducer), state.org.present);
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'REFILE_SUBTREE', sourceHeaderId, targetHeaderId, dirtying: true });
-      expect(store.getState().present).not.toEqual(oldState);
-      store.dispatch({ type: ActionTypes.UNDO });
-      expect(store.getState().present).toEqual(oldState);
+      check_is_undoable(state, {
+        type: 'REFILE_SUBTREE',
+        sourceHeaderId,
+        targetHeaderId,
+        dirtying: true,
+      });
     });
   });
 
   describe('INSERT_CAPTURE', () => {
     let store, template;
+    let state;
+    const testOrgFile = readFixture('nested_header');
 
     beforeEach(() => {
       template = {
@@ -117,6 +136,8 @@ describe('org reducer', () => {
         template: '* TODO %?',
         isSample: true,
       };
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
       state.capture = state.capture.update('captureTemplates', (templates) =>
         templates.push(fromJS(template))
       );
@@ -134,22 +155,19 @@ describe('org reducer', () => {
     }
 
     function expectOrigLastHeader(headers) {
-      expect(extractTitleAndNesting(headers.last())).toEqual([
-        'A header with a custom todo sequence in DONE state',
-        1,
-      ]);
+      expect(extractTitleAndNesting(headers.last())).toEqual(['A nested header', 2]);
     }
 
     function insertCapture(shouldPrepend) {
       // Check initially parsed file looks as expected
       let headers = store.getState().org.present.get('headers');
-      expect(headers.size).toEqual(13);
+      expect(headers.size).toEqual(2);
       expectOrigFirstHeader(headers);
       expectOrigLastHeader(headers);
       const action = types.insertCapture(template.id, content, shouldPrepend);
       store.dispatch(action);
       const newHeaders = store.getState().org.present.get('headers');
-      expect(newHeaders.size).toEqual(14);
+      expect(newHeaders.size).toEqual(3);
       return newHeaders;
     }
 
@@ -172,55 +190,40 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
-      // Perform an undoable action to warm up the redux-undo history.
-      // Without this action, and without the
-      // syncFilter: true flag in the undoable config,
-      // the _lastUnfiltered field will be empty, and so will
-      // be the 'past' after the INSERT_CAPTURE action.
-      // The ADD_HEADER action is undoable so it gets saved
-      // in _lastUnfiltered and then gets into the 'past' only to
-      // be successfuly restored when we perform the UNDO.
-      const firstHeader = state.org.present.get('headers').get(0).get('id');
-      store.dispatch({ type: 'ADD_HEADER', headerId: firstHeader });
-
-      const oldState = store.getState().org.present;
-      store.dispatch({
+      check_is_undoable(state, {
         type: 'INSERT_CAPTURE',
         template: fromJS(template),
         content,
         shouldPrepend: true,
         dirtying: true,
       });
-      expect(store.getState().org.present).not.toEqual(oldState);
-      store.dispatch({ type: ActionTypes.UNDO });
-      expect(store.getState().org.present).toEqual(oldState);
     });
   });
 
   describe('MOVE_HEADER_LEFT', () => {
     let nestedHeaderId;
-    let ml_state;
-    const ml_testOrgFile = readFixture('nested_header');
+    let state;
+    const testOrgFile = readFixture('nested_header');
 
     beforeEach(() => {
-      ml_state = readInitialState();
-      ml_state.org.present = parseOrg(ml_testOrgFile);
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
       // The target is to move "A nested header" to the top level.
 
       // "A nested header" the 2nd item but we count from 0 not 1.
-      nestedHeaderId = ml_state.org.present.get('headers').get(1).get('id');
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
     });
 
     it('should handle MOVE_HEADER_LEFT', () => {
       // Mapping the headers to their nesting level. This is how the
       // initially parsed file should look like.
-      expect(extractTitlesAndNestings(ml_state.org.present.get('headers'))).toEqual([
+      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
       ]);
 
       const action = types.moveHeaderLeft(nestedHeaderId);
-      const newState = reducer(ml_state.org.present, action);
+      const newState = reducer(state.org.present, action);
 
       // "A nested header" is not at the top level.
       expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
@@ -230,39 +233,34 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
-      const store = createStore(undoable(reducer), ml_state.org.present);
-      const oldState = store.getState().present;
-      store.dispatch(types.moveHeaderLeft(nestedHeaderId));
-      expect(store.getState().present).not.toEqual(oldState);
-      store.dispatch({ type: ActionTypes.UNDO });
-      expect(store.getState().present).toEqual(oldState);
+      check_is_undoable(state, types.moveHeaderLeft(nestedHeaderId));
     });
   });
 
   describe('MOVE_HEADER_RIGHT', () => {
     let nestedHeaderId;
-    let ml_state;
-    const ml_testOrgFile = readFixture('nested_header');
+    let state;
+    const testOrgFile = readFixture('nested_header');
 
     beforeEach(() => {
-      ml_state = readInitialState();
-      ml_state.org.present = parseOrg(ml_testOrgFile);
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
       // The target is to move "A nested header" to the next nesting level.
 
       // "A nested header" the 2nd item but we count from 0 not 1.
-      nestedHeaderId = ml_state.org.present.get('headers').get(1).get('id');
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
     });
 
     it('should handle MOVE_HEADER_RIGHT', () => {
       // Mapping the headers to their nesting level. This is how the
       // initially parsed file should look like.
-      expect(extractTitlesAndNestings(ml_state.org.present.get('headers'))).toEqual([
+      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
       ]);
 
       const action = types.moveHeaderRight(nestedHeaderId);
-      const newState = reducer(ml_state.org.present, action);
+      const newState = reducer(state.org.present, action);
 
       // "A nested header" is not at the top level.
       expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
@@ -272,12 +270,7 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
-      const store = createStore(undoable(reducer), ml_state.org.present);
-      const oldState = store.getState().present;
-      store.dispatch(types.moveHeaderRight(nestedHeaderId));
-      expect(store.getState().present).not.toEqual(oldState);
-      store.dispatch({ type: ActionTypes.UNDO });
-      expect(store.getState().present).toEqual(oldState);
+      check_is_undoable(state, types.moveHeaderRight(nestedHeaderId));
     });
   });
 });
