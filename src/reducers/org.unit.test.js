@@ -747,4 +747,37 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
     });
   });
+
+  describe('REORDER_TAGS', () => {
+    let headerId;
+    let state;
+    const testOrgFile = readFixture('more_tags');
+    const fromIndex = 0;
+    const toIndex = 2;
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(0).get('id');
+    });
+
+    it('should handle REORDER_TAGS', () => {
+      const stateSelected = reducer(state.org.present, { type: 'SELECT_HEADER', headerId });
+      const newState = reducer(stateSelected, types.reorderTags(fromIndex, toIndex));
+
+      expect(stateSelected.get('selectedHeaderId')).toEqual(headerId);
+      expect(newState.get('selectedHeaderId')).toEqual(headerId);
+      expect(
+        headerWithId(newState.get('headers'), headerId).getIn(['titleLine', 'tags']).toJS()
+      ).toEqual(['t2', 't3', 't1', 'spec_tag']);
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'title']));
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('description'));
+    });
+  });
 });
