@@ -51,6 +51,12 @@ describe('org reducer', () => {
     expect(store.getState().present).toEqual(oldState);
   }
 
+  function check_kept_factory(oldState, newState) {
+    return (query) => {
+      expect(query(oldState)).toEqual(query(newState));
+    };
+  }
+
   describe('REFILE_SUBTREE', () => {
     let state;
     const testOrgFile = readFixture('main_test_file');
@@ -490,12 +496,6 @@ describe('org reducer', () => {
       irrelevantHeaderId = state.org.present.get('headers').get(1).get('id');
     });
 
-    function check_kept_factory(oldState, newState) {
-      return (query) => {
-        expect(query(oldState)).toEqual(query(newState));
-      };
-    }
-
     it('should handle UPDATE_LOG_ENTRY_TIME', () => {
       const newState = reducer(
         state.org.present,
@@ -533,16 +533,47 @@ describe('org reducer', () => {
       state.org.present = parseOrg(testOrgFile);
     });
 
-    function check_kept_factory(oldState, newState) {
-      return (query) => {
-        expect(query(oldState)).toEqual(query(newState));
-      };
-    }
-
     it('should handle SET_ORG_FILE_ERROR_MESSAGE', () => {
       const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message));
       expect(newState.get('orgFileErrorMessage')).toEqual(message);
       expect(newState.get('headers')).toEqual(state.org.present.get('headers'));
+    });
+  });
+
+  describe('UPDATE_PROPERTY_LIST_ITEMS', () => {
+    let headerId;
+    let irrelevantHeaderId;
+    let state;
+    const testOrgFile = readFixture('properties_extended');
+    const properties = fromJS([
+      { property: 'fst', value: 'car', id: generateId() },
+      { property: 'snd', value: null, id: generateId() },
+    ]);
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(1).get('id');
+      irrelevantHeaderId = state.org.present.get('headers').get(0).get('id');
+    });
+
+    it('should handle UPDATE_PROPERTY_LIST_ITEMS', () => {
+      const newState = reducer(
+        state.org.present,
+        types.updatePropertyListItems(headerId, properties)
+      );
+
+      expect(headerWithId(newState.get('headers'), headerId).get('propertyListItems')).toEqual(
+        properties
+      );
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
     });
   });
 });
