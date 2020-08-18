@@ -6,6 +6,7 @@ import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
 import { headerWithId } from '../lib/org_utils';
+import { dateForTimestamp, timestampForDate } from '../lib/timestamps';
 import { readInitialState } from '../util/settings_persister';
 
 import { createStore, applyMiddleware } from 'redux';
@@ -471,6 +472,54 @@ describe('org reducer', () => {
     it('is undoable', () => {
       check_is_undoable(state, types.advanceTodoState(todoHeaderId, true));
       check_is_undoable(state, types.advanceTodoState(doneHeaderId, false));
+    });
+  });
+
+  describe('UPDATE_LOG_ENTRY_TIME', () => {
+    let headerId;
+    let irrelevantHeaderId;
+    let state;
+    const testOrgFile = readFixture('logbook');
+    const date = new Date(98, 1);
+    const ts = timestampForDate(date, { isActive: true, withStartTime: true });
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(0).get('id');
+      irrelevantHeaderId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    function check_kept_factory(oldState, newState) {
+      return (query) => {
+        expect(query(oldState)).toEqual(query(newState));
+      };
+    }
+
+    it('should handle UPDATE_LOG_ENTRY_TIME', () => {
+      const newState = reducer(
+        state.org.present,
+        types.updateLogEntryTime(headerId, 0, 'start', ts)
+      );
+      expect(
+        dateForTimestamp(
+          headerWithId(newState.get('headers'), headerId).getIn(['logBookEntries', 0, 'start'])
+        )
+      ).toEqual(date);
+
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.get('headers').size);
+      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries').size);
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['logBookEntries', 1, 'start'])
+      );
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['logBookEntries', 1, 'end'])
+      );
     });
   });
 });
