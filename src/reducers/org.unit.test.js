@@ -378,7 +378,7 @@ describe('org reducer', () => {
       // "This is done" is the 1st header,
       // "Header with repeater" is the 2nd,
       // "This is not a todo" is 3rd item, and
-      // "Repeating task" is 4th item; we cound from 1.
+      // "Repeating task" is 4th item; we count from 1.
       doneHeaderId = state.org.present.get('headers').get(0).get('id');
       todoHeaderId = state.org.present.get('headers').get(1).get('id');
       regularHeaderId = state.org.present.get('headers').get(2).get('id');
@@ -803,6 +803,61 @@ describe('org reducer', () => {
       );
 
       const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+    });
+  });
+
+  describe('ADVANCE_CHECKBOX_STATE', () => {
+    let headerId;
+    let checkedBoxId;
+    let uncheckedBoxId;
+    let irrelevantHeaderId;
+    let state;
+    const testOrgFile = readFixture('checkboxes');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      let headers = state.org.present.get('headers');
+      headerId = headers.get(0).get('id');
+      irrelevantHeaderId = headers.get(1).get('id');
+      checkedBoxId = headerWithId(headers, headerId).getIn(['description', 0, 'items', 2, 'id']);
+      uncheckedBoxId = headerWithId(headers, headerId).getIn(['description', 0, 'items', 1, 'id']);
+    });
+
+    it('should check the box', () => {
+      const oldState = state.org.present;
+      const newState = reducer(oldState, types.advanceCheckboxState(uncheckedBoxId));
+
+      expect(
+        headerWithId(newState.get('headers'), headerId)
+          .getIn(['description', 0, 'items'])
+          .toJS()
+          .map((x) => x.checkboxState)
+      ).toEqual(['unchecked', 'checked', 'checked']);
+
+      const check_kept = check_kept_factory(oldState, newState);
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['description', 0, 'items', 0])
+      );
+      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+    });
+
+    it('should uncheck the box', () => {
+      const oldState = state.org.present;
+      const newState = reducer(oldState, types.advanceCheckboxState(checkedBoxId));
+
+      expect(
+        headerWithId(newState.get('headers'), headerId)
+          .getIn(['description', 0, 'items'])
+          .toJS()
+          .map((x) => x.checkboxState)
+      ).toEqual(['unchecked', 'unchecked', 'unchecked']);
+
+      const check_kept = check_kept_factory(oldState, newState);
+      check_kept((st) =>
+        headerWithId(st.get('headers'), headerId).getIn(['description', 0, 'items', 0])
+      );
       check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
     });
   });
