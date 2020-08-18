@@ -155,19 +155,19 @@ describe('org reducer', () => {
     }
 
     function expectOrigLastHeader(headers) {
-      expect(extractTitleAndNesting(headers.last())).toEqual(['A nested header', 2]);
+      expect(extractTitleAndNesting(headers.last())).toEqual(['A deep nested header', 3]);
     }
 
     function insertCapture(shouldPrepend) {
       // Check initially parsed file looks as expected
       let headers = store.getState().org.present.get('headers');
-      expect(headers.size).toEqual(2);
+      expect(headers.size).toEqual(3);
       expectOrigFirstHeader(headers);
       expectOrigLastHeader(headers);
       const action = types.insertCapture(template.id, content, shouldPrepend);
       store.dispatch(action);
       const newHeaders = store.getState().org.present.get('headers');
-      expect(newHeaders.size).toEqual(3);
+      expect(newHeaders.size).toEqual(4);
       return newHeaders;
     }
 
@@ -220,6 +220,7 @@ describe('org reducer', () => {
       expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
+        ['A deep nested header', 3],
       ]);
 
       const action = types.moveHeaderLeft(nestedHeaderId);
@@ -229,6 +230,7 @@ describe('org reducer', () => {
       expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 1],
+        ['A deep nested header', 3],
       ]);
     });
 
@@ -257,6 +259,7 @@ describe('org reducer', () => {
       expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 2],
+        ['A deep nested header', 3],
       ]);
 
       const action = types.moveHeaderRight(nestedHeaderId);
@@ -266,6 +269,7 @@ describe('org reducer', () => {
       expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
         ['Top level header', 1],
         ['A nested header', 3],
+        ['A deep nested header', 3],
       ]);
     });
 
