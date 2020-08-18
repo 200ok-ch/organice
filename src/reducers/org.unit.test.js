@@ -196,4 +196,88 @@ describe('org reducer', () => {
       expect(store.getState().org.present).toEqual(oldState);
     });
   });
+
+  describe('MOVE_HEADER_LEFT', () => {
+    let nestedHeaderId;
+    let ml_state;
+    const ml_testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      ml_state = readInitialState();
+      ml_state.org.present = parseOrg(ml_testOrgFile);
+      // The target is to move "A nested header" to the top level.
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = ml_state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle MOVE_HEADER_LEFT', () => {
+      // Mapping the headers to their nesting level. This is how the
+      // initially parsed file should look like.
+      expect(extractTitlesAndNestings(ml_state.org.present.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+      ]);
+
+      const action = types.moveHeaderLeft(nestedHeaderId);
+      const newState = reducer(ml_state.org.present, action);
+
+      // "A nested header" is not at the top level.
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 1],
+      ]);
+    });
+
+    it('is undoable', () => {
+      const store = createStore(undoable(reducer), ml_state.org.present);
+      const oldState = store.getState().present;
+      store.dispatch(types.moveHeaderLeft(nestedHeaderId));
+      expect(store.getState().present).not.toEqual(oldState);
+      store.dispatch({ type: ActionTypes.UNDO });
+      expect(store.getState().present).toEqual(oldState);
+    });
+  });
+
+  describe('MOVE_HEADER_RIGHT', () => {
+    let nestedHeaderId;
+    let ml_state;
+    const ml_testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      ml_state = readInitialState();
+      ml_state.org.present = parseOrg(ml_testOrgFile);
+      // The target is to move "A nested header" to the next nesting level.
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = ml_state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle MOVE_HEADER_RIGHT', () => {
+      // Mapping the headers to their nesting level. This is how the
+      // initially parsed file should look like.
+      expect(extractTitlesAndNestings(ml_state.org.present.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+      ]);
+
+      const action = types.moveHeaderRight(nestedHeaderId);
+      const newState = reducer(ml_state.org.present, action);
+
+      // "A nested header" is not at the top level.
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 3],
+      ]);
+    });
+
+    it('is undoable', () => {
+      const store = createStore(undoable(reducer), ml_state.org.present);
+      const oldState = store.getState().present;
+      store.dispatch(types.moveHeaderRight(nestedHeaderId));
+      expect(store.getState().present).not.toEqual(oldState);
+      store.dispatch({ type: ActionTypes.UNDO });
+      expect(store.getState().present).toEqual(oldState);
+    });
+  });
 });
