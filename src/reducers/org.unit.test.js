@@ -522,4 +522,27 @@ describe('org reducer', () => {
       );
     });
   });
+
+  describe('SET_ORG_FILE_ERROR_MESSAGE', () => {
+    let state;
+    const testOrgFile = readFixture('nested_header');
+    const message = 'It’s Does Not Compute';
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+    });
+
+    function check_kept_factory(oldState, newState) {
+      return (query) => {
+        expect(query(oldState)).toEqual(query(newState));
+      };
+    }
+
+    it('should handle SET_ORG_FILE_ERROR_MESSAGE', () => {
+      const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message));
+      expect(newState.get('orgFileErrorMessage')).toEqual(message);
+      expect(newState.get('headers')).toEqual(state.org.present.get('headers'));
+    });
+  });
 });
