@@ -5,6 +5,7 @@ import reducer from './org';
 import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
+import { headerWithId } from '../lib/org_utils';
 import { readInitialState } from '../util/settings_persister';
 
 import { createStore, applyMiddleware } from 'redux';
@@ -325,7 +326,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      // The target is to move "A nested header" to the top level.
+      // The target is to move "A nested header" to the deeper nested level.
 
       // "A nested header" the 2nd item but we count from 0 not 1.
       nestedHeaderId = state.org.present.get('headers').get(1).get('id');
@@ -353,6 +354,123 @@ describe('org reducer', () => {
 
     it('is undoable', () => {
       check_is_undoable(state, types.moveSubtreeRight(nestedHeaderId));
+    });
+  });
+
+  describe('ADVANCE_TODO_STATE', () => {
+    let regularHeaderId;
+    let todoHeaderId;
+    let doneHeaderId;
+    let repeatingHeaderId;
+    let state;
+    const testOrgFile = readFixture('various_todos');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      // "This is done" is the 1st header,
+      // "Header with repeater" is the 2nd,
+      // "This is not a todo" is 3rd item, and
+      // "Repeating task" is 4th item; we cound from 1.
+      doneHeaderId = state.org.present.get('headers').get(0).get('id');
+      todoHeaderId = state.org.present.get('headers').get(1).get('id');
+      regularHeaderId = state.org.present.get('headers').get(2).get('id');
+      repeatingHeaderId = state.org.present.get('headers').get(3).get('id');
+    });
+
+    function check_todo_keyword_kept(oldHeaders, newHeaders, headerId) {
+      expect(headerWithId(oldHeaders, headerId).getIn(['titleLine', 'todoKeyword'])).toEqual(
+        headerWithId(newHeaders, headerId).getIn(['titleLine', 'todoKeyword'])
+      );
+    }
+    function check_todo_keyword_changed(oldHeaders, newHeaders, headerId) {
+      expect(headerWithId(oldHeaders, headerId).getIn(['titleLine', 'todoKeyword'])).not.toEqual(
+        headerWithId(newHeaders, headerId).getIn(['titleLine', 'todoKeyword'])
+      );
+    }
+    function check_header_kept(oldHeaders, newHeaders, headerId) {
+      expect(headerWithId(oldHeaders, headerId)).toEqual(headerWithId(newHeaders, headerId));
+    }
+
+    it('should advance TODO state', () => {
+      const oldHeaders = state.org.present.get('headers');
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(todoHeaderId)).get(
+        'headers'
+      );
+      check_header_kept(oldHeaders, newHeaders, regularHeaderId);
+      check_todo_keyword_changed(oldHeaders, newHeaders, todoHeaderId);
+      check_header_kept(oldHeaders, newHeaders, doneHeaderId);
+
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+    });
+
+    it('should advance DONE state', () => {
+      const oldHeaders = state.org.present.get('headers');
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(doneHeaderId)).get(
+        'headers'
+      );
+      check_header_kept(oldHeaders, newHeaders, regularHeaderId);
+      check_header_kept(oldHeaders, newHeaders, todoHeaderId);
+      check_todo_keyword_changed(oldHeaders, newHeaders, doneHeaderId);
+
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+    });
+
+    it('should advance non-TODO state', () => {
+      const oldHeaders = state.org.present.get('headers');
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(regularHeaderId)).get(
+        'headers'
+      );
+      check_todo_keyword_changed(oldHeaders, newHeaders, regularHeaderId);
+      check_header_kept(oldHeaders, newHeaders, todoHeaderId);
+      check_header_kept(oldHeaders, newHeaders, doneHeaderId);
+
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+    });
+
+    it('should advance repeating task', () => {
+      const oldHeaders = state.org.present.get('headers');
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(repeatingHeaderId)).get(
+        'headers'
+      );
+      check_todo_keyword_kept(oldHeaders, newHeaders, repeatingHeaderId);
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toBeGreaterThan(
+        headerWithId(oldHeaders, repeatingHeaderId).get('description').size
+      );
+
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('planningItems')).not.toEqual(
+        headerWithId(oldHeaders, repeatingHeaderId).get('planningItems')
+      );
+
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+    });
+
+    it('should advance repeating task again', () => {
+      const intermState = reducer(state.org.present, types.advanceTodoState(repeatingHeaderId));
+      const intermHeaders = intermState.get('headers');
+      const newHeaders = reducer(intermState, types.advanceTodoState(repeatingHeaderId)).get(
+        'headers'
+      );
+      check_todo_keyword_kept(intermHeaders, newHeaders, repeatingHeaderId);
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
+        headerWithId(intermHeaders, repeatingHeaderId).get('description').size
+      );
+
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('planningItems')).not.toEqual(
+        headerWithId(intermHeaders, repeatingHeaderId).get('planningItems')
+      );
+
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(intermHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+    });
+
+    it('is undoable', () => {
+      check_is_undoable(state, types.advanceTodoState(todoHeaderId, true));
+      check_is_undoable(state, types.advanceTodoState(doneHeaderId, false));
     });
   });
 });
