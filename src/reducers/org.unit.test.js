@@ -887,8 +887,9 @@ describe('org reducer', () => {
     });
   });
 
-  function firstTable(contents) {
-    return contents.find((item) => item.get('type') === 'table');
+  function firstTable(state) {
+    let hdrContents = state.getIn(['headers', 0, 'description']);
+    return hdrContents.find((item) => item.get('type') === 'table');
   }
 
   describe('UPDATE_TABLE_CELL_VALUE', () => {
@@ -897,58 +898,26 @@ describe('org reducer', () => {
     const newValue = 'Murakami';
     const testOrgFile = readFixture('table');
 
-    function firstTable(contents) {
-      return contents.find((item) => item.get('type') === 'table');
-    }
-
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
     });
 
     it('should handle UPDATE_TABLE_CELL_VALUE', () => {
       const newState = reducer(state.org.present, types.updateTableCellValue(cellId, newValue));
       expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-          'contents',
-          1,
-          'contents',
-          1,
-          'contents',
-          0,
-          'contents',
-        ])
+        firstTable(newState).getIn(['contents', 1, 'contents', 1, 'contents', 0, 'contents'])
       ).toEqual(newValue);
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-          'contents',
-          1,
-          'contents',
-          1,
-          'rawContents',
-        ])
-      ).toEqual(newValue);
+      expect(firstTable(newState).getIn(['contents', 1, 'contents', 1, 'rawContents'])).toEqual(
+        newValue
+      );
       const check_kept = check_kept_factory(state.org.present, newState);
       check_kept((st) => st.getIn('headers', 0, 'titleLine'));
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 0, 'contents'])
-      );
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 2, 'contents'])
-      );
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 1, 'contents', 0])
-      );
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 1, 'contents', 2])
-      );
+      check_kept((st) => firstTable(st).getIn(['contents', 0, 'contents']));
+      check_kept((st) => firstTable(st).getIn(['contents', 2, 'contents']));
+      check_kept((st) => firstTable(st).getIn(['contents', 1, 'contents', 0]));
+      check_kept((st) => firstTable(st).getIn(['contents', 1, 'contents', 2]));
     });
   });
 
@@ -961,13 +930,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -979,46 +942,16 @@ describe('org reducer', () => {
       const check_kept = check_kept_factory(state.org.present, newState);
 
       [0, 1, 2].forEach((i) => {
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            1,
-          ])
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            2,
-          ])
+        expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents', 2])
         );
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            2,
-          ])
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            1,
-          ])
+        expect(firstTable(newState).getIn(['contents', i, 'contents', 2])).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents', 1])
         );
-        check_kept((st) =>
-          firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents', 0])
-        );
-        check_kept(
-          (st) =>
-            firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents'])
-              .size
-        );
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents']).size);
       });
-      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('contents').size);
+      check_kept((st) => firstTable(st).get('contents').size);
     });
 
     it('is undoable', () => {
@@ -1035,13 +968,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1053,46 +980,16 @@ describe('org reducer', () => {
       const check_kept = check_kept_factory(state.org.present, newState);
 
       [0, 1, 2].forEach((i) => {
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            1,
-          ])
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            0,
-          ])
+        expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents', 0])
         );
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            0,
-          ])
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            1,
-          ])
+        expect(firstTable(newState).getIn(['contents', i, 'contents', 0])).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents', 1])
         );
-        check_kept((st) =>
-          firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents', 2])
-        );
-        check_kept(
-          (st) =>
-            firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents'])
-              .size
-        );
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 2]));
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents']).size);
       });
-      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('contents').size);
+      check_kept((st) => firstTable(st).get('contents').size);
     });
 
     it('is undoable', () => {
@@ -1109,13 +1006,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1126,16 +1017,14 @@ describe('org reducer', () => {
       const newState = reducer(stateCellSelected, types.moveTableRowUp());
       const check_kept = check_kept_factory(state.org.present, newState);
 
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 0])
-      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 1]));
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 1])
-      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 0]));
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 2])
+      expect(firstTable(newState).getIn(['contents', 0])).toEqual(
+        firstTable(oldState).getIn(['contents', 1])
       );
-      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('contents').size);
+      expect(firstTable(newState).getIn(['contents', 1])).toEqual(
+        firstTable(oldState).getIn(['contents', 0])
+      );
+      check_kept((st) => firstTable(st).getIn(['contents', 2]));
+      check_kept((st) => firstTable(st).get('contents').size);
     });
 
     it('is undoable', () => {
@@ -1152,13 +1041,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1169,16 +1052,14 @@ describe('org reducer', () => {
       const newState = reducer(stateCellSelected, types.moveTableRowDown());
       const check_kept = check_kept_factory(state.org.present, newState);
 
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 2])
-      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 1]));
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 1])
-      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 2]));
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 0])
+      expect(firstTable(newState).getIn(['contents', 2])).toEqual(
+        firstTable(oldState).getIn(['contents', 1])
       );
-      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('contents').size);
+      expect(firstTable(newState).getIn(['contents', 1])).toEqual(
+        firstTable(oldState).getIn(['contents', 2])
+      );
+      check_kept((st) => firstTable(st).getIn(['contents', 0]));
+      check_kept((st) => firstTable(st).get('contents').size);
     });
 
     it('is undoable', () => {
@@ -1195,13 +1076,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1213,39 +1088,15 @@ describe('org reducer', () => {
       const check_kept = check_kept_factory(state.org.present, newState);
 
       [0, 1, 2].forEach((i) => {
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-          ]).size
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-          ]).size - 1
+        expect(firstTable(newState).getIn(['contents', i, 'contents']).size).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents']).size - 1
         );
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            1,
-          ])
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            2,
-          ])
+        expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents', 2])
         );
-        check_kept((st) =>
-          firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents', 0])
-        );
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
       });
-      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('contents').size);
+      check_kept((st) => firstTable(st).get('contents').size);
     });
     it('is undoable', () => {
       check_is_undoable_on_table(store, cellId, types.removeTableColumn());
@@ -1261,13 +1112,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1278,19 +1123,15 @@ describe('org reducer', () => {
       const newState = reducer(stateCellSelected, types.removeTableRow());
       const check_kept = check_kept_factory(state.org.present, newState);
 
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents']).size
-      ).toEqual(
-        firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents']).size - 1
+      expect(firstTable(newState).getIn(['contents']).size).toEqual(
+        firstTable(oldState).getIn(['contents']).size - 1
       );
 
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 1])
-      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 2]));
-
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 0])
+      expect(firstTable(newState).getIn(['contents', 1])).toEqual(
+        firstTable(oldState).getIn(['contents', 2])
       );
+
+      check_kept((st) => firstTable(st).getIn(['contents', 0]));
     });
 
     it('is undoable', () => {
@@ -1307,13 +1148,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1325,42 +1160,16 @@ describe('org reducer', () => {
       const check_kept = check_kept_factory(state.org.present, newState);
 
       [0, 1, 2].forEach((i) => {
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-          ]).size
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-          ]).size + 1
+        expect(firstTable(newState).getIn(['contents', i, 'contents']).size).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents']).size + 1
         );
-        expect(
-          firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            3,
-          ])
-        ).toEqual(
-          firstTable(oldState.getIn(['headers', 0, 'description'])).getIn([
-            'contents',
-            i,
-            'contents',
-            2,
-          ])
+        expect(firstTable(newState).getIn(['contents', i, 'contents', 3])).toEqual(
+          firstTable(oldState).getIn(['contents', i, 'contents', 2])
         );
-        check_kept((st) =>
-          firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents', 0])
-        );
-        check_kept((st) =>
-          firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', i, 'contents', 1])
-        );
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
+        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 1]));
       });
-      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('contents').size);
+      check_kept((st) => firstTable(st).get('contents').size);
     });
 
     it('is undoable', () => {
@@ -1377,13 +1186,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
-        'contents',
-        1,
-        'contents',
-        1,
-        'id',
-      ]);
+      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
@@ -1395,19 +1198,13 @@ describe('org reducer', () => {
       const check_kept = check_kept_factory(state.org.present, newState);
 
       [0, 1].forEach((i) => {});
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 0])
+      check_kept((st) => firstTable(st).getIn(['contents', 0]));
+      check_kept((st) => firstTable(st).getIn(['contents', 1]));
+      expect(firstTable(newState).getIn(['contents', 3])).toEqual(
+        firstTable(oldState).getIn(['contents', 2])
       );
-      check_kept((st) =>
-        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 1])
-      );
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 3])
-      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 2]));
-      expect(
-        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents']).size
-      ).toEqual(
-        firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents']).size + 1
+      expect(firstTable(newState).getIn(['contents']).size).toEqual(
+        firstTable(oldState).getIn(['contents']).size + 1
       );
     });
 
