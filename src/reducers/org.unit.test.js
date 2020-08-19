@@ -1095,4 +1095,90 @@ describe('org reducer', () => {
       check_is_undoable_on_table(store, cellId, types.moveTableColumnLeft());
     });
   });
+
+  describe('MOVE_TABLE_ROW_UP', () => {
+    let state;
+    let store;
+    let cellId;
+    const testOrgFile = readFixture('table');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
+        'contents',
+        1,
+        'contents',
+        1,
+        'id',
+      ]);
+      store = createStore(undoable(reducer), state.org.present);
+    });
+
+    it('should handle MOVE_TABLE_ROW_UP', () => {
+      const oldState = store.getState().present;
+      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+      const stateCellSelected = store.getState().present;
+      const newState = reducer(stateCellSelected, types.moveTableRowUp());
+      const check_kept = check_kept_factory(state.org.present, newState);
+
+      expect(
+        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 0])
+      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 1]));
+      expect(
+        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 1])
+      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 0]));
+      check_kept((st) =>
+        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 2])
+      );
+      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('size'));
+    });
+
+    it('is undoable', () => {
+      check_is_undoable_on_table(store, cellId, types.moveTableRowUp());
+    });
+  });
+
+  describe('MOVE_TABLE_ROW_DOWN', () => {
+    let state;
+    let store;
+    let cellId;
+    const testOrgFile = readFixture('table');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
+        'contents',
+        1,
+        'contents',
+        1,
+        'id',
+      ]);
+      store = createStore(undoable(reducer), state.org.present);
+    });
+
+    it('should handle MOVE_TABLE_ROW_DOWN', () => {
+      const oldState = store.getState().present;
+      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+      const stateCellSelected = store.getState().present;
+      const newState = reducer(stateCellSelected, types.moveTableRowDown());
+      const check_kept = check_kept_factory(state.org.present, newState);
+
+      expect(
+        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 2])
+      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 1]));
+      expect(
+        firstTable(newState.getIn(['headers', 0, 'description'])).getIn(['contents', 1])
+      ).toEqual(firstTable(oldState.getIn(['headers', 0, 'description'])).getIn(['contents', 2]));
+      check_kept((st) =>
+        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 0])
+      );
+      check_kept((st) => firstTable(st.getIn(['headers', 0, 'description'])).get('size'));
+    });
+
+    it('is undoable', () => {
+      check_is_undoable_on_table(store, cellId, types.moveTableRowDown());
+    });
+  });
 });
