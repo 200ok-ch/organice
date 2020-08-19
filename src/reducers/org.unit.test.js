@@ -874,4 +874,65 @@ describe('org reducer', () => {
       expect(newState.get('pendingCapture')).toBeNull();
     });
   });
+
+  describe('UPDATE_TABLE_CELL_VALUE', () => {
+    let state;
+    let cellId;
+    const newValue = 'Murakami';
+    const testOrgFile = readFixture('table');
+
+    function firstTable(contents) {
+      return contents.find((item) => item.get('type') === 'table');
+    }
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      cellId = firstTable(state.org.present.getIn(['headers', 0, 'description'])).getIn([
+        'contents',
+        1,
+        'contents',
+        1,
+        'id',
+      ]);
+    });
+
+    it('should handle SET_HEADER_TAGS', () => {
+      const newState = reducer(state.org.present, types.updateTableCellValue(cellId, newValue));
+      expect(
+        firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
+          'contents',
+          1,
+          'contents',
+          1,
+          'contents',
+          0,
+          'contents',
+        ])
+      ).toEqual(newValue);
+      expect(
+        firstTable(newState.getIn(['headers', 0, 'description'])).getIn([
+          'contents',
+          1,
+          'contents',
+          1,
+          'rawContents',
+        ])
+      ).toEqual(newValue);
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) => st.getIn('headers', 0, 'titleLine'));
+      check_kept((st) =>
+        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 0, 'contents'])
+      );
+      check_kept((st) =>
+        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 2, 'contents'])
+      );
+      check_kept((st) =>
+        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 1, 'contents', 0])
+      );
+      check_kept((st) =>
+        firstTable(st.getIn(['headers', 0, 'description'])).getIn(['contents', 1, 'contents', 2])
+      );
+    });
+  });
 });
