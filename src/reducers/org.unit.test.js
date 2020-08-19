@@ -1226,4 +1226,19 @@ describe('org reducer', () => {
       expect(newState.get('focusedHeaderId')).toEqual(headerId);
     });
   });
+
+  describe('SET_DIRTY', () => {
+    let state;
+
+    beforeEach(() => {
+      state = readInitialState();
+    });
+
+    it('should handle SET_DIRTY', () => {
+      const dirtyState = reducer(state.org.present, types.setDirty(true));
+      expect(dirtyState.get('isDirty')).toEqual(true);
+      const cleanState = reducer(dirtyState, types.setDirty(false));
+      expect(cleanState.get('isDirty')).toEqual(false);
+    });
+  });
 });
