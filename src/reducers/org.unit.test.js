@@ -1212,4 +1212,18 @@ describe('org reducer', () => {
       check_is_undoable_on_table(store, cellId, types.addNewTableRow());
     });
   });
+
+  describe('FOCUS_HEADER', () => {
+    let state;
+    const headerId = generateId();
+
+    beforeEach(() => {
+      state = readInitialState();
+    });
+
+    it('should handle FOCUS_HEADER', () => {
+      const newState = reducer(state.org.present, types.focusHeader(headerId));
+      expect(newState.get('focusedHeaderId')).toEqual(headerId);
+    });
+  });
 });
