@@ -861,4 +861,17 @@ describe('org reducer', () => {
       check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
     });
   });
+
+  describe('CLEAR_PENDING_CAPTURE', () => {
+    let state;
+
+    beforeEach(() => {
+      state = readInitialState();
+    });
+
+    it('should handle CLEAR_PENDING_CAPTURE', () => {
+      const newState = reducer(state.org.present, types.clearPendingCapture());
+      expect(newState.get('pendingCapture')).toBeNull();
+    });
+  });
 });
