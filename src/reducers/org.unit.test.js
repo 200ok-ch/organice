@@ -1431,7 +1431,7 @@ describe('org reducer', () => {
     });
 
     it('is undoable', () => {
-      check_is_undoable(state, types.moveHeaderLeft(nestedHeaderId));
+      check_is_undoable(state, types.removeHeader(nestedHeaderId));
     });
   });
 
@@ -1555,6 +1555,42 @@ describe('org reducer', () => {
         const newState = reducer(stateSelected, types.selectNextVisibleHeader());
         expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
       });
+    });
+  });
+
+  describe('UPDATE_HEADER_DESCRIPTION', () => {
+    let nestedHeaderId;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+    const newDescription =
+      'One man once said TODO,\n - [ ] and <2020-01-18 Sat> \n - others :followed: ';
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      // The target is to move "A nested header" to the top level.
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle UPDATE_HEADER_DESCRIPTION', () => {
+      const action = types.updateHeaderDescription(nestedHeaderId, newDescription);
+      const newState = reducer(state.org.present, action);
+      const check_kept = check_kept_factory(state.org.present, newState);
+      check_kept((st) =>
+        headerWithId(st.get('headers'), nestedHeaderId).getIn(['titleLine', 'rawTitle'])
+      );
+      expect(headerWithId(newState.get('headers'), nestedHeaderId).get('rawDescription')).toEqual(
+        newDescription
+      );
+      expect(headerWithId(newState.get('headers'), nestedHeaderId).get('description')).not.toEqual(
+        headerWithId(state.org.present.get('headers'), nestedHeaderId).get('description')
+      );
+    });
+
+    it('is undoable', () => {
+      check_is_undoable(state, types.updateHeaderDescription(nestedHeaderId, newDescription));
     });
   });
 });
