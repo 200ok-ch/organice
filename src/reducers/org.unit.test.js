@@ -5,7 +5,7 @@ import reducer from './org';
 import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
-import { headerWithId } from '../lib/org_utils';
+import { headerWithId, headerWithPath } from '../lib/org_utils';
 import { dateForTimestamp, timestampForDate } from '../lib/timestamps';
 import { readInitialState } from '../util/settings_persister';
 
@@ -1239,6 +1239,50 @@ describe('org reducer', () => {
       expect(dirtyState.get('isDirty')).toEqual(true);
       const cleanState = reducer(dirtyState, types.setDirty(false));
       expect(cleanState.get('isDirty')).toEqual(false);
+    });
+  });
+
+  describe('APPLY_OPENNESS_STATE', () => {
+    let state;
+    const fileName = 'main_test_file';
+    const testOrgFile = readFixture(fileName);
+    let opennessState = fromJS({
+      [fileName]: [
+        ['Top level header', 'A nested header'],
+        ['A header with various links as content'],
+      ],
+    });
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile).set('path', fileName);
+    });
+
+    it('should handle APPLY_OPENNESS_STATE', () => {
+      const stateWithOpenness = state.org.present.set('opennessState', opennessState);
+      const newState = reducer(stateWithOpenness, types.applyOpennessState());
+
+      expect(
+        headerWithPath(newState.get('headers'), fromJS(['Top level header'])).get('opened')
+      ).toEqual(true);
+      expect(
+        headerWithPath(
+          newState.get('headers'),
+          fromJS(['Top level header', 'A todo item with schedule and deadline'])
+        ).get('opened')
+      ).toEqual(false);
+      expect(
+        headerWithPath(newState.get('headers'), fromJS(['Another top level header'])).get('opened')
+      ).toEqual(false);
+      expect(
+        headerWithPath(newState.get('headers'), fromJS(['A header with tags'])).get('opened')
+      ).toEqual(false);
+      expect(
+        headerWithPath(
+          newState.get('headers'),
+          fromJS(['A header with various links as content'])
+        ).get('opened')
+      ).toEqual(true);
     });
   });
 });
