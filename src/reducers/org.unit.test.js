@@ -1395,4 +1395,43 @@ describe('org reducer', () => {
       ).toEqual(true);
     });
   });
+
+  describe('REMOVE_HEADER', () => {
+    let nestedHeaderId;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      // The target is to remove "A nested header".
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle REMOVE_HEADER', () => {
+      // Mapping the headers to their nesting level. This is how the
+      // initially parsed file should look like.
+      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+        ['A second nested header', 2],
+      ]);
+
+      const action = types.removeHeader(nestedHeaderId);
+      const newState = reducer(state.org.present, action);
+
+      // "A nested header" is not at the top level.
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A second nested header', 2],
+      ]);
+    });
+
+    it('is undoable', () => {
+      check_is_undoable(state, types.moveHeaderLeft(nestedHeaderId));
+    });
+  });
 });
