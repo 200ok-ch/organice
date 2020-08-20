@@ -30,6 +30,10 @@ describe('org reducer', () => {
       .toJS();
   }
 
+  function selectHeader(state, id) {
+    return reducer(state, { type: 'SELECT_HEADER', headerId: id });
+  }
+
   function check_is_undoable(state, action) {
     const store = createStore(undoable(reducer), state.org.present);
 
@@ -1554,10 +1558,6 @@ describe('org reducer', () => {
       return reducer(state.set('opennessState', opennessState), types.applyOpennessState());
     }
 
-    function selectHeader(state, id) {
-      return reducer(state, { type: 'SELECT_HEADER', headerId: id });
-    }
-
     describe('SELECT_PREVIOUS_VISIBLE_HEADER', () => {
       it('should skip invisible header', () => {
         const stateSelected = selectHeader(
@@ -1692,6 +1692,49 @@ describe('org reducer', () => {
       expect(editState.get('editMode')).toEqual('description');
       const nonEditState = reducer(editState, types.exitEditMode());
       expect(nonEditState.get('editMode')).toBeNull();
+    });
+  });
+
+  describe('SET_SEARCH_FILTER_INFORMATION', () => {
+    let headerId;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+    const validFilter = 'header';
+    const invalidFilter = ':';
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      headerId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle valid search filter', () => {
+      const oldState = selectHeader(state.org.present, headerId);
+      const action = types.setSearchFilterInformation(validFilter, 0, 'refile');
+      const newState = reducer(oldState, action);
+
+      expect(newState.getIn(['search', 'searchFilter'])).toEqual(validFilter);
+      expect(newState.getIn(['search', 'searchFilterValid'])).toEqual(true);
+      expect(
+        newState
+          .getIn(['search', 'filteredHeaders'])
+          .map((hdr) => hdr.getIn(['titleLine', 'rawTitle']))
+          .toJS()
+      ).toEqual(['Top level header', 'A second nested header']);
+
+      const check_kept = check_kept_factory(oldState, newState);
+      check_kept((st) => st.get('headers'));
+    });
+
+    it('should ignore invalid search filter', () => {
+      const oldState = selectHeader(state.org.present, headerId);
+      const action = types.setSearchFilterInformation(invalidFilter, 0, 'refile');
+      const newState = reducer(oldState, action);
+
+      expect(newState.getIn(['search', 'searchFilter'])).toEqual(invalidFilter);
+      expect(newState.getIn(['search', 'searchFilterValid'])).toEqual(false);
+      const check_kept = check_kept_factory(oldState, newState);
+      check_kept((st) => st.get('headers'));
     });
   });
 });
