@@ -974,11 +974,12 @@ describe('org reducer', () => {
   describe('ADVANCE_CHECKBOX_STATE', () => {
     let topHeaderId;
     let bottomHeaderId;
-    let checkedBoxId;
-    let uncheckedBoxId;
-    let nestId;
-    let deepNestedId;
-    let bottomNestedId;
+    let checkedBoxC;
+    let uncheckedBoxB;
+    let compoundBoxE;
+    let deepNestedBoxH;
+    let bottomNestedBoxK;
+    let bottomDeepNestedBoxN;
     let state;
     const testOrgFile = readFixture('checkboxes');
 
@@ -988,16 +989,22 @@ describe('org reducer', () => {
       let headers = state.org.present.get('headers');
       topHeaderId = headers.get(0).get('id');
       bottomHeaderId = headers.get(1).get('id');
-      checkedBoxId = headerWithId(headers, topHeaderId).getIn(['description', 0, 'items', 2, 'id']);
-      uncheckedBoxId = headerWithId(headers, topHeaderId).getIn([
+      checkedBoxC = headerWithId(headers, topHeaderId).getIn(['description', 0, 'items', 2, 'id']);
+      uncheckedBoxB = headerWithId(headers, topHeaderId).getIn([
         'description',
         0,
         'items',
         1,
         'id',
       ]);
-      nestId = headerWithId(headers, bottomHeaderId).getIn(['description', 0, 'items', 1, 'id']);
-      deepNestedId = headerWithId(headers, bottomHeaderId).getIn([
+      compoundBoxE = headerWithId(headers, bottomHeaderId).getIn([
+        'description',
+        0,
+        'items',
+        1,
+        'id',
+      ]);
+      deepNestedBoxH = headerWithId(headers, bottomHeaderId).getIn([
         'description',
         0,
         'items',
@@ -1012,7 +1019,7 @@ describe('org reducer', () => {
         0,
         'id',
       ]);
-      bottomNestedId = headerWithId(headers, bottomHeaderId).getIn([
+      bottomNestedBoxK = headerWithId(headers, bottomHeaderId).getIn([
         'description',
         0,
         'items',
@@ -1023,11 +1030,26 @@ describe('org reducer', () => {
         0,
         'id',
       ]);
+      bottomDeepNestedBoxN = headerWithId(headers, bottomHeaderId).getIn([
+        'description',
+        0,
+        'items',
+        2,
+        'contents',
+        0,
+        'items',
+        1,
+        'contents',
+        0,
+        'items',
+        1,
+        'id',
+      ]);
     });
 
     it('should check the box', () => {
       const oldState = state.org.present;
-      const newState = reducer(oldState, types.advanceCheckboxState(uncheckedBoxId));
+      const newState = reducer(oldState, types.advanceCheckboxState(uncheckedBoxB));
 
       expect(
         headerWithId(newState.get('headers'), topHeaderId)
@@ -1045,7 +1067,7 @@ describe('org reducer', () => {
 
     it('should uncheck the box', () => {
       const oldState = state.org.present;
-      const newState = reducer(oldState, types.advanceCheckboxState(checkedBoxId));
+      const newState = reducer(oldState, types.advanceCheckboxState(checkedBoxC));
 
       expect(
         headerWithId(newState.get('headers'), topHeaderId)
@@ -1064,13 +1086,13 @@ describe('org reducer', () => {
     it('should just dirty when checkbox is a nest header', () => {
       const oldState = state.org.present;
       const justDirty = reducer(oldState, types.setDirty(true));
-      const newState = reducer(oldState, types.advanceCheckboxState(nestId));
+      const newState = reducer(oldState, types.advanceCheckboxState(compoundBoxE));
       expect(newState).toEqual(justDirty);
     });
 
     it('should check the parent boxes and update cookies when complete', () => {
       const oldState = state.org.present;
-      const newState = reducer(oldState, types.advanceCheckboxState(deepNestedId));
+      const newState = reducer(oldState, types.advanceCheckboxState(deepNestedBoxH));
 
       expect(
         headerWithId(newState.get('headers'), bottomHeaderId)
@@ -1085,15 +1107,26 @@ describe('org reducer', () => {
       ).toEqual([2, 3]);
     });
 
-    it('should ', () => {
+    it('should keep the partial state when some children are not checked', () => {
       const oldState = state.org.present;
-      const newState = reducer(oldState, types.advanceCheckboxState(bottomNestedId));
+      const newState = reducer(oldState, types.advanceCheckboxState(bottomNestedBoxK));
       expect(
         headerWithId(newState.get('headers'), bottomHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
       ).toEqual(['checked', 'partial', 'partial', null]);
+    });
+
+    it('should clear the compound when children are undone', () => {
+      const oldState = state.org.present;
+      const newState = reducer(oldState, types.advanceCheckboxState(bottomDeepNestedBoxN));
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId)
+          .getIn(['description', 0, 'items'])
+          .toJS()
+          .map((x) => x.checkboxState)
+      ).toEqual(['checked', 'partial', 'unchecked', null]);
     });
   });
 
