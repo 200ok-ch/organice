@@ -779,6 +779,7 @@ describe('org reducer', () => {
     const ts = timestampForDate(date, { isActive: true, withStartTime: true });
     let headerTsId;
     let bodyTsId;
+    const invalidId = generateId();
 
     beforeEach(() => {
       state = readInitialState();
@@ -827,6 +828,13 @@ describe('org reducer', () => {
       check_kept((st) => st.get('headers').size);
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('titleLine'));
     });
+
+    it('should just dirty when trying to update invalid id', () => {
+      const oldState = state.org.present;
+      const justDirty = reducer(oldState, types.setDirty(true));
+      const newState = reducer(oldState, types.updateTimestampWithId(invalidId, 'dummy'));
+      expect(newState).toEqual(justDirty);
+    });
   });
 
   describe('REORDER_PROPERTY_LIST', () => {
@@ -836,6 +844,7 @@ describe('org reducer', () => {
     const testOrgFile = readFixture('properties_extended');
     const fromIndex = 1;
     const toIndex = 3;
+    const invalidId = generateId();
 
     beforeEach(() => {
       state = readInitialState();
@@ -868,6 +877,19 @@ describe('org reducer', () => {
       );
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
     });
+
+    it('should just dirty when working with invalid header id', () => {
+      const oldState = state.org.present;
+      const justDirty = reducer(oldState, types.setDirty(true));
+      const newState = reducer(oldState, {
+        type: 'REORDER_PROPERTY_LIST',
+        fromIndex,
+        toIndex,
+        invalidId,
+        dirtying: true,
+      });
+      expect(newState).toEqual(justDirty);
+    });
   });
 
   describe('REORDER_TAGS', () => {
@@ -876,6 +898,7 @@ describe('org reducer', () => {
     const testOrgFile = readFixture('more_tags');
     const fromIndex = 0;
     const toIndex = 2;
+    const invalidId = generateId();
 
     beforeEach(() => {
       state = readInitialState();
@@ -901,6 +924,13 @@ describe('org reducer', () => {
       );
       check_kept((st) => headerWithId(st.get('headers'), headerId).get('description'));
     });
+
+    it('should just dirty when working with invalid header id', () => {
+      const oldState = reducer(state.org.present, { type: 'SELECT_HEADER', invalidId });
+      const justDirty = reducer(oldState, types.setDirty(true));
+      const newState = reducer(oldState, types.reorderTags(fromIndex, toIndex));
+      expect(newState).toEqual(justDirty);
+    });
   });
 
   describe('SET_HEADER_TAGS', () => {
@@ -908,6 +938,7 @@ describe('org reducer', () => {
     let state;
     const testOrgFile = readFixture('more_tags');
     const tags = fromJS(['ta', 't1', 'spec_tag']);
+    const invalidId = generateId();
 
     beforeEach(() => {
       state = readInitialState();
@@ -927,13 +958,22 @@ describe('org reducer', () => {
       const check_kept = check_kept_factory(state.org.present, newState);
       check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
     });
+
+    it('should just dirty when working with invalid header id', () => {
+      const oldState = state.org.present;
+      const justDirty = reducer(oldState, types.setDirty(true));
+      const newState = reducer(oldState, types.setHeaderTags(invalidId, tags));
+      expect(newState).toEqual(justDirty);
+    });
   });
 
   describe('ADVANCE_CHECKBOX_STATE', () => {
-    let headerId;
+    let topHeaderId;
     let checkedBoxId;
     let uncheckedBoxId;
-    let irrelevantHeaderId;
+    let bottomHeaderId;
+    let nestId;
+    let deepNestedId;
     let state;
     const testOrgFile = readFixture('checkboxes');
 
@@ -941,10 +981,32 @@ describe('org reducer', () => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
       let headers = state.org.present.get('headers');
-      headerId = headers.get(0).get('id');
-      irrelevantHeaderId = headers.get(1).get('id');
-      checkedBoxId = headerWithId(headers, headerId).getIn(['description', 0, 'items', 2, 'id']);
-      uncheckedBoxId = headerWithId(headers, headerId).getIn(['description', 0, 'items', 1, 'id']);
+      topHeaderId = headers.get(0).get('id');
+      bottomHeaderId = headers.get(1).get('id');
+      checkedBoxId = headerWithId(headers, topHeaderId).getIn(['description', 0, 'items', 2, 'id']);
+      uncheckedBoxId = headerWithId(headers, topHeaderId).getIn([
+        'description',
+        0,
+        'items',
+        1,
+        'id',
+      ]);
+      nestId = headerWithId(headers, bottomHeaderId).getIn(['description', 0, 'items', 1, 'id']);
+      deepNestedId = headerWithId(headers, bottomHeaderId).getIn([
+        'description',
+        0,
+        'items',
+        1,
+        'contents',
+        0,
+        'items',
+        0,
+        'contents',
+        0,
+        'items',
+        0,
+        'id',
+      ]);
     });
 
     it('should check the box', () => {
@@ -952,7 +1014,7 @@ describe('org reducer', () => {
       const newState = reducer(oldState, types.advanceCheckboxState(uncheckedBoxId));
 
       expect(
-        headerWithId(newState.get('headers'), headerId)
+        headerWithId(newState.get('headers'), topHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
@@ -960,9 +1022,9 @@ describe('org reducer', () => {
 
       const check_kept = check_kept_factory(oldState, newState);
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['description', 0, 'items', 0])
+        headerWithId(st.get('headers'), topHeaderId).getIn(['description', 0, 'items', 0])
       );
-      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) => headerWithId(st.get('headers'), bottomHeaderId));
     });
 
     it('should uncheck the box', () => {
@@ -970,7 +1032,7 @@ describe('org reducer', () => {
       const newState = reducer(oldState, types.advanceCheckboxState(checkedBoxId));
 
       expect(
-        headerWithId(newState.get('headers'), headerId)
+        headerWithId(newState.get('headers'), topHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
@@ -978,9 +1040,33 @@ describe('org reducer', () => {
 
       const check_kept = check_kept_factory(oldState, newState);
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['description', 0, 'items', 0])
+        headerWithId(st.get('headers'), topHeaderId).getIn(['description', 0, 'items', 0])
       );
-      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) => headerWithId(st.get('headers'), bottomHeaderId));
+    });
+
+    it('should just dirty when checkbox is a nest header', () => {
+      const oldState = state.org.present;
+      const justDirty = reducer(oldState, types.setDirty(true));
+      const newState = reducer(oldState, types.advanceCheckboxState(nestId));
+      expect(newState).toEqual(justDirty);
+    });
+
+    it('should check the parent boxes and update cookies when complete', () => {
+      const oldState = state.org.present;
+      const newState = reducer(oldState, types.advanceCheckboxState(deepNestedId));
+
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId)
+          .getIn(['description', 0, 'items'])
+          .toJS()
+          .map((x) => x.checkboxState)
+      ).toEqual(['checked', 'checked', 'checked']);
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId)
+          .getIn(['titleLine', 'title', 1, 'fraction'])
+          .toJS()
+      ).toEqual([3, 3]);
     });
   });
 
