@@ -368,7 +368,7 @@ const moveHeaderDown = (state, action) => {
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
   const nextSiblingIndex = headerIndex + subheaders.size + 1;
   const nextSibling = headers.get(nextSiblingIndex);
-  if (nextSibling.get('nestingLevel') < header.get('nestingLevel')) {
+  if (!nextSibling || nextSibling.get('nestingLevel') < header.get('nestingLevel')) {
     return state;
   }
 
