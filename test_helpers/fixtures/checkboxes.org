@@ -2,10 +2,16 @@
 - [ ] One
 - [ ] Two
 - [X] Three
-* Another header [2/3]
+* Another header [1/3]
 - [X] One
 - [-] Two
   - [ ] Nested one
     - [ ] Nested nested
   - [X] Nested two
-- [X] Three
+- [-] Three
+  - [ ] Three-nested one
+  - [-] Three-nested two
+    - [ ] Three-nested-nested one
+    - [X] Three-nested-nested two
+  - [ ] three-nested three
+- Not a checkbox

@@ -973,11 +973,12 @@ describe('org reducer', () => {
 
   describe('ADVANCE_CHECKBOX_STATE', () => {
     let topHeaderId;
+    let bottomHeaderId;
     let checkedBoxId;
     let uncheckedBoxId;
-    let bottomHeaderId;
     let nestId;
     let deepNestedId;
+    let bottomNestedId;
     let state;
     const testOrgFile = readFixture('checkboxes');
 
@@ -1005,6 +1006,17 @@ describe('org reducer', () => {
         0,
         'items',
         0,
+        'contents',
+        0,
+        'items',
+        0,
+        'id',
+      ]);
+      bottomNestedId = headerWithId(headers, bottomHeaderId).getIn([
+        'description',
+        0,
+        'items',
+        2,
         'contents',
         0,
         'items',
@@ -1065,12 +1077,23 @@ describe('org reducer', () => {
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
-      ).toEqual(['checked', 'checked', 'checked']);
+      ).toEqual(['checked', 'checked', 'partial', null]);
       expect(
         headerWithId(newState.get('headers'), bottomHeaderId)
           .getIn(['titleLine', 'title', 1, 'fraction'])
           .toJS()
-      ).toEqual([3, 3]);
+      ).toEqual([2, 3]);
+    });
+
+    it('should ', () => {
+      const oldState = state.org.present;
+      const newState = reducer(oldState, types.advanceCheckboxState(bottomNestedId));
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId)
+          .getIn(['description', 0, 'items'])
+          .toJS()
+          .map((x) => x.checkboxState)
+      ).toEqual(['checked', 'partial', 'partial', null]);
     });
   });
 
