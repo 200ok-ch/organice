@@ -785,7 +785,7 @@ const clearPendingCapture = (state) => state.set('pendingCapture', null);
 const updateParentListCheckboxes = (state, itemPath) => {
   const parentListItemPath = itemPath.slice(0, itemPath.length - 4);
   const parentListItem = state.getIn(parentListItemPath);
-  if (!parentListItem.has('checkboxState')) {
+  if (!parentListItem.get('isCheckbox')) {
     return state;
   }
 
@@ -816,8 +816,6 @@ const updateParentListCheckboxes = (state, itemPath) => {
           return false;
         case 'partial':
           return false;
-        default:
-          return false;
       }
     })
     .toJS();
@@ -826,11 +824,7 @@ const updateParentListCheckboxes = (state, itemPath) => {
     updateCookiesInAttributedStringWithChildCompletionStates(titleLine, childCompletionStates)
   );
 
-  if (parentListItem.get('isCheckbox')) {
-    return updateParentListCheckboxes(state, parentListItemPath);
-  } else {
-    return state;
-  }
+  return updateParentListCheckboxes(state, parentListItemPath);
 };
 
 const advanceCheckboxState = (state, action) => {
