@@ -1593,4 +1593,19 @@ describe('org reducer', () => {
       check_is_undoable(state, types.updateHeaderDescription(nestedHeaderId, newDescription));
     });
   });
+
+  describe('EXIT_EDIT_MODE', () => {
+    let state;
+
+    beforeEach(() => {
+      state = readInitialState();
+    });
+
+    it('should handle EXIT_EDIT_MODE', () => {
+      const editState = reducer(state.org.present, types.enterEditMode('description'));
+      expect(editState.get('editMode')).toEqual('description');
+      const nonEditState = reducer(editState, types.exitEditMode());
+      expect(nonEditState.get('editMode')).toBeNull();
+    });
+  });
 });
