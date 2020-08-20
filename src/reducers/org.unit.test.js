@@ -1434,4 +1434,127 @@ describe('org reducer', () => {
       check_is_undoable(state, types.moveHeaderLeft(nestedHeaderId));
     });
   });
+
+  describe('selecting ', () => {
+    let topHeaderId;
+    let nestedHeaderId;
+    let deepNestedHeaderId;
+    let nestedHeader2Id;
+    let state;
+    const fileName = 'nested_header';
+    const testOrgFile = readFixture(fileName);
+    let openOnlyTop = fromJS({
+      [fileName]: [['Top level header']],
+    });
+    let openAll = fromJS({
+      [fileName]: [['Top level header', 'A nested header']],
+    });
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile).set('path', fileName);
+
+      // "Top level header" is the 1st item but we count from 0 not 1.
+      topHeaderId = state.org.present.get('headers').get(0).get('id');
+      // "A nested header" is the 2nd item but we count from 0 not 1.
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+      // "A deep nested header" is the 3rd item but we count from 0 not 1.
+      deepNestedHeaderId = state.org.present.get('headers').get(2).get('id');
+      // "A second nested header"is  the 4th item but we count from 0 not 1.
+      nestedHeader2Id = state.org.present.get('headers').get(3).get('id');
+    });
+
+    function openHeaders(state, opennessState) {
+      return reducer(state.set('opennessState', opennessState), types.applyOpennessState());
+    }
+
+    function selectHeader(state, id) {
+      return reducer(state, { type: 'SELECT_HEADER', headerId: id });
+    }
+
+    describe('SELECT_PREVIOUS_VISIBLE_HEADER', () => {
+      it('should skip invisible header', () => {
+        const stateSelected = selectHeader(
+          openHeaders(state.org.present, openOnlyTop),
+          nestedHeader2Id
+        );
+        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(nestedHeaderId);
+      });
+
+      it("should select junior header when it's above", () => {
+        const stateSelected = selectHeader(
+          openHeaders(state.org.present, openAll),
+          nestedHeader2Id
+        );
+        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+      });
+
+      it('should select parent header', () => {
+        const stateSelected = selectHeader(
+          openHeaders(state.org.present, openAll),
+          deepNestedHeaderId
+        );
+        expect(stateSelected.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(nestedHeaderId);
+      });
+
+      it('do nothing on the first header', () => {
+        const stateSelected = selectHeader(openHeaders(state.org.present, openAll), topHeaderId);
+        expect(stateSelected.get('selectedHeaderId')).toEqual(topHeaderId);
+        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
+      });
+    });
+
+    describe('SELECT_NEXT_VISIBLE_HEADER', () => {
+      it('should skip invisible header', () => {
+        const stateSelected = selectHeader(
+          openHeaders(state.org.present, openOnlyTop),
+          nestedHeaderId
+        );
+        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+      });
+
+      it('should select child when its visible', () => {
+        const stateSelected = selectHeader(openHeaders(state.org.present, openAll), nestedHeaderId);
+        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+      });
+
+      it("should select elder header when it's below", () => {
+        const stateSelected = selectHeader(
+          openHeaders(state.org.present, openAll),
+          deepNestedHeaderId
+        );
+        expect(stateSelected.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+      });
+
+      it('do nothing on the last header', () => {
+        const stateSelected = selectHeader(
+          openHeaders(state.org.present, openAll),
+          nestedHeader2Id
+        );
+        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+      });
+
+      it('do nothing on the last visible header', () => {
+        const stateSelected = selectHeader(state.org.present, topHeaderId);
+        expect(stateSelected.get('selectedHeaderId')).toEqual(topHeaderId);
+        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
+      });
+    });
+  });
 });
