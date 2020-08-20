@@ -175,19 +175,19 @@ describe('org reducer', () => {
     }
 
     function expectOrigLastHeader(headers) {
-      expect(extractTitleAndNesting(headers.last())).toEqual(['A deep nested header', 3]);
+      expect(extractTitleAndNesting(headers.last())).toEqual(['A second nested header', 2]);
     }
 
     function insertCapture(shouldPrepend) {
       // Check initially parsed file looks as expected
       let headers = store.getState().org.present.get('headers');
-      expect(headers.size).toEqual(3);
+      expect(headers.size).toEqual(4);
       expectOrigFirstHeader(headers);
       expectOrigLastHeader(headers);
       const action = types.insertCapture(template.id, content, shouldPrepend);
       store.dispatch(action);
       const newHeaders = store.getState().org.present.get('headers');
-      expect(newHeaders.size).toEqual(4);
+      expect(newHeaders.size).toEqual(5);
       return newHeaders;
     }
 
@@ -241,6 +241,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 2],
         ['A deep nested header', 3],
+        ['A second nested header', 2],
       ]);
 
       const action = types.moveHeaderLeft(nestedHeaderId);
@@ -251,6 +252,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 1],
         ['A deep nested header', 3],
+        ['A second nested header', 2],
       ]);
     });
 
@@ -280,6 +282,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 2],
         ['A deep nested header', 3],
+        ['A second nested header', 2],
       ]);
 
       const action = types.moveHeaderRight(nestedHeaderId);
@@ -290,11 +293,114 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 3],
         ['A deep nested header', 3],
+        ['A second nested header', 2],
       ]);
     });
 
     it('is undoable', () => {
       check_is_undoable(state, types.moveHeaderRight(nestedHeaderId));
+    });
+  });
+
+  describe('MOVE_HEADER_DOWN', () => {
+    let nestedHeaderId;
+    let nestedHeader2Id;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      // The target is to move "A nested header" down.
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+      // "A second nested header" the 4th item but we count from 0 not 1.
+      nestedHeader2Id = state.org.present.get('headers').get(3).get('id');
+    });
+
+    it('should handle MOVE_HEADER_DOWN', () => {
+      // Mapping the headers to their nesting level. This is how the
+      // initially parsed file should look like.
+      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+        ['A second nested header', 2],
+      ]);
+
+      const action = types.moveHeaderDown(nestedHeaderId);
+      const newState = reducer(state.org.present, action);
+
+      // "A nested header" is not at the top level.
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A second nested header', 2],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+      ]);
+    });
+
+    it('should do nothing if already on the bottom', () => {
+      const justDirty = reducer(state.org.present, types.setDirty(true));
+      const action = types.moveHeaderDown(nestedHeader2Id);
+      const newState = reducer(state.org.present, action);
+      expect(newState).toEqual(justDirty);
+    });
+
+    it('is undoable', () => {
+      check_is_undoable(state, types.moveHeaderDown(nestedHeaderId));
+    });
+  });
+
+  describe('MOVE_HEADER_UP', () => {
+    let nestedHeader2Id;
+    let nestedHeaderId;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      // The target is to move "A second nested header" up.
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+      // "A second nested header" the 4th item but we count from 0 not 1.
+      nestedHeader2Id = state.org.present.get('headers').get(3).get('id');
+    });
+
+    it('should handle MOVE_HEADER_UP', () => {
+      // Mapping the headers to their nesting level. This is how the
+      // initially parsed file should look like.
+      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+        ['A second nested header', 2],
+      ]);
+
+      const action = types.moveHeaderUp(nestedHeader2Id);
+      const newState = reducer(state.org.present, action);
+
+      // "A nested header" is not at the top level.
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A second nested header', 2],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+      ]);
+    });
+
+    it('should do nothing if already at the top', () => {
+      const justDirty = reducer(state.org.present, types.setDirty(true));
+      const action = types.moveHeaderUp(nestedHeaderId);
+      const newState = reducer(state.org.present, action);
+      expect(newState).toEqual(justDirty);
+    });
+
+    it('is undoable', () => {
+      check_is_undoable(state, types.moveHeaderUp(nestedHeader2Id));
     });
   });
 
@@ -319,6 +425,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 2],
         ['A deep nested header', 3],
+        ['A second nested header', 2],
       ]);
 
       const action = types.moveSubtreeLeft(nestedHeaderId);
@@ -329,6 +436,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 1],
         ['A deep nested header', 2],
+        ['A second nested header', 2],
       ]);
     });
 
@@ -358,6 +466,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 2],
         ['A deep nested header', 3],
+        ['A second nested header', 2],
       ]);
 
       const action = types.moveSubtreeRight(nestedHeaderId);
@@ -368,6 +477,7 @@ describe('org reducer', () => {
         ['Top level header', 1],
         ['A nested header', 3],
         ['A deep nested header', 4],
+        ['A second nested header', 2],
       ]);
     });
 
