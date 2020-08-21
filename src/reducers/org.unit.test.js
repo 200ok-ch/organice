@@ -1738,6 +1738,12 @@ describe('org reducer', () => {
     });
 
     describe('SELECT_NEXT_VISIBLE_HEADER', () => {
+      it('start from the first', () => {
+        expect(state.org.present.get('selectedHeaderId')).toBeUndefined();
+        const newState = reducer(state.org.present, types.selectNextVisibleHeader());
+        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
+      });
+
       it('should skip invisible header', () => {
         const stateSelected = selectHeader(
           openHeaders(state.org.present, openOnlyTop),
