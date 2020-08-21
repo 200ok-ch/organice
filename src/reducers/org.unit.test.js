@@ -67,6 +67,12 @@ describe('org reducer', () => {
     expect(store.getState().present).toEqual(oldState);
   }
 
+  function check_just_dirtying(oldState, action) {
+    const justDirty = reducer(oldState, types.setDirty(true));
+    const newState = reducer(oldState, action);
+    expect(newState).toEqual(justDirty);
+  }
+
   function check_kept_factory(oldState, newState) {
     return (query) => {
       expect(query(oldState)).toEqual(query(newState));
@@ -383,11 +389,8 @@ describe('org reducer', () => {
       ]);
     });
 
-    it('should do nothing if already on the bottom', () => {
-      const justDirty = reducer(state.org.present, types.setDirty(true));
-      const action = types.moveHeaderDown(nestedHeader2Id);
-      const newState = reducer(state.org.present, action);
-      expect(newState).toEqual(justDirty);
+    it('should just dirty if already on the bottom', () => {
+      check_just_dirtying(state.org.present, types.moveHeaderDown(nestedHeader2Id));
     });
 
     it('is undoable', () => {
@@ -434,11 +437,8 @@ describe('org reducer', () => {
       ]);
     });
 
-    it('should do nothing if already at the top', () => {
-      const justDirty = reducer(state.org.present, types.setDirty(true));
-      const action = types.moveHeaderUp(nestedHeaderId);
-      const newState = reducer(state.org.present, action);
-      expect(newState).toEqual(justDirty);
+    it('should just dirty if already at the top', () => {
+      check_just_dirtying(state.org.present, types.moveHeaderUp(nestedHeaderId));
     });
 
     it('is undoable', () => {
@@ -872,10 +872,7 @@ describe('org reducer', () => {
     });
 
     it('should just dirty when trying to update invalid id', () => {
-      const oldState = state.org.present;
-      const justDirty = reducer(oldState, types.setDirty(true));
-      const newState = reducer(oldState, types.updateTimestampWithId(invalidId, 'dummy'));
-      expect(newState).toEqual(justDirty);
+      check_just_dirtying(state.org.present, types.updateTimestampWithId(invalidId, 'dummy'));
     });
   });
 
@@ -921,16 +918,13 @@ describe('org reducer', () => {
     });
 
     it('should just dirty when working with invalid header id', () => {
-      const oldState = state.org.present;
-      const justDirty = reducer(oldState, types.setDirty(true));
-      const newState = reducer(oldState, {
+      check_just_dirtying(state.org.present, {
         type: 'REORDER_PROPERTY_LIST',
         fromIndex,
         toIndex,
         invalidId,
         dirtying: true,
       });
-      expect(newState).toEqual(justDirty);
     });
   });
 
@@ -968,10 +962,8 @@ describe('org reducer', () => {
     });
 
     it('should just dirty when working with invalid header id', () => {
-      const oldState = reducer(state.org.present, { type: 'SELECT_HEADER', invalidId });
-      const justDirty = reducer(oldState, types.setDirty(true));
-      const newState = reducer(oldState, types.reorderTags(fromIndex, toIndex));
-      expect(newState).toEqual(justDirty);
+      const selectedState = reducer(state.org.present, { type: 'SELECT_HEADER', invalidId });
+      check_just_dirtying(selectedState, types.reorderTags(fromIndex, toIndex));
     });
   });
 
@@ -1002,10 +994,7 @@ describe('org reducer', () => {
     });
 
     it('should just dirty when working with invalid header id', () => {
-      const oldState = state.org.present;
-      const justDirty = reducer(oldState, types.setDirty(true));
-      const newState = reducer(oldState, types.setHeaderTags(invalidId, tags));
-      expect(newState).toEqual(justDirty);
+      check_just_dirtying(state.org.present, types.setHeaderTags(invalidId, tags));
     });
   });
 
@@ -1122,10 +1111,7 @@ describe('org reducer', () => {
     });
 
     it('should just dirty when checkbox is a nest header', () => {
-      const oldState = state.org.present;
-      const justDirty = reducer(oldState, types.setDirty(true));
-      const newState = reducer(oldState, types.advanceCheckboxState(compoundBoxE));
-      expect(newState).toEqual(justDirty);
+      check_just_dirtying(state.org.present, types.advanceCheckboxState(compoundBoxE));
     });
 
     it('should check the parent boxes and update cookies when complete', () => {
@@ -1248,6 +1234,10 @@ describe('org reducer', () => {
       check_kept((st) => firstTable(st).get('contents').size);
     });
 
+    it('should just dirty on move with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.moveTableColumnRight());
+    });
+
     it('is undoable', () => {
       check_is_undoable_on_table(store, cellId, types.moveTableColumnRight());
     });
@@ -1286,6 +1276,10 @@ describe('org reducer', () => {
       check_kept((st) => firstTable(st).get('contents').size);
     });
 
+    it('should just dirty on move with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.moveTableColumnLeft());
+    });
+
     it('is undoable', () => {
       check_is_undoable_on_table(store, cellId, types.moveTableColumnLeft());
     });
@@ -1321,6 +1315,10 @@ describe('org reducer', () => {
       check_kept((st) => firstTable(st).get('contents').size);
     });
 
+    it('should just dirty on move with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.moveTableRowUp());
+    });
+
     it('is undoable', () => {
       check_is_undoable_on_table(store, cellId, types.moveTableRowUp());
     });
@@ -1354,6 +1352,10 @@ describe('org reducer', () => {
       );
       check_kept((st) => firstTable(st).getIn(['contents', 0]));
       check_kept((st) => firstTable(st).get('contents').size);
+    });
+
+    it('should just dirty on move with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.moveTableRowDown());
     });
 
     it('is undoable', () => {
@@ -1392,6 +1394,11 @@ describe('org reducer', () => {
       });
       check_kept((st) => firstTable(st).get('contents').size);
     });
+
+    it('should just dirty on remove with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.removeTableColumn());
+    });
+
     it('is undoable', () => {
       check_is_undoable_on_table(store, cellId, types.removeTableColumn());
     });
@@ -1426,6 +1433,10 @@ describe('org reducer', () => {
       );
 
       check_kept((st) => firstTable(st).getIn(['contents', 0]));
+    });
+
+    it('should just dirty on remove with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.removeTableRow());
     });
 
     it('is undoable', () => {
@@ -1466,6 +1477,10 @@ describe('org reducer', () => {
       check_kept((st) => firstTable(st).get('contents').size);
     });
 
+    it('should just dirty on add with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.addNewTableColumn());
+    });
+
     it('is undoable', () => {
       check_is_undoable_on_table(store, cellId, types.addNewTableColumn());
     });
@@ -1500,6 +1515,10 @@ describe('org reducer', () => {
       expect(firstTable(newState).getIn(['contents']).size).toEqual(
         firstTable(oldState).getIn(['contents']).size + 1
       );
+    });
+
+    it('should just dirty on add with no cell selected', () => {
+      check_just_dirtying(store.getState().present, types.addNewTableRow());
     });
 
     it('is undoable', () => {
