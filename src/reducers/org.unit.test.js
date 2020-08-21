@@ -1597,6 +1597,18 @@ describe('org reducer', () => {
         ).get('opened')
       ).toEqual(true);
     });
+
+    it('should do nothing when no openness state is set', () => {
+      const oldState = state.org.present;
+      const newState = reducer(oldState, types.applyOpennessState());
+      expect(newState).toEqual(oldState);
+    });
+
+    it('should do nothing when no openness state is set for the file', () => {
+      const stateWithOpenness = state.org.present.set('opennessState', fromJS({}));
+      const newState = reducer(stateWithOpenness, types.applyOpennessState());
+      expect(newState).toEqual(stateWithOpenness);
+    });
   });
 
   describe('REMOVE_HEADER', () => {
