@@ -1652,6 +1652,14 @@ describe('org reducer', () => {
       ]);
     });
 
+    it('should reset header focus', () => {
+      const action = types.removeHeader(nestedHeaderId);
+      const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
+      expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
+      const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
+      expect(newState.get('focusedHeaderId')).toEqual(null);
+    });
+
     it('is undoable', () => {
       check_is_undoable(state, types.removeHeader(nestedHeaderId));
     });
