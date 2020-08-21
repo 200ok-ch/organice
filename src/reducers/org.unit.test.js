@@ -1142,15 +1142,17 @@ describe('org reducer', () => {
           .toJS()
       ).toEqual([2, 3]);
 
-      expect(headerWithId(newState.get('headers'), bottomHeaderId).getIn([
-        'description',
-        0,
-        'items', // compoundBoxE
-        1,
-        'titleLine',
-        1,
-        'percentage'
-      ])).toEqual(100);
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId).getIn([
+          'description',
+          0,
+          'items', // compoundBoxE
+          1,
+          'titleLine',
+          1,
+          'percentage',
+        ])
+      ).toEqual(100);
     });
 
     it('should keep the partial state when some children are not checked', () => {
@@ -1959,6 +1961,34 @@ describe('org reducer', () => {
       expect(newState.getIn(['search', 'searchFilterValid'])).toEqual(false);
       const check_kept = check_kept_factory(oldState, newState);
       check_kept((st) => st.get('headers'));
+    });
+  });
+
+  describe('TOGGLE_HEADER_OPENED', () => {
+    let topHeaderId, nestedHeaderId;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+
+      topHeaderId = state.org.present.get('headers').get(0).get('id');
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should open only the header on the first toggle', () => {
+      const newState = reducer(state.org.present, types.toggleHeaderOpened(topHeaderId));
+      expect(headerWithId(newState.get('headers'), topHeaderId).get('opened')).toEqual(true);
+      expect(headerWithId(newState.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
+    });
+
+    it('should ignore if focused and open', () => {
+      expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
+      const openState = reducer(state.org.present, types.toggleHeaderOpened(topHeaderId));
+      const focusedState = reducer(openState, types.focusHeader(topHeaderId));
+      const newState = reducer(focusedState, types.toggleHeaderOpened(topHeaderId));
+      expect(newState).toEqual(focusedState);
     });
   });
 });
