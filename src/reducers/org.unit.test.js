@@ -41,7 +41,7 @@ describe('org reducer', () => {
     // Without this action, and without the
     // syncFilter: true flag in the undoable config,
     // the _lastUnfiltered field will be empty, and so will
-    // be the 'past' after the INSERT_CAPTURE action.
+    // be the 'past' after the `action`.
     // The ADD_HEADER action is undoable so it gets saved
     // in _lastUnfiltered and then gets into the 'past' only to
     // be successfuly restored when we perform the UNDO.
@@ -143,14 +143,26 @@ describe('org reducer', () => {
   });
 
   describe('INSERT_CAPTURE', () => {
-    let store, template;
+    let store, templateTopLevel, templateNested;
     let state;
     const testOrgFile = readFixture('nested_header');
 
     beforeEach(() => {
-      template = {
+      templateTopLevel = {
         description: '',
         headerPaths: [],
+        iconName: 'todo',
+        id: generateId(),
+        isAvailableInAllOrgFiles: false,
+        letter: '',
+        orgFilesWhereAvailable: [],
+        shouldPrepend: false,
+        template: '* TODO %?',
+        isSample: true,
+      };
+      templateNested = {
+        description: '',
+        headerPaths: ['Top level header', 'A nested header'],
         iconName: 'todo',
         id: generateId(),
         isAvailableInAllOrgFiles: false,
@@ -163,7 +175,7 @@ describe('org reducer', () => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
       state.capture = state.capture.update('captureTemplates', (templates) =>
-        templates.push(fromJS(template))
+        templates.push(fromJS(templateTopLevel)).push(fromJS(templateNested))
       );
 
       // We have to create a full store rather than just the org bit,
@@ -182,7 +194,7 @@ describe('org reducer', () => {
       expect(extractTitleAndNesting(headers.last())).toEqual(['A second nested header', 2]);
     }
 
-    function insertCapture(shouldPrepend) {
+    function insertCapture(template, shouldPrepend) {
       // Check initially parsed file looks as expected
       let headers = store.getState().org.present.get('headers');
       expect(headers.size).toEqual(4);
@@ -195,8 +207,8 @@ describe('org reducer', () => {
       return newHeaders;
     }
 
-    it('should insert at top of file', () => {
-      const newHeaders = insertCapture(true);
+    it('should insert at the top of file', () => {
+      const newHeaders = insertCapture(templateTopLevel, true);
       expectOrigLastHeader(newHeaders);
       const first = newHeaders.first();
       expect(first.getIn(['titleLine', 'rawTitle'])).toEqual('My task');
@@ -204,8 +216,8 @@ describe('org reducer', () => {
       expect(first.get('rawDescription')).toEqual('Some description\n');
     });
 
-    it('should insert at bottom of file', () => {
-      const newHeaders = insertCapture(false);
+    it('should insert at the bottom of file', () => {
+      const newHeaders = insertCapture(templateTopLevel, false);
       expectOrigFirstHeader(newHeaders);
       const last = newHeaders.last();
       expect(last.getIn(['titleLine', 'rawTitle'])).toEqual('My task');
@@ -213,10 +225,36 @@ describe('org reducer', () => {
       expect(last.get('rawDescription')).toEqual('Some description\n');
     });
 
+    it('should insert as the first child', () => {
+      const newHeaders = insertCapture(templateNested, true);
+      expectOrigFirstHeader(newHeaders);
+      expectOrigLastHeader(newHeaders);
+      expect(extractTitlesAndNestings(newHeaders)).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['My task', 3],
+        ['A deep nested header', 3],
+        ['A second nested header', 2],
+      ]);
+    });
+
+    it('should insert as the last child', () => {
+      const newHeaders = insertCapture(templateNested, false);
+      expectOrigFirstHeader(newHeaders);
+      expectOrigLastHeader(newHeaders);
+      expect(extractTitlesAndNestings(newHeaders)).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+        ['My task', 3],
+        ['A second nested header', 2],
+      ]);
+    });
+
     it('is undoable', () => {
       check_is_undoable(state, {
         type: 'INSERT_CAPTURE',
-        template: fromJS(template),
+        template: fromJS(templateTopLevel),
         content,
         shouldPrepend: true,
         dirtying: true,
