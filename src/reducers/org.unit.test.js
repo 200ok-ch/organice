@@ -646,6 +646,10 @@ describe('org reducer', () => {
       expect(extractTitlesAndNestings(intermHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
     });
 
+    it('should just dirty when applied to no header', () => {
+      check_just_dirtying(state.org.present, types.advanceTodoState(undefined));
+    });
+
     it('is undoable', () => {
       check_is_undoable(state, types.advanceTodoState(todoHeaderId, true));
       check_is_undoable(state, types.advanceTodoState(doneHeaderId, false));
