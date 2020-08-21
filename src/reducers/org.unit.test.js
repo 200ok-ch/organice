@@ -448,6 +448,7 @@ describe('org reducer', () => {
 
   describe('MOVE_SUBTREE_LEFT', () => {
     let nestedHeaderId;
+    let topLevelHeaderId;
     let state;
     const testOrgFile = readFixture('nested_header');
 
@@ -458,6 +459,8 @@ describe('org reducer', () => {
 
       // "A nested header" the 2nd item but we count from 0 not 1.
       nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+
+      topLevelHeaderId = state.org.present.get('headers').get(0).get('id');
     });
 
     it('should handle MOVE_SUBTREE_LEFT', () => {
@@ -480,6 +483,10 @@ describe('org reducer', () => {
         ['A deep nested header', 2],
         ['A second nested header', 2],
       ]);
+    });
+
+    it('should just dirty when trying to move left a toplevel subtree', () => {
+      check_just_dirtying(state.org.present, types.moveSubtreeLeft(topLevelHeaderId));
     });
 
     it('is undoable', () => {
