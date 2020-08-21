@@ -1124,13 +1124,9 @@ describe('org reducer', () => {
     });
   });
 
-  function firstTable(state) {
-    let hdrContents = state.getIn(['headers', 0, 'description']);
-    return hdrContents.find((item) => item.get('type') === 'table');
-  }
-
-  describe('UPDATE_TABLE_CELL_VALUE', () => {
+  describe('table', () => {
     let state;
+    let store;
     let cellId;
     const newValue = 'Murakami';
     const testOrgFile = readFixture('table');
@@ -1139,347 +1135,259 @@ describe('org reducer', () => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
       cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-    });
-
-    it('should handle UPDATE_TABLE_CELL_VALUE', () => {
-      const newState = reducer(state.org.present, types.updateTableCellValue(cellId, newValue));
-      expect(
-        firstTable(newState).getIn(['contents', 1, 'contents', 1, 'contents', 0, 'contents'])
-      ).toEqual(newValue);
-      expect(firstTable(newState).getIn(['contents', 1, 'contents', 1, 'rawContents'])).toEqual(
-        newValue
-      );
-      const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => st.getIn('headers', 0, 'titleLine'));
-      check_kept((st) => firstTable(st).getIn(['contents', 0, 'contents']));
-      check_kept((st) => firstTable(st).getIn(['contents', 2, 'contents']));
-      check_kept((st) => firstTable(st).getIn(['contents', 1, 'contents', 0]));
-      check_kept((st) => firstTable(st).getIn(['contents', 1, 'contents', 2]));
-    });
-  });
-
-  describe('MOVE_TABLE_COLUMN_RIGHT', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
       store = createStore(undoable(reducer), state.org.present);
     });
 
-    it('should handle MOVE_TABLE_COLUMN_RIGHT', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.moveTableColumnRight());
-      const check_kept = check_kept_factory(state.org.present, newState);
+    function firstTable(state) {
+      let hdrContents = state.getIn(['headers', 0, 'description']);
+      return hdrContents.find((item) => item.get('type') === 'table');
+    }
 
-      [0, 1, 2].forEach((i) => {
-        expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents', 2])
+    describe('UPDATE_TABLE_CELL_VALUE', () => {
+      it('should handle UPDATE_TABLE_CELL_VALUE', () => {
+        const newState = reducer(state.org.present, types.updateTableCellValue(cellId, newValue));
+        expect(
+          firstTable(newState).getIn(['contents', 1, 'contents', 1, 'contents', 0, 'contents'])
+        ).toEqual(newValue);
+        expect(firstTable(newState).getIn(['contents', 1, 'contents', 1, 'rawContents'])).toEqual(
+          newValue
         );
-        expect(firstTable(newState).getIn(['contents', i, 'contents', 2])).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents', 1])
-        );
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents']).size);
+        const check_kept = check_kept_factory(state.org.present, newState);
+        check_kept((st) => st.getIn('headers', 0, 'titleLine'));
+        check_kept((st) => firstTable(st).getIn(['contents', 0, 'contents']));
+        check_kept((st) => firstTable(st).getIn(['contents', 2, 'contents']));
+        check_kept((st) => firstTable(st).getIn(['contents', 1, 'contents', 0]));
+        check_kept((st) => firstTable(st).getIn(['contents', 1, 'contents', 2]));
       });
-      check_kept((st) => firstTable(st).get('contents').size);
     });
 
-    it('should just dirty on move with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.moveTableColumnRight());
-    });
+    describe('MOVE_TABLE_COLUMN_RIGHT', () => {
+      it('should handle MOVE_TABLE_COLUMN_RIGHT', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.moveTableColumnRight());
+        const check_kept = check_kept_factory(state.org.present, newState);
 
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.moveTableColumnRight());
-    });
-  });
-
-  describe('MOVE_TABLE_COLUMN_LEFT', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
-
-    it('should handle MOVE_TABLE_COLUMN_LEFT', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.moveTableColumnLeft());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      [0, 1, 2].forEach((i) => {
-        expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents', 0])
-        );
-        expect(firstTable(newState).getIn(['contents', i, 'contents', 0])).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents', 1])
-        );
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 2]));
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents']).size);
+        [0, 1, 2].forEach((i) => {
+          expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents', 2])
+          );
+          expect(firstTable(newState).getIn(['contents', i, 'contents', 2])).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents', 1])
+          );
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents']).size);
+        });
+        check_kept((st) => firstTable(st).get('contents').size);
       });
-      check_kept((st) => firstTable(st).get('contents').size);
-    });
 
-    it('should just dirty on move with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.moveTableColumnLeft());
-    });
-
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.moveTableColumnLeft());
-    });
-  });
-
-  describe('MOVE_TABLE_ROW_UP', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
-
-    it('should handle MOVE_TABLE_ROW_UP', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.moveTableRowUp());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      expect(firstTable(newState).getIn(['contents', 0])).toEqual(
-        firstTable(oldState).getIn(['contents', 1])
-      );
-      expect(firstTable(newState).getIn(['contents', 1])).toEqual(
-        firstTable(oldState).getIn(['contents', 0])
-      );
-      check_kept((st) => firstTable(st).getIn(['contents', 2]));
-      check_kept((st) => firstTable(st).get('contents').size);
-    });
-
-    it('should just dirty on move with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.moveTableRowUp());
-    });
-
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.moveTableRowUp());
-    });
-  });
-
-  describe('MOVE_TABLE_ROW_DOWN', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
-
-    it('should handle MOVE_TABLE_ROW_DOWN', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.moveTableRowDown());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      expect(firstTable(newState).getIn(['contents', 2])).toEqual(
-        firstTable(oldState).getIn(['contents', 1])
-      );
-      expect(firstTable(newState).getIn(['contents', 1])).toEqual(
-        firstTable(oldState).getIn(['contents', 2])
-      );
-      check_kept((st) => firstTable(st).getIn(['contents', 0]));
-      check_kept((st) => firstTable(st).get('contents').size);
-    });
-
-    it('should just dirty on move with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.moveTableRowDown());
-    });
-
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.moveTableRowDown());
-    });
-  });
-
-  describe('REMOVE_TABLE_COLUMN', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
-
-    it('should handle REMOVE_TABLE_COLUMN', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.removeTableColumn());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      [0, 1, 2].forEach((i) => {
-        expect(firstTable(newState).getIn(['contents', i, 'contents']).size).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents']).size - 1
-        );
-        expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents', 2])
-        );
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
+      it('should just dirty on move with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.moveTableColumnRight());
       });
-      check_kept((st) => firstTable(st).get('contents').size);
-    });
 
-    it('should just dirty on remove with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.removeTableColumn());
-    });
-
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.removeTableColumn());
-    });
-  });
-
-  describe('REMOVE_TABLE_ROW', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
-
-    it('should handle REMOVE_TABLE_ROW', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.removeTableRow());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      expect(firstTable(newState).getIn(['contents']).size).toEqual(
-        firstTable(oldState).getIn(['contents']).size - 1
-      );
-
-      expect(firstTable(newState).getIn(['contents', 1])).toEqual(
-        firstTable(oldState).getIn(['contents', 2])
-      );
-
-      check_kept((st) => firstTable(st).getIn(['contents', 0]));
-    });
-
-    it('should just dirty on remove with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.removeTableRow());
-    });
-
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.removeTableRow());
-    });
-  });
-
-  describe('ADD_NEW_TABLE_COLUMN', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
-
-    it('should handle ADD_NEW_TABLE_COLUMN', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.addNewTableColumn());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      [0, 1, 2].forEach((i) => {
-        expect(firstTable(newState).getIn(['contents', i, 'contents']).size).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents']).size + 1
-        );
-        expect(firstTable(newState).getIn(['contents', i, 'contents', 3])).toEqual(
-          firstTable(oldState).getIn(['contents', i, 'contents', 2])
-        );
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
-        check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 1]));
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.moveTableColumnRight());
       });
-      check_kept((st) => firstTable(st).get('contents').size);
     });
 
-    it('should just dirty on add with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.addNewTableColumn());
+    describe('MOVE_TABLE_COLUMN_LEFT', () => {
+      it('should handle MOVE_TABLE_COLUMN_LEFT', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.moveTableColumnLeft());
+        const check_kept = check_kept_factory(state.org.present, newState);
+
+        [0, 1, 2].forEach((i) => {
+          expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents', 0])
+          );
+          expect(firstTable(newState).getIn(['contents', i, 'contents', 0])).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents', 1])
+          );
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 2]));
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents']).size);
+        });
+        check_kept((st) => firstTable(st).get('contents').size);
+      });
+
+      it('should just dirty on move with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.moveTableColumnLeft());
+      });
+
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.moveTableColumnLeft());
+      });
     });
 
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.addNewTableColumn());
-    });
-  });
+    describe('MOVE_TABLE_ROW_UP', () => {
+      it('should handle MOVE_TABLE_ROW_UP', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.moveTableRowUp());
+        const check_kept = check_kept_factory(state.org.present, newState);
 
-  describe('ADD_NEW_TABLE_ROW', () => {
-    let state;
-    let store;
-    let cellId;
-    const testOrgFile = readFixture('table');
+        expect(firstTable(newState).getIn(['contents', 0])).toEqual(
+          firstTable(oldState).getIn(['contents', 1])
+        );
+        expect(firstTable(newState).getIn(['contents', 1])).toEqual(
+          firstTable(oldState).getIn(['contents', 0])
+        );
+        check_kept((st) => firstTable(st).getIn(['contents', 2]));
+        check_kept((st) => firstTable(st).get('contents').size);
+      });
 
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      cellId = firstTable(state.org.present).getIn(['contents', 1, 'contents', 1, 'id']);
-      store = createStore(undoable(reducer), state.org.present);
-    });
+      it('should just dirty on move with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.moveTableRowUp());
+      });
 
-    it('should handle ADD_NEW_TABLE_ROW', () => {
-      const oldState = store.getState().present;
-      store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-      const stateCellSelected = store.getState().present;
-      const newState = reducer(stateCellSelected, types.addNewTableRow());
-      const check_kept = check_kept_factory(state.org.present, newState);
-
-      [0, 1].forEach((i) => {});
-      check_kept((st) => firstTable(st).getIn(['contents', 0]));
-      check_kept((st) => firstTable(st).getIn(['contents', 1]));
-      expect(firstTable(newState).getIn(['contents', 3])).toEqual(
-        firstTable(oldState).getIn(['contents', 2])
-      );
-      expect(firstTable(newState).getIn(['contents']).size).toEqual(
-        firstTable(oldState).getIn(['contents']).size + 1
-      );
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.moveTableRowUp());
+      });
     });
 
-    it('should just dirty on add with no cell selected', () => {
-      check_just_dirtying(store.getState().present, types.addNewTableRow());
+    describe('MOVE_TABLE_ROW_DOWN', () => {
+      it('should handle MOVE_TABLE_ROW_DOWN', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.moveTableRowDown());
+        const check_kept = check_kept_factory(state.org.present, newState);
+
+        expect(firstTable(newState).getIn(['contents', 2])).toEqual(
+          firstTable(oldState).getIn(['contents', 1])
+        );
+        expect(firstTable(newState).getIn(['contents', 1])).toEqual(
+          firstTable(oldState).getIn(['contents', 2])
+        );
+        check_kept((st) => firstTable(st).getIn(['contents', 0]));
+        check_kept((st) => firstTable(st).get('contents').size);
+      });
+
+      it('should just dirty on move with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.moveTableRowDown());
+      });
+
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.moveTableRowDown());
+      });
     });
 
-    it('is undoable', () => {
-      check_is_undoable_on_table(store, cellId, types.addNewTableRow());
+    describe('REMOVE_TABLE_COLUMN', () => {
+      it('should handle REMOVE_TABLE_COLUMN', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.removeTableColumn());
+        const check_kept = check_kept_factory(state.org.present, newState);
+
+        [0, 1, 2].forEach((i) => {
+          expect(firstTable(newState).getIn(['contents', i, 'contents']).size).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents']).size - 1
+          );
+          expect(firstTable(newState).getIn(['contents', i, 'contents', 1])).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents', 2])
+          );
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
+        });
+        check_kept((st) => firstTable(st).get('contents').size);
+      });
+
+      it('should just dirty on remove with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.removeTableColumn());
+      });
+
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.removeTableColumn());
+      });
+    });
+
+    describe('REMOVE_TABLE_ROW', () => {
+      it('should handle REMOVE_TABLE_ROW', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.removeTableRow());
+        const check_kept = check_kept_factory(state.org.present, newState);
+
+        expect(firstTable(newState).getIn(['contents']).size).toEqual(
+          firstTable(oldState).getIn(['contents']).size - 1
+        );
+
+        expect(firstTable(newState).getIn(['contents', 1])).toEqual(
+          firstTable(oldState).getIn(['contents', 2])
+        );
+
+        check_kept((st) => firstTable(st).getIn(['contents', 0]));
+      });
+
+      it('should just dirty on remove with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.removeTableRow());
+      });
+
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.removeTableRow());
+      });
+    });
+
+    describe('ADD_NEW_TABLE_COLUMN', () => {
+      it('should handle ADD_NEW_TABLE_COLUMN', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.addNewTableColumn());
+        const check_kept = check_kept_factory(state.org.present, newState);
+
+        [0, 1, 2].forEach((i) => {
+          expect(firstTable(newState).getIn(['contents', i, 'contents']).size).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents']).size + 1
+          );
+          expect(firstTable(newState).getIn(['contents', i, 'contents', 3])).toEqual(
+            firstTable(oldState).getIn(['contents', i, 'contents', 2])
+          );
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 0]));
+          check_kept((st) => firstTable(st).getIn(['contents', i, 'contents', 1]));
+        });
+        check_kept((st) => firstTable(st).get('contents').size);
+      });
+
+      it('should just dirty on add with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.addNewTableColumn());
+      });
+
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.addNewTableColumn());
+      });
+    });
+
+    describe('ADD_NEW_TABLE_ROW', () => {
+      it('should handle ADD_NEW_TABLE_ROW', () => {
+        const oldState = store.getState().present;
+        store.dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+        const stateCellSelected = store.getState().present;
+        const newState = reducer(stateCellSelected, types.addNewTableRow());
+        const check_kept = check_kept_factory(state.org.present, newState);
+
+        [0, 1].forEach((i) => {});
+        check_kept((st) => firstTable(st).getIn(['contents', 0]));
+        check_kept((st) => firstTable(st).getIn(['contents', 1]));
+        expect(firstTable(newState).getIn(['contents', 3])).toEqual(
+          firstTable(oldState).getIn(['contents', 2])
+        );
+        expect(firstTable(newState).getIn(['contents']).size).toEqual(
+          firstTable(oldState).getIn(['contents']).size + 1
+        );
+      });
+
+      it('should just dirty on add with no cell selected', () => {
+        check_just_dirtying(store.getState().present, types.addNewTableRow());
+      });
+
+      it('is undoable', () => {
+        check_is_undoable_on_table(store, cellId, types.addNewTableRow());
+      });
     });
   });
 
