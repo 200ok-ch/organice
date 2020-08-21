@@ -1135,11 +1135,22 @@ describe('org reducer', () => {
           .toJS()
           .map((x) => x.checkboxState)
       ).toEqual(['checked', 'checked', 'partial', null]);
+
       expect(
         headerWithId(newState.get('headers'), bottomHeaderId)
           .getIn(['titleLine', 'title', 1, 'fraction'])
           .toJS()
       ).toEqual([2, 3]);
+
+      expect(headerWithId(newState.get('headers'), bottomHeaderId).getIn([
+        'description',
+        0,
+        'items', // compoundBoxE
+        1,
+        'titleLine',
+        1,
+        'percentage'
+      ])).toEqual(100);
     });
 
     it('should keep the partial state when some children are not checked', () => {
