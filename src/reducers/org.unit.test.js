@@ -494,7 +494,6 @@ describe('org reducer', () => {
       });
 
       it('should reset header focus', () => {
-        const action = types.removeHeader(nestedHeaderId);
         const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
         expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
         const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
@@ -532,7 +531,6 @@ describe('org reducer', () => {
       });
 
       it('should reset header focus', () => {
-        const action = types.removeHeader(nestedHeaderId);
         const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
         expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
         const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
@@ -1611,7 +1609,6 @@ describe('org reducer', () => {
         const newState = reducer(stateCellSelected, types.addNewTableRow());
         const check_kept = check_kept_factory(state.org.present, newState);
 
-        [0, 1].forEach((i) => {});
         check_kept((st) => firstTable(st).getIn(['contents', 0]));
         check_kept((st) => firstTable(st).getIn(['contents', 1]));
         expect(firstTable(newState).getIn(['contents', 3])).toEqual(
