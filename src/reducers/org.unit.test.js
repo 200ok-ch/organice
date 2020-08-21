@@ -1665,6 +1665,57 @@ describe('org reducer', () => {
     });
   });
 
+  describe('ADD_HEADER', () => {
+    let nestedHeaderId;
+    let state;
+    const testOrgFile = readFixture('nested_header');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+      // The target is to remove "A nested header".
+
+      // "A nested header" the 2nd item but we count from 0 not 1.
+      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
+    });
+
+    it('should handle ADD_HEADER and unfocus', () => {
+      const oldState = state.org.present;
+      expect(extractTitlesAndNestings(oldState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+        ['A second nested header', 2],
+      ]);
+
+      const stateSelected = reducer(oldState, types.focusHeader(nestedHeaderId));
+      expect(stateSelected.get('focusedHeaderId')).toEqual(nestedHeaderId);
+      const newState = reducer(stateSelected, types.addHeader(nestedHeaderId));
+      expect(newState.get('focusedHeaderId')).toBeNull();
+
+      // "A nested header" is not at the top level.
+      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        ['Top level header', 1],
+        ['A nested header', 2],
+        ['A deep nested header', 3],
+        ['', 2],
+        ['A second nested header', 2],
+      ]);
+    });
+
+    it('should reset header focus', () => {
+      const action = types.removeHeader(nestedHeaderId);
+      const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
+      expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
+      const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
+      expect(newState.get('focusedHeaderId')).toEqual(null);
+    });
+
+    it('is undoable', () => {
+      check_is_undoable(state, types.removeHeader(nestedHeaderId));
+    });
+  });
+
   describe('selecting ', () => {
     let topHeaderId;
     let nestedHeaderId;
