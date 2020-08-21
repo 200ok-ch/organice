@@ -268,22 +268,27 @@ describe('org reducer', () => {
     });
   });
 
-  describe('tree moving', () => {
+  describe('header tree', () => {
     let topLevelHeaderId;
     let nestedHeaderId;
     let nestedHeader2Id;
+    let deepNestedHeaderId;
     let state;
-    const testOrgFile = readFixture('nested_header');
+    const fileName = 'nested_header';
+    const testOrgFile = readFixture(fileName);
 
     beforeEach(() => {
       state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
+      state.org.present = parseOrg(testOrgFile).set('path', fileName);
       // The target is to move "A nested header" to the top level.
 
+      // "Top level header" is the 1st item but we count from 0 not 1.
       topLevelHeaderId = state.org.present.get('headers').get(0).get('id');
-      // "A nested header" the 2nd item but we count from 0 not 1.
+      // "A nested header" is the 2nd item but we count from 0 not 1.
       nestedHeaderId = state.org.present.get('headers').get(1).get('id');
-      // "A second nested header" the 4th item but we count from 0 not 1.
+      // "A deep nested header" is the 3rd item but we count from 0 not 1.
+      deepNestedHeaderId = state.org.present.get('headers').get(2).get('id');
+      // "A second nested header"is  the 4th item but we count from 0 not 1.
       nestedHeader2Id = state.org.present.get('headers').get(3).get('id');
     });
 
@@ -464,6 +469,242 @@ describe('org reducer', () => {
 
       it('is undoable', () => {
         check_is_undoable(state, types.moveSubtreeRight(nestedHeaderId));
+      });
+    });
+
+    describe('REMOVE_HEADER', () => {
+      it('should handle REMOVE_HEADER', () => {
+        // Mapping the headers to their nesting level. This is how the
+        // initially parsed file should look like.
+        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+          ['Top level header', 1],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+          ['A second nested header', 2],
+        ]);
+
+        const action = types.removeHeader(nestedHeaderId);
+        const newState = reducer(state.org.present, action);
+
+        // "A nested header" is not at the top level.
+        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+          ['Top level header', 1],
+          ['A second nested header', 2],
+        ]);
+      });
+
+      it('should reset header focus', () => {
+        const action = types.removeHeader(nestedHeaderId);
+        const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
+        expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
+        expect(newState.get('focusedHeaderId')).toEqual(null);
+      });
+
+      it('is undoable', () => {
+        check_is_undoable(state, types.removeHeader(nestedHeaderId));
+      });
+    });
+
+    describe('ADD_HEADER', () => {
+      it('should handle ADD_HEADER and unfocus', () => {
+        const oldState = state.org.present;
+        expect(extractTitlesAndNestings(oldState.get('headers'))).toEqual([
+          ['Top level header', 1],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+          ['A second nested header', 2],
+        ]);
+
+        const stateSelected = reducer(oldState, types.focusHeader(nestedHeaderId));
+        expect(stateSelected.get('focusedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(stateSelected, types.addHeader(nestedHeaderId));
+        expect(newState.get('focusedHeaderId')).toBeNull();
+
+        // "A nested header" is not at the top level.
+        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+          ['Top level header', 1],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+          ['', 2],
+          ['A second nested header', 2],
+        ]);
+      });
+
+      it('should reset header focus', () => {
+        const action = types.removeHeader(nestedHeaderId);
+        const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
+        expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
+        expect(newState.get('focusedHeaderId')).toEqual(null);
+      });
+
+      it('is undoable', () => {
+        check_is_undoable(state, types.removeHeader(nestedHeaderId));
+      });
+    });
+
+    describe('selecting ', () => {
+      let openOnlyTop = fromJS({
+        [fileName]: [['Top level header']],
+      });
+      let openAll = fromJS({
+        [fileName]: [['Top level header', 'A nested header']],
+      });
+
+      function openHeaders(state, opennessState) {
+        return reducer(state.set('opennessState', opennessState), types.applyOpennessState());
+      }
+
+      describe('SELECT_PREVIOUS_VISIBLE_HEADER', () => {
+        it('should skip invisible header', () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openOnlyTop),
+            nestedHeader2Id
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+          const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(nestedHeaderId);
+        });
+
+        it("should select junior header when it's above", () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openAll),
+            nestedHeader2Id
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+          const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+        });
+
+        it('should select parent header', () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openAll),
+            deepNestedHeaderId
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+          const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(nestedHeaderId);
+        });
+
+        it('do nothing on the first header', () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openAll),
+            topLevelHeaderId
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+          const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+        });
+      });
+
+      describe('SELECT_NEXT_VISIBLE_HEADER', () => {
+        it('start from the first', () => {
+          expect(state.org.present.get('selectedHeaderId')).toBeUndefined();
+          const newState = reducer(state.org.present, types.selectNextVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+        });
+
+        it('should skip invisible header', () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openOnlyTop),
+            nestedHeaderId
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeaderId);
+          const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        });
+
+        it('should select child when its visible', () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openAll),
+            nestedHeaderId
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeaderId);
+          const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+        });
+
+        it("should select elder header when it's below", () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openAll),
+            deepNestedHeaderId
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
+          const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        });
+
+        it('do nothing on the last header', () => {
+          const stateSelected = selectHeader(
+            openHeaders(state.org.present, openAll),
+            nestedHeader2Id
+          );
+          expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+          const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        });
+
+        it('do nothing on the last visible header', () => {
+          const stateSelected = selectHeader(state.org.present, topLevelHeaderId);
+          expect(stateSelected.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+          const newState = reducer(stateSelected, types.selectNextVisibleHeader());
+          expect(newState.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+        });
+      });
+
+      describe('SELECT_NEXT_SIBLING_HEADER', () => {
+        it('ignore when on the last sibling', () => {
+          const oldState = selectHeader(state.org.present, topLevelHeaderId);
+          const newState = reducer(oldState, types.selectNextSiblingHeader(nestedHeader2Id));
+          expect(newState.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+
+          const oldState2 = selectHeader(state.org.present, nestedHeader2Id);
+          const newState2 = reducer(oldState2, types.selectNextSiblingHeader(nestedHeader2Id));
+          expect(newState2.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+        });
+      });
+    });
+
+    describe('UPDATE_HEADER_DESCRIPTION', () => {
+      const newDescription =
+        'One man once said TODO,\n - [ ] and <2020-01-18 Sat> \n - others :followed: ';
+
+      it('should handle UPDATE_HEADER_DESCRIPTION', () => {
+        const action = types.updateHeaderDescription(nestedHeaderId, newDescription);
+        const newState = reducer(state.org.present, action);
+        const check_kept = check_kept_factory(state.org.present, newState);
+        check_kept((st) =>
+          headerWithId(st.get('headers'), nestedHeaderId).getIn(['titleLine', 'rawTitle'])
+        );
+        expect(headerWithId(newState.get('headers'), nestedHeaderId).get('rawDescription')).toEqual(
+          newDescription
+        );
+        expect(
+          headerWithId(newState.get('headers'), nestedHeaderId).get('description')
+        ).not.toEqual(
+          headerWithId(state.org.present.get('headers'), nestedHeaderId).get('description')
+        );
+      });
+
+      it('is undoable', () => {
+        check_is_undoable(state, types.updateHeaderDescription(nestedHeaderId, newDescription));
+      });
+    });
+
+    describe('TOGGLE_HEADER_OPENED', () => {
+      it('should open only the header on the first toggle', () => {
+        const newState = reducer(state.org.present, types.toggleHeaderOpened(topLevelHeaderId));
+        expect(headerWithId(newState.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
+        expect(headerWithId(newState.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
+      });
+
+      it('should ignore if focused and open', () => {
+        expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
+        const openState = reducer(state.org.present, types.toggleHeaderOpened(topLevelHeaderId));
+        const focusedState = reducer(openState, types.focusHeader(topLevelHeaderId));
+        const newState = reducer(focusedState, types.toggleHeaderOpened(topLevelHeaderId));
+        expect(newState).toEqual(focusedState);
       });
     });
   });
@@ -1476,277 +1717,6 @@ describe('org reducer', () => {
     });
   });
 
-  describe('REMOVE_HEADER', () => {
-    let nestedHeaderId;
-    let state;
-    const testOrgFile = readFixture('nested_header');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      // The target is to remove "A nested header".
-
-      // "A nested header" the 2nd item but we count from 0 not 1.
-      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
-    });
-
-    it('should handle REMOVE_HEADER', () => {
-      // Mapping the headers to their nesting level. This is how the
-      // initially parsed file should look like.
-      expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
-        ['Top level header', 1],
-        ['A nested header', 2],
-        ['A deep nested header', 3],
-        ['A second nested header', 2],
-      ]);
-
-      const action = types.removeHeader(nestedHeaderId);
-      const newState = reducer(state.org.present, action);
-
-      // "A nested header" is not at the top level.
-      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
-        ['Top level header', 1],
-        ['A second nested header', 2],
-      ]);
-    });
-
-    it('should reset header focus', () => {
-      const action = types.removeHeader(nestedHeaderId);
-      const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
-      expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
-      const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
-      expect(newState.get('focusedHeaderId')).toEqual(null);
-    });
-
-    it('is undoable', () => {
-      check_is_undoable(state, types.removeHeader(nestedHeaderId));
-    });
-  });
-
-  describe('ADD_HEADER', () => {
-    let nestedHeaderId;
-    let state;
-    const testOrgFile = readFixture('nested_header');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      // The target is to remove "A nested header".
-
-      // "A nested header" the 2nd item but we count from 0 not 1.
-      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
-    });
-
-    it('should handle ADD_HEADER and unfocus', () => {
-      const oldState = state.org.present;
-      expect(extractTitlesAndNestings(oldState.get('headers'))).toEqual([
-        ['Top level header', 1],
-        ['A nested header', 2],
-        ['A deep nested header', 3],
-        ['A second nested header', 2],
-      ]);
-
-      const stateSelected = reducer(oldState, types.focusHeader(nestedHeaderId));
-      expect(stateSelected.get('focusedHeaderId')).toEqual(nestedHeaderId);
-      const newState = reducer(stateSelected, types.addHeader(nestedHeaderId));
-      expect(newState.get('focusedHeaderId')).toBeNull();
-
-      // "A nested header" is not at the top level.
-      expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
-        ['Top level header', 1],
-        ['A nested header', 2],
-        ['A deep nested header', 3],
-        ['', 2],
-        ['A second nested header', 2],
-      ]);
-    });
-
-    it('should reset header focus', () => {
-      const action = types.removeHeader(nestedHeaderId);
-      const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
-      expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
-      const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
-      expect(newState.get('focusedHeaderId')).toEqual(null);
-    });
-
-    it('is undoable', () => {
-      check_is_undoable(state, types.removeHeader(nestedHeaderId));
-    });
-  });
-
-  describe('selecting ', () => {
-    let topHeaderId;
-    let nestedHeaderId;
-    let deepNestedHeaderId;
-    let nestedHeader2Id;
-    let state;
-    const fileName = 'nested_header';
-    const testOrgFile = readFixture(fileName);
-    let openOnlyTop = fromJS({
-      [fileName]: [['Top level header']],
-    });
-    let openAll = fromJS({
-      [fileName]: [['Top level header', 'A nested header']],
-    });
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile).set('path', fileName);
-
-      // "Top level header" is the 1st item but we count from 0 not 1.
-      topHeaderId = state.org.present.get('headers').get(0).get('id');
-      // "A nested header" is the 2nd item but we count from 0 not 1.
-      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
-      // "A deep nested header" is the 3rd item but we count from 0 not 1.
-      deepNestedHeaderId = state.org.present.get('headers').get(2).get('id');
-      // "A second nested header"is  the 4th item but we count from 0 not 1.
-      nestedHeader2Id = state.org.present.get('headers').get(3).get('id');
-    });
-
-    function openHeaders(state, opennessState) {
-      return reducer(state.set('opennessState', opennessState), types.applyOpennessState());
-    }
-
-    describe('SELECT_PREVIOUS_VISIBLE_HEADER', () => {
-      it('should skip invisible header', () => {
-        const stateSelected = selectHeader(
-          openHeaders(state.org.present, openOnlyTop),
-          nestedHeader2Id
-        );
-        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(nestedHeaderId);
-      });
-
-      it("should select junior header when it's above", () => {
-        const stateSelected = selectHeader(
-          openHeaders(state.org.present, openAll),
-          nestedHeader2Id
-        );
-        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
-      });
-
-      it('should select parent header', () => {
-        const stateSelected = selectHeader(
-          openHeaders(state.org.present, openAll),
-          deepNestedHeaderId
-        );
-        expect(stateSelected.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
-        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(nestedHeaderId);
-      });
-
-      it('do nothing on the first header', () => {
-        const stateSelected = selectHeader(openHeaders(state.org.present, openAll), topHeaderId);
-        expect(stateSelected.get('selectedHeaderId')).toEqual(topHeaderId);
-        const newState = reducer(stateSelected, types.selectPreviousVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
-      });
-    });
-
-    describe('SELECT_NEXT_VISIBLE_HEADER', () => {
-      it('start from the first', () => {
-        expect(state.org.present.get('selectedHeaderId')).toBeUndefined();
-        const newState = reducer(state.org.present, types.selectNextVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
-      });
-
-      it('should skip invisible header', () => {
-        const stateSelected = selectHeader(
-          openHeaders(state.org.present, openOnlyTop),
-          nestedHeaderId
-        );
-        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeaderId);
-        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-      });
-
-      it('should select child when its visible', () => {
-        const stateSelected = selectHeader(openHeaders(state.org.present, openAll), nestedHeaderId);
-        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeaderId);
-        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
-      });
-
-      it("should select elder header when it's below", () => {
-        const stateSelected = selectHeader(
-          openHeaders(state.org.present, openAll),
-          deepNestedHeaderId
-        );
-        expect(stateSelected.get('selectedHeaderId')).toEqual(deepNestedHeaderId);
-        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-      });
-
-      it('do nothing on the last header', () => {
-        const stateSelected = selectHeader(
-          openHeaders(state.org.present, openAll),
-          nestedHeader2Id
-        );
-        expect(stateSelected.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-      });
-
-      it('do nothing on the last visible header', () => {
-        const stateSelected = selectHeader(state.org.present, topHeaderId);
-        expect(stateSelected.get('selectedHeaderId')).toEqual(topHeaderId);
-        const newState = reducer(stateSelected, types.selectNextVisibleHeader());
-        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
-      });
-    });
-
-    describe('SELECT_NEXT_SIBLING_HEADER', () => {
-      it('ignore when on the last sibling', () => {
-        const oldState = selectHeader(state.org.present, topHeaderId);
-        const newState = reducer(oldState, types.selectNextSiblingHeader(nestedHeader2Id));
-        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
-
-        const oldState2 = selectHeader(state.org.present, nestedHeader2Id);
-        const newState2 = reducer(oldState2, types.selectNextSiblingHeader(nestedHeader2Id));
-        expect(newState2.get('selectedHeaderId')).toEqual(nestedHeader2Id);
-      });
-    });
-  });
-
-  describe('UPDATE_HEADER_DESCRIPTION', () => {
-    let nestedHeaderId;
-    let state;
-    const testOrgFile = readFixture('nested_header');
-    const newDescription =
-      'One man once said TODO,\n - [ ] and <2020-01-18 Sat> \n - others :followed: ';
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-      // The target is to move "A nested header" to the top level.
-
-      // "A nested header" the 2nd item but we count from 0 not 1.
-      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
-    });
-
-    it('should handle UPDATE_HEADER_DESCRIPTION', () => {
-      const action = types.updateHeaderDescription(nestedHeaderId, newDescription);
-      const newState = reducer(state.org.present, action);
-      const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) =>
-        headerWithId(st.get('headers'), nestedHeaderId).getIn(['titleLine', 'rawTitle'])
-      );
-      expect(headerWithId(newState.get('headers'), nestedHeaderId).get('rawDescription')).toEqual(
-        newDescription
-      );
-      expect(headerWithId(newState.get('headers'), nestedHeaderId).get('description')).not.toEqual(
-        headerWithId(state.org.present.get('headers'), nestedHeaderId).get('description')
-      );
-    });
-
-    it('is undoable', () => {
-      check_is_undoable(state, types.updateHeaderDescription(nestedHeaderId, newDescription));
-    });
-  });
-
   describe('EXIT_EDIT_MODE', () => {
     let state;
 
@@ -1802,34 +1772,6 @@ describe('org reducer', () => {
       expect(newState.getIn(['search', 'searchFilterValid'])).toEqual(false);
       const check_kept = check_kept_factory(oldState, newState);
       check_kept((st) => st.get('headers'));
-    });
-  });
-
-  describe('TOGGLE_HEADER_OPENED', () => {
-    let topHeaderId, nestedHeaderId;
-    let state;
-    const testOrgFile = readFixture('nested_header');
-
-    beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
-
-      topHeaderId = state.org.present.get('headers').get(0).get('id');
-      nestedHeaderId = state.org.present.get('headers').get(1).get('id');
-    });
-
-    it('should open only the header on the first toggle', () => {
-      const newState = reducer(state.org.present, types.toggleHeaderOpened(topHeaderId));
-      expect(headerWithId(newState.get('headers'), topHeaderId).get('opened')).toEqual(true);
-      expect(headerWithId(newState.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
-    });
-
-    it('should ignore if focused and open', () => {
-      expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
-      const openState = reducer(state.org.present, types.toggleHeaderOpened(topHeaderId));
-      const focusedState = reducer(openState, types.focusHeader(topHeaderId));
-      const newState = reducer(focusedState, types.toggleHeaderOpened(topHeaderId));
-      expect(newState).toEqual(focusedState);
     });
   });
 });
