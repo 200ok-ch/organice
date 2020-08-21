@@ -1788,6 +1788,18 @@ describe('org reducer', () => {
         expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
       });
     });
+
+    describe('SELECT_NEXT_SIBLING_HEADER', () => {
+      it('ignore when on the last sibling', () => {
+        const oldState = selectHeader(state.org.present, topHeaderId);
+        const newState = reducer(oldState, types.selectNextSiblingHeader(nestedHeader2Id));
+        expect(newState.get('selectedHeaderId')).toEqual(topHeaderId);
+
+        const oldState2 = selectHeader(state.org.present, nestedHeader2Id);
+        const newState2 = reducer(oldState2, types.selectNextSiblingHeader(nestedHeader2Id));
+        expect(newState2.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+      });
+    });
   });
 
   describe('UPDATE_HEADER_DESCRIPTION', () => {
