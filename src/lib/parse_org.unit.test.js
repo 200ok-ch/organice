@@ -4,6 +4,7 @@ import {
   parseOrg,
   parseTodoKeywordConfig,
   _parsePlanningItems,
+  _parseLogNotes,
   parseMarkupAndCookies,
 } from './parse_org';
 import readFixture from '../../test_helpers/index';
@@ -43,6 +44,24 @@ describe('Test the parser', () => {
       expect(result.description).toEqual([]);
       expect(result.rawDescription).toEqual('');
     });
+  });
+});
+
+describe('Test parsing of log notes', () => {
+  test('Parses notes when followed by logbook', () => {
+    const result = _parseLogNotes('- a note\n  two lines\n:LOGBOOK:\n...');
+    expect(result.logNotes).toEqual('- a note\n  two lines');
+    expect(result.strippedDescription).toEqual(':LOGBOOK:\n...');
+  });
+  test('Parses notes when not followed by logbook but an empty line', () => {
+    const result = _parseLogNotes('- a note\n  two lines\n\nrest');
+    expect(result.logNotes).toEqual('- a note\n  two lines\n');
+    expect(result.strippedDescription).toEqual('rest');
+  });
+  test('Parses notes when when not followed by anything', () => {
+    const result = _parseLogNotes('- a note\n  two lines\n- another\n');
+    expect(result.logNotes).toEqual('- a note\n  two lines\n- another');
+    expect(result.strippedDescription).toEqual('');
   });
 });
 

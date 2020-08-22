@@ -309,6 +309,9 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
     contents += `${indentation}:END:\n`;
   }
 
+  // Log notes come after properties and before logbook.
+  if (header.logNotes) contents += `${header.logNotes}\n`;
+
   if (header.logBookEntries.length) {
     const logBookEntriesContent = header.logBookEntries
       .map((entry) => {

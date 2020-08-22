@@ -590,18 +590,49 @@ const parseLogbook = (rawText) => {
   };
 };
 
+export const _parseLogNotes = (rawText) => {
+  const lines = rawText.split('\n');
+  const logbookLineIndex = lines.findIndex((line) => line.trim() === ':LOGBOOK:');
+  if (logbookLineIndex !== -1)
+    return {
+      logNotes: lines.slice(0, logbookLineIndex).join('\n'),
+      strippedDescription: lines.slice(logbookLineIndex).join('\n'),
+    };
+  // First line doesn't look like a list item?
+  if (!rawText.trim().startsWith('- ')) {
+    return { logNotes: '', strippedDescription: rawText };
+  }
+  // If no logbook, we assume the first empty line to be the
+  // separator between notes and description.
+  const firstEmptyLineIndex = lines.findIndex((line) => line.trim() === '');
+  if (firstEmptyLineIndex !== -1)
+    return {
+      logNotes: lines.slice(0, logbookLineIndex).join('\n'),
+      strippedDescription: lines.slice(logbookLineIndex).join('\n'),
+    };
+  return {
+    logNotes: rawText,
+    strippedDescription: '',
+  };
+};
+
 export const parseDescriptionPrefixElements = (rawText) => {
   const planningItemsParse = _parsePlanningItems(rawText);
 
   const planningItems = planningItemsParse.planningItems;
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
-  const logBookParse = parseLogbook(propertyListParse.strippedDescription);
+  // In Orgmode, notes are added below properties and before
+  // logbook. However, logbook is added directly below properties if
+  // it does not exist.
+  const logNotes = _parseLogNotes(propertyListParse.strippedDescription);
+  const logBookParse = parseLogbook(logNotes.strippedDescription);
 
   return {
     planningItems: planningItems,
     propertyListItems: propertyListParse.propertyListItems,
-    strippedDescription: logBookParse.strippedDescription,
+    logNotes: logNotes.logNotes,
     logBookEntries: logBookParse.logBookEntries,
+    strippedDescription: logBookParse.strippedDescription,
   };
 };
 
@@ -609,9 +640,11 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
   const {
     planningItems,
     propertyListItems,
-    strippedDescription,
+    logNotes,
     logBookEntries,
+    strippedDescription,
   } = parseDescriptionPrefixElements(rawUnstrippedDescription);
+  const parsedLogNotes = parseRawText(logNotes); // for convenience, parse it here, not in _parseLogNotes
   const parsedDescription = parseRawText(strippedDescription);
 
   const parsedTitle = header.getIn(['titleLine', 'title']);
@@ -626,6 +659,8 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
     .set('description', parsedDescription)
     .set('planningItems', mergedPlanningItems)
     .set('propertyListItems', propertyListItems)
+    .set('logNotes', logNotes)
+    .set('parsedLogNotes', parsedLogNotes)
     .set('logBookEntries', logBookEntries);
 };
 
