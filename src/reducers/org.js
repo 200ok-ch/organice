@@ -521,22 +521,12 @@ const refileSubtree = (state, action) => {
 const addNote = (state, action) => {
   // See org-add-note (C-c C-z) and variable org-log-note-headings
   const { noteText } = action;
-  console.log(noteText);
 
   const headerId = state.get('selectedHeaderId');
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, headerId);
   return state.updateIn(['headers', headerIndex], (header) =>
-    // TODO: Don't do it like this, because this overwrites the
-    //       complete body of the header.
-    // TODO: I don't think it works like this. Probably it's a good
-    //       idea to extend `_updateHeaderFromDescription` from
-    //       lib/parse_org.js.
-    // It's not enough to set rawDescription; the whole header must be
-    // reconstructed. Either parse modified rawDescription or directy
-    // update description (which is parsed).
-
-    header.update('rawDescription', (rawDescription) => `${noteText}\n${rawDescription}`)
+    header.update('logNotes', (logNotes) => `${noteText}\n${logNotes}`)
   );
 };
 
