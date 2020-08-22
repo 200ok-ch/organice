@@ -339,7 +339,7 @@ ${description}`;
               const exportedFile = parseAndExportOrgFile(testOrgFile);
               expect(exportedFile).toEqual(testOrgFile);
             });
-            test('Parsing a planning items followed by a checklist must work', () => {
+            test('Parsing planning items followed by a checklist must work', () => {
               const testDescription = '- [ ] foo\n- [ ] bar';
               const parsed = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`);
               const parsedPlanningItem = parsed.planningItems.toJS();
