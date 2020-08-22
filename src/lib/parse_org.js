@@ -341,7 +341,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
       } else {
         currentListHeaderNestingLevel = null;
 
-        if (!!line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
+        if (line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
           currentListHeaderNestingLevel = numLeadingSpaces;
 
           return [
@@ -594,26 +594,17 @@ export const _parseLogNotes = (rawText) => {
   const lines = rawText.split('\n');
   const logbookLineIndex = lines.findIndex((line) => line.trim() === ':LOGBOOK:');
   if (logbookLineIndex !== -1)
-    return {
-      logNotes: lines.slice(0, logbookLineIndex).join('\n'),
-      strippedDescription: lines.slice(logbookLineIndex).join('\n'),
-    };
-  // First line doesn't look like a list item?
+    return makeLogNotesResult(lines.slice(0, logbookLineIndex), lines.slice(logbookLineIndex));
+  // First line doesn't look like a log note list item?
   if (!rawText.trim().startsWith('- ')) {
-    return { logNotes: '', strippedDescription: rawText };
+    return makeLogNotesResult([], [rawText]);
   }
   // If no logbook, we assume the first empty line to be the
   // separator between notes and description.
   const firstEmptyLineIndex = lines.findIndex((line) => line.trim() === '');
   if (firstEmptyLineIndex !== -1)
-    return {
-      logNotes: lines.slice(0, logbookLineIndex).join('\n'),
-      strippedDescription: lines.slice(logbookLineIndex).join('\n'),
-    };
-  return {
-    logNotes: rawText,
-    strippedDescription: '',
-  };
+    return makeLogNotesResult(lines.slice(0, logbookLineIndex), lines.slice(logbookLineIndex));
+  return makeLogNotesResult([rawText], []);
 };
 
 export const parseDescriptionPrefixElements = (rawText) => {
@@ -644,7 +635,6 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
     logBookEntries,
     strippedDescription,
   } = parseDescriptionPrefixElements(rawUnstrippedDescription);
-  const parsedLogNotes = parseRawText(logNotes); // for convenience, parse it here, not in _parseLogNotes
   const parsedDescription = parseRawText(strippedDescription);
 
   const parsedTitle = header.getIn(['titleLine', 'title']);
@@ -660,7 +650,6 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
     .set('planningItems', mergedPlanningItems)
     .set('propertyListItems', propertyListItems)
     .set('logNotes', logNotes)
-    .set('parsedLogNotes', parsedLogNotes)
     .set('logBookEntries', logBookEntries);
 };
 
@@ -891,4 +880,13 @@ const getLinesFromFileContents = (fileContents) => {
   if (lines.length > 0 && lines[lines.length - 1] !== '') return lines;
 
   return lines.slice(0, lines.length - 1);
+};
+
+const makeLogNotesResult = (logNotesLines, strippedDescriptionLines) => {
+  const rawLogNotes = logNotesLines.join('\n');
+  return {
+    rawLogNotes: rawLogNotes,
+    logNotes: parseRawText(rawLogNotes),
+    strippedDescription: strippedDescriptionLines.join('\n'),
+  };
 };

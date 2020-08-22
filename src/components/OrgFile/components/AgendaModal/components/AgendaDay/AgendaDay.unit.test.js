@@ -48,8 +48,7 @@ describe('Unit Tests for AgendaDay', () => {
           description: [{ type: 'text', contents: '\n' }],
           opened: false,
           id: 4,
-          logNotes: '',
-          parsedLogNotes: [],
+          logNotes: [],
           nestingLevel: 1,
           logBookEntries: [],
           planningItems: [

@@ -242,7 +242,7 @@ class HeaderContent extends PureComponent {
               onEdit={this.handlePropertyListEdit}
             />
             <AttributedString
-              parts={header.get('parsedLogNotes')}
+              parts={header.get('logNotes')}
               subPartDataAndHandlers={{
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,

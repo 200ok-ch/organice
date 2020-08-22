@@ -3,6 +3,7 @@
 import {
   parseOrg,
   parseTodoKeywordConfig,
+  parseRawText,
   _parsePlanningItems,
   _parseLogNotes,
   parseMarkupAndCookies,
@@ -50,18 +51,27 @@ describe('Test the parser', () => {
 describe('Test parsing of log notes', () => {
   test('Parses notes when followed by logbook', () => {
     const result = _parseLogNotes('- a note\n  two lines\n:LOGBOOK:\n...');
-    expect(result.logNotes).toEqual('- a note\n  two lines');
+    expect(result.rawLogNotes).toEqual('- a note\n  two lines');
     expect(result.strippedDescription).toEqual(':LOGBOOK:\n...');
   });
   test('Parses notes when not followed by logbook but an empty line', () => {
     const result = _parseLogNotes('- a note\n  two lines\n\nrest');
-    expect(result.logNotes).toEqual('- a note\n  two lines\n');
+    expect(result.rawLogNotes).toEqual('- a note\n  two lines\n');
     expect(result.strippedDescription).toEqual('rest');
   });
   test('Parses notes when when not followed by anything', () => {
     const result = _parseLogNotes('- a note\n  two lines\n- another\n');
-    expect(result.logNotes).toEqual('- a note\n  two lines\n- another');
+    expect(result.rawLogNotes).toEqual('- a note\n  two lines\n- another');
     expect(result.strippedDescription).toEqual('');
+  });
+});
+
+describe('Parse raw text', () => {
+  test('Parses empty string', () => {
+    expect(parseRawText('').toJS()).toEqual([]);
+  });
+  test('Parses simple line', () => {
+    expect(parseRawText('test').toJS()).toEqual([{ type: 'text', contents: 'test' }]);
   });
 });
 

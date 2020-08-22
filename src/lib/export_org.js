@@ -310,7 +310,7 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   }
 
   // Log notes come after properties and before logbook.
-  if (header.logNotes) contents += `${header.logNotes}\n`;
+  if (header.logNotes) contents += attributedStringToRawText(fromJS(header.logNotes)) + '\n';
 
   if (header.logBookEntries.length) {
     const logBookEntriesContent = header.logBookEntries

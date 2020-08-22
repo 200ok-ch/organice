@@ -525,8 +525,8 @@ const addNote = (state, action) => {
   const headerId = state.get('selectedHeaderId');
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, headerId);
-  return state.updateIn(['headers', headerIndex], (header) =>
-    header.update('logNotes', (logNotes) => `${noteText}\n${logNotes}`)
+  return state.updateIn(['headers', headerIndex, 'logNotes'], (logNotes) =>
+    parseRawText(noteText + (logNotes ? `\n${attributedStringToRawText(logNotes)}` : ''))
   );
 };
 
