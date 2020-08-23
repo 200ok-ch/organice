@@ -702,6 +702,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     nestingLevel,
     planningItems: [],
     propertyListItems: [],
+    logNotes: [],
     logBookEntries: [],
   });
 };
