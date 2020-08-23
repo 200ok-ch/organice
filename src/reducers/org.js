@@ -1248,35 +1248,31 @@ function updateHeadlines(
  * @param {string} currentTodoState Current TODO state, e.g. TODO or DONE.
  * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
  */
-function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer) {
+function addTodoStateChangeLogItem(
+  state,
+  headerIndex,
+  newTodoState,
+  currentTodoState,
+  logIntoDrawer
+) {
   // this is how the TODO state change will be logged
   const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
     fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
   )}`;
 
   if (logIntoDrawer) {
-    // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
+    // Prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
     // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
     const newEntry = fromJS({
       id: generateId(),
       raw: newStateChangeLogText,
     });
-    return header.updateIn(['logBookEntries'], (entries) =>
-      !!entries ? entries.unshift(newEntry) : List([newEntry])
+    return state.updateIn(['headers', headerIndex, 'logBookEntries'], (entries) =>
+      entries ? entries.unshift(newEntry) : List([newEntry])
     );
   } else {
-    // previous default: when org-log-into-drawer not set,
-    // we have to prepend state change log text to the existing contents
-    // 1. get the existing rawDescription
-    let rawDescription = header.get('rawDescription');
-    if (rawDescription.startsWith('\n')) {
-      rawDescription = rawDescription.slice(1);
-    }
-    // 2. prepend the new bullet and write it out again
-    rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
-    return header
-      .set('rawDescription', rawDescription)
-      .set('description', parseRawText(rawDescription));
+    // When org-log-into-drawer not set, prepend state change log text to log notes
+    return addNote(state, { noteText: newStateChangeLogText });
   }
 }
 
@@ -1325,8 +1321,12 @@ function updatePlanningItemsWithRepeaters(
             })
           )
     );
-    state = state.updateIn(['headers', headerIndex], (header) =>
-      addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer)
+    state = addTodoStateChangeLogItem(
+      state,
+      headerIndex,
+      newTodoState,
+      currentTodoState,
+      logIntoDrawer
     );
   }
   return state;
