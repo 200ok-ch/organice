@@ -1243,7 +1243,8 @@ function updateHeadlines(
 /**
  * Add a TODO state change log item either to the heading body or LOGBOOK drawer.
  *
- * @param {*} header State of the header where the state change log item should be added.
+ * @param {*} state
+ * @param {*} headerIndex Index of header where the state change log item should be added.
  * @param {string} newTodoState New TODO state, e.g. DONE.
  * @param {string} currentTodoState Current TODO state, e.g. TODO or DONE.
  * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
@@ -1255,10 +1256,11 @@ function addTodoStateChangeLogItem(
   currentTodoState,
   logIntoDrawer
 ) {
-  // this is how the TODO state change will be logged
-  const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
+  // This is how the TODO state change will be logged
+  const inactiveTimestamp = renderAsText(
     fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
-  )}`;
+  );
+  const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${inactiveTimestamp}`;
 
   if (logIntoDrawer) {
     // Prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
