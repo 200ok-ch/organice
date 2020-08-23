@@ -1268,7 +1268,7 @@ function addTodoStateChangeLogItem(
       raw: newStateChangeLogText,
     });
     return state.updateIn(['headers', headerIndex, 'logBookEntries'], (entries) =>
-      entries ? entries.unshift(newEntry) : List([newEntry])
+      entries.unshift(newEntry)
     );
   } else {
     // When org-log-into-drawer not set, prepend state change log text to log notes
