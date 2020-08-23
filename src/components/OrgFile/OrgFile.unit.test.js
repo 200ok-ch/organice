@@ -7,6 +7,7 @@ import {
   parseMarkupAndCookies,
 } from '../../lib/parse_org';
 import { exportOrg, createRawDescriptionText } from '../../lib/export_org';
+import { newHeaderWithTitle } from '../../lib/parse_org';
 import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
 import { fromJS } from 'immutable';
@@ -29,16 +30,9 @@ function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
 
 describe('Tests for export', () => {
   const createSimpleHeaderWithDescription = (description) =>
-    fromJS({
-      titleLine: undefined, // not needed
-      rawDescription: description,
-      description: [{ type: 'text', contents: description }],
-      id: 4,
-      nestingLevel: 1,
-      logBookEntries: [],
-      planningItems: [],
-      propertyListItems: [],
-    });
+    newHeaderWithTitle('Test', 1, fromJS([]))
+      .set('description', fromJS([{ type: 'text', contents: description }]))
+      .set('rawDescription', description);
 
   test('Simple description export of empty description works', () => {
     const description = '';
