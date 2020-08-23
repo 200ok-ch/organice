@@ -317,12 +317,10 @@ ${header.get('rawDescription')}`;
     const dontIndent = this.props.dontIndent;
 
     // TODO: wrap input; sth. like this https://codereview.stackexchange.com/a/171857
-    // Getting indentation, timestamp, and template string is impure, hence do it here:
-    const indentation = dontIndent ? '' : ' '.repeat(header.nestingLevel + 1);
+    // Getting timestamp and template string is impure, hence do it here:
     const timestamp = moment().format('YYYY-MM-DD HH:MM');
     // Generate note based on a template string (as defined in org-log-note-headings):
-    const noteText = `${indentation}- Note taken on [${timestamp}] \\\\
-${indentation}  ${input}`;
+    const noteText = `- Note taken on [${timestamp}] \\\\\n  ${input}`;
 
     this.props.org.addNote(noteText);
   }
