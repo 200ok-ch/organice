@@ -316,7 +316,7 @@ ${header.get('rawDescription')}`;
     // Wrap line at 70 characters, see fill-column in "Insert note" window (C-c C-z)
     const wrappedIndentedInput = this.formatTextWrap(input, 70).replace(/\n(.)/, '\n  $1');
     // Getting timestamp and template string is impure, hence do it here:
-    const timestamp = moment().format('YYYY-MM-DD HH:MM');
+    const timestamp = moment().format('YYYY-MM-DD HH:MM'); // TODO: use getCurrentTimestamp and export timestamp to text?
     // Generate note based on a template string (as defined in org-log-note-headings):
     const noteText = `- Note taken on [${timestamp}] \\\\\n  ${wrappedIndentedInput}`;
 
