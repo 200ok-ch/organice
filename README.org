@@ -712,8 +712,8 @@ fork. organice differs from org-web in that:
   - This company is 200ok llc: https://200ok.ch/
   - The continuous effort yields a certain power over time. At the
     time of writing this, organice has ~3 times as many commits (1500
-    vs 600) and contributors (25 vs. 8). Of course, quality doesn't
-    trump quantity. However, many of the new contributors brought
+    vs 600) and contributors (25 vs. 8). Of course, quantity doesn't
+    trump quality. However, many of the new contributors brought
     significant features and improvements, not just tiny patches.
 
 - organice initially focused on becoming bug free - for example on
