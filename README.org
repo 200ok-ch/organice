@@ -365,6 +365,39 @@ ssh -L 3000:localhost:3000 user-dev-machine
 If you don't have a shell on your phone, you can use a dedicated SSH
 application (like [[https://www.termius.com/][Terminus]]).
 
+** Debugging Tests
+
+Apart from the popular choice of =console.log=-debugging, it's easy to
+use Chrome or Chromium for debugging tests.
+
+Place a =debugger;= statement in any test, then run:
+
+#+begin_src shell
+yarn test:dbg
+#+end_src
+
+This will start running your Jest tests, but pause before executing to
+allow a debugger to attach to the process.
+
+Open the following in Chrome:
+
+#+begin_example
+about:inspect
+#+end_example
+
+After opening that link, the Chrome Developer Tools will be displayed.
+Select inspect on your process and a breakpoint will be set at the
+first line of the react script (this is done to give you time to open
+the developer tools and to prevent Jest from executing before you have
+time to do so). Click the button that looks like a "play" button in
+the upper right hand side of the screen to continue execution. When
+Jest executes the test that contains the debugger statement, execution
+will pause and you can examine the current scope and call stack.
+
+The "Create React App" upstream docs for this feature are here:
+https://create-react-app.dev/docs/debugging-tests/
+
+
 ** Contributions
 
 Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
