@@ -4,9 +4,11 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
-
-
-
+* [2020-08-25 Tue]
+** Fixed
+   - Updating table cell values and removing table rows or colums was
+     not undoable
+     - Thank you [[https://github.com/necto][necto]] for your [[https://github.com/200ok-ch/organice/pull/432][PR]] 🙏
 
 * [2020-07-28 Tue]
 ** Fixed
