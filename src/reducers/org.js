@@ -538,7 +538,6 @@ const addNote = (state, action) => {
   const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
   // Generate note based on a template string (as defined in org-log-note-headings):
   const timestamp = getTimestampAsText(currentDate, '[]');
-  console.log(timestamp);
   const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
   return addNoteGeneric(state, { noteText });
 };

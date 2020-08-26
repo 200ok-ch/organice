@@ -567,15 +567,16 @@ export const timestampWithId = (headers, timestampId) =>
       (header) =>
         timestampWithIdInAttributedString(header.getIn(['titleLine', 'title']), timestampId) ||
         timestampWithIdInAttributedString(header.get('description'), timestampId) ||
+        timestampWithIdInAttributedString(header.get('logNotes'), timestampId) ||
         header
           .get('propertyListItems')
           .map((propertyListItem) =>
             timestampWithIdInAttributedString(propertyListItem.get('value'), timestampId)
           )
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first()
     )
-    .find((result) => !!result);
+    .find((result) => result);
 
 export const customFormatDistanceToNow = (datetime) => {
   return formatDistanceToNow(datetime, { addSuffix: true });

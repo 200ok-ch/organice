@@ -81,7 +81,7 @@ export const timestampForDate = (time, { isActive = true, withStartTime = false 
 export const getCurrentTimestampAsText = (bracketPair = '<>') =>
   getTimestampAsText(new Date(), bracketPair);
 export const getTimestampAsText = (time, bracketPair = '<>') =>
-  `${bracketPair[0]}${format(time, 'yyyy-MM-dd eee')}${bracketPair[0]}`;
+  `${bracketPair[0]}${format(time, 'yyyy-MM-dd eee')}${bracketPair[1]}`;
 
 export const dateForTimestamp = (timestamp) => {
   const { year, month, day, startHour, startMinute } = timestamp.toJS();
