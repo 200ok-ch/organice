@@ -43,7 +43,7 @@ import {
   todoKeywordSetForKeyword,
   inheritedValueOfProperty,
 } from '../lib/org_utils';
-import { getCurrentTimestamp, applyRepeater, renderAsText } from '../lib/timestamps';
+import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
 
 const displayFile = (state, action) => {
@@ -183,15 +183,14 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
-  const headerId = action.headerId || state.get('selectedHeaderId');
-  if (!headerId) {
+  const { headerId, logIntoDrawer, currentDate } = action; // TODO: isn't logIntoDrawer a setting in the store? then why to pass it?
+  const headerId2 = headerId || state.get('selectedHeaderId'); // TODO: why passing headerId at all?
+  if (!headerId2) {
     return state;
   }
 
-  const logIntoDrawer = action.logIntoDrawer;
-
   const headers = state.get('headers');
-  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId2);
 
   const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
   const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
@@ -205,17 +204,18 @@ const advanceTodoState = (state, action) => {
     .map((planningItem, index) => [planningItem, index])
     .filter(([planningItem]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
 
-  state = updateHeadlines(
+  state = updateHeadlines({
     currentTodoSet,
     newTodoState,
     indexedPlanningItemsWithRepeaters,
     state,
     headerIndex,
     currentTodoState,
-    logIntoDrawer
-  );
+    logIntoDrawer,
+    currentDate,
+  });
 
-  state = updateCookiesOfParentOfHeaderWithId(state, headerId);
+  state = updateCookiesOfParentOfHeaderWithId(state, headerId2);
 
   return state;
 };
@@ -518,8 +518,9 @@ const refileSubtree = (state, action) => {
   return state;
 };
 
-const addNote = (state, action) => {
-  // See org-add-note (C-c C-z) and variable org-log-note-headings
+// Add a log note to the selected header. This can be any type of log
+// note as defined in variable org-log-note-headings.
+const addNoteGeneric = (state, action) => {
   const { noteText } = action;
 
   const headerId = state.get('selectedHeaderId');
@@ -528,6 +529,35 @@ const addNote = (state, action) => {
   return state.updateIn(['headers', headerIndex, 'logNotes'], (logNotes) =>
     parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
   );
+};
+
+// See org-add-note (C-c C-z) and variable org-log-note-headings.
+const addNote = (state, action) => {
+  const { inputText, currentDate } = action;
+  // Wrap line at 70 characters, see fill-column in "Insert note" window (C-c C-z)
+  const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
+  // Generate note based on a template string (as defined in org-log-note-headings):
+  const timestamp = getTimestampAsText(currentDate, '[]');
+  console.log(timestamp);
+  const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
+  return addNoteGeneric(state, { noteText });
+};
+
+// TODO: where to put this function?
+// Hard-wrap long lines - from https://codereview.stackexchange.com/a/171857
+const formatTextWrap = (text, maxLineLength) => {
+  const words = text.replace(/[\r\n]+/g, ' ').split(' ');
+  let lineLength = 0;
+
+  return words.reduce((result, word) => {
+    if (lineLength + word.length >= maxLineLength) {
+      lineLength = word.length;
+      return result + `\n${word}`; // don't add spaces upfront
+    } else {
+      lineLength += word.length + (result ? 1 : 0);
+      return result ? result + ` ${word}` : `${word}`; // add space only when needed
+    }
+  }, '');
 };
 
 const focusHeader = (state, action) => {
@@ -956,7 +986,7 @@ const addNewPlanningItem = (state, action) => {
   const newPlanningItem = fromJS({
     id: generateId(),
     type: action.planningType,
-    timestamp: getCurrentTimestamp(),
+    timestamp: timestampForDate(new Date()), // TODO: impure new Date()
   });
 
   return state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) =>
@@ -1211,33 +1241,32 @@ export default (state = Map(), action) => {
  * @param {Number} headerIndex
  * @param {String} currentTodoState
  */
-function updateHeadlines(
+function updateHeadlines({
   currentTodoSet,
   newTodoState,
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
   currentTodoState,
-  logIntoDrawer
-) {
+  logIntoDrawer,
+  currentDate,
+}) {
   if (
     currentTodoSet.get('completedKeywords').includes(newTodoState) &&
     indexedPlanningItemsWithRepeaters.size > 0
   )
-    state = updatePlanningItemsWithRepeaters(
+    return updatePlanningItemsWithRepeaters({
       indexedPlanningItemsWithRepeaters,
       state,
       headerIndex,
       currentTodoSet,
       newTodoState,
       currentTodoState,
-      logIntoDrawer
-    );
-  else {
-    // Update simple headline (without repeaters)
-    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
-  }
-  return state;
+      logIntoDrawer,
+      currentDate,
+    });
+  // Update simple headline (without repeaters)
+  return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
 }
 
 /**
@@ -1257,9 +1286,7 @@ function addTodoStateChangeLogItem(
   logIntoDrawer
 ) {
   // This is how the TODO state change will be logged
-  const inactiveTimestamp = renderAsText(
-    fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
-  );
+  const inactiveTimestamp = getTimestampAsText(new Date(), '[]'); // TODO: impure new Date()
   const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${inactiveTimestamp}`;
 
   if (logIntoDrawer) {
@@ -1274,23 +1301,24 @@ function addTodoStateChangeLogItem(
     );
   } else {
     // When org-log-into-drawer not set, prepend state change log text to log notes
-    return addNote(state, { noteText: newStateChangeLogText });
+    return addNoteGeneric(state, { noteText: newStateChangeLogText });
   }
 }
 
-function updatePlanningItemsWithRepeaters(
+function updatePlanningItemsWithRepeaters({
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
   currentTodoSet,
   newTodoState,
   currentTodoState,
-  logIntoDrawer
-) {
+  logIntoDrawer,
+  currentDate,
+}) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
       ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-      applyRepeater(planningItem.get('timestamp'), new Date())
+      applyRepeater(planningItem.get('timestamp'), currentDate)
     );
   });
   state = state.setIn(
@@ -1298,7 +1326,10 @@ function updatePlanningItemsWithRepeaters(
     currentTodoSet.get('keywords').first()
   );
   if (!noLogRepeatEnabledP({ state, headerIndex })) {
-    const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
+    const lastRepeatTimestamp = timestampForDate(new Date(), {
+      isActive: false,
+      withStartTime: true,
+    }); // TODO: impure new Date()
     const newLastRepeatValue = [
       {
         type: 'timestamp',

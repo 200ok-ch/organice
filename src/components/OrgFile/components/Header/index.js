@@ -21,8 +21,6 @@ import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
 import { getCurrentTimestamp } from '../../../../lib/timestamps';
 
-import * as moment from 'moment';
-
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
   FREE_DRAG_ACTIVATION_DISTANCE = 10;
@@ -313,30 +311,7 @@ ${header.get('rawDescription')}`;
     if (input !== null) input = input.trim();
     if (!input) return;
 
-    // Wrap line at 70 characters, see fill-column in "Insert note" window (C-c C-z)
-    const wrappedIndentedInput = this.formatTextWrap(input, 70).replace(/\n(.)/, '\n  $1');
-    // Getting timestamp and template string is impure, hence do it here:
-    const timestamp = moment().format('YYYY-MM-DD HH:MM'); // TODO: use getCurrentTimestamp and export timestamp to text?
-    // Generate note based on a template string (as defined in org-log-note-headings):
-    const noteText = `- Note taken on [${timestamp}] \\\\\n  ${wrappedIndentedInput}`;
-
-    this.props.org.addNote(noteText);
-  }
-
-  // Hard-wrap long lines - from https://codereview.stackexchange.com/a/171857
-  formatTextWrap(text, maxLineLength) {
-    const words = text.replace(/[\r\n]+/g, ' ').split(' ');
-    let lineLength = 0;
-
-    return words.reduce((result, word) => {
-      if (lineLength + word.length >= maxLineLength) {
-        lineLength = word.length;
-        return result + `\n${word}`; // don't add spaces upfront
-      } else {
-        lineLength += word.length + (result ? 1 : 0);
-        return result ? result + ` ${word}` : `${word}`; // add space only when needed
-      }
-    }, '');
+    this.props.org.addNote(input, new Date());
   }
 
   handlePopupClose() {

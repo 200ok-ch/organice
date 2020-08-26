@@ -203,7 +203,7 @@ export const selectHeaderAndOpenParents = (headerId) => (dispatch) => {
  * @param {*} headerId headerId to advance, or null if you want the currently focused header.
  * @param {*} logIntoDrawer false to log state change into body, true to log into :LOGBOOK: drawer.
  */
-export const advanceTodoState = (headerId, logIntoDrawer) => ({
+export const advanceTodoState = (headerId, logIntoDrawer, currentDate) => ({
   type: 'ADVANCE_TODO_STATE',
   headerId,
   logIntoDrawer,
@@ -312,9 +312,10 @@ export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
   dirtying: true,
 });
 
-export const addNote = (noteText) => ({
+export const addNote = (inputText, currentDate) => ({
   type: 'HEADER_ADD_NOTE',
-  noteText,
+  inputText,
+  currentDate,
   dirtying: true,
 });
 
