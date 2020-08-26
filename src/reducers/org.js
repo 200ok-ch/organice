@@ -816,6 +816,8 @@ const updateParentListCheckboxes = (state, itemPath) => {
           return false;
         case 'partial':
           return false;
+        default:
+          return false;
       }
     })
     .toJS();
