@@ -33,6 +33,7 @@
     "build": "./bin/compile_search_parser.sh && react-scripts build",
     "test:dbg": "./bin/compile_search_parser.sh && react-scripts --inspect-brk test --runInBand --no-cache",
     "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
+    "coverage": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom --coverage --watchAll=false",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
@@ -55,6 +56,11 @@
     "prettier-eslint-cli": "^5.0.0",
     "raw.macro": "0.3.1",
     "react-test-renderer": "^16.13.1"
+  },
+  "jest": {
+    "coverageReporters": [
+      "text"
+    ]
   },
   "browserslist": [
     ">0.2%",

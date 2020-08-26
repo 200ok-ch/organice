@@ -485,6 +485,13 @@ export const reorderPropertyList = (fromIndex, toIndex) => (dispatch, getState) 
     dirtying: true,
   });
 
+/**
+ * Action to change the timestamp using a cross-cutting id.
+ *
+ * @param {*} timestampId cross-cutting id of the timestamp (might be in the title or description).
+ * @param {*} newTimestamp the new value for the timestamp;
+ *                         must have the form: {id:, type:, firstTimestamp:, secondTimestamp:}.
+ */
 export const updateTimestampWithId = (timestampId, newTimestamp) => ({
   type: 'UPDATE_TIMESTAMP_WITH_ID',
   timestampId,

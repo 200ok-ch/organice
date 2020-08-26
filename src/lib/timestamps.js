@@ -48,8 +48,10 @@ export const renderAsText = (timestamp) => {
 };
 
 export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } = {}) => {
-  const time = new Date();
+  return timestampForDate(new Date(), { isActive, withStartTime });
+};
 
+export const timestampForDate = (time, { isActive = true, withStartTime = false } = {}) => {
   const timestamp = {
     isActive,
     year: format(time, 'yyyy'),

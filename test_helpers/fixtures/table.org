@@ -1,0 +1,12 @@
+* A table
+#+BEGIN: clocktable :maxlevel 25 :scope subtree :formula "$3=$2*150;t"
+#+CAPTION: Clock summary at [2019-09-22 Sun 11:21]
+| Headline            |   Time |        |
+|---------------------+--------+--------|
+| *Total time*        | *4:10* | 625.00 |
+|---------------------+--------+--------|
+| Tables              |   4:10 | 625.00 |
+| Something todo      |   2:05 | 312.50 |
+| Something else todo |   2:05 | 312.50 |
+#+TBLFM: $3=$2*150;t
+#+END:

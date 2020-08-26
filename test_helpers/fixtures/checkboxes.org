@@ -1,0 +1,17 @@
+* Header with checkboxes
+- [ ] Box A
+- [ ] Box B
+- [X] Box C
+* Another header [1/3]
+- [X] Box D
+- [-] Box E [50%]
+  - [ ] Box G
+    - [ ] Box H
+  - [X] Box I
+- [-] Box J
+  - [ ] Box K
+  - [-] Box L
+    - [ ] Box M
+    - [X] Box N
+  - [ ] Box O
+- Not a checkbox
