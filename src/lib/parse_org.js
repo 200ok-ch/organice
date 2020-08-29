@@ -591,21 +591,13 @@ const parseLogbook = (rawText) => {
 };
 
 export const _parseLogNotes = (rawText) => {
+  // Only parse log notes if a logbook exists. Otherwise, a list - log notes
+  // or just a normal list - will go into the description.
   const lines = rawText.split('\n');
   const logbookLineIndex = lines.findIndex((line) => line.trim() === ':LOGBOOK:');
   if (logbookLineIndex !== -1)
     return makeLogNotesResult(lines.slice(0, logbookLineIndex), lines.slice(logbookLineIndex));
-  // First line doesn't look like a log note list item?
-  if (!rawText.trim().startsWith('- ')) return makeLogNotesResult([], [rawText]);
-  // If no logbook, we assume the first empty line to be the
-  // separator between notes and description.
-  const firstEmptyLineIndex = lines.findIndex((line) => line.trim() === '');
-  if (firstEmptyLineIndex !== -1)
-    return makeLogNotesResult(
-      lines.slice(0, firstEmptyLineIndex),
-      lines.slice(firstEmptyLineIndex)
-    );
-  return makeLogNotesResult([rawText], []);
+  return makeLogNotesResult([], [rawText]);
 };
 
 export const parseDescriptionPrefixElements = (rawText) => {
