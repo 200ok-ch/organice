@@ -45,6 +45,7 @@ import {
 } from '../lib/org_utils';
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
+import { formatTextWrap } from '../util/misc';
 
 const displayFile = (state, action) => {
   const parsedFile = parseOrg(action.contents);
@@ -540,23 +541,6 @@ const addNote = (state, action) => {
   const timestamp = getTimestampAsText(currentDate, '[]');
   const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
   return addNoteGeneric(state, { noteText });
-};
-
-// TODO: where to put this function?
-// Hard-wrap long lines - from https://codereview.stackexchange.com/a/171857
-const formatTextWrap = (text, maxLineLength) => {
-  const words = text.replace(/[\r\n]+/g, ' ').split(' ');
-  let lineLength = 0;
-
-  return words.reduce((result, word) => {
-    if (lineLength + word.length >= maxLineLength) {
-      lineLength = word.length;
-      return result + `\n${word}`; // don't add spaces upfront
-    } else {
-      lineLength += word.length + (result ? 1 : 0);
-      return result ? result + ` ${word}` : `${word}`; // add space only when needed
-    }
-  }, '');
 };
 
 const focusHeader = (state, action) => {
