@@ -71,20 +71,13 @@ describe('Parse raw text', () => {
   });
 });
 
-describe('Parsing and exporting should not alter the original file', () => {
-  describe('Planning items', () => {
-    describe('Formatting is the same as in Emacs', () => {
-      describe('List formatting', () => {
-        test('Planning items should contain active timestamps from title and description as well', () => {
-          const testOrgFile = readFixture('schedule_and_timestamps');
-          const parsedFile = parseOrg(testOrgFile);
-          const headers = parsedFile.get('headers').toJS();
-          expect(headers.length).toEqual(1);
-          const header = headers[0];
-          expect(header.planningItems.length).toEqual(3);
-        });
-      });
-    });
+describe('Parse headline with planning items and active timestamps', () => {
+  test('Planning items should contain active timestamps from title and description as well', () => {
+    const testOrgFile = readFixture('schedule_and_timestamps');
+    const parsedFile = parseOrg(testOrgFile);
+    const headers = parsedFile.get('headers').toJS();
+    const header = headers[0];
+    expect(header.planningItems.length).toEqual(3);
   });
 });
 
