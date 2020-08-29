@@ -185,13 +185,13 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 
 const advanceTodoState = (state, action) => {
   const { headerId, logIntoDrawer, currentDate } = action; // TODO: isn't logIntoDrawer a setting in the store? then why to pass it?
-  const headerId2 = headerId || state.get('selectedHeaderId'); // TODO: why passing headerId at all?
-  if (!headerId2) {
+  const existingHeaderId = headerId || state.get('selectedHeaderId'); // TODO: why passing headerId at all?
+  if (!existingHeaderId) {
     return state;
   }
 
   const headers = state.get('headers');
-  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId2);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, existingHeaderId);
 
   const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
   const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
@@ -216,7 +216,7 @@ const advanceTodoState = (state, action) => {
     currentDate,
   });
 
-  state = updateCookiesOfParentOfHeaderWithId(state, headerId2);
+  state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
 
   return state;
 };
