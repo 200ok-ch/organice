@@ -132,7 +132,11 @@ const Settings = ({
           <div className="setting-label__description">
             Log TODO state changes (currently only for repeating items) into the LOGBOOK drawer
             instead of into the body of the heading (default). See the Orgmode documentation on{' '}
-            <a href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
+            <a
+              href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               org-log-into-drawer
             </a>{' '}
             for more information.
@@ -148,7 +152,11 @@ const Settings = ({
             By default, the metadata body (including deadlines and drawers) of an exported org
             heading is indented according to its level. If instead you prefer to keep your body text
             flush-left, i.e.{' '}
-            <a href="https://orgmode.org/manual/Hard-indentation.html">
+            <a
+              href="https://orgmode.org/manual/Hard-indentation.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <code>(setq org-adapt-indentation nil)</code>
             </a>
             , then activate this setting. The raw content text is left unchanged.
