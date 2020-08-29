@@ -203,7 +203,7 @@ export const selectHeaderAndOpenParents = (headerId) => (dispatch) => {
  * @param {*} headerId headerId to advance, or null if you want the currently focused header.
  * @param {*} logIntoDrawer false to log state change into body, true to log into :LOGBOOK: drawer.
  */
-export const advanceTodoState = (headerId, logIntoDrawer, currentDate) => ({
+export const advanceTodoState = (headerId, logIntoDrawer) => ({
   type: 'ADVANCE_TODO_STATE',
   headerId,
   logIntoDrawer,
