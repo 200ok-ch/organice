@@ -538,7 +538,7 @@ const addNote = (state, action) => {
   // Wrap line at 70 characters, see fill-column in "Insert note" window (C-c C-z)
   const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
   // Generate note based on a template string (as defined in org-log-note-headings):
-  const timestamp = getTimestampAsText(currentDate, '[]');
+  const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
   const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
   return addNoteGeneric(state, { noteText });
 };
