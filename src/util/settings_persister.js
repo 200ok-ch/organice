@@ -119,6 +119,12 @@ export const persistableFields = [
   },
   {
     category: 'base',
+    name: 'closeSubheadersRecursively',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
+  {
+    category: 'base',
     name: 'shouldNotIndentOnExport',
     type: 'boolean',
     shouldStoreInConfig: true,

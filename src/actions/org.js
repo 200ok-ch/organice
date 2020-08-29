@@ -179,9 +179,10 @@ export const openHeader = (headerId) => ({
   headerId,
 });
 
-export const toggleHeaderOpened = (headerId) => ({
+export const toggleHeaderOpened = (headerId, closeSubheadersRecursively) => ({
   type: 'TOGGLE_HEADER_OPENED',
   headerId,
+  closeSubheadersRecursively,
 });
 
 export const selectHeader = (headerId) => (dispatch) => {

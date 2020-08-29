@@ -29,6 +29,7 @@ import {
   indexAndHeaderWithId,
   parentIdOfHeaderWithId,
   subheadersOfHeaderWithId,
+  subheaderIndicesOfHeaderWithId,
   numSubheadersOfHeaderWithId,
   indexOfPreviousSibling,
   openDirectParent,
@@ -87,10 +88,10 @@ const toggleHeaderOpened = (state, action) => {
     return state;
   }
 
-  if (isOpened) {
-    const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
-    subheaders.forEach((index) => {
-      state = state.setIn(['headers', headerIndex + index + 1, 'opened'], false);
+  if (isOpened && action.closeSubheadersRecursively) {
+    const subheaderIndices = subheaderIndicesOfHeaderWithId(headers, action.headerId);
+    subheaderIndices.forEach((index) => {
+      state = state.setIn(['headers', index, 'opened'], false);
     });
   }
 
