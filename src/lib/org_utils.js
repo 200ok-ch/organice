@@ -629,10 +629,11 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
  * Subheaders do not count as content.
  */
 export const hasHeaderContent = (header) =>
-  !!header.get('rawDescription') ||
-  header.get('planningItems').size !== 0 ||
-  header.get('propertyListItems').size !== 0 ||
-  header.get('logBookEntries').size !== 0;
+  header.get('rawDescription') ||
+  !header.get('planningItems').isEmpty() ||
+  !header.get('propertyListItems').isEmpty() ||
+  !header.get('logNotes').isEmpty() ||
+  !header.get('logBookEntries').isEmpty();
 
 /**
  * Returns a function which takes a `todoKeyword` which then returns
