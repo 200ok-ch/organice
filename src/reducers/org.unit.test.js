@@ -1,3 +1,5 @@
+/* global process */
+
 import { fromJS } from 'immutable';
 
 import generateId from '../lib/id_generator';
@@ -5,7 +7,7 @@ import reducer from './org';
 import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
-import { headerWithId, headerWithPath } from '../lib/org_utils';
+import { headerWithId, headerWithPath, indexOfHeaderWithId } from '../lib/org_utils';
 import { dateForTimestamp, timestampForDate } from '../lib/timestamps';
 import { readInitialState } from '../util/settings_persister';
 
@@ -1347,6 +1349,71 @@ describe('org reducer', () => {
           .toJS()
           .map((x) => x.checkboxState)
       ).toEqual(['checked', 'partial', 'unchecked', null]);
+    });
+
+    function insertBugIntoCheckboxM(oldState, bug) {
+      return oldState.updateIn(
+        [
+          'headers',
+          indexOfHeaderWithId(oldState.get('headers'), bottomHeaderId),
+          'description',
+          0,
+          'items',
+          2,
+          'contents',
+          0,
+          'items',
+          1,
+          'contents',
+          0,
+          'items',
+          0, // Box M
+          'checkboxState',
+        ],
+        () => bug
+      );
+    }
+
+    it('should panic on an unknown checkbox state in test mode', () => {
+      const oldState = state.org.present;
+      const buggyState = insertBugIntoCheckboxM(oldState, 'Karamba!');
+      expect(() => reducer(buggyState, types.advanceCheckboxState(bottomDeepNestedBoxN))).toThrow(
+        /Karamba!/
+      );
+    });
+
+    function callInProd(fun) {
+      const OLD_ENV = process.env;
+      process.env.NODE_ENV = 'production';
+      jest.resetModules();
+      const result = fun();
+      process.env = { ...OLD_ENV };
+      return result;
+    }
+
+    it('should ignore an unknown checkbox state in production mode', () => {
+      const oldState = state.org.present;
+      const buggyState = insertBugIntoCheckboxM(oldState, 'Karamba!');
+      const newState = callInProd(() =>
+        reducer(buggyState, types.advanceCheckboxState(bottomDeepNestedBoxN))
+      );
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId).getIn([
+          'description',
+          0,
+          'items',
+          2,
+          'contents',
+          0,
+          'items',
+          1,
+          'contents',
+          0,
+          'items',
+          1, // Box N
+          'checkboxState',
+        ])
+      ).toEqual('unchecked');
     });
   });
 

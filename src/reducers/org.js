@@ -1,3 +1,5 @@
+/* global process */
+
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
@@ -817,7 +819,11 @@ const updateParentListCheckboxes = (state, itemPath) => {
         case 'partial':
           return false;
         default:
-          return false;
+          if (process.env.NODE_ENV !== 'production') {
+            throw Error("Unexpected checkboxState: '" + state + "'");
+          } else {
+            return false;
+          }
       }
     })
     .toJS();
