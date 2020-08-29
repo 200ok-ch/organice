@@ -409,6 +409,24 @@ ${description}`;
     });
   });
 
+  describe('Log notes followed by a log book', () => {
+    const testOrgFile = readFixture('logbook_and_log_notes');
+    test('Parse and export does not change original file', () => {
+      const exported = parseAndExportOrgFile(testOrgFile);
+      expect(testOrgFile).toEqual(exported);
+    });
+
+    const parsed = parseOrg(testOrgFile).toJS();
+    test('Log notes of first headline are parsed', () => {
+      expect(parsed.headers[0].logNotes[0].type).toEqual('list');
+      expect(parsed.headers[0].logNotes[0].items.length).toEqual(1);
+    });
+    test('Log notes of second headline are parsed', () => {
+      expect(parsed.headers[1].logNotes[0].type).toEqual('list');
+      expect(parsed.headers[1].logNotes[0].items.length).toEqual(4);
+    });
+  });
+
   describe('Reducers and helper functions', () => {
     describe('"nologrepeat" configuration', () => {
       test('Detects "nologrepeat" when set in #+STARTUP as only option', () => {
