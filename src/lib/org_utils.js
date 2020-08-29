@@ -416,44 +416,34 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
     .filter((result) => !!result)
     .first();
 
-export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) =>
-  headers
+export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) => {
+  const makeResult = (headerIndex, pathAndPart, localPath) => ({
+    path: [headerIndex, ...localPath].concat(pathAndPart.path),
+    timestampPart: pathAndPart.timestampPart,
+  });
+
+  return headers
     .map((header, headerIndex) => {
+      let localPath = ['titleLine', 'title'];
       let pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
-        header.getIn(['titleLine', 'title']),
+        header.getIn(localPath),
         timestampId
       );
-      if (pathAndPart) {
-        const { path, timestampPart } = pathAndPart;
-        return {
-          path: [headerIndex, 'titleLine', 'title'].concat(path),
-          timestampPart,
-        };
-      }
+      if (pathAndPart) return makeResult(headerIndex, pathAndPart, localPath);
 
+      localPath = ['description'];
       pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
-        header.get('description'),
+        header.getIn(localPath),
         timestampId
       );
-      if (pathAndPart) {
-        const { path, timestampPart } = pathAndPart;
-        return {
-          path: [headerIndex, 'description'].concat(path),
-          timestampPart,
-        };
-      }
+      if (pathAndPart) return makeResult(headerIndex, pathAndPart, localPath);
 
+      localPath = ['logNotes'];
       pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
-        header.get('logNotes'),
+        header.getIn(localPath),
         timestampId
       );
-      if (pathAndPart) {
-        const { path, timestampPart } = pathAndPart;
-        return {
-          path: [headerIndex, 'logNotes'].concat(path),
-          timestampPart,
-        };
-      }
+      if (pathAndPart) return makeResult(headerIndex, pathAndPart, localPath);
 
       pathAndPart = header
         .get('propertyListItems')
@@ -466,17 +456,12 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
             propertyListItem.get('value'),
             timestampId
           );
-          if (plistPathAndPart) {
-            const { path, timestampPart } = plistPathAndPart;
-            return {
-              path: [headerIndex, 'propertyListItems', propertyListItemIndex, 'value'].concat(path),
-              timestampPart,
-            };
-          }
+          localPath = ['propertyListItems', propertyListItemIndex, 'value'];
+          if (plistPathAndPart) return makeResult(headerIndex, plistPathAndPart, localPath);
 
           return null;
         })
-        .filter((result) => !!result)
+        .filter((result) => result)
         .first();
       if (pathAndPart) {
         return pathAndPart;
@@ -486,6 +471,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
     })
     .filter((result) => !!result)
     .first();
+};
 
 export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) =>
   headers
