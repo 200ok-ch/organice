@@ -282,7 +282,7 @@ export default ({
           <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
             <a
-              href="https://github.com/200ok-ch/organice/#capture-params-and-siri-support"
+              href="https://organice.200ok.ch/documentation.html#capture_templates"
               target="_blank"
               rel="noopener noreferrer"
             >
