@@ -538,7 +538,6 @@ const mapStateToProps = (state, ownProps) => {
     focusedHeader,
     isFocused: !!focusedHeader && focusedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
-    dontIndent: state.base.get('shouldNotIndentOnExport'),
   };
 };
 
