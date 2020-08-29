@@ -697,6 +697,20 @@ describe('org reducer', () => {
         expect(headerWithId(newState.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
       });
 
+      it('should close the header and subheaders on the second toggle', () => {
+        const topLevelOpen = reducer(state.org.present, types.toggleHeaderOpened(topLevelHeaderId));
+        const nestedOpen = reducer(topLevelOpen, types.toggleHeaderOpened(nestedHeaderId));
+        const deepNestedOpen = reducer(nestedOpen, types.toggleHeaderOpened(deepNestedHeaderId));
+        const allClosed = reducer(deepNestedOpen, types.toggleHeaderOpened(topLevelHeaderId));
+        expect(headerWithId(allClosed.get('headers'), topLevelHeaderId).get('opened')).toEqual(
+          false
+        );
+        expect(headerWithId(allClosed.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
+        expect(headerWithId(allClosed.get('headers'), deepNestedHeaderId).get('opened')).toEqual(
+          false
+        );
+      });
+
       it('should ignore if focused and open', () => {
         expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
         const openState = reducer(state.org.present, types.toggleHeaderOpened(topLevelHeaderId));
