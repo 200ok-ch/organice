@@ -634,7 +634,8 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
   const mergedPlanningItems = mergePlanningItems(
     planningItems,
     extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_TITLE', parsedTitle),
-    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription)
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription),
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_LOG_NOTES', logNotes)
   );
 
   return header
@@ -844,18 +845,12 @@ export const updatePlanningItems = (planningItems, type, parsed) =>
     .filter((x) => x.get('type') !== type)
     .merge(extractActiveTimestampsForPlanningItemsFromParse(type, parsed));
 
-export const updatePlanningItemsFromTitleAndDescription = (
-  planningItems,
-  parsedTitle,
-  parsedDescription
-) => {
-  const tempPlanningItems = updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', parsedTitle);
-  const resultingPlanningItems = updatePlanningItems(
-    tempPlanningItems,
-    'TIMESTAMP_DESCRIPTION',
-    parsedDescription
-  );
-  return resultingPlanningItems;
+export const updatePlanningItemsFromHeader = (header) => {
+  let items = header.get('planningItems');
+  items = updatePlanningItems(items, 'TIMESTAMP_TITLE', header.getIn(['titleLine', 'title']));
+  items = updatePlanningItems(items, 'TIMESTAMP_DESCRIPTION', header.get('description'));
+  items = updatePlanningItems(items, 'TIMESTAMP_LOG_NOTES', header.get('logNotes'));
+  return items;
 };
 
 const computeNestingLevel = (titleLineWithAsterisk) => {

@@ -423,7 +423,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
         header.getIn(['titleLine', 'title']),
         timestampId
       );
-      if (!!pathAndPart) {
+      if (pathAndPart) {
         const { path, timestampPart } = pathAndPart;
         return {
           path: [headerIndex, 'titleLine', 'title'].concat(path),
@@ -435,10 +435,22 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
         header.get('description'),
         timestampId
       );
-      if (!!pathAndPart) {
+      if (pathAndPart) {
         const { path, timestampPart } = pathAndPart;
         return {
           path: [headerIndex, 'description'].concat(path),
+          timestampPart,
+        };
+      }
+
+      pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+        header.get('logNotes'),
+        timestampId
+      );
+      if (pathAndPart) {
+        const { path, timestampPart } = pathAndPart;
+        return {
+          path: [headerIndex, 'logNotes'].concat(path),
           timestampPart,
         };
       }
@@ -454,7 +466,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
             propertyListItem.get('value'),
             timestampId
           );
-          if (!!plistPathAndPart) {
+          if (plistPathAndPart) {
             const { path, timestampPart } = plistPathAndPart;
             return {
               path: [headerIndex, 'propertyListItems', propertyListItemIndex, 'value'].concat(path),
@@ -466,7 +478,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
         })
         .filter((result) => !!result)
         .first();
-      if (!!pathAndPart) {
+      if (pathAndPart) {
         return pathAndPart;
       }
 

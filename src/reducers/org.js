@@ -18,7 +18,7 @@ import {
   newHeaderWithTitle,
   newHeaderFromText,
   updatePlanningItems,
-  updatePlanningItemsFromTitleAndDescription,
+  updatePlanningItemsFromHeader,
   _updateHeaderFromDescription,
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
@@ -939,15 +939,11 @@ const updateTimestampWithId = (state, action) => {
     .updateIn(['headers', headerIndex], (header) => {
       const description = header.get('description');
       const title = header.getIn(['titleLine', 'title']);
-      const planningItems = header.get('planningItems');
 
       return header
         .setIn(['titleLine', 'rawTitle'], attributedStringToRawText(title))
         .set('rawDescription', attributedStringToRawText(description))
-        .set(
-          'planningItems',
-          updatePlanningItemsFromTitleAndDescription(planningItems, title, description)
-        );
+        .set('planningItems', updatePlanningItemsFromHeader(header));
     });
 };
 
