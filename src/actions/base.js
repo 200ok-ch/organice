@@ -102,6 +102,11 @@ export const setShouldLogIntoDrawer = (shouldLogIntoDrawer) => ({
   shouldLogIntoDrawer,
 });
 
+export const setCloseSubheadersRecursively = (closeSubheadersRecursively) => ({
+  type: 'SET_CLOSE_SUBHEADERS_RECURSIVELY',
+  closeSubheadersRecursively,
+});
+
 export const setShouldNotIndentOnExport = (shouldNotIndentOnExport) => ({
   type: 'SET_SHOULD_NOT_INDENT_ON_EXPORT',
   shouldNotIndentOnExport,

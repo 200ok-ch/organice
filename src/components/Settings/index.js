@@ -21,6 +21,7 @@ const Settings = ({
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
+  closeSubheadersRecursively,
   shouldNotIndentOnExport,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
@@ -57,6 +58,9 @@ const Settings = ({
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
 
   const handleShouldLogIntoDrawer = () => base.setShouldLogIntoDrawer(!shouldLogIntoDrawer);
+
+  const handleCloseSubheadersRecursively = () =>
+    base.setCloseSubheadersRecursively(!closeSubheadersRecursively);
 
   const handleShouldNotIndentOnExport = () =>
     base.setShouldNotIndentOnExport(!shouldNotIndentOnExport);
@@ -139,6 +143,21 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={shouldLogIntoDrawer} onToggle={handleShouldLogIntoDrawer} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          When folding a header, fold all ist subheaders too
+          <div className="setting-label__description">
+            When folding a header, fold recursively all its subheaders, so that when the header is
+            reopened all subheaders are folded, regardless of their state prior to folding. If this
+            turned off, the fold-state of the subheaders is preserved when the header is unfolded.
+          </div>
+        </div>
+        <Switch
+          isEnabled={closeSubheadersRecursively}
+          onToggle={handleCloseSubheadersRecursively}
+        />
       </div>
 
       <div className="setting-container">
@@ -253,6 +272,7 @@ const mapStateToProps = (state) => {
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };

@@ -86,7 +86,7 @@ const toggleHeaderOpened = (state, action) => {
     return state;
   }
 
-  if (isOpened) {
+  if (isOpened && action.closeSubheadersRecursively) {
     const subheaderIndices = subheaderIndicesOfHeaderWithId(headers, action.headerId);
     subheaderIndices.forEach((index) => {
       state = state.setIn(['headers', index, 'opened'], false);

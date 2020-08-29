@@ -184,10 +184,10 @@ class Header extends PureComponent {
   handleHeaderClick(event) {
     const classList = event.target.classList;
     if (classList.contains('header') || classList.contains('header__bullet')) {
-      const { header, hasContent, isSelected } = this.props;
+      const { header, hasContent, isSelected, closeSubheadersRecursively } = this.props;
 
       if (hasContent && (!header.get('opened') || isSelected)) {
-        this.props.org.toggleHeaderOpened(header.get('id'));
+        this.props.org.toggleHeaderOpened(header.get('id'), closeSubheadersRecursively);
       }
 
       this.props.org.selectHeader(header.get('id'));
@@ -525,6 +525,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     bulletStyle: state.base.get('bulletStyle'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     focusedHeader,
     isFocused: !!focusedHeader && focusedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
