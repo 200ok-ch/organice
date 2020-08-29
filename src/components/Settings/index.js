@@ -147,11 +147,12 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
-          When folding a header, fold all ist subheaders too
+          When folding a header, fold all subheaders too
           <div className="setting-label__description">
             When folding a header, fold recursively all its subheaders, so that when the header is
-            reopened all subheaders are folded, regardless of their state prior to folding. If this
-            turned off, the fold-state of the subheaders is preserved when the header is unfolded.
+            reopened all subheaders are folded, regardless of their state prior to folding. This is
+            the default in Emacs Org mode. If this turned off, the fold-state of the subheaders is
+            preserved when the header is unfolded.
           </div>
         </div>
         <Switch
