@@ -56,10 +56,10 @@ describe('Test parsing of log notes', () => {
   });
   test('Parses notes when not followed by logbook but an empty line', () => {
     const result = _parseLogNotes('- a note\n  two lines\n\nrest');
-    expect(result.rawLogNotes).toEqual('- a note\n  two lines\n');
-    expect(result.strippedDescription).toEqual('rest');
+    expect(result.rawLogNotes).toEqual('- a note\n  two lines');
+    expect(result.strippedDescription).toEqual('\nrest');
   });
-  test('Parses notes when when not followed by anything', () => {
+  test('Parses notes when not followed by anything', () => {
     const result = _parseLogNotes('- a note\n  two lines\n- another\n');
     expect(result.rawLogNotes).toEqual('- a note\n  two lines\n- another');
     expect(result.strippedDescription).toEqual('');

@@ -596,14 +596,15 @@ export const _parseLogNotes = (rawText) => {
   if (logbookLineIndex !== -1)
     return makeLogNotesResult(lines.slice(0, logbookLineIndex), lines.slice(logbookLineIndex));
   // First line doesn't look like a log note list item?
-  if (!rawText.trim().startsWith('- ')) {
-    return makeLogNotesResult([], [rawText]);
-  }
+  if (!rawText.trim().startsWith('- ')) return makeLogNotesResult([], [rawText]);
   // If no logbook, we assume the first empty line to be the
   // separator between notes and description.
   const firstEmptyLineIndex = lines.findIndex((line) => line.trim() === '');
   if (firstEmptyLineIndex !== -1)
-    return makeLogNotesResult(lines.slice(0, logbookLineIndex), lines.slice(logbookLineIndex));
+    return makeLogNotesResult(
+      lines.slice(0, firstEmptyLineIndex),
+      lines.slice(firstEmptyLineIndex)
+    );
   return makeLogNotesResult([rawText], []);
 };
 
