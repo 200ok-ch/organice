@@ -127,12 +127,6 @@ export default class HeaderActionDrawer extends PureComponent {
             onClick: onAddNote,
             title: 'Add a note',
           })}
-          {/* Placeholder to align the other icons */}
-          {this.iconWithFFClickCatcher({
-            className: '',
-            onClick: () => {},
-            title: '',
-          })}
         </div>
       </div>
     );
