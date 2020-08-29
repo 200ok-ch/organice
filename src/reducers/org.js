@@ -527,9 +527,12 @@ const addNoteGeneric = (state, action) => {
   const headerId = state.get('selectedHeaderId');
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, headerId);
-  return state.updateIn(['headers', headerIndex, 'logNotes'], (logNotes) =>
-    parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
-  );
+  return state.updateIn(['headers', headerIndex], (header) => {
+    const updatedHeader = header.update('logNotes', (logNotes) =>
+      parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
+    );
+    return updatedHeader.set('planningItems', updatePlanningItemsFromHeader(updatedHeader));
+  });
 };
 
 // See org-add-note (C-c C-z) and variable org-log-note-headings.
