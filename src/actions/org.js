@@ -519,6 +519,7 @@ export const addNewPlanningItem = (headerId, planningType) => ({
   headerId,
   planningType,
   dirtying: true,
+  timestamp: new Date(),
 });
 
 export const removePlanningItem = (headerId, planningItemIndex) => ({

@@ -972,7 +972,7 @@ const addNewPlanningItem = (state, action) => {
   const newPlanningItem = fromJS({
     id: generateId(),
     type: action.planningType,
-    timestamp: timestampForDate(new Date()), // TODO: impure new Date()
+    timestamp: timestampForDate(action.timestamp),
   });
 
   return state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) =>
