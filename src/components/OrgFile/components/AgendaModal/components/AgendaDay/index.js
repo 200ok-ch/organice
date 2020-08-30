@@ -132,7 +132,7 @@ export default class AgendaDay extends PureComponent {
           const planningItemDate = dateForTimestamp(timestamp);
           const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
           const isCompletedTodo =
-            todoKeyword && isTodoKeywordCompleted(todoKeywordSets, todoKeywordSets);
+            todoKeyword && isTodoKeywordCompleted(todoKeywordSets, todoKeyword);
           if (isCompletedTodo) {
             return false;
           }
