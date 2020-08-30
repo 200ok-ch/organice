@@ -185,7 +185,7 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 
 const advanceTodoState = (state, action) => {
   const { headerId, logIntoDrawer, timestamp } = action;
-  const existingHeaderId = headerId || state.get('selectedHeaderId'); // TODO: why passing headerId at all?
+  const existingHeaderId = headerId || state.get('selectedHeaderId');
   if (!existingHeaderId) {
     return state;
   }
