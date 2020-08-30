@@ -10,7 +10,7 @@
     "classnames": "^2.2.6",
     "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
-    "dropbox": "^5.1.0",
+    "dropbox": "^5.2.1",
     "immutable": "^3.8.2",
     "lodash": "^4.17.19",
     "pegjs": "^0.10.0",
