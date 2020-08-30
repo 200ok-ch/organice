@@ -22,7 +22,7 @@ When you select a header the "header action drawer" appears. The first two icons
 9. Calendar 2: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set scheduled datetime]]
 10. Hourglass: [[https://orgmode.org/manual/Clocking-commands.html][Clock in and out (Start and stop the clock)]]
 11. File Export: [[https://orgmode.org/manual/Refile-and-copy.html][Refile this header to another header]]
-12. Add a note: Add a time-stamped note to the current header.
+12. Add a note: Add a time-stamped note to the current header (=org-add-note=).
 
 ** Todos [1/4] [25%]
 This header has a few TODO items as subheaders.
