@@ -184,7 +184,7 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
-  const { headerId, logIntoDrawer, currentDate } = action; // TODO: isn't logIntoDrawer a setting in the store? then why to pass it?
+  const { headerId, logIntoDrawer, currentDate, timestamp } = action; // TODO: isn't logIntoDrawer a setting in the store? then why to pass it?
   const existingHeaderId = headerId || state.get('selectedHeaderId'); // TODO: why passing headerId at all?
   if (!existingHeaderId) {
     return state;
@@ -214,6 +214,7 @@ const advanceTodoState = (state, action) => {
     currentTodoState,
     logIntoDrawer,
     currentDate,
+    timestamp,
   });
 
   state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
@@ -1236,6 +1237,7 @@ function updateHeadlines({
   currentTodoState,
   logIntoDrawer,
   currentDate,
+  timestamp,
 }) {
   if (
     currentTodoSet.get('completedKeywords').includes(newTodoState) &&
@@ -1250,6 +1252,7 @@ function updateHeadlines({
       currentTodoState,
       logIntoDrawer,
       currentDate,
+      timestamp,
     });
   // Update simple headline (without repeaters)
   return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
@@ -1269,10 +1272,11 @@ function addTodoStateChangeLogItem(
   headerIndex,
   newTodoState,
   currentTodoState,
-  logIntoDrawer
+  logIntoDrawer,
+  timestamp
 ) {
   // This is how the TODO state change will be logged
-  const inactiveTimestamp = getTimestampAsText(new Date(), '[]'); // TODO: impure new Date()
+  const inactiveTimestamp = getTimestampAsText(timestamp, '[]');
   const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${inactiveTimestamp}`;
 
   if (logIntoDrawer) {
@@ -1300,6 +1304,7 @@ function updatePlanningItemsWithRepeaters({
   currentTodoState,
   logIntoDrawer,
   currentDate,
+  timestamp,
 }) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
@@ -1312,10 +1317,10 @@ function updatePlanningItemsWithRepeaters({
     currentTodoSet.get('keywords').first()
   );
   if (!noLogRepeatEnabledP({ state, headerIndex })) {
-    const lastRepeatTimestamp = timestampForDate(new Date(), {
+    const lastRepeatTimestamp = timestampForDate(timestamp, {
       isActive: false,
       withStartTime: true,
-    }); // TODO: impure new Date()
+    });
     const newLastRepeatValue = [
       {
         type: 'timestamp',
@@ -1345,7 +1350,8 @@ function updatePlanningItemsWithRepeaters({
       headerIndex,
       newTodoState,
       currentTodoState,
-      logIntoDrawer
+      logIntoDrawer,
+      timestamp
     );
   }
   return state;
