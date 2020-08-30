@@ -432,6 +432,17 @@ describe('Render all views', () => {
           expect(queryByText('09/19')).toBeFalsy();
           expect(queryByText(`${timeSinceScheduled} ago`)).toBeTruthy();
         });
+
+        test('Agenda shows only actionable TODOs, not with a DONE state', () => {
+          fireEvent.click(getByTitle('Show agenda'));
+
+          const drawerElem = getByTestId('drawer');
+          expect(drawerElem).not.toHaveTextContent("A headline that's done since a loong time");
+          expect(drawerElem).not.toHaveTextContent("A headline that's done a day earlier even");
+
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+          expect(drawerElem).toHaveTextContent('A repeating todo');
+        });
       });
 
       describe('Link recognition', () => {
