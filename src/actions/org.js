@@ -209,6 +209,7 @@ export const advanceTodoState = (headerId, logIntoDrawer) => ({
   headerId,
   logIntoDrawer,
   dirtying: true,
+  timestamp: new Date(),
 });
 
 export const enterEditMode = (editModeType) => ({
@@ -310,6 +311,13 @@ export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
   type: 'REFILE_SUBTREE',
   sourceHeaderId,
   targetHeaderId,
+  dirtying: true,
+});
+
+export const addNote = (inputText, currentDate) => ({
+  type: 'HEADER_ADD_NOTE',
+  inputText,
+  currentDate,
   dirtying: true,
 });
 
@@ -513,6 +521,7 @@ export const addNewPlanningItem = (headerId, planningType) => ({
   headerId,
   planningType,
   dirtying: true,
+  timestamp: new Date(),
 });
 
 export const removePlanningItem = (headerId, planningItemIndex) => ({

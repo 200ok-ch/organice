@@ -289,7 +289,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
               item.get('contents'),
               timestampId
             );
-            if (!!pathAndPart) {
+            if (pathAndPart) {
               const { path, timestampPart } = pathAndPart;
               return {
                 path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
@@ -300,7 +300,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                 item.get('titleLine'),
                 timestampId
               );
-              if (!!pathAndPart) {
+              if (pathAndPart) {
                 const { path, timestampPart } = pathAndPart;
                 return {
                   path: [partIndex, 'items', itemIndex, 'titleLine'].concat(path),
@@ -311,7 +311,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
               }
             }
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else if (part.get('type') === 'table') {
         return part
@@ -324,7 +324,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                   cell.get('contents'),
                   timestampId
                 );
-                if (!!pathAndPart) {
+                if (pathAndPart) {
                   const { path, timestampPart } = pathAndPart;
                   return {
                     path: [
@@ -341,16 +341,16 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                   return null;
                 }
               })
-              .filter((result) => !!result)
+              .filter((result) => result)
               .first();
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else {
         return null;
       }
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId) =>
@@ -370,7 +370,7 @@ export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId)
                 item.get('contents'),
                 listItemId
               );
-              if (!!pathAndPart) {
+              if (pathAndPart) {
                 const { path, listItemPart } = pathAndPart;
                 return {
                   path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
@@ -381,13 +381,13 @@ export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId)
               }
             }
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else {
         return null;
       }
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cellId) =>
@@ -407,7 +407,7 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
               item.get('contents'),
               cellId
             );
-            if (!!pathAndPart) {
+            if (pathAndPart) {
               const { path, tablePart } = pathAndPart;
               return {
                 path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
@@ -417,41 +417,43 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
               return null;
             }
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else {
         return null;
       }
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
-export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) =>
-  headers
-    .map((header, headerIndex) => {
-      let pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
-        header.getIn(['titleLine', 'title']),
-        timestampId
-      );
-      if (!!pathAndPart) {
-        const { path, timestampPart } = pathAndPart;
-        return {
-          path: [headerIndex, 'titleLine', 'title'].concat(path),
-          timestampPart,
-        };
-      }
+export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) => {
+  const makeResult = (headerIndex, pathAndPart, localPath) => ({
+    path: [headerIndex, ...localPath].concat(pathAndPart.path),
+    timestampPart: pathAndPart.timestampPart,
+  });
 
-      pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
-        header.get('description'),
+  return headers
+    .map((header, headerIndex) => {
+      let localPath = ['titleLine', 'title'];
+      let pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+        header.getIn(localPath),
         timestampId
       );
-      if (!!pathAndPart) {
-        const { path, timestampPart } = pathAndPart;
-        return {
-          path: [headerIndex, 'description'].concat(path),
-          timestampPart,
-        };
-      }
+      if (pathAndPart) return makeResult(headerIndex, pathAndPart, localPath);
+
+      localPath = ['description'];
+      pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+        header.getIn(localPath),
+        timestampId
+      );
+      if (pathAndPart) return makeResult(headerIndex, pathAndPart, localPath);
+
+      localPath = ['logNotes'];
+      pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(
+        header.getIn(localPath),
+        timestampId
+      );
+      if (pathAndPart) return makeResult(headerIndex, pathAndPart, localPath);
 
       pathAndPart = header
         .get('propertyListItems')
@@ -464,26 +466,22 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
             propertyListItem.get('value'),
             timestampId
           );
-          if (!!plistPathAndPart) {
-            const { path, timestampPart } = plistPathAndPart;
-            return {
-              path: [headerIndex, 'propertyListItems', propertyListItemIndex, 'value'].concat(path),
-              timestampPart,
-            };
-          }
+          localPath = ['propertyListItems', propertyListItemIndex, 'value'];
+          if (plistPathAndPart) return makeResult(headerIndex, plistPathAndPart, localPath);
 
           return null;
         })
-        .filter((result) => !!result)
+        .filter((result) => result)
         .first();
-      if (!!pathAndPart) {
+      if (pathAndPart) {
         return pathAndPart;
       }
 
       return null;
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
+};
 
 export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) =>
   headers
@@ -502,7 +500,7 @@ export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) =>
         listItemPart,
       };
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) =>
@@ -522,7 +520,7 @@ export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) =>
         tablePart,
       };
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const updateTableContainingCellId = (headers, cellId, updaterCallbackGenerator) => {
@@ -564,7 +562,7 @@ export const timestampWithIdInAttributedString = (parts, timestampId) => {
   }
 
   const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(parts, timestampId);
-  if (!!pathAndPart) {
+  if (pathAndPart) {
     return pathAndPart.timestampPart;
   } else {
     return null;
@@ -577,15 +575,16 @@ export const timestampWithId = (headers, timestampId) =>
       (header) =>
         timestampWithIdInAttributedString(header.getIn(['titleLine', 'title']), timestampId) ||
         timestampWithIdInAttributedString(header.get('description'), timestampId) ||
+        timestampWithIdInAttributedString(header.get('logNotes'), timestampId) ||
         header
           .get('propertyListItems')
           .map((propertyListItem) =>
             timestampWithIdInAttributedString(propertyListItem.get('value'), timestampId)
           )
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first()
     )
-    .find((result) => !!result);
+    .find((result) => result);
 
 export const customFormatDistanceToNow = (datetime) => {
   return formatDistanceToNow(datetime, { addSuffix: true });
@@ -638,10 +637,11 @@ export const computeAllPropertyValuesFor = (allOrgProperties, propertyName) =>
  * Subheaders do not count as content.
  */
 export const hasHeaderContent = (header) =>
-  !!header.get('rawDescription') ||
-  header.get('planningItems').size !== 0 ||
-  header.get('propertyListItems').size !== 0 ||
-  header.get('logBookEntries').size !== 0;
+  header.get('rawDescription') ||
+  !header.get('planningItems').isEmpty() ||
+  !header.get('propertyListItems').isEmpty() ||
+  !header.get('logNotes').isEmpty() ||
+  !header.get('logBookEntries').isEmpty();
 
 /**
  * Returns a function which takes a `todoKeyword` which then returns
@@ -653,19 +653,11 @@ export const createIsTodoKeywordInDoneState = (todoKeywordSets) => {
     todoKeywordSets.some((x) => x.get('completedKeywords').includes(todoKeyword));
 };
 
-export const shouldRenderPlanningItem = (x) =>
-  x.type !== 'TIMESTAMP_TITLE' && x.type !== 'TIMESTAMP_DESCRIPTION';
+// Regular planning items in org are written directly below headline and have type SCHEDULED, DEADLINE, CLOSED.
+export const isRegularPlanningItem = (x) => !x.get('type').startsWith('TIMESTAMP_');
 
-export const getPlanningItemTypeText = (planningItem) => {
-  const text = planningItem.get('type');
-  switch (text) {
-    case 'TIMESTAMP_TITLE':
-    case 'TIMESTAMP_DESCRIPTION':
-      return 'TIMESTAMP';
-    default:
-      return text;
-  }
-};
+export const getPlanningItemTypeText = (planningItem) =>
+  isRegularPlanningItem(planningItem) ? planningItem.get('type') : 'TIMESTAMP';
 
 export const getTodoKeywordSetsAsFlattenedArray = (state) => {
   return state

@@ -3,7 +3,9 @@
 import {
   parseOrg,
   parseTodoKeywordConfig,
+  parseRawText,
   _parsePlanningItems,
+  _parseLogNotes,
   parseMarkupAndCookies,
 } from './parse_org';
 import readFixture from '../../test_helpers/index';
@@ -46,20 +48,36 @@ describe('Test the parser', () => {
   });
 });
 
-describe('Parsing and exporting should not alter the original file', () => {
-  describe('Planning items', () => {
-    describe('Formatting is the same as in Emacs', () => {
-      describe('List formatting', () => {
-        test('Planning items should contain active timestamps from title and description as well', () => {
-          const testOrgFile = readFixture('schedule_and_timestamps');
-          const parsedFile = parseOrg(testOrgFile);
-          const headers = parsedFile.get('headers').toJS();
-          expect(headers.length).toEqual(1);
-          const header = headers[0];
-          expect(header.planningItems.length).toEqual(3);
-        });
-      });
-    });
+describe('Test parsing of log notes', () => {
+  test('Parses notes when followed by logbook', () => {
+    const result = _parseLogNotes('- a note\n  two lines\n:LOGBOOK:\n...');
+    expect(result.rawLogNotes).toEqual('- a note\n  two lines');
+    expect(result.strippedDescription).toEqual(':LOGBOOK:\n...');
+  });
+  test('Does not parse notes when no logbook exists (they will go into description)', () => {
+    const text = '- a note\n  two lines\n\nrest';
+    const result = _parseLogNotes(text);
+    expect(result.rawLogNotes).toEqual('');
+    expect(result.strippedDescription).toEqual(text);
+  });
+});
+
+describe('Parse raw text', () => {
+  test('Parses empty string', () => {
+    expect(parseRawText('').toJS()).toEqual([]);
+  });
+  test('Parses simple line', () => {
+    expect(parseRawText('test').toJS()).toEqual([{ type: 'text', contents: 'test' }]);
+  });
+});
+
+describe('Parse headline with planning items and active timestamps', () => {
+  test('Planning items should contain active timestamps from title and description as well', () => {
+    const testOrgFile = readFixture('schedule_and_timestamps');
+    const parsedFile = parseOrg(testOrgFile);
+    const headers = parsedFile.get('headers').toJS();
+    const header = headers[0];
+    expect(header.planningItems.length).toEqual(3);
   });
 });
 

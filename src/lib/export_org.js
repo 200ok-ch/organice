@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
-import { shouldRenderPlanningItem } from './org_utils';
+import { isRegularPlanningItem } from './org_utils';
 import { renderAsText, timestampDuration } from './timestamps';
 
 const linkPartToRawText = (linkPart) => {
@@ -272,6 +272,7 @@ export const exportOrg = ({ headers, linesBeforeHeadings, dontIndent }) => {
  */
 export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   // To simplify access to properties:
+  const immutableHeader = header;
   header = header.toJS();
 
   // Pad things like planning items and tables appropriately
@@ -284,7 +285,10 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   }
 
   // Special case: do not render planning items that are normal active timestamps
-  const planningItemsToRender = header.planningItems.filter(shouldRenderPlanningItem);
+  const planningItemsToRender = immutableHeader
+    .get('planningItems')
+    .filter(isRegularPlanningItem)
+    .toJS();
   if (planningItemsToRender.length) {
     const planningItemsContent = planningItemsToRender
       .map((planningItem) => {
@@ -308,6 +312,13 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
     contents += `${propertyListItemsContent}\n`;
     contents += `${indentation}:END:\n`;
   }
+
+  // Log notes come after properties and before logbook.
+  contents += attributedStringToRawText(fromJS(header.logNotes))
+    .split('\n')
+    .map((line) => (line.trim() ? `${indentation}${line}` : ''))
+    .join('\n');
+  contents += header.logNotes.length ? '\n' : '';
 
   if (header.logBookEntries.length) {
     const logBookEntriesContent = header.logBookEntries

@@ -52,6 +52,7 @@ class Header extends PureComponent {
       'handleScheduledClick',
       'handleShareHeaderClick',
       'handleRefileHeaderRequest',
+      'handleAddNoteClick',
     ]);
 
     this.state = {
@@ -305,6 +306,14 @@ ${header.get('rawDescription')}`;
     // window.location.href = mailtoURI;
   }
 
+  handleAddNoteClick() {
+    let input = prompt('Enter a note to add to the header:');
+    if (input !== null) input = input.trim();
+    if (!input) return;
+
+    this.props.org.addNote(input, new Date());
+  }
+
   handlePopupClose() {
     this.props.base.closePopup();
   }
@@ -505,6 +514,7 @@ ${header.get('rawDescription')}`;
                   hasActiveClock={hasActiveClock}
                   onShareHeader={this.handleShareHeaderClick}
                   onRefileHeader={this.handleRefileHeaderRequest}
+                  onAddNote={this.handleAddNoteClick}
                 />
               </Collapse>
 

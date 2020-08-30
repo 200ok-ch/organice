@@ -4,6 +4,11 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-08-30 Sun]
+
+** Added
+   - Add note to header (=M-x org-add-note=)
+     - This adds a button for taking notes to tasks (org-add-note). They will be prepended to the header contents after :PROPERTIES: and before the :LOGBOOK:
 * [2020-08-29 Sat]
 ** Fixed
    - If a user folds a header, all its subheaders should collapse as well, so that when the user reopens it, they stay closed.

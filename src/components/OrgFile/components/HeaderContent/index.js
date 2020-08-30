@@ -241,6 +241,13 @@ class HeaderContent extends PureComponent {
               shouldDisableActions={shouldDisableActions}
               onEdit={this.handlePropertyListEdit}
             />
+            <AttributedString
+              parts={header.get('logNotes')}
+              subPartDataAndHandlers={{
+                onTimestampClick: this.handleTimestampClick,
+                shouldDisableActions,
+              }}
+            />
             <LogBookEntries
               logBookEntries={header.get('logBookEntries')}
               onTimestampClick={this.handleLogEntryTimestampClick(header.get('id'))}

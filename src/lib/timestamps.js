@@ -47,9 +47,8 @@ export const renderAsText = (timestamp) => {
   return timestampText;
 };
 
-export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } = {}) => {
-  return timestampForDate(new Date(), { isActive, withStartTime });
-};
+export const getCurrentTimestamp = ({ isActive = true, withStartTime = false } = {}) =>
+  timestampForDate(new Date(), { isActive, withStartTime });
 
 export const timestampForDate = (time, { isActive = true, withStartTime = false } = {}) => {
   const timestamp = {
@@ -78,7 +77,15 @@ export const timestampForDate = (time, { isActive = true, withStartTime = false 
   return timestamp;
 };
 
-export const getCurrentTimestampAsText = () => `<${format(new Date(), 'yyyy-MM-dd eee')}>`;
+// To get around the heavy-weight renderAsText(fromJS(getCurrentTimestampAsText()))
+export const getCurrentTimestampAsText = ({ isActive = true, withStartTime = false } = {}) =>
+  getTimestampAsText(new Date(), { isActive, withStartTime });
+export const getTimestampAsText = (time, { isActive = true, withStartTime = false } = {}) => {
+  const bracketPair = isActive ? '<>' : '[]';
+  let formatString = 'yyyy-MM-dd eee';
+  if (withStartTime) formatString += ' HH:mm';
+  return `${bracketPair[0]}${format(time, formatString)}${bracketPair[1]}`;
+};
 
 export const dateForTimestamp = (timestamp) => {
   const { year, month, day, startHour, startMinute } = timestamp.toJS();
@@ -140,7 +147,7 @@ export const applyRepeater = (timestamp, currentDate) => {
       break;
     case '.+':
       newDate = addTimestampUnitToDate(
-        new Date(),
+        currentDate,
         timestamp.get('repeaterValue'),
         timestamp.get('repeaterUnit')
       );

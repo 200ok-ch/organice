@@ -7,6 +7,7 @@ import {
   parseMarkupAndCookies,
 } from '../../lib/parse_org';
 import { exportOrg, createRawDescriptionText } from '../../lib/export_org';
+import { newHeaderWithTitle } from '../../lib/parse_org';
 import readFixture from '../../../test_helpers/index';
 import { noLogRepeatEnabledP } from '../../reducers/org';
 import { fromJS } from 'immutable';
@@ -29,16 +30,9 @@ function parseAndExportOrgFile(testOrgFile, dontIndent = false) {
 
 describe('Tests for export', () => {
   const createSimpleHeaderWithDescription = (description) =>
-    fromJS({
-      titleLine: undefined, // not needed
-      rawDescription: description,
-      description: [{ type: 'text', contents: description }],
-      id: 4,
-      nestingLevel: 1,
-      logBookEntries: [],
-      planningItems: [],
-      propertyListItems: [],
-    });
+    newHeaderWithTitle('Test', 1, fromJS([]))
+      .set('description', fromJS([{ type: 'text', contents: description }]))
+      .set('rawDescription', description);
 
   test('Simple description export of empty description works', () => {
     const description = '';
@@ -339,7 +333,7 @@ ${description}`;
               const exportedFile = parseAndExportOrgFile(testOrgFile);
               expect(exportedFile).toEqual(testOrgFile);
             });
-            test('Parsing a planning items followed by a checklist must work', () => {
+            test('Parsing planning items followed by a checklist must work', () => {
               const testDescription = '- [ ] foo\n- [ ] bar';
               const parsed = _parsePlanningItems(`SCHEDULED: <2019-07-30 Tue>\n${testDescription}`);
               const parsedPlanningItem = parsed.planningItems.toJS();
@@ -412,6 +406,24 @@ ${description}`;
         expect(exportedLines[1]).toEqual(':LOGBOOK:');
         expect(exportedLines[2].startsWith('CLOCK:')).toBeTruthy();
       });
+    });
+  });
+
+  describe('Log notes followed by a log book', () => {
+    const testOrgFile = readFixture('logbook_and_log_notes');
+    test('Parse and export does not change original file', () => {
+      const exported = parseAndExportOrgFile(testOrgFile);
+      expect(testOrgFile).toEqual(exported);
+    });
+
+    const parsed = parseOrg(testOrgFile).toJS();
+    test('Log notes of first headline are parsed', () => {
+      expect(parsed.headers[0].logNotes[0].type).toEqual('list');
+      expect(parsed.headers[0].logNotes[0].items.length).toEqual(1);
+    });
+    test('Log notes of second headline are parsed', () => {
+      expect(parsed.headers[1].logNotes[0].type).toEqual('list');
+      expect(parsed.headers[1].logNotes[0].items.length).toEqual(4);
     });
   });
 

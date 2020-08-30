@@ -341,7 +341,7 @@ export const parseRawText = (rawText, { excludeContentElements = false } = {}) =
       } else {
         currentListHeaderNestingLevel = null;
 
-        if (!!line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
+        if (line.match(LIST_HEADER_REGEX) && !excludeContentElements) {
           currentListHeaderNestingLevel = numLeadingSpaces;
 
           return [
@@ -590,18 +590,33 @@ const parseLogbook = (rawText) => {
   };
 };
 
+export const _parseLogNotes = (rawText) => {
+  // Only parse log notes if a logbook exists. Otherwise, a list - log notes
+  // or just a normal list - will go into the description.
+  const lines = rawText.split('\n');
+  const logbookLineIndex = lines.findIndex((line) => line.trim() === ':LOGBOOK:');
+  if (logbookLineIndex !== -1)
+    return makeLogNotesResult(lines.slice(0, logbookLineIndex), lines.slice(logbookLineIndex));
+  return makeLogNotesResult([], [rawText]);
+};
+
 export const parseDescriptionPrefixElements = (rawText) => {
   const planningItemsParse = _parsePlanningItems(rawText);
 
   const planningItems = planningItemsParse.planningItems;
   const propertyListParse = parsePropertyList(planningItemsParse.strippedDescription);
-  const logBookParse = parseLogbook(propertyListParse.strippedDescription);
+  // In Orgmode, notes are added below properties and before
+  // logbook. However, logbook is added directly below properties if
+  // it does not exist.
+  const logNotes = _parseLogNotes(propertyListParse.strippedDescription);
+  const logBookParse = parseLogbook(logNotes.strippedDescription);
 
   return {
     planningItems: planningItems,
     propertyListItems: propertyListParse.propertyListItems,
-    strippedDescription: logBookParse.strippedDescription,
+    logNotes: logNotes.logNotes,
     logBookEntries: logBookParse.logBookEntries,
+    strippedDescription: logBookParse.strippedDescription,
   };
 };
 
@@ -609,8 +624,9 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
   const {
     planningItems,
     propertyListItems,
-    strippedDescription,
+    logNotes,
     logBookEntries,
+    strippedDescription,
   } = parseDescriptionPrefixElements(rawUnstrippedDescription);
   const parsedDescription = parseRawText(strippedDescription);
 
@@ -618,7 +634,8 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
   const mergedPlanningItems = mergePlanningItems(
     planningItems,
     extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_TITLE', parsedTitle),
-    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription)
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_DESCRIPTION', parsedDescription),
+    extractActiveTimestampsForPlanningItemsFromParse('TIMESTAMP_LOG_NOTES', logNotes)
   );
 
   return header
@@ -626,6 +643,7 @@ export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) =
     .set('description', parsedDescription)
     .set('planningItems', mergedPlanningItems)
     .set('propertyListItems', propertyListItems)
+    .set('logNotes', logNotes)
     .set('logBookEntries', logBookEntries);
 };
 
@@ -678,6 +696,7 @@ export const newHeaderWithTitle = (line, nestingLevel, todoKeywordSets) => {
     nestingLevel,
     planningItems: [],
     propertyListItems: [],
+    logNotes: [],
     logBookEntries: [],
   });
 };
@@ -826,18 +845,12 @@ export const updatePlanningItems = (planningItems, type, parsed) =>
     .filter((x) => x.get('type') !== type)
     .merge(extractActiveTimestampsForPlanningItemsFromParse(type, parsed));
 
-export const updatePlanningItemsFromTitleAndDescription = (
-  planningItems,
-  parsedTitle,
-  parsedDescription
-) => {
-  const tempPlanningItems = updatePlanningItems(planningItems, 'TIMESTAMP_TITLE', parsedTitle);
-  const resultingPlanningItems = updatePlanningItems(
-    tempPlanningItems,
-    'TIMESTAMP_DESCRIPTION',
-    parsedDescription
-  );
-  return resultingPlanningItems;
+export const updatePlanningItemsFromHeader = (header) => {
+  let items = header.get('planningItems');
+  items = updatePlanningItems(items, 'TIMESTAMP_TITLE', header.getIn(['titleLine', 'title']));
+  items = updatePlanningItems(items, 'TIMESTAMP_DESCRIPTION', header.get('description'));
+  items = updatePlanningItems(items, 'TIMESTAMP_LOG_NOTES', header.get('logNotes'));
+  return items;
 };
 
 const computeNestingLevel = (titleLineWithAsterisk) => {
@@ -856,4 +869,13 @@ const getLinesFromFileContents = (fileContents) => {
   if (lines.length > 0 && lines[lines.length - 1] !== '') return lines;
 
   return lines.slice(0, lines.length - 1);
+};
+
+const makeLogNotesResult = (logNotesLines, strippedDescriptionLines) => {
+  const rawLogNotes = logNotesLines.join('\n');
+  return {
+    rawLogNotes: rawLogNotes,
+    logNotes: parseRawText(rawLogNotes),
+    strippedDescription: strippedDescriptionLines.join('\n'),
+  };
 };

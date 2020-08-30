@@ -20,7 +20,7 @@ import {
   newHeaderWithTitle,
   newHeaderFromText,
   updatePlanningItems,
-  updatePlanningItemsFromTitleAndDescription,
+  updatePlanningItemsFromHeader,
   _updateHeaderFromDescription,
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
@@ -46,8 +46,9 @@ import {
   todoKeywordSetForKeyword,
   inheritedValueOfProperty,
 } from '../lib/org_utils';
-import { getCurrentTimestamp, applyRepeater, renderAsText } from '../lib/timestamps';
+import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
+import { formatTextWrap } from '../util/misc';
 
 const displayFile = (state, action) => {
   const parsedFile = parseOrg(action.contents);
@@ -186,15 +187,14 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
-  const headerId = action.headerId || state.get('selectedHeaderId');
-  if (!headerId) {
+  const { headerId, logIntoDrawer, timestamp } = action;
+  const existingHeaderId = headerId || state.get('selectedHeaderId');
+  if (!existingHeaderId) {
     return state;
   }
 
-  const logIntoDrawer = action.logIntoDrawer;
-
   const headers = state.get('headers');
-  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
+  const { header, headerIndex } = indexAndHeaderWithId(headers, existingHeaderId);
 
   const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
   const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
@@ -208,17 +208,18 @@ const advanceTodoState = (state, action) => {
     .map((planningItem, index) => [planningItem, index])
     .filter(([planningItem]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
 
-  state = updateHeadlines(
+  state = updateHeadlines({
     currentTodoSet,
     newTodoState,
     indexedPlanningItemsWithRepeaters,
     state,
     headerIndex,
     currentTodoState,
-    logIntoDrawer
-  );
+    logIntoDrawer,
+    timestamp,
+  });
 
-  state = updateCookiesOfParentOfHeaderWithId(state, headerId);
+  state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
 
   return state;
 };
@@ -519,6 +520,37 @@ const refileSubtree = (state, action) => {
   state = state.set('headers', headers);
 
   return state;
+};
+
+// Add a log note to the selected header. This can be any type of log
+// note as defined in the Emacs Org mode variable
+// `org-log-note-headings`.
+const addNoteGeneric = (state, action) => {
+  const { noteText } = action;
+
+  const headerId = state.get('selectedHeaderId');
+  const headers = state.get('headers');
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  return state.updateIn(['headers', headerIndex], (header) => {
+    const updatedHeader = header.update('logNotes', (logNotes) =>
+      parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
+    );
+    return updatedHeader.set('planningItems', updatePlanningItemsFromHeader(updatedHeader));
+  });
+};
+
+// See Emacs Org mode `org-add-note` (C-c C-z) and variable
+// `org-log-note-headings`.
+const addNote = (state, action) => {
+  const { inputText, currentDate } = action;
+  // Wrap line at 70 characters, see Emacs `fill-column` in "Insert
+  // note" window (C-c C-z)
+  const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
+  // Generate note based on a template string (as defined in Emacs Org
+  // mode `org-log-note-headings`):
+  const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
+  const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
+  return addNoteGeneric(state, { noteText });
 };
 
 const focusHeader = (state, action) => {
@@ -921,15 +953,11 @@ const updateTimestampWithId = (state, action) => {
     .updateIn(['headers', headerIndex], (header) => {
       const description = header.get('description');
       const title = header.getIn(['titleLine', 'title']);
-      const planningItems = header.get('planningItems');
 
       return header
         .setIn(['titleLine', 'rawTitle'], attributedStringToRawText(title))
         .set('rawDescription', attributedStringToRawText(description))
-        .set(
-          'planningItems',
-          updatePlanningItemsFromTitleAndDescription(planningItems, title, description)
-        );
+        .set('planningItems', updatePlanningItemsFromHeader(header));
     });
 };
 
@@ -951,7 +979,7 @@ const addNewPlanningItem = (state, action) => {
   const newPlanningItem = fromJS({
     id: generateId(),
     type: action.planningType,
-    timestamp: getCurrentTimestamp(),
+    timestamp: timestampForDate(action.timestamp),
   });
 
   return state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) =>
@@ -1126,6 +1154,8 @@ export default (state = Map(), action) => {
       return moveSubtreeRight(state, action);
     case 'REFILE_SUBTREE':
       return refileSubtree(state, action);
+    case 'HEADER_ADD_NOTE':
+      return addNote(state, action);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
@@ -1204,88 +1234,85 @@ export default (state = Map(), action) => {
  * @param {Number} headerIndex
  * @param {String} currentTodoState
  */
-function updateHeadlines(
+function updateHeadlines({
   currentTodoSet,
   newTodoState,
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
   currentTodoState,
-  logIntoDrawer
-) {
+  logIntoDrawer,
+  timestamp,
+}) {
   if (
     currentTodoSet.get('completedKeywords').includes(newTodoState) &&
     indexedPlanningItemsWithRepeaters.size > 0
   )
-    state = updatePlanningItemsWithRepeaters(
+    return updatePlanningItemsWithRepeaters({
       indexedPlanningItemsWithRepeaters,
       state,
       headerIndex,
       currentTodoSet,
       newTodoState,
       currentTodoState,
-      logIntoDrawer
-    );
-  else {
-    // Update simple headline (without repeaters)
-    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
-  }
-  return state;
+      logIntoDrawer,
+      timestamp,
+    });
+  // Update simple headline (without repeaters)
+  return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
 }
 
 /**
  * Add a TODO state change log item either to the heading body or LOGBOOK drawer.
  *
- * @param {*} header State of the header where the state change log item should be added.
+ * @param {*} state
+ * @param {*} headerIndex Index of header where the state change log item should be added.
  * @param {string} newTodoState New TODO state, e.g. DONE.
  * @param {string} currentTodoState Current TODO state, e.g. TODO or DONE.
  * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
  */
-function addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer) {
-  // this is how the TODO state change will be logged
-  const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${renderAsText(
-    fromJS(getCurrentTimestamp({ isActive: false, withStartTime: true }))
-  )}`;
+function addTodoStateChangeLogItem(
+  state,
+  headerIndex,
+  newTodoState,
+  currentTodoState,
+  logIntoDrawer,
+  timestamp
+) {
+  // This is how the TODO state change will be logged
+  const inactiveTimestamp = getTimestampAsText(timestamp, '[]');
+  const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${inactiveTimestamp}`;
 
   if (logIntoDrawer) {
-    // prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
+    // Prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
     // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
     const newEntry = fromJS({
       id: generateId(),
       raw: newStateChangeLogText,
     });
-    return header.updateIn(['logBookEntries'], (entries) =>
-      !!entries ? entries.unshift(newEntry) : List([newEntry])
+    return state.updateIn(['headers', headerIndex, 'logBookEntries'], (entries) =>
+      entries.unshift(newEntry)
     );
   } else {
-    // previous default: when org-log-into-drawer not set,
-    // we have to prepend state change log text to the existing contents
-    // 1. get the existing rawDescription
-    let rawDescription = header.get('rawDescription');
-    if (rawDescription.startsWith('\n')) {
-      rawDescription = rawDescription.slice(1);
-    }
-    // 2. prepend the new bullet and write it out again
-    rawDescription = '\n' + newStateChangeLogText + '\n' + rawDescription;
-    return header
-      .set('rawDescription', rawDescription)
-      .set('description', parseRawText(rawDescription));
+    // When org-log-into-drawer not set, prepend state change log text to log notes
+    return addNoteGeneric(state, { noteText: newStateChangeLogText });
   }
 }
 
-function updatePlanningItemsWithRepeaters(
+function updatePlanningItemsWithRepeaters({
   indexedPlanningItemsWithRepeaters,
   state,
   headerIndex,
   currentTodoSet,
   newTodoState,
   currentTodoState,
-  logIntoDrawer
-) {
+  logIntoDrawer,
+  timestamp,
+}) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
       ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-      applyRepeater(planningItem.get('timestamp'), new Date())
+      applyRepeater(planningItem.get('timestamp'), timestamp)
     );
   });
   state = state.setIn(
@@ -1293,7 +1320,10 @@ function updatePlanningItemsWithRepeaters(
     currentTodoSet.get('keywords').first()
   );
   if (!noLogRepeatEnabledP({ state, headerIndex })) {
-    const lastRepeatTimestamp = getCurrentTimestamp({ isActive: false, withStartTime: true });
+    const lastRepeatTimestamp = timestampForDate(timestamp, {
+      isActive: false,
+      withStartTime: true,
+    });
     const newLastRepeatValue = [
       {
         type: 'timestamp',
@@ -1318,8 +1348,13 @@ function updatePlanningItemsWithRepeaters(
             })
           )
     );
-    state = state.updateIn(['headers', headerIndex], (header) =>
-      addTodoStateChangeLogItem(header, newTodoState, currentTodoState, logIntoDrawer)
+    state = addTodoStateChangeLogItem(
+      state,
+      headerIndex,
+      newTodoState,
+      currentTodoState,
+      logIntoDrawer,
+      timestamp
     );
   }
   return state;
