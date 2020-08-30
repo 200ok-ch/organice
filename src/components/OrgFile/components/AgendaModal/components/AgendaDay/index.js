@@ -86,7 +86,7 @@ export default class AgendaDay extends PureComponent {
                       ? format(planningItemDate, 'MM/dd')
                       : customFormatDistanceToNow(planningItemDate)}
 
-                    {!!planningItem.getIn(['timestamp', 'startHour']) && (
+                    {planningItem.getIn(['timestamp', 'startHour']) && (
                       <Fragment>
                         <br />
                         {format(planningItemDate, 'h:mma')}
@@ -130,9 +130,9 @@ export default class AgendaDay extends PureComponent {
             return false;
           }
           const planningItemDate = dateForTimestamp(timestamp);
+          const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
           const isCompletedTodo =
-            !!header.getIn(['titleLine', 'todoKeyword']) &&
-            isTodoKeywordCompleted(todoKeywordSets, header.getIn(['titleLine', 'todoKeyword']));
+            todoKeyword && isTodoKeywordCompleted(todoKeywordSets, todoKeywordSets);
           if (isCompletedTodo) {
             return false;
           }
@@ -142,7 +142,7 @@ export default class AgendaDay extends PureComponent {
                 if (isBefore(planningItemDate, new Date())) {
                   return true;
                 }
-                const [delayValue, delayUnit] = !!timestamp.get('delayType')
+                const [delayValue, delayUnit] = timestamp.get('delayType')
                   ? [timestamp.get('delayValue'), timestamp.get('delayUnit')]
                   : [agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit];
                 const appearDate = subtractTimestampUnitFromDate(
@@ -156,7 +156,7 @@ export default class AgendaDay extends PureComponent {
               }
             case 'SCHEDULED':
               let appearDate = planningItemDate;
-              if (!!timestamp.get('delayType')) {
+              if (timestamp.get('delayType')) {
                 const hasBeenRepeated = header
                   .get('propertyListItems')
                   .some((propertyListItem) => propertyListItem.get('property') === 'LAST_REPEAT');
@@ -182,7 +182,7 @@ export default class AgendaDay extends PureComponent {
         const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
           .get('timestamp')
           .toJS();
-        return [!!startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
+        return [startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
       });
   }
 }

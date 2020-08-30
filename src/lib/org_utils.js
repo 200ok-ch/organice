@@ -289,7 +289,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
               item.get('contents'),
               timestampId
             );
-            if (!!pathAndPart) {
+            if (pathAndPart) {
               const { path, timestampPart } = pathAndPart;
               return {
                 path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
@@ -300,7 +300,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                 item.get('titleLine'),
                 timestampId
               );
-              if (!!pathAndPart) {
+              if (pathAndPart) {
                 const { path, timestampPart } = pathAndPart;
                 return {
                   path: [partIndex, 'items', itemIndex, 'titleLine'].concat(path),
@@ -311,7 +311,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
               }
             }
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else if (part.get('type') === 'table') {
         return part
@@ -324,7 +324,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                   cell.get('contents'),
                   timestampId
                 );
-                if (!!pathAndPart) {
+                if (pathAndPart) {
                   const { path, timestampPart } = pathAndPart;
                   return {
                     path: [
@@ -341,16 +341,16 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
                   return null;
                 }
               })
-              .filter((result) => !!result)
+              .filter((result) => result)
               .first();
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else {
         return null;
       }
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId) =>
@@ -370,7 +370,7 @@ export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId)
                 item.get('contents'),
                 listItemId
               );
-              if (!!pathAndPart) {
+              if (pathAndPart) {
                 const { path, listItemPart } = pathAndPart;
                 return {
                   path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
@@ -381,13 +381,13 @@ export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId)
               }
             }
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else {
         return null;
       }
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cellId) =>
@@ -407,7 +407,7 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
               item.get('contents'),
               cellId
             );
-            if (!!pathAndPart) {
+            if (pathAndPart) {
               const { path, tablePart } = pathAndPart;
               return {
                 path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
@@ -417,13 +417,13 @@ export const pathAndPartOfTableContainingCellIdInAttributedString = (parts, cell
               return null;
             }
           })
-          .filter((result) => !!result)
+          .filter((result) => result)
           .first();
       } else {
         return null;
       }
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) => {
@@ -479,7 +479,7 @@ export const pathAndPartOfTimestampItemWithIdInHeaders = (headers, timestampId) 
 
       return null;
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 };
 
@@ -500,7 +500,7 @@ export const pathAndPartOfListItemWithIdInHeaders = (headers, listItemId) =>
         listItemPart,
       };
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) =>
@@ -520,7 +520,7 @@ export const pathAndPartOfTableContainingCellIdInHeaders = (headers, cellId) =>
         tablePart,
       };
     })
-    .filter((result) => !!result)
+    .filter((result) => result)
     .first();
 
 export const updateTableContainingCellId = (headers, cellId, updaterCallbackGenerator) => {
@@ -562,7 +562,7 @@ export const timestampWithIdInAttributedString = (parts, timestampId) => {
   }
 
   const pathAndPart = pathAndPartOfTimestampItemWithIdInAttributedString(parts, timestampId);
-  if (!!pathAndPart) {
+  if (pathAndPart) {
     return pathAndPart.timestampPart;
   } else {
     return null;
