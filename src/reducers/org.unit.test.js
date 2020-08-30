@@ -1,3 +1,5 @@
+/* global process */
+
 import { fromJS } from 'immutable';
 
 import generateId from '../lib/id_generator';
@@ -5,7 +7,7 @@ import reducer from './org';
 import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
-import { headerWithId, headerWithPath } from '../lib/org_utils';
+import { headerWithId, headerWithPath, indexOfHeaderWithId } from '../lib/org_utils';
 import { dateForTimestamp, timestampForDate } from '../lib/timestamps';
 import { readInitialState } from '../util/settings_persister';
 
@@ -692,16 +694,63 @@ describe('org reducer', () => {
 
     describe('TOGGLE_HEADER_OPENED', () => {
       it('should open only the header on the first toggle', () => {
-        const newState = reducer(state.org.present, types.toggleHeaderOpened(topLevelHeaderId));
+        const newState = reducer(
+          state.org.present,
+          types.toggleHeaderOpened(topLevelHeaderId, true)
+        );
         expect(headerWithId(newState.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
         expect(headerWithId(newState.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
       });
 
+      it('should close the header and subheaders on the second toggle', () => {
+        const topLevelOpen = reducer(
+          state.org.present,
+          types.toggleHeaderOpened(topLevelHeaderId, true)
+        );
+        const nestedOpen = reducer(topLevelOpen, types.toggleHeaderOpened(nestedHeaderId, true));
+        const deepNestedOpen = reducer(
+          nestedOpen,
+          types.toggleHeaderOpened(deepNestedHeaderId, true)
+        );
+        const allClosed = reducer(deepNestedOpen, types.toggleHeaderOpened(topLevelHeaderId, true));
+        const reopened = reducer(allClosed, types.toggleHeaderOpened(topLevelHeaderId, true));
+        expect(headerWithId(reopened.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
+        expect(headerWithId(reopened.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
+        expect(headerWithId(reopened.get('headers'), deepNestedHeaderId).get('opened')).toEqual(
+          false
+        );
+      });
+
+      it('should close only the header when said so', () => {
+        const topLevelOpen = reducer(
+          state.org.present,
+          types.toggleHeaderOpened(topLevelHeaderId, true)
+        );
+        const nestedOpen = reducer(topLevelOpen, types.toggleHeaderOpened(nestedHeaderId, true));
+        const deepNestedOpen = reducer(
+          nestedOpen,
+          types.toggleHeaderOpened(deepNestedHeaderId, true)
+        );
+        const allClosed = reducer(
+          deepNestedOpen,
+          types.toggleHeaderOpened(topLevelHeaderId, false)
+        );
+        const reopened = reducer(allClosed, types.toggleHeaderOpened(topLevelHeaderId, false));
+        expect(headerWithId(reopened.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
+        expect(headerWithId(reopened.get('headers'), nestedHeaderId).get('opened')).toEqual(true);
+        expect(headerWithId(reopened.get('headers'), deepNestedHeaderId).get('opened')).toEqual(
+          true
+        );
+      });
+
       it('should ignore if focused and open', () => {
         expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
-        const openState = reducer(state.org.present, types.toggleHeaderOpened(topLevelHeaderId));
+        const openState = reducer(
+          state.org.present,
+          types.toggleHeaderOpened(topLevelHeaderId, true)
+        );
         const focusedState = reducer(openState, types.focusHeader(topLevelHeaderId));
-        const newState = reducer(focusedState, types.toggleHeaderOpened(topLevelHeaderId));
+        const newState = reducer(focusedState, types.toggleHeaderOpened(topLevelHeaderId, true));
         expect(newState).toEqual(focusedState);
       });
     });
@@ -1351,6 +1400,71 @@ describe('org reducer', () => {
           .toJS()
           .map((x) => x.checkboxState)
       ).toEqual(['checked', 'partial', 'unchecked', null]);
+    });
+
+    function insertBugIntoCheckboxM(oldState, bug) {
+      return oldState.updateIn(
+        [
+          'headers',
+          indexOfHeaderWithId(oldState.get('headers'), bottomHeaderId),
+          'description',
+          0,
+          'items',
+          2,
+          'contents',
+          0,
+          'items',
+          1,
+          'contents',
+          0,
+          'items',
+          0, // Box M
+          'checkboxState',
+        ],
+        () => bug
+      );
+    }
+
+    it('should panic on an unknown checkbox state in test mode', () => {
+      const oldState = state.org.present;
+      const buggyState = insertBugIntoCheckboxM(oldState, 'Karamba!');
+      expect(() => reducer(buggyState, types.advanceCheckboxState(bottomDeepNestedBoxN))).toThrow(
+        /Karamba!/
+      );
+    });
+
+    function callInProd(fun) {
+      const OLD_ENV = process.env;
+      process.env.NODE_ENV = 'production';
+      jest.resetModules();
+      const result = fun();
+      process.env = { ...OLD_ENV };
+      return result;
+    }
+
+    it('should ignore an unknown checkbox state in production mode', () => {
+      const oldState = state.org.present;
+      const buggyState = insertBugIntoCheckboxM(oldState, 'Karamba!');
+      const newState = callInProd(() =>
+        reducer(buggyState, types.advanceCheckboxState(bottomDeepNestedBoxN))
+      );
+      expect(
+        headerWithId(newState.get('headers'), bottomHeaderId).getIn([
+          'description',
+          0,
+          'items',
+          2,
+          'contents',
+          0,
+          'items',
+          1,
+          'contents',
+          0,
+          'items',
+          1, // Box N
+          'checkboxState',
+        ])
+      ).toEqual('unchecked');
     });
   });
 

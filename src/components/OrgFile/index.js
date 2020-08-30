@@ -140,10 +140,10 @@ class OrgFile extends PureComponent {
   }
 
   handleToggleHeaderOpenedHotKey() {
-    const { selectedHeaderId } = this.props;
+    const { selectedHeaderId, closeSubheadersRecursively } = this.props;
 
     if (selectedHeaderId) {
-      this.props.org.toggleHeaderOpened(selectedHeaderId);
+      this.props.org.toggleHeaderOpened(selectedHeaderId, closeSubheadersRecursively);
     }
   }
 
@@ -516,6 +516,7 @@ const mapStateToProps = (state) => {
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
     pendingCapture: state.org.present.get('pendingCapture'),
+    closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
   };
 };

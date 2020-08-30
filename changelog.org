@@ -9,6 +9,12 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Added
    - Add note to header (=M-x org-add-note=)
      - This adds a button for taking notes to tasks (org-add-note). They will be prepended to the header contents after :PROPERTIES: and before the :LOGBOOK:
+* [2020-08-29 Sat]
+** Fixed
+   - If a user folds a header, all its subheaders should collapse as well, so that when the user reopens it, they stay closed.
+     - The previous behavior is buggy in a way that it keeps the subheaders open as they were, restoring their openness when the header is unfolded.
+     - The previous behavior is useful, though. So this change introduces a user setting to toggle the behaviour.
+   - Thank you [[https://github.com/necto][necto]] for your [[https://github.com/200ok-ch/organice/pull/440][PR]] 🙏
 
 * [2020-08-25 Tue]
 ** Fixed

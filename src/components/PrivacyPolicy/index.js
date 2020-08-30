@@ -7,8 +7,10 @@ const PrivacyPolicy = () => {
       <p>Last updated: May 9th, 2020</p>
 
       <p>
-        <a href="https://200ok.ch/">200ok llc</a> operates the https://organice.200ok.ch website and
-        mobile apps.
+        <a href="https://200ok.ch/" target="_blank" rel="noopener noreferrer">
+          200ok llc
+        </a>{' '}
+        operates the https://organice.200ok.ch website and mobile apps.
       </p>
 
       <p>

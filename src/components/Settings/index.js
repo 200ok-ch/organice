@@ -21,6 +21,7 @@ const Settings = ({
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
+  closeSubheadersRecursively,
   shouldNotIndentOnExport,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
@@ -57,6 +58,9 @@ const Settings = ({
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
 
   const handleShouldLogIntoDrawer = () => base.setShouldLogIntoDrawer(!shouldLogIntoDrawer);
+
+  const handleCloseSubheadersRecursively = () =>
+    base.setCloseSubheadersRecursively(!closeSubheadersRecursively);
 
   const handleShouldNotIndentOnExport = () =>
     base.setShouldNotIndentOnExport(!shouldNotIndentOnExport);
@@ -132,7 +136,11 @@ const Settings = ({
           <div className="setting-label__description">
             Log TODO state changes (currently only for repeating items) into the LOGBOOK drawer
             instead of into the body of the heading (default). See the Orgmode documentation on{' '}
-            <a href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
+            <a
+              href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               org-log-into-drawer
             </a>{' '}
             for more information.
@@ -143,12 +151,32 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
+          When folding a header, fold all subheaders too
+          <div className="setting-label__description">
+            When folding a header, fold recursively all its subheaders, so that when the header is
+            reopened all subheaders are folded, regardless of their state prior to folding. This is
+            the default in Emacs Org mode. If this turned off, the fold-state of the subheaders is
+            preserved when the header is unfolded.
+          </div>
+        </div>
+        <Switch
+          isEnabled={closeSubheadersRecursively}
+          onToggle={handleCloseSubheadersRecursively}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
           Disable hard indent on Org export
           <div className="setting-label__description">
             By default, the metadata body (including deadlines and drawers) of an exported org
             heading is indented according to its level. If instead you prefer to keep your body text
             flush-left, i.e.{' '}
-            <a href="https://orgmode.org/manual/Hard-indentation.html">
+            <a
+              href="https://orgmode.org/manual/Hard-indentation.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <code>(setq org-adapt-indentation nil)</code>
             </a>
             , then activate this setting. The raw content text is left unchanged.
@@ -253,6 +281,7 @@ const mapStateToProps = (state) => {
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
   };

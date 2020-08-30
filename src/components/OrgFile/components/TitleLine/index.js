@@ -85,13 +85,13 @@ class TitleLine extends PureComponent {
   }
 
   handleTitleClick() {
-    const { header, hasContent, isSelected, onClick } = this.props;
+    const { header, hasContent, isSelected, onClick, closeSubheadersRecursively } = this.props;
 
     if (!!onClick) {
       onClick();
     } else {
       if (hasContent && (!header.get('opened') || isSelected)) {
-        this.props.org.toggleHeaderOpened(header.get('id'));
+        this.props.org.toggleHeaderOpened(header.get('id'), closeSubheadersRecursively);
       }
 
       this.props.org.selectHeader(header.get('id'));
@@ -284,6 +284,7 @@ const mapStateToProps = (state, ownProps) => {
       state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     setShouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),
   };

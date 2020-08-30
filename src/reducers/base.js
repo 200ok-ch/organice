@@ -33,6 +33,9 @@ const setShouldShowTitleInOrgFile = (state, action) =>
 const setShouldLogIntoDrawer = (state, action) =>
   state.set('shouldLogIntoDrawer', action.shouldLogIntoDrawer);
 
+const setCloseSubheadersRecursively = (state, action) =>
+  state.set('closeSubheadersRecursively', action.closeSubheadersRecursively);
+
 /**
  * When enabled, keep all heading body text flush-left. When disabled (the
  * default) indent the body text of headings according to the nesting level of
@@ -137,6 +140,8 @@ export default (state = Map(), action) => {
       return setShouldShowTitleInOrgFile(state, action);
     case 'SET_SHOULD_LOG_INTO_DRAWER':
       return setShouldLogIntoDrawer(state, action);
+    case 'SET_CLOSE_SUBHEADERS_RECURSIVELY':
+      return setCloseSubheadersRecursively(state, action);
     case 'SET_SHOULD_NOT_INDENT_ON_EXPORT':
       return setShouldNotIndentOnExport(state, action);
     case 'SET_HAS_UNSEEN_CHANGELOG':
