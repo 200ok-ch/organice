@@ -57,6 +57,7 @@ function SearchModal(props) {
         <input
           type="text"
           value={searchFilter}
+          autoFocus
           className={classNames('textfield', 'task-list__filter-input', {
             'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
           })}
