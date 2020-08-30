@@ -184,7 +184,7 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
-  const { headerId, logIntoDrawer, currentDate, timestamp } = action; // TODO: isn't logIntoDrawer a setting in the store? then why to pass it?
+  const { headerId, logIntoDrawer, timestamp } = action;
   const existingHeaderId = headerId || state.get('selectedHeaderId'); // TODO: why passing headerId at all?
   if (!existingHeaderId) {
     return state;
@@ -213,7 +213,6 @@ const advanceTodoState = (state, action) => {
     headerIndex,
     currentTodoState,
     logIntoDrawer,
-    currentDate,
     timestamp,
   });
 
@@ -1236,7 +1235,6 @@ function updateHeadlines({
   headerIndex,
   currentTodoState,
   logIntoDrawer,
-  currentDate,
   timestamp,
 }) {
   if (
@@ -1251,7 +1249,6 @@ function updateHeadlines({
       newTodoState,
       currentTodoState,
       logIntoDrawer,
-      currentDate,
       timestamp,
     });
   // Update simple headline (without repeaters)
@@ -1303,13 +1300,12 @@ function updatePlanningItemsWithRepeaters({
   newTodoState,
   currentTodoState,
   logIntoDrawer,
-  currentDate,
   timestamp,
 }) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     state = state.setIn(
       ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-      applyRepeater(planningItem.get('timestamp'), currentDate)
+      applyRepeater(planningItem.get('timestamp'), timestamp)
     );
   });
   state = state.setIn(
