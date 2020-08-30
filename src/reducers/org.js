@@ -520,7 +520,8 @@ const refileSubtree = (state, action) => {
 };
 
 // Add a log note to the selected header. This can be any type of log
-// note as defined in variable org-log-note-headings.
+// note as defined in the Emacs Org mode variable
+// `org-log-note-headings`.
 const addNoteGeneric = (state, action) => {
   const { noteText } = action;
 
@@ -535,12 +536,15 @@ const addNoteGeneric = (state, action) => {
   });
 };
 
-// See org-add-note (C-c C-z) and variable org-log-note-headings.
+// See Emacs Org mode `org-add-note` (C-c C-z) and variable
+// `org-log-note-headings`.
 const addNote = (state, action) => {
   const { inputText, currentDate } = action;
-  // Wrap line at 70 characters, see fill-column in "Insert note" window (C-c C-z)
+  // Wrap line at 70 characters, see Emacs `fill-column` in "Insert
+  // note" window (C-c C-z)
   const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
-  // Generate note based on a template string (as defined in org-log-note-headings):
+  // Generate note based on a template string (as defined in Emacs Org
+  // mode `org-log-note-headings`):
   const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
   const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
   return addNoteGeneric(state, { noteText });
