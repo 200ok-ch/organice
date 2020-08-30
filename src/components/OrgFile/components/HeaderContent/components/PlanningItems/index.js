@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import './stylesheet.css';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
-import { shouldRenderPlanningItem } from '../../../../../../lib/org_utils';
+import { isRegularPlanningItem } from '../../../../../../lib/org_utils';
 
 import _ from 'lodash';
 
@@ -21,7 +21,7 @@ export default class PlanningItems extends PureComponent {
   render() {
     const { planningItems } = this.props;
 
-    const planningItemsToRender = planningItems.filter((x) => shouldRenderPlanningItem(x.toJS()));
+    const planningItemsToRender = planningItems.filter((x) => isRegularPlanningItem(x));
     if (planningItemsToRender.isEmpty()) return null;
 
     return (

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
-import { shouldRenderPlanningItem } from './org_utils';
+import { isRegularPlanningItem } from './org_utils';
 import { renderAsText, timestampDuration } from './timestamps';
 
 const linkPartToRawText = (linkPart) => {
@@ -272,6 +272,7 @@ export const exportOrg = ({ headers, linesBeforeHeadings, dontIndent }) => {
  */
 export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   // To simplify access to properties:
+  const immutableHeader = header;
   header = header.toJS();
 
   // Pad things like planning items and tables appropriately
@@ -284,7 +285,10 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   }
 
   // Special case: do not render planning items that are normal active timestamps
-  const planningItemsToRender = header.planningItems.filter(shouldRenderPlanningItem);
+  const planningItemsToRender = immutableHeader
+    .get('planningItems')
+    .filter(isRegularPlanningItem)
+    .toJS();
   if (planningItemsToRender.length) {
     const planningItemsContent = planningItemsToRender
       .map((planningItem) => {

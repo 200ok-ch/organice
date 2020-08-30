@@ -653,19 +653,11 @@ export const createIsTodoKeywordInDoneState = (todoKeywordSets) => {
     todoKeywordSets.some((x) => x.get('completedKeywords').includes(todoKeyword));
 };
 
-export const shouldRenderPlanningItem = (x) =>
-  x.type !== 'TIMESTAMP_TITLE' && x.type !== 'TIMESTAMP_DESCRIPTION';
+// Regular planning items in org are written directly below headline and have type SCHEDULED, DEADLINE, CLOSED.
+export const isRegularPlanningItem = (x) => !x.get('type').startsWith('TIMESTAMP_');
 
-export const getPlanningItemTypeText = (planningItem) => {
-  const text = planningItem.get('type');
-  switch (text) {
-    case 'TIMESTAMP_TITLE':
-    case 'TIMESTAMP_DESCRIPTION':
-      return 'TIMESTAMP';
-    default:
-      return text;
-  }
-};
+export const getPlanningItemTypeText = (planningItem) =>
+  isRegularPlanningItem(planningItem) ? planningItem.get('type') : 'TIMESTAMP';
 
 export const getTodoKeywordSetsAsFlattenedArray = (state) => {
   return state
