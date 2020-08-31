@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import './stylesheet.css';
 import logo from '../../images/organice.svg';
+import ExternalLink from '../UI/ExternalLink';
 
 export default () => {
   return (
@@ -31,9 +32,8 @@ export default () => {
         <Link to="/sample">
           <div className="btn landing-button doc-button">View sample</div>
         </Link>
-        <a href="/documentation.html" target="_blank" rel="noopener noreferrer">
-          <div className="btn landing-button doc-button">Documentation</div>
-        </a>
+        <div className="btn landing-button doc-button"></div>
+        <ExternalLink href="/documentation.html" content="Documentation" />
       </div>
       <footer>
         <Link to="/privacy-policy">Privacy Policy</Link>

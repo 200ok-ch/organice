@@ -7,6 +7,7 @@ import './stylesheet.css';
 import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';
 import TimestampPart from './components/TimestampPart';
+import ExternalLink from '../../../UI/ExternalLink';
 
 import { orgFileExtensions } from '../../../../lib/org_utils';
 
@@ -51,11 +52,7 @@ export default ({ parts, subPartDataAndHandlers }) => {
       target = 'file://' + target;
     }
 
-    return (
-      <a key={id} href={target} target="_blank" rel="noopener noreferrer">
-        {title}
-      </a>
-    );
+    return <ExternalLink key={id} href={target} content={title} />;
   };
 
   const normalisePath = (target) => {
@@ -142,25 +139,19 @@ export default ({ parts, subPartDataAndHandlers }) => {
             );
           case 'url':
             return (
-              <a
+              <ExternalLink
                 href={part.get('content')}
                 key={part.get('id')}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {part.get('content')}
-              </a>
+                content={part.get('content')}
+              />
             );
           case 'www-url':
             return (
-              <a
+              <ExternalLink
                 href={`https://${part.get('content')}`}
                 key={part.get('id')}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {part.get('content')}
-              </a>
+                content={part.get('content')}
+              />
             );
           case 'e-mail':
             return (

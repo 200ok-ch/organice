@@ -1,5 +1,6 @@
 import React from 'react';
 import './stylesheet.css';
+import ExternalLink from '../UI/ExternalLink';
 const PrivacyPolicy = () => {
   return (
     <div className="privacy-policy-container">
@@ -7,10 +8,8 @@ const PrivacyPolicy = () => {
       <p>Last updated: May 9th, 2020</p>
 
       <p>
-        <a href="https://200ok.ch/" target="_blank" rel="noopener noreferrer">
-          200ok llc
-        </a>{' '}
-        operates the https://organice.200ok.ch website and mobile apps.
+        <ExternalLink href="https://200ok.ch/" content="200ok llc" /> operates the{' '}
+        <ExternalLink href="https://organice.200ok.ch" /> website and mobile apps.
       </p>
 
       <p>
