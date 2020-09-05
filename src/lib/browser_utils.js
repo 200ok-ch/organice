@@ -29,6 +29,14 @@ export const isMobileBrowser = (() => {
   });
 })();
 
+export const isIos = () => {
+  return browser.satisfies({
+    mobile: {
+      safari: '>=6',
+    },
+  });
+};
+
 /** Is iPhone Model X (tested with Xs) */
 export const isIphoneX = window.matchMedia
   ? window.matchMedia('(max-device-width: 812px) and (-webkit-device-pixel-ratio : 3)').matches

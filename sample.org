@@ -166,7 +166,7 @@ Checkboxes:
 
 Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/200ok-ch/organice/issues/26][the issue]] on Github
 * Timestamps
-organice has native support for displaying and editing timestamps.
+organice has native support for displaying and editing [[https://orgmode.org/manual/Timestamps.html#Timestamps][timestamps]].
 
 Try tapping on the timestamps below to get a feel for the editor:
 
