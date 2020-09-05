@@ -126,7 +126,7 @@ export default ({ template, onCapture, headers, onClose }) => {
             rows="4"
             value={textareaValue}
             onChange={handleTextareaChange}
-            autoFocus={true}
+            autoFocus
             ref={textarea}
           />
           <div className="capture-modal-button-container">

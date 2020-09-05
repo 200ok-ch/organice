@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import TaskListView from './components/TaskListView';
 import Drawer from '../../../UI/Drawer';
 
-import { isMobileBrowser } from '../../../../lib/browser_utils';
+import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -58,7 +58,8 @@ function TaskListModal(props) {
         <input
           type="text"
           value={searchFilter}
-          autoFocus
+          // Rationale: See SearchModal: index.js
+          autoFocus={!isIos()}
           className={classNames('textfield', 'task-list__filter-input', {
             'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
           })}

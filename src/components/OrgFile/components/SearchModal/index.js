@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import HeaderListView from './components/HeaderListView';
 import Drawer from '../../../UI/Drawer';
 
-import { isMobileBrowser } from '../../../../lib/browser_utils';
+import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -57,7 +57,18 @@ function SearchModal(props) {
         <input
           type="text"
           value={searchFilter}
-          autoFocus
+          // On iOS, setting autoFocus here will move the contents of
+          // the drawer off the screen, because the keyboard pops up
+          // late when the height is already set to '92%'. Some other
+          // complications: There's no API to check if the keyboard is
+          // open or not. When setting the height of the container to
+          // something like 48% for iOS, this works on iPhone (tested
+          // on Xs and 6S), but when the keyboard is closed, the
+          // container is still small when the user wants to read the
+          // longer list without the keyboard in the way. There might
+          // be a better way: If the drawer wouldn't move, iOS likely
+          // would set the heights correctly automatically.
+          autoFocus={!isIos()}
           className={classNames('textfield', 'task-list__filter-input', {
             'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
           })}
