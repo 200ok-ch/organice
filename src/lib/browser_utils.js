@@ -30,11 +30,7 @@ export const isMobileBrowser = (() => {
 })();
 
 export const isIos = () => {
-  return browser.satisfies({
-    mobile: {
-      safari: '>=6',
-    },
-  });
+  return browser.getOS().name === 'iOS';
 };
 
 /** Is iPhone Model X (tested with Xs) */
