@@ -8,7 +8,7 @@
   "dependencies": {
     "bowser": "^2.10.0",
     "classnames": "^2.2.6",
-    "date-fns": "^2.16.0",
+    "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "dropbox": "^5.2.1",
     "immutable": "^3.8.2",
