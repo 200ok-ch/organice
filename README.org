@@ -59,10 +59,13 @@ You can watch it on:
 
 organice is a web application. You can use it from any browser. On iOS
 and Android, you can install organice to your homescreen. When
-started from there, it will run in full-screen and add some [[#offline_support][offline
-capabilities]].
+started from there, it will run in full-screen as a Progressive Web
+Application (PWA) which will add some [[#offline_support][offline capabilities]].
 
-Installing to the homescreen on:
+First, go to the page that you want to use as your start screen when
+using organice as an app from your homescreen. This could be the
+"files" overview or your main Org file. Then to install to the
+homescreen follow these platform specific instructions:
 
 - *iOS:*
 
