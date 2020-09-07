@@ -4,6 +4,10 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-09-07 Mon]
+** Added
+   - Added the capability to chose the start screen when installing organice to the homescreen.
+     - More information on how to install organice like this, see https://organice.200ok.ch/documentation.html#installation
 * [2020-09-05 Sat]
 
 ** Fixed
