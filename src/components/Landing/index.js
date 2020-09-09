@@ -32,8 +32,9 @@ export default () => {
         <Link to="/sample">
           <div className="btn landing-button doc-button">View sample</div>
         </Link>
-        <div className="btn landing-button doc-button"></div>
-        <ExternalLink href="/documentation.html" content="Documentation" />
+        <ExternalLink href="/documentation.html">
+          <div className="btn landing-button doc-button">Documentation</div>
+        </ExternalLink>
       </div>
       <footer>
         <Link to="/privacy-policy">Privacy Policy</Link>

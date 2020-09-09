@@ -137,10 +137,9 @@ const Settings = ({
           <div className="setting-label__description">
             Log TODO state changes (currently only for repeating items) into the LOGBOOK drawer
             instead of into the body of the heading (default). See the Orgmode documentation on{' '}
-            <ExternalLink
-              href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html"
-              content="org-log-into-drawer"
-            />{' '}
+            <ExternalLink href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
+              <code>org-log-into-drawer</code>
+            </ExternalLink>{' '}
             for more information.
           </div>
         </div>
@@ -170,12 +169,9 @@ const Settings = ({
             By default, the metadata body (including deadlines and drawers) of an exported org
             heading is indented according to its level. If instead you prefer to keep your body text
             flush-left, i.e.{' '}
-            <code>
-              <ExternalLink
-                href="https://orgmode.org/manual/Hard-indentation.html"
-                content="(setq org-adapt-indentation nil)"
-              />
-            </code>
+            <ExternalLink href="https://orgmode.org/manual/Hard-indentation.html">
+              <code>(setq org-adapt-indentation nil)</code>
+            </ExternalLink>
             , then activate this setting. The raw content text is left unchanged.
           </div>
         </div>
@@ -241,16 +237,17 @@ const Settings = ({
         </Link>
 
         <button className="btn settings-btn">
-          <ExternalLink
-            href="https://organice.200ok.ch/documentation.html"
-            content="Documentation"
-          />{' '}
-          <i className="fas fa-external-link-alt fa-sm" />
+          <ExternalLink href="https://organice.200ok.ch/documentation.html">
+            Documentation
+            <i className="fas fa-external-link-alt fa-sm" />
+          </ExternalLink>{' '}
         </button>
 
         <button className="btn settings-btn">
-          <ExternalLink href="https://github.com/200ok-ch/organice" content="Github repo" />{' '}
-          <i className="fas fa-external-link-alt fa-sm" />
+          <ExternalLink href="https://github.com/200ok-ch/organice">
+            Github repo
+            <i className="fas fa-external-link-alt fa-sm" />
+          </ExternalLink>{' '}
         </button>
 
         <hr className="settings-button-separator" />

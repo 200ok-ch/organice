@@ -52,7 +52,11 @@ export default ({ parts, subPartDataAndHandlers }) => {
       target = 'file://' + target;
     }
 
-    return <ExternalLink key={id} href={target} content={title} />;
+    return (
+      <ExternalLink key={id} href={target}>
+        {title}
+      </ExternalLink>
+    );
   };
 
   const normalisePath = (target) => {
@@ -139,19 +143,15 @@ export default ({ parts, subPartDataAndHandlers }) => {
             );
           case 'url':
             return (
-              <ExternalLink
-                href={part.get('content')}
-                key={part.get('id')}
-                content={part.get('content')}
-              />
+              <ExternalLink href={part.get('content')} key={part.get('id')}>
+                {part.get('content')}
+              </ExternalLink>
             );
           case 'www-url':
             return (
-              <ExternalLink
-                href={`https://${part.get('content')}`}
-                key={part.get('id')}
-                content={part.get('content')}
-              />
+              <ExternalLink href={`https://${part.get('content')}`} key={part.get('id')}>
+                {part.get('content')}
+              </ExternalLink>
             );
           case 'e-mail':
             return (

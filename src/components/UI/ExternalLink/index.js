@@ -1,8 +1,8 @@
 import React from 'react';
-export default ({ href, content, key }) => {
+export default ({ href, key, children }) => {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" key={key}>
-      {content ? content : href}
+      {children ? children : href}
     </a>
   );
 };
