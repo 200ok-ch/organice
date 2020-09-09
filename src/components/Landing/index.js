@@ -31,9 +31,9 @@ export default () => {
         <Link to="/sample">
           <div className="btn landing-button doc-button">View sample</div>
         </Link>
-        <a href="/documentation.html" target="_blank" rel="noopener noreferrer">
+        <ExternalLink href="/documentation.html">
           <div className="btn landing-button doc-button">Documentation</div>
-        </a>
+        </ExternalLink>
       </div>
       <footer>
         <Link to="/privacy-policy">Privacy Policy</Link>

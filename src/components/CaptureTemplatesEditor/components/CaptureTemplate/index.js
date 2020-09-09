@@ -118,13 +118,9 @@ export default ({
       <div className="capture-template__help-text">
         Instead of a letter, you can specify the name of any free Font Awesome icon (like lemon or
         calendar-plus) to use as the capture icon. You can search the available icons{' '}
-        <a
-          href="https://fontawesome.com/icons?d=gallery&s=solid&m=free"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <ExternalLink href="https://fontawesome.com/icons?d=gallery&s=solid&m=free">
           here
-        </a>
+        </ExternalLink>
         .
       </div>
     </div>
@@ -281,13 +277,9 @@ export default ({
           </li>
           <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
-            <a
-              href="https://organice.200ok.ch/documentation.html#capture_templates"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://organice.200ok.ch/documentation.html#capture_templates">
               the README file
-            </a>{' '}
+            </ExternalLink>{' '}
             for more details.
           </li>
         </ul>
