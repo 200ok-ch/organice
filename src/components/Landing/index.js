@@ -32,7 +32,7 @@ export default () => {
         <Link to="/sample">
           <div className="btn landing-button doc-button">View sample</div>
         </Link>
-        <ExternalLink href="/documentation.html">
+        <ExternalLink href="https://organice.200ok.ch/documentation.html">
           <div className="btn landing-button doc-button">Documentation</div>
         </ExternalLink>
       </div>
