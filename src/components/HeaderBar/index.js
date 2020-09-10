@@ -266,11 +266,9 @@ class HeaderBar extends PureComponent {
           )}
 
           {!isAuthenticated && (
-            <span>
-              <ExternalLink href="https://github.com/200ok-ch/organice">
-                <i className="fab fa-github header-bar__actions__item" />
-              </ExternalLink>
-            </span>
+            <ExternalLink href="https://github.com/200ok-ch/organice">
+              <i className="fab fa-github header-bar__actions__item" />
+            </ExternalLink>
           )}
 
           {isAuthenticated && !activeModalPage && !!path && (
