@@ -7,6 +7,7 @@ import './stylesheet.css';
 import TablePart from './components/TablePart';
 import ListPart from './components/ListPart';
 import TimestampPart from './components/TimestampPart';
+import ExternalLink from '../../../UI/ExternalLink';
 
 import { orgFileExtensions } from '../../../../lib/org_utils';
 
@@ -52,9 +53,9 @@ export default ({ parts, subPartDataAndHandlers }) => {
     }
 
     return (
-      <a key={id} href={target} target="_blank" rel="noopener noreferrer">
+      <ExternalLink key={id} href={target}>
         {title}
-      </a>
+      </ExternalLink>
     );
   };
 
@@ -142,25 +143,15 @@ export default ({ parts, subPartDataAndHandlers }) => {
             );
           case 'url':
             return (
-              <a
-                href={part.get('content')}
-                key={part.get('id')}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink href={part.get('content')} key={part.get('id')}>
                 {part.get('content')}
-              </a>
+              </ExternalLink>
             );
           case 'www-url':
             return (
-              <a
-                href={`https://${part.get('content')}`}
-                key={part.get('id')}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink href={`https://${part.get('content')}`} key={part.get('id')}>
                 {part.get('content')}
-              </a>
+              </ExternalLink>
             );
           case 'e-mail':
             return (

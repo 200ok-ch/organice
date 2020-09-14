@@ -18,6 +18,7 @@ import PropertyListEditorModal from './components/PropertyListEditorModal';
 import AgendaModal from './components/AgendaModal';
 import TaskListModal from './components/TaskListModal';
 import SearchModal from './components/SearchModal';
+import ExternalLink from '../UI/ExternalLink';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -392,13 +393,9 @@ class OrgFile extends PureComponent {
           <br />
           This was probably the result of an error in attempting to parse your org file. It'd be
           super helpful if you could{' '}
-          <a
-            href="https://github.com/200ok-ch/organice/issues/new"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <ExternalLink href="https://github.com/200ok-ch/organice/issues/new">
             create an issue
-          </a>{' '}
+          </ExternalLink>{' '}
           (and include the org file if possible!)
         </div>
       );
@@ -465,13 +462,9 @@ class OrgFile extends PureComponent {
               ) : (
                 <Fragment>
                   If you think this is a bug, please{' '}
-                  <a
-                    href="https://github.com/200ok-ch/organice/issues/new"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <ExternalLink href="https://github.com/200ok-ch/organice/issues/new">
                     create an issue
-                  </a>{' '}
+                  </ExternalLink>{' '}
                   and include the org file if possible!
                 </Fragment>
               )}

@@ -11,6 +11,7 @@ import './stylesheet.css';
 
 import TabButtons from '../UI/TabButtons';
 import Switch from '../UI/Switch';
+import ExternalLink from '../UI/ExternalLink';
 
 const Settings = ({
   fontSize,
@@ -136,13 +137,9 @@ const Settings = ({
           <div className="setting-label__description">
             Log TODO state changes (currently only for repeating items) into the LOGBOOK drawer
             instead of into the body of the heading (default). See the Orgmode documentation on{' '}
-            <a
-              href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              org-log-into-drawer
-            </a>{' '}
+            <ExternalLink href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
+              <code>org-log-into-drawer</code>
+            </ExternalLink>{' '}
             for more information.
           </div>
         </div>
@@ -172,13 +169,9 @@ const Settings = ({
             By default, the metadata body (including deadlines and drawers) of an exported org
             heading is indented according to its level. If instead you prefer to keep your body text
             flush-left, i.e.{' '}
-            <a
-              href="https://orgmode.org/manual/Hard-indentation.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://orgmode.org/manual/Hard-indentation.html">
               <code>(setq org-adapt-indentation nil)</code>
-            </a>
+            </ExternalLink>
             , then activate this setting. The raw content text is left unchanged.
           </div>
         </div>
@@ -244,19 +237,17 @@ const Settings = ({
         </Link>
 
         <button className="btn settings-btn">
-          <a
-            href="https://organice.200ok.ch/documentation.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation <i className="fas fa-external-link-alt fa-sm" />
-          </a>
+          <ExternalLink href="https://organice.200ok.ch/documentation.html">
+            Documentation
+            <i className="fas fa-external-link-alt fa-sm" />
+          </ExternalLink>{' '}
         </button>
 
         <button className="btn settings-btn">
-          <a href="https://github.com/200ok-ch/organice" target="_blank" rel="noopener noreferrer">
-            Github repo <i className="fas fa-external-link-alt fa-sm" />
-          </a>
+          <ExternalLink href="https://github.com/200ok-ch/organice">
+            Github repo
+            <i className="fas fa-external-link-alt fa-sm" />
+          </ExternalLink>{' '}
         </button>
 
         <hr className="settings-button-separator" />

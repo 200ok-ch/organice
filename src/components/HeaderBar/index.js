@@ -12,6 +12,8 @@ import * as baseActions from '../../actions/base';
 import * as orgActions from '../../actions/org';
 import { ActionCreators as undoActions } from 'redux-undo';
 
+import ExternalLink from '../UI/ExternalLink';
+
 import { List } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -264,13 +266,9 @@ class HeaderBar extends PureComponent {
           )}
 
           {!isAuthenticated && (
-            <a
-              href="https://github.com/200ok-ch/organice"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://github.com/200ok-ch/organice">
               <i className="fab fa-github header-bar__actions__item" />
-            </a>
+            </ExternalLink>
           )}
 
           {isAuthenticated && !activeModalPage && !!path && (
