@@ -11,7 +11,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 * [2020-09-05 Sat]
 
 ** Fixed
-  - Search and Todo List modals could be moved off screen on iOS since [2020-08-30 Sun]. The fix is to disable =autoFocus= on is. The rationale for that documented here: https://github.com/200ok-ch/organice/pull/462
+  - Search and Todo List modals could be moved off screen on iOS since [2020-08-30 Sun]. The fix is to disable =autoFocus= on iOS. The rationale for that documented here: https://github.com/200ok-ch/organice/pull/462
 
 * [2020-08-30 Sun]
 
