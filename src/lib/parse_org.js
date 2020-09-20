@@ -3,11 +3,13 @@ import generateId from './id_generator';
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
 
-// - HTTP URL regex taken from https://stackoverflow.com/a/3809435/999007
 // TODO: Extract all match groups of `beginningRegexp` (for example
 // like `emailRegexp`), so that they can be documented and are less
 // unwieldly.
-const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]])?)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
+const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]])?)/;
+
+// Regexp taken from https://stackoverflow.com/a/3809435/999007
+const httpUrlRegexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
 
 // Regexp taken from https://stackoverflow.com/a/1373724/999007
 const urlRegexp = /([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)/;
@@ -29,6 +31,7 @@ const wwwUrlRegexp = /(www(\.[-_a-zA-Z0-9]+){2,}(\/[-_a-zA-Z0-9]+)*)/;
 const markupAndCookieRegex = new RegExp(
   [
     beginningRegexp.source,
+    httpUrlRegexp.source,
     urlRegexp.source,
     internationalPhoneRegexp.source,
     usPhoneRegexp.source,
