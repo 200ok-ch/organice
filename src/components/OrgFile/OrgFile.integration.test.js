@@ -446,7 +446,7 @@ describe('Render all views', () => {
       });
 
       describe('Link recognition', () => {
-        test('recognizes phone numbers', () => {
+        test('recognizes canonical format +xxxxxxxxx phone numbers', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')
           );
@@ -456,6 +456,50 @@ describe('Render all views', () => {
           // And it renders as such
           expect(elem[0]).toHaveAttribute('href', 'tel:+498025123456789');
           expect(elem[0]).toHaveTextContent('+498025123456789');
+        });
+
+        test('recognizes US phone numbers', () => {
+          fireEvent.click(
+            queryByText('A header with a URL, mail address and phone number as content')
+          );
+
+          const phone_numbers = [
+            '123-456-7890',
+            '(123) 456-7890',
+            '123 456 7890',
+            '123.456.7890',
+            '+91 (123) 456-7890',
+          ];
+
+          for (let i in phone_numbers) {
+            const phone_number = phone_numbers[i];
+            const elem = getAllByText(phone_number);
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', `tel:${phone_number}`);
+            expect(elem[0]).toHaveTextContent(phone_number);
+          }
+        });
+
+        test('recognizes Swiss phone numbers', () => {
+          fireEvent.click(
+            queryByText('A header with a URL, mail address and phone number as content')
+          );
+
+          const phone_numbers = [
+            '0783268674',
+            '041783268675',
+            '0041783268674',
+            '+41783268676',
+            '+41783268677',
+          ];
+
+          for (let i in phone_numbers) {
+            const phone_number = phone_numbers[i];
+            const elem = getAllByText(phone_number);
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).toHaveAttribute('href', `tel:${phone_number}`);
+            expect(elem[0]).toHaveTextContent(phone_number);
+          }
         });
 
         test('recognizes URLs', () => {

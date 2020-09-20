@@ -4,6 +4,24 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-09-20 Sun]
+** Added
+
+   - Recognize US and Swiss phone numbers and make them clickable
+   - Next to 'canonical' phone numbers like +498025123456789, also recognize:
+     - US phone numbers:
+       - 123-456-7890
+       - (123) 456-7890
+       - 123 456 7890
+       - 123.456.7890
+       - +91 (123) 456-7890
+     - Swiss phone numbers:
+      - 0783268674
+      - 041783268675
+      - 0041783268674
+      - +41783268676
+      - +41783268677
+
 * [2020-09-07 Mon]
 ** Added
    - Added the capability to chose the start screen when installing organice to the homescreen.
