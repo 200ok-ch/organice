@@ -183,7 +183,7 @@ Try tapping on the timestamps below to get a feel for the editor:
 
 organice recognizes various types of hyperlinks automatically which Emacs Org mode would not necessarily do. That makes sense, because mobile devices, or browsers, enable a different feature set.
 
-For example, when you read this in organice, then the text https://organice.200ok.ch will implicitly be rendered as a clickable link (as it would be in Emacs Org mode). The same also works for email addresses like info@200ok.ch and different kinds of phone numbers where Emacs Org mode doesn't create an explicit link, but organice does.
+For example, when you read this in organice, then the text https://organice.200ok.ch will implicitly be rendered as a clickable link (as it would be in Emacs Org mode). The same also works for other web links like www.200ok.ch, email addresses like info@200ok.ch, and different kinds of phone numbers. For these, Emacs Org mode doesn't create an explicit link, but organice can and does.
 
 International/US phone numbers:
 
