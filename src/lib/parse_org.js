@@ -3,13 +3,50 @@ import generateId from './id_generator';
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
 
-// This regexp is pretty unwieldy. Use https://www.debuggex.com/ to edit it, then paste the results in here.
-const markupAndCookieRegex = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]])?)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))|([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)|((\+|00)\d{8,30})|((\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4})|(0[1-9]{2}\s[0-9]{3}\s[0-9]{2}\s[0-9]{2})|(0[0-9]{9,11})|(www(\.[-_a-zA-Z0-9]+){2,}(\/[-_a-zA-Z0-9]+)*)/g;
-const timestampRegex = /* scroll to the right --->                                                                                                                     */ /([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]]/;
+// TODO: Extract all match groups of `beginningRegexp` (for example
+// like `emailRegexp`), so that they can be documented and are less
+// unwieldly.
+const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]])?)/;
 
-// - HTTP URL regex taken from https://stackoverflow.com/a/3809435/999007
-// - e-mail regex taken from https://stackoverflow.com/a/1373724/999007
-// - US phone regexp taken from https://stackoverflow.com/a/16699507/252585
+// Regexp taken from https://stackoverflow.com/a/3809435/999007
+const httpUrlRegexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
+
+// Regexp taken from https://stackoverflow.com/a/1373724/999007
+const urlRegexp = /([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)/;
+
+const internationalPhoneRegexp = /((\+|00)\d{8,30})/;
+
+// Regexp taken from https://stackoverflow.com/a/16699507/252585
+const usPhoneRegexp = /((\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4})/;
+
+// Works for formatted mobile phone numbers like "078 326 86 74"
+const swissPhoneRegexp1 = /(0[1-9]{2}\s[0-9]{3}\s[0-9]{2}\s[0-9]{2})/;
+
+// Works for unformatted mobile phone numbers like "0783268674" and
+// unformatted landline numbers like "041783268675"
+const swissPhoneRegexp2 = /(0[0-9]{9,11})/;
+
+const wwwUrlRegexp = /(www(\.[-_a-zA-Z0-9]+){2,}(\/[-_a-zA-Z0-9]+)*)/;
+
+const markupAndCookieRegex = new RegExp(
+  [
+    beginningRegexp.source,
+    httpUrlRegexp.source,
+    urlRegexp.source,
+    internationalPhoneRegexp.source,
+    usPhoneRegexp.source,
+    swissPhoneRegexp1.source,
+    swissPhoneRegexp2.source,
+    wwwUrlRegexp.source,
+  ].join('|'),
+  'g'
+);
+
+// INFO: https://www.debuggex.com/ is a good tool to inspect how the
+// matches work.
+// console.log(markupAndCookieRegex);
+
+const timestampRegex = /* scroll to the right --->                                                                                                                     */ /([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]]/;
 
 const timestampFromRegexMatch = (match, partIndices) => {
   const [
