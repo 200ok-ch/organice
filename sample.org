@@ -179,6 +179,29 @@ Try tapping on the timestamps below to get a feel for the editor:
 [2018-09-17 Sun 10:00-11:30]
 
 <2018-09-17 Sun>--<2018-09-25 Tue>
+* Automatic/Implicit links
+
+organice recognizes various types of hyperlinks automatically which Emacs Org mode would not necessarily do. That makes sense, because mobile devices, or browsers, enable a different feature set.
+
+For example, when you read this in organice, then the text https://organice.200ok.ch will implicitly be rendered as a clickable link (as it would be in Emacs Org mode). The same also works for email addresses like info@200ok.ch and different kinds of phone numbers where Emacs Org mode doesn't create an explicit link, but organice does.
+
+International/US phone numbers:
+
+  - 123-456-7890
+  - (123) 456-7890
+  - 123 456 7890
+  - 123.456.7890
+  - +91 (123) 456-7890
+
+Swiss phone numbers:
+
+ - 0783268674
+ - 078 326 86 74
+ - 041783268675
+ - 0041783268674
+ - +41783268676
+ - +41783268677
+
 * Property lists
 organice has native support for viewing and editing [[https://orgmode.org/guide/Properties.html][property lists]]. To bring up an editor, expand the ~PROPERTIES~ drawer below and tap on any of the properties.
 ** Example
