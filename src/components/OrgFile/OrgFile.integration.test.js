@@ -450,43 +450,29 @@ describe('Render all views', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')
           );
-          const elem = getAllByText('+498025123456789');
+          const elem = getAllByText('+49123456789');
           // There's exactly one phone number
           expect(elem.length).toEqual(1);
           // And it renders as such
-          expect(elem[0]).toHaveAttribute('href', 'tel:+498025123456789');
-          expect(elem[0]).toHaveTextContent('+498025123456789');
+          expect(elem[0]).toHaveAttribute('href', 'tel:+49123456789');
+          expect(elem[0]).toHaveTextContent('+49123456789');
         });
 
-        test('recognizes US phone numbers', () => {
+        test('recognizes phone numbers', () => {
           fireEvent.click(
             queryByText('A header with a URL, mail address and phone number as content')
           );
 
           const phone_numbers = [
+            // US
             '123-456-7890',
             '(123) 456-7890',
             '123 456 7890',
             '123.456.7890',
             '+91 (123) 456-7890',
-          ];
-
-          for (let i in phone_numbers) {
-            const phone_number = phone_numbers[i];
-            const elem = getAllByText(phone_number);
-            expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', `tel:${phone_number}`);
-            expect(elem[0]).toHaveTextContent(phone_number);
-          }
-        });
-
-        test('recognizes Swiss phone numbers', () => {
-          fireEvent.click(
-            queryByText('A header with a URL, mail address and phone number as content')
-          );
-
-          const phone_numbers = [
+            // Swiss
             '0783268674',
+            '078 326 86 74',
             '041783268675',
             '0041783268674',
             '+41783268676',
@@ -499,6 +485,22 @@ describe('Render all views', () => {
             expect(elem.length).toEqual(1);
             expect(elem[0]).toHaveAttribute('href', `tel:${phone_number}`);
             expect(elem[0]).toHaveTextContent(phone_number);
+          }
+        });
+
+        test('does not recognize random numbers as phone numbers', () => {
+          fireEvent.click(
+            queryByText('A header with a URL, mail address and phone number as content')
+          );
+
+          const numbers = ['05 05 05'];
+
+          for (let i in numbers) {
+            const number = numbers[i];
+            const elem = getAllByText(number);
+            expect(elem.length).toEqual(1);
+            expect(elem[0]).not.toHaveAttribute('href', `tel:${number}`);
+            expect(elem[0]).toHaveTextContent(number);
           }
         });
 

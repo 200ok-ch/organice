@@ -33,7 +33,7 @@ Some description content
 
   Canonical format +xxxxxxxxx phone numbers:
 
-    - +498025123456789
+    - +49123456789
 
   US phone numbers:
     - 123-456-7890
@@ -44,10 +44,14 @@ Some description content
 
   Swiss phone numbers:
     - 0783268674
+    - 078 326 86 74
     - 041783268675
     - 0041783268674
     - +41783268676
     - +41783268677
+
+  These are not phone numbers:
+    - 05 05 05
 
 ** PROJECT Foo
 *** DONE A headline that's done since a loong time

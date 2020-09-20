@@ -21,7 +21,7 @@ Some description content
 
   This is an e-mail foo.bar@baz.org in a line of text.
 
-  +Don't+ call me on: +498025123456789.
+  +Don't+ call me on: +49123456789
 ** PROJECT Foo
 *** DONE A headline that's done since a loong time
     SCHEDULED: <2001-01-03 Wed>
