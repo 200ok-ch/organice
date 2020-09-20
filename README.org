@@ -747,15 +747,15 @@ fork. organice differs from org-web in that:
   continually work on it.
   - This company is 200ok llc: https://200ok.ch/
   - The continuous effort yields a certain power over time. At the
-    time of writing this, organice has ~3 times as many commits (1500
-    vs 600) and contributors (25 vs. 8). Of course, quantity doesn't
+    time of writing this, organice has ~3 times as many commits (~1700
+    vs 600) and contributors (29 vs. 8). Of course, quantity doesn't
     trump quality. However, many of the new contributors brought
     significant features and improvements, not just tiny patches.
 
 - organice initially focused on becoming bug free - for example on
   parsing and exporting org files correctly.
 - organice continues to evolve independently with its own feature
-  set. For example, it has [[file:WIKI.org::#faq_webdav][WebDAV]] support.
+  set. For example, it has [[https://organice.200ok.ch/documentation.html#faq_webdav][WebDAV support]].
 - organice is a project with equal focus on mobile as desktop
   browsers.
 - org-web [[https://github.com/DanielDe/org-web/issues/75][tracks users]] with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].
