@@ -31,7 +31,24 @@ Some description content
 
   This is an e-mail foo.bar@baz.org in a line of text.
 
-  +Don't+ call me on: +498025123456789.
+  Canonical format +xxxxxxxxx phone numbers:
+
+    - +498025123456789
+
+  US phone numbers:
+    - 123-456-7890
+    - (123) 456-7890
+    - 123 456 7890
+    - 123.456.7890
+    - +91 (123) 456-7890
+
+  Swiss phone numbers:
+    - 0783268674
+    - 041783268675
+    - 0041783268674
+    - +41783268676
+    - +41783268677
+
 ** PROJECT Foo
 *** DONE A headline that's done since a loong time
    SCHEDULED: <2001-01-03 Wed>
