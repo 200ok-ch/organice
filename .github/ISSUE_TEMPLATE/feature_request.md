@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+Before creating a new issue, please read ["How we work with issues"](.200ok.ch/documentation.html#how_we_work_with_issues).
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is.
 
