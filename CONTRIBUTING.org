@@ -30,6 +30,9 @@ organice lacks, this is a feature request, not a bug.
     a blank issue.
 
 ** How we work with issues
+   :PROPERTIES:
+   :CUSTOM_ID: how_we_work_with_issues
+   :END:
 
 One of our quality goals is to keep the amount of issues manageable.
 This means that a single person has to be able to groom the backlog
