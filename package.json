@@ -49,7 +49,7 @@
     "eslint": "^6.6.0",
     "eslint-nibble": "^5.1.0",
     "eslint-plugin-jest": "^23.20.0",
-    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react": "^7.21.3",
     "eslint-plugin-react-redux": "^3.3.0",
     "prettier-eslint": "^11.0.0",
     "prettier": "^2.0.5",
