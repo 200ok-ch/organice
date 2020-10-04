@@ -258,7 +258,7 @@ class HeaderBar extends PureComponent {
       const redoIconClassName = classNames('fas fa-redo header-bar__actions__item', {
         'header-bar__actions__item--disabled': !isRedoEnabled,
       });
-      const clockIconClassName = classNames('fas fa-clock header-bar__actions__item', {});
+      const clockIconClassName = classNames('fas fa-hourglass-half header-bar__actions__item', {});
 
       const settingsIconClassName = classNames('fas fa-cogs header-bar__actions__item');
 
