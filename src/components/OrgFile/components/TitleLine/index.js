@@ -294,7 +294,7 @@ const mapStateToProps = (state, ownProps) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),
-    showClockDisplay: state.base.get('showClockDisplay'),
+    showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };
 

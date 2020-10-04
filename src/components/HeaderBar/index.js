@@ -334,7 +334,7 @@ const mapStateToProps = (state) => {
     isUndoEnabled: state.org.past.length > 0,
     isRedoEnabled: state.org.future.length > 0,
     syncBackendType: state.syncBackend.get('client') && state.syncBackend.get('client').type,
-    showClockDisplay: state.base.get('showClockDisplay'),
+    showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };
 

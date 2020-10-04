@@ -111,7 +111,6 @@ const closePopup = (state) => {
 
 const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
 
-const toggleClockDisplay = (state, action) => state.set('showClockDisplay', action.showClockDisplay);
 
 /**
  * Reducer that is responsible for the "base" state slice.
@@ -168,8 +167,6 @@ export default (state = Map(), action) => {
       return closePopup(state, action);
     case 'SET_IS_LOADING':
       return setIsLoading(state, action);
-    case 'TOGGLE_CLOCK_DISPLAY':
-      return toggleClockDisplay(state, action);
     default:
       return state;
   }

@@ -1007,7 +1007,8 @@ export const setLogEntryStop = (state, action) => {
   const entryIndex = state
     .getIn(['headers', headerIdx, 'logBookEntries'])
     .findIndex((entry) => entry.get('id') === entryId);
-  return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
+  state = state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
+  return state.update('headers', updateHeadersTotalTimeLogged);
 };
 
 export const createLogEntryStart = (state, action) => {
@@ -1026,10 +1027,11 @@ export const createLogEntryStart = (state, action) => {
 export const updateLogEntryTime = (state, action) => {
   const { headerId, entryIndex, entryType, newTime } = action;
   const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
-  return state.setIn(
+  state = state.setIn(
     ['headers', headerIdx, 'logBookEntries', entryIndex, entryType],
     fromJS(newTime)
   );
+  return state.update('headers', updateHeadersTotalTimeLogged);;
 };
 
 export const setSearchFilterInformation = (state, action) => {
@@ -1103,10 +1105,12 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-const updateTotalTimeLogged = (state, action) => 
-  action.showClockDisplay ?
-    state.update('headers', updateHeadersTotalTimeLogged) :
-    state;
+const toggleClockDisplay = (state, action) => {
+  if(action.showClockDisplay){
+    state = state.update('headers', updateHeadersTotalTimeLogged);
+  }
+  return state.set('showClockDisplay', action.showClockDisplay);
+}
 
 export default (state = Map(), action) => {
   if (action.dirtying) {
@@ -1225,7 +1229,7 @@ export default (state = Map(), action) => {
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
-      return updateTotalTimeLogged(state, action);
+      return toggleClockDisplay(state, action);
 
     default:
       return state;
