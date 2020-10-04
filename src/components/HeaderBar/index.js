@@ -225,8 +225,8 @@ class HeaderBar extends PureComponent {
     }
   }
 
-  handleClockClick() {
-    this.props.base.toggleClockDisplay();
+  handleClockClick(showClockDisplay) {
+    this.props.base.toggleClockDisplay(showClockDisplay);
   }
 
   handleHelpClick() {
@@ -242,6 +242,7 @@ class HeaderBar extends PureComponent {
       path,
       isUndoEnabled,
       isRedoEnabled,
+      showClockDisplay,
     } = this.props;
 
     if (!!activeModalPage) {
@@ -281,7 +282,7 @@ class HeaderBar extends PureComponent {
             <Fragment>
               <i className={undoIconClassName} onClick={this.handleUndoClick} title="Undo" />
               <i className={redoIconClassName} onClick={this.handleRedoClick} title="Redo" />
-              <i className={clockIconClassName} onClick={this.handleClockClick} title="Toggle clock display" />
+              <i className={clockIconClassName} onClick={()=>this.handleClockClick(!showClockDisplay)} title="Toggle clock display" />
               <i
                 className="fas fa-question-circle header-bar__actions__item"
                 onClick={this.handleHelpClick}
@@ -333,6 +334,7 @@ const mapStateToProps = (state) => {
     isUndoEnabled: state.org.past.length > 0,
     isRedoEnabled: state.org.future.length > 0,
     syncBackendType: state.syncBackend.get('client') && state.syncBackend.get('client').type,
+    showClockDisplay: state.base.get('showClockDisplay'),
   };
 };
 

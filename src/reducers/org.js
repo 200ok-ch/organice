@@ -1103,7 +1103,10 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-const updateTotalTimeLogged = state => state.update('headers', updateHeadersTotalTimeLogged);
+const updateTotalTimeLogged = (state, action) => 
+  action.showClockDisplay ?
+    state.update('headers', updateHeadersTotalTimeLogged) :
+    state;
 
 export default (state = Map(), action) => {
   if (action.dirtying) {
@@ -1222,7 +1225,7 @@ export default (state = Map(), action) => {
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
-      return updateTotalTimeLogged(state);
+      return updateTotalTimeLogged(state, action);
 
     default:
       return state;

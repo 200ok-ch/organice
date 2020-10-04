@@ -189,6 +189,7 @@ export const closePopup = () => ({
   type: 'CLOSE_POPUP',
 });
 
-export const toggleClockDisplay = () => ({
+export const toggleClockDisplay = showClockDisplay => ({
   type: 'TOGGLE_CLOCK_DISPLAY',
+  showClockDisplay,
 });
