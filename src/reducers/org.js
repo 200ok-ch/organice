@@ -1008,7 +1008,9 @@ export const setLogEntryStop = (state, action) => {
     .getIn(['headers', headerIdx, 'logBookEntries'])
     .findIndex((entry) => entry.get('id') === entryId);
   state = state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
-  return state.update('headers', updateHeadersTotalTimeLogged);
+  return state.get('showClockDisplay') ? 
+    state.update('headers', updateHeadersTotalTimeLogged) :
+    state;
 };
 
 export const createLogEntryStart = (state, action) => {
@@ -1031,7 +1033,9 @@ export const updateLogEntryTime = (state, action) => {
     ['headers', headerIdx, 'logBookEntries', entryIndex, entryType],
     fromJS(newTime)
   );
-  return state.update('headers', updateHeadersTotalTimeLogged);;
+  return state.get('showClockDisplay') ? 
+    state.update('headers', updateHeadersTotalTimeLogged) :
+    state;
 };
 
 export const setSearchFilterInformation = (state, action) => {
