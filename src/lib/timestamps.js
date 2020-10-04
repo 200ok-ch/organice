@@ -194,5 +194,8 @@ export const dateDuration = (start, end) => {
 };
 
 export const millisDuration = (millis) => {
+  if(millis===undefined){
+    return '';
+  }
   return dateDuration(new Date(0), new Date(millis));
 }
