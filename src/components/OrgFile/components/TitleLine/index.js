@@ -190,9 +190,23 @@ class TitleLine extends PureComponent {
     const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
+    const titleLineStyle = {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'space-between'
+    };
+
     const titleStyle = {
       color,
       wordBreak: 'break-word',
+    };
+
+    const clockDisplayStyle = {
+      color,
+      wordBreak: 'break-word',
+      minWidth: '5em',
+      textAlign: 'right',
+      marginRight: '5px',
     };
 
     return (
@@ -245,7 +259,7 @@ class TitleLine extends PureComponent {
             </div>
           </div>
         ) : (
-          <div>
+          <div style={titleLineStyle}>
             <span style={titleStyle} ref={this.handleTitleSpanRef}>
               <AttributedString
                 parts={header.getIn(['titleLine', 'title'])}
@@ -254,14 +268,12 @@ class TitleLine extends PureComponent {
                   shouldDisableActions,
                 }}
               />
-              {showClockDisplay ?
-                <span>{header.get('totalTimeLoggedRecursive')===0 
-                  ? '' 
-                  : ' LOGGED: ' + millisDuration(header.get('totalTimeLoggedRecursive')) + ' '}
-                </span>
-                : null}
               {!header.get('opened') && hasContent ? '...' : ''}
             </span>
+            {showClockDisplay && header.get('totalTimeLoggedRecursive')!==0  ?
+                <span style={clockDisplayStyle}>
+                  {millisDuration(header.get('totalTimeLoggedRecursive'))}
+                </span> : null}
 
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
