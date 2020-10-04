@@ -188,3 +188,7 @@ export const activatePopup = (popupType, data) => ({
 export const closePopup = () => ({
   type: 'CLOSE_POPUP',
 });
+
+export const toggleClockDisplay = () => ({
+  type: 'TOGGLE_CLOCK_DISPLAY',
+});

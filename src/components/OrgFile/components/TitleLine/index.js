@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { getCurrentTimestampAsText, millisDuration } from '../../../../lib/timestamps';
 import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
 
 import { generateTitleLine } from '../../../../lib/export_org';
@@ -183,6 +183,7 @@ class TitleLine extends PureComponent {
       shouldDisableActions,
       shouldDisableExplicitWidth,
       todoKeywordSets,
+      showClockDisplay,
     } = this.props;
     const { containerWidth } = this.state;
 
@@ -253,6 +254,12 @@ class TitleLine extends PureComponent {
                   shouldDisableActions,
                 }}
               />
+              {showClockDisplay ?
+                <span>{header.get('totalTimeLoggedRecursive')===0 
+                  ? '' 
+                  : ' LOGGED: ' + millisDuration(header.get('totalTimeLoggedRecursive')) + ' '}
+                </span>
+                : null}
               {!header.get('opened') && hasContent ? '...' : ''}
             </span>
 
@@ -287,6 +294,7 @@ const mapStateToProps = (state, ownProps) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),
+    showClockDisplay: state.base.get('showClockDisplay'),
   };
 };
 

@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
+import { updateHeadersTotalTimeLogged } from '../lib/clocking';
 
 import {
   extractAllOrgTags,
@@ -1102,6 +1103,8 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
+const updateTotalTimeLogged = state => state.update('headers', updateHeadersTotalTimeLogged);
+
 export default (state = Map(), action) => {
   if (action.dirtying) {
     state = state.set('isDirty', true);
@@ -1218,6 +1221,8 @@ export default (state = Map(), action) => {
       return updateLogEntryTime(state, action);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
+    case 'TOGGLE_CLOCK_DISPLAY':
+      return updateTotalTimeLogged(state);
 
     default:
       return state;
