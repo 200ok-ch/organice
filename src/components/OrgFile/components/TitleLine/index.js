@@ -203,7 +203,6 @@ class TitleLine extends PureComponent {
 
     const clockDisplayStyle = {
       color,
-      wordBreak: 'break-word',
       minWidth: '5em',
       textAlign: 'right',
       marginRight: '5px',
