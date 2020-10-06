@@ -1007,10 +1007,7 @@ export const setLogEntryStop = (state, action) => {
   const entryIndex = state
     .getIn(['headers', headerIdx, 'logBookEntries'])
     .findIndex((entry) => entry.get('id') === entryId);
-  state = state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
-  return state.get('showClockDisplay') ? 
-    state.update('headers', updateHeadersTotalTimeLogged) :
-    state;
+  return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
 };
 
 export const createLogEntryStart = (state, action) => {
@@ -1029,13 +1026,10 @@ export const createLogEntryStart = (state, action) => {
 export const updateLogEntryTime = (state, action) => {
   const { headerId, entryIndex, entryType, newTime } = action;
   const headerIdx = indexOfHeaderWithId(state.get('headers'), headerId);
-  state = state.setIn(
+  return state.setIn(
     ['headers', headerIdx, 'logBookEntries', entryIndex, entryType],
     fromJS(newTime)
   );
-  return state.get('showClockDisplay') ? 
-    state.update('headers', updateHeadersTotalTimeLogged) :
-    state;
 };
 
 export const setSearchFilterInformation = (state, action) => {
@@ -1116,11 +1110,7 @@ const toggleClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 }
 
-export default (state = Map(), action) => {
-  if (action.dirtying) {
-    state = state.set('isDirty', true);
-  }
-
+const reducer = (state, action) => {
   switch (action.type) {
     case 'DISPLAY_FILE':
       return displayFile(state, action);
@@ -1238,6 +1228,19 @@ export default (state = Map(), action) => {
     default:
       return state;
   }
+}
+
+export default (state = Map(), action) => {
+  if (action.dirtying) {
+    state = state.set('isDirty', true);
+  }
+  
+  state = reducer(state, action);
+  
+  if (action.dirtying && state.get('showClockDisplay')) {
+    state = state.update('headers', updateHeadersTotalTimeLogged);
+  }
+  return state;
 };
 
 /**
