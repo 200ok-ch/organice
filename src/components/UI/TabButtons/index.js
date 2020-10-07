@@ -4,7 +4,7 @@ import './stylesheet.css';
 
 import classNames from 'classnames';
 
-export default ({ buttons, selectedButton, useEqualWidthTabs, onSelect }) => {
+export default ({ buttons, titles, selectedButton, useEqualWidthTabs, onSelect }) => {
   const handleButtonClick = (buttonName) => () => onSelect(buttonName);
 
   const containerClassName = classNames('tab-buttons', {
@@ -17,13 +17,23 @@ export default ({ buttons, selectedButton, useEqualWidthTabs, onSelect }) => {
 
   return (
     <div className={containerClassName} style={style}>
-      {buttons.map((buttonName) => {
+      {buttons.map((buttonName, index) => {
         const className = classNames('tab-buttons__btn', {
           'tab-buttons__btn--selected': buttonName === selectedButton,
         });
+        // Optionally add a title
+        let title = '';
+        if (titles) {
+          title = titles[index];
+        }
 
         return (
-          <div key={buttonName} className={className} onClick={handleButtonClick(buttonName)}>
+          <div
+            key={buttonName}
+            title={title}
+            className={className}
+            onClick={handleButtonClick(buttonName)}
+          >
             {buttonName}
           </div>
         );
