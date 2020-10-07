@@ -9,6 +9,9 @@ This header has some description text and a couple subheaders. Look through the 
 * Actions
 ** Editing headers
 When you select a header the "header action drawer" appears. The first two icons in this drawer edit the header and description respectively. Try editing this header.
+
+If you want the "header action drawer" to disappear or to deselect the current header, tap into the title (or empty space) in the headerbar.
+
 ** All icons in the header action bar
 
 1. Pen: Edit header title
