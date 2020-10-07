@@ -258,7 +258,7 @@ class TitleLine extends PureComponent {
             </div>
           </div>
         ) : (
-          <div style={{width: '100%'}}>
+          <div>
             <div style={titleLineStyle}>
               <span style={titleStyle} ref={this.handleTitleSpanRef}>
                 <AttributedString
@@ -276,7 +276,6 @@ class TitleLine extends PureComponent {
               </span> 
               : null}
           </div>
-            
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
                 {header
