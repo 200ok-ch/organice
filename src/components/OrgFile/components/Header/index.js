@@ -491,6 +491,7 @@ ${header.get('rawDescription')}`;
                 color={color}
                 hasContent={hasContent}
                 isSelected={isSelected}
+                shouldDisableExplicitWidth
                 shouldDisableActions={shouldDisableActions}
               />
 

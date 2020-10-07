@@ -1103,7 +1103,7 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-const toggleClockDisplay = (state, action) => {
+const setShowClockDisplay = (state, action) => {
   if(action.showClockDisplay){
     state = state.update('headers', updateHeadersTotalTimeLogged);
   }
@@ -1223,7 +1223,7 @@ const reducer = (state, action) => {
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
-      return toggleClockDisplay(state, action);
+      return setShowClockDisplay(state, action);
 
     default:
       return state;

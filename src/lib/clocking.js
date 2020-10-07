@@ -28,7 +28,10 @@ const sliceHeaderAndSubheaders = (headers, index)=>{
   return headerAndFollowingHeaders.slice(0, followingHeaderIndex);
 }
 
-export const updateHeadersTotalTimeLogged = headers => {
+export const updateHeadersTotalTimeLogged = (headers) => {
+  if(!headers){
+    return headers;
+  }
   const headersWithtotalTimeLogged = headers.map((header)=>
     header.set('totalTimeLogged',totalTimeLogged(header)));
   const headersWithtotalTimeLoggedRecursive = headersWithtotalTimeLogged.map(

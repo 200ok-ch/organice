@@ -258,22 +258,25 @@ class TitleLine extends PureComponent {
             </div>
           </div>
         ) : (
-          <div style={titleLineStyle}>
-            <span style={titleStyle} ref={this.handleTitleSpanRef}>
-              <AttributedString
-                parts={header.getIn(['titleLine', 'title'])}
-                subPartDataAndHandlers={{
-                  onTimestampClick: this.handleTimestampClick,
-                  shouldDisableActions,
-                }}
-              />
-              {!header.get('opened') && hasContent ? '...' : ''}
-            </span>
+          <div style={{width: '100%'}}>
+            <div style={titleLineStyle}>
+              <span style={titleStyle} ref={this.handleTitleSpanRef}>
+                <AttributedString
+                  parts={header.getIn(['titleLine', 'title'])}
+                  subPartDataAndHandlers={{
+                    onTimestampClick: this.handleTimestampClick,
+                    shouldDisableActions,
+                  }}
+                />
+                {!header.get('opened') && hasContent ? '...' : ''}
+              </span>
             {showClockDisplay && header.get('totalTimeLoggedRecursive')!==0  ?
-                <span style={clockDisplayStyle}>
-                  {millisDuration(header.get('totalTimeLoggedRecursive'))}
-                </span> : null}
-
+              <span style={clockDisplayStyle}>
+                {millisDuration(header.get('totalTimeLoggedRecursive'))}
+              </span> 
+              : null}
+          </div>
+            
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
                 {header
