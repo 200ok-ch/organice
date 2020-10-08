@@ -193,7 +193,7 @@ class TitleLine extends PureComponent {
     const titleLineStyle = {
       width: '100%',
       display: 'flex',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
     };
 
     const titleStyle = {
@@ -258,7 +258,7 @@ class TitleLine extends PureComponent {
             </div>
           </div>
         ) : (
-          <div>
+          <div style={{width:'100%'}}>
             <div style={titleLineStyle}>
               <span style={titleStyle} ref={this.handleTitleSpanRef}>
                 <AttributedString
