@@ -221,15 +221,11 @@ const Settings = ({
         <div className="setting-label">
           Display time summaries
           <div className="setting-label__description">
-            This puts overlays at the end of each headline, 
-            showing the total time recorded under that heading, 
-            including the time of any subheadings.
+            This puts overlays at the end of each headline, showing the total time recorded under
+            that heading, including the time of any subheadings.
           </div>
         </div>
-        <Switch
-          isEnabled={showClockDisplay}
-          onToggle={handleShowClockDisplayClick}
-        />
+        <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
       </div>
 
       <div className="settings-buttons-container">

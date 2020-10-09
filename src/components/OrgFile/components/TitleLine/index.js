@@ -258,7 +258,7 @@ class TitleLine extends PureComponent {
             </div>
           </div>
         ) : (
-          <div style={{width:'100%'}}>
+          <div style={{ width: '100%' }}>
             <div style={titleLineStyle}>
               <span style={titleStyle} ref={this.handleTitleSpanRef}>
                 <AttributedString
@@ -270,12 +270,12 @@ class TitleLine extends PureComponent {
                 />
                 {!header.get('opened') && hasContent ? '...' : ''}
               </span>
-            {showClockDisplay && header.get('totalTimeLoggedRecursive')!==0  ?
-              <span style={clockDisplayStyle}>
-                {millisDuration(header.get('totalTimeLoggedRecursive'))}
-              </span> 
-              : null}
-          </div>
+              {showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0 ? (
+                <span style={clockDisplayStyle}>
+                  {millisDuration(header.get('totalTimeLoggedRecursive'))}
+                </span>
+              ) : null}
+            </div>
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
                 {header

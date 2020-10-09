@@ -111,7 +111,6 @@ const closePopup = (state) => {
 
 const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
 
-
 /**
  * Reducer that is responsible for the "base" state slice.
  */
