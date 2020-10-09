@@ -1104,11 +1104,11 @@ export const setSearchFilterInformation = (state, action) => {
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
 const setShowClockDisplay = (state, action) => {
-  if(action.showClockDisplay){
+  if (action.showClockDisplay) {
     state = state.update('headers', updateHeadersTotalTimeLogged);
   }
   return state.set('showClockDisplay', action.showClockDisplay);
-}
+};
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -1228,15 +1228,15 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-}
+};
 
 export default (state = Map(), action) => {
   if (action.dirtying) {
     state = state.set('isDirty', true);
   }
-  
+
   state = reducer(state, action);
-  
+
   if (action.dirtying && state.get('showClockDisplay')) {
     state = state.update('headers', updateHeadersTotalTimeLogged);
   }
