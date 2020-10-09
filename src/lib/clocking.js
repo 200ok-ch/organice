@@ -1,3 +1,4 @@
+import { subheadersOfHeaderWithIndex } from './org_utils';
 import { dateForTimestamp } from './timestamps';
 
 const totalTimeLogged = (header) => {
@@ -13,24 +14,6 @@ const totalTimeLogged = (header) => {
   return addedTimes;
 };
 
-const sliceHeaderAndSubheaders = (headers, index) => {
-  const nestingLevel = headers.get(index).get('nestingLevel');
-  const headerAndFollowingHeaders = headers.slice(index);
-  for (
-    var followingHeaderIndex = 1;
-    followingHeaderIndex < headerAndFollowingHeaders.size;
-    followingHeaderIndex++
-  ) {
-    if (
-      !headerAndFollowingHeaders.get(followingHeaderIndex) ||
-      headerAndFollowingHeaders.get(followingHeaderIndex).get('nestingLevel') <= nestingLevel
-    ) {
-      break;
-    }
-  }
-  return headerAndFollowingHeaders.slice(0, followingHeaderIndex);
-};
-
 export const updateHeadersTotalTimeLogged = (headers) => {
   if (!headers) {
     return headers;
@@ -39,10 +22,10 @@ export const updateHeadersTotalTimeLogged = (headers) => {
     header.set('totalTimeLogged', totalTimeLogged(header))
   );
   const headersWithtotalTimeLoggedRecursive = headersWithtotalTimeLogged.map((header, index) => {
-    const headerAndSubheaders = sliceHeaderAndSubheaders(headersWithtotalTimeLogged, index);
-    const totalTimeLoggedRecursive = headerAndSubheaders.reduce(
+    const subheaders = subheadersOfHeaderWithIndex(headersWithtotalTimeLogged, index);
+    const totalTimeLoggedRecursive = subheaders.reduce(
       (acc, val) => acc + val.get('totalTimeLogged'),
-      0
+      header.get('totalTimeLogged')
     );
     return header.set('totalTimeLoggedRecursive', totalTimeLoggedRecursive);
   });
