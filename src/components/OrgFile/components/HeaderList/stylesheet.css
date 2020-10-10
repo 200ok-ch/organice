@@ -3,6 +3,7 @@
 .header-list-container {
   font-family: Courier;
   margin-top: 10px;
+  padding-bottom: 100px;
 
   z-index: 1;
 }
@@ -11,5 +12,6 @@
   box-shadow: inset 0px 0px 5px 0px rgba(148, 148, 148, 0.75);
   margin: 0;
   margin-top: 10px;
+  padding-bottom: 100px;
   border-radius: 5px;
 }

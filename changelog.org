@@ -4,6 +4,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-10-10 Sat]
+** Changed
+
+   - Improve header stickiness
+     - The header bar was not always sticky for longer documents and the therefore some functionality was hard to reach (the user had to scroll to the top to reach it).
+     - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/499][PR]] 🙏
 * [2020-10-07 Wed]
 ** Added
 
