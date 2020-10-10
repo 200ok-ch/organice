@@ -30,6 +30,7 @@ body,
   color: var(--base00);
   background: var(--base3);
   height: 100%;
+  overflow-y: hidden;
 }
 
 h2 {

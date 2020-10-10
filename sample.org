@@ -9,6 +9,9 @@ This header has some description text and a couple subheaders. Look through the 
 * Actions
 ** Editing headers
 When you select a header the "header action drawer" appears. The first two icons in this drawer edit the header and description respectively. Try editing this header.
+
+If you want the "header action drawer" to disappear or to deselect the current header, tap into the title (or empty space) in the headerbar.
+
 ** All icons in the header action bar
 
 1. Pen: Edit header title
@@ -212,18 +215,53 @@ organice has native support for viewing and editing [[https://orgmode.org/guide/
 :END:
 * Planning
 organice has native support for adding and editing DEADLINE and SCHEDULED items. It also supports [[https://orgmode.org/manual/Repeated-tasks.html][repeaters]] and [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][delays]]. Check out these examples:
+
+=DEADLINE= means that the task - most likely a TODO item, though not necessarily—is supposed to be finished on that date.
+
+=SCHEDULED= means that you are planning to start working on that task on the given date.
+
+Scheduling an item should not be understood in the same way that we understand scheduling a meeting. Setting a date for a meeting is just a simple appointment, you can mark this entry with a simple plain timestamp, to get this item shown on the date where it applies.
+
 ** An item with a deadline
    DEADLINE: <2018-10-03 Wed>
+
+Deadlines and scheduled items produce entries in the agenda when they are over-due, so it is important to be able to mark such an entry as done once you have done so. When you mark a ‘DEADLINE’ or a ‘SCHEDULED’ with the TODO keyword ‘DONE’, it no longer produces entries in the agenda.
 ** An item that is scheduled
    SCHEDULED: <2018-10-18 Thu>
+** Doctors appointment <2020-10-07 Wed>
+
+For simple appointments, it is enough to mark the entry with a simple plain timestamp. This will still show up in the agenda.
+
 ** An item with both
    DEADLINE: <2018-10-05 Fri> SCHEDULED: <2018-10-04 Thu>
 ** TODO An item with a repeater - try swiping right to advance to the DONE state
-   DEADLINE: <2019-01-03 Thu ++1w>
+   DEADLINE: <2019-01-10 Thu +1w>
    :PROPERTIES:
-   :LAST_REPEAT: [2019-12-08 Sun 11:19]
+   :LAST_REPEAT: [2019-01-03 Thu 15:35]
    :END:
-   - State "DONE"       from "TODO"       [2019-12-08 Sun 11:19]
+
+   - State "DONE"       from "TODO"       [2019-01-03 Thu 15:35]
+
+The =+1w= is a repeater; the intended interpretation is that the task has a deadline on '2019-01-10' and repeats itself every (one) week starting from that time. You can use yearly, monthly, weekly, daily and hourly repeat cookies by using the 'y', 'w', 'm', 'd' and 'h' letters.
+
+With the =+1w= cookie, the date shift is always exactly one week. So if you completed the TODO for three months, marking this entry DONE still keeps it as an overdue deadline. Depending on the task, this may not be the best way to handle it. For example, if you forgot to call your father for 3 weeks, it does not make sense to call him 3 times in a single day to make up for it. Finally, there are tasks, like changing batteries, which should always repeat a certain time after the last time you did it. For these tasks, Org mode has special repeaters =++= and =.+=. For example:
+
+*** TODO Call kitchen trash
+    DEADLINE: <2019-02-11 Mon ++1w>
+    Marking this DONE shifts the date by at least one week, but also by as many weeks as it takes to get this date into the future. However, it stays on a Sunday, even if you called and marked it done on Saturday.
+
+*** TODO Check the batteries in the smoke detectors
+    DEADLINE: <2019-11-01 Fri .+1m>
+    Marking this DONE shifts the date to one month after today.
+** TODO An item with deadline and different lead time
+   DEADLINE: <2020-10-07 Wed>
+
+On the deadline date, the task is listed in the agenda. In addition, the agenda for today carries a warning about the approaching or missed deadline, starting a defined time period before the due date (see settings "Default DEADLINE warning period"), and continuing until the entry is marked as done.
+
+You can specify a different lead time for warnings for a specific deadlines using the following syntax. Here is an example with a warning period of 5 days 'DEADLINE: <2004-02-29 Sun -5d>'.
+
+In case the task contains a repeater, the delay is considered to affect all occurrences; if you want the delay to only affect the first scheduled occurrence of the task, use '--5d' instead.
+
 * Capture
 organice supports something like [[https://orgmode.org/manual/Capture.html][Org capture]] in the form of customizable, quickly accessible buttons for creating new headers.
 
