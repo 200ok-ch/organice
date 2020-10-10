@@ -193,6 +193,11 @@ class TimestampEditor extends PureComponent {
               <div className="timestamp-editor__delay-repeater-type">
                 <TabButtons
                   buttons={['+', '++', '.+']}
+                  titles={[
+                    'Shift exactly the amount of time in the repeater (i.e. one month for +1m).',
+                    'Shift the date by at least the amount of time in the repeater (i.e. one month for +1m), but also by as many intervals (i.e. months for for +1m) as it takes to get this date into the future.',
+                    'Shift the date exactly the amount of time of the repeater into the future.',
+                  ]}
                   selectedButton={repeaterType || '+'}
                   onSelect={this.handleRepeaterTypeChange}
                 />
@@ -206,7 +211,8 @@ class TimestampEditor extends PureComponent {
               />
               <div>
                 <TabButtons
-                  buttons={'hdwmy'.split('')}
+                  buttons={['h', 'd', 'w', 'm', 'y']}
+                  titles={['hours', 'days', 'weeks', 'months', 'years']}
                   selectedButton={repeaterUnit || 'h'}
                   onSelect={this.handleRepeaterUnitChange}
                 />
@@ -239,6 +245,10 @@ class TimestampEditor extends PureComponent {
               <div className="timestamp-editor__delay-repeater-type">
                 <TabButtons
                   buttons={['-', '--']}
+                  titles={[
+                    'Set a different lead time before the entry is put into the agenda.',
+                    "In case the task contains a repeater, the delay is considered to affect all occurrences; if you want the delay to only affect the first scheduled occurrence of the task, use '--' instead.",
+                  ]}
                   selectedButton={delayType || '-'}
                   onSelect={this.handleDelayTypeChange}
                 />
@@ -252,7 +262,8 @@ class TimestampEditor extends PureComponent {
               />
               <div>
                 <TabButtons
-                  buttons={'hdwmy'.split('')}
+                  buttons={['h', 'd', 'w', 'm', 'y']}
+                  titles={['hours', 'days', 'weeks', 'months', 'years']}
                   selectedButton={delayUnit || 'h'}
                   onSelect={this.handleDelayUnitChange}
                 />

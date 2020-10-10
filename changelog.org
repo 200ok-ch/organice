@@ -10,6 +10,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
    - Improve header stickiness
      - The header bar was not always sticky for longer documents and the therefore some functionality was hard to reach (the user had to scroll to the top to reach it).
      - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/499][PR]] 🙏
+* [2020-10-07 Wed]
+** Added
+
+   - Added Documentation on [[https://orgmode.org/manual/Repeated-tasks.html][repeaters]] and [[https://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][delays]] to =sample.org= and to mouseovers for the relevant buttons.
 
 * [2020-09-20 Sun]
 ** Added
