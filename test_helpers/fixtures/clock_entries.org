@@ -1,0 +1,9 @@
+* No clock entries
+* With clock entries within LOGBOOK
+  :LOGBOOK:
+  CLOCK: [2020-10-10 Sat 17:49]--[2020-10-10 Sat 18:49] =>  1:00
+  CLOCK: [2020-10-10 Sat 12:49]--[2020-10-10 Sat 18:49] =>  6:00
+  :END:
+* With clock entries without LOGBOOK
+  CLOCK: [2020-10-10 Sat 17:49]--[2020-10-10 Sat 18:49] =>  1:00
+  CLOCK: [2020-10-10 Sat 12:49]--[2020-10-10 Sat 18:49] =>  6:00
