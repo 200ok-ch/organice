@@ -1908,10 +1908,5 @@ describe('org reducer', () => {
       const header = state.org.present.get('headers').get(1);
       expect(header.get('totalTimeLogged')).toEqual(25200000);
     });
-
-    it('sets a `totalTimeLogged` for headers with clock entries without LOGBOOK', () => {
-      const header = state.org.present.get('headers').get(2);
-      expect(header.get('totalTimeLogged')).toEqual(25200000);
-    });
   });
 });
