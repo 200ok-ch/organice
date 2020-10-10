@@ -59,6 +59,8 @@ describe('Unit Tests for AgendaDay', () => {
             },
           ],
           propertyListItems: [],
+          totalTimeLogged: 0,
+          totalTimeLoggedRecursive: 0,
         },
       ],
     ];
