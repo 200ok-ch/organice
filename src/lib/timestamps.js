@@ -174,6 +174,10 @@ export const applyRepeater = (timestamp, currentDate) => {
 
 export const timestampDuration = (startTimestamp, endTimestamp) => {
   let [start, end] = [startTimestamp, endTimestamp].map(dateForTimestamp);
+  return dateDuration(start, end);
+};
+
+export const dateDuration = (start, end) => {
   let pad = ' ';
   if (start > end) {
     pad = '-';
@@ -187,4 +191,11 @@ export const timestampDuration = (startTimestamp, endTimestamp) => {
   const minutes = minDiff % 60;
   const minutesText = minutes >= 10 ? minutes : `0${minutes}`;
   return `${pad}${hours}:${minutesText}`;
+};
+
+export const millisDuration = (millis) => {
+  if (millis === undefined) {
+    return '';
+  }
+  return dateDuration(new Date(0), new Date(millis));
 };

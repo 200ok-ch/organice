@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
+import { updateHeadersTotalTimeLogged } from '../lib/clocking';
 
 import {
   extractAllOrgTags,
@@ -1102,11 +1103,14 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-export default (state = Map(), action) => {
-  if (action.dirtying) {
-    state = state.set('isDirty', true);
+const setShowClockDisplay = (state, action) => {
+  if (action.showClockDisplay) {
+    state = state.update('headers', updateHeadersTotalTimeLogged);
   }
+  return state.set('showClockDisplay', action.showClockDisplay);
+};
 
+const reducer = (state, action) => {
   switch (action.type) {
     case 'DISPLAY_FILE':
       return displayFile(state, action);
@@ -1218,10 +1222,25 @@ export default (state = Map(), action) => {
       return updateLogEntryTime(state, action);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
+    case 'TOGGLE_CLOCK_DISPLAY':
+      return setShowClockDisplay(state, action);
 
     default:
       return state;
   }
+};
+
+export default (state = Map(), action) => {
+  if (action.dirtying) {
+    state = state.set('isDirty', true);
+  }
+
+  state = reducer(state, action);
+
+  if (action.dirtying && state.get('showClockDisplay')) {
+    state = state.update('headers', updateHeadersTotalTimeLogged);
+  }
+  return state;
 };
 
 /**

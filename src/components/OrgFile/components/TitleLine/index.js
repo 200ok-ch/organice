@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { getCurrentTimestampAsText, millisDuration } from '../../../../lib/timestamps';
 import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
 
 import { generateTitleLine } from '../../../../lib/export_org';
@@ -183,15 +183,29 @@ class TitleLine extends PureComponent {
       shouldDisableActions,
       shouldDisableExplicitWidth,
       todoKeywordSets,
+      showClockDisplay,
     } = this.props;
     const { containerWidth } = this.state;
 
     const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
+    const titleLineStyle = {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'space-between',
+    };
+
     const titleStyle = {
       color,
       wordBreak: 'break-word',
+    };
+
+    const clockDisplayStyle = {
+      color,
+      minWidth: '5em',
+      textAlign: 'right',
+      marginRight: '5px',
     };
 
     return (
@@ -244,18 +258,24 @@ class TitleLine extends PureComponent {
             </div>
           </div>
         ) : (
-          <div>
-            <span style={titleStyle} ref={this.handleTitleSpanRef}>
-              <AttributedString
-                parts={header.getIn(['titleLine', 'title'])}
-                subPartDataAndHandlers={{
-                  onTimestampClick: this.handleTimestampClick,
-                  shouldDisableActions,
-                }}
-              />
-              {!header.get('opened') && hasContent ? '...' : ''}
-            </span>
-
+          <div style={{ width: '100%' }}>
+            <div style={titleLineStyle}>
+              <span style={titleStyle} ref={this.handleTitleSpanRef}>
+                <AttributedString
+                  parts={header.getIn(['titleLine', 'title'])}
+                  subPartDataAndHandlers={{
+                    onTimestampClick: this.handleTimestampClick,
+                    shouldDisableActions,
+                  }}
+                />
+                {!header.get('opened') && hasContent ? '...' : ''}
+              </span>
+              {showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0 ? (
+                <span style={clockDisplayStyle}>
+                  {millisDuration(header.get('totalTimeLoggedRecursive'))}
+                </span>
+              ) : null}
+            </div>
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
                 {header
@@ -287,6 +307,7 @@ const mapStateToProps = (state, ownProps) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),
+    showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };
 

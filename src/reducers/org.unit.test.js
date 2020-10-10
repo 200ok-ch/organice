@@ -1889,4 +1889,24 @@ describe('org reducer', () => {
       check_kept((st) => st.get('headers'));
     });
   });
+
+  describe('show clock display', () => {
+    let state;
+    const testOrgFile = readFixture('clock_entries');
+
+    beforeEach(() => {
+      state = readInitialState();
+      state.org.present = parseOrg(testOrgFile);
+    });
+
+    it('sets no `totalTimeLogged` for headers without clock entries', () => {
+      const header = state.org.present.get('headers').get(0);
+      expect(header.get('totalTimeLogged')).toEqual(0);
+    });
+
+    it('sets a `totalTimeLogged` for headers with clock entries within LOGBOOK', () => {
+      const header = state.org.present.get('headers').get(1);
+      expect(header.get('totalTimeLogged')).toEqual(25200000);
+    });
+  });
 });

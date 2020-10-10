@@ -1,0 +1,24 @@
+* No clock entries
+* With clock entries within LOGBOOK
+  :LOGBOOK:
+  CLOCK: [2020-10-10 Sat 17:49]--[2020-10-10 Sat 18:49] =>  1:00
+  CLOCK: [2020-10-10 Sat 12:49]--[2020-10-10 Sat 18:49] =>  6:00
+  :END:
+* With clock entries without LOGBOOK
+  CLOCK: [2020-10-10 Sat 17:49]--[2020-10-10 Sat 18:49] =>  1:00
+  CLOCK: [2020-10-10 Sat 12:49]--[2020-10-10 Sat 18:49] =>  6:00
+
+organice only has partial support for this. It'll display the
+timestamps correctly and can edit them as a timestamp range. However,
+a change will not reflect in updating the time distance. The reason is
+clock entries without a drawer are not the default in Emacs for quite
+a while.
+
+* With clock entries within custom drawer
+  :timedrawer:
+  CLOCK: [2020-10-10 Sat 17:49]--[2020-10-10 Sat 18:49] =>  1:00
+  CLOCK: [2020-10-10 Sat 12:49]--[2020-10-10 Sat 18:49] =>  6:00
+  :END:
+
+organice does support this only in the same way as it does partially
+support clock entries without LOGBOOK.

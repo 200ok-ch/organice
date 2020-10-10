@@ -52,15 +52,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               >
                 TODO
               </span>
-              <div>
-                <span
-                  style="color: black; word-break: break-word;"
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  style="width: 100%; display: flex; justify-content: space-between;"
                 >
-                  <span>
-                    A todo item with schedule and deadline
+                  <span
+                    style="color: black; word-break: break-word;"
+                  >
+                    <span>
+                      A todo item with schedule and deadline
+                    </span>
+                    
                   </span>
-                  
-                </span>
+                </div>
               </div>
             </div>
             <div
@@ -93,15 +99,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               >
                 TODO
               </span>
-              <div>
-                <span
-                  style="color: black; word-break: break-word;"
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  style="width: 100%; display: flex; justify-content: space-between;"
                 >
-                  <span>
-                    A repeating todo
+                  <span
+                    style="color: black; word-break: break-word;"
+                  >
+                    <span>
+                      A repeating todo
+                    </span>
+                    
                   </span>
-                  
-                </span>
+                </div>
               </div>
             </div>
             <div
@@ -134,15 +146,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               >
                 FINISHED
               </span>
-              <div>
-                <span
-                  style="color: black; word-break: break-word;"
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  style="width: 100%; display: flex; justify-content: space-between;"
                 >
-                  <span>
-                    A header with a custom todo sequence in DONE state
+                  <span
+                    style="color: black; word-break: break-word;"
+                  >
+                    <span>
+                      A header with a custom todo sequence in DONE state
+                    </span>
+                    
                   </span>
-                  
-                </span>
+                </div>
               </div>
             </div>
             <div />
@@ -162,15 +180,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               >
                 DONE
               </span>
-              <div>
-                <span
-                  style="color: black; word-break: break-word;"
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  style="width: 100%; display: flex; justify-content: space-between;"
                 >
-                  <span>
-                    A headline that's done a day earlier even
+                  <span
+                    style="color: black; word-break: break-word;"
+                  >
+                    <span>
+                      A headline that's done a day earlier even
+                    </span>
+                    
                   </span>
-                  
-                </span>
+                </div>
               </div>
             </div>
             <div
@@ -203,15 +227,21 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               >
                 DONE
               </span>
-              <div>
-                <span
-                  style="color: black; word-break: break-word;"
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  style="width: 100%; display: flex; justify-content: space-between;"
                 >
-                  <span>
-                    A headline that's done since a loong time
+                  <span
+                    style="color: black; word-break: break-word;"
+                  >
+                    <span>
+                      A headline that's done since a loong time
+                    </span>
+                    
                   </span>
-                  
-                </span>
+                </div>
               </div>
             </div>
             <div
@@ -325,18 +355,23 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  Top level header
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    Top level header
+                  </span>
+                  ...
                 </span>
-                ...
-              </span>
+              </div>
             </div>
           </div>
           <div />
@@ -371,18 +406,23 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  Another top level header
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    Another top level header
+                  </span>
+                  ...
                 </span>
-                ...
-              </span>
+              </div>
             </div>
           </div>
           <div />
@@ -417,18 +457,23 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  A header with tags                                              
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    A header with tags                                              
+                  </span>
+                  
                 </span>
-                
-              </span>
+              </div>
               <div>
                 <div
                   class="header-tag"
@@ -475,25 +520,30 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  A header with 
-                  <a
-                    href="https://organice.200ok.ch"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    a link
-                  </a>
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    A header with 
+                    <a
+                      href="https://organice.200ok.ch"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      a link
+                    </a>
+                  </span>
+                  
                 </span>
-                
-              </span>
+              </div>
             </div>
           </div>
           <div />
@@ -528,18 +578,23 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  A header with various links as content
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    A header with various links as content
+                  </span>
+                  ...
                 </span>
-                ...
-              </span>
+              </div>
             </div>
           </div>
           <div />
@@ -574,18 +629,23 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  A header with a URL, mail address and phone number as content
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    A header with a URL, mail address and phone number as content
+                  </span>
+                  ...
                 </span>
-                ...
-              </span>
+              </div>
             </div>
           </div>
           <div />
@@ -620,22 +680,27 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="title-line"
-            style="width: 0px;"
           >
             <span
               class="todo-keyword todo-keyword--done-state"
             >
               FINISHED
             </span>
-            <div>
-              <span
-                style="word-break: break-word;"
+            <div
+              style="width: 100%;"
+            >
+              <div
+                style="width: 100%; display: flex; justify-content: space-between;"
               >
-                <span>
-                  A header with a custom todo sequence in DONE state
+                <span
+                  style="word-break: break-word;"
+                >
+                  <span>
+                    A header with a custom todo sequence in DONE state
+                  </span>
+                  
                 </span>
-                
-              </span>
+              </div>
             </div>
           </div>
           <div />

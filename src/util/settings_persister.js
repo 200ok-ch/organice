@@ -130,6 +130,12 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
+    category: 'org',
+    name: 'showClockDisplay',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
+  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',

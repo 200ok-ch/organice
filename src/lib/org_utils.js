@@ -50,8 +50,8 @@ export const headerWithId = (headers, headerId) => {
   return headers.get(indexOfHeaderWithId(headers, headerId));
 };
 
-const subheaderIndexRangeForHeaderId = (headers, headerId) => {
-  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
+const subheaderIndexRangeForHeaderIndex = (headers, headerIndex) => {
+  const header = headers.get(headerIndex);
 
   const afterHeaders = headers.slice(headerIndex + 1);
   const nextSiblingHeaderIndex = afterHeaders.findIndex((siblingHeader) => {
@@ -65,9 +65,19 @@ const subheaderIndexRangeForHeaderId = (headers, headerId) => {
   }
 };
 
+const subheaderIndexRangeForHeaderId = (headers, headerId) => {
+  const headerIndex = indexOfHeaderWithId(headers, headerId);
+  return subheaderIndexRangeForHeaderIndex(headers, headerIndex);
+};
+
 export const subheaderIndicesOfHeaderWithId = (headers, headerId) => {
   let [begin, end] = subheaderIndexRangeForHeaderId(headers, headerId);
   return _.range(begin, end);
+};
+
+export const subheadersOfHeaderWithIndex = (headers, headerIndex) => {
+  let [begin, end] = subheaderIndexRangeForHeaderIndex(headers, headerIndex);
+  return headers.slice(begin, end);
 };
 
 export const subheadersOfHeaderWithId = (headers, headerId) => {

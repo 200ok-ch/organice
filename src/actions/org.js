@@ -573,3 +573,8 @@ export const setSearchFilterInformation = (searchFilter, cursorPosition, context
   cursorPosition,
   context,
 });
+
+export const setShowClockDisplay = (showClockDisplay) => ({
+  type: 'TOGGLE_CLOCK_DISPLAY',
+  showClockDisplay,
+});

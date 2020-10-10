@@ -6,6 +6,7 @@ import { withRouter, Link } from 'react-router-dom';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as baseActions from '../../actions/base';
+import * as orgActions from '../../actions/org';
 
 import './stylesheet.css';
 
@@ -28,7 +29,9 @@ const Settings = ({
   agendaDefaultDeadlineDelayUnit,
   hasUnseenChangelog,
   syncBackend,
+  showClockDisplay,
   base,
+  org,
 }) => {
   const handleSignOutClick = () =>
     window.confirm('Are you sure you want to sign out?') ? syncBackend.signOut() : void 0;
@@ -68,6 +71,8 @@ const Settings = ({
 
   const handleShouldStoreSettingsInSyncBackendChange = () =>
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
+
+  const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
 
   const handleChangelogClick = () => base.pushModalPage('changelog');
 
@@ -212,6 +217,17 @@ const Settings = ({
         </div>
       </div>
 
+      <div className="setting-container">
+        <div className="setting-label">
+          Display time summaries
+          <div className="setting-label__description">
+            This puts overlays at the end of each headline, showing the total time recorded under
+            that heading, including the time of any subheadings.
+          </div>
+        </div>
+        <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
+      </div>
+
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>
           Capture templates
@@ -275,6 +291,7 @@ const mapStateToProps = (state) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
+    showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };
 
@@ -282,6 +299,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     syncBackend: bindActionCreators(syncBackendActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),
+    org: bindActionCreators(orgActions, dispatch),
   };
 };
 
