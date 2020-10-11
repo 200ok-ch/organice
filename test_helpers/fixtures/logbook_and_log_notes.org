@@ -27,5 +27,19 @@
 
   description text
 
+* Header with =LOGBOOK= drawer and note with standard spacing in between
+  :LOGBOOK:
+  CLOCK: [2020-10-11 Sun 18:15]--[2020-10-11 Sun 18:25] =>  0:10
+  :END:
+
+
+  - Note taken on [2020-10-11 Sun 18:25] \\
+    bar
+* Header with =LOGBOOK= drawer and note without spacing in between
+  :LOGBOOK:
+  CLOCK: [2020-10-11 Sun 18:15]--[2020-10-11 Sun 18:25] =>  0:10
+  :END:
+  - Note taken on [2020-10-11 Sun 18:25] \\
+    bar
 * Boring header
 no text
