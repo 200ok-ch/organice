@@ -18,6 +18,26 @@
 // Just wrap parser.parse() in a try-catch block and handle the case of an
 // incomplete/incorrect filter string.
 
+{
+  const checkDate = (year, month, day) => {
+    if (month === null) {
+      return { type: 'timestamp', year: parseInt(year), month, day };
+    } else {
+      const date = new Date(year + "-" + month + "-" + (day === null ? "01" : day));
+      if (isNaN(date.valueOf())) {
+        throw {message: 'invalid date'};
+      }
+    }
+    return { 
+      type: 'timestamp', 
+      year: parseInt(year), 
+      month: parseInt(month), 
+      day: day === null ? null : parseInt(day) 
+    };
+  };
+
+}
+
 Expression "filter expression"
   = _* head:LocationAnnotedTerm tail:(_+ LocationAnnotedTerm)* _* {
       return tail.reduce((result, element) => {
@@ -41,7 +61,8 @@ Term "filter term"
   /     a:PlainTerm { a.exclude = false; return a; }
 
 PlainTerm
-  = TermText
+  = TermField
+  / TermText
   / TermProp
   / TermTag
 
@@ -68,6 +89,48 @@ TermProp "property filter term"
             words: b === null ? [''] : b
           }
         };
+
+TermField "search outside of header"
+  = "clock:"     a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
+  / "sched:"     a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
+  / "scheduled:" a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
+  / "dead:"      a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
+  / "deadline:"  a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
+
+TimeRange "moments and timeranges"
+  = ".." a:Moment { return { type: 'range', from: null, to: a }; }
+  / a:Moment? ".." b:Moment? { 
+      if (a === null && b === null) {
+        throw {message: `empty timerange '..'`};
+      }
+      return { type: 'range', from: a, to: b }; 
+    }
+  / a:Moment { return { type: 'date', date: a }; }
+
+Moment "moment"
+  = TimeOffset
+  / TimeStamp
+  / TimeUnit
+  / "today" { return { type: 'special', value: 'today' }; }
+  / "now" { return { type: 'special', value: 'now' }; }
+
+TimeStamp
+  = year:Year [-./]? month:Month? [-./]? day:Day? { return checkDate(year, month, day); }
+
+TimeUnit
+  = a:[hdwmy] { return { type: 'unit', unit: a }; }
+
+Year "year"
+  = a:$([0-9][0-9][0-9][0-9]) { return a; }
+
+Month "month"
+  = a:$([0-9][0-9]) { return a; }
+
+Day "day"
+  =  a:$([0-9][0-9]) { return a; }
+
+TimeOffset "offset"
+  = a:$([0-9]+) b:([hdwmy]) { return { type: 'offset', value: parseInt(a), unit: b, }; }
 
 StringAlternatives "alternatives"
   = head:String tail:("|" String)* {

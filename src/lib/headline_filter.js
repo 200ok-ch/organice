@@ -1,9 +1,191 @@
 // Matcher
 
 import { fromJS } from 'immutable';
+import {
+  startOfDay,
+  endOfDay,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  startOfHour,
+} from 'date-fns';
 import { attributedStringToRawText } from './export_org.js';
 import { computeAllPropertyNames, computeAllPropertyValuesFor } from './org_utils';
+import {
+  timestampForDate,
+  getCurrentTimestamp,
+  addTimestampUnitToDate,
+  subtractTimestampUnitFromDate,
+  sameDay,
+  sameMonth,
+  sameYear,
+  dateForTimestamp,
+} from './timestamps';
 
+const startOfDate = (from) => {
+  const temp = new Date();
+  temp.setFullYear(from.year);
+  if (from.month === null) {
+    return startOfYear(temp);
+  } else if (from.day === null) {
+    temp.setMonth(from.month + 1);
+    return startOfMonth(temp);
+  } else {
+    temp.setMonth(from.month + 1);
+    temp.setDate(from.day);
+    return startOfDay(temp);
+  }
+};
+
+const endOfDate = (to) => {
+  const temp = new Date();
+  temp.setFullYear(to.year);
+  if (to.month === null) {
+    return endOfYear(temp);
+  } else if (to.day === null) {
+    temp.setMonth(to.month + 1);
+    return endOfMonth(temp);
+  } else {
+    temp.setMonth(to.month + 1);
+    temp.setDate(to.day);
+    return endOfDay(temp);
+  }
+};
+
+const fromSpecial = (from) => {
+  const temp = new Date();
+  if (from.value == 'now') {
+    return temp;
+  } else if (from.value == 'today') {
+    return startOfDay(temp);
+  }
+};
+
+const toSpecial = (to) => {
+  const temp = new Date();
+  if (to.value == 'now') {
+    return temp;
+  } else if (to.value == 'today') {
+    return endOfDay(temp);
+  }
+};
+
+const fromUnit = (date, unit) => {
+  const d = new Date(date);
+  switch (unit) {
+    case 'h':
+      return startOfHour(d);
+    case 'd':
+      return startOfDay(d);
+    case 'w':
+      return startOfWeek(d);
+    case 'm':
+      return startOfMonth(d);
+    case 'y':
+      return startOfYear(d);
+  }
+};
+
+const toUnit = (unit, date) => {
+  const d = new Date(date);
+  switch (unit) {
+    case 'h':
+      return endOfHour(d);
+    case 'd':
+      return endOfDay(d);
+    case 'w':
+      return endOfWeek(d);
+    case 'm':
+      return endOfMonth(d);
+    case 'y':
+      return endOfYear(d);
+  }
+};
+
+const resolveFrom = (from) => {
+  if (from === null) {
+    return new Date();
+  } else if (from.type === 'timestamp') {
+    return startOfDate(from);
+  } else if (from.type === 'special') {
+    return fromSpecial(from);
+  } else if (from.type === 'offset') {
+    return subtractTimestampUnitFromDate(new Date(), from.value, from.unit);
+  } else if (from.type === 'unit') {
+    return fromUnit(new Date(), from.unit);
+  }
+};
+
+const resolveTo = (to) => {
+  if (to === null) {
+    return new Date();
+  } else if (to.type === 'timestamp') {
+    return endOfDate(to);
+  } else if (to.type === 'special') {
+    return toSpecial(to);
+  } else if (to.type === 'offset') {
+    return addTimestampUnitFromDate(new Date(), to.value, to.unit);
+  } else if (to.type === 'unit') {
+    return toUnit(new Date(), to.unit);
+  }
+};
+
+const isRelative = (moment) => {
+  return moment.type === 'offset' || moment.type === 'unit';
+};
+
+const timeFilter = (filterDescription) => {
+  const timeFilterDescription = filterDescription.field.timerange;
+  let lower;
+  let upper;
+  if (timeFilterDescription.type === 'date') {
+    const date = timeFilterDescription.date;
+    if (date.type === 'offset') {
+      lower = new Date();
+      upper = addTimestampUnitToDate(new Date(lower));
+    } else {
+      lower = resolveFrom(date);
+      upper = resolveTo(date);
+    }
+    return (timestamp) =>
+      lower <= dateForTimestamp(timestamp) && dateForTimestamp(timestamp) <= upper;
+  } else if (timeFilterDescription.type === 'range') {
+    const from = timeFilterDescription.from
+      ? timeFilterDescription.from
+      : { type: 'special', value: 'now' };
+    const to = timeFilterDescription.to
+      ? timeFilterDescription.to
+      : { type: 'special', value: 'now' };
+    let lower;
+    let upper;
+    if (isRelative(from) === isRelative(to)) {
+      lower = resolveFrom(from);
+      upper = resolveTo(to);
+    } else if (from.type === 'offset') {
+      upper = resolveTo(to);
+      lower = subtractTimestampUnitToDate(new Date(upper), from.value, from.unit);
+    } else if (to.type === 'offset') {
+      lower = resolveFrom(from);
+      upper = addTimestampUnitToDate(new Date(lower), to.value, to.unit);
+    } else if (from.type === 'unit') {
+      upper = resolveTo(to);
+      lower = fromUnit(upper, from.unit);
+    } else if (to.type === 'unit') {
+      lower = resolveFrom(from);
+      upper = toUnit(lower, to.unit);
+    } else {
+      throw 'unable to construct timerangefilter';
+    }
+    return (timestamp) =>
+      lower <= dateForTimestamp(timestamp) && dateForTimestamp(timestamp) <= upper;
+  } else {
+    throw 'unable to construct timefilter';
+  }
+};
+
+// TODO refactor to only do things concerning header in returned function
+// do as much as possible in closure
 export const isMatch = (filterExpr) => (header) => {
   const headLine = header.get('titleLine');
   const tags = headLine.get('tags');
@@ -13,6 +195,20 @@ export const isMatch = (filterExpr) => (header) => {
   const properties = header
     .get('propertyListItems')
     .map((p) => [p.get('property'), attributedStringToRawText(p.get('value'))]);
+  const scheduleds = header
+    .get('planningItems')
+    .filter((p) => p.get('type') === 'SCHEDULED')
+    .map((p) => p.get('timestamp'));
+  const deadlines = header
+    .get('planningItems')
+    .filter((p) => p.get('type') === 'DEADLINE')
+    .map((p) => p.get('timestamp'));
+  const clocks = header
+    .get('logBookEntries')
+    .flatMap((l) => [l.get('start'), l.get('end')])
+    .filter((t) => t !== undefined && t !== null);
+
+  console.debug(scheduleds);
 
   const filterFilter = (type, exclude) => (x) => x.type === type && x.exclude === exclude;
   const words = (x) => x.words;
@@ -24,6 +220,10 @@ export const isMatch = (filterExpr) => (header) => {
   const filterProps = filterExpr
     .filter(filterFilter('property', false))
     .map((x) => [x.property, x.words]);
+  const filterField = filterExpr.filter(filterFilter('field', false));
+  const filterClock = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
+  const filterSchedule = filterField.filter((f) => f.field.type === 'scheduled').map(timeFilter);
+  const filterDeadline = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
 
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
@@ -32,7 +232,11 @@ export const isMatch = (filterExpr) => (header) => {
     .filter(filterFilter('property', true))
     .map((x) => [x.property, x.words]);
 
+  console.log('filter incoming');
+  console.debug(filterSchedule[0]);
+
   const orChain = (source) => (xs) => xs.some((x) => source.includes(x));
+  const orChainDate = (dates) => (filter) => dates.size !== 0 && dates.some((x) => filter(x));
   const propertyFilter = ([x, ys]) =>
     !properties
       .filter(([key, val]) => {
@@ -43,11 +247,15 @@ export const isMatch = (filterExpr) => (header) => {
         return nameMatch && valueMatch;
       })
       .isEmpty();
+
   return (
     filterTags.every(orChain(tags)) &&
     filterCS.every(orChain(headlineText)) &&
     filterIC.every(orChain(headlineText.toLowerCase())) &&
     filterProps.every(propertyFilter) &&
+    filterClock.every(orChainDate(clocks)) &&
+    filterSchedule.every(orChainDate(scheduleds)) &&
+    filterDeadline.every(orChainDate(deadlines)) &&
     !filterTagsExcl.some(orChain(tags)) &&
     !filterCSExcl.some(orChain(headlineText)) &&
     !filterICExcl.some(orChain(headlineText.toLowerCase())) &&
