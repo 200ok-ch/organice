@@ -2,24 +2,22 @@
 
 import { fromJS } from 'immutable';
 import {
-  startOfDay,
-  endOfDay,
-  startOfMonth,
-  endOfMonth,
-  startOfYear,
-  endOfYear,
   startOfHour,
+  startOfDay,
+  startOfWeek,
+  startOfMonth,
+  startOfYear,
+  endOfHour,
+  endOfDay,
+  endOfWeek,
+  endOfMonth,
+  endOfYear,
 } from 'date-fns';
 import { attributedStringToRawText } from './export_org.js';
 import { computeAllPropertyNames, computeAllPropertyValuesFor } from './org_utils';
 import {
-  timestampForDate,
-  getCurrentTimestamp,
   addTimestampUnitToDate,
   subtractTimestampUnitFromDate,
-  sameDay,
-  sameMonth,
-  sameYear,
   dateForTimestamp,
 } from './timestamps';
 
@@ -125,7 +123,7 @@ const resolveTo = (to) => {
   } else if (to.type === 'special') {
     return toSpecial(to);
   } else if (to.type === 'offset') {
-    return addTimestampUnitFromDate(new Date(), to.value, to.unit);
+    return addTimestampUnitToDate(new Date(), to.value, to.unit);
   } else if (to.type === 'unit') {
     return toUnit(new Date(), to.unit);
   }
@@ -164,7 +162,7 @@ const timeFilter = (filterDescription) => {
       upper = resolveTo(to);
     } else if (from.type === 'offset') {
       upper = resolveTo(to);
-      lower = subtractTimestampUnitToDate(new Date(upper), from.value, from.unit);
+      lower = subtractTimestampUnitFromDate(new Date(upper), from.value, from.unit);
     } else if (to.type === 'offset') {
       lower = resolveFrom(from);
       upper = addTimestampUnitToDate(new Date(lower), to.value, to.unit);
