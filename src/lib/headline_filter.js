@@ -85,7 +85,7 @@ const fromUnit = (date, unit) => {
   }
 };
 
-const toUnit = (unit, date) => {
+const toUnit = (date, unit) => {
   const d = new Date(date);
   switch (unit) {
     case 'h':
@@ -177,6 +177,8 @@ const timeFilter = (filterDescription) => {
     }
     return (timestamp) =>
       lower <= dateForTimestamp(timestamp) && dateForTimestamp(timestamp) <= upper;
+  } else if (timeFilterDescription.type === 'all') {
+    return (timestamp) => true;
   } else {
     throw 'unable to construct timefilter';
   }

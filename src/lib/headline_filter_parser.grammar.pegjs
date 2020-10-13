@@ -101,7 +101,7 @@ TimeRange "moments and timeranges"
   = ".." a:Moment { return { type: 'range', from: null, to: a }; }
   / a:Moment? ".." b:Moment? { 
       if (a === null && b === null) {
-        throw {message: `empty timerange '..'`};
+        return { type: 'all'};
       }
       return { type: 'range', from: a, to: b }; 
     }
