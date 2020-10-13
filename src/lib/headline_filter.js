@@ -184,32 +184,10 @@ const timeFilter = (filterDescription) => {
   }
 };
 
-// TODO refactor to only do things concerning header in returned function
-// do as much as possible in closure
-export const isMatch = (filterExpr) => (header) => {
-  const headLine = header.get('titleLine');
-  const tags = headLine.get('tags');
-  const todoKeyword = headLine.get('todoKeyword');
-  const rawTitle = headLine.get('rawTitle');
-  const headlineText = todoKeyword ? `${todoKeyword} ${rawTitle}` : rawTitle;
-  const properties = header
-    .get('propertyListItems')
-    .map((p) => [p.get('property'), attributedStringToRawText(p.get('value'))]);
-  const scheduleds = header
-    .get('planningItems')
-    .filter((p) => p.get('type') === 'SCHEDULED')
-    .map((p) => p.get('timestamp'));
-  const deadlines = header
-    .get('planningItems')
-    .filter((p) => p.get('type') === 'DEADLINE')
-    .map((p) => p.get('timestamp'));
-  const clocks = header
-    .get('logBookEntries')
-    .flatMap((l) => [l.get('start'), l.get('end')])
-    .filter((t) => t !== undefined && t !== null);
+const orChain = (source) => (xs) => xs.some((x) => source.includes(x));
+const orChainDate = (dates) => (filter) => dates.size !== 0 && dates.some((x) => filter(x));
 
-  console.debug(scheduleds);
-
+export const isMatch = (filterExpr) => {
   const filterFilter = (type, exclude) => (x) => x.type === type && x.exclude === exclude;
   const words = (x) => x.words;
   const wordsLowerCase = (x) => x.words.map((y) => y.toLowerCase());
@@ -232,35 +210,53 @@ export const isMatch = (filterExpr) => (header) => {
     .filter(filterFilter('property', true))
     .map((x) => [x.property, x.words]);
 
-  console.log('filter incoming');
-  console.debug(filterSchedule[0]);
+  return (header) => {
+    const headLine = header.get('titleLine');
+    const tags = headLine.get('tags');
+    const todoKeyword = headLine.get('todoKeyword');
+    const rawTitle = headLine.get('rawTitle');
+    const headlineText = todoKeyword ? `${todoKeyword} ${rawTitle}` : rawTitle;
+    const properties = header
+      .get('propertyListItems')
+      .map((p) => [p.get('property'), attributedStringToRawText(p.get('value'))]);
+    const scheduleds = header
+      .get('planningItems')
+      .filter((p) => p.get('type') === 'SCHEDULED')
+      .map((p) => p.get('timestamp'));
+    const deadlines = header
+      .get('planningItems')
+      .filter((p) => p.get('type') === 'DEADLINE')
+      .map((p) => p.get('timestamp'));
+    const clocks = header
+      .get('logBookEntries')
+      .flatMap((l) => [l.get('start'), l.get('end')])
+      .filter((t) => t !== undefined && t !== null);
 
-  const orChain = (source) => (xs) => xs.some((x) => source.includes(x));
-  const orChainDate = (dates) => (filter) => dates.size !== 0 && dates.some((x) => filter(x));
-  const propertyFilter = ([x, ys]) =>
-    !properties
-      .filter(([key, val]) => {
-        // Property names (keys) are case-insensitive
-        // https://orgmode.org/manual/Property-Syntax.html
-        const nameMatch = key.toLowerCase() === x.toLowerCase();
-        const valueMatch = ys.some((y) => val.includes(y));
-        return nameMatch && valueMatch;
-      })
-      .isEmpty();
+    const propertyFilter = ([x, ys]) =>
+      !properties
+        .filter(([key, val]) => {
+          // Property names (keys) are case-insensitive
+          // https://orgmode.org/manual/Property-Syntax.html
+          const nameMatch = key.toLowerCase() === x.toLowerCase();
+          const valueMatch = ys.some((y) => val.includes(y));
+          return nameMatch && valueMatch;
+        })
+        .isEmpty();
 
-  return (
-    filterTags.every(orChain(tags)) &&
-    filterCS.every(orChain(headlineText)) &&
-    filterIC.every(orChain(headlineText.toLowerCase())) &&
-    filterProps.every(propertyFilter) &&
-    filterClock.every(orChainDate(clocks)) &&
-    filterSchedule.every(orChainDate(scheduleds)) &&
-    filterDeadline.every(orChainDate(deadlines)) &&
-    !filterTagsExcl.some(orChain(tags)) &&
-    !filterCSExcl.some(orChain(headlineText)) &&
-    !filterICExcl.some(orChain(headlineText.toLowerCase())) &&
-    !filterPropsExcl.some(propertyFilter)
-  );
+    return (
+      filterTags.every(orChain(tags)) &&
+      filterCS.every(orChain(headlineText)) &&
+      filterIC.every(orChain(headlineText.toLowerCase())) &&
+      filterProps.every(propertyFilter) &&
+      filterClock.every(orChainDate(clocks)) &&
+      filterSchedule.every(orChainDate(scheduleds)) &&
+      filterDeadline.every(orChainDate(deadlines)) &&
+      !filterTagsExcl.some(orChain(tags)) &&
+      !filterCSExcl.some(orChain(headlineText)) &&
+      !filterICExcl.some(orChain(headlineText.toLowerCase())) &&
+      !filterPropsExcl.some(propertyFilter)
+    );
+  };
 };
 
 // Suggestions / Completions

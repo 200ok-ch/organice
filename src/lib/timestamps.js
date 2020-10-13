@@ -99,23 +99,39 @@ export const dateForTimestamp = (timestamp) => {
   return parse(timestampString, 'yyyy-MM-dd HH:mm', new Date());
 };
 
-export const addTimestampUnitToDate = (date, numUnits, timestampUnit) =>
-  ({
-    h: addHours(date, numUnits),
-    d: addDays(date, numUnits),
-    w: addWeeks(date, numUnits),
-    m: addMonths(date, numUnits),
-    y: addYears(date, numUnits),
-  }[timestampUnit]);
+export const addTimestampUnitToDate = (date, numUnits, timestampUnit) => {
+  switch (timestampUnit) {
+    case 'h':
+      return addHours(date, numUnits);
+    case 'd':
+      return addDays(date, numUnits);
+    case 'w':
+      return addWeeks(date, numUnits);
+    case 'm':
+      return addMonths(date, numUnits);
+    case 'y':
+      return addYears(date, numUnits);
+    default:
+      return date;
+  }
+};
 
-export const subtractTimestampUnitFromDate = (date, numUnits, timestampUnit) =>
-  ({
-    h: subHours(date, numUnits),
-    d: subDays(date, numUnits),
-    w: subWeeks(date, numUnits),
-    m: subMonths(date, numUnits),
-    y: subYears(date, numUnits),
-  }[timestampUnit]);
+export const subtractTimestampUnitFromDate = (date, numUnits, timestampUnit) => {
+  switch (timestampUnit) {
+    case 'h':
+      return subHours(date, numUnits);
+    case 'd':
+      return subDays(date, numUnits);
+    case 'w':
+      return subWeeks(date, numUnits);
+    case 'm':
+      return subMonths(date, numUnits);
+    case 'y':
+      return subYears(date, numUnits);
+    default:
+      return date;
+  }
+};
 
 export const applyRepeater = (timestamp, currentDate) => {
   if (!timestamp.get('repeaterType')) {
