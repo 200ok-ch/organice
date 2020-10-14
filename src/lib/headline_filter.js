@@ -27,10 +27,10 @@ const startOfDate = (from) => {
   if (from.month === null) {
     return startOfYear(temp);
   } else if (from.day === null) {
-    temp.setMonth(from.month + 1);
+    temp.setMonth(from.month - 1);
     return startOfMonth(temp);
   } else {
-    temp.setMonth(from.month + 1);
+    temp.setMonth(from.month - 1);
     temp.setDate(from.day);
     return startOfDay(temp);
   }
@@ -42,10 +42,10 @@ const endOfDate = (to) => {
   if (to.month === null) {
     return endOfYear(temp);
   } else if (to.day === null) {
-    temp.setMonth(to.month + 1);
+    temp.setMonth(to.month - 1);
     return endOfMonth(temp);
   } else {
-    temp.setMonth(to.month + 1);
+    temp.setMonth(to.month - 1);
     temp.setDate(to.day);
     return endOfDay(temp);
   }
@@ -199,9 +199,20 @@ export const isMatch = (filterExpr) => {
     .filter(filterFilter('property', false))
     .map((x) => [x.property, x.words]);
   const filterField = filterExpr.filter(filterFilter('field', false));
+  const filterDate = filterField.filter((f) => f.field.type === 'date').map(timeFilter);
   const filterClock = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
   const filterSchedule = filterField.filter((f) => f.field.type === 'scheduled').map(timeFilter);
   const filterDeadline = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
+
+  /* TODO
+  const filterFieldExcl = filterExpr.filter(filterFilter('field', true));
+  const filterDateExcl = filterField.filter((f) => f.field.type === 'date').map(timeFilter);
+  const filterClockExcl = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
+  const filterScheduleExcl = filterField
+    .filter((f) => f.field.type === 'scheduled')
+    .map(timeFilter);
+  const filterDeadlineExcl = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
+  */
 
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
@@ -219,19 +230,20 @@ export const isMatch = (filterExpr) => {
     const properties = header
       .get('propertyListItems')
       .map((p) => [p.get('property'), attributedStringToRawText(p.get('value'))]);
-    const scheduleds = header
-      .get('planningItems')
+    const planningItems = header.get('planningItems');
+    const dates = planningItems.map((p) => p.get('timestamp'));
+    const scheduleds = planningItems
       .filter((p) => p.get('type') === 'SCHEDULED')
-      .map((p) => p.get('timestamp'));
-    const deadlines = header
-      .get('planningItems')
+      .map((p) => p.get('timestamp'))
+      .filter((p) => p.get('isActive') === true);
+    const deadlines = planningItems
       .filter((p) => p.get('type') === 'DEADLINE')
-      .map((p) => p.get('timestamp'));
+      .map((p) => p.get('timestamp'))
+      .filter((p) => p.get('isActive') === true);
     const clocks = header
       .get('logBookEntries')
       .flatMap((l) => [l.get('start'), l.get('end')])
       .filter((t) => t !== undefined && t !== null);
-
     const propertyFilter = ([x, ys]) =>
       !properties
         .filter(([key, val]) => {
@@ -248,13 +260,19 @@ export const isMatch = (filterExpr) => {
       filterCS.every(orChain(headlineText)) &&
       filterIC.every(orChain(headlineText.toLowerCase())) &&
       filterProps.every(propertyFilter) &&
+      filterDate.every(orChainDate(dates)) &&
       filterClock.every(orChainDate(clocks)) &&
       filterSchedule.every(orChainDate(scheduleds)) &&
       filterDeadline.every(orChainDate(deadlines)) &&
       !filterTagsExcl.some(orChain(tags)) &&
       !filterCSExcl.some(orChain(headlineText)) &&
       !filterICExcl.some(orChain(headlineText.toLowerCase())) &&
-      !filterPropsExcl.some(propertyFilter)
+      !filterPropsExcl.some(propertyFilter) //&&
+      // TODO: logic has to work on timestamp basis,
+      // can't reject a header because one of potentially many timestamps is excluded.
+      //!filterClockExcl.some(orChainDate(clocks)) &&
+      //!filterScheduleExcl.some(orChainDate(scheduleds)) &&
+      //!filterDeadlineExcl.some(orChainDate(deadlines))
     );
   };
 };

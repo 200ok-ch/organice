@@ -1,0 +1,134 @@
+* scheduling
+** single scheduled item
+   SCHEDULED: <2020-10-13 Tue>
+** scheduled timerange
+   SCHEDULED: <2020-10-13 Tue 14:00-23:00>
+** TODO repeater
+   SCHEDULED: <2020-10-13 Tue +1w>
+** TODO repeater with logged status change
+   SCHEDULED: <2020-10-20 Tue +1w>
+   :PROPERTIES:
+   :LAST_REPEAT: [2020-10-14 Wed 18:41]
+   :END:
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       <2020-10-14 Wed>
+   :END:
+* deadlines
+** active deadlines
+*** simple active deadline
+    DEADLINE: <2020-10-13 Tue>
+** inactive deadlines
+*** simple inactive deadline
+    DEADLINE: [2020-10-13 Tue]
+* timestamps
+** active timestamps
+*** simple active timestamp <2020-10-13 Tue>
+*** simple active timestamp in description
+<2020-10-13 Tue>
+** inactive timestamps
+*** simple inactive timestamp [2020-10-13 Tue]
+*** simple inactive timestamp in description
+[2020-10-13 Tue]
+* log notes
+** simple timestamp in log notes
+   - Note taken on [2020-10-13 Tue 20:34] \\
+     I'm a note
+* clocking
+** 2019
+*** january 2019
+    :LOGBOOK:
+    CLOCK: [2019-01-01 Tue 19:00]
+    :END:
+*** february 2019
+    :LOGBOOK:
+    CLOCK: [2019-02-01 Fri 19:00]
+    :END:
+*** march 2019
+    :LOGBOOK:
+    CLOCK: [2019-03-01 Fri 19:00]
+    :END:
+*** april 2019
+    :LOGBOOK:
+    CLOCK: [2019-04-01 Mon 19:00]
+    :END:
+*** may 2019
+    :LOGBOOK:
+    CLOCK: [2019-05-01 Mi 19:00]
+    :END:
+*** june 2019
+    :LOGBOOK:
+    CLOCK: [2019-06-01 Sa 19:00]
+    :END:
+*** juli 2019
+    :LOGBOOK:
+    CLOCK: [2019-07-01 Mo 19:00]
+    :END:
+*** august 2019
+    :LOGBOOK:
+    CLOCK: [2019-08-01 Do 19:00]
+    :END:
+*** september 2019
+    :LOGBOOK:
+    CLOCK: [2019-09-01 So 19:00]
+    :END:
+*** october 2019
+    :LOGBOOK:
+    CLOCK: [2019-10-01 Di 19:00]
+    :END:
+*** november 2019
+    :LOGBOOK:
+    CLOCK: [2019-11-01 Fr 19:00]
+    :END:
+*** december 2019
+    :LOGBOOK:
+    CLOCK: [2019-12-01 So 19:00]
+    :END:
+** 2020
+*** january 2020
+    :LOGBOOK:
+    CLOCK: [2020-01-01 Mi 19:00]--[2020-01-01 Mi 20:00] =>  1:00
+    :END:
+*** february 2020
+    :LOGBOOK:
+    CLOCK: [2020-02-01 Sa 19:00]--[2020-02-01 Sa 20:00] =>  1:00
+    :END:
+*** march 2020
+    :LOGBOOK:
+    CLOCK: [2020-03-01 So 19:00]--[2020-03-01 So 20:00] =>  1:00
+    :END:
+*** april 2020
+    :LOGBOOK:
+    CLOCK: [2020-04-01 Mi 19:00]--[2020-04-01 Mi 20:00] =>  1:00
+    :END:
+*** may 2020
+    :LOGBOOK:
+    CLOCK: [2020-05-01 Fr 19:00]--[2020-05-01 Fr 20:00] =>  1:00
+    :END:
+*** june 2020
+    :LOGBOOK:
+    CLOCK: [2020-06-01 Mo 19:00]--[2020-06-01 Mo 20:00] =>  1:00
+    :END:
+*** juli 2020
+    :LOGBOOK:
+    CLOCK: [2020-07-01 Mi 19:00]--[2020-07-01 Mi 20:00] =>  1:00
+    :END:
+*** august 2020
+    :LOGBOOK:
+    CLOCK: [2020-08-01 Sa 19:00]--[2020-08-01 Sa 20:00] =>  1:00
+    :END:
+*** september 2020
+    :LOGBOOK:
+    CLOCK: [2020-09-01 Di 19:00]--[2020-09-01 Di 20:00] =>  1:00
+    :END:
+*** october 2020
+    :LOGBOOK:
+    CLOCK: [2020-10-01 Do 19:00]--[2020-10-01 Do 20:00] =>  1:00
+    :END:
+*** november 2020
+    :LOGBOOK:
+    CLOCK: [2020-11-01 So 19:00]--[2020-11-01 So 20:00] =>  1:00
+    :END:
+*** december 2020
+    :LOGBOOK:
+    CLOCK: [2020-12-01 Di 19:00]--[2020-12-01 Di 20:00] =>  1:00
+    :END:

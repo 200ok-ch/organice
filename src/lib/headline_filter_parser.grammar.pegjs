@@ -57,7 +57,13 @@ LocationAnnotedTerm
 
 // The order of lines is important here.
 Term "filter term"
-  = "-" a:PlainTerm { a.exclude = true;  return a; }
+  = "-" a:PlainTerm { 
+    if ( a.type === 'field' && a.field.type !== 'desc') {
+      throw { message: `can't negate timerange searches yet` };
+    } else {
+      a.exclude = true;  
+      return a;
+    } }
   /     a:PlainTerm { a.exclude = false; return a; }
 
 PlainTerm
@@ -91,7 +97,8 @@ TermProp "property filter term"
         };
 
 TermField "search outside of header"
-  = "clock:"     a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
+  = "date:"     a:TimeRange  { return { type: 'field', field: { type: 'date',      timerange: a } }; }
+  / "clock:"     a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
   / "sched:"     a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
   / "scheduled:" a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
   / "dead:"      a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
