@@ -204,16 +204,6 @@ export const isMatch = (filterExpr) => {
   const filterSchedule = filterField.filter((f) => f.field.type === 'scheduled').map(timeFilter);
   const filterDeadline = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
 
-  /* TODO
-  const filterFieldExcl = filterExpr.filter(filterFilter('field', true));
-  const filterDateExcl = filterField.filter((f) => f.field.type === 'date').map(timeFilter);
-  const filterClockExcl = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
-  const filterScheduleExcl = filterField
-    .filter((f) => f.field.type === 'scheduled')
-    .map(timeFilter);
-  const filterDeadlineExcl = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
-  */
-
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
   const filterICExcl = filterExpr.filter(filterFilter('ignore-case', true)).map(wordsLowerCase);
@@ -230,16 +220,16 @@ export const isMatch = (filterExpr) => {
     const properties = header
       .get('propertyListItems')
       .map((p) => [p.get('property'), attributedStringToRawText(p.get('value'))]);
-    const planningItems = header.get('planningItems');
+    const planningItems = header
+      .get('planningItems')
+      .filter((p) => p.get('timestamp').get('isActive') === true);
     const dates = planningItems.map((p) => p.get('timestamp'));
     const scheduleds = planningItems
       .filter((p) => p.get('type') === 'SCHEDULED')
-      .map((p) => p.get('timestamp'))
-      .filter((p) => p.get('isActive') === true);
+      .map((p) => p.get('timestamp'));
     const deadlines = planningItems
       .filter((p) => p.get('type') === 'DEADLINE')
-      .map((p) => p.get('timestamp'))
-      .filter((p) => p.get('isActive') === true);
+      .map((p) => p.get('timestamp'));
     const clocks = header
       .get('logBookEntries')
       .flatMap((l) => [l.get('start'), l.get('end')])
@@ -267,12 +257,7 @@ export const isMatch = (filterExpr) => {
       !filterTagsExcl.some(orChain(tags)) &&
       !filterCSExcl.some(orChain(headlineText)) &&
       !filterICExcl.some(orChain(headlineText.toLowerCase())) &&
-      !filterPropsExcl.some(propertyFilter) //&&
-      // TODO: logic has to work on timestamp basis,
-      // can't reject a header because one of potentially many timestamps is excluded.
-      //!filterClockExcl.some(orChainDate(clocks)) &&
-      //!filterScheduleExcl.some(orChainDate(scheduleds)) &&
-      //!filterDeadlineExcl.some(orChainDate(deadlines))
+      !filterPropsExcl.some(propertyFilter)
     );
   };
 };
