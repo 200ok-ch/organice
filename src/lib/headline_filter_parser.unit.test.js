@@ -1,4 +1,4 @@
-/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectFirstParseResultExclude", "expectStrings"] }] */
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectFirstParseResultExclude", "expectStrings", "expectField"] }] */
 
 import parser from './headline_filter_parser';
 
@@ -629,7 +629,7 @@ describe('Headline filter parser', () => {
       });
     });
 
-    test('Parse special values in ranges', ()=>{
+    test('Parse special values in ranges', () => {
       expectField('date:now..').toEqual({
         type: 'date',
         timerange: {
@@ -638,7 +638,7 @@ describe('Headline filter parser', () => {
             type: 'special',
             value: 'now',
           },
-          to: null
+          to: null,
         },
       });
       expectField('date:..now').toEqual({
@@ -660,7 +660,7 @@ describe('Headline filter parser', () => {
             type: 'special',
             value: 'today',
           },
-          to: null
+          to: null,
         },
       });
       expectField('date:..today').toEqual({
