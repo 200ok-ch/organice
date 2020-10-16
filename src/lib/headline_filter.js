@@ -138,13 +138,13 @@ const timeFilter = (filterDescription) => {
   let lower;
   let upper;
   if (timeFilterDescription.type === 'point') {
-    const date = timeFilterDescription.date;
-    if (date.type === 'offset') {
+    const point = timeFilterDescription.point;
+    if (point.type === 'offset') {
       lower = new Date();
       upper = addTimestampUnitToDate(new Date(lower));
     } else {
-      lower = resolveFrom(date);
-      upper = resolveTo(date);
+      lower = resolveFrom(point);
+      upper = resolveTo(point);
     }
     return (timestamp) =>
       lower <= dateForTimestamp(timestamp) && dateForTimestamp(timestamp) <= upper;
