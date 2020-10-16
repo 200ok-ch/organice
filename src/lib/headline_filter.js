@@ -178,7 +178,7 @@ const timeFilter = (filterDescription) => {
     return (timestamp) =>
       lower <= dateForTimestamp(timestamp) && dateForTimestamp(timestamp) <= upper;
   } else if (timeFilterDescription.type === 'all') {
-    return (timestamp) => true;
+    return (_) => true;
   } else {
     throw 'unable to construct timefilter';
   }
