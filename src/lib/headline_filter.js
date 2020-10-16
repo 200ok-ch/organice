@@ -53,18 +53,18 @@ const endOfDate = (to) => {
 
 const fromSpecial = (from) => {
   const temp = new Date();
-  if (from.value == 'now') {
+  if (from.value === 'now') {
     return temp;
-  } else if (from.value == 'today') {
+  } else if (from.value === 'today') {
     return startOfDay(temp);
   }
 };
 
 const toSpecial = (to) => {
   const temp = new Date();
-  if (to.value == 'now') {
+  if (to.value === 'now') {
     return temp;
-  } else if (to.value == 'today') {
+  } else if (to.value === 'today') {
     return endOfDay(temp);
   }
 };
@@ -82,6 +82,8 @@ const fromUnit = (date, unit) => {
       return startOfMonth(d);
     case 'y':
       return startOfYear(d);
+    default:
+      throw Error('unknown `unit` for timerange search');
   }
 };
 
@@ -98,6 +100,8 @@ const toUnit = (date, unit) => {
       return endOfMonth(d);
     case 'y':
       return endOfYear(d);
+    default:
+      throw Error('unknown `unit` for timerange search');
   }
 };
 
@@ -173,14 +177,14 @@ const timeFilter = (filterDescription) => {
       lower = resolveFrom(from);
       upper = toUnit(lower, to.unit);
     } else {
-      throw 'unable to construct timerangefilter';
+      throw Error('unable to construct timerangefilter');
     }
     return (timestamp) =>
       lower <= dateForTimestamp(timestamp) && dateForTimestamp(timestamp) <= upper;
   } else if (timeFilterDescription.type === 'all') {
     return (_) => true;
   } else {
-    throw 'unable to construct timefilter';
+    throw Error('unable to construct timefilter');
   }
 };
 
