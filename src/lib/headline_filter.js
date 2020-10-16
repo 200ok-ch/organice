@@ -137,7 +137,7 @@ const timeFilter = (filterDescription) => {
   const timeFilterDescription = filterDescription.field.timerange;
   let lower;
   let upper;
-  if (timeFilterDescription.type === 'date') {
+  if (timeFilterDescription.type === 'point') {
     const date = timeFilterDescription.date;
     if (date.type === 'offset') {
       lower = new Date();

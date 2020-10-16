@@ -20,22 +20,25 @@
 
 {
   const checkDate = (year, month, day) => {
-    if (month === null) {
-      return { type: 'timestamp', year: parseInt(year), month, day };
+    const date = new Date(year + "-" + month + "-" + day);
+    if (isNaN(date.valueOf())) {
+      throw { message: 'invalid date'};
     } else {
-      const date = new Date(year + "-" + month + "-" + (day === null ? "01" : day));
-      if (isNaN(date.valueOf())) {
-        throw {message: 'invalid date'};
-      }
+      return { 
+        type: 'timestamp', 
+        year: parseInt(year), 
+        month: parseInt(month), 
+        day: parseInt(day) 
+      };
     }
-    return { 
-      type: 'timestamp', 
-      year: parseInt(year), 
-      month: parseInt(month), 
-      day: day === null ? null : parseInt(day) 
-    };
   };
-
+  const checkMonth = (year, month) => {
+    if (month >= 1 && month <= 12) {
+      return { type: 'timestamp', year: parseInt(year), month: parseInt(month), day: null };
+    } else {
+      throw {message: 'invalid month'};  
+    }
+  };
 }
 
 Expression "filter expression"
@@ -105,24 +108,23 @@ TermField "search outside of header"
   / "deadline:"  a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
 
 TimeRange "moments and timeranges"
-  = ".." a:Moment { return { type: 'range', from: null, to: a }; }
-  / a:Moment? ".." b:Moment? { 
-      if (a === null && b === null) {
-        return { type: 'all'};
-      }
-      return { type: 'range', from: a, to: b }; 
-    }
-  / a:Moment { return { type: 'date', date: a }; }
+  = a:Moment ".." b:Moment { return { type: 'range', from: a, to: b }; }
+  / a:Moment ".."          { return { type: 'range', from: a, to: null }; }
+  / a:Moment               { return { type: 'point', point: a }; }
+  / ".." a:Moment          { return { type: 'range', from: null, to: a }; }
+  / ".."                   { return { type: 'all' }; }
 
 Moment "moment"
   = TimeOffset
-  / TimeStamp
+  / Timestamp
   / TimeUnit
   / "today" { return { type: 'special', value: 'today' }; }
   / "now" { return { type: 'special', value: 'now' }; }
 
-TimeStamp
-  = year:Year [-./]? month:Month? [-./]? day:Day? { return checkDate(year, month, day); }
+Timestamp
+  = year:Year [-./]? month:Month [-./]? day:Day { return checkDate(year, month, day); }
+  / year:Year [-./]? month:Month                { return checkMonth(year, month); }
+  / year:Year                                   { return { type: 'timestamp', year: parseInt(year), month: null, day: null }; }
 
 TimeUnit
   = a:[hdwmy] { return { type: 'unit', unit: a }; }
