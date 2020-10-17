@@ -316,6 +316,53 @@ Last but not least, you can search for headlines with defined properties:
 
 This filters headlines having a property *blocked_by* (with any value) and a property *assignee* with a value containing =nobody= or =none=.
 
+You can also search time ranges on headers with planning items (SCHEDULED and DEADLINE), plain active timestamps or clocked work time.
+
+The time related filters are:
+
+- =scheduled= (shorthand =sched=)
+- =deadline= (shorthand =dead=)
+- =clock=
+- =date=
+
+=date= is a shorthand to search for planning items (SCHEDULED and DEADLINE) and plain active timestamps at the same time.
+
+These time related filters work on time ranges indicated by =START..END= where =START= and =END= support the following units:
+
+- =h=: Hours
+- =d=: Days
+- =w=: Weeks
+- =m=: Months
+- =y=: Years
+
+=START= and =END= can both be omitted to search for an infinite timespan into the past or future. Both can be used with digits to quantify the amount (i.e. =2w= for two weeks). For both, the digit can be omitted, so =1w= is equivalent to =w=.
+
+There are two special units that need no quantification:
+
+- =today=: Current date
+- =now=: Current time
+
+Next to units, =START= and =END= can also be expressed in dates like.
+Dates can be expressed by:
+
+- =YYYY= (i.e. 2020)
+- =YYYY-MM= (i.e. 2020-11)
+- =YYYY/MM= (i.e. 2020/11)
+- =YYYY.MM= (i.e. 2020.11)
+- =YYYYMM= (i.e. 202011)
+- =YYYY-MM-DD= (i.e. 2020-11-17)
+- =YYYY/MM/DD= (i.e. 2020/11/17)
+- =YYYY.MM.DD= (i.e. 2020.11.17)
+- =YYYYMMDD= (i.e. 20201117)
+
+Some examples on how to use time ranges:
+
+- =clock:..= searches for all items with time clocked
+- =sched:w= searches for all scheduled items in the current week (same for other units)
+- =dead:..w= searches for all deadlines between now and the end of the week
+- =date:today= searches for all planning items (scheduled and deadline items) as well as items with active timestamps
+- =sched:2m..w= if both ends of the range are relative, they refer back to the current moment. So this searches for all scheduled items between two months before now to the end of the current week
+
 ** Auto-completion for filters
 
 You probably noticed that organice provides suggestions for your filter. After space, =-=, =:=, and =|= you can tap on the completion – no need to type the tag, property, etc.
