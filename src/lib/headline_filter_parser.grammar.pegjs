@@ -100,12 +100,10 @@ TermProp "property filter term"
         };
 
 TermField "search outside of header"
-  = "date:"     a:TimeRange  { return { type: 'field', field: { type: 'date',      timerange: a } }; }
-  / "clock:"     a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
-  / "sched:"     a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
-  / "scheduled:" a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
-  / "dead:"      a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
-  / "deadline:"  a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
+  = "date:"                   a:TimeRange { return { type: 'field', field: { type: 'date',      timerange: a } }; }
+  / "clock:"                  a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
+  / ("sched:" / "scheduled:") a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
+  / ("dead:" / "deadline:")   a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
 
 TimeRange "moments and timeranges"
   = a:Moment ".." b:Moment { return { type: 'range', from: a, to: b }; }
@@ -118,8 +116,7 @@ Moment "moment"
   = TimeOffset
   / Timestamp
   / TimeUnit
-  / "today" { return { type: 'special', value: 'today' }; }
-  / "now" { return { type: 'special', value: 'now' }; }
+  / a:$("today" / "now") { return { type: 'special', value: a }; }
 
 Timestamp
   = year:Year [-./]? month:Month [-./]? day:Day { return checkDate(year, month, day); }
