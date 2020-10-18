@@ -1056,7 +1056,7 @@ export const setSearchFilterInformation = (state, action) => {
 
     // Only search subheaders if a header is focused
     const focusedHeaderId = state.get('focusedHeaderId');
-    if (focusedHeaderId === undefined || focusedHeaderId === null) {
+    if (focusedHeaderId === undefined || focusedHeaderId === null || context === 'refile') {
       filteredHeaders = headers.filter(isMatch(searchFilterExpr));
     } else {
       const subheaders = subheadersOfHeaderWithId(headers, focusedHeaderId);
