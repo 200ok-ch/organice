@@ -339,7 +339,7 @@ These time related filters work on time ranges indicated by =START..END= where =
 - =m=: Months
 - =y=: Years
 
-=START= and =END= can both be omitted to search for an infinite timespan into the past or future. Both can be used with digits to quantify the amount (i.e. =2w= for two weeks). For both, the digit can be omitted to refer to the calendar unit instead of a time duration (i.e. =w= is the current week from Monday to Sunday).
+=START= and =END= can both be omitted to search for an infinite timespan into the past or future. Both can be used with digits to quantify the amount (i.e. =2w= for two weeks). For both, the digit can be omitted to refer to the calendar unit instead of a time duration (i.e. =w= is the current week using the [[https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system][Western Traditional]] system [from Sunday to Saturday]).
 
 There are two special units that need no quantification:
 
