@@ -338,6 +338,21 @@ describe('Render all views', () => {
           expect(drawerElem).toHaveTextContent('A header with tags');
           expect(drawerElem).not.toHaveTextContent('Another top level header');
         });
+
+        test('searches in sub-headers when focused', () => {
+          // Click 'focus' on the first header
+          fireEvent.click(queryByText('Top level header'));
+          fireEvent.click(container.querySelectorAll("[data-testid='header-action-focus']")[0]);
+
+          fireEvent.click(getByTitle('Show search'));
+          const drawerElem = getByTestId('drawer');
+
+          // Only sub-headers are visible
+          expect(drawerElem).not.toHaveTextContent('A header with tags');
+          expect(drawerElem).not.toHaveTextContent('Another top level header');
+          expect(drawerElem).toHaveTextContent('A nested header');
+          expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
+        });
       });
 
       describe('Refile', () => {

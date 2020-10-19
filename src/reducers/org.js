@@ -1052,7 +1052,16 @@ export const setSearchFilterInformation = (state, action) => {
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successful
   if (searchFilterValid) {
-    let filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+    let filteredHeaders;
+
+    // Only search subheaders if a header is focused
+    const focusedHeaderId = state.get('focusedHeaderId');
+    if (!focusedHeaderId || context === 'refile') {
+      filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+    } else {
+      const subheaders = subheadersOfHeaderWithId(headers, focusedHeaderId);
+      filteredHeaders = subheaders.filter(isMatch(searchFilterExpr));
+    }
 
     // Filter selectedHeader and its subheaders from `headers`,
     // because you don't want to refile a header to itself or to one
