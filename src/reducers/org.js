@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
-import { updateHeadersTotalTimeLogged } from '../lib/clocking';
+import { updateHeadersTotalTimeLogged, totalTimeLogged } from '../lib/clocking';
 
 import {
   extractAllOrgTags,
@@ -1074,6 +1074,23 @@ export const setSearchFilterInformation = (state, action) => {
       filteredHeaders = filteredHeaders.filter((h) => {
         return !filterIds.includes(h.get('id'));
       });
+    }
+
+    // show clocked times & sum if there is a clock search term
+    const showClockedTimes =
+      searchFilterExpr.filter((f) => f.type === 'field').filter((f) => f.field.type === 'clock')
+        .length !== 0;
+
+    console.debug(searchFilterExpr.filter((f) => f.type === 'field').filter((f) => f.field.type === 'clock'))
+    state.setIn(['search', 'showClockedTimes'], showClockedTimes);
+    if (showClockedTimes) {
+      if (!state.get('showClockDisplay')) {
+        filteredHeaders = headers.map((header) =>
+        header.set('totalTimeLogged', totalTimeLogged(header))
+      );
+      }
+      const clockedTime = filteredHeaders.reduce((acc, val) => acc + val.get('totalTimeLogged'), 0);
+      state.setIn(['search', 'clockedTime'], clockedTime);
     }
 
     state.setIn(['search', 'filteredHeaders'], filteredHeaders);

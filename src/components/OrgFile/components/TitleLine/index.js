@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import { getCurrentTimestampAsText, millisDuration } from '../../../../lib/timestamps';
+import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
 
 import { generateTitleLine } from '../../../../lib/export_org';
@@ -183,25 +183,19 @@ class TitleLine extends PureComponent {
       shouldDisableActions,
       shouldDisableExplicitWidth,
       todoKeywordSets,
-      showClockDisplay,
+      addition,
     } = this.props;
     const { containerWidth } = this.state;
 
     const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
     const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
 
-    const titleLineStyle = {
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'space-between',
-    };
-
     const titleStyle = {
       color,
       wordBreak: 'break-word',
     };
 
-    const clockDisplayStyle = {
+    const additionStyle = {
       color,
       minWidth: '5em',
       textAlign: 'right',
@@ -259,7 +253,7 @@ class TitleLine extends PureComponent {
           </div>
         ) : (
           <div style={{ width: '100%' }}>
-            <div style={titleLineStyle}>
+            <div className="title-line-text">
               <span style={titleStyle} ref={this.handleTitleSpanRef}>
                 <AttributedString
                   parts={header.getIn(['titleLine', 'title'])}
@@ -270,10 +264,8 @@ class TitleLine extends PureComponent {
                 />
                 {!header.get('opened') && hasContent ? '...' : ''}
               </span>
-              {showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0 ? (
-                <span style={clockDisplayStyle}>
-                  {millisDuration(header.get('totalTimeLoggedRecursive'))}
-                </span>
+              {addition !== null && addition !== undefined && addition !== '' ? (
+                <span style={additionStyle}>{addition}</span>
               ) : null}
             </div>
             {header.getIn(['titleLine', 'tags']).size > 0 && (
@@ -307,7 +299,6 @@ const mapStateToProps = (state, ownProps) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     todoKeywordSets: state.org.present.get('todoKeywordSets'),
-    showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };
 

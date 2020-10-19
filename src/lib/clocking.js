@@ -1,7 +1,7 @@
 import { subheadersOfHeaderWithIndex } from './org_utils';
 import { dateForTimestamp } from './timestamps';
 
-const totalTimeLogged = (header) => {
+export const totalTimeLogged = (header) => {
   const logBookEntries = header.get('logBookEntries', []);
 
   const times = logBookEntries.map((entry) =>

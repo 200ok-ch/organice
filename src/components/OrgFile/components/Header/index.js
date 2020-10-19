@@ -19,7 +19,7 @@ import HeaderActionDrawer from './components/HeaderActionDrawer';
 
 import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
-import { getCurrentTimestamp } from '../../../../lib/timestamps';
+import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -332,6 +332,7 @@ ${header.get('rawDescription')}`;
       focusedHeader,
       isFocused,
       shouldDisableActions,
+      showClockDisplay,
     } = this.props;
 
     const indentLevel = !!focusedHeader
@@ -493,6 +494,11 @@ ${header.get('rawDescription')}`;
                 isSelected={isSelected}
                 shouldDisableExplicitWidth={swipedDistance === 0}
                 shouldDisableActions={shouldDisableActions}
+                addition={
+                  showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
+                    ? millisDuration(header.get('totalTimeLoggedRecursive'))
+                    : null
+                }
               />
 
               <Collapse
@@ -540,6 +546,7 @@ const mapStateToProps = (state, ownProps) => {
     focusedHeader,
     isFocused: !!focusedHeader && focusedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
+    showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };
 
