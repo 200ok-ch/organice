@@ -74,6 +74,7 @@ export default class HeaderActionDrawer extends PureComponent {
             : this.iconWithFFClickCatcher({
                 className: 'fas fa-compress fa-lg',
                 onClick: onFocus,
+                testId: 'header-action-focus',
                 title: 'Narrow to subtree (Focus on this header)',
               })}
 

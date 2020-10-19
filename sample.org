@@ -283,6 +283,8 @@ Tap a header in the view to jump to it.
 
 Using the filter input, you can search for headlines. Specifically, you can search for headline text, TODO keywords, tags, and [[https://orgmode.org/guide/Properties.html][orgmode properties]]. It also supports alternatives, and you can exclude headlines by negating a filter.
 
+When a header is focused, and the user uses the 'search' or 'task list' feature, then the searched header list is automatically narrowed to only subheaders of the originally focused header.
+
 ** Differences Search and Task List
 
 - In the task list, you can tap on the date to switch to a more readable relative date format.

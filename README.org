@@ -413,8 +413,9 @@ Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:
 Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
-Please note: If you want the hosted application to connect to Dropbox
-or Google Drive, please read the section on [[#synchronization_back_ends][Synchronization back-ends]].
+Please note: If you want the hosted application to connect to Dropbox,
+WebDAV or Google Drive, please read the section on [[#synchronization_back_ends][Synchronization
+back-ends]].
 
 ** FTP
 
@@ -423,7 +424,7 @@ Note: Creating a build will actually make your =REACT_APP_*= variables
 from the =.env= file available under =process.env= even though it'll
 be a front-end application.
 
-And then upload to your web-server. Here's a script for your
+And then upload to your web-server. Here's a sample script for your
 convenience:
 
 #+BEGIN_SRC shell
@@ -438,6 +439,10 @@ quit
 END_SCRIPT
 exit 0
 #+END_SRC
+
+The reference instance (https://organice.200ok.ch) is actually
+deployed via FTP. The full build script is in
+[[file:bin/compile_and_upload.sh][bin/compile_and_upload.sh]].
 
 ** Docker
    :PROPERTIES:
@@ -491,23 +496,30 @@ git push heroku master
    :CUSTOM_ID: synchronization_back_ends
    :END:
 
-Note that logging in to Dropbox will only work if you're running the
-app on ~http://localhost:3000~, because all redirect URIs must be
-specified ahead of time on the Dropbox developer console.
+*** Dropbox
+    :PROPERTIES:
+    :CUSTOM_ID: dropbox
+    :END:
 
-To configure your own application on Dropbox, please go [[https://www.dropbox.com/developers/apps/][here]] and then
-configure this app key in the ~.env~ file. Make sure to add your own
-URL as =Redirect URI=.
+To configure your own instance of organice for Dropbox, please go [[https://www.dropbox.com/developers/apps/][to
+the Dropbox developer console]], create a new app and configure the
+resulting =clientId= in a newly created ~.env~ file (analogous to
+~.env.sample~) as the value of the key =REACT_APP_DROPBOX_CLIENT_ID=.
 
-To configure your own application on Google Drive, please generate an
-API key as described on [[https://developers.google.com/drive/api/v3/quickstart/js][this page]].
+Make sure to add your own host URL as =Redirect URI=. Otherwise,
+logging in to Dropbox will only work if you're running the app on
+~http://localhost:3000~. All other redirect URIs must be specified
+ahead of time on the Dropbox developer console.
 
 *** WebDAV
+    :PROPERTIES:
+    :CUSTOM_ID: webdav
+    :END:
 
 **** General
 
 With WebDAV support, organice can potentially be used with a multitude
-of synchronization backends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
+of synchronization back-ends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
 [[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
 like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
 
@@ -522,6 +534,41 @@ In the [[file:WIKI.org::#faq_webdav][WebDAV FAQ]], you'll find lots more informa
   - Documentation how to configure Nextcloud behind haproxy to allow
     WebDAV
   - Documentation on Nextcloud sharing
+
+*** Google Drive
+    :PROPERTIES:
+    :CUSTOM_ID: google_drive
+    :END:
+
+To configure your own instance of organice for Google Drive, please go
+consult the [[https://developers.google.com/drive/api/v3/quickstart/js][Google Developer documentation]]. In the Google Cloud
+Platform console,you will create a Google Drive API key and an OAuth
+Client ID. Then, you will create a new ~.env~ file (analogous to
+~.env.sample~) and add those as values for the keys
+=REACT_APP_GOOGLE_DRIVE_API_KEY= and
+=REACT_APP_GOOGLE_DRIVE_CLIENT_ID=.
+
+*** Encryption
+    :PROPERTIES:
+    :CUSTOM_ID: encryption
+    :END:
+
+If you do not trust your data with Dropbox or Google, you are free to
+host your own [[#webdav][WebDAV]] server and take any number of precautionary
+measures. For example, you can encrypt your data on disk. organice
+itself is just a front-end application, requires no server and has no
+tracking system. Therefore, the data within any organice instance
+(self hosted or not) is already only accessible to you, your browser
+and the network between your browser and your chosen back-end.
+Therefore, if have a strong SSL certificate configured on your WebDAV
+server and organice instance, then organice will communicate securely
+via HTTPS to your server where your data is as secure as you make it.
+Then, your data will be encrypted and inaccessible to any third party.
+
+Of course, security is hard. So the above statement is not a
+guarantee, but a guideline. You're responsible to ensure that the
+technologies employed (HTTPS, SSL, WebDAV, Browser, etc) are up to
+date and secure.
 
 ** Routing
    :PROPERTIES:
