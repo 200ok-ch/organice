@@ -6,3 +6,5 @@ services:
       context: .
     ports:
       - "5000:5000"
+    volumes:
+      - ./.env.sample:/opt/organice/.env

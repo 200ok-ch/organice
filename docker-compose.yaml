@@ -4,3 +4,5 @@ services:
     image: 'twohundredok/organice:latest'
     ports:
       - '5000:5000'
+    volumes:
+      - ./.env:/opt/organice/.env
