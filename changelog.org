@@ -4,11 +4,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+
+* [2020-10-20 Tue]
+** Added
+   - Add 'time range' queries to search for planning items (SCHEDULED and DEADLINE), plain active timestamps or clocked work time.
+     - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/505][PR]] 🙏
 * [2020-10-19 Mon]
 ** Added
-   - When a header is focused, and the user uses the 'search' or 'task
-     list' feature, then the searched header list is automatically
-     narrowed to only subheaders of the originally focused header.
+   - When a header is focused, and the user uses the 'search' or 'task list' feature, then the searched header list is automatically narrowed to only subheaders of the originally focused header.
      - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/517][PR]] 🙏
 
 * [2020-10-10 Sat]
