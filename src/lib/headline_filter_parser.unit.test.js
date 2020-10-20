@@ -1,4 +1,4 @@
-/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectFirstParseResultExclude", "expectStrings"] }] */
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectFirstParseResultExclude", "expectStrings", "expectField"] }] */
 
 import parser from './headline_filter_parser';
 
@@ -99,6 +99,673 @@ describe('Headline filter parser', () => {
     });
     test('Parses a quoted string in a property filter term', () => {
       expectStrings(":prop1:'a b'").toEqual(['a b']);
+    });
+  });
+
+  describe('Parsing of Timeranges', () => {
+    const expectField = (s) => expect(parser.parse(s)[0].field);
+    const all = (searchterm) => ({
+      type: searchterm,
+      timerange: {
+        type: 'all',
+      },
+    });
+
+    test('Parses all kind of time searchterms (with open ranges)', () => {
+      expectField('clock:..').toEqual(all('clock'));
+      expectField('sched:..').toEqual(all('scheduled'));
+      expectField('scheduled:..').toEqual(all('scheduled'));
+      expectField('dead:..').toEqual(all('deadline'));
+      expectField('deadline:..').toEqual(all('deadline'));
+      expectField('date:..').toEqual(all('date'));
+    });
+
+    test('Parses single Timestamps', () => {
+      expectField('date:2020').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: null,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2020-07').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2020-07-05').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: 5,
+          },
+        },
+      });
+      expectField('date:202007').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: null,
+          },
+        },
+      });
+      expectField('date:20200705').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: 5,
+          },
+        },
+      });
+      expectField('date:2020.07').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2020.07.05').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: 5,
+          },
+        },
+      });
+      expectField('date:2020/07').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2020/07/05').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'timestamp',
+            year: 2020,
+            month: 7,
+            day: 5,
+          },
+        },
+      });
+    });
+
+    test('Parses single TimeUnits', () => {
+      expectField('date:h').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'unit',
+            unit: 'h',
+          },
+        },
+      });
+      expectField('date:d').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'unit',
+            unit: 'd',
+          },
+        },
+      });
+      expectField('date:w').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'unit',
+            unit: 'w',
+          },
+        },
+      });
+      expectField('date:m').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'unit',
+            unit: 'm',
+          },
+        },
+      });
+      expectField('date:y').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'unit',
+            unit: 'y',
+          },
+        },
+      });
+    });
+
+    test('Parsing single offsets (interpreted as ranges now..offset)', () => {
+      expectField('date:1h').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'offset',
+            unit: 'h',
+            value: 1,
+          },
+        },
+      });
+      expectField('date:45d').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'offset',
+            unit: 'd',
+            value: 45,
+          },
+        },
+      });
+      expectField('date:962w').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'offset',
+            unit: 'w',
+            value: 962,
+          },
+        },
+      });
+      expectField('date:0000378y').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'offset',
+            unit: 'y',
+            value: 378,
+          },
+        },
+      });
+    });
+
+    test('Parse special time keywords', () => {
+      expectField('date:now').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'special',
+            value: 'now',
+          },
+        },
+      });
+      expectField('date:today').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'point',
+          point: {
+            type: 'special',
+            value: 'today',
+          },
+        },
+      });
+    });
+
+    test('Parse Timestamp ranges', () => {
+      expectField('date:2019..2020').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: null,
+            day: null,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: null,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019-10..2020').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 10,
+            day: null,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: null,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019-11-30..2020').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 11,
+            day: 30,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: null,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019..2020-05').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: null,
+            day: null,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: 5,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019..2020-05-15').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: null,
+            day: null,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: 5,
+            day: 15,
+          },
+        },
+      });
+      expectField('date:2019-11..2020-05').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 11,
+            day: null,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: 5,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019-11..2020-05-21').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 11,
+            day: null,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: 5,
+            day: 21,
+          },
+        },
+      });
+      expectField('date:2019-01-30..2020').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 1,
+            day: 30,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: null,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019-01-30..2020-10').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 1,
+            day: 30,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: 10,
+            day: null,
+          },
+        },
+      });
+      expectField('date:2019-01-30..2020-10-22').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 1,
+            day: 30,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: 10,
+            day: 22,
+          },
+        },
+      });
+    });
+
+    test('Parse offsets in ranges', () => {
+      expectField('date:3422d..2020').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'offset',
+            unit: 'd',
+            value: 3422,
+          },
+          to: {
+            type: 'timestamp',
+            year: 2020,
+            month: null,
+            day: null,
+          },
+        },
+      });
+      expectField('date:1985-05..8m').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 1985,
+            month: 5,
+            day: null,
+          },
+          to: {
+            type: 'offset',
+            unit: 'm',
+            value: 8,
+          },
+        },
+      });
+      expectField('date:1y..8m').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'offset',
+            unit: 'y',
+            value: 1,
+          },
+          to: {
+            type: 'offset',
+            unit: 'm',
+            value: 8,
+          },
+        },
+      });
+    });
+
+    test('Parse unit ranges', () => {
+      expectField('date:..m').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: null,
+          to: {
+            type: 'unit',
+            unit: 'm',
+          },
+        },
+      });
+      expectField('date:w..').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'unit',
+            unit: 'w',
+          },
+          to: null,
+        },
+      });
+      expectField('date:y..h').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'unit',
+            unit: 'y',
+          },
+          to: {
+            type: 'unit',
+            unit: 'h',
+          },
+        },
+      });
+    });
+
+    test('Parse special values in ranges', () => {
+      expectField('date:now..').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'special',
+            value: 'now',
+          },
+          to: null,
+        },
+      });
+      expectField('date:..now').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: null,
+          to: {
+            type: 'special',
+            value: 'now',
+          },
+        },
+      });
+      expectField('date:today..').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'special',
+            value: 'today',
+          },
+          to: null,
+        },
+      });
+      expectField('date:..today').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: null,
+          to: {
+            type: 'special',
+            value: 'today',
+          },
+        },
+      });
+      expectField('date:now..now').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'special',
+            value: 'now',
+          },
+          to: {
+            type: 'special',
+            value: 'now',
+          },
+        },
+      });
+      expectField('date:today..today').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'special',
+            value: 'today',
+          },
+          to: {
+            type: 'special',
+            value: 'today',
+          },
+        },
+      });
+      expectField('date:today..now').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'special',
+            value: 'today',
+          },
+          to: {
+            type: 'special',
+            value: 'now',
+          },
+        },
+      });
+      expectField('date:now..today').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'special',
+            value: 'now',
+          },
+          to: {
+            type: 'special',
+            value: 'today',
+          },
+        },
+      });
+    });
+
+    test('Parses half defined timestamp ranges', () => {
+      expectField('date:2019-01-30..').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: {
+            type: 'timestamp',
+            year: 2019,
+            month: 1,
+            day: 30,
+          },
+          to: null,
+        },
+      });
+      expectField('date:..2019-01-30').toEqual({
+        type: 'date',
+        timerange: {
+          type: 'range',
+          from: null,
+          to: {
+            type: 'timestamp',
+            year: 2019,
+            month: 1,
+            day: 30,
+          },
+        },
+      });
+    });
+
+    test(`Doesn't parse illegal dates`, () => {
+      // Chrome accepts days up to 31 for all months and maps them onto the first days of the following month
+      expect(() => parser.parse('date:2019-11-32')).toThrowError();
+      expect(() => parser.parse('date:2019-00')).toThrowError();
+      expect(() => parser.parse('date:2019-13')).toThrowError();
     });
   });
 
