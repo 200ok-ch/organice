@@ -497,7 +497,7 @@ ${header.get('rawDescription')}`;
                 addition={
                   showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
                     ? millisDuration(header.get('totalTimeLoggedRecursive'))
-                    : null
+                    : ''
                 }
               />
 
