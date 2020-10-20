@@ -30,7 +30,7 @@ export const filterAndSortDirectoryListing = (listing) => {
 };
 
 export default (accessToken) => {
-  const dropboxClient = new Dropbox({ accessToken, fetch });
+  const dropboxClient = new Dropbox({ accessToken, fetch: fetch.bind(window) });
 
   const isSignedIn = () => new Promise((resolve) => resolve(true));
 
@@ -50,15 +50,15 @@ export default (accessToken) => {
     new Promise((resolve, reject) => {
       dropboxClient
         .filesListFolder({ path })
-        .then((response) =>
+        .then((response) => {
           resolve({
-            listing: transformDirectoryListing(response.entries),
-            hasMore: response.has_more,
+            listing: transformDirectoryListing(response.result.entries),
+            hasMore: response.result.has_more,
             additionalSyncBackendState: Map({
-              cursor: response.cursor,
+              cursor: response.result.cursor,
             }),
-          })
-        )
+          });
+        })
         .catch(reject);
     });
 
@@ -67,10 +67,10 @@ export default (accessToken) => {
     return new Promise((resolve, reject) =>
       dropboxClient.filesListFolderContinue({ cursor }).then((response) =>
         resolve({
-          listing: transformDirectoryListing(response.entries),
-          hasMore: response.has_more,
+          listing: transformDirectoryListing(response.result.entries),
+          hasMore: response.result.has_more,
           additionalSyncBackendState: Map({
-            cursor: response.cursor,
+            cursor: response.result.cursor,
           }),
         })
       )
@@ -104,10 +104,10 @@ export default (accessToken) => {
           reader.addEventListener('loadend', () =>
             resolve({
               contents: reader.result,
-              lastModifiedAt: response.server_modified,
+              lastModifiedAt: response.result.server_modified,
             })
           );
-          reader.readAsText(response.fileBlob);
+          reader.readAsText(response.result.fileBlob);
         })
         .catch((error) => {
           // INFO: It's possible organice is using the Dropbox API
