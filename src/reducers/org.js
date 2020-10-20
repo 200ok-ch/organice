@@ -1081,13 +1081,12 @@ export const setSearchFilterInformation = (state, action) => {
       searchFilterExpr.filter((f) => f.type === 'field').filter((f) => f.field.type === 'clock')
         .length !== 0;
 
-    console.debug(searchFilterExpr.filter((f) => f.type === 'field').filter((f) => f.field.type === 'clock'))
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
     if (showClockedTimes) {
       if (!state.get('showClockDisplay')) {
         filteredHeaders = headers.map((header) =>
-        header.set('totalTimeLogged', totalTimeLogged(header))
-      );
+          header.set('totalTimeLogged', totalTimeLogged(header))
+        );
       }
       const clockedTime = filteredHeaders.reduce((acc, val) => acc + val.get('totalTimeLogged'), 0);
       state.setIn(['search', 'clockedTime'], clockedTime);
