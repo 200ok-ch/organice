@@ -137,7 +137,7 @@ const isRelative = (moment) => {
   return moment.type === 'offset' || moment.type === 'unit';
 };
 
-const timeFilter = (filterDescription) => {
+export const timeFilter = (filterDescription) => {
   const timeFilterDescription = filterDescription.field.timerange;
   let lower;
   let upper;

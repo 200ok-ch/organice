@@ -1,7 +1,7 @@
 import { subheadersOfHeaderWithIndex } from './org_utils';
 import { dateForTimestamp } from './timestamps';
 
-export const totalTimeLogged = (header) => {
+const totalTimeLogged = (header) => {
   const logBookEntries = header.get('logBookEntries', []);
 
   const times = logBookEntries.map((entry) =>
@@ -9,6 +9,21 @@ export const totalTimeLogged = (header) => {
       ? dateForTimestamp(entry.get('end')) - dateForTimestamp(entry.get('start'))
       : 0
   );
+
+  const addedTimes = times.reduce((acc, val) => acc + val, 0);
+  return addedTimes;
+};
+
+export const totalFilteredTimeLogged = (filters, header) => {
+  const clocks = header
+    .get('logBookEntries', [])
+    .map((l) => [l.get('start'), l.get('end')])
+    .filter(
+      ([start, end]) => start !== undefined && start !== null && end !== undefined && end !== null
+    )
+    .filter((ts) => ts.some((t) => filters.every((f) => f(t))));
+
+  const times = clocks.map(([start, end]) => dateForTimestamp(end) - dateForTimestamp(start));
 
   const addedTimes = times.reduce((acc, val) => acc + val, 0);
   return addedTimes;

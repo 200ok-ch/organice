@@ -4,8 +4,8 @@ import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
-import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
-import { updateHeadersTotalTimeLogged, totalTimeLogged } from '../lib/clocking';
+import { isMatch, computeCompletionsForDatalist, timeFilter } from '../lib/headline_filter';
+import { updateHeadersTotalTimeLogged, totalFilteredTimeLogged } from '../lib/clocking';
 
 import {
   extractAllOrgTags,
@@ -1077,18 +1077,21 @@ export const setSearchFilterInformation = (state, action) => {
     }
 
     // show clocked times & sum if there is a clock search term
-    const showClockedTimes =
-      searchFilterExpr.filter((f) => f.type === 'field').filter((f) => f.field.type === 'clock')
-        .length !== 0;
-
+    const clockFilters = searchFilterExpr
+      .filter((f) => f.type === 'field')
+      .filter((f) => f.field.type === 'clock');
+    const filterFunctions = clockFilters.map(timeFilter);
+    const showClockedTimes = clockFilters.length !== 0;
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
+
     if (showClockedTimes) {
-      if (!state.get('showClockDisplay')) {
-        filteredHeaders = headers.map((header) =>
-          header.set('totalTimeLogged', totalTimeLogged(header))
-        );
-      }
-      const clockedTime = filteredHeaders.reduce((acc, val) => acc + val.get('totalTimeLogged'), 0);
+      filteredHeaders = filteredHeaders.map((header) =>
+        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+      );
+      const clockedTime = filteredHeaders.reduce(
+        (acc, val) => acc + val.get('totalFilteredTimeLogged'),
+        0
+      );
       state.setIn(['search', 'clockedTime'], clockedTime);
     }
 
