@@ -38,7 +38,7 @@ class HeaderList extends PureComponent {
   }
 
   render() {
-    const { headers, selectedHeaderId, focusedHeaderId, shouldDisableActions } = this.props;
+    const { headers, selectedHeaderId, narrowedHeaderId, shouldDisableActions } = this.props;
 
     const headerRenderData = headers
       .map((header) => {
@@ -80,16 +80,16 @@ class HeaderList extends PureComponent {
       }
     });
 
-    if (!!focusedHeaderId) {
-      const focusedHeaderIndex = headerRenderData.findIndex(
-        (headerRenderDatum) => headerRenderDatum.header.get('id') === focusedHeaderId
+    if (!!narrowedHeaderId) {
+      const narrowedHeaderIndex = headerRenderData.findIndex(
+        (headerRenderDatum) => headerRenderDatum.header.get('id') === narrowedHeaderId
       );
 
-      const previousHeaders = headerRenderData.slice(0, focusedHeaderIndex);
+      const previousHeaders = headerRenderData.slice(0, narrowedHeaderIndex);
       previousHeaders.forEach((headerRenderDatum) => (headerRenderDatum.displayed = false));
 
-      const numSubheaders = numSubheadersOfHeaderWithId(headers, focusedHeaderId);
-      const followingHeaders = headerRenderData.slice(focusedHeaderIndex + numSubheaders + 1);
+      const numSubheaders = numSubheadersOfHeaderWithId(headers, narrowedHeaderId);
+      const followingHeaders = headerRenderData.slice(narrowedHeaderIndex + numSubheaders + 1);
       followingHeaders.forEach((headerRenderDatum) => (headerRenderDatum.displayed = false));
     }
 
@@ -109,7 +109,7 @@ class HeaderList extends PureComponent {
     );
 
     const className = classNames('header-list-container', {
-      'header-list-container--focused': !!focusedHeaderId,
+      'header-list-container--narrowed': !!narrowedHeaderId,
     });
     return (
       <div className={className}>
@@ -138,7 +138,7 @@ const mapStateToProps = (state) => {
   return {
     headers: state.org.present.get('headers'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
-    focusedHeaderId: state.org.present.get('focusedHeaderId'),
+    narrowedHeaderId: state.org.present.get('narrowedHeaderId'),
   };
 };
 

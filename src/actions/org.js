@@ -32,7 +32,7 @@ export const stopDisplayingFile = () => {
   return (dispatch) => {
     dispatch({ type: 'STOP_DISPLAYING_FILE' });
     dispatch(ActionCreators.clearHistory());
-    dispatch(unfocusHeader());
+    dispatch(widenHeader());
     dispatch(closePopup());
     dispatch(setLastSyncAt(null));
   };
@@ -201,7 +201,7 @@ export const selectHeaderAndOpenParents = (headerId) => (dispatch) => {
 /**
  * Action to advance the state, e.g. TODO -> DONE, of the header specified in headerId.
  *
- * @param {*} headerId headerId to advance, or null if you want the currently focused header.
+ * @param {*} headerId headerId to advance, or null if you want the currently narrowed header.
  * @param {*} logIntoDrawer false to log state change into body, true to log into :LOGBOOK: drawer.
  */
 export const advanceTodoState = (headerId, logIntoDrawer) => ({
@@ -321,13 +321,13 @@ export const addNote = (inputText, currentDate) => ({
   dirtying: true,
 });
 
-export const focusHeader = (headerId) => ({
-  type: 'FOCUS_HEADER',
+export const narrowHeader = (headerId) => ({
+  type: 'NARROW_HEADER',
   headerId,
 });
 
-export const unfocusHeader = () => ({
-  type: 'UNFOCUS_HEADER',
+export const widenHeader = () => ({
+  type: 'WIDEN_HEADER',
 });
 
 export const applyOpennessState = () => ({

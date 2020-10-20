@@ -86,7 +86,7 @@ const toggleHeaderOpened = (state, action) => {
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
   const isOpened = header.get('opened');
 
-  if (isOpened && state.get('focusedHeaderId') === action.headerId) {
+  if (isOpened && state.get('narrowedHeaderId') === action.headerId) {
     return state;
   }
 
@@ -268,8 +268,8 @@ const addHeader = (state, action) => {
     state.get('todoKeywordSets')
   );
 
-  if (action.headerId === state.get('focusedHeaderId')) {
-    state = state.set('focusedHeaderId', null);
+  if (action.headerId === state.get('narrowedHeaderId')) {
+    state = state.set('narrowedHeaderId', null);
   }
 
   return state.update('headers', (headers) =>
@@ -335,8 +335,8 @@ const removeHeader = (state, action) => {
     headers = headers.delete(headerIndex);
   });
 
-  if (action.headerId === state.get('focusedHeaderId')) {
-    state = state.set('focusedHeaderId', null);
+  if (action.headerId === state.get('narrowedHeaderId')) {
+    state = state.set('narrowedHeaderId', null);
   }
 
   state = state.set('headers', headers);
@@ -554,11 +554,11 @@ const addNote = (state, action) => {
   return addNoteGeneric(state, { noteText });
 };
 
-const focusHeader = (state, action) => {
-  return state.set('focusedHeaderId', action.headerId);
+const narrowHeader = (state, action) => {
+  return state.set('narrowedHeaderId', action.headerId);
 };
 
-const unfocusHeader = (state) => state.set('focusedHeaderId', null);
+const widenHeader = (state) => state.set('narrowedHeaderId', null);
 
 const applyOpennessState = (state) => {
   const opennessState = state.get('opennessState');
@@ -1054,12 +1054,12 @@ export const setSearchFilterInformation = (state, action) => {
   if (searchFilterValid) {
     let filteredHeaders;
 
-    // Only search subheaders if a header is focused
-    const focusedHeaderId = state.get('focusedHeaderId');
-    if (!focusedHeaderId || context === 'refile') {
+    // Only search subheaders if a header is narrowed
+    const narrowedHeaderId = state.get('narrowedHeaderId');
+    if (!narrowedHeaderId || context === 'refile') {
       filteredHeaders = headers.filter(isMatch(searchFilterExpr));
     } else {
-      const subheaders = subheadersOfHeaderWithId(headers, focusedHeaderId);
+      const subheaders = subheadersOfHeaderWithId(headers, narrowedHeaderId);
       filteredHeaders = subheaders.filter(isMatch(searchFilterExpr));
     }
 
@@ -1173,10 +1173,10 @@ const reducer = (state, action) => {
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
       return setDirty(state, action);
-    case 'FOCUS_HEADER':
-      return focusHeader(state, action);
-    case 'UNFOCUS_HEADER':
-      return unfocusHeader(state, action);
+    case 'NARROW_HEADER':
+      return narrowHeader(state, action);
+    case 'WIDEN_HEADER':
+      return widenHeader(state, action);
     case 'SET_SELECTED_TABLE_CELL_ID':
       return setSelectedTableCellId(state, action);
     case 'ADD_NEW_TABLE_ROW':

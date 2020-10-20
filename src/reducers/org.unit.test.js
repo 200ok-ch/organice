@@ -496,11 +496,11 @@ describe('org reducer', () => {
         ]);
       });
 
-      it('should reset header focus', () => {
-        const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
-        expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
-        const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
-        expect(newState.get('focusedHeaderId')).toEqual(null);
+      it('should reset header narrowing', () => {
+        const narrowedState = reducer(state.org.present, types.narrowHeader(nestedHeaderId));
+        expect(narrowedState.get('narrowedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(narrowedState, types.removeHeader(nestedHeaderId));
+        expect(newState.get('narrowedHeaderId')).toEqual(null);
       });
 
       it('is undoable', () => {
@@ -509,7 +509,7 @@ describe('org reducer', () => {
     });
 
     describe('ADD_HEADER', () => {
-      it('should handle ADD_HEADER and unfocus', () => {
+      it('should handle ADD_HEADER and widen', () => {
         const oldState = state.org.present;
         expect(extractTitlesAndNestings(oldState.get('headers'))).toEqual([
           ['Top level header', 1],
@@ -518,10 +518,10 @@ describe('org reducer', () => {
           ['A second nested header', 2],
         ]);
 
-        const stateSelected = reducer(oldState, types.focusHeader(nestedHeaderId));
-        expect(stateSelected.get('focusedHeaderId')).toEqual(nestedHeaderId);
+        const stateSelected = reducer(oldState, types.narrowHeader(nestedHeaderId));
+        expect(stateSelected.get('narrowedHeaderId')).toEqual(nestedHeaderId);
         const newState = reducer(stateSelected, types.addHeader(nestedHeaderId));
-        expect(newState.get('focusedHeaderId')).toBeNull();
+        expect(newState.get('narrowedHeaderId')).toBeNull();
 
         // "A nested header" is not at the top level.
         expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
@@ -533,11 +533,11 @@ describe('org reducer', () => {
         ]);
       });
 
-      it('should reset header focus', () => {
-        const focusedState = reducer(state.org.present, types.focusHeader(nestedHeaderId));
-        expect(focusedState.get('focusedHeaderId')).toEqual(nestedHeaderId);
-        const newState = reducer(focusedState, types.removeHeader(nestedHeaderId));
-        expect(newState.get('focusedHeaderId')).toEqual(null);
+      it('should reset header narrowing', () => {
+        const narrowedState = reducer(state.org.present, types.narrowHeader(nestedHeaderId));
+        expect(narrowedState.get('narrowedHeaderId')).toEqual(nestedHeaderId);
+        const newState = reducer(narrowedState, types.removeHeader(nestedHeaderId));
+        expect(newState.get('narrowedHeaderId')).toEqual(null);
       });
 
       it('is undoable', () => {
@@ -744,15 +744,15 @@ describe('org reducer', () => {
         );
       });
 
-      it('should ignore if focused and open', () => {
+      it('should ignore if narrowed and open', () => {
         expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
         const openState = reducer(
           state.org.present,
           types.toggleHeaderOpened(topLevelHeaderId, true)
         );
-        const focusedState = reducer(openState, types.focusHeader(topLevelHeaderId));
-        const newState = reducer(focusedState, types.toggleHeaderOpened(topLevelHeaderId, true));
-        expect(newState).toEqual(focusedState);
+        const narrowedState = reducer(openState, types.narrowHeader(topLevelHeaderId));
+        const newState = reducer(narrowedState, types.toggleHeaderOpened(topLevelHeaderId, true));
+        expect(newState).toEqual(narrowedState);
       });
     });
   });
@@ -1748,7 +1748,7 @@ describe('org reducer', () => {
     });
   });
 
-  describe('FOCUS_HEADER', () => {
+  describe('NARROW_HEADER', () => {
     let state;
     const headerId = generateId();
 
@@ -1756,9 +1756,9 @@ describe('org reducer', () => {
       state = readInitialState();
     });
 
-    it('should handle FOCUS_HEADER', () => {
-      const newState = reducer(state.org.present, types.focusHeader(headerId));
-      expect(newState.get('focusedHeaderId')).toEqual(headerId);
+    it('should handle NARROW_HEADER', () => {
+      const newState = reducer(state.org.present, types.narrowHeader(headerId));
+      expect(newState.get('narrowedHeaderId')).toEqual(headerId);
     });
   });
 

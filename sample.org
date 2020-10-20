@@ -18,7 +18,7 @@ If you want the "header action drawer" to disappear or to deselect the current h
 2. Pen in square: Edit header description
 3. Tags: [[https://orgmode.org/manual/Tags.html][Modify tags]]
 4. Properties: [[https://orgmode.org/manual/Properties-and-columns.html][Modify properties]]
-5. Expand: [[https://orgmode.org/manual/Structure-editing.html][Narrow to subtree]] (Focus on this header)
+5. Expand: [[https://orgmode.org/manual/Structure-editing.html][Narrow to subtree]] (/Narrowing/ means focusing on this header, making the rest temporarily inaccessible.)
 6. Plus: Create new header below
 7. Mail: Share this header via email
 8. Calendar 1: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set deadline datetime]]
@@ -54,12 +54,14 @@ Try it out on these headers:
 **** Starla                                             :cute:old:medium:dog:
 **** Rex                                                :cute:old:medium:dog:
 **** Maz                                          :cute:middleaged:large:dog:
-** Focusing
-The next button in the header action drawer "focuses" on a header, hiding all others and promoting it to the top level. Press the button again to "unfocus".
+** Narrowing
+The next button in the header action drawer "narrows" to a header, hiding all others and promoting it to the top level. Press the button again to "widen".
 
-This is purely visual - your org file isn't affected under the hood.
+Narrowing can make it easier to concentrate on a single heading or topic by eliminating clutter. It can also be used to limit the range of operation of a search command.
 
-I find this useful for focusing on my "Groceries" list when I go to the grocery store. Give it a shot on this grocery list:
+This is purely visual - your Org file isn't affected under the hood.
+
+Example: You can narrow on the "Groceries" list when you go to the grocery store. Give it a shot on this grocery list:
 *** Groceries
 - [ ] Mangoes
 - [ ] Dark chocolate
@@ -283,7 +285,7 @@ Tap a header in the view to jump to it.
 
 Using the filter input, you can search for headlines. Specifically, you can search for headline text, TODO keywords, tags, and [[https://orgmode.org/guide/Properties.html][orgmode properties]]. It also supports alternatives, and you can exclude headlines by negating a filter.
 
-When a header is focused, and the user uses the 'search' or 'task list' feature, then the searched header list is automatically narrowed to only subheaders of the originally focused header.
+When a header is narrowed, and the user uses the 'search' or 'task list' feature, then the searched header list is automatically narrowed to only subheaders of the originally narrowed header.
 
 ** Differences Search and Task List
 
