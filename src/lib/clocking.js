@@ -29,7 +29,7 @@ export const totalFilteredTimeLogged = (filters, header) => {
   return addedTimes;
 };
 
-export const updateHeadersTotalTimeLogged = (headers) => {
+export const updateHeadersTotalTimeLoggedRecursive = (headers) => {
   if (!headers) {
     return headers;
   }
@@ -47,7 +47,7 @@ export const updateHeadersTotalTimeLogged = (headers) => {
   return headersWithtotalTimeLoggedRecursive;
 };
 
-export const updateHeadersTotalFilteredTimeLogged = (filters, headers) => {
+export const updateHeadersTotalFilteredTimeLoggedRecursive = (filters, headers) => {
   if (!headers) {
     return headers;
   }

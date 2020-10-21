@@ -6,9 +6,9 @@ import _ from 'lodash';
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist, timeFilter } from '../lib/headline_filter';
 import {
-  updateHeadersTotalTimeLogged,
+  updateHeadersTotalTimeLoggedRecursive,
   totalFilteredTimeLogged,
-  updateHeadersTotalFilteredTimeLogged,
+  updateHeadersTotalFilteredTimeLoggedRecursive,
 } from '../lib/clocking';
 
 import {
@@ -1080,7 +1080,7 @@ export const setSearchFilterInformation = (state, action) => {
       headersToSearch = headersToSearch.map((header) =>
         header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
       );
-      headersToSearch = updateHeadersTotalFilteredTimeLogged(
+      headersToSearch = updateHeadersTotalFilteredTimeLoggedRecursive(
         filterFunctions,
         headersToSearch
       ).filter((header) => header.get('totalFilteredTimeLoggedRecursive') !== 0);
@@ -1147,7 +1147,7 @@ const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage
 
 const setShowClockDisplay = (state, action) => {
   if (action.showClockDisplay) {
-    state = state.update('headers', updateHeadersTotalTimeLogged);
+    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
   }
   return state.set('showClockDisplay', action.showClockDisplay);
 };
@@ -1280,7 +1280,7 @@ export default (state = Map(), action) => {
   state = reducer(state, action);
 
   if (action.dirtying && state.get('showClockDisplay')) {
-    state = state.update('headers', updateHeadersTotalTimeLogged);
+    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
   }
   return state;
 };
