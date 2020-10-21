@@ -1084,15 +1084,17 @@ export const setSearchFilterInformation = (state, action) => {
         filterFunctions,
         headersToSearch
       ).filter((header) => header.get('totalFilteredTimeLoggedRecursive') !== 0);
+    }
 
-      const clockedTime = headersToSearch.reduce(
+    filteredHeaders = headersToSearch.filter(isMatch(searchFilterExpr));
+
+    if (showClockedTimes) {
+      const clockedTime = filteredHeaders.reduce(
         (acc, val) => acc + val.get('totalFilteredTimeLogged'),
         0
       );
       state.setIn(['search', 'clockedTime'], clockedTime);
     }
-
-    filteredHeaders = headersToSearch.filter(isMatch(searchFilterExpr));
 
     // Filter selectedHeader and its subheaders from `headers`,
     // because you don't want to refile a header to itself or to one
