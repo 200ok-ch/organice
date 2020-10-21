@@ -1080,7 +1080,10 @@ export const setSearchFilterInformation = (state, action) => {
       headersToSearch = headersToSearch.map((header) =>
         header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
       );
-      headersToSearch = updateHeadersTotalFilteredTimeLogged(filterFunctions, headersToSearch);
+      headersToSearch = updateHeadersTotalFilteredTimeLogged(
+        filterFunctions,
+        headersToSearch
+      ).filter((header) => header.get('totalFilteredTimeLoggedRecursive') !== 0);
 
       const clockedTime = headersToSearch.reduce(
         (acc, val) => acc + val.get('totalFilteredTimeLogged'),
