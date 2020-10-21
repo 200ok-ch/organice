@@ -40,8 +40,8 @@ function HeaderListView(props) {
                   shouldDisableExplicitWidth
                   onClick={handleHeaderClick(header.get('id'))}
                   addition={
-                    showClockedTimes && header.get('totalFilteredTimeLogged') !== 0
-                      ? millisDuration(header.get('totalFilteredTimeLogged'))
+                    showClockedTimes && header.get('totalFilteredTimeLoggedRecursive') !== 0
+                      ? millisDuration(header.get('totalFilteredTimeLoggedRecursive'))
                       : null
                   }
                 />

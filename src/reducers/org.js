@@ -5,7 +5,11 @@ import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
 import { isMatch, computeCompletionsForDatalist, timeFilter } from '../lib/headline_filter';
-import { updateHeadersTotalTimeLogged, totalFilteredTimeLogged } from '../lib/clocking';
+import {
+  updateHeadersTotalTimeLogged,
+  totalFilteredTimeLogged,
+  updateHeadersTotalFilteredTimeLogged,
+} from '../lib/clocking';
 
 import {
   extractAllOrgTags,
@@ -1054,14 +1058,38 @@ export const setSearchFilterInformation = (state, action) => {
   if (searchFilterValid) {
     let filteredHeaders;
 
+    // show clocked times & sum if there is a clock search term
+    const clockFilters = searchFilterExpr
+      .filter((f) => f.type === 'field')
+      .filter((f) => f.field.type === 'clock');
+    const filterFunctions = clockFilters.map(timeFilter);
+    const showClockedTimes = clockFilters.length !== 0;
+    state.setIn(['search', 'showClockedTimes'], showClockedTimes);
+
     // Only search subheaders if a header is focused
     const focusedHeaderId = state.get('focusedHeaderId');
+    let headersToSearch;
     if (!focusedHeaderId || context === 'refile') {
-      filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+      headersToSearch = headers;
     } else {
-      const subheaders = subheadersOfHeaderWithId(headers, focusedHeaderId);
-      filteredHeaders = subheaders.filter(isMatch(searchFilterExpr));
+      headersToSearch = subheadersOfHeaderWithId(headers, focusedHeaderId);
     }
+
+    // calculate relevant clocked times and total
+    if (showClockedTimes) {
+      headersToSearch = headersToSearch.map((header) =>
+        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+      );
+      headersToSearch = updateHeadersTotalFilteredTimeLogged(filterFunctions, headersToSearch);
+
+      const clockedTime = headersToSearch.reduce(
+        (acc, val) => acc + val.get('totalFilteredTimeLogged'),
+        0
+      );
+      state.setIn(['search', 'clockedTime'], clockedTime);
+    }
+
+    filteredHeaders = headersToSearch.filter(isMatch(searchFilterExpr));
 
     // Filter selectedHeader and its subheaders from `headers`,
     // because you don't want to refile a header to itself or to one
@@ -1074,25 +1102,6 @@ export const setSearchFilterInformation = (state, action) => {
       filteredHeaders = filteredHeaders.filter((h) => {
         return !filterIds.includes(h.get('id'));
       });
-    }
-
-    // show clocked times & sum if there is a clock search term
-    const clockFilters = searchFilterExpr
-      .filter((f) => f.type === 'field')
-      .filter((f) => f.field.type === 'clock');
-    const filterFunctions = clockFilters.map(timeFilter);
-    const showClockedTimes = clockFilters.length !== 0;
-    state.setIn(['search', 'showClockedTimes'], showClockedTimes);
-
-    if (showClockedTimes) {
-      filteredHeaders = filteredHeaders.map((header) =>
-        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
-      );
-      const clockedTime = filteredHeaders.reduce(
-        (acc, val) => acc + val.get('totalFilteredTimeLogged'),
-        0
-      );
-      state.setIn(['search', 'clockedTime'], clockedTime);
     }
 
     state.setIn(['search', 'filteredHeaders'], filteredHeaders);

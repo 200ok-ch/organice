@@ -46,3 +46,21 @@ export const updateHeadersTotalTimeLogged = (headers) => {
   });
   return headersWithtotalTimeLoggedRecursive;
 };
+
+export const updateHeadersTotalFilteredTimeLogged = (filters, headers) => {
+  if (!headers) {
+    return headers;
+  }
+  const headersWithtotalTimeLogged = headers.map((header) =>
+    header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filters, header))
+  );
+  const headersWithtotalTimeLoggedRecursive = headersWithtotalTimeLogged.map((header, index) => {
+    const subheaders = subheadersOfHeaderWithIndex(headersWithtotalTimeLogged, index);
+    const totalTimeLoggedRecursive = subheaders.reduce(
+      (acc, val) => acc + val.get('totalFilteredTimeLogged'),
+      header.get('totalFilteredTimeLogged')
+    );
+    return header.set('totalFilteredTimeLoggedRecursive', totalTimeLoggedRecursive);
+  });
+  return headersWithtotalTimeLoggedRecursive;
+};
