@@ -234,7 +234,7 @@ const Settings = ({
       <div className="setting-container">
         <div className="setting-label">
           Dark Mode
-          <div className="setting-label__description">Enable dark mode.</div>
+          <div className="setting-label__description"></div>
         </div>
         <Switch isEnabled={darkMode} onToggle={handleDarkModeClick} />
       </div>
