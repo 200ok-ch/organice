@@ -1,7 +1,7 @@
 @import '../../../../colors.css';
 
 .no-items-message {
-  color: gray;
+  color: var(--base0);
   text-align: center;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .property-list-editor__item-container--dragging {
-  background-color: #e6e6e6;
+  background-color: var(--base3);
 }
 
 item-container__drag-handle {

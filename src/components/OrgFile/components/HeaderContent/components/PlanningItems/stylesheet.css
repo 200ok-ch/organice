@@ -3,11 +3,11 @@
 }
 
 .planning-item__type {
-  color: gray;
+  color: var(--base0);
 }
 
 .planning-item__timestamp {
   cursor: pointer;
-  color: blue;
+  color: var(--base02);
   text-decoration: underline;
 }

@@ -1,7 +1,7 @@
 @import '../../../../colors.css';
 
 .no-tags-message {
-  color: gray;
+  color: var(--base0);
   text-align: center;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .tag-container--dragging {
-  background-color: #e6e6e6;
+  background-color: var(--base3);
 }
 
 .tag-container__drag-handle {
@@ -48,7 +48,7 @@
   margin-bottom: 20px;
 
   border: none;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--base3);
 }
 
 .all-tags-container {

@@ -4,11 +4,11 @@
   border-bottom: 2px solid var(--base2);
   padding: 15px 5px;
 
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: var(--base03);
 }
 
 .capture-template-container--dragging {
-  background-color: #e6e6e6;
+  background-color: var(--base3);
 }
 
 .capture-template-container__header {
@@ -50,7 +50,7 @@
 
 .capture-template__field-container {
   margin-bottom: 5px;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--base3);
   padding-bottom: 5px;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .capture-template__help-text {
-  color: gray;
+  color: var(--base0);
   font-size: 14px;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -90,7 +90,7 @@
 .capture-template__field__or-line {
   width: 20px;
   height: 1px;
-  background-color: #d8d8d8;
+  background-color: var(--base3);
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -114,7 +114,7 @@
 }
 
 .remove-multi-textfield-button {
-  color: gray;
+  color: var(--base0);
   border: 0;
   background-color: transparent;
 }
@@ -135,7 +135,7 @@
 }
 
 .template-textarea {
-  border: 1px solid #d8d8d8;
+  border: 1px solid var(--base3);
 
   margin-top: 5px;
 }
@@ -146,7 +146,7 @@
 }
 
 .capture-template__delete-button {
-  background-color: #b90000;
+  background-color: var(--red);
 
   margin-top: 15px;
   margin-bottom: 0;

@@ -1,6 +1,6 @@
 .property-list__property {
   font-weight: bold;
-  color: rgb(177, 134, 16);
+  color: var(--yellow);
 
   margin-right: 5px;
 }

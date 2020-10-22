@@ -11,7 +11,7 @@
 }
 
 .drawer-outer-container--visible {
-  background-color: rgba(238, 232, 213, 0.1);
+  background-color: var(--base2);
 }
 
 .drawer-inner-container {
@@ -51,7 +51,7 @@
 .drawer__grabber {
   width: 35px;
   height: 5px;
-  background-color: gray;
+  background-color: var(--base0);
   flex-shrink: 0;
 
   border-radius: 50px;

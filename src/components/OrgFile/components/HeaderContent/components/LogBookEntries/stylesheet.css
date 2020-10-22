@@ -1,6 +1,6 @@
 .logbook-entries__item-start,
 .logbook-entries__item-end {
   cursor: pointer;
-  color: blue;
+  color: var(--base02);
   text-decoration: underline;
 }

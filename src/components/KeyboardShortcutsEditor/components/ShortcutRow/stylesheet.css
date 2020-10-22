@@ -5,12 +5,12 @@
   align-items: center;
   justify-content: space-between;
   margin: 10px;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--base3);
   padding: 5px 0;
 }
 
 .keyboard-shortcut-container:first-of-type {
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid var(--base3);
 }
 
 .keyboard-shortcut-container__shortcut-name {
@@ -25,8 +25,8 @@
   justify-content: center;
 
   color: var(--base02);
-  background-color: #f1f1f1;
-  border: 1px solid gray;
+  background-color: var(--base3);
+  border: 1px solid var(--base0);
   box-sizing: border-box;
 
   font-family: Courier;

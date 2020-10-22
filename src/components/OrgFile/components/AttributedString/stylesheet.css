@@ -11,7 +11,7 @@
 
 .attributed-string__inline-markup--inline-code,
 .attributed-string__inline-markup--verbatim {
-  color: black;
+  color: var(--base03);
   background-color: var(--base2);
   border: 1px solid var(--base1);
   padding: 2px;

@@ -43,7 +43,7 @@
 }
 
 .timestamp-editor__icon {
-  color: gray;
+  color: var(--base0);
 }
 
 .delay-repeater-value-input {
@@ -60,7 +60,7 @@
   padding-left: 12px;
 
   background-color: var(--magenta);
-  color: #FFE;
+  color: var(--base3);
 
   font-size: 14px;
 
@@ -70,7 +70,7 @@
 
 .timestamp-editor__date-input, .timestamp-editor__time-input {
   background-color: var(--magenta);
-  color: #FFE;
+  color: var(--base3);
 
   border: none;
   border-radius: 0;
