@@ -24,6 +24,9 @@ export const darkModeColors = () => {
   root.style.setProperty('--base1', '#586e75');
   root.style.setProperty('--base2', '#073642');
   root.style.setProperty('--base3', '#002b36');
+  // switch magenta and violet
+  root.style.setProperty('--magenta', '#6c71c4');
+  root.style.setProperty('--violet', '#d33682');
 };
 export const brightModeColors = () => {
   const root = document.documentElement;
@@ -35,4 +38,7 @@ export const brightModeColors = () => {
   root.style.setProperty('--base01', '#586e75');
   root.style.setProperty('--base02', '#073642');
   root.style.setProperty('--base03', '#002b36');
+  // switch magenta and violet
+  root.style.setProperty('--magenta', '#d33682');
+  root.style.setProperty('--violet', '#6c71c4');
 };
