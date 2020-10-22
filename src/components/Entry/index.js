@@ -25,6 +25,7 @@ import SyncServiceSignIn from '../SyncServiceSignIn';
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
+import { darkModeColors, brightModeColors } from '../../util/misc';
 
 class Entry extends PureComponent {
   constructor(props) {
@@ -137,7 +138,14 @@ class Entry extends PureComponent {
       activeModalPage,
       pendingCapture,
       location: { pathname },
+      darkMode,
     } = this.props;
+
+    if (darkMode) {
+      darkModeColors();
+    } else {
+      brightModeColors();
+    }
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
@@ -204,6 +212,7 @@ const mapStateToProps = (state) => {
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
     isDirty: state.org.present.get('isDirty'),
+    darkMode: state.base.get('darkMode'),
   };
 };
 

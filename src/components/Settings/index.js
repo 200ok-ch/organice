@@ -30,6 +30,7 @@ const Settings = ({
   hasUnseenChangelog,
   syncBackend,
   showClockDisplay,
+  darkMode,
   base,
   org,
 }) => {
@@ -73,6 +74,8 @@ const Settings = ({
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
+
+  const handleDarkModeClick = () => base.setDarkMode(!darkMode);
 
   const handleChangelogClick = () => base.pushModalPage('changelog');
 
@@ -228,6 +231,14 @@ const Settings = ({
         <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
       </div>
 
+      <div className="setting-container">
+        <div className="setting-label">
+          Dark Mode
+          <div className="setting-label__description">Enable dark mode.</div>
+        </div>
+        <Switch isEnabled={darkMode} onToggle={handleDarkModeClick} />
+      </div>
+
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>
           Capture templates
@@ -292,6 +303,7 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    darkMode: state.base.get('darkMode'),
   };
 };
 

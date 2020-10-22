@@ -13,3 +13,26 @@ export const formatTextWrap = (text, maxLineLength) => {
     }
   }, '');
 };
+
+export const darkModeColors = () => {
+  const root = document.documentElement;
+  root.style.setProperty('--base03', '#fdf6e3');
+  root.style.setProperty('--base02', '#eee8d5');
+  root.style.setProperty('--base01', '#93a1a1');
+  root.style.setProperty('--base00', '#839496');
+  root.style.setProperty('--base0', '#657b83');
+  root.style.setProperty('--base1', '#586e75');
+  root.style.setProperty('--base2', '#073642');
+  root.style.setProperty('--base3', '#002b36');
+};
+export const brightModeColors = () => {
+  const root = document.documentElement;
+  root.style.setProperty('--base3', '#fdf6e3');
+  root.style.setProperty('--base2', '#eee8d5');
+  root.style.setProperty('--base1', '#93a1a1');
+  root.style.setProperty('--base0', '#839496');
+  root.style.setProperty('--base00', '#657b83');
+  root.style.setProperty('--base01', '#586e75');
+  root.style.setProperty('--base02', '#073642');
+  root.style.setProperty('--base03', '#002b36');
+};
