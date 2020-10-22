@@ -15,7 +15,7 @@
 }
 
 .table-part__cell--selected {
-  background-color: rgba(239, 255, 0, 0.28);
+  background-color: var(--green-soft);
 }
 
 .table-cell__edit-container {
