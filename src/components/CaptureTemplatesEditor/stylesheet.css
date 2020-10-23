@@ -12,6 +12,6 @@
 
 .no-capture-templates-message {
   text-align: center;
-  color: gray;
+  color: var(--base0);
   padding: 20px;
 }

@@ -2,7 +2,7 @@
 
 .switch {
   display: inline-block;
-  border: 1px solid #d8d8d8;
+  border: 1px solid var(--base2);
   width: 90px;
   height: 34px;
   padding: 2px;
@@ -12,8 +12,8 @@
 .switch__grabber {
   width: 42px;
   height: 28px;
-  border: 1px solid #d8d8d8;
+  border: 1px solid var(--base2);
   box-sizing: border-box;
-  box-shadow: 1px 1px 5px 0px rgba(148, 148, 148, 0.75);
+  box-shadow: 1px 1px 5px 0px var(--base0-soft);
   background-color: var(--base00);
 }

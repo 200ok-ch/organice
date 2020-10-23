@@ -5,8 +5,11 @@
   --base03:     #002b36;
   --base02:     #073642;
   --base01:     #586e75;
+  --base01-soft: rgba(88, 110, 117, 0.4);
   --base00:     #657b83;
+  --base00-soft: rgba(101, 123, 131, 0.75);
   --base0:      #839496;
+  --base0-soft: rgba(131, 148, 150, 0.75);
   --base1:      #93a1a1;
   --base1-soft: rgba(147, 161, 161, 0.4);
   --base2:      #eee8d5;
@@ -19,4 +22,5 @@
   --blue:       #268bd2;
   --cyan:       #2aa198;
   --green:      #859900;
+  --green-soft: rgba(133, 153, 0, 0.28);
 }
