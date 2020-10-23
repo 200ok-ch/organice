@@ -44,8 +44,6 @@ h2 {
 .btn {
   cursor: pointer;
   background-color: var(--magenta);
-  /* TODO: What's the right way to have text on an action button in */
-  /* solarized? */
   color: var(--base3) !important;
 
   border: 0;
