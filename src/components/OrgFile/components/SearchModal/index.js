@@ -56,7 +56,11 @@ function SearchModal(props) {
     <Drawer onClose={onClose} maxSize={true}>
       <div className="task-list__modal-title">
         <h2 className="agenda__title">{capitalize(context)}</h2>
-        {showClockedTimes ? millisDuration(clockedTime) : null}
+        {showClockedTimes ? (
+          <span title="Sum of time logged on all search results directly (not including time logged on their children)">
+            {millisDuration(clockedTime)}
+          </span>
+        ) : null}
       </div>
 
       <datalist id="task-list__datalist-filter">
