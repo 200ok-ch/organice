@@ -56,7 +56,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="color: black; word-break: break-word;"
@@ -103,7 +103,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="color: black; word-break: break-word;"
@@ -150,7 +150,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="color: black; word-break: break-word;"
@@ -158,7 +158,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                     <span>
                       A header with a custom todo sequence in DONE state
                     </span>
-                    
+
                   </span>
                 </div>
               </div>
@@ -184,7 +184,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="color: black; word-break: break-word;"
@@ -231,7 +231,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="color: black; word-break: break-word;"
@@ -361,7 +361,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -371,6 +371,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
             </div>
           </div>
@@ -412,7 +415,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -422,6 +425,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
             </div>
           </div>
@@ -463,7 +469,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -473,6 +479,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
               <div>
                 <div
@@ -526,7 +535,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -543,6 +552,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
             </div>
           </div>
@@ -584,7 +596,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -594,6 +606,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
             </div>
           </div>
@@ -635,7 +650,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -645,6 +660,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
             </div>
           </div>
@@ -690,7 +708,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -698,8 +716,11 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   <span>
                     A header with a custom todo sequence in DONE state
                   </span>
-                  
+
                 </span>
+                <span
+                  style="min-width: 5em; text-align: right; margin-right: 5px;"
+                />
               </div>
             </div>
           </div>
