@@ -25,7 +25,7 @@ import SyncServiceSignIn from '../SyncServiceSignIn';
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
-import { darkModeColors, brightModeColors } from '../../util/misc';
+import { darkModeColors, brightModeColors } from '../../lib/color';
 
 class Entry extends PureComponent {
   constructor(props) {
