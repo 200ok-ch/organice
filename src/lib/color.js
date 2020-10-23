@@ -34,7 +34,7 @@ export const darkModeColors = () => {
   root.style.setProperty('--magenta', '#6c71c4');
   root.style.setProperty('--violet', '#d33682');
 };
-export const brightModeColors = () => {
+export const lightModeColors = () => {
   const root = document.documentElement;
   root.style.setProperty('--base3', '#fdf6e3');
   root.style.setProperty('--base2', '#eee8d5');

@@ -25,7 +25,7 @@ import SyncServiceSignIn from '../SyncServiceSignIn';
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
-import { darkModeColors, brightModeColors } from '../../lib/color';
+import { darkModeColors, lightModeColors } from '../../lib/color';
 
 class Entry extends PureComponent {
   constructor(props) {
@@ -144,7 +144,7 @@ class Entry extends PureComponent {
     if (darkMode) {
       darkModeColors();
     } else {
-      brightModeColors();
+      lightModeColors();
     }
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
