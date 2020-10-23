@@ -30,7 +30,7 @@ const Settings = ({
   hasUnseenChangelog,
   syncBackend,
   showClockDisplay,
-  darkMode,
+  colorScheme,
   base,
   org,
 }) => {
@@ -43,7 +43,7 @@ const Settings = ({
 
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
-  const handleDarkModeClick = (colorScheme) => base.setDarkMode(colorScheme);
+  const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
 
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
@@ -94,8 +94,8 @@ const Settings = ({
         <div className="setting-label">Color scheme</div>
         <TabButtons
           buttons={['Light', 'Dark']}
-          selectedButton={darkMode}
-          onSelect={handleDarkModeClick}
+          selectedButton={colorScheme}
+          onSelect={handleColorSchemeClick}
         />
       </div>
 
@@ -304,7 +304,7 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
-    darkMode: state.base.get('darkMode'),
+    colorScheme: state.base.get('colorScheme'),
   };
 };
 

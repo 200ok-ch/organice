@@ -138,10 +138,10 @@ class Entry extends PureComponent {
       activeModalPage,
       pendingCapture,
       location: { pathname },
-      darkMode,
+      colorScheme,
     } = this.props;
 
-    if (darkMode==='Dark') {
+    if (colorScheme === 'Dark') {
       darkModeColors();
     } else {
       lightModeColors();
@@ -212,7 +212,7 @@ const mapStateToProps = (state) => {
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
     isDirty: state.org.present.get('isDirty'),
-    darkMode: state.base.get('darkMode'),
+    colorScheme: state.base.get('colorScheme'),
   };
 };
 

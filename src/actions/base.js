@@ -145,9 +145,9 @@ export const setShouldStoreSettingsInSyncBackend = (newShouldStoreSettingsInSync
   };
 };
 
-export const setDarkMode = (darkMode) => ({
-  type: 'SET_DARK_MODE',
-  darkMode,
+export const setColorScheme = (colorScheme) => ({
+  type: 'SET_COLOR_SCHEME',
+  colorScheme,
 });
 
 export const setHasUnseenChangelog = (newHasUnseenChangelog) => ({

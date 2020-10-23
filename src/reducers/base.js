@@ -111,8 +111,8 @@ const closePopup = (state) => {
 
 const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
 
-const setDarkMode = (state, action) => {
-  return state.set('darkMode', action.darkMode);
+const setColorScheme = (state, action) => {
+  return state.set('colorScheme', action.colorScheme);
 };
 
 /**
@@ -136,8 +136,8 @@ export default (state = Map(), action) => {
       return setAgendaDefaultDeadlineDelayValue(state, action);
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
       return setShouldStoreSettingsInSyncBackend(state, action);
-    case 'SET_DARK_MODE':
-      return setDarkMode(state, action);
+    case 'SET_COLOR_SCHEME':
+      return setColorScheme(state, action);
     case 'SET_SHOULD_LIVE_SYNC':
       return setShouldLiveSync(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
