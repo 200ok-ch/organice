@@ -371,9 +371,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
             </div>
           </div>
@@ -425,9 +422,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
             </div>
           </div>
@@ -479,9 +473,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
               <div>
                 <div
@@ -552,9 +543,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
             </div>
           </div>
@@ -606,9 +594,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
             </div>
           </div>
@@ -660,9 +645,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   ...
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
             </div>
           </div>
@@ -718,9 +700,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                   </span>
                   
                 </span>
-                <span
-                  style="min-width: 5em; text-align: right; margin-right: 5px;"
-                />
               </div>
             </div>
           </div>
