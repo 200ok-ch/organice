@@ -4,6 +4,11 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-10-23 Fri]
+** Added
+   - Add 'dark mode' next to 'light mode' as a setting.
+     - Both themes are based on the popular [[https://ethanschoonover.com/solarized/][Solarized]] color palette.
+     - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/527][PR]] 🙏
 
 * [2020-10-20 Tue]
 ** Added
