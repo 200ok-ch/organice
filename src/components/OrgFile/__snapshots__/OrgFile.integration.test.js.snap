@@ -56,7 +56,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="word-break: break-word;"
@@ -103,7 +103,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="word-break: break-word;"
@@ -150,7 +150,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="word-break: break-word;"
@@ -184,7 +184,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="word-break: break-word;"
@@ -231,7 +231,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
                     style="word-break: break-word;"
@@ -361,7 +361,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -412,7 +412,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -463,7 +463,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -526,7 +526,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -584,7 +584,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -635,7 +635,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -690,7 +690,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"

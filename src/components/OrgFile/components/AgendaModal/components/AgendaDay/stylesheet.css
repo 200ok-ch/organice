@@ -43,6 +43,7 @@
 }
 
 .agenda-day__header__header-container {
+  width: 100%;
   margin-top: 18px;
 }
 

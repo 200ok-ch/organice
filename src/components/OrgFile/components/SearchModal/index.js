@@ -10,6 +10,7 @@ import HeaderListView from './components/HeaderListView';
 import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
+import { millisDuration } from '../../../../lib/timestamps';
 
 import * as orgActions from '../../../../actions/org';
 
@@ -18,7 +19,15 @@ import * as orgActions from '../../../../actions/org';
 // changing all.
 function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
-  const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions, context } = props;
+  const {
+    onClose,
+    searchFilter,
+    searchFilterValid,
+    searchFilterSuggestions,
+    context,
+    showClockedTimes,
+    clockedTime,
+  } = props;
 
   function handleHeaderClick(headerId) {
     props.onClose(headerId);
@@ -45,7 +54,14 @@ function SearchModal(props) {
 
   return (
     <Drawer onClose={onClose} maxSize={true}>
-      <h2 className="agenda__title">{capitalize(context)}</h2>
+      <div className="task-list__modal-title">
+        <h2 className="agenda__title">{capitalize(context)}</h2>
+        {showClockedTimes ? (
+          <span title="Sum of time logged on all search results directly (not including time logged on their children)">
+            {millisDuration(clockedTime)}
+          </span>
+        ) : null}
+      </div>
 
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
@@ -96,6 +112,8 @@ const mapStateToProps = (state) => ({
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
+  showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
+  clockedTime: state.org.present.getIn(['search', 'clockedTime']),
 });
 
 const mapDispatchToProps = (dispatch) => ({

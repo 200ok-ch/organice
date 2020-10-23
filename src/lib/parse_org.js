@@ -1,5 +1,5 @@
 import generateId from './id_generator';
-import { updateHeadersTotalTimeLogged } from './clocking';
+import { updateHeadersTotalTimeLoggedRecursive } from './clocking';
 
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
@@ -857,7 +857,7 @@ export const parseOrg = (fileContents) => {
     return _updateHeaderFromDescription(header, description);
   });
 
-  headers = updateHeadersTotalTimeLogged(headers);
+  headers = updateHeadersTotalTimeLoggedRecursive(headers);
 
   return fromJS({
     headers,

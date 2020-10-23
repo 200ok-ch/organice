@@ -137,7 +137,7 @@ const isRelative = (moment) => {
   return moment.type === 'offset' || moment.type === 'unit';
 };
 
-const timeFilter = (filterDescription) => {
+export const timeFilter = (filterDescription) => {
   const timeFilterDescription = filterDescription.field.timerange;
   let lower;
   let upper;
@@ -204,7 +204,7 @@ export const isMatch = (filterExpr) => {
     .map((x) => [x.property, x.words]);
   const filterField = filterExpr.filter(filterFilter('field', false));
   const filterDate = filterField.filter((f) => f.field.type === 'date').map(timeFilter);
-  const filterClock = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
+  //const filterClock = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
   const filterSchedule = filterField.filter((f) => f.field.type === 'scheduled').map(timeFilter);
   const filterDeadline = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
 
@@ -234,10 +234,10 @@ export const isMatch = (filterExpr) => {
     const deadlines = planningItems
       .filter((p) => p.get('type') === 'DEADLINE')
       .map((p) => p.get('timestamp'));
-    const clocks = header
-      .get('logBookEntries')
-      .flatMap((l) => [l.get('start'), l.get('end')])
-      .filter((t) => t !== undefined && t !== null);
+    //const clocks = header
+    //  .get('logBookEntries')
+    //  .flatMap((l) => [l.get('start'), l.get('end')])
+    //  .filter((t) => t !== undefined && t !== null);
     const propertyFilter = ([x, ys]) =>
       !properties
         .filter(([key, val]) => {
@@ -255,7 +255,7 @@ export const isMatch = (filterExpr) => {
       filterIC.every(orChain(headlineText.toLowerCase())) &&
       filterProps.every(propertyFilter) &&
       filterDate.every(orChainDate(dates)) &&
-      filterClock.every(orChainDate(clocks)) &&
+      //filterClock.every(orChainDate(clocks)) &&
       filterSchedule.every(orChainDate(scheduleds)) &&
       filterDeadline.every(orChainDate(deadlines)) &&
       !filterTagsExcl.some(orChain(tags)) &&

@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import * as orgActions from '../../../../../../actions/org';
 import './stylesheet.css';
 
+import { millisDuration } from '../../../../../../lib/timestamps';
+
 import TitleLine from '../../../TitleLine';
 
 function HeaderListView(props) {
@@ -20,7 +22,7 @@ function HeaderListView(props) {
     props.org.setSearchFilterInformation('', 0, context);
   }, [context, props.org]);
 
-  const { headers } = props;
+  const { headers, showClockedTimes } = props;
 
   return (
     <div className="agenda-day__container">
@@ -37,6 +39,11 @@ function HeaderListView(props) {
                   shouldDisableActions
                   shouldDisableExplicitWidth
                   onClick={handleHeaderClick(header.get('id'))}
+                  addition={
+                    showClockedTimes && header.get('totalFilteredTimeLoggedRecursive') !== 0
+                      ? millisDuration(header.get('totalFilteredTimeLoggedRecursive'))
+                      : null
+                  }
                 />
               </div>
             </div>
@@ -51,6 +58,7 @@ const mapStateToProps = (state) => ({
   // When no filtering has happened, yet (initial state), use all headers.
   headers:
     state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
+  showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
 });
 
 const mapDispatchToProps = (dispatch) => ({

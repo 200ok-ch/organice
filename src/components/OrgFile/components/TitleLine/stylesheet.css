@@ -51,3 +51,9 @@
 .insert-timestamp-icon {
   margin-right: 5px;
 }
+
+.title-line-text {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
