@@ -12,7 +12,7 @@
 }
 
 .tag-container--dragging {
-  background-color: var(--base3);
+  background-color: var(--base1);
 }
 
 .tag-container__drag-handle {
@@ -32,7 +32,7 @@
 
   padding-left: 10px;
 
-  color: var(--base2);
+  color: var(--base1);
 }
 
 .tags-editor__add-new-container {
@@ -48,7 +48,7 @@
   margin-bottom: 20px;
 
   border: none;
-  border-bottom: 1px solid var(--base3);
+  border-bottom: 1px solid var(--base2);
 }
 
 .all-tags-container {

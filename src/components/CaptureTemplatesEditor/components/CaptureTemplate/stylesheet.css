@@ -8,7 +8,7 @@
 }
 
 .capture-template-container--dragging {
-  background-color: var(--base3);
+  background-color: var(--base1);
 }
 
 .capture-template-container__header {
@@ -50,7 +50,7 @@
 
 .capture-template__field-container {
   margin-bottom: 5px;
-  border-bottom: 1px solid var(--base3);
+  border-bottom: 1px solid var(--base2);
   padding-bottom: 5px;
 }
 
@@ -90,7 +90,7 @@
 .capture-template__field__or-line {
   width: 20px;
   height: 1px;
-  background-color: var(--base3);
+  background-color: var(--base2);
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -135,7 +135,7 @@
 }
 
 .template-textarea {
-  border: 1px solid var(--base3);
+  border: 1px solid var(--base2);
 
   margin-top: 5px;
 }

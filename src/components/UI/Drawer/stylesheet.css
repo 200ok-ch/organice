@@ -11,7 +11,7 @@
 }
 
 .drawer-outer-container--visible {
-  background-color: var(--base2);
+  background-color: var(--base1-soft);
 }
 
 .drawer-inner-container {

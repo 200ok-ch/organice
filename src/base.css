@@ -80,7 +80,7 @@ h2 {
 }
 
 .textfield {
-  border: 1px solid var(--base3);
+  border: 1px solid var(--base1);
   border-radius: 0;
   -webkit-appearance: none;
   padding: 5px;
