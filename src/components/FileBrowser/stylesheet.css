@@ -2,7 +2,7 @@
 
 .file-browser-container a {
   text-decoration: none;
-  color: black;
+  color: var(--base03);
 }
 
 .file-browser__header {
@@ -19,13 +19,13 @@
 }
 
 .file-browser__file-list__element {
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid var(--base2);
   padding: 10px;
   font-family: Courier;
 }
 
 .file-browser__file-list__element:last-of-type {
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--base2);
 }
 
 .file-browser__file-list__element--load-more-row:last-of-type {

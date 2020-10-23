@@ -28,7 +28,7 @@
 }
 
 .timestamp-editor__separator__margin-line {
-  background-color: black;
+  background-color: var(--base03);
   height: 1px;
   width: 40%;
 

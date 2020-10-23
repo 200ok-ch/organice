@@ -287,15 +287,17 @@ nvm use
 To install the necessary packages, run:
 
 #+BEGIN_SRC shell
-yarn install
+yarn install --production=false
 #+END_SRC
 
-To test against your own Dropbox account, you'll need to
-create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
+To test against your own Dropbox or Google Drive application, you'll
+need to create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
 
 #+BEGIN_SRC shell
 cp .env.sample .env
 #+END_SRC
+
+Then, fill in the blanks in ~.env~ with your Dropbox or Google Drive credentials.
 
 Running the application:
 

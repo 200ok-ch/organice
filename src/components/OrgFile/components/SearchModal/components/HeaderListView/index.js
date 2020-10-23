@@ -33,7 +33,7 @@ function HeaderListView(props) {
               <div className="agenda-day__header__header-container">
                 <TitleLine
                   header={header}
-                  color="black"
+                  color="var(--base03)"
                   hasContent={false}
                   isSelected={false}
                   shouldDisableActions

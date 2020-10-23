@@ -145,6 +145,11 @@ export const setShouldStoreSettingsInSyncBackend = (newShouldStoreSettingsInSync
   };
 };
 
+export const setColorScheme = (colorScheme) => ({
+  type: 'SET_COLOR_SCHEME',
+  colorScheme,
+});
+
 export const setHasUnseenChangelog = (newHasUnseenChangelog) => ({
   type: 'SET_HAS_UNSEEN_CHANGELOG',
   newHasUnseenChangelog,

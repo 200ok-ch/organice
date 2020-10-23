@@ -33,6 +33,10 @@ body,
   overflow-y: hidden;
 }
 
+a {
+  color: var(--base03);
+}
+
 h2 {
   color: var(--base01) !important;
 }
@@ -40,16 +44,14 @@ h2 {
 .btn {
   cursor: pointer;
   background-color: var(--magenta);
-  /* TODO: What's the right way to have text on an action button in */
-  /* solarized? */
-  color: #ffe !important;
+  color: var(--base3) !important;
 
   border: 0;
   padding: 8px 16px;
 }
 
 .btn a {
-  color: #ffe !important;
+  color: var(--base3) !important;
 }
 
 .btn--circle {
@@ -78,7 +80,7 @@ h2 {
 }
 
 .textfield {
-  border: 1px solid #d8d8d8;
+  border: 1px solid var(--base1);
   border-radius: 0;
   -webkit-appearance: none;
   padding: 5px;

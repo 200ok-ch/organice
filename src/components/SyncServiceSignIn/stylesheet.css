@@ -30,7 +30,7 @@
   font-weight: bold;
 
   font-size: 18px;
-  color: gray;
+  color: var(--base0);
 
   text-align: center;
 }

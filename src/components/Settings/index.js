@@ -30,6 +30,7 @@ const Settings = ({
   hasUnseenChangelog,
   syncBackend,
   showClockDisplay,
+  colorScheme,
   base,
   org,
 }) => {
@@ -41,6 +42,8 @@ const Settings = ({
   const handleCaptureTemplatesClick = () => base.pushModalPage('capture_templates_editor');
 
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
+
+  const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
 
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
@@ -84,6 +87,15 @@ const Settings = ({
           buttons={['Regular', 'Large']}
           selectedButton={fontSize}
           onSelect={handleFontSizeChange}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">Color scheme</div>
+        <TabButtons
+          buttons={['Light', 'Dark']}
+          selectedButton={colorScheme}
+          onSelect={handleColorSchemeClick}
         />
       </div>
 
@@ -292,6 +304,7 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    colorScheme: state.base.get('colorScheme'),
   };
 };
 

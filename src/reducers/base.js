@@ -111,6 +111,10 @@ const closePopup = (state) => {
 
 const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
 
+const setColorScheme = (state, action) => {
+  return state.set('colorScheme', action.colorScheme);
+};
+
 /**
  * Reducer that is responsible for the "base" state slice.
  */
@@ -132,6 +136,8 @@ export default (state = Map(), action) => {
       return setAgendaDefaultDeadlineDelayValue(state, action);
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
       return setShouldStoreSettingsInSyncBackend(state, action);
+    case 'SET_COLOR_SCHEME':
+      return setColorScheme(state, action);
     case 'SET_SHOULD_LIVE_SYNC':
       return setShouldLiveSync(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
