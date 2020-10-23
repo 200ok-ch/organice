@@ -30,6 +30,11 @@ export const darkModeColors = () => {
   root.style.setProperty('--base1', '#586e75');
   root.style.setProperty('--base2', '#073642');
   root.style.setProperty('--base3', '#002b36');
+  // switch transparent color variants
+  root.style.setProperty('--base01-soft', 'rgba(147, 161, 161, 0.4)');
+  root.style.setProperty('--base00-soft', 'rgba(131, 148, 150, 0.75)');
+  root.style.setProperty('--base0-soft', 'rgba(101, 123, 131, 0.75)');
+  root.style.setProperty('--base1-soft', 'rgba(88, 110, 117, 0.4)');
   // switch magenta and violet
   root.style.setProperty('--magenta', '#6c71c4');
   root.style.setProperty('--violet', '#d33682');
@@ -44,6 +49,11 @@ export const lightModeColors = () => {
   root.style.setProperty('--base01', '#586e75');
   root.style.setProperty('--base02', '#073642');
   root.style.setProperty('--base03', '#002b36');
+  // switch transparent color variants
+  root.style.setProperty('--base01-soft', 'rgba(88, 110, 117, 0.4)');
+  root.style.setProperty('--base00-soft', 'rgba(101, 123, 131, 0.75)');
+  root.style.setProperty('--base0-soft', 'rgba(131, 148, 150, 0.75)');
+  root.style.setProperty('--base1-soft', 'rgba(147, 161, 161, 0.4)');
   // switch magenta and violet
   root.style.setProperty('--magenta', '#d33682');
   root.style.setProperty('--violet', '#6c71c4');
