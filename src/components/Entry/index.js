@@ -141,7 +141,7 @@ class Entry extends PureComponent {
       darkMode,
     } = this.props;
 
-    if (darkMode) {
+    if (darkMode==='Dark') {
       darkModeColors();
     } else {
       lightModeColors();

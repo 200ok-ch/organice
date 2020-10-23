@@ -43,6 +43,8 @@ const Settings = ({
 
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
+  const handleDarkModeClick = (colorScheme) => base.setDarkMode(colorScheme);
+
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
   const handleShouldTapTodoToAdvanceChange = () =>
@@ -75,8 +77,6 @@ const Settings = ({
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
 
-  const handleDarkModeClick = () => base.setDarkMode(!darkMode);
-
   const handleChangelogClick = () => base.pushModalPage('changelog');
 
   return (
@@ -87,6 +87,15 @@ const Settings = ({
           buttons={['Regular', 'Large']}
           selectedButton={fontSize}
           onSelect={handleFontSizeChange}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">Color scheme</div>
+        <TabButtons
+          buttons={['Light', 'Dark']}
+          selectedButton={darkMode}
+          onSelect={handleDarkModeClick}
         />
       </div>
 
@@ -229,14 +238,6 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
-      </div>
-
-      <div className="setting-container">
-        <div className="setting-label">
-          Dark Mode
-          <div className="setting-label__description"></div>
-        </div>
-        <Switch isEnabled={darkMode} onToggle={handleDarkModeClick} />
       </div>
 
       <div className="settings-buttons-container">
