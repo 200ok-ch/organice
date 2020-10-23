@@ -264,9 +264,7 @@ class TitleLine extends PureComponent {
                 />
                 {!header.get('opened') && hasContent ? '...' : ''}
               </span>
-              {addition !== null && addition !== undefined ? (
-                <span style={additionStyle}>{addition}</span>
-              ) : null}
+              {addition ? <span style={additionStyle}>{addition}</span> : null}
             </div>
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>

@@ -18,9 +18,7 @@ export const totalFilteredTimeLogged = (filters, header) => {
   const clocks = header
     .get('logBookEntries', [])
     .map((l) => [l.get('start'), l.get('end')])
-    .filter(
-      ([start, end]) => start !== undefined && start !== null && end !== undefined && end !== null
-    )
+    .filter(([start, end]) => start && end)
     .filter((ts) => ts.some((t) => filters.every((f) => f(t))));
 
   const times = clocks.map(([start, end]) => dateForTimestamp(end) - dateForTimestamp(start));
