@@ -137,8 +137,8 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'darkMode',
-    type: 'boolean',
+    name: 'colorScheme',
+    type: 'string',
     shouldStoreInConfig: true,
   },
   {
