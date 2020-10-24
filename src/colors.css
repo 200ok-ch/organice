@@ -24,12 +24,12 @@
 
   header text based on indentation level:
   --blue
-  --green
+  --green: DONE keyword
   --cyan
   --yellow
 
   additional colors:
-  --orange: todo keyword, overdue planning dates
+  --orange: TODO keyword, overdue planning dates
   --red: error messages, changelog
   --magenta: action button
   --violet: unused
