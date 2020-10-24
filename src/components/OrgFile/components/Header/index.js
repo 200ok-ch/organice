@@ -18,7 +18,7 @@ import HeaderContent from '../HeaderContent';
 import HeaderActionDrawer from './components/HeaderActionDrawer';
 
 import { headerWithId } from '../../../../lib/org_utils';
-import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
+import { interpolateColors, rgbaObject, rgbaString, readRgbaVariable } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
 
 class Header extends PureComponent {
@@ -378,7 +378,7 @@ ${header.get('rawDescription')}`;
           const isRightActionActivated =
             -1 * swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
 
-          const disabledBackgroundColor = rgbaObject(211, 211, 211, 1);
+          const disabledBackgroundColor = readRgbaVariable('--base3');
           const leftActivatedBackgroundColor = rgbaObject(0, 128, 0, 1);
           const rightActivatedBackgroundColor = rgbaObject(255, 0, 0, 1);
 

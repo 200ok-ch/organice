@@ -20,6 +20,29 @@ export const rgbaString = (rgba) => {
   return `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 };
 
+// assumes var is either a longform-hex or rgb(a) color value
+export const readRgbaVariable = (varName) => {
+  const varValue = getComputedStyle(document.documentElement).getPropertyValue(varName);
+  if (varValue.charAt(0) === '#') {
+    const hexValue = varValue.substring(1, 7);
+    return rgbaObject(
+      parseInt(hexValue.substring(0, 2), 16),
+      parseInt(hexValue.substring(2, 4), 16),
+      parseInt(hexValue.substring(4, 6), 16),
+      1
+    );
+  } else {
+    const rgbaValues = [...varValue.matchAll(/[0-9.]+/g)].map((a) => +a[0]);
+    if (rgbaValues.length === 3) {
+      return rgbaObject(...rgbaValues, 0);
+    } else if (rgbaValues.length === 4) {
+      return rgbaObject(...rgbaValues);
+    } else {
+      return rgbaObject(0, 0, 0, 0);
+    }
+  }
+};
+
 export const solarizedDark = () => {
   const root = document.documentElement;
   // backgrounds
@@ -31,7 +54,7 @@ export const solarizedDark = () => {
   root.style.setProperty('--base0', '#657b83');
   root.style.setProperty('--base1', '#586e75');
   root.style.setProperty('--base2', '#073642');
-  root.style.setProperty('--base3', '#002b36');
+  root.style.setProperty('--base3', 'rgb(0,0,0)'); // #002b36
   // shadows
   root.style.setProperty('--base0-soft', 'rgba(101, 123, 131, 0.75)');
   // highlighted backgrounds
