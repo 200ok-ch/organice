@@ -508,10 +508,8 @@ the Dropbox developer console]], create a new app and configure the
 resulting =clientId= in a newly created ~.env~ file (analogous to
 ~.env.sample~) as the value of the key =REACT_APP_DROPBOX_CLIENT_ID=.
 
-Make sure to add your own host URL as =Redirect URI=. Otherwise,
-logging in to Dropbox will only work if you're running the app on
-~http://localhost:3000~. All other redirect URIs must be specified
-ahead of time on the Dropbox developer console.
+Make sure to add your own host URL (or http://localhost:3000/ for local development) as =Redirect URI=.
+Your dropbox app needs permission to read and write files.
 
 *** WebDAV
     :PROPERTIES:
