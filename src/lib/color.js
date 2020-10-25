@@ -54,7 +54,7 @@ export const solarizedDark = () => {
   root.style.setProperty('--base0', '#657b83');
   root.style.setProperty('--base1', '#586e75');
   root.style.setProperty('--base2', '#073642');
-  root.style.setProperty('--base3', 'rgb(0,0,0)'); // #002b36
+  root.style.setProperty('--base3', '#002b36');
   // shadows
   root.style.setProperty('--base0-soft', 'rgba(101, 123, 131, 0.75)');
   // highlighted backgrounds
