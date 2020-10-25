@@ -79,8 +79,13 @@ const themes = {
 };
 
 export const loadTheme = (theme) => {
-  if (theme) {
+  if (theme && themes[theme]) {
     const style = document.documentElement.style;
     Object.entries(themes[theme]).forEach(([k, v]) => style.setProperty(k, v));
+    
+    // set theme color on android
+    document
+      .querySelector('meta[name="theme-color"]')
+      .setAttribute('content', themes[theme]['--base3']);
   }
 };
