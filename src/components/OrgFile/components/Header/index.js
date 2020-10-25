@@ -43,8 +43,8 @@ class Header extends PureComponent {
       'handleEnterDescriptionEditMode',
       'handleShowTagsModal',
       'handleShowPropertyListEditorModal',
-      'handleFocus',
-      'handleUnfocus',
+      'handleNarrow',
+      'handleWiden',
       'handleAddNewHeader',
       'handleRest',
       'handleDeadlineClick',
@@ -212,12 +212,12 @@ class Header extends PureComponent {
     this.props.base.activatePopup('property-list-editor');
   }
 
-  handleFocus() {
-    this.props.org.focusHeader(this.props.header.get('id'));
+  handleNarrow() {
+    this.props.org.narrowHeader(this.props.header.get('id'));
   }
 
-  handleUnfocus() {
-    this.props.org.unfocusHeader();
+  handleWiden() {
+    this.props.org.widenHeader();
   }
 
   handleAddNewHeader() {
@@ -329,14 +329,14 @@ ${header.get('rawDescription')}`;
       hasContent,
       isSelected,
       bulletStyle,
-      focusedHeader,
-      isFocused,
+      narrowedHeader,
+      isNarrowed,
       shouldDisableActions,
       showClockDisplay,
     } = this.props;
 
-    const indentLevel = !!focusedHeader
-      ? header.get('nestingLevel') - focusedHeader.get('nestingLevel') + 1
+    const indentLevel = !!narrowedHeader
+      ? header.get('nestingLevel') - narrowedHeader.get('nestingLevel') + 1
       : header.get('nestingLevel');
 
     const {
@@ -509,11 +509,11 @@ ${header.get('rawDescription')}`;
                 <HeaderActionDrawer
                   onEnterTitleEditMode={this.handleEnterTitleEditMode}
                   onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
-                  isFocused={isFocused}
+                  isNarrowed={isNarrowed}
                   onTagsClick={this.handleShowTagsModal}
                   onPropertiesClick={this.handleShowPropertyListEditorModal}
-                  onFocus={this.handleFocus}
-                  onUnfocus={this.handleUnfocus}
+                  onNarrow={this.handleNarrow}
+                  onWiden={this.handleWiden}
                   onAddNewHeader={this.handleAddNewHeader}
                   onDeadlineClick={this.handleDeadlineClick}
                   onClockInOutClick={this.handleClockInOutClick}
@@ -535,16 +535,16 @@ ${header.get('rawDescription')}`;
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const focusedHeader = !!state.org.present.get('focusedHeaderId')
-    ? headerWithId(state.org.present.get('headers'), state.org.present.get('focusedHeaderId'))
+  const narrowedHeader = !!state.org.present.get('narrowedHeaderId')
+    ? headerWithId(state.org.present.get('headers'), state.org.present.get('narrowedHeaderId'))
     : null;
 
   return {
     bulletStyle: state.base.get('bulletStyle'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
-    focusedHeader,
-    isFocused: !!focusedHeader && focusedHeader.get('id') === ownProps.header.get('id'),
+    narrowedHeader,
+    isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
   };

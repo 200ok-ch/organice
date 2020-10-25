@@ -400,7 +400,7 @@ const mapStateToProps = (state) => {
     inEditMode: !!state.org.present.get('editMode'),
     selectedHeaderId: state.org.present.get('selectedHeaderId'),
     isDirty: state.org.present.get('isDirty'),
-    isFocusedHeaderActive: !!state.org.present.get('focusedHeaderId'),
+    isNarrowedHeaderActive: !!state.org.present.get('narrowedHeaderId'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     captureTemplates: state.capture.get('captureTemplates', List()),
     path: state.org.present.get('path'),

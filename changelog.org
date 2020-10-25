@@ -21,6 +21,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Added
    - When a header is focused, and the user uses the 'search' or 'task list' feature, then the searched header list is automatically narrowed to only subheaders of the originally focused header.
      - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/517][PR]] 🙏
+** Changed
+   - The 'focus header' feature is renamed.
+     - /Narrowing/ means focusing on this header, making the rest temporarily inaccessible.
+     - Canceling the narrowing, which makes all headers once again accessible, is called /widening/.
 
 * [2020-10-10 Sat]
 ** Added
