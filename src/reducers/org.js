@@ -4,8 +4,12 @@ import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import headline_filter_parser from '../lib/headline_filter_parser';
-import { isMatch, computeCompletionsForDatalist } from '../lib/headline_filter';
-import { updateHeadersTotalTimeLogged } from '../lib/clocking';
+import { isMatch, computeCompletionsForDatalist, timeFilter } from '../lib/headline_filter';
+import {
+  updateHeadersTotalTimeLoggedRecursive,
+  totalFilteredTimeLogged,
+  updateHeadersTotalFilteredTimeLoggedRecursive,
+} from '../lib/clocking';
 
 import {
   extractAllOrgTags,
@@ -1054,13 +1058,42 @@ export const setSearchFilterInformation = (state, action) => {
   if (searchFilterValid) {
     let filteredHeaders;
 
+    // show clocked times & sum if there is a clock search term
+    const clockFilters = searchFilterExpr
+      .filter((f) => f.type === 'field')
+      .filter((f) => f.field.type === 'clock');
+    const filterFunctions = clockFilters.map(timeFilter);
+    const showClockedTimes = clockFilters.length !== 0;
+    state.setIn(['search', 'showClockedTimes'], showClockedTimes);
+
     // Only search subheaders if a header is narrowed
     const narrowedHeaderId = state.get('narrowedHeaderId');
+    let headersToSearch;
     if (!narrowedHeaderId || context === 'refile') {
-      filteredHeaders = headers.filter(isMatch(searchFilterExpr));
+      headersToSearch = headers;
     } else {
-      const subheaders = subheadersOfHeaderWithId(headers, narrowedHeaderId);
-      filteredHeaders = subheaders.filter(isMatch(searchFilterExpr));
+      headersToSearch = subheadersOfHeaderWithId(headers, narrowedHeaderId);
+    }
+
+    // calculate relevant clocked times and total
+    if (showClockedTimes) {
+      headersToSearch = headersToSearch.map((header) =>
+        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+      );
+      headersToSearch = updateHeadersTotalFilteredTimeLoggedRecursive(
+        filterFunctions,
+        headersToSearch
+      ).filter((header) => header.get('totalFilteredTimeLoggedRecursive') !== 0);
+    }
+
+    filteredHeaders = headersToSearch.filter(isMatch(searchFilterExpr));
+
+    if (showClockedTimes) {
+      const clockedTime = filteredHeaders.reduce(
+        (acc, val) => acc + val.get('totalFilteredTimeLogged'),
+        0
+      );
+      state.setIn(['search', 'clockedTime'], clockedTime);
     }
 
     // Filter selectedHeader and its subheaders from `headers`,
@@ -1114,7 +1147,7 @@ const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage
 
 const setShowClockDisplay = (state, action) => {
   if (action.showClockDisplay) {
-    state = state.update('headers', updateHeadersTotalTimeLogged);
+    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
   }
   return state.set('showClockDisplay', action.showClockDisplay);
 };
@@ -1247,7 +1280,7 @@ export default (state = Map(), action) => {
   state = reducer(state, action);
 
   if (action.dirtying && state.get('showClockDisplay')) {
-    state = state.update('headers', updateHeadersTotalTimeLogged);
+    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
   }
   return state;
 };

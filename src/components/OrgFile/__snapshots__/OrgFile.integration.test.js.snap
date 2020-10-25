@@ -56,10 +56,10 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
-                    style="color: black; word-break: break-word;"
+                    style="word-break: break-word;"
                   >
                     <span>
                       A todo item with schedule and deadline
@@ -103,10 +103,10 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
-                    style="color: black; word-break: break-word;"
+                    style="word-break: break-word;"
                   >
                     <span>
                       A repeating todo
@@ -150,10 +150,10 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
-                    style="color: black; word-break: break-word;"
+                    style="word-break: break-word;"
                   >
                     <span>
                       A header with a custom todo sequence in DONE state
@@ -184,10 +184,10 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
-                    style="color: black; word-break: break-word;"
+                    style="word-break: break-word;"
                   >
                     <span>
                       A headline that's done a day earlier even
@@ -231,10 +231,10 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 style="width: 100%;"
               >
                 <div
-                  style="width: 100%; display: flex; justify-content: space-between;"
+                  class="title-line-text"
                 >
                   <span
-                    style="color: black; word-break: break-word;"
+                    style="word-break: break-word;"
                   >
                     <span>
                       A headline that's done since a loong time
@@ -361,7 +361,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -412,7 +412,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -463,7 +463,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -526,7 +526,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -584,7 +584,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -635,7 +635,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"
@@ -690,7 +690,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               style="width: 100%;"
             >
               <div
-                style="width: 100%; display: flex; justify-content: space-between;"
+                class="title-line-text"
               >
                 <span
                   style="word-break: break-word;"

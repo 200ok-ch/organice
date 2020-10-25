@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   margin: 10px;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--base2);
   padding: 5px 0;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .setting-container:first-of-type {
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid var(--base2);
 }
 
 .setting-label {
@@ -32,7 +32,7 @@
 
 .setting-label__description {
   font-size: 14px;
-  color: gray;
+  color: var(--base0);
   max-width: calc(100% - 25px);
   margin-top: 5px;
 }
@@ -61,11 +61,11 @@
   margin-bottom: 20px;
 
   border: none;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--base2);
 }
 
 .changelog-badge-container {
-  font-style: ;
+  font-style: none;
   font-weight: bold;
   color: var(--red);
   background-color: var(--base2);

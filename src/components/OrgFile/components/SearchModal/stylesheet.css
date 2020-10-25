@@ -20,3 +20,9 @@
 .task-list__filter-input-invalid {
   border: 2px solid var(--red);
 }
+
+.task-list__modal-title {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

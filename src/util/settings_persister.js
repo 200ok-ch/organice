@@ -136,6 +136,12 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
+    category: 'base',
+    name: 'colorScheme',
+    type: 'string',
+    shouldStoreInConfig: true,
+  },
+  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',

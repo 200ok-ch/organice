@@ -195,8 +195,8 @@ class TimestampEditor extends PureComponent {
                   buttons={['+', '++', '.+']}
                   titles={[
                     'Shift exactly the amount of time in the repeater (i.e. one month for +1m).',
-                    'Shift the date by at least the amount of time in the repeater (i.e. one month for +1m), but also by as many intervals (i.e. months for for +1m) as it takes to get this date into the future.',
-                    'Shift the date exactly the amount of time of the repeater into the future.',
+                    'Shift the date by as many intervals of the amount of time in the repeater (i.e. one or many months for for ++1m) as it takes to get this date into the future.',
+                    'Shift the date exactly the amount of time of the repeater relative to the time of the state change.',
                   ]}
                   selectedButton={repeaterType || '+'}
                   onSelect={this.handleRepeaterTypeChange}

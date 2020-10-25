@@ -16,7 +16,7 @@
 }
 
 .todo-keyword--done-state {
-  color: green;
+  color: var(--green);
 }
 
 .todo-keyword--none {
@@ -40,7 +40,7 @@
 }
 
 .title-line__insert-timestamp-button {
-  color: gray;
+  color: var(--base0);
 
   font-family: Courier;
 
@@ -50,4 +50,10 @@
 
 .insert-timestamp-icon {
   margin-right: 5px;
+}
+
+.title-line-text {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }

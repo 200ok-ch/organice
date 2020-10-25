@@ -9,7 +9,7 @@
 }
 
 .header-list-container--focused {
-  box-shadow: inset 0px 0px 5px 0px rgba(148, 148, 148, 0.75);
+  box-shadow: inset 0px 0px 5px 0px var(--base0-soft);
   margin: 0;
   margin-top: 10px;
   padding-bottom: 100px;

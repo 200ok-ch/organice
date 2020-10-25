@@ -81,6 +81,39 @@ function WebDAVForm() {
   );
 }
 
+function GoogleDriveNote() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  return !isVisible ? (
+    <div
+      id="googleDriveNote"
+      onClick={() => {
+        setIsVisible(true);
+      }}
+    >
+      <h4>Click to read news regarding use of Google drive</h4>
+    </div>
+  ) : (
+    <div id="googleDriveNote">
+      <h2>News regarding use of Google drive</h2>
+      We are waiting for Google to put{' '}
+      <a href="https://github.com/200ok-ch/organice/issues/127">
+        Google Drive for this instance into production mode
+      </a>
+      . Until that has happend, only 100 users can use this instance of organice. If you cannot log
+      in here, but want to use Google Drive,{' '}
+      <a href="https://organice.200ok.ch/documentation.html#google_drive">
+        here are the instructions
+      </a>{' '}
+      on running your own instance of organice with Google Drive enabled.
+      <p>
+        If you don't want to do that, you are welcome to use Dropbox or WebDAV as synchronisation
+        back-ends.
+      </p>
+    </div>
+  );
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -138,8 +171,14 @@ export default class SyncServiceSignIn extends PureComponent {
           <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
         </div>
 
-        <div className="sync-service-container" onClick={this.handleGoogleDriveClick}>
-          <img src={GoogleDriveLogo} alt="Google Drive logo" className="google-drive-logo" />
+        <div className="sync-service-container">
+          <img
+            src={GoogleDriveLogo}
+            onClick={this.handleGoogleDriveClick}
+            alt="Google Drive logo"
+            className="google-drive-logo"
+          />
+          <GoogleDriveNote />
         </div>
 
         <div className="sync-service-container">
