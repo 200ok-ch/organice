@@ -297,7 +297,9 @@ need to create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to jus
 cp .env.sample .env
 #+END_SRC
 
-Then, fill in the blanks in ~.env~ with your Dropbox or Google Drive credentials.
+Then, fill in the blanks in ~.env~ with your Dropbox or Google Drive
+credentials. More information about that is in the section
+[[#synchronization_back_ends][Synchronization back-ends]].
 
 Running the application:
 
