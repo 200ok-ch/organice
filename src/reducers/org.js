@@ -56,26 +56,27 @@ import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
 
 const displayFile = (state, action) => {
-  const parsedFile = parseOrg(action.contents);
+  const { path, contents } = action;
+  const parsedFile = parseOrg(contents);
 
   return state
-    .set('path', action.path)
-    .set('contents', action.contents)
-    .set('headers', parsedFile.get('headers'))
-    .set('todoKeywordSets', parsedFile.get('todoKeywordSets'))
-    .set('fileConfigLines', parsedFile.get('fileConfigLines'))
-    .set('linesBeforeHeadings', parsedFile.get('linesBeforeHeadings'));
+    .set('path', path)
+    .setIn(['files', path, 'contents'], contents)
+    .setIn(['files', path, 'headers'], parsedFile.get('headers'))
+    .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
+    .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
+    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
 const stopDisplayingFile = (state) =>
   state
     .set('path', null)
-    .set('contents', null)
-    .set('headers', null)
-    .set('filteredHeaders', null)
-    .set('todoKeywordSets', null)
-    .set('fileConfigLines', null)
-    .set('linesBeforeHeadings', null);
+    //.set('contents', null)
+    //.set('headers', null)
+    .set('filteredHeaders', null);
+//.set('todoKeywordSets', null)
+//.set('fileConfigLines', null)
+//.set('linesBeforeHeadings', null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
@@ -564,13 +565,13 @@ const narrowHeader = (state, action) => {
 
 const widenHeader = (state) => state.set('narrowedHeaderId', null);
 
-const applyOpennessState = (state) => {
+const applyOpennessState = (state, action, path) => {
   const opennessState = state.get('opennessState');
   if (!opennessState) {
     return state;
   }
 
-  const fileOpennessState = opennessState.get(state.get('path'));
+  const fileOpennessState = opennessState.get(path);
   if (!fileOpennessState || fileOpennessState.size === 0) {
     return state;
   }
@@ -1152,116 +1153,124 @@ const setShowClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 };
 
+const reduceInFile = (state, action, path) => (func, ...args) => {
+  let file = state.getIn(['files', path]);
+  return state.setIn(['files', path], func(file ? file : new Map(), action, ...args));
+};
+
 const reducer = (state, action) => {
+  const path = state.get('path');
+  const inFile = reduceInFile(state, action, path);
+
   switch (action.type) {
     case 'DISPLAY_FILE':
       return displayFile(state, action);
     case 'STOP_DISPLAYING_FILE':
       return stopDisplayingFile(state, action);
     case 'TOGGLE_HEADER_OPENED':
-      return toggleHeaderOpened(state, action);
+      return inFile(toggleHeaderOpened);
     case 'OPEN_HEADER':
-      return openHeader(state, action);
+      return inFile(openHeader);
     case 'SELECT_HEADER':
-      return selectHeader(state, action);
+      return inFile(selectHeader);
     case 'OPEN_PARENTS_OF_HEADER':
-      return openParentsOfHeader(state, action);
+      return inFile(openParentsOfHeader);
     case 'ADVANCE_TODO_STATE':
-      return advanceTodoState(state, action);
+      return inFile(advanceTodoState);
     case 'ENTER_EDIT_MODE':
-      return enterEditMode(state, action);
+      return inFile(enterEditMode);
     case 'EXIT_EDIT_MODE':
-      return exitEditMode(state, action);
+      return inFile(exitEditMode);
     case 'UPDATE_HEADER_TITLE':
-      return updateHeaderTitle(state, action);
+      return inFile(updateHeaderTitle);
     case 'UPDATE_HEADER_DESCRIPTION':
-      return updateHeaderDescription(state, action);
+      return inFile(updateHeaderDescription);
     case 'ADD_HEADER':
-      return addHeader(state, action);
+      return inFile(addHeader);
     case 'SELECT_NEXT_SIBLING_HEADER':
-      return selectNextSiblingHeader(state, action);
+      return inFile(selectNextSiblingHeader);
     case 'SELECT_NEXT_VISIBLE_HEADER':
-      return selectNextVisibleHeader(state, action);
+      return inFile(selectNextVisibleHeader);
     case 'SELECT_PREVIOUS_VISIBLE_HEADER':
-      return selectPreviousVisibleHeader(state, action);
+      return inFile(selectPreviousVisibleHeader);
     case 'REMOVE_HEADER':
-      return removeHeader(state, action);
+      return inFile(removeHeader);
     case 'MOVE_HEADER_UP':
-      return moveHeaderUp(state, action);
+      return inFile(moveHeaderUp);
     case 'MOVE_HEADER_DOWN':
-      return moveHeaderDown(state, action);
+      return inFile(moveHeaderDown);
     case 'MOVE_HEADER_LEFT':
-      return moveHeaderLeft(state, action);
+      return inFile(moveHeaderLeft);
     case 'MOVE_HEADER_RIGHT':
-      return moveHeaderRight(state, action);
+      return inFile(moveHeaderRight);
     case 'MOVE_SUBTREE_LEFT':
-      return moveSubtreeLeft(state, action);
+      return inFile(moveSubtreeLeft);
     case 'MOVE_SUBTREE_RIGHT':
-      return moveSubtreeRight(state, action);
+      return inFile(moveSubtreeRight);
     case 'REFILE_SUBTREE':
       return refileSubtree(state, action);
     case 'HEADER_ADD_NOTE':
-      return addNote(state, action);
+      return inFile(addNote);
     case 'APPLY_OPENNESS_STATE':
-      return applyOpennessState(state, action);
+      return inFile(applyOpennessState, path);
     case 'SET_DIRTY':
-      return setDirty(state, action);
+      return inFile(setDirty);
     case 'NARROW_HEADER':
-      return narrowHeader(state, action);
+      return inFile(narrowHeader);
     case 'WIDEN_HEADER':
-      return widenHeader(state, action);
+      return inFile(widenHeader);
     case 'SET_SELECTED_TABLE_CELL_ID':
-      return setSelectedTableCellId(state, action);
+      return inFile(setSelectedTableCellId);
     case 'ADD_NEW_TABLE_ROW':
-      return addNewTableRow(state, action);
+      return inFile(addNewTableRow);
     case 'REMOVE_TABLE_ROW':
-      return removeTableRow(state, action);
+      return inFile(removeTableRow);
     case 'ADD_NEW_TABLE_COLUMN':
-      return addNewTableColumn(state, action);
+      return inFile(addNewTableColumn);
     case 'REMOVE_TABLE_COLUMN':
-      return removeTableColumn(state, action);
+      return inFile(removeTableColumn);
     case 'MOVE_TABLE_ROW_DOWN':
-      return moveTableRowDown(state, action);
+      return inFile(moveTableRowDown);
     case 'MOVE_TABLE_ROW_UP':
-      return moveTableRowUp(state, action);
+      return inFile(moveTableRowUp);
     case 'MOVE_TABLE_COLUMN_LEFT':
-      return moveTableColumnLeft(state, action);
+      return inFile(moveTableColumnLeft);
     case 'MOVE_TABLE_COLUMN_RIGHT':
-      return moveTableColumnRight(state, action);
+      return inFile(moveTableColumnRight);
     case 'UPDATE_TABLE_CELL_VALUE':
-      return updateTableCellValue(state, action);
+      return inFile(updateTableCellValue);
     case 'INSERT_CAPTURE':
       return insertCapture(state, action);
     case 'CLEAR_PENDING_CAPTURE':
       return clearPendingCapture(state, action);
     case 'ADVANCE_CHECKBOX_STATE':
-      return advanceCheckboxState(state, action);
+      return inFile(advanceCheckboxState);
     case 'SET_LAST_SYNC_AT':
-      return setLastSyncAt(state, action);
+      return inFile(setLastSyncAt);
     case 'SET_HEADER_TAGS':
-      return setHeaderTags(state, action);
+      return inFile(setHeaderTags);
     case 'REORDER_TAGS':
-      return reorderTags(state, action);
+      return inFile(reorderTags);
     case 'REORDER_PROPERTY_LIST':
-      return reorderPropertyList(state, action);
+      return inFile(reorderPropertyList);
     case 'UPDATE_TIMESTAMP_WITH_ID':
-      return updateTimestampWithId(state, action);
+      return inFile(updateTimestampWithId);
     case 'UPDATE_PLANNING_ITEM_TIMESTAMP':
-      return updatePlanningItemTimestamp(state, action);
+      return inFile(updatePlanningItemTimestamp);
     case 'ADD_NEW_PLANNING_ITEM':
-      return addNewPlanningItem(state, action);
+      return inFile(addNewPlanningItem);
     case 'REMOVE_PLANNING_ITEM':
-      return removePlanningItem(state, action);
+      return inFile(removePlanningItem);
     case 'UPDATE_PROPERTY_LIST_ITEMS':
-      return updatePropertyListItems(state, action);
+      return inFile(updatePropertyListItems);
     case 'SET_ORG_FILE_ERROR_MESSAGE':
       return setOrgFileErrorMessage(state, action);
     case 'SET_LOG_ENTRY_STOP':
-      return setLogEntryStop(state, action);
+      return inFile(setLogEntryStop);
     case 'CREATE_LOG_ENTRY_START':
-      return createLogEntryStart(state, action);
+      return inFile(createLogEntryStart);
     case 'UPDATE_LOG_ENTRY_TIME':
-      return updateLogEntryTime(state, action);
+      return inFile(updateLogEntryTime);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':

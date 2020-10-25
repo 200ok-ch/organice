@@ -334,7 +334,6 @@ ${header.get('rawDescription')}`;
       shouldDisableActions,
       showClockDisplay,
     } = this.props;
-
     const indentLevel = !!narrowedHeader
       ? header.get('nestingLevel') - narrowedHeader.get('nestingLevel') + 1
       : header.get('nestingLevel');
@@ -535,8 +534,10 @@ ${header.get('rawDescription')}`;
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const narrowedHeader = !!state.org.present.get('narrowedHeaderId')
-    ? headerWithId(state.org.present.get('headers'), state.org.present.get('narrowedHeaderId'))
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path]);
+  const narrowedHeader = !!file.get('narrowedHeaderId')
+    ? headerWithId(file.get('headers'), file.get('narrowedHeaderId'))
     : null;
 
   return {
@@ -545,7 +546,7 @@ const mapStateToProps = (state, ownProps) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     narrowedHeader,
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
-    inEditMode: !!state.org.present.get('editMode'),
+    inEditMode: !!file.get('editMode'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };

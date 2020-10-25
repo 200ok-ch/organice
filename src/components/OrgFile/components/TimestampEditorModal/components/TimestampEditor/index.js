@@ -337,7 +337,9 @@ class TimestampEditor extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path]);
+  const selectedHeaderId = file.get('selectedHeaderId');
   return {
     selectedHeaderId,
   };

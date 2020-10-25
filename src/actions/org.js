@@ -112,9 +112,9 @@ const doSync = ({
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
-      const isDirty = getState().org.present.get('isDirty');
+      const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
       const lastServerModifiedAt = parseISO(lastModifiedAt);
-      const lastSyncAt = getState().org.present.get('lastSyncAt');
+      const lastSyncAt = getState().org.present.getIn(['files', path, 'lastSyncAt']);
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
@@ -122,8 +122,12 @@ const doSync = ({
             .updateFile(
               path,
               exportOrg({
-                headers: getState().org.present.get('headers'),
-                linesBeforeHeadings: getState().org.present.get('linesBeforeHeadings'),
+                headers: getState().org.present.getIn(['files', path, 'headers']),
+                linesBeforeHeadings: getState().org.present.getIn([
+                  'files',
+                  path,
+                  'linesBeforeHeadings',
+                ]),
                 dontIndent: getState().base.get('shouldNotIndentOnExport'),
               })
             )
@@ -409,6 +413,7 @@ export const clearPendingCapture = () => ({
 });
 
 export const insertPendingCapture = () => (dispatch, getState) => {
+  const path = getState().org.present.get('path');
   const pendingCapture = getState().org.present.get('pendingCapture');
   const templateName = pendingCapture.get('captureTemplateName');
   const captureContent = pendingCapture.get('captureContent');
@@ -436,7 +441,7 @@ export const insertPendingCapture = () => (dispatch, getState) => {
   }
 
   const targetHeader = headerWithPath(
-    getState().org.present.get('headers'),
+    getState().org.present.getIn(['files', path, 'headers']),
     template.get('headerPaths')
   );
   if (!targetHeader) {

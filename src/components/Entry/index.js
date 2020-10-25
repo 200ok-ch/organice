@@ -200,6 +200,8 @@ class Entry extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path]);
   return {
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
@@ -207,7 +209,7 @@ const mapStateToProps = (state) => {
     lastSeenChangelogHash: state.base.get('lastSeenChangelogHash'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
-    isDirty: state.org.present.get('isDirty'),
+    isDirty: file ? file.get('isDirty') : null,
     colorScheme: state.base.get('colorScheme'),
   };
 };

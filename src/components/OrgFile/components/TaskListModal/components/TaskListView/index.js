@@ -114,12 +114,15 @@ function TaskListView(props) {
   }
 }
 
-const mapStateToProps = (state) => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  // When no filtering has happened, yet (initial state), use all headers.
-  headers:
-    state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
-});
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path]);
+  return {
+    todoKeywordSets: file.get('todoKeywordSets'),
+    // When no filtering has happened, yet (initial state), use all headers.
+    headers: state.org.present.getIn(['search', 'filteredHeaders']) || file.get('headers'),
+  };
+};
 
 const getTimeFromPlanningItem = (planningItem) =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();

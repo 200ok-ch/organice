@@ -161,11 +161,15 @@ function AgendaModal(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
-  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-});
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files',path]);
+  return {
+    todoKeywordSets: file.get('todoKeywordSets'),
+    agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
+    agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),

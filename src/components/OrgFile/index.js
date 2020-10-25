@@ -492,19 +492,21 @@ class OrgFile extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const headers = state.org.present.get('headers');
-  const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  const loadedPath = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', loadedPath]);
+  const headers = file ? file.get('headers') : null;
+  const selectedHeaderId = file ? file.get('selectedHeaderId') : null;
   const activePopup = state.base.get('activePopup');
 
   return {
     headers,
     selectedHeaderId,
-    isDirty: state.org.present.get('isDirty'),
-    loadedPath: state.org.present.get('path'),
+    isDirty: file ? file.get('isDirty') : null,
+    loadedPath,
     selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
-    inEditMode: !!state.org.present.get('editMode'),
+    inEditMode: !!file ? file.get('editMode') : null,
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),

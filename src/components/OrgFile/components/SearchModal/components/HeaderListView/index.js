@@ -54,12 +54,17 @@ function HeaderListView(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  // When no filtering has happened, yet (initial state), use all headers.
-  headers:
-    state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
-  showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
-});
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files',path]);
+  return {
+    // When no filtering has happened, yet (initial state), use all headers.
+    headers:
+      state.org.present.getIn(['search', 'filteredHeaders']) ||
+      file.get('headers'),
+    showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),

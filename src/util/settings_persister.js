@@ -208,6 +208,7 @@ export const readInitialState = () => {
     org: {
       past: [],
       present: Map({
+        files: Map(),
         search: Map({
           searchFilter: '',
           searchFilterExpr: [],
@@ -323,8 +324,9 @@ export const subscribeToChanges = (store) => {
       }
 
       const currentFilePath = state.org.present.get('path');
-      if (!!currentFilePath && state.org.present.get('headers')) {
-        const openHeaderPaths = getOpenHeaderPaths(state.org.present.get('headers'));
+      const headers = state.org.present.getIn(['files', currentFilePath, 'headers']);
+      if (!!currentFilePath && headers) {
+        const openHeaderPaths = getOpenHeaderPaths(headers);
 
         let opennessState = {};
         const opennessStateJSONString = localStorage.getItem('headerOpenness');
