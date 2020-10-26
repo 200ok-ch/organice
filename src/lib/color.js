@@ -79,7 +79,37 @@ const themes = {
     },
   },
   Gruvbox: {
-    Light: {},
+    Light: {
+      /*
+     gruvbox light
+     see https://github.com/morhetz/gruvbox for palette
+     this theme uses the 'faded' version of the color palette
+   */
+      // background and highlights
+      '--base3': '#fbf1c7', // bg0
+      '--base2': '#d5c4a1', // bg2
+      '--base1': '#bdae93', // bg3
+      '--base0': '#a89984', // bg4
+      '--base00': '#7c6f64', // fg4
+      '--base01': '#665c54', // fg3
+      '--base02': '#504945', // fg2
+      '--base03': '#282828', // fg0
+      // transparent versions
+      '--base0-soft': 'rgba(168, 153, 132, 0.75)',
+      '--base1-soft': 'rgba(189, 174, 147, 0.4)',
+      // header colors
+      '--blue': '#076678',
+      '--green': '#79740e',
+      '--cyan': '#427b58',
+      '--yellow': '#b57614',
+      // additional colors
+      '--orange': '#af3a03',
+      '--red': '#9d0006',
+      '--magenta': '#8f3f71', // faded purple
+      '--violet': '#b16286', // neutral purple
+      // table highlight
+      '--green-soft': 'rgba(133, 153, 0, 0.28)',
+    },
     Dark: {
       /*
      gruvbox dark
