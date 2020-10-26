@@ -149,6 +149,12 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
+    category: 'base',
+    name: 'theme',
+    type: 'string',
+    shouldStoreInConfig: true,
+  },
+  {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',

@@ -22,6 +22,9 @@ export const rgbaString = (rgba) => {
 
 const themes = {
   Solarized: {
+    /* 
+      https://ethanschoonover.com/solarized/ 
+    */
     Light: {
       '--base3': '#fdf6e3',
       '--base2': '#eee8d5',
@@ -61,9 +64,9 @@ const themes = {
       '--base01': '#93a1a1',
       '--base00': '#839496',
       // shadows
-      '--base0-soft': 'rgba(101, 123, 131, 0.75)',
+      '--base0-soft': 'rgba(0, 21, 27, 0.75)',
       // highlighted backgrounds
-      '--base1-soft': 'rgba(88, 110, 117, 0.4)',
+      '--base1-soft': 'rgba(0, 21, 27, 0.4)',
       // header colors
       '--blue': '#268bd2',
       '--green': '#859900',
@@ -81,10 +84,9 @@ const themes = {
   Gruvbox: {
     Light: {
       /*
-     gruvbox light
-     see https://github.com/morhetz/gruvbox for palette
-     this theme uses the 'faded' version of the color palette
-   */
+        see https://github.com/morhetz/gruvbox for palette
+        this theme uses the 'faded' version of the color palette
+      */
       // background and highlights
       '--base3': '#fbf1c7', // bg0
       '--base2': '#d5c4a1', // bg2
@@ -112,10 +114,9 @@ const themes = {
     },
     Dark: {
       /*
-     gruvbox dark
-     see https://github.com/morhetz/gruvbox for palette
-     this theme uses the 'neutral' version of the color palette
-   */
+        see https://github.com/morhetz/gruvbox for palette
+        this theme uses the 'neutral' version of the color palette
+      */
       // background and highlights
       '--base3': '#282828', // bg0
       '--base2': '#504945', // bg2
@@ -145,9 +146,9 @@ const themes = {
   One: {
     Light: {
       /*
-      adaptation of atom one light theme
-      https://github.com/atom/atom/tree/master/packages/one-light-ui
-    */
+        adaptation of atom one light theme
+        https://github.com/atom/atom/tree/master/packages/one-light-ui
+      */
       // background and highlights
       '--base03': '#383A42',
       '--base02': '#585A5F',
@@ -175,9 +176,9 @@ const themes = {
     },
     Dark: {
       /*
-      adaptation of atom one dark theme
-      https://github.com/atom/atom/tree/master/packages/one-dark-ui
-    */
+        adaptation of atom one dark theme
+        https://github.com/atom/atom/tree/master/packages/one-dark-ui
+      */
       // background and highlights
       '--base03': '#abb2bf',
       '--base02': '#9198A5',
@@ -188,8 +189,8 @@ const themes = {
       '--base2': '#343944',
       '--base3': '#282c34',
       // transparent versions
-      '--base0-soft': 'rgba(76, 82, 99, 0.75)',
-      '--base1-soft': 'rgba(88, 110, 117, 0.4)',
+      '--base0-soft': 'rgba(20, 22, 26, 0.75)',
+      '--base1-soft': 'rgba(20, 22, 26, 0.4)',
       // header colors
       '--blue': 'rgb(100, 148, 237)',
       '--green': 'rgb(115, 201, 144)',
@@ -205,10 +206,10 @@ const themes = {
     },
   },
   Smyck: {
+    /*
+      see http://color.smyck.org/ for palette
+    */
     Light: {
-      /*
-        see http://color.smyck.org/ for palette
-      */
       // background and highlights
       '--base3': '#F7F7F7',
       '--base2': '#DFDFDF',
@@ -220,7 +221,7 @@ const themes = {
       '--base03': '#000000',
       // transparent versions
       '--base0-soft': 'rgba(176, 176, 176, 0.75)',
-      '--base1-soft': 'rgba(200, 200, 200, 0.4)',
+      '--base1-soft': 'rgba(31, 31, 31, 0.4)',
       // header colors
       '--blue': '#72B3CC',
       '--green': '#8EB33B',
@@ -235,9 +236,6 @@ const themes = {
       '--green-soft': 'rgba(133, 153, 0, 0.28)',
     },
     Dark: {
-      /*
-        see http://color.smyck.org/ for palette
-      */
       // background and highlights
       '--base3': '#000000',
       '--base2': '#1F1F1F',
@@ -249,7 +247,7 @@ const themes = {
       '--base03': '#F7F7F7',
       // transparent versions
       '--base0-soft': 'rgba(31, 31, 31, 0.75)',
-      '--base1-soft': 'rgba(62, 62, 62, 0.4)',
+      '--base1-soft': 'rgba(31, 31, 31, 0.4)',
       // header colors
       '--blue': '#72B3CC',
       '--green': '#8EB33B',
@@ -264,9 +262,77 @@ const themes = {
       '--green-soft': 'rgba(133, 153, 0, 0.28)',
     },
   },
+  Code: {
+    Light: {
+      /*
+        a rough approximation of Light+ (default light theme of VS Code)
+        https://github.com/microsoft/vscode/blob/master/extensions/theme-defaults/themes/dark_plus.json
+      */
+      // backgrounds
+      '--base3': '#FFFFFF',
+      '--base2': '#DBDBDB',
+      '--base1': '#B6B6B6',
+      '--base0': '#929292',
+      // highlights
+      '--base00': '#6D6D6D',
+      '--base01': '#494949',
+      '--base02': '#242424',
+      '--base03': '#000000',
+      // shadows
+      '--base0-soft': 'rgba(20, 20, 20, 0.75)',
+      // highlighted backgrounds
+      '--base1-soft': 'rgba(48, 48, 54, 0.4)',
+      // header colors
+      '--blue': 'rgb(79,193,255)',
+      '--green': 'rgb(106, 153, 85)',
+      '--cyan': '#ce9178', // orange (cyan is #4EC9B0)
+      '--yellow': '#d7ba7d',
+      // additional colors
+      '--orange': '#d16969', // red
+      '--red': '#d16969',
+      '--magenta': '#569cd6', // light blue
+      '--violet': '#C586C0',
+      // table highlight
+      '--green-soft': 'rgba(133, 153, 0, 0.28)',
+    },
+    Dark: {
+      /*
+        a rough approximation of Dark+ (default dark theme of VS Code)
+        https://github.com/microsoft/vscode/blob/master/extensions/theme-defaults/themes/dark_plus.json
+      */
+      // backgrounds
+      '--base3': '#1E1E1E',
+      '--base2': '#2C2C32',
+      '--base1': '#303036',
+      '--base0': '#34343a',
+      // highlights
+      '--base00': '#C8C8C8',
+      '--base01': '#cccccc',
+      '--base02': '#D0D0D0',
+      '--base03': '#D4D4D4',
+      // shadows
+      '--base0-soft': 'rgba(15, 15, 15, 0.75)',
+      // highlighted backgrounds
+      '--base1-soft': 'rgba(15, 15, 15, 0.4)',
+      // header colors
+      '--blue': 'rgb(79,193,255)',
+      '--green': 'rgb(106, 153, 85)',
+      '--cyan': '#ce9178', // orange (cyan is #4EC9B0)
+      '--yellow': '#d7ba7d',
+      // additional colors
+      '--orange': '#d16969', // red
+      '--red': '#d16969',
+      '--magenta': '#569cd6', // light blue
+      '--violet': '#C586C0',
+      // table highlight
+      '--green-soft': 'rgba(133, 153, 0, 0.28)',
+    },
+  },
 };
 
 export const loadTheme = (theme = 'Solarized', colorScheme = 'Light') => {
+  theme = theme === 'undefined' ? 'Solarized' : theme;
+  colorScheme = colorScheme === 'undefined' ? 'Light' : colorScheme;
   const style = document.documentElement.style;
   Object.entries(themes[theme][colorScheme]).forEach(([k, v]) => style.setProperty(k, v));
 
