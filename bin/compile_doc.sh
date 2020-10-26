@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if ! [ -e README.org ]; then
     echo >&2 "Error: Please run this script from top of the organice repository."

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Sanity check that all variables are set to upload to FTP
 [ -z ${FTP_HOST+x} ] && (echo "$FTP_HOST needs to be set for uploading to FTP."; exit 1)
