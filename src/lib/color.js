@@ -141,6 +141,39 @@ const themes = {
       // table highlight
       '--green-soft': 'rgba(133, 153, 0, 0.28)',
     },
+    One: {
+      Light: {},
+      Dark: {
+        /*
+        adaptation of atom one dark theme
+        https://github.com/atom/atom/tree/master/packages/one-dark-ui
+      */
+        // background and highlights
+        '--base03': '#abb2bf',
+        '--base02': '#9198A5',
+        '--base01': '#767D8A',
+        '--base00': '#5c6370',
+        '--base0': '#4c5263',
+        '--base1': '#404553',
+        '--base2': '#343944',
+        '--base3': '#282c34',
+        // transparent versions
+        '--base0-soft': 'rgba(76, 82, 99, 0.75)',
+        '--base1-soft': 'rgba(88, 110, 117, 0.4)',
+        // header colors
+        '--blue': 'rgb(100, 148, 237)',
+        '--green': 'rgb(115, 201, 144)',
+        '--cyan': 'rgb(204, 133, 51)', //orange
+        '--yellow': 'rgb(226, 192, 141)',
+        // additional colors
+        '--orange': 'rgb(255, 99, 71)', //red
+        '--red': '#D831B0', //pink
+        '--magenta': 'rgb(0, 136, 255)', //blue
+        '--violet': '#d33682',
+        // table highlight
+        '--green-soft': 'rgba(133, 153, 0, 0.28)',
+      },
+    },
   },
 };
 
