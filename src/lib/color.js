@@ -204,6 +204,38 @@ const themes = {
       '--green-soft': 'rgba(133, 153, 0, 0.28)',
     },
   },
+  Smyck: {
+    Light: {},
+    Dark: {
+      /*
+        see http://color.smyck.org/ for palette
+      */
+      // background and highlights
+      '--base3': '#000000',
+      '--base2': '#1F1F1F',
+      '--base1': '#3E3E3E',
+      '--base0': '#5D5D5D',
+      '--base00': '#B0B0B0',
+      '--base01': '#C8C8C8',
+      '--base02': '#DFDFDF',
+      '--base03': '#F7F7F7',
+      // transparent versions
+      '--base0-soft': 'rgba(31, 31, 31, 0.75)',
+      '--base1-soft': 'rgba(62, 62, 62, 0.4)',
+      // header colors
+      '--blue': '#72B3CC',
+      '--green': '#8EB33B',
+      '--cyan': '#218693',
+      '--yellow': '#D0B03C',
+      // additional colors
+      '--orange': '#C75646',
+      '--red': '#E09690',
+      '--magenta': '#77DFD8',
+      '--violet': '#FBB1F9',
+      // table highlight
+      '--green-soft': 'rgba(133, 153, 0, 0.28)',
+    },
+  },
 };
 
 export const loadTheme = (theme = 'Solarized', colorScheme = 'Light') => {
