@@ -221,7 +221,7 @@ const themes = {
       '--base03': '#000000',
       // transparent versions
       '--base0-soft': 'rgba(176, 176, 176, 0.75)',
-      '--base1-soft': 'rgba(31, 31, 31, 0.4)',
+      '--base1-soft': 'rgba(200, 200, 200, 0.4)',
       // header colors
       '--blue': '#72B3CC',
       '--green': '#8EB33B',
@@ -279,9 +279,9 @@ const themes = {
       '--base02': '#242424',
       '--base03': '#000000',
       // shadows
-      '--base0-soft': 'rgba(20, 20, 20, 0.75)',
+      '--base0-soft': 'rgba(146, 146, 146, 0.75)',
       // highlighted backgrounds
-      '--base1-soft': 'rgba(48, 48, 54, 0.4)',
+      '--base1-soft': 'rgba(172, 172, 172, 0.4)',
       // header colors
       '--blue': 'rgb(79,193,255)',
       '--green': 'rgb(106, 153, 85)',
