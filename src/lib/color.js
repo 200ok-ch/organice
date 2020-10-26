@@ -285,12 +285,12 @@ const themes = {
       // header colors
       '--blue': '#0000ff',
       '--green': '#098658',
-      '--cyan': '#267f99', // orange (cyan is #4EC9B0)
+      '--cyan': '#267f99',
       '--yellow': '#795e26',
       // additional colors
-      '--orange': '#ee0000', // red
+      '--orange': '#ee0000',
       '--red': '#a31515',
-      '--magenta': '#0070c1', // light blue
+      '--magenta': '#0070c1',
       '--violet': '#811f3f',
       // table highlight
       '--green-soft': 'rgba(133, 153, 0, 0.28)',
