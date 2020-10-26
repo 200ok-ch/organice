@@ -283,15 +283,15 @@ const themes = {
       // highlighted backgrounds
       '--base1-soft': 'rgba(172, 172, 172, 0.4)',
       // header colors
-      '--blue': 'rgb(79,193,255)',
-      '--green': 'rgb(106, 153, 85)',
-      '--cyan': '#ce9178', // orange (cyan is #4EC9B0)
-      '--yellow': '#d7ba7d',
+      '--blue': '#0000ff',
+      '--green': '#098658',
+      '--cyan': '#267f99', // orange (cyan is #4EC9B0)
+      '--yellow': '#795e26',
       // additional colors
-      '--orange': '#d16969', // red
-      '--red': '#d16969',
-      '--magenta': '#569cd6', // light blue
-      '--violet': '#C586C0',
+      '--orange': '#ee0000', // red
+      '--red': '#a31515',
+      '--magenta': '#0070c1', // light blue
+      '--violet': '#811f3f',
       // table highlight
       '--green-soft': 'rgba(133, 153, 0, 0.28)',
     },
