@@ -205,7 +205,35 @@ const themes = {
     },
   },
   Smyck: {
-    Light: {},
+    Light: {
+      /*
+        see http://color.smyck.org/ for palette
+      */
+      // background and highlights
+      '--base3': '#F7F7F7',
+      '--base2': '#DFDFDF',
+      '--base1': '#C8C8C8',
+      '--base0': '#B0B0B0',
+      '--base00': '#5D5D5D',
+      '--base01': '#3E3E3E',
+      '--base02': '#1F1F1F',
+      '--base03': '#000000',
+      // transparent versions
+      '--base0-soft': 'rgba(176, 176, 176, 0.75)',
+      '--base1-soft': 'rgba(200, 200, 200, 0.4)',
+      // header colors
+      '--blue': '#72B3CC',
+      '--green': '#8EB33B',
+      '--cyan': '#218693',
+      '--yellow': '#D0B03C',
+      // additional colors
+      '--orange': '#C75646',
+      '--red': '#E09690',
+      '--magenta': '#77DFD8',
+      '--violet': '#FBB1F9',
+      // table highlight
+      '--green-soft': 'rgba(133, 153, 0, 0.28)',
+    },
     Dark: {
       /*
         see http://color.smyck.org/ for palette
