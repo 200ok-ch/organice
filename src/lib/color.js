@@ -78,6 +78,40 @@ const themes = {
       '--green-soft:': 'rgba(133, 153, 0, 0.28)',
     },
   },
+  Gruvbox: {
+    Light: {},
+    Dark: {
+      /*
+     gruvbox dark
+     see https://github.com/morhetz/gruvbox for palette
+     this theme uses the 'neutral' version of the color palette
+   */
+      // background and highlights
+      '--base3': '#282828', // bg0
+      '--base2': '#504945', // bg2
+      '--base1': '#665c54', // bg3
+      '--base0': '#7c6f64', // bg4
+      '--base00': '#a89984', // fg4
+      '--base01': '#bdae93', // fg3
+      '--base02': '#d5c4a1', // fg2
+      '--base03': '#fbf1c7', // fg0
+      // transparent versions
+      '--base0-soft': 'rgba(20, 20, 20, 0.75)',
+      '--base1-soft': 'rgba(20, 20, 20, 0.4)',
+      // header colors
+      '--blue': '#458588',
+      '--green': '#98971a',
+      '--cyan': '#689d6a',
+      '--yellow': '#d79921',
+      // additional colors
+      '--orange': '#d65d0e',
+      '--red': '#cc241d',
+      '--magenta': '#b16286', // neutral purple
+      '--violet': '#d3869b', // bright purple
+      // table highlight
+      '--green-soft': 'rgba(133, 153, 0, 0.28)',
+    },
+  },
 };
 
 export const loadTheme = (theme = 'Solarized', colorScheme = 'Light') => {
