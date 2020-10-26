@@ -31,6 +31,7 @@ const Settings = ({
   syncBackend,
   showClockDisplay,
   colorScheme,
+  theme,
   base,
   org,
 }) => {
@@ -53,6 +54,8 @@ const Settings = ({
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
   const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
+
+  const handleThemeClick = (theme) => base.setTheme(theme);
 
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
@@ -105,6 +108,15 @@ const Settings = ({
           buttons={['Light', 'Dark']}
           selectedButton={colorScheme}
           onSelect={handleColorSchemeClick}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">Theme</div>
+        <TabButtons
+          buttons={['Solarized', 'One', 'Gruvbox', 'Smyck']}
+          selectedButton={theme}
+          onSelect={handleThemeClick}
         />
       </div>
 
@@ -317,6 +329,7 @@ const mapStateToProps = (state) => {
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
     colorScheme: state.base.get('colorScheme'),
+    theme: state.base.get('theme'),
   };
 };
 
