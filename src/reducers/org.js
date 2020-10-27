@@ -1040,7 +1040,9 @@ export const updateLogEntryTime = (state, action) => {
 
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
-  const headers = state.get('headers');
+
+  const path = state.get('path');
+  const files = state.get('files');
   state = state.asMutable();
 
   let searchFilterValid = true;
@@ -1058,6 +1060,7 @@ export const setSearchFilterInformation = (state, action) => {
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successful
   if (searchFilterValid) {
+    const headers = files.map((file) => file.get('headers'));
     let filteredHeaders;
 
     // show clocked times & sum if there is a clock search term
@@ -1074,27 +1077,38 @@ export const setSearchFilterInformation = (state, action) => {
     if (!narrowedHeaderId || context === 'refile') {
       headersToSearch = headers;
     } else {
-      headersToSearch = subheadersOfHeaderWithId(headers, narrowedHeaderId);
+      headersToSearch = Map().set(
+        path,
+        subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
+      );
     }
 
     // calculate relevant clocked times and total
     if (showClockedTimes) {
-      headersToSearch = headersToSearch.map((header) =>
-        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        headersOfFile.map((header) =>
+          header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+        )
       );
-      headersToSearch = updateHeadersTotalFilteredTimeLoggedRecursive(
-        filterFunctions,
-        headersToSearch
-      ).filter((header) => header.get('totalFilteredTimeLoggedRecursive') !== 0);
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        updateHeadersTotalFilteredTimeLoggedRecursive(filterFunctions, headersOfFile).filter(
+          (header) => header.get('totalFilteredTimeLoggedRecursive') !== 0
+        )
+      );
     }
 
-    filteredHeaders = headersToSearch.filter(isMatch(searchFilterExpr));
+    filteredHeaders = headersToSearch.map((headersOfFile) =>
+      headersOfFile.filter(isMatch(searchFilterExpr))
+    );
 
     if (showClockedTimes) {
-      const clockedTime = filteredHeaders.reduce(
-        (acc, val) => acc + val.get('totalFilteredTimeLogged'),
-        0
-      );
+      const clockedTime = filteredHeaders
+        .map((headersOfFile) =>
+          headersOfFile.reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0)
+        )
+        .values()
+        .reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0);
+
       state.setIn(['search', 'clockedTime'], clockedTime);
     }
 
@@ -1103,12 +1117,14 @@ export const setSearchFilterInformation = (state, action) => {
     // of its subheaders.
     if (context === 'refile') {
       const selectedHeaderId = state.get('selectedHeaderId');
-      const subheaders = subheadersOfHeaderWithId(headers, selectedHeaderId);
+      const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
       let filterIds = subheaders.map((s) => s.get('id')).toJS();
       filterIds.push(selectedHeaderId);
-      filteredHeaders = filteredHeaders.filter((h) => {
-        return !filterIds.includes(h.get('id'));
-      });
+      filteredHeaders = filteredHeaders.update(path, (headersOfFile) =>
+        headersOfFile.filter((h) => {
+          return !filterIds.includes(h.get('id'));
+        })
+      );
     }
 
     state.setIn(['search', 'filteredHeaders'], filteredHeaders);
@@ -1130,9 +1146,13 @@ export const setSearchFilterInformation = (state, action) => {
     // Only for an empty filter string,  provide last used filters as suggestions.
     searchFilterSuggestions = lastUsedFilterStrings;
   } else {
-    const todoKeywords = getTodoKeywordSetsAsFlattenedArray(state);
-    const tagNames = extractAllOrgTags(headers).toJS();
-    const allProperties = extractAllOrgProperties(headers).toJS();
+    // TODO: Currently only showing suggestions based on opened file.
+    // Decide if they should be based on all files.
+    const currentFile = files.get(path);
+    const headersOfFile = currentFile.get('headers');
+    const todoKeywords = getTodoKeywordSetsAsFlattenedArray(currentFile);
+    const tagNames = extractAllOrgTags(headersOfFile).toJS();
+    const allProperties = extractAllOrgProperties(headersOfFile).toJS();
     searchFilterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
       searchFilterExpr,
       searchFilter,
