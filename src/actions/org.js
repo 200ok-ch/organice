@@ -30,11 +30,11 @@ export const setLastSyncAt = (lastSyncAt) => ({
 
 export const stopDisplayingFile = () => {
   return (dispatch) => {
-    dispatch({ type: 'STOP_DISPLAYING_FILE' });
-    dispatch(ActionCreators.clearHistory());
     dispatch(widenHeader());
     dispatch(closePopup());
     dispatch(setLastSyncAt(null));
+    dispatch({ type: 'STOP_DISPLAYING_FILE' });
+    dispatch(ActionCreators.clearHistory());
   };
 };
 

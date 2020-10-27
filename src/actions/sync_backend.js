@@ -111,11 +111,11 @@ export const downloadFile = (path) => {
       .syncBackend.get('client')
       .getFileContents(path)
       .then((fileContents) => {
-        dispatch(setDirty(false));
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
-        dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
         dispatch(displayFile(path, fileContents));
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
+        dispatch(setDirty(false));
         dispatch(applyOpennessState());
         dispatch(ActionCreators.clearHistory());
       })
