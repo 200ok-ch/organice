@@ -565,7 +565,8 @@ const narrowHeader = (state, action) => {
 
 const widenHeader = (state) => state.set('narrowedHeaderId', null);
 
-const applyOpennessState = (state, action, path) => {
+const applyOpennessState = (state, action) => {
+  const path = state.get('path');
   const opennessState = state.get('opennessState');
   if (!opennessState) {
     return state;
@@ -576,12 +577,12 @@ const applyOpennessState = (state, action, path) => {
     return state;
   }
 
-  let headers = state.get('headers');
+  let headers = state.getIn(['files', path, 'headers']);
   fileOpennessState.forEach((openHeaderPath) => {
     headers = openHeaderWithPath(headers, openHeaderPath);
   });
 
-  return state.set('headers', headers);
+  return state.setIn(['files', path, 'headers'], headers);
 };
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
@@ -1212,7 +1213,7 @@ const reducer = (state, action) => {
     case 'HEADER_ADD_NOTE':
       return inFile(addNote);
     case 'APPLY_OPENNESS_STATE':
-      return inFile(applyOpennessState, path);
+      return applyOpennessState(state, action);
     case 'SET_DIRTY':
       return inFile(setDirty);
     case 'NARROW_HEADER':
@@ -1283,7 +1284,8 @@ const reducer = (state, action) => {
 
 export default (state = Map(), action) => {
   if (action.dirtying) {
-    state = state.set('isDirty', true);
+    const path = state.get('path');
+    state = state.setIn(['files', path, 'isDirty'], true);
   }
 
   state = reducer(state, action);
