@@ -339,10 +339,10 @@ describe('Render all views', () => {
           expect(drawerElem).not.toHaveTextContent('Another top level header');
         });
 
-        test('searches in sub-headers when focused', () => {
-          // Click 'focus' on the first header
+        test('searches in sub-headers when narrowed', () => {
+          // Click 'narrow' on the first header
           fireEvent.click(queryByText('Top level header'));
-          fireEvent.click(container.querySelectorAll("[data-testid='header-action-focus']")[0]);
+          fireEvent.click(container.querySelectorAll("[data-testid='header-action-narrow']")[0]);
 
           fireEvent.click(getByTitle('Show search'));
           const drawerElem = getByTestId('drawer');

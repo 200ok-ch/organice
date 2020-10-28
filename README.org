@@ -284,11 +284,38 @@ nvm use
 
 ** Setup
 
+*** Installation of packages
+
 To install the necessary packages, run:
 
 #+BEGIN_SRC shell
 yarn install --production=false
 #+END_SRC
+
+*** Setup any of the synchronization back-ends
+
+organice can sync your Org files using Dropbox, Google Drive and
+WebDAV as back-ends.
+
+If you want to develop a feature that needs synchronization, then you
+will have to set up any of those options. If you want to work on a
+feature that does not need synchronization, you can skip this step.
+
+**** WebDAV
+
+organice has support for WebDAV and ships with a Docker container with
+a WebDAV server based on Apache. You can make use of that and use this
+WebDAV back-end for local development.
+
+Having said that, if you're a Dropbox or Google Drive user, then it's
+convenient to have working setups for either of them if you want to
+test on files that are already in those back-ends. But it doesn't have
+to be a barrier, just to get started. And maybe you don't want to host
+your files with either of them anyway and use WebDAV all the way.
+
+In any case, [[#faq_webdav][here's how to get running locally with a WebDAV setup]].
+
+**** Dropbox or Google Drive
 
 To test against your own Dropbox or Google Drive application, you'll
 need to create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
@@ -297,19 +324,23 @@ need to create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to jus
 cp .env.sample .env
 #+END_SRC
 
-Then, fill in the blanks in ~.env~ with your Dropbox or Google Drive credentials.
+Then, fill in the blanks in ~.env~ with your Dropbox or Google Drive
+credentials. More information about that is in the section
+[[#synchronization_back_ends][Synchronization back-ends]].
 
-Running the application:
+**** Running the application
 
 #+BEGIN_SRC shell
 yarn start
 #+END_SRC
 
-Running the tests:
+**** Running the tests:
 
 #+BEGIN_SRC shell
 yarn test
 #+END_SRC
+
+**** Details
 
 For searching the Org file, there's a [[file:src/lib/headline_filter_parser.grammar.pegjs][grammar]] for the search
 clause. It's written in [[https://pegjs.org/][pegjs]]. Generating the parser code happens
@@ -508,10 +539,8 @@ the Dropbox developer console]], create a new app and configure the
 resulting =clientId= in a newly created ~.env~ file (analogous to
 ~.env.sample~) as the value of the key =REACT_APP_DROPBOX_CLIENT_ID=.
 
-Make sure to add your own host URL as =Redirect URI=. Otherwise,
-logging in to Dropbox will only work if you're running the app on
-~http://localhost:3000~. All other redirect URIs must be specified
-ahead of time on the Dropbox developer console.
+Make sure to add your own host URL (or ~http://localhost:3000/~ for local development) as =Redirect URI=.
+Your dropbox app needs permission to read and write files.
 
 *** WebDAV
     :PROPERTIES:
@@ -527,7 +556,7 @@ like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https:/
 
 **** More information
 
-In the [[file:WIKI.org::#faq_webdav][WebDAV FAQ]], you'll find lots more information regarding WebDAV:
+In the [[#faq_webdav][WebDAV FAQ]], you'll find lots more information regarding WebDAV:
 
   - A screencast of how organice works when logging in to a WebDAV
     server

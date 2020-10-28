@@ -24,9 +24,9 @@ export default class HeaderActionDrawer extends PureComponent {
       onEnterDescriptionEditMode,
       onTagsClick,
       onPropertiesClick,
-      isFocused,
-      onFocus,
-      onUnfocus,
+      isNarrowed,
+      onNarrow,
+      onWiden,
       onAddNewHeader,
       onDeadlineClick,
       onClockInOutClick,
@@ -65,17 +65,18 @@ export default class HeaderActionDrawer extends PureComponent {
             title: 'Modify properties',
           })}
 
-          {isFocused
+          {isNarrowed
             ? this.iconWithFFClickCatcher({
                 className: 'fas fa-expand fa-lg',
-                onClick: onUnfocus,
-                title: 'Widen (Unfocus from this header)',
+                onClick: onWiden,
+                title: 'Widen (Cancelling the narrowing.)',
               })
             : this.iconWithFFClickCatcher({
                 className: 'fas fa-compress fa-lg',
-                onClick: onFocus,
-                testId: 'header-action-focus',
-                title: 'Narrow to subtree (Focus on this header)',
+                onClick: onNarrow,
+                testId: 'header-action-narrow',
+                title:
+                  'Narrow to subtree (focusing in on some portion of the buffer, making the rest temporarily inaccessible.)',
               })}
 
           {this.iconWithFFClickCatcher({
