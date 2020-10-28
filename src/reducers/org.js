@@ -1042,6 +1042,8 @@ export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
   const path = state.get('path');
+  // TODO: search currently uses all loaded files.
+  // Decide which files should be used based on context or configuration.
   const files = state.get('files');
   state = state.asMutable();
 

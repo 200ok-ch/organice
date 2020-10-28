@@ -97,7 +97,7 @@ function AgendaModal(props) {
 
   const {
     onClose,
-    headers,
+    files,
     todoKeywordSets,
     agendaDefaultDeadlineDelayValue,
     agendaDefaultDeadlineDelayUnit,
@@ -145,7 +145,7 @@ function AgendaModal(props) {
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
             date={date}
-            headers={headers}
+            files={files}
             onHeaderClick={handleHeaderClick}
             todoKeywordSets={todoKeywordSets}
             dateDisplayType={dateDisplayType}
@@ -165,6 +165,7 @@ const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files',path]);
   return {
+    files: state.org.present.get('files'),
     todoKeywordSets: file.get('todoKeywordSets'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',

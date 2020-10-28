@@ -354,9 +354,9 @@ class OrgFile extends PureComponent {
           />
         ) : null;
       case 'agenda':
-        return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
+        return <AgendaModal onClose={this.handlePopupClose} />;
       case 'task-list':
-        return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
+        return <TaskListModal onClose={this.handlePopupClose} />;
       case 'search':
         return <SearchModal onClose={this.handleSearchPopupClose} context="search" />;
       case 'refile':

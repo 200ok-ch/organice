@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Map } from 'immutable';
 
 import * as orgActions from '../../../../../../actions/org';
 import './stylesheet.css';
