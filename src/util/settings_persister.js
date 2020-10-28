@@ -101,7 +101,7 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'shouldSyncOnBecomingVisibile',
+    name: 'shouldSyncOnBecomingVisible',
     type: 'boolean',
     shouldStoreInConfig: true,
   },

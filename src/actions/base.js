@@ -87,9 +87,9 @@ export const setShouldLiveSync = (shouldLiveSync) => ({
   shouldLiveSync,
 });
 
-export const setShouldSyncOnBecomingVisibile = (shouldSyncOnBecomingVisibile) => ({
+export const setShouldSyncOnBecomingVisible = (shouldSyncOnBecomingVisible) => ({
   type: 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE',
-  shouldSyncOnBecomingVisibile,
+  shouldSyncOnBecomingVisible,
 });
 
 export const setShouldShowTitleInOrgFile = (shouldShowTitleInOrgFile) => ({

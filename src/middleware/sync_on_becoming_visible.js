@@ -31,7 +31,7 @@ export default (store) => (next) => (action) => {
     document.addEventListener(evtname, () => {
       if (
         store.getState().syncBackend.get('client') &&
-        store.getState().base.get('shouldSyncOnBecomingVisibile')
+        store.getState().base.get('shouldSyncOnBecomingVisible')
       ) {
         debouncedDispatchSync(store);
       }

@@ -20,7 +20,7 @@ const Settings = ({
   shouldTapTodoToAdvance,
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
-  shouldSyncOnBecomingVisibile,
+  shouldSyncOnBecomingVisible,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
   closeSubheadersRecursively,
@@ -59,7 +59,7 @@ const Settings = ({
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
 
   const handleShouldSyncOnBecomingVisibleChange = () =>
-    base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
+    base.setShouldSyncOnBecomingVisible(!shouldSyncOnBecomingVisible);
 
   const handleShouldShowTitleInOrgFile = () =>
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
@@ -133,7 +133,7 @@ const Settings = ({
           </div>
         </div>
         <Switch
-          isEnabled={shouldSyncOnBecomingVisibile}
+          isEnabled={shouldSyncOnBecomingVisible}
           onToggle={handleShouldSyncOnBecomingVisibleChange}
         />
       </div>
@@ -297,7 +297,7 @@ const mapStateToProps = (state) => {
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
-    shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
+    shouldSyncOnBecomingVisible: state.base.get('shouldSyncOnBecomingVisible'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),

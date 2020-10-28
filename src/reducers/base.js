@@ -24,8 +24,8 @@ const setShouldStoreSettingsInSyncBackend = (state, action) =>
 
 const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.shouldLiveSync);
 
-const setShouldSyncOnBecomingVisibile = (state, action) =>
-  state.set('shouldSyncOnBecomingVisibile', action.shouldSyncOnBecomingVisibile);
+const setShouldSyncOnBecomingVisible = (state, action) =>
+  state.set('shouldSyncOnBecomingVisible', action.shouldSyncOnBecomingVisible);
 
 const setShouldShowTitleInOrgFile = (state, action) =>
   state.set('shouldShowTitleInOrgFile', action.shouldShowTitleInOrgFile);
@@ -141,7 +141,7 @@ export default (state = Map(), action) => {
     case 'SET_SHOULD_LIVE_SYNC':
       return setShouldLiveSync(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
-      return setShouldSyncOnBecomingVisibile(state, action);
+      return setShouldSyncOnBecomingVisible(state, action);
     case 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE':
       return setShouldShowTitleInOrgFile(state, action);
     case 'SET_SHOULD_LOG_INTO_DRAWER':
