@@ -29,8 +29,8 @@ import {
 import classNames from 'classnames';
 
 export default class AgendaDay extends PureComponent {
-  handleHeaderClick(headerId) {
-    return () => this.props.onHeaderClick(headerId);
+  handleHeaderClick(path, headerId) {
+    return () => this.props.onHeaderClick(path, headerId);
   }
 
   render() {
@@ -109,7 +109,7 @@ export default class AgendaDay extends PureComponent {
                           isSelected={false}
                           shouldDisableActions
                           shouldDisableExplicitWidth
-                          onClick={this.handleHeaderClick(header.get('id'))}
+                          onClick={this.handleHeaderClick(path, header.get('id'))}
                         />
                       </div>
                     </div>

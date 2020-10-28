@@ -12,8 +12,8 @@ import TitleLine from '../../../TitleLine';
 
 function HeaderListView(props) {
   const { context } = props;
-  function handleHeaderClick(headerId) {
-    return () => props.onHeaderClick(headerId);
+  function handleHeaderClick(path, headerId) {
+    return () => props.onHeaderClick(path, headerId);
   }
 
   // Populate filteredHeaders
@@ -43,7 +43,7 @@ function HeaderListView(props) {
                       isSelected={false}
                       shouldDisableActions
                       shouldDisableExplicitWidth
-                      onClick={handleHeaderClick(header.get('id'))}
+                      onClick={handleHeaderClick(path, header.get('id'))}
                       addition={
                         showClockedTimes && header.get('totalFilteredTimeLoggedRecursive') !== 0
                           ? millisDuration(header.get('totalFilteredTimeLoggedRecursive'))

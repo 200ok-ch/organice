@@ -212,18 +212,18 @@ class OrgFile extends PureComponent {
     this.props.base.closePopup();
   }
 
-  handleSearchPopupClose(headerId) {
+  handleSearchPopupClose(path, headerId) {
     this.props.base.closePopup();
-    this.props.org.selectHeaderAndOpenParents(headerId);
+    this.props.org.selectHeaderAndOpenParents(path, headerId);
   }
 
-  handleRefilePopupClose(targetHeaderId) {
+  handleRefilePopupClose(targetPath, targetHeaderId) {
     this.props.base.closePopup();
     // When the user closes the drawer without selecting a header, do
     // not trigger refiling.
     if (targetHeaderId) {
-      const { selectedHeaderId } = this.props;
-      this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
+      const { loadedPath, selectedHeaderId } = this.props;
+      this.props.org.refileSubtree(loadedPath, selectedHeaderId, targetPath, targetHeaderId);
     }
   }
 

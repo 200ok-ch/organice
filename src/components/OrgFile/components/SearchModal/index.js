@@ -27,10 +27,11 @@ function SearchModal(props) {
     context,
     showClockedTimes,
     clockedTime,
+    path,
   } = props;
 
-  function handleHeaderClick(headerId) {
-    props.onClose(headerId);
+  function handleHeaderClick(path, headerId) {
+    props.onClose(path, headerId);
   }
 
   function handleToggleDateDisplayType() {
@@ -109,6 +110,7 @@ function SearchModal(props) {
 }
 
 const mapStateToProps = (state) => ({
+  path: state.org.present.get('path'),
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],

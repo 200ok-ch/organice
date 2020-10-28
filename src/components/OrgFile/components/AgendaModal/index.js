@@ -52,9 +52,9 @@ function AgendaModal(props) {
     }
   }
 
-  function handleHeaderClick(headerId) {
+  function handleHeaderClick(path, headerId) {
     props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.org.selectHeaderAndOpenParents(path, headerId);
   }
 
   function handlePreviousDateClick() {

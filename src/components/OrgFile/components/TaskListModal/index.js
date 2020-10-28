@@ -18,9 +18,9 @@ import * as orgActions from '../../../../actions/org';
 function TaskListModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
-  function handleHeaderClick(headerId) {
+  function handleHeaderClick(path, headerId) {
     props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.org.selectHeaderAndOpenParents(path, headerId);
   }
 
   function handleToggleDateDisplayType() {

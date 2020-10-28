@@ -139,8 +139,8 @@ const updateCookiesInAttributedStringWithChildCompletionStates = (parts, complet
   });
 };
 
-const updateCookiesOfHeaderWithId = (state, headerId) => {
-  const headers = state.get('headers');
+const updateCookiesOfHeaderWithId = (file, headerId) => {
+  const headers = file.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, headerId);
   const subheaders = subheadersOfHeaderWithId(headers, headerId);
 
@@ -157,7 +157,7 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
     .map((header) => header.getIn(['titleLine', 'todoKeyword']))
     .filter((todoKeyword) => !!todoKeyword)
     .map((todoKeyword) =>
-      todoKeywordSetForKeyword(state.get('todoKeywordSets'), todoKeyword)
+      todoKeywordSetForKeyword(file.get('todoKeywordSets'), todoKeyword)
         .get('completedKeywords')
         .contains(todoKeyword)
     );
@@ -174,7 +174,7 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
       .toJS();
   }
 
-  return state
+  return file
     .updateIn(['headers', headerIndex, 'titleLine', 'title'], (title) =>
       updateCookiesInAttributedStringWithChildCompletionStates(title, completionStates)
     )
@@ -183,13 +183,13 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
     );
 };
 
-const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
-  const parentHeaderId = parentIdOfHeaderWithId(state.get('headers'), headerId);
+const updateCookiesOfParentOfHeaderWithId = (file, headerId) => {
+  const parentHeaderId = parentIdOfHeaderWithId(file.get('headers'), headerId);
   if (!parentHeaderId) {
-    return state;
+    return file;
   }
 
-  return updateCookiesOfHeaderWithId(state, parentHeaderId);
+  return updateCookiesOfHeaderWithId(file, parentHeaderId);
 };
 
 const advanceTodoState = (state, action) => {
@@ -451,44 +451,57 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
-const refileSubtree = (state, action) => {
-  /**
-   * Move an item in an immutablejs List from one index to another.
-   * @param {list} List
-   * @param {integer} fromIndex
-   * @param {integer} toIndex
-   * @param {any} integer
-   */
-  function moveItem({ list, fromIndex, toIndex, item }) {
-    const targetItem = list.get(toIndex);
-    list = list.delete(fromIndex);
-    const targetIndex = list.indexOf(targetItem);
-    return list.insert(targetIndex + 1, item);
-  }
+/**
+ * Move an item in immutablejs Lists.
+ * @param {list} List
+ * @param {integer} fromIndex
+ * @param {integer} toIndex
+ * @param {any} integer
+ */
+const moveItemInFile = ({ fromList, fromIndex, toIndex, item }) => {
+  const targetItem = fromList.get(toIndex);
+  fromList = fromList.delete(fromIndex);
+  const targetIndex = fromList.indexOf(targetItem);
+  fromList = fromList.insert(targetIndex + 1, item);
+  return [fromList, fromList];
+};
 
-  const { sourceHeaderId, targetHeaderId } = action;
-  let headers = state.get('headers');
+const moveItemAcrossFiles = ({ fromList, fromIndex, toList, toIndex, item }) => {
+  const targetItem = toList.get(toIndex);
+  fromList = fromList.delete(fromIndex);
+  const targetIndex = toList.indexOf(targetItem);
+  toList = toList.insert(targetIndex + 1, item);
+  return [fromList, toList];
+};
+
+const refileSubtree = (state, action) => {
+  const { sourcePath, sourceHeaderId, targetPath, targetHeaderId } = action;
+  const moveItem = sourcePath === targetPath ? moveItemInFile : moveItemAcrossFiles;
+  let sourceHeaders = state.getIn(['files', sourcePath, 'headers']);
+  let targetHeaders = state.getIn(['files', targetPath, 'headers']);
   let { header: sourceHeader, headerIndex: sourceHeaderIndex } = indexAndHeaderWithId(
-    headers,
+    sourceHeaders,
     sourceHeaderId
   );
-  let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+  let targetHeaderIndex = indexOfHeaderWithId(targetHeaders, targetHeaderId);
 
   // Do not attempt to move a header to itself
-  if (sourceHeaderIndex === targetHeaderIndex) return state;
+  // TODO: this should be handeled by search not showing the selected header on refile
+  //if (sourceHeaderIndex === targetHeaderIndex) return state;
 
-  let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
+  let subheadersOfSourceHeader = subheadersOfHeaderWithId(sourceHeaders, sourceHeaderId);
 
-  const nestingLevelSource = state.getIn(['headers', sourceHeaderIndex, 'nestingLevel']);
-  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
+  const nestingLevelSource = sourceHeaders.getIn([sourceHeaderIndex, 'nestingLevel']);
+  const nestingLevelTarget = targetHeaders.getIn([targetHeaderIndex, 'nestingLevel']);
 
   // Indent the newly placed sourceheader so that it fits underneath the targetHeader
   sourceHeader = sourceHeader.set('nestingLevel', nestingLevelTarget + 1);
 
   // Put the sourceHeader into the right slot after the targetHeader
-  headers = moveItem({
-    list: headers,
+  [sourceHeaders, targetHeaders] = moveItem({
+    fromList: sourceHeaders,
     fromIndex: sourceHeaderIndex,
+    toList: targetHeaders,
     toIndex: targetHeaderIndex,
     item: sourceHeader,
   });
@@ -507,23 +520,29 @@ const refileSubtree = (state, action) => {
       //       4 (3)
       subheader.get('nestingLevel') - nestingLevelSource + nestingLevelTarget + 1
     );
-    const fromIndex = indexOfHeaderWithId(headers, subheader.get('id'));
+    const fromIndex = indexOfHeaderWithId(sourceHeaders, subheader.get('id'));
 
-    targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+    targetHeaderIndex = indexOfHeaderWithId(targetHeaders, targetHeaderId);
     const toIndex = targetHeaderIndex + index + 1;
 
-    headers = moveItem({
-      list: headers,
+    [sourceHeaders, targetHeaders] = moveItem({
+      fromList: sourceHeaders,
       fromIndex,
+      toList: targetHeaders,
       toIndex,
       item: subheader,
     });
   });
 
-  state = updateCookies(state, sourceHeaderId, action);
-  state = updateCookies(state, targetHeaderId, action);
+  state = state.setIn(['files', sourcePath, 'headers'], sourceHeaders);
+  state = state.setIn(['files', targetPath, 'headers'], targetHeaders);
 
-  state = state.set('headers', headers);
+  state = state.updateIn(['files', sourcePath], (file) =>
+    updateCookies(file, sourceHeaderId, action)
+  );
+  state = state.updateIn(['files', targetPath], (file) =>
+    updateCookies(file, targetHeaderId, action)
+  );
 
   return state;
 };
@@ -1169,6 +1188,8 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
+const changePath = (state, action) => state.set('path', action.path);
+
 const setShowClockDisplay = (state, action) => {
   if (action.showClockDisplay) {
     state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
@@ -1296,6 +1317,8 @@ const reducer = (state, action) => {
       return inFile(updateLogEntryTime);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
+    case 'CHANGE_PATH':
+      return changePath(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
 
@@ -1477,10 +1500,10 @@ export function noLogRepeatEnabledP({ state, headerIndex }) {
  * Function wrapper around `updateCookiesOfHeaderWithId` and
  * `updateCookiesOfParentOfHeaderWithId`.
  */
-function updateCookies(state, previousParentHeaderId, action) {
-  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
-  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
-  return state;
+function updateCookies(file, previousParentHeaderId, action) {
+  file = updateCookiesOfHeaderWithId(file, previousParentHeaderId);
+  file = updateCookiesOfParentOfHeaderWithId(file, action.headerId);
+  return file;
 }
 
 /**

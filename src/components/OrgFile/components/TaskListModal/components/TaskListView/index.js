@@ -17,15 +17,14 @@ import { format, isPast } from 'date-fns';
 import classNames from 'classnames';
 
 function TaskListView(props) {
-  function handleHeaderClick(headerId) {
-    return () => props.onHeaderClick(headerId);
+  function handleHeaderClick(path, headerId) {
+    return () => props.onHeaderClick(path, headerId);
   }
 
   const { dateDisplayType, onToggleDateDisplayType, headers, todoKeywordSets } = props;
 
   // TODO this uses the todokeywordset of the current file for all files
   // use each files own todokeywordset instead
-  console.debug(headers);
   const planningItemsAndHeaders = headers.map((headersForFile) =>
     getPlanningItemsAndHeaders({
       headers: headersForFile,
@@ -83,7 +82,7 @@ function TaskListView(props) {
                       isSelected={false}
                       shouldDisableActions
                       shouldDisableExplicitWidth
-                      onClick={handleHeaderClick(header.get('id'))}
+                      onClick={handleHeaderClick(path, header.get('id'))}
                     />
                     {planningInformation}
                   </div>
