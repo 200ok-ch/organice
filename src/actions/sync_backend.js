@@ -114,7 +114,9 @@ export const downloadFile = (path) => {
       .then((fileContents) => {
         dispatch(setDirty(false));
         dispatch(hideLoadingMessage());
-        dispatch(pushBackup(path, fileContents));
+        if (getState().base.get('shouldBackup')) {
+          dispatch(pushBackup(path, fileContents));
+        }
         dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
         dispatch(displayFile(path, fileContents));
         dispatch(applyOpennessState());
