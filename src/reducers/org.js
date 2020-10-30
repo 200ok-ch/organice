@@ -1284,9 +1284,9 @@ const reducer = (state, action) => {
     case 'UPDATE_TABLE_CELL_VALUE':
       return inFile(updateTableCellValue);
     case 'INSERT_CAPTURE':
-      return insertCapture(state, action);
+      return inFile(insertCapture);
     case 'CLEAR_PENDING_CAPTURE':
-      return clearPendingCapture(state, action);
+      return inFile(clearPendingCapture);
     case 'ADVANCE_CHECKBOX_STATE':
       return inFile(advanceCheckboxState);
     case 'SET_LAST_SYNC_AT':
