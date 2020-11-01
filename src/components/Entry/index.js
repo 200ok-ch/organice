@@ -12,7 +12,6 @@ import classNames from 'classnames';
 
 import { changelogHash } from '../../lib/org_utils';
 import PrivacyPolicy from '../PrivacyPolicy';
-import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
 import FileBrowser from '../FileBrowser';
 import LoadingIndicator from '../LoadingIndicator';
@@ -152,8 +151,6 @@ class Entry extends PureComponent {
 
     return (
       <div className={className}>
-        <HeaderBar />
-
         <LoadingIndicator message={loadingMessage} />
 
         <Prompt
