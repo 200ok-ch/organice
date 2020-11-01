@@ -33,6 +33,7 @@ body,
 #root {
   color: var(--base00);
   background: var(--base3);
+  scroll-padding-top: 60px;
 }
 
 a {
