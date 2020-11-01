@@ -10,6 +10,7 @@ import './stylesheet.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
+import ActionButtons from './components/ActionButtons';
 import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
@@ -406,6 +407,7 @@ class OrgFile extends PureComponent {
       staticFile,
       customKeybindings,
       inEditMode,
+      disableInlineEditing,
       orgFileErrorMessage,
     } = this.props;
 
@@ -505,12 +507,18 @@ class OrgFile extends PureComponent {
             <div className="dirty-indicator">Unpushed changes</div>
           )}
 
-          {!shouldDisableActions && (
-            <ActionDrawer
-              shouldDisableSyncButtons={shouldDisableSyncButtons}
-              staticFile={staticFile}
-            />
-          )}
+          {!shouldDisableActions &&
+            (disableInlineEditing ? (
+              <ActionButtons
+                shouldDisableSyncButtons={shouldDisableSyncButtons}
+                staticFile={staticFile}
+              />
+            ) : (
+              <ActionDrawer
+                shouldDisableSyncButtons={shouldDisableSyncButtons}
+                staticFile={staticFile}
+              />
+            ))}
 
           {this.renderActivePopup()}
         </div>
@@ -522,18 +530,19 @@ class OrgFile extends PureComponent {
 const mapStateToProps = (state) => {
   const headers = state.org.present.get('headers');
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
-  const selectedHeader = headers && selectedHeaderId && headerWithId(headers, selectedHeaderId);
   const activePopup = state.base.get('activePopup');
+
   return {
     headers,
     selectedHeaderId,
     isDirty: state.org.present.get('isDirty'),
     loadedPath: state.org.present.get('path'),
-    selectedHeader,
+    selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     dontIndent: state.base.get('shouldNotIndentOnExport'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     inEditMode: !!state.org.present.get('editMode'),
+    disableInlineEditing:state.org.present.get('disableInlineEditing'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),

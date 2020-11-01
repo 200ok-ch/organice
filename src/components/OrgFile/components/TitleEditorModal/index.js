@@ -56,7 +56,7 @@ export default class TitleEditorModal extends PureComponent {
       this.state.titleValue === newTitle.substring(0, newTitle.length - 1) &&
       lastCharacter === '\n'
     ) {
-      this.props.org.exitEditMode();
+      this.props.onClose();
       return;
     }
 

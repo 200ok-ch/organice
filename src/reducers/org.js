@@ -30,7 +30,7 @@ import {
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
 import {
-  headerWithId,
+  subheadersOfHeaderWithIndex,
   indexOfHeaderWithId,
   indexAndHeaderWithId,
   parentIdOfHeaderWithId,
@@ -268,11 +268,13 @@ const addHeader = (state, action) => {
     const narrowedHeaderId = state.get('narrowedHeaderId');
     if (narrowedHeaderId) {
       // insert underneath narrowed header
-      const narrowedHeader = headerWithId(headers, narrowedHeaderId);
-      const nestingLevel = narrowedHeader.get('nestingLevel');
-      const [_, end] = subheaderIndexRangeForHeaderId(headers, narrowedHeaderId);
+      const { header, headerIndex } = indexAndHeaderWithId(headers, narrowedHeaderId);
+      const nestingLevel = header.get('nestingLevel');
+      const subheaders = subheadersOfHeaderWithIndex(headers, headerIndex);
       const newHeader = newHeaderWithTitle('', nestingLevel + 1, state.get('todoKeywordSets'));
-      return state.update('headers', (headers) => headers.insert(end + 1, newHeader));
+      return state.update('headers', (headers) =>
+        headers.insert(headerIndex + subheaders.size + 1, newHeader)
+      );
     } else {
       // insert top level at the end of the document
       const newHeader = newHeaderWithTitle('', 1, state.get('todoKeywordSets'));
@@ -308,12 +310,13 @@ const selectNextSiblingHeader = (state, action) => {
   // after creating a header with no header selected..
   if (!action.headerId) {
     if (state.get('narrowedHeaderId')) {
-      // take the last header under a narrowed header if there is one
-      const [_, end] = subheaderIndexRangeForHeaderId(state.get('narrowedHeaderId'));
-      headerId = end;
+      // if there is a narrowed header take the last header under it
+      const subheaders = subheadersOfHeaderWithId(headers, state.get('narrowedHeaderId'));
+      return state.set('selectedHeaderId', subheaders.get(subheaders.size - 1).get('id'));
     } else {
       // take the last header
-      headerId = headers.size - 1;
+      const lastHeaderId = headers.get(headers.size - 1).get('id');
+      return state.set('selectedHeaderId', lastHeaderId);
     }
   }
   const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
@@ -1187,6 +1190,9 @@ const setShowClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 };
 
+const setDisableInlineEditing = (state, action) =>
+  state.set('disableInlineEditing', action.disableInlineEditing);
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'DISPLAY_FILE':
@@ -1303,7 +1309,8 @@ const reducer = (state, action) => {
       return setSearchFilterInformation(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
-
+    case 'DISABLE_INLINE_EDITING':
+      return setDisableInlineEditing(state, action);
     default:
       return state;
   }

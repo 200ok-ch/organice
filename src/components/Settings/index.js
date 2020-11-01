@@ -30,6 +30,7 @@ const Settings = ({
   hasUnseenChangelog,
   syncBackend,
   showClockDisplay,
+  disableInlineEditing,
   colorScheme,
   base,
   org,
@@ -76,6 +77,8 @@ const Settings = ({
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
+
+  const handleDisableInlineEditingClick = () => org.setDisableInlineEditing(!disableInlineEditing);
 
   const handleChangelogClick = () => base.pushModalPage('changelog');
 
@@ -240,6 +243,17 @@ const Settings = ({
         <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
       </div>
 
+      <div className="setting-container">
+        <div className="setting-label">
+          Disable inline editing
+          <div className="setting-label__description">
+            Access editing actions via the buttons at the bottom of the screen instead of having
+            them embeded in the selected header.
+          </div>
+        </div>
+        <Switch isEnabled={disableInlineEditing} onToggle={handleDisableInlineEditingClick} />
+      </div>
+
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>
           Capture templates
@@ -304,6 +318,7 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    disableInlineEditing: state.org.present.get('disableInlineEditing'),
     colorScheme: state.base.get('colorScheme'),
   };
 };

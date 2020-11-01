@@ -108,8 +108,14 @@ export default ({ parts, subPartDataAndHandlers }) => {
               </span>
             );
           case 'table':
-            return (
+            return subPartDataAndHandlers.disableInlineEditing ? (
               <StaticTablePart
+                key={part.get('id')}
+                table={part}
+                subPartDataAndHandlers={subPartDataAndHandlers}
+              />
+            ) : (
+              <TablePart
                 key={part.get('id')}
                 table={part}
                 subPartDataAndHandlers={subPartDataAndHandlers}

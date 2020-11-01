@@ -1,14 +1,7 @@
 @import '../../../../../../../colors.css';
 
-.table-action-drawer {
-  display: flex;
-  justify-content: space-around;
-}
-
 .table-action-drawer-container {
   color: var(--base01);
-
-  width: 50%;
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -41,50 +34,4 @@
 
 .table-action-drawer__sub-icon--rotated {
   transform: rotate(270deg);
-}
-
-.table-action-movement-container {
-  color: var(--base01);
-
-  width: 50%;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-}
-
-.table-action-movement__up {
-  grid-column-start: 2;
-  grid-row-start: 1;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.table-action-movement__down {
-  grid-column-start: 2;
-  grid-row-start: 3;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.table-action-movement__left {
-  grid-column-start: 1;
-  grid-row-start: 2;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.table-action-movement__right {
-  grid-column-start: 3;
-  grid-row-start: 2;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

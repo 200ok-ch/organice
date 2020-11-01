@@ -255,6 +255,12 @@ export const addHeaderAndEdit = (headerId) => (dispatch) => {
   dispatch(enterEditMode('title'));
 };
 
+export const addHeaderAndOpenEditor = (headerId) => (dispatch) => {
+  dispatch(addHeader(headerId));
+  dispatch(selectNextSiblingHeader(headerId));
+  dispatch(activatePopup('title-editor'));
+};
+
 export const selectNextVisibleHeader = (headerId) => ({
   type: 'SELECT_NEXT_VISIBLE_HEADER',
   headerId,
@@ -347,7 +353,7 @@ export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
 
   if (!!cellId) {
-    // TODO restor for inline action bar
+    // TODO restore for inline action bar
     //dispatch(selectHeader(null));
   }
 };
@@ -582,4 +588,9 @@ export const setSearchFilterInformation = (searchFilter, cursorPosition, context
 export const setShowClockDisplay = (showClockDisplay) => ({
   type: 'TOGGLE_CLOCK_DISPLAY',
   showClockDisplay,
+});
+
+export const setDisableInlineEditing = (disableInlineEditing) => ({
+  type: 'DISABLE_INLINE_EDITING',
+  disableInlineEditing,
 });

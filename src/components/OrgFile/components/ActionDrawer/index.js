@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { Fragment, useState, useEffect, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -13,29 +13,24 @@ import * as captureActions from '../../../../actions/capture';
 import * as baseActions from '../../../../actions/base';
 
 import sampleCaptureTemplates from '../../../../lib/sample_capture_templates';
-import { headerWithId } from '../../../../lib/org_utils';
-import { getCurrentTimestamp } from '../../../../lib/timestamps';
 
 import ActionButton from './components/ActionButton/';
 
 const ActionDrawer = ({
   org,
-  header,
   selectedHeaderId,
   base,
   staticFile,
   captureTemplates,
   path,
   selectedTableCellId,
+  inEditMode,
   isLoading,
   shouldDisableSyncButtons,
-  isNarrowed,
-  hasActiveClock,
 }) => {
   const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
   const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
   const [isDisplayingSearchButtons, setIsDisplayingSearchButtons] = useState(false);
-  const [isDisplayingEditButtons, setIsDisplayingEditButtons] = useState(false);
 
   useEffect(() => {
     document.querySelector('html').style.paddingBottom = '90px';
@@ -44,16 +39,10 @@ const ActionDrawer = ({
   });
 
   const mainArrowButton = useRef(null);
-  const mainEditButton = useRef(null);
 
   const mainArrowButtonBoundingRect = useMemo(
     () => (!!mainArrowButton.current ? mainArrowButton.current.getBoundingClientRect() : null),
     [mainArrowButton]
-  );
-
-  const mainEditButtonBoundingRect = useMemo(
-    () => (!!mainEditButton.current ? mainEditButton.current.getBoundingClientRect() : null),
-    [mainEditButton]
   );
 
   const handleUpClick = () =>
@@ -72,11 +61,7 @@ const ActionDrawer = ({
 
   const handleMoveSubtreeRightClick = () => org.moveSubtreeRight(selectedHeaderId);
 
-  const handleAddNewHeader = () => {
-    setIsDisplayingCaptureButtons(false);
-    // TODO: do it in a popup
-    org.addHeaderAndEdit(selectedHeaderId);
-  };
+  const handleDoneClick = () => org.exitEditMode();
 
   const handleCaptureButtonClick = (templateId) => () => {
     setIsDisplayingCaptureButtons(false);
@@ -120,123 +105,6 @@ const ActionDrawer = ({
     setIsDisplayingCaptureButtons(!isDisplayingCaptureButtons);
   };
 
-  const handleMainEditButtonClick = () => setIsDisplayingEditButtons(!isDisplayingEditButtons);
-
-  const handleEnterTitleEditMode = () => {
-    setIsDisplayingEditButtons(false);
-    base.activatePopup('title-editor');
-  };
-
-  const handleEnterDescriptionEditMode = () => {
-    setIsDisplayingEditButtons(false);
-    org.openHeader(selectedHeaderId);
-    base.activatePopup('description-editor');
-  };
-
-  const handleNarrowClick = () => {
-    setIsDisplayingEditButtons(false);
-    org.narrowHeader(selectedHeaderId);
-  };
-  const handleWidenClick = () => {
-    setIsDisplayingEditButtons(false);
-    org.widenHeader();
-  };
-
-  const handleShowTagsModal = () => {
-    setIsDisplayingEditButtons(false);
-    base.activatePopup('tags-editor');
-  };
-
-  const handleShowPropertyListEditorModal = () => {
-    setIsDisplayingEditButtons(false);
-    base.activatePopup('property-list-editor');
-  };
-
-  const handleDeadlineAndScheduledClick = (planningType) => {
-    const existingDeadlinePlanningItemIndex = header
-      .get('planningItems', [])
-      .findIndex((planningItem) => planningItem.get('type') === planningType);
-
-    if (existingDeadlinePlanningItemIndex === -1) {
-      org.addNewPlanningItem(selectedHeaderId, planningType);
-      base.activatePopup('timestamp-editor', {
-        headerId: selectedHeaderId,
-        planningItemIndex: header.get('planningItems').size,
-      });
-    } else {
-      base.activatePopup('timestamp-editor', {
-        headerId: selectedHeaderId,
-        planningItemIndex: existingDeadlinePlanningItemIndex,
-      });
-    }
-    org.openHeader(selectedHeaderId);
-  };
-
-  const handleDeadlineClick = () => {
-    setIsDisplayingEditButtons(false);
-    handleDeadlineAndScheduledClick('DEADLINE');
-  };
-
-  const handleClockInOutClick = () => {
-    setIsDisplayingEditButtons(false);
-    const logBook = header.get('logBookEntries', []);
-    const existingClockIndex = logBook.findIndex((entry) => entry.get('end') === null);
-    const now = getCurrentTimestamp({ isActive: false, withStartTime: true });
-    if (existingClockIndex !== -1) {
-      org.setLogEntryStop(header.get('id'), logBook.getIn([existingClockIndex, 'id']), now);
-    } else {
-      org.createLogEntryStart(header.get('id'), now);
-    }
-  };
-
-  const handleScheduledClick = () => {
-    setIsDisplayingEditButtons(false);
-    handleDeadlineAndScheduledClick('SCHEDULED');
-  };
-
-  const handleShareHeaderClick = () => {
-    setIsDisplayingEditButtons(false);
-
-    const titleLine = header.get('titleLine');
-    const todoKeyword = titleLine.get('todoKeyword');
-    const tags = titleLine.get('tags');
-    const title = titleLine.get('rawTitle').trim();
-    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
-    const body = `
-${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
-${header.get('rawDescription')}`;
-    //const titleParts = titleLine.get('title'); // List of parsed tokens in title
-    //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
-    //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
-    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-      body
-    )}`;
-    // TODO: If available, use webshare
-    // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
-
-    window.open(mailtoURI);
-    // INFO: Alternative implementation that works without having a
-    // popup window. We didn't go this route, because it's non-trivial
-    // to mock the window object, so it's harder to test. Having
-    // slightly worse UX in favor of having a test is not optimal, as
-    // well, of course.
-    // window.location.href = mailtoURI;
-  };
-
-  const handleAddNoteClick = () => {
-    setIsDisplayingEditButtons(false);
-    let input = prompt('Enter a note to add to the header:');
-    if (input !== null) input = input.trim();
-    if (!input) return;
-
-    org.addNote(input, new Date());
-  };
-
-  const handleRefileHeaderRequest = () => {
-    setIsDisplayingEditButtons(false);
-    base.activatePopup('refile');
-  };
-
   const renderCaptureButtons = () => {
     const availableCaptureTemplates = getAvailableCaptureTemplates();
 
@@ -244,16 +112,14 @@ ${header.get('rawDescription')}`;
       position: 'absolute',
       zIndex: 0,
       left: 0,
-      opacity:
-        isDisplayingArrowButtons || isDisplayingSearchButtons || isDisplayingEditButtons ? 0 : 1,
+      opacity: isDisplayingArrowButtons || isDisplayingSearchButtons ? 0 : 1,
     };
     if (!isDisplayingCaptureButtons) {
       baseCaptureButtonStyle.boxShadow = 'none';
     }
 
     const mainButtonStyle = {
-      opacity:
-        isDisplayingArrowButtons || isDisplayingSearchButtons || isDisplayingEditButtons ? 0 : 1,
+      opacity: isDisplayingArrowButtons || isDisplayingSearchButtons ? 0 : 1,
       position: 'relative',
       zIndex: 1,
     };
@@ -268,22 +134,14 @@ ${header.get('rawDescription')}`;
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
               iconName={isDisplayingCaptureButtons ? 'times' : 'plus'}
-              isDisabled={
-                isDisplayingArrowButtons || isDisplayingSearchButtons || isDisplayingEditButtons
-              }
+              isDisabled={false}
               onClick={handleMainCaptureButtonClick}
               style={mainButtonStyle}
               tooltip={
                 isDisplayingCaptureButtons ? 'Hide capture templates' : 'Show capture templates'
               }
             />
-            <ActionButton
-              iconName={'plus'}
-              isDisabled={false}
-              onClick={handleAddNewHeader}
-              style={{ ...baseCaptureButtonStyle, bottom: style.bottom }}
-              tooltip={'Create new header below'}
-            />
+
             {availableCaptureTemplates.map((template, index) => (
               <ActionButton
                 key={template.get('id')}
@@ -291,7 +149,7 @@ ${header.get('rawDescription')}`;
                 iconName={template.get('iconName')}
                 isDisabled={false}
                 onClick={handleCaptureButtonClick(template.get('id'))}
-                style={{ ...baseCaptureButtonStyle, bottom: style.bottom * (index + 2) }}
+                style={{ ...baseCaptureButtonStyle, bottom: style.bottom * (index + 1) }}
                 tooltip={`Activate "${template.get('description')}" capture template`}
               />
             ))}
@@ -306,16 +164,14 @@ ${header.get('rawDescription')}`;
       position: 'absolute',
       zIndex: 0,
       left: 0,
-      opacity:
-        isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingEditButtons ? 0 : 1,
+      opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
     };
     if (!isDisplayingSearchButtons) {
       baseSearchButtonStyle.boxShadow = 'none';
     }
 
     const mainButtonStyle = {
-      opacity:
-        isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingEditButtons ? 0 : 1,
+      opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
       position: 'relative',
       zIndex: 1,
     };
@@ -330,9 +186,7 @@ ${header.get('rawDescription')}`;
           <div className="action-drawer__capture-buttons-container">
             <ActionButton
               iconName={isDisplayingSearchButtons ? 'times' : 'search'}
-              isDisabled={
-                isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingEditButtons
-              }
+              isDisabled={false}
               onClick={handleMainSearchButtonClick}
               style={mainButtonStyle}
               tooltip={
@@ -341,19 +195,10 @@ ${header.get('rawDescription')}`;
             />
 
             <ActionButton
-              iconName="calendar-alt"
-              shouldSpinSubIcon={isLoading}
-              isDisabled={false}
-              onClick={handleAgendaClick}
-              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 1 }}
-              tooltip="Show agenda"
-            />
-
-            <ActionButton
               iconName="search"
               isDisabled={false}
               onClick={handleSearchClick}
-              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 2 }}
+              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 1 }}
               tooltip="Show search"
             />
 
@@ -361,7 +206,7 @@ ${header.get('rawDescription')}`;
               iconName="tasks"
               isDisabled={false}
               onClick={handleTaskListClick}
-              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 3 }}
+              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 2 }}
               tooltip="Show task list"
             />
           </div>
@@ -372,8 +217,7 @@ ${header.get('rawDescription')}`;
 
   const renderMovementButtons = () => {
     const baseArrowButtonStyle = {
-      opacity:
-        isDisplayingCaptureButtons || isDisplayingSearchButtons || isDisplayingEditButtons ? 0 : 1,
+      opacity: isDisplayingCaptureButtons || isDisplayingSearchButtons ? 0 : 1,
     };
     if (!isDisplayingArrowButtons) {
       baseArrowButtonStyle.boxShadow = 'none';
@@ -409,9 +253,7 @@ ${header.get('rawDescription')}`;
               additionalClassName="action-drawer__arrow-button"
               iconName="arrow-up"
               subIconName={!!selectedTableCellId ? 'table' : null}
-              isDisabled={
-                isDisplayingCaptureButtons || isDisplayingSearchButtons || isDisplayingEditButtons
-              }
+              isDisabled={false}
               onClick={handleUpClick}
               style={{ ...baseArrowButtonStyle, bottom: style.topRowYOffset }}
               tooltip={!!selectedTableCellId ? 'Move row up' : 'Move header up'}
@@ -452,7 +294,7 @@ ${header.get('rawDescription')}`;
               tooltip={!!selectedTableCellId ? 'Move column right' : 'Move header right'}
             />
             {!selectedTableCellId && (
-              <>
+              <Fragment>
                 <ActionButton
                   additionalClassName="action-drawer__arrow-button"
                   iconName="chevron-left"
@@ -477,7 +319,7 @@ ${header.get('rawDescription')}`;
                   }}
                   tooltip="Move entire subtree right"
                 />
-              </>
+              </Fragment>
             )}
 
             <ActionButton
@@ -486,12 +328,7 @@ ${header.get('rawDescription')}`;
               additionalClassName="action-drawer__main-arrow-button"
               isDisabled={false}
               onClick={handleMainArrowButtonClick}
-              style={{
-                opacity:
-                  isDisplayingCaptureButtons || isDisplayingSearchButtons || isDisplayingEditButtons
-                    ? 0
-                    : 1,
-              }}
+              style={{ opacity: isDisplayingCaptureButtons || isDisplayingSearchButtons ? 0 : 1 }}
               tooltip={isDisplayingArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
               onRef={mainArrowButton}
             />
@@ -501,234 +338,7 @@ ${header.get('rawDescription')}`;
     );
   };
 
-  const renderEditButtons = () => {
-    const showEditButtons = isDisplayingEditButtons && !!selectedHeaderId;
-    if (!showEditButtons && isDisplayingEditButtons) {
-      setIsDisplayingEditButtons(false);
-    }
-
-    const baseEditButtonStyle = {
-      zIndex:1,
-      opacity:
-        !selectedHeaderId ||
-        isDisplayingCaptureButtons ||
-        isDisplayingSearchButtons ||
-        isDisplayingArrowButtons
-          ? 0
-          : 1,
-    };
-    if (!showEditButtons) {
-      baseEditButtonStyle.boxShadow = 'none';
-    }
-
-    let centerXOffset = 0;
-    if (!!mainEditButtonBoundingRect) {
-      centerXOffset =
-        window.screen.width / 2 -
-        (mainEditButtonBoundingRect.x + mainEditButtonBoundingRect.width / 2);
-    }
-
-    let actionDrawerContainerWidth = document.getElementById('root').scrollWidth - 20;
-    const actionDrawerContainer = document
-      .getElementsByClassName('action-drawer-container')
-      .item(0);
-    if (!!actionDrawerContainer) {
-      actionDrawerContainerWidth = document
-        .getElementsByClassName('action-drawer-container')
-        .item(0).scrollWidth;
-    }
-
-    const distance = (actionDrawerContainerWidth - 60) / 4;
-    const animatedStyles = {
-      centerXOffset: spring(showEditButtons ? centerXOffset : 0, { stiffness: 300 }),
-      topRowYOffset: spring(showEditButtons ? 160 : 0, { stiffness: 300 }),
-      middleRowYOffset: spring(showEditButtons ? 80 : 0, { stiffness: 300 }),
-      firstColumnXOffset: spring(showEditButtons ? 4 * distance : 0, {
-        stiffness: 300,
-      }),
-      secondColumnXOffset: spring(showEditButtons ? 3 * distance : 0, {
-        stiffness: 300,
-      }),
-      thirdColumnXOffset: spring(showEditButtons ? 2 * distance : 0, {
-        stiffness: 300,
-      }),
-      fourthColumnXOffset: spring(showEditButtons ? distance : 0, {
-        stiffness: 300,
-      }),
-    };
-
-    return (
-      <Motion style={animatedStyles}>
-        {(style) => (
-          <div
-            className="action-drawer__arrow-buttons-container"
-            style={{ left: style.centerXOffset }}
-          >
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="pencil-alt"
-              isDisabled={
-                isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingSearchButtons
-              }
-              onClick={handleEnterTitleEditMode}
-              style={{ ...baseEditButtonStyle, bottom: style.middleRowYOffset }}
-              tooltip={'Edit header title'}
-            />
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="edit"
-              isDisabled={false}
-              onClick={handleEnterDescriptionEditMode}
-              style={{
-                ...baseEditButtonStyle,
-                right: style.fourthColumnXOffset,
-              }}
-              tooltip={'Edit header description'}
-            />
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="tags"
-              isDisabled={false}
-              onClick={handleShowTagsModal}
-              style={{
-                ...baseEditButtonStyle,
-                bottom: style.middleRowYOffset,
-                right: style.secondColumnXOffset,
-              }}
-              tooltip={'Modify tags'}
-            />
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="list"
-              isDisabled={false}
-              onClick={handleShowPropertyListEditorModal}
-              style={{
-                ...baseEditButtonStyle,
-                bottom: style.middleRowYOffset,
-                right: style.thirdColumnXOffset,
-              }}
-              tooltip={'Modify properties'}
-            />
-
-            <>
-              <ActionButton
-                additionalClassName="action-drawer__arrow-button"
-                iconName={isNarrowed ? 'expand' : 'compress'}
-                isDisabled={false}
-                onClick={isNarrowed ? handleWidenClick : handleNarrowClick}
-                style={{
-                  ...baseEditButtonStyle,
-                  bottom: style.middleRowYOffset,
-                  right: style.firstColumnXOffset,
-                }}
-                tooltip={
-                  isNarrowed
-                    ? 'Widen (Cancelling the narrowing.)'
-                    : 'Narrow to subtree (focusing in on some portion of the buffer, making the rest temporarily inaccessible.)'
-                }
-              />
-            </>
-
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="envelope"
-              isDisabled={false}
-              onClick={handleShareHeaderClick}
-              style={{
-                ...baseEditButtonStyle,
-                bottom: style.topRowYOffset,
-                right: style.firstColumnXOffset,
-              }}
-              tooltip="Share this header via email"
-            />
-
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="calendar-check"
-              isDisabled={false}
-              onClick={handleDeadlineClick}
-              style={{
-                ...baseEditButtonStyle,
-                right: style.firstColumnXOffset,
-              }}
-              tooltip="Set deadline datetime"
-            />
-
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="calendar-times"
-              isDisabled={false}
-              onClick={handleScheduledClick}
-              style={{
-                ...baseEditButtonStyle,
-                right: style.secondColumnXOffset,
-              }}
-              tooltip="Set scheduled datetime"
-            />
-
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName={hasActiveClock ? 'hourglass-end' : 'hourglass-start'}
-              isDisabled={false}
-              onClick={handleClockInOutClick}
-              style={{
-                ...baseEditButtonStyle,
-                right: style.thirdColumnXOffset,
-              }}
-              tooltip={hasActiveClock ? 'Clock out (Stop the clock)' : 'Clock in (Start the clock)'}
-            />
-
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="file-export"
-              isDisabled={false}
-              onClick={handleRefileHeaderRequest}
-              style={{
-                ...baseEditButtonStyle,
-                bottom: style.topRowYOffset,
-              }}
-              tooltip="Refile this header to another header"
-            />
-
-            <ActionButton
-              additionalClassName="action-drawer__arrow-button"
-              iconName="sticky-note"
-              isDisabled={false}
-              onClick={handleAddNoteClick}
-              style={{
-                ...baseEditButtonStyle,
-                bottom: style.middleRowYOffset,
-                right: style.fourthColumnXOffset,
-              }}
-              tooltip="Add a note"
-            />
-
-            <ActionButton
-              iconName={showEditButtons ? 'times' : 'pencil-alt'}
-              additionalClassName="action-drawer__main-arrow-button"
-              isDisabled={!selectedHeaderId}
-              onClick={handleMainEditButtonClick}
-              style={{
-                opacity:
-                  isDisplayingCaptureButtons ||
-                  isDisplayingSearchButtons ||
-                  isDisplayingArrowButtons
-                    ? 0
-                    : 1,
-              }}
-              tooltip={showEditButtons ? 'Hide edit buttons' : 'Show edit buttons'}
-              onRef={mainEditButton}
-            />
-          </div>
-        )}
-      </Motion>
-    );
-  };
-
-  const handleAgendaClick = () => {
-    setIsDisplayingSearchButtons(false);
-    base.activatePopup('agenda');
-  };
+  const handleAgendaClick = () => base.activatePopup('agenda');
   const handleTaskListClick = () => {
     setIsDisplayingSearchButtons(false);
     base.activatePopup('task-list');
@@ -740,60 +350,61 @@ ${header.get('rawDescription')}`;
 
   return (
     <div className="action-drawer-container nice-scroll">
+      {inEditMode ? (
+        <button className="btn action-drawer__done-btn" onClick={handleDoneClick}>
+          Done
+        </button>
+      ) : (
+        <Fragment>
           <ActionButton
             iconName="cloud"
             subIconName="sync-alt"
             shouldSpinSubIcon={isLoading}
-            isDisabled={
-              shouldDisableSyncButtons ||
-              isDisplayingArrowButtons ||
-              isDisplayingCaptureButtons ||
-              isDisplayingSearchButtons ||
-              isDisplayingEditButtons
-            }
+            isDisabled={shouldDisableSyncButtons}
             onClick={handleSync}
             style={{
               opacity:
-                isDisplayingArrowButtons ||
-                isDisplayingCaptureButtons ||
-                isDisplayingSearchButtons ||
-                isDisplayingEditButtons
+                isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingSearchButtons
                   ? 0
                   : 1,
             }}
             tooltip="Sync changes"
           />
-          {renderSearchButtons()}
+
+          <ActionButton
+            iconName="calendar-alt"
+            shouldSpinSubIcon={isLoading}
+            isDisabled={false}
+            onClick={handleAgendaClick}
+            style={{
+              opacity:
+                isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingSearchButtons
+                  ? 0
+                  : 1,
+            }}
+            tooltip="Show agenda"
+          />
+
           {renderMovementButtons()}
+
+          {renderSearchButtons()}
           {renderCaptureButtons()}
-          {renderEditButtons()}
+        </Fragment>
+      )}
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
-  const path = state.org.present.get('path');
-  const selectedHeaderId = state.org.present.get('selectedHeaderId');
-  const narrowedHeaderId = state.org.present.get('narrowedHeaderId');
-
-  const headers = state.org.present.get('headers');
-  const header = headerWithId(headers, selectedHeaderId);
-  const logBookEntries = header
-    .get('logBookEntries')
-    .filter((entry) => entry.get('raw') === undefined);
-  const hasActiveClock =
-    logBookEntries.size !== 0 && logBookEntries.filter((entry) => !entry.get('end')).size !== 0;
-
   return {
-    selectedHeaderId,
-    header,
+    inEditMode: !!state.org.present.get('editMode'),
+    selectedHeaderId: state.org.present.get('selectedHeaderId'),
     isDirty: state.org.present.get('isDirty'),
-    isNarrowed: !!narrowedHeaderId,
+    isNarrowedHeaderActive: !!state.org.present.get('narrowedHeaderId'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     captureTemplates: state.capture.get('captureTemplates', List()),
-    path,
+    path: state.org.present.get('path'),
     isLoading: state.base.get('isLoading'),
-    hasActiveClock,
   };
 };
 

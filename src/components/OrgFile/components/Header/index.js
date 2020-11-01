@@ -333,6 +333,7 @@ ${header.get('rawDescription')}`;
       isNarrowed,
       shouldDisableActions,
       showClockDisplay,
+      disableInlineEditing,
     } = this.props;
 
     const indentLevel = !!narrowedHeader
@@ -501,29 +502,31 @@ ${header.get('rawDescription')}`;
                 }
               />
 
-              <Collapse
-                isOpened={isSelected && !shouldDisableActions}
-                springConfig={{ stiffness: 300 }}
-                style={{ marginRight: rightSwipeActionContainerStyle.width }}
-              >
-                <HeaderActionDrawer
-                  onEnterTitleEditMode={this.handleEnterTitleEditMode}
-                  onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
-                  isNarrowed={isNarrowed}
-                  onTagsClick={this.handleShowTagsModal}
-                  onPropertiesClick={this.handleShowPropertyListEditorModal}
-                  onNarrow={this.handleNarrow}
-                  onWiden={this.handleWiden}
-                  onAddNewHeader={this.handleAddNewHeader}
-                  onDeadlineClick={this.handleDeadlineClick}
-                  onClockInOutClick={this.handleClockInOutClick}
-                  onScheduledClick={this.handleScheduledClick}
-                  hasActiveClock={hasActiveClock}
-                  onShareHeader={this.handleShareHeaderClick}
-                  onRefileHeader={this.handleRefileHeaderRequest}
-                  onAddNote={this.handleAddNoteClick}
-                />
-              </Collapse>
+              {!disableInlineEditing ? (
+                <Collapse
+                  isOpened={isSelected && !shouldDisableActions}
+                  springConfig={{ stiffness: 300 }}
+                  style={{ marginRight: rightSwipeActionContainerStyle.width }}
+                >
+                  <HeaderActionDrawer
+                    onEnterTitleEditMode={this.handleEnterTitleEditMode}
+                    onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
+                    isNarrowed={isNarrowed}
+                    onTagsClick={this.handleShowTagsModal}
+                    onPropertiesClick={this.handleShowPropertyListEditorModal}
+                    onNarrow={this.handleNarrow}
+                    onWiden={this.handleWiden}
+                    onAddNewHeader={this.handleAddNewHeader}
+                    onDeadlineClick={this.handleDeadlineClick}
+                    onClockInOutClick={this.handleClockInOutClick}
+                    onScheduledClick={this.handleScheduledClick}
+                    hasActiveClock={hasActiveClock}
+                    onShareHeader={this.handleShareHeaderClick}
+                    onRefileHeader={this.handleRefileHeaderRequest}
+                    onAddNote={this.handleAddNoteClick}
+                  />
+                </Collapse>
+              ) : null}
 
               <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
             </div>
@@ -547,6 +550,7 @@ const mapStateToProps = (state, ownProps) => {
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    disableInlineEditing: state.org.present.get('disableInlineEditing'),
   };
 };
 

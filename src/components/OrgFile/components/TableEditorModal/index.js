@@ -7,7 +7,7 @@ import './stylesheet.css';
 
 import Drawer from '../../../UI/Drawer/';
 import AttributedString from '../AttributedString';
-import TableActionDrawer from '../AttributedString/components/TablePart/TableActionDrawer';
+import TableActionButtons from './TableActionButtons';
 
 import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
@@ -269,7 +269,7 @@ class TableEditorModal extends PureComponent {
         </table>
 
         <Collapse isOpened={!shouldDisableActions}>
-          <TableActionDrawer subPartDataAndHandlers={subPartDataAndHandlers} />
+          <TableActionButtons subPartDataAndHandlers={subPartDataAndHandlers} />
         </Collapse>
       </Drawer>
     );
