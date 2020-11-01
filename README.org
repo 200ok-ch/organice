@@ -433,6 +433,19 @@ will pause and you can examine the current scope and call stack.
 The "Create React App" upstream docs for this feature are here:
 https://create-react-app.dev/docs/debugging-tests/
 
+** Automatic deployments of reference instance
+
+The productive reference instance of organice is deployed to
+https://organice.200ok.ch/. On merging a pull request to =master=,
+code and documentation are automatically deployed to production.
+
+For more complicated features (aka epics) that require more than one
+pull request, there is a reference stage instance on
+[[https://staging.organice.200ok.ch/]]. When working on epics, we follow
+the popular [[https://nvie.com/posts/a-successful-git-branching-model/][nvie git branching model]] in that we successively create
+feature branches against =develop= until the epic is finished. On
+merging a pull request to =develop=, code and documentation are
+automatically deployed to stage.
 
 ** Contributions
 
