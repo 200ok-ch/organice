@@ -371,6 +371,10 @@ const removeHeader = (state, action) => {
 
   const parentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
 
+  if (action.headerId === state.get('selectedHeaderId')) {
+    state = state.set('selectedHeaderId', null);
+  }
+
   _.times(numHeadersToRemove).forEach(() => {
     headers = headers.delete(headerIndex);
   });
