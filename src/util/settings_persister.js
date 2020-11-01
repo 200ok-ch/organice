@@ -167,14 +167,14 @@ const getFieldsToPersist = (state, fields) => {
     .concat(
       persistableFields
         .filter((field) => field.category !== 'org')
-        .map((field) =>
-          field.type === 'json'
+        .map((field) => {
+          return field.type === 'json'
             ? [
                 field.name,
                 JSON.stringify(state[field.category].get(field.name) || field.default || {}),
               ]
-            : [field.name, state[field.category].get(field.name)]
-        )
+            : [field.name, state[field.category].get(field.name) || field.default];
+        })
     );
 };
 
