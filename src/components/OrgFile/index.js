@@ -15,6 +15,9 @@ import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
+import TitleEditorModal from './components/TitleEditorModal';
+import DescriptionEditorModal from './components/DescriptionEditorModal';
+import TableEditorModal from './components/TableEditorModal';
 import AgendaModal from './components/AgendaModal';
 import TaskListModal from './components/TaskListModal';
 import SearchModal from './components/SearchModal';
@@ -63,6 +66,8 @@ class OrgFile extends PureComponent {
       'handlePopupClose',
       'handleSearchPopupClose',
       'handleRefilePopupClose',
+      'handleTitlePopupClose',
+      'handleDescriptionPopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
@@ -227,6 +232,16 @@ class OrgFile extends PureComponent {
     }
   }
 
+  handleTitlePopupClose(titleValue) {
+    this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+    this.props.base.closePopup();
+  }
+
+  handleDescriptionPopupClose(descriptionValue) {
+    this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    this.props.base.closePopup();
+  }
+
   handleSyncConfirmationPull() {
     this.props.org.sync({ forceAction: 'pull' });
     this.props.base.closePopup();
@@ -278,6 +293,7 @@ class OrgFile extends PureComponent {
       captureTemplates,
       headers,
       selectedHeader,
+      shouldDisableActions,
     } = this.props;
 
     switch (activePopupType) {
@@ -361,6 +377,18 @@ class OrgFile extends PureComponent {
         return <SearchModal onClose={this.handleSearchPopupClose} context="search" />;
       case 'refile':
         return <SearchModal onClose={this.handleRefilePopupClose} context="refile" />;
+      case 'title-editor':
+        return <TitleEditorModal header={selectedHeader} onClose={this.handleTitlePopupClose} />;
+      case 'description-editor':
+        return (
+          <DescriptionEditorModal
+            header={selectedHeader}
+            dontIndent={this.props.dontIndent}
+            onClose={this.handleDescriptionPopupClose}
+          />
+        );
+      case 'table-editor':
+        return <TableEditorModal shouldDisableActions={shouldDisableActions} />;
       default:
         return null;
     }
@@ -494,15 +522,16 @@ class OrgFile extends PureComponent {
 const mapStateToProps = (state) => {
   const headers = state.org.present.get('headers');
   const selectedHeaderId = state.org.present.get('selectedHeaderId');
+  const selectedHeader = headers && selectedHeaderId && headerWithId(headers, selectedHeaderId);
   const activePopup = state.base.get('activePopup');
-
   return {
     headers,
     selectedHeaderId,
     isDirty: state.org.present.get('isDirty'),
     loadedPath: state.org.present.get('path'),
-    selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
+    selectedHeader,
     customKeybindings: state.base.get('customKeybindings'),
+    dontIndent: state.base.get('shouldNotIndentOnExport'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     inEditMode: !!state.org.present.get('editMode'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,

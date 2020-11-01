@@ -27,6 +27,7 @@ class HeaderContent extends PureComponent {
       'handleTextareaRef',
       'handleDescriptionChange',
       'handleTextareaBlur',
+      'handleTableSelect',
       'handleTableCellSelect',
       'handleExitTableEditMode',
       'handleTableCellValueUpdate',
@@ -113,6 +114,12 @@ class HeaderContent extends PureComponent {
         this.setState({ shouldIgnoreBlur: false });
       }
     }, 200);
+  }
+
+  handleTableSelect(tableId) {
+    this.props.org.selectHeader(this.props.header.get('id'));
+    this.props.org.setSelectedTableId(tableId);
+    this.props.base.activatePopup('table-editor');
   }
 
   handleTableCellSelect(cellId) {
@@ -256,16 +263,17 @@ class HeaderContent extends PureComponent {
             <AttributedString
               parts={header.get('description')}
               subPartDataAndHandlers={{
-                onTableCellSelect: this.handleTableCellSelect,
-                selectedTableCellId: selectedTableCellId,
-                inTableEditMode: inTableEditMode,
-                onExitTableEditMode: this.handleExitTableEditMode,
-                onTableCellValueUpdate: this.handleTableCellValueUpdate,
-                onEnterTableEditMode: this.handleEnterTableEditMode,
-                onAddNewTableRow: this.handleAddNewTableRow,
-                onRemoveTableRow: this.handleRemoveTableRow,
-                onAddNewTableColumn: this.handleAddNewTableColumn,
-                onRemoveTableColumn: this.handleRemoveTableColumn,
+                onTableSelect: this.handleTableSelect,
+                //onTableCellSelect: this.handleTableCellSelect,
+                //selectedTableCellId: selectedTableCellId,
+                //inTableEditMode: inTableEditMode,
+                //onExitTableEditMode: this.handleExitTableEditMode,
+                //onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                //onEnterTableEditMode: this.handleEnterTableEditMode,
+                //onAddNewTableRow: this.handleAddNewTableRow,
+                //onRemoveTableRow: this.handleRemoveTableRow,
+                //onAddNewTableColumn: this.handleAddNewTableColumn,
+                //onRemoveTableColumn: this.handleRemoveTableColumn,
                 onCheckboxClick: this.handleCheckboxClick,
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,

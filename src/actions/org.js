@@ -339,11 +339,16 @@ export const setDirty = (isDirty) => ({
   isDirty,
 });
 
+export const setSelectedTableId = (tableId) => (dispatch) => {
+  dispatch({ type: 'SET_SELECTED_TABLE_ID', tableId });
+};
+
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
 
   if (!!cellId) {
-    dispatch(selectHeader(null));
+    // TODO restor for inline action bar
+    //dispatch(selectHeader(null));
   }
 };
 

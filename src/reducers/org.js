@@ -30,11 +30,13 @@ import {
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
 import {
+  headerWithId,
   indexOfHeaderWithId,
   indexAndHeaderWithId,
   parentIdOfHeaderWithId,
   subheadersOfHeaderWithId,
   subheaderIndicesOfHeaderWithId,
+  subheaderIndexRangeForHeaderId,
   numSubheadersOfHeaderWithId,
   indexOfPreviousSibling,
   openDirectParent,
@@ -260,6 +262,24 @@ const updateHeaderDescription = (state, action) => {
 
 const addHeader = (state, action) => {
   const headers = state.get('headers');
+
+  // when creating a header with no header selected..
+  if (!action.headerId) {
+    const narrowedHeaderId = state.get('narrowedHeaderId');
+    if (narrowedHeaderId) {
+      // insert underneath narrowed header
+      const narrowedHeader = headerWithId(headers, narrowedHeaderId);
+      const nestingLevel = narrowedHeader.get('nestingLevel');
+      const [_, end] = subheaderIndexRangeForHeaderId(headers, narrowedHeaderId);
+      const newHeader = newHeaderWithTitle('', nestingLevel + 1, state.get('todoKeywordSets'));
+      return state.update('headers', (headers) => headers.insert(end + 1, newHeader));
+    } else {
+      // insert top level at the end of the document
+      const newHeader = newHeaderWithTitle('', 1, state.get('todoKeywordSets'));
+      return state.update('headers', (headers) => headers.push(newHeader));
+    }
+  }
+
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
@@ -282,9 +302,22 @@ const addHeader = (state, action) => {
 };
 
 const selectNextSiblingHeader = (state, action) => {
+  let headerId = action.headerId;
   const headers = state.get('headers');
-  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
-  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+
+  // after creating a header with no header selected..
+  if (!action.headerId) {
+    if (state.get('narrowedHeaderId')) {
+      // take the last header under a narrowed header if there is one
+      const [_, end] = subheaderIndexRangeForHeaderId(state.get('narrowedHeaderId'));
+      headerId = end;
+    } else {
+      // take the last header
+      headerId = headers.size - 1;
+    }
+  }
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
+  const subheaders = subheadersOfHeaderWithId(headers, headerId);
 
   const nextSibling = headers.get(headerIndex + subheaders.size + 1);
 
@@ -584,6 +617,8 @@ const applyOpennessState = (state) => {
 };
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
+
+const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
 
 const setSelectedTableCellId = (state, action) => state.set('selectedTableCellId', action.cellId);
 
@@ -1210,6 +1245,8 @@ const reducer = (state, action) => {
       return narrowHeader(state, action);
     case 'WIDEN_HEADER':
       return widenHeader(state, action);
+    case 'SET_SELECTED_TABLE_ID':
+      return setSelectedTableId(state, action);
     case 'SET_SELECTED_TABLE_CELL_ID':
       return setSelectedTableCellId(state, action);
     case 'ADD_NEW_TABLE_ROW':

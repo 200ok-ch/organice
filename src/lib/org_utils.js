@@ -65,7 +65,7 @@ const subheaderIndexRangeForHeaderIndex = (headers, headerIndex) => {
   }
 };
 
-const subheaderIndexRangeForHeaderId = (headers, headerId) => {
+export const subheaderIndexRangeForHeaderId = (headers, headerId) => {
   const headerIndex = indexOfHeaderWithId(headers, headerId);
   return subheaderIndexRangeForHeaderIndex(headers, headerIndex);
 };
