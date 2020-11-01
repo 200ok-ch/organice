@@ -4,6 +4,16 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-11-01 Sun]
+** Fixed
+   - organice has various settings that the user can configure. Before manual configuration, there organice loads sane defaults. Loading and persisting some of these defaults was buggy before.
+     - Loading and persisting of defaults works now.
+     - Previously saved wrong values are removed from =localStorage= to reduce future bug potential.
+     - Changing this is - strictly speaking - not visible to the end-user, so it wouldn't ordinarily show up in this changelog. However, since it makes changes to the already saved settings (in cleaning up old faulty values), it theoretically could introduce a bug in the settings. Hence, the change is added to the changelog.
+     - Related PRs:
+       - https://github.com/200ok-ch/organice/pull/552
+       - https://github.com/200ok-ch/organice/pull/553
+       - https://github.com/200ok-ch/organice/pull/554
 * [2020-10-25 Sun]
 ** Changed
    - The 'focus header' feature is renamed.
