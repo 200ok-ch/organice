@@ -81,6 +81,7 @@ export const persistableFields = [
     category: 'base',
     name: 'shouldStoreSettingsInSyncBackend',
     type: 'boolean',
+    default: true,
     shouldStoreInConfig: true,
   },
   {
@@ -99,12 +100,14 @@ export const persistableFields = [
     category: 'base',
     name: 'shouldLiveSync',
     type: 'boolean',
+    default: true,
     shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldSyncOnBecomingVisibile',
     type: 'boolean',
+    default: true,
     shouldStoreInConfig: true,
   },
   {
