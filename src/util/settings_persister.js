@@ -11,7 +11,9 @@ import generateId from '../lib/id_generator';
 export const isLocalStorageAvailable = () => {
   try {
     localStorage.setItem('test', 'test');
-    return localStorage.getItem('test') === 'test';
+    const localStorageRes = localStorage.getItem('test') === 'test';
+    localStorage.removeItem('test');
+    return localStorageRes && localStorage;
   } catch (e) {
     return false;
   }
