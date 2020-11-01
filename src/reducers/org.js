@@ -1198,8 +1198,7 @@ const setShowClockDisplay = (state, action) => {
 };
 
 const reduceInFile = (state, action, path) => (func, ...args) => {
-  let file = state.getIn(['files', path]);
-  return state.setIn(['files', path], func(file ? file : new Map(), action, ...args));
+  return state.updateIn(['files', path], (file) => func(file ? file : Map(), action, ...args));
 };
 
 const reducer = (state, action) => {
