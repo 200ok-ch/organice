@@ -214,7 +214,9 @@ class OrgFile extends PureComponent {
 
   handleSearchPopupClose(path, headerId) {
     this.props.base.closePopup();
-    this.props.org.selectHeaderAndOpenParents(path, headerId);
+    if (path && headerId) {
+      this.props.org.selectHeaderAndOpenParents(path, headerId);
+    }
   }
 
   handleRefilePopupClose(targetPath, targetHeaderId) {
