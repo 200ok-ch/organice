@@ -4,6 +4,7 @@
 @media (min-width: 767px) {
   html {
     background: var(--base2);
+    cursor: default;
   }
 
   #root {
