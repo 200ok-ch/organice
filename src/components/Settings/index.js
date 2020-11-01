@@ -34,6 +34,15 @@ const Settings = ({
   base,
   org,
 }) => {
+  // This looks like hardcoding where it would be possible to dispatch
+  // on the `location.origin`, but here we assure that every instance
+  // of organice has a valid link to documentation. Self-building does
+  // not insure that, because building and hosting docs is not part of
+  // the application itself.
+  const documentationHost = window.location.origin.match(/staging.organice.200ok.ch/)
+    ? 'https://staging.organice.200ok.ch'
+    : 'https://organice.200ok.ch';
+
   const handleSignOutClick = () =>
     window.confirm('Are you sure you want to sign out?') ? syncBackend.signOut() : void 0;
 
@@ -265,7 +274,7 @@ const Settings = ({
         </Link>
 
         <button className="btn settings-btn">
-          <ExternalLink href="https://organice.200ok.ch/documentation.html">
+          <ExternalLink href={`${documentationHost}/documentation.html`}>
             Documentation
             <i className="fas fa-external-link-alt fa-sm" />
           </ExternalLink>{' '}
