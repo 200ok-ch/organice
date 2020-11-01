@@ -55,6 +55,7 @@ export const persistableFields = [
     category: 'base',
     name: 'bulletStyle',
     type: 'nullable',
+    default: 'Fancy',
     shouldStoreInConfig: true,
   },
   {
@@ -243,6 +244,9 @@ export const readInitialState = () => {
         value = fromJS(JSON.parse(value));
       }
     }
+
+    // When nothing has been saved to localStorage before, load the default.
+    value = value || field.default;
 
     if (field.category === 'org') {
       initialState[field.category].present = initialState[field.category].present.set(

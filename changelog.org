@@ -8,10 +8,11 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 ** Changed
    - We have enabled some default settings by default, because they are reasonable for a new user:
-      - =shouldStoreSettingsInSyncBackend=, because it enables using organice on multiple clients
-      - =shouldLiveSync=, because it reduces the chance to have a conflict in the open Org file
-      - =shouldSyncOnBecomingVisibile=, because it reduces the chance to have a conflict in the open Org file
-      - If you personally do not want them enabled, you can disable them separately in the [[/settings][settings]] any time.
+     - =shouldStoreSettingsInSyncBackend=, because it enables using organice on multiple clients.
+     - =shouldLiveSync=, because it reduces the chance to have a conflict in the open Org file.
+     - =shouldSyncOnBecomingVisibile=, because it reduces the chance to have a conflict in the open Org file.
+   - =bulletStyle= is set to "Fancy", because it looks more visually pleasing than an asterisk (*) and hence makes organice look better on a first test run.
+   - If you personally do not want them enabled, you can disable them separately in the [[/settings][settings]] any time.
 
 ** Fixed
    - organice has various settings that the user can configure. Before manual configuration, there organice loads sane defaults. Loading and persisting some of these defaults was buggy before.

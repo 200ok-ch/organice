@@ -289,9 +289,12 @@ const Settings = ({
 };
 
 const mapStateToProps = (state) => {
+  // The default values here only relate to the settings view. To set
+  // defaults which get loaded on an initial run of organice, look at
+  // `util/settings_persister.js::persistableFields`.
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
-    bulletStyle: state.base.get('bulletStyle') || 'Classic',
+    bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
