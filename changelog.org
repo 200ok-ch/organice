@@ -5,6 +5,14 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 * [2020-11-01 Sun]
+
+** Changed
+   - We have enabled some default settings by default, because they are reasonable for a new user:
+      - =shouldStoreSettingsInSyncBackend=, because it enables using organice on multiple clients
+      - =shouldLiveSync=, because it reduces the chance to have a conflict in the open Org file
+      - =shouldSyncOnBecomingVisibile=, because it reduces the chance to have a conflict in the open Org file
+      - If you personally do not want them enabled, you can disable them separately in the [[/settings][settings]] any time.
+
 ** Fixed
    - organice has various settings that the user can configure. Before manual configuration, there organice loads sane defaults. Loading and persisting some of these defaults was buggy before.
      - Loading and persisting of defaults works now.
