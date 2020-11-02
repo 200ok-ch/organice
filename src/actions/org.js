@@ -271,6 +271,10 @@ export const selectPreviousVisibleHeader = (headerId) => ({
   headerId,
 });
 
+export const cycleHeaderVisibility = (headerId) => (dispatch) => {
+  dispatch({ type: 'CYCLE_HEADER_VISIBILITY', headerId });
+};
+
 export const removeHeader = (headerId) => ({
   type: 'REMOVE_HEADER',
   headerId,

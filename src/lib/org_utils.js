@@ -154,6 +154,29 @@ export const indexOfPreviousSibling = (headers, headerIndex) => {
   return null;
 };
 
+export const isHeaderOpenedRecursively = (headers, headerId) => {
+  const subheaders = subheadersOfHeaderWithId(headers, headerId);
+  return !subheaders.find((s) => !s.get('opened'));
+};
+
+export const openHeaderRecursively = (headers, headerId) => {
+  headers = headers.setIn([headerId, 'opened'], true);
+  const indices = subheaderIndicesOfHeaderWithId(headers, headerId);
+  indices.forEach((i) => {
+    headers = headers.setIn([i, 'opened'], true);
+  });
+  return headers;
+};
+
+export const closeHeaderRecursively = (headers, headerId) => {
+  headers = headers.setIn([headerId, 'opened'], false);
+  const indices = subheaderIndicesOfHeaderWithId(headers, headerId);
+  indices.forEach((i) => {
+    headers = headers.setIn([i, 'opened'], false);
+  });
+  return headers;
+};
+
 const isHeaderVisible = (headers, headerId) => {
   const parentHeaderId = parentIdOfHeaderWithId(headers, headerId);
   if (!parentHeaderId) {

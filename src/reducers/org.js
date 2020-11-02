@@ -15,6 +15,9 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   getTodoKeywordSetsAsFlattenedArray,
+  isHeaderOpenedRecursively,
+  openHeaderRecursively,
+  closeHeaderRecursively,
 } from '../lib/org_utils';
 
 import {
@@ -360,6 +363,21 @@ const selectPreviousVisibleHeader = (state) => {
   }
 
   return state.set('selectedHeaderId', previousVisibleHeader.get('id'));
+};
+
+const cycleHeaderVisibility = (state, action) => {
+  const headers = state.get('headers');
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
+  if (header.get('opened')) {
+    if (isHeaderOpenedRecursively(headers, action.headerId)) {
+      return state.update('headers', (h) => closeHeaderRecursively(h, action.headerId));
+    } else {
+      return state.update('headers', (h) => openHeaderRecursively(h, action.headerId));
+    }
+  } else {
+    state = state.update('headers', (h) => closeHeaderRecursively(h, action.headerId));
+    return state.setIn(['headers', headerIndex, 'opened'], true);
+  }
 };
 
 const removeHeader = (state, action) => {
@@ -1229,6 +1247,8 @@ const reducer = (state, action) => {
       return selectNextVisibleHeader(state, action);
     case 'SELECT_PREVIOUS_VISIBLE_HEADER':
       return selectPreviousVisibleHeader(state, action);
+    case 'CYCLE_HEADER_VISIBILITY':
+      return cycleHeaderVisibility(state, action);
     case 'REMOVE_HEADER':
       return removeHeader(state, action);
     case 'MOVE_HEADER_UP':
