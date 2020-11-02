@@ -331,8 +331,6 @@ const themes = {
 };
 
 export const loadTheme = (theme = 'Solarized', colorScheme = 'Light') => {
-  theme = theme === 'undefined' ? 'Solarized' : theme;
-  colorScheme = colorScheme === 'undefined' ? 'Light' : colorScheme;
   const style = document.documentElement.style;
   Object.entries(themes[theme][colorScheme]).forEach(([k, v]) => style.setProperty(k, v));
 
