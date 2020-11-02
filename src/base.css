@@ -31,6 +31,7 @@ body,
   background: var(--base3);
   height: 100%;
   overflow-y: hidden;
+  user-select: none;
 }
 
 a {
