@@ -26,7 +26,6 @@ import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_ba
 import './base.css';
 
 import Entry from './components/Entry';
-import HeaderBar from './components/HeaderBar';
 
 import _ from 'lodash';
 import { Map } from 'immutable';
@@ -161,7 +160,6 @@ export default class App extends PureComponent {
         <Router>
           <Provider store={this.store}>
             <div className="App">
-              <HeaderBar />
               <Entry />
             </div>
           </Provider>
