@@ -161,7 +161,7 @@ export default class App extends PureComponent {
         <Router>
           <Provider store={this.store}>
             <div className="App">
-              <HeaderBar/>
+              <HeaderBar />
               <Entry />
             </div>
           </Provider>
