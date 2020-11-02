@@ -152,6 +152,7 @@ export const persistableFields = [
     category: 'base',
     name: 'theme',
     type: 'string',
+    default: 'Solarized',
     shouldStoreInConfig: true,
   },
   {
