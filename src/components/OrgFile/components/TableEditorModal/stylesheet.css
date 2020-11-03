@@ -1,6 +1,7 @@
 @import '../../../../colors.css';
 
 .table-part {
+  align-self: center;
   border-collapse: collapse;
   margin-top: 3px;
   margin-bottom: 3px;
