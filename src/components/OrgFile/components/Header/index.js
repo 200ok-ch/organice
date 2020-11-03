@@ -20,6 +20,7 @@ import HeaderActionDrawer from './components/HeaderActionDrawer';
 import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
+import org from '../../../../reducers/org';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -128,10 +129,14 @@ class Header extends PureComponent {
       }
 
       if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
-        this.setState({
-          isPlayingRemoveAnimation: true,
-          heightBeforeRemove: this.containerDiv.offsetHeight,
-        });
+        if (this.props.disableInlineEditing) {
+          this.props.org.cycleHeaderVisibility(this.props.header.get('id'));
+        } else {
+          this.setState({
+            isPlayingRemoveAnimation: true,
+            heightBeforeRemove: this.containerDiv.offsetHeight,
+          });
+        }
       }
     }
 
@@ -226,7 +231,7 @@ class Header extends PureComponent {
 
   handleRest() {
     if (this.state.isPlayingRemoveAnimation) {
-      this.props.org.removeHeader(this.props.header.get('id'));
+      this.props.org.cycleHeaderVisibility(this.props.header.get('id'));
     }
   }
 

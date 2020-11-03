@@ -160,8 +160,8 @@ export const isHeaderOpenedRecursively = (headers, headerId) => {
 };
 
 export const openHeaderRecursively = (headers, headerId) => {
-  headers = headers.setIn([headerId, 'opened'], true);
   const indices = subheaderIndicesOfHeaderWithId(headers, headerId);
+  headers = headers.setIn([indices[0]-1, 'opened'], true);
   indices.forEach((i) => {
     headers = headers.setIn([i, 'opened'], true);
   });
@@ -169,8 +169,8 @@ export const openHeaderRecursively = (headers, headerId) => {
 };
 
 export const closeHeaderRecursively = (headers, headerId) => {
-  headers = headers.setIn([headerId, 'opened'], false);
   const indices = subheaderIndicesOfHeaderWithId(headers, headerId);
+  headers = headers.setIn([indices[0]-1, 'opened'], false);
   indices.forEach((i) => {
     headers = headers.setIn([i, 'opened'], false);
   });

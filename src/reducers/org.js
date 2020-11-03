@@ -90,6 +90,10 @@ const openHeader = (state, action) => {
 };
 
 const toggleHeaderOpened = (state, action) => {
+  // skip after swipe action
+  if (state.get('skipNextToggleHeaderOpened')) {
+    return state.set('skipNextToggleHeaderOpened', false);
+  }
   const headers = state.get('headers');
 
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
@@ -197,6 +201,9 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
+  // swiping also triggeres a click action that is hereby disabled
+  state = state.set('skipNextToggleHeaderOpened', true);
+
   const { headerId, logIntoDrawer, timestamp } = action;
   const existingHeaderId = headerId || state.get('selectedHeaderId');
   if (!existingHeaderId) {
@@ -368,7 +375,12 @@ const selectPreviousVisibleHeader = (state) => {
 const cycleHeaderVisibility = (state, action) => {
   const headers = state.get('headers');
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
+
+  // swiping also triggeres a click action that is hereby disabled
+  state = state.set('skipNextToggleHeaderOpened', true);
+
   if (header.get('opened')) {
+    console.debug(isHeaderOpenedRecursively(headers, action.headerId));
     if (isHeaderOpenedRecursively(headers, action.headerId)) {
       return state.update('headers', (h) => closeHeaderRecursively(h, action.headerId));
     } else {

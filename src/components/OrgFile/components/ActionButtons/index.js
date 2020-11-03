@@ -231,6 +231,14 @@ ${header.get('rawDescription')}`;
     org.addNote(input, new Date());
   };
 
+  const handleCycleVisibilityClick = () => {
+    org.cycleHeaderVisibility(selectedHeaderId);
+  };
+
+  const handleRemoceHeaderClick = () => {
+    org.removeHeader(header.get('id'));
+  };
+
   const handleRefileHeaderRequest = () => {
     setIsDisplayingEditButtons(false);
     base.activatePopup('refile');
@@ -700,6 +708,19 @@ ${header.get('rawDescription')}`;
                 right: style.fourthColumnXOffset,
               }}
               tooltip="Add a note"
+            />
+
+            <ActionButton
+              additionalClassName="action-drawer__arrow-button"
+              iconName="trash"
+              isDisabled={false}
+              onClick={handleRemoceHeaderClick}
+              style={{
+                ...baseEditButtonStyle,
+                bottom: style.topRowYOffset,
+                right: style.thirdColumnXOffset,
+              }}
+              tooltip="Remove header"
             />
 
             <ActionButton
