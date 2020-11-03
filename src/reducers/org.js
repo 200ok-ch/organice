@@ -380,7 +380,6 @@ const cycleHeaderVisibility = (state, action) => {
   state = state.set('skipNextToggleHeaderOpened', true);
 
   if (header.get('opened')) {
-    console.debug(isHeaderOpenedRecursively(headers, action.headerId));
     if (isHeaderOpenedRecursively(headers, action.headerId)) {
       return state.update('headers', (h) => closeHeaderRecursively(h, action.headerId));
     } else {
