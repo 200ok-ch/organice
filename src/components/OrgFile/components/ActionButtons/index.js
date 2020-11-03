@@ -231,11 +231,8 @@ ${header.get('rawDescription')}`;
     org.addNote(input, new Date());
   };
 
-  const handleCycleVisibilityClick = () => {
-    org.cycleHeaderVisibility(selectedHeaderId);
-  };
-
-  const handleRemoceHeaderClick = () => {
+  const handleRemoveHeaderClick = () => {
+    setIsDisplayingEditButtons(false);
     org.removeHeader(header.get('id'));
   };
 
@@ -714,7 +711,7 @@ ${header.get('rawDescription')}`;
               additionalClassName="action-drawer__arrow-button"
               iconName="trash"
               isDisabled={false}
-              onClick={handleRemoceHeaderClick}
+              onClick={handleRemoveHeaderClick}
               style={{
                 ...baseEditButtonStyle,
                 bottom: style.topRowYOffset,
