@@ -114,6 +114,10 @@ const toggleHeaderOpened = (state, action) => {
 };
 
 const selectHeader = (state, action) => {
+   // skip after swipe action
+   if (state.get('skipNextSelectHeader')) {
+    return state.set('skipNextSelectHeader', false);
+  }
   return state.set('selectedHeaderId', action.headerId);
 };
 
@@ -378,6 +382,7 @@ const cycleHeaderVisibility = (state, action) => {
 
   // swiping also triggeres a click action that is hereby disabled
   state = state.set('skipNextToggleHeaderOpened', true);
+  state = state.set('skipNextSelectHeader', true);
 
   if (header.get('opened')) {
     if (isHeaderOpenedRecursively(headers, action.headerId)) {
