@@ -56,17 +56,13 @@ const ActionButtons = ({
     [mainEditButton]
   );
 
-  const handleUpClick = () =>
-    !!selectedHeaderId ? org.moveHeaderUp(selectedHeaderId) : org.moveTableRowUp();
+  const handleUpClick = () => org.moveHeaderUp(selectedHeaderId);
 
-  const handleDownClick = () =>
-    !!selectedHeaderId ? org.moveHeaderDown(selectedHeaderId) : org.moveTableRowDown();
+  const handleDownClick = () => org.moveHeaderDown(selectedHeaderId);
 
-  const handleLeftClick = () =>
-    !!selectedHeaderId ? org.moveHeaderLeft(selectedHeaderId) : org.moveTableColumnLeft();
+  const handleLeftClick = () => org.moveHeaderLeft(selectedHeaderId);
 
-  const handleRightClick = () =>
-    !!selectedHeaderId ? org.moveHeaderRight(selectedHeaderId) : org.moveTableColumnRight();
+  const handleRightClick = () => org.moveHeaderRight(selectedHeaderId);
 
   const handleMoveSubtreeLeftClick = () => org.moveSubtreeLeft(selectedHeaderId);
 
@@ -417,27 +413,24 @@ ${header.get('rawDescription')}`;
             <ActionButton
               additionalClassName="action-drawer__arrow-button"
               iconName="arrow-up"
-              subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={
                 isDisplayingCaptureButtons || isDisplayingSearchButtons || isDisplayingEditButtons
               }
               onClick={handleUpClick}
               style={{ ...baseArrowButtonStyle, bottom: style.topRowYOffset }}
-              tooltip={!!selectedTableCellId ? 'Move row up' : 'Move header up'}
+              tooltip={'Move header up'}
             />
             <ActionButton
               additionalClassName="action-drawer__arrow-button"
               iconName="arrow-down"
-              subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
               onClick={handleDownClick}
               style={{ ...baseArrowButtonStyle, bottom: style.bottomRowYOffset }}
-              tooltip={!!selectedTableCellId ? 'Move row down' : 'Move header down'}
+              tooltip={'Move header down'}
             />
             <ActionButton
               additionalClassName="action-drawer__arrow-button"
               iconName="arrow-left"
-              subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
               onClick={handleLeftClick}
               style={{
@@ -445,12 +438,11 @@ ${header.get('rawDescription')}`;
                 bottom: style.bottomRowYOffset,
                 right: style.firstColumnXOffset,
               }}
-              tooltip={!!selectedTableCellId ? 'Move column left' : 'Move header left'}
+              tooltip={'Move header left'}
             />
             <ActionButton
               additionalClassName="action-drawer__arrow-button"
               iconName="arrow-right"
-              subIconName={!!selectedTableCellId ? 'table' : null}
               isDisabled={false}
               onClick={handleRightClick}
               style={{
@@ -458,7 +450,7 @@ ${header.get('rawDescription')}`;
                 bottom: style.bottomRowYOffset,
                 left: style.firstColumnXOffset,
               }}
-              tooltip={!!selectedTableCellId ? 'Move column right' : 'Move header right'}
+              tooltip={'Move header right'}
             />
             {!selectedTableCellId && (
               <>
