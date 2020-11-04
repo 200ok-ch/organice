@@ -606,7 +606,7 @@ ${header.get('rawDescription')}`;
               style={{
                 ...baseEditButtonStyle,
                 bottom: style.middleRowYOffset,
-                right: style.thirdColumnXOffset,
+                right: style.firstColumnXOffset,
               }}
               tooltip={'Modify properties'}
             />
@@ -620,7 +620,7 @@ ${header.get('rawDescription')}`;
                 style={{
                   ...baseEditButtonStyle,
                   bottom: style.middleRowYOffset,
-                  right: style.firstColumnXOffset,
+                  right: style.thirdColumnXOffset,
                 }}
                 tooltip={
                   isNarrowed
