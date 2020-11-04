@@ -375,11 +375,16 @@ ${header.get('rawDescription')}`;
   };
 
   const renderMovementButtons = () => {
+    const showArrowButtons = isDisplayingArrowButtons && !!selectedHeaderId;
+    if (!showArrowButtons && isDisplayingArrowButtons) {
+      setIsDisplayingArrowButtons(false);
+    }
+
     const baseArrowButtonStyle = {
       opacity:
         isDisplayingCaptureButtons || isDisplayingSearchButtons || isDisplayingEditButtons ? 0 : 1,
     };
-    if (!isDisplayingArrowButtons) {
+    if (!showArrowButtons) {
       baseArrowButtonStyle.boxShadow = 'none';
     }
 
@@ -391,13 +396,13 @@ ${header.get('rawDescription')}`;
     }
 
     const animatedStyles = {
-      centerXOffset: spring(isDisplayingArrowButtons ? centerXOffset : 0, { stiffness: 300 }),
-      topRowYOffset: spring(isDisplayingArrowButtons ? 150 : 0, { stiffness: 300 }),
-      bottomRowYOffset: spring(isDisplayingArrowButtons ? 80 : 0, { stiffness: 300 }),
-      firstColumnXOffset: spring(isDisplayingArrowButtons ? 70 : 0, {
+      centerXOffset: spring(showArrowButtons ? centerXOffset : 0, { stiffness: 300 }),
+      topRowYOffset: spring(showArrowButtons ? 150 : 0, { stiffness: 300 }),
+      bottomRowYOffset: spring(showArrowButtons ? 80 : 0, { stiffness: 300 }),
+      firstColumnXOffset: spring(showArrowButtons ? 70 : 0, {
         stiffness: 300,
       }),
-      secondColumnXOffset: spring(isDisplayingArrowButtons ? 140 : 0, {
+      secondColumnXOffset: spring(showArrowButtons ? 140 : 0, {
         stiffness: 300,
       }),
     };
@@ -485,10 +490,10 @@ ${header.get('rawDescription')}`;
             )}
 
             <ActionButton
-              iconName={isDisplayingArrowButtons ? 'times' : 'arrows-alt'}
+              iconName={showArrowButtons ? 'times' : 'arrows-alt'}
               subIconName={!!selectedTableCellId ? 'table' : null}
               additionalClassName="action-drawer__main-arrow-button"
-              isDisabled={false}
+              isDisabled={!selectedHeaderId}
               onClick={handleMainArrowButtonClick}
               style={{
                 opacity:
@@ -496,7 +501,7 @@ ${header.get('rawDescription')}`;
                     ? 0
                     : 1,
               }}
-              tooltip={isDisplayingArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
+              tooltip={showArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
               onRef={mainArrowButton}
             />
           </div>
