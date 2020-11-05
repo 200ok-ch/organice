@@ -220,11 +220,7 @@ ${header.get('rawDescription')}`;
 
   const handleAddNoteClick = () => {
     setIsDisplayingEditButtons(false);
-    let input = prompt('Enter a note to add to the header:');
-    if (input !== null) input = input.trim();
-    if (!input) return;
-
-    org.addNote(input, new Date());
+    base.activatePopup('note-editor');
   };
 
   const handleRemoveHeaderClick = () => {

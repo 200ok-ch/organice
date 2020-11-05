@@ -19,6 +19,7 @@ import PropertyListEditorModal from './components/PropertyListEditorModal';
 import TitleEditorModal from './components/TitleEditorModal';
 import DescriptionEditorModal from './components/DescriptionEditorModal';
 import TableEditorModal from './components/TableEditorModal';
+import NoteEditorModal from './components/NoteEditorModal';
 import AgendaModal from './components/AgendaModal';
 import TaskListModal from './components/TaskListModal';
 import SearchModal from './components/SearchModal';
@@ -390,6 +391,8 @@ class OrgFile extends PureComponent {
         );
       case 'table-editor':
         return <TableEditorModal shouldDisableActions={shouldDisableActions} />;
+      case 'note-editor':
+        return <NoteEditorModal shouldDisableActions={shouldDisableActions} />;
       default:
         return null;
     }
@@ -542,7 +545,7 @@ const mapStateToProps = (state) => {
     dontIndent: state.base.get('shouldNotIndentOnExport'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     inEditMode: !!state.org.present.get('editMode'),
-    disableInlineEditing:state.org.present.get('disableInlineEditing'),
+    disableInlineEditing: state.org.present.get('disableInlineEditing'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
