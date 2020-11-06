@@ -594,18 +594,29 @@ class OrgFile extends PureComponent {
             <Drawer
               onClose={() =>
                 this.getPopupCloseAction(activePopupType)(
-                  ...(this.state.popupCloseActionValuesAccessor ? this.state.popupCloseActionValuesAccessor() : [])
+                  ...(this.state.popupCloseActionValuesAccessor
+                    ? this.state.popupCloseActionValuesAccessor()
+                    : [])
                 )
               }
               maxSize={this.getPopupMaxSize(activePopupType)}
             >
-              <DrawerActionBar
-                onSwitch={() =>
-                  this.getPopupSwitchAction(activePopupType)(
-                    ...(this.state.popupCloseActionValuesAccessor ? this.state.popupCloseActionValuesAccessor() : [])
-                  )
-                }
-              />
+              {(activePopupType === 'title-editor' ||
+                activePopupType === 'description-editor' ||
+                activePopupType === 'tags-editor' ||
+                activePopupType === 'property-list-editor' ||
+                activePopupType === 'timestamp-editor' ||
+                activePopupType === 'note-editor') && (
+                <DrawerActionBar
+                  onSwitch={() =>
+                    this.getPopupSwitchAction(activePopupType)(
+                      ...(this.state.popupCloseActionValuesAccessor
+                        ? this.state.popupCloseActionValuesAccessor()
+                        : [])
+                    )
+                  }
+                />
+              )}
               {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
             </Drawer>
           ) : null}
