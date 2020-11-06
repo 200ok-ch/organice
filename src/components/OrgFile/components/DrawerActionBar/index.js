@@ -28,30 +28,24 @@ class DrawerActionBar extends PureComponent {
     ]);
   }
 
-/*   componentDidUpdate(prevProps) {
-    const { prevActivePopupType } = prevProps;
-    const { activePopupType } = this.props;
-
-    if (prevActivePopupType === 'title-editor' && activePopupType !== 'title-editor') {
-    }
-    if (prevActivePopupType === 'description-editor' && activePopupType !== 'description-editor') {
-    }
-  } */
-
   handleShowTitleEditModal() {
+    this.props.onSwitch();
     this.props.base.activatePopup('title-editor');
   }
 
   handleShowDescriptionEditModal() {
+    this.props.onSwitch();
     this.props.org.openHeader(this.props.selectedHeaderId);
     this.props.base.activatePopup('description-editor');
   }
 
   handleShowTagsModal() {
+    this.props.onSwitch();
     this.props.base.activatePopup('tags-editor');
   }
 
   handleShowPropertyListEditorModal() {
+    this.props.onSwitch();
     this.props.base.activatePopup('property-list-editor');
   }
 
@@ -79,25 +73,25 @@ class DrawerActionBar extends PureComponent {
   }
 
   handleShowDeadlineModal() {
+    this.props.onSwitch();
     this.handleDeadlineAndScheduledClick('DEADLINE');
   }
 
   handleShowScheduledModal() {
+    this.props.onSwitch();
     this.handleDeadlineAndScheduledClick('SCHEDULED');
   }
 
   handleShowNoteModal() {
+    this.props.onSwitch();
     this.props.base.activatePopup('note-editor');
   }
 
   render() {
-    const { header } = this.props;
-
-    this.props.org.selectHeader(header.get('id'));
-
     return (
       <div className="static-action-bar">
         <DrawerActionButtons
+          activePopupType={this.props.activePopupType}
           onEnterTitleEditMode={this.handleShowTitleEditModal}
           onEnterDescriptionEditMode={this.handleShowDescriptionEditModal}
           onTagsClick={this.handleShowTagsModal}

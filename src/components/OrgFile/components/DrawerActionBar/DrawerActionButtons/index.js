@@ -5,11 +5,12 @@ import './stylesheet.css';
 export default class DrawerActionButtons extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.
-  iconWithFFClickCatcher({ className, onClick, title, testId = '' }) {
+  iconWithFFClickCatcher({ className, onClick, title, disabled, testId = '' }) {
     return (
       <div
         title={title}
         onClick={onClick}
+        disabled={disabled}
         className="header-action-drawer__ff-click-catcher-container"
       >
         <div className="header-action-drawer__ff-click-catcher" />
@@ -27,6 +28,7 @@ export default class DrawerActionButtons extends PureComponent {
       onDeadlineClick,
       onScheduledClick,
       onAddNote,
+      activePopupType
     } = this.props;
 
     return (
@@ -36,6 +38,7 @@ export default class DrawerActionButtons extends PureComponent {
             className: 'fas fa-pencil-alt fa-lg',
             onClick: onEnterTitleEditMode,
             title: 'Edit header title',
+            disabled: 'title-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({
@@ -67,7 +70,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
           })}
-         
+
           {this.iconWithFFClickCatcher({
             className: 'far fa-sticky-note fa-lg',
             onClick: onAddNote,

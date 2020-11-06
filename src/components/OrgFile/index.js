@@ -71,7 +71,9 @@ class OrgFile extends PureComponent {
       'handleSearchPopupClose',
       'handleRefilePopupClose',
       'handleTitlePopupClose',
+      'handleTitlePopupSwitch',
       'handleDescriptionPopupClose',
+      'handleDescriptionPopupSwitch',
       'handleTablePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
@@ -544,9 +546,8 @@ class OrgFile extends PureComponent {
       undo: preventDefaultAndHandleEditMode(this.handleUndoHotKey),
     };
 
-    let popupCloseActionValuesAccessor;
     const setPopupCloseActionValuesAccessor = (v) => {
-      popupCloseActionValuesAccessor = v;
+      this.setState({ popupCloseActionValuesAccessor: v });
     };
 
     return (
@@ -593,17 +594,18 @@ class OrgFile extends PureComponent {
             <Drawer
               onClose={() =>
                 this.getPopupCloseAction(activePopupType)(
-                  ...(popupCloseActionValuesAccessor ? popupCloseActionValuesAccessor() : [])
+                  ...(this.state.popupCloseActionValuesAccessor ? this.state.popupCloseActionValuesAccessor() : [])
                 )
               }
-              /* onSwitch={() =>
-                this.getPopupSwitchAction(activePopupType)(
-                  ...(popupCloseActionValuesAccessor ? popupCloseActionValuesAccessor() : [])
-                )
-              } */
               maxSize={this.getPopupMaxSize(activePopupType)}
             >
-              {/* <DrawerActionBar /> */}
+              <DrawerActionBar
+                onSwitch={() =>
+                  this.getPopupSwitchAction(activePopupType)(
+                    ...(this.state.popupCloseActionValuesAccessor ? this.state.popupCloseActionValuesAccessor() : [])
+                  )
+                }
+              />
               {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
             </Drawer>
           ) : null}
