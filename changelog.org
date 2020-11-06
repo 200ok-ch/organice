@@ -4,6 +4,18 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-11-06 Fri]
+
+** Added
+   - Additional themes. You now can choose between:
+     - Solarized
+     - One
+     - Gruvbox
+     - Smyck
+     - Code
+   - All of these are themes work in light and dark mode!
+     - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/540][PR]] 🙏
+
 * [2020-11-01 Sun]
 
 ** Changed
