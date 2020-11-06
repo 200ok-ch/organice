@@ -115,6 +115,10 @@ const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
 };
 
+const setTheme = (state, action) => {
+  return state.set('theme', action.theme);
+};
+
 /**
  * Reducer that is responsible for the "base" state slice.
  */
@@ -138,6 +142,8 @@ export default (state = Map(), action) => {
       return setShouldStoreSettingsInSyncBackend(state, action);
     case 'SET_COLOR_SCHEME':
       return setColorScheme(state, action);
+    case 'SET_THEME':
+      return setTheme(state, action);
     case 'SET_SHOULD_LIVE_SYNC':
       return setShouldLiveSync(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
