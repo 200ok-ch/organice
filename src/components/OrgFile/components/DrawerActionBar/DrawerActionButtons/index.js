@@ -9,8 +9,7 @@ export default class DrawerActionButtons extends PureComponent {
     return (
       <div
         title={title}
-        onClick={onClick}
-        disabled={disabled}
+        onClick={!disabled && onClick}
         className="header-action-drawer__ff-click-catcher-container"
       >
         <div className="header-action-drawer__ff-click-catcher" />
@@ -28,7 +27,7 @@ export default class DrawerActionButtons extends PureComponent {
       onDeadlineClick,
       onScheduledClick,
       onAddNote,
-      activePopupType
+      activePopupType,
     } = this.props;
 
     return (
@@ -45,6 +44,7 @@ export default class DrawerActionButtons extends PureComponent {
             className: 'fas fa-edit fa-lg',
             onClick: onEnterDescriptionEditMode,
             title: 'Edit header description',
+            disabled: 'description-editor' === activePopupType,
             testId: 'edit-header-title',
           })}
 
