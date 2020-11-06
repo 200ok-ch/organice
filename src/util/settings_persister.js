@@ -153,6 +153,7 @@ export const persistableFields = [
     name: 'theme',
     type: 'string',
     default: 'Solarized',
+    shouldStoreInConfig: true,
   },
   {
     category: 'capture',
