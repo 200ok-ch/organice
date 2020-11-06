@@ -63,6 +63,7 @@ class Header extends PureComponent {
       containerWidth: null,
       isPlayingRemoveAnimation: false,
       heightBeforeRemove: null,
+      disabledBackgroundColor: readRgbaVariable('--base3'),
     };
   }
 
@@ -378,7 +379,6 @@ ${header.get('rawDescription')}`;
           const isRightActionActivated =
             -1 * swipedDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE;
 
-          const disabledBackgroundColor = readRgbaVariable('--base3');
           const leftActivatedBackgroundColor = rgbaObject(0, 128, 0, 1);
           const rightActivatedBackgroundColor = rgbaObject(255, 0, 0, 1);
 
@@ -421,7 +421,7 @@ ${header.get('rawDescription')}`;
                     width: leftInterpolatedStyle.width,
                     backgroundColor: rgbaString(
                       interpolateColors(
-                        disabledBackgroundColor,
+                        this.state.disabledBackgroundColor,
                         leftActivatedBackgroundColor,
                         leftInterpolatedStyle.backgroundColorFactor
                       )
@@ -455,7 +455,7 @@ ${header.get('rawDescription')}`;
                     width: rightInterpolatedStyle.width,
                     backgroundColor: rgbaString(
                       interpolateColors(
-                        disabledBackgroundColor,
+                        this.state.disabledBackgroundColor,
                         rightActivatedBackgroundColor,
                         rightInterpolatedStyle.backgroundColorFactor
                       )
