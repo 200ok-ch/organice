@@ -252,6 +252,9 @@ organice implements this customization strategy:
 
 
 ** Themes
+   :PROPERTIES:
+   :CUSTOM_ID: themes
+   :END:
 
 organice implements a strategy pattern, so that adding new themes is
 quite easy. These themes come bundled with organice, each in =light= and
