@@ -288,15 +288,17 @@ class TitleLine extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files',path]);
   return {
     inEditMode:
-      state.org.present.get('editMode') === 'title' &&
-      state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
+      file.get('editMode') === 'title' &&
+      file.get('selectedHeaderId') === ownProps.header.get('id'),
     setShouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
-    isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
-    todoKeywordSets: state.org.present.get('todoKeywordSets'),
+    isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),
+    todoKeywordSets: file.get('todoKeywordSets'),
   };
 };
 

@@ -396,14 +396,16 @@ const ActionDrawer = ({
 };
 
 const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path]);
   return {
-    inEditMode: !!state.org.present.get('editMode'),
-    selectedHeaderId: state.org.present.get('selectedHeaderId'),
-    isDirty: state.org.present.get('isDirty'),
-    isNarrowedHeaderActive: !!state.org.present.get('narrowedHeaderId'),
-    selectedTableCellId: state.org.present.get('selectedTableCellId'),
+    inEditMode: !!file.get('editMode'),
+    selectedHeaderId: file.get('selectedHeaderId'),
+    isDirty: file.get('isDirty'),
+    isNarrowedHeaderActive: !!file.get('narrowedHeaderId'),
+    selectedTableCellId: file.get('selectedTableCellId'),
     captureTemplates: state.capture.get('captureTemplates', List()),
-    path: state.org.present.get('path'),
+    path,
     isLoading: state.base.get('isLoading'),
   };
 };

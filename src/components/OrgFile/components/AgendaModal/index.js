@@ -52,9 +52,9 @@ function AgendaModal(props) {
     }
   }
 
-  function handleHeaderClick(headerId) {
+  function handleHeaderClick(path, headerId) {
     props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.org.selectHeaderAndOpenParents(path, headerId);
   }
 
   function handlePreviousDateClick() {
@@ -97,7 +97,7 @@ function AgendaModal(props) {
 
   const {
     onClose,
-    headers,
+    files,
     todoKeywordSets,
     agendaDefaultDeadlineDelayValue,
     agendaDefaultDeadlineDelayUnit,
@@ -145,7 +145,7 @@ function AgendaModal(props) {
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
             date={date}
-            headers={headers}
+            files={files}
             onHeaderClick={handleHeaderClick}
             todoKeywordSets={todoKeywordSets}
             dateDisplayType={dateDisplayType}
@@ -161,11 +161,16 @@ function AgendaModal(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
-  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-});
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files',path]);
+  return {
+    files: state.org.present.get('files'),
+    todoKeywordSets: file.get('todoKeywordSets'),
+    agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
+    agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),

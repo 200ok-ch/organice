@@ -30,11 +30,11 @@ export const setLastSyncAt = (lastSyncAt) => ({
 
 export const stopDisplayingFile = () => {
   return (dispatch) => {
-    dispatch({ type: 'STOP_DISPLAYING_FILE' });
-    dispatch(ActionCreators.clearHistory());
     dispatch(widenHeader());
     dispatch(closePopup());
     dispatch(setLastSyncAt(null));
+    dispatch({ type: 'STOP_DISPLAYING_FILE' });
+    dispatch(ActionCreators.clearHistory());
   };
 };
 
@@ -112,9 +112,9 @@ const doSync = ({
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
-      const isDirty = getState().org.present.get('isDirty');
+      const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
       const lastServerModifiedAt = parseISO(lastModifiedAt);
-      const lastSyncAt = getState().org.present.get('lastSyncAt');
+      const lastSyncAt = getState().org.present.getIn(['files', path, 'lastSyncAt']);
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
@@ -122,8 +122,12 @@ const doSync = ({
             .updateFile(
               path,
               exportOrg({
-                headers: getState().org.present.get('headers'),
-                linesBeforeHeadings: getState().org.present.get('linesBeforeHeadings'),
+                headers: getState().org.present.getIn(['files', path, 'headers']),
+                linesBeforeHeadings: getState().org.present.getIn([
+                  'files',
+                  path,
+                  'linesBeforeHeadings',
+                ]),
                 dontIndent: getState().base.get('shouldNotIndentOnExport'),
               })
             )
@@ -193,7 +197,14 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-export const selectHeaderAndOpenParents = (headerId) => (dispatch) => {
+const changePath = (path) => ({
+  type: 'CHANGE_PATH',
+  path,
+});
+
+export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
+  // TODO: change path does not change the browser path
+  dispatch(changePath(path));
   dispatch(selectHeader(headerId));
   dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });
 };
@@ -307,9 +318,11 @@ export const moveSubtreeRight = (headerId) => ({
   dirtying: true,
 });
 
-export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
+export const refileSubtree = (sourcePath, sourceHeaderId, targetPath, targetHeaderId) => ({
   type: 'REFILE_SUBTREE',
+  sourcePath,
   sourceHeaderId,
+  targetPath,
   targetHeaderId,
   dirtying: true,
 });
@@ -409,6 +422,7 @@ export const clearPendingCapture = () => ({
 });
 
 export const insertPendingCapture = () => (dispatch, getState) => {
+  const path = getState().org.present.get('path');
   const pendingCapture = getState().org.present.get('pendingCapture');
   const templateName = pendingCapture.get('captureTemplateName');
   const captureContent = pendingCapture.get('captureContent');
@@ -436,7 +450,7 @@ export const insertPendingCapture = () => (dispatch, getState) => {
   }
 
   const targetHeader = headerWithPath(
-    getState().org.present.get('headers'),
+    getState().org.present.getIn(['files', path, 'headers']),
     template.get('headerPaths')
   );
   if (!targetHeader) {
