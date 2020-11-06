@@ -66,7 +66,7 @@ export default class DrawerActionButtons extends PureComponent {
             title: 'Set deadline datetime',
           })}
           {this.iconWithFFClickCatcher({
-            className: 'far fa-calendar-check fa-lg',
+            className: 'far fa-calendar-times fa-lg',
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
           })}
