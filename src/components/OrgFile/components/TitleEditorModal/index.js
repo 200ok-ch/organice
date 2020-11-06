@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 
 import './stylesheet.css';
 
-import Drawer from '../../../UI/Drawer/';
-
 import _ from 'lodash';
 
 import { generateTitleLine } from '../../../../lib/export_org';
@@ -28,6 +26,10 @@ export default class TitleEditorModal extends PureComponent {
 
   handleTextareaRef(textarea) {
     this.textarea = textarea;
+  }
+
+  componentDidMount() {
+    this.props.setPopupCloseActionValuesAccessor(() => [this.state.titleValue]);
   }
 
   componentDidUpdate(prevProps) {
@@ -87,10 +89,8 @@ export default class TitleEditorModal extends PureComponent {
   }
 
   render() {
-    const { onClose } = this.props;
-
     return (
-      <Drawer onClose={() => onClose(this.state.titleValue)}>
+      <>
         <h2 className="drawer-modal__title">Edit title</h2>
 
         <div className="title-line__edit-container">
@@ -110,7 +110,7 @@ export default class TitleEditorModal extends PureComponent {
             Insert timestamp
           </div>
         </div>
-      </Drawer>
+      </>
     );
   }
 }

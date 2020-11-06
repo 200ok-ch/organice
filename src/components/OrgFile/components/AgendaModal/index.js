@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import './stylesheet.css';
 
 import AgendaDay from './components/AgendaDay';
-import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
 import * as orgActions from '../../../../actions/org';
@@ -122,7 +121,7 @@ function AgendaModal(props) {
   }
 
   return (
-    <Drawer onClose={onClose} maxSize={true}>
+    <>
       <h2 className="agenda__title">Agenda</h2>
 
       <div className="agenda__tab-container">
@@ -157,7 +156,7 @@ function AgendaModal(props) {
       </div>
 
       <br />
-    </Drawer>
+    </>
   );
 }
 

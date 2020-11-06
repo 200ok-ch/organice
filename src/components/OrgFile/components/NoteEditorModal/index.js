@@ -4,8 +4,6 @@ import { bindActionCreators } from 'redux';
 
 import './stylesheet.css';
 
-import Drawer from '../../../UI/Drawer/';
-
 import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
 
@@ -55,7 +53,7 @@ class NoteEditorModal extends PureComponent {
     const { onClose } = this.props;
 
     return (
-      <Drawer onClose={(e) => this.props.base.closePopup()}>
+      <>
         <h2 className="drawer-modal__title">Add note</h2>
         <div>Enter a note to add to the header:</div>
         <textarea
@@ -74,7 +72,7 @@ class NoteEditorModal extends PureComponent {
         >
           Add
         </button>
-      </Drawer>
+      </>
     );
   }
 }

@@ -2,8 +2,6 @@ import React, { PureComponent, Fragment } from 'react';
 
 import './stylesheet.css';
 
-import Drawer from '../../../UI/Drawer';
-
 import { attributedStringToRawText } from '../../../../lib/export_org';
 import generateId from '../../../../lib/id_generator';
 import { parseMarkupAndCookies } from '../../../../lib/parse_org';
@@ -90,7 +88,7 @@ export default class PropertyListEditorModal extends PureComponent {
     });
 
     return (
-      <Drawer onClose={onClose}>
+      <>
         <h2 className="drawer-modal__title">Edit property list</h2>
 
         <datalist id="drawer-modal__datalist-property-names">
@@ -178,7 +176,7 @@ export default class PropertyListEditorModal extends PureComponent {
         <div className="property-list-editor__add-new-container">
           <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewItem} />
         </div>
-      </Drawer>
+      </>
     );
   }
 }

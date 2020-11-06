@@ -28,7 +28,6 @@ class TableEditorModal extends PureComponent {
       'handleCellChange',
       'handleInsertTimestamp',
       'handleTextareaRef',
-      'handleTablePopupClose',
       'handleTableCellSelect',
       'handleTableCellValueUpdate',
       'handleExitTableEditMode',
@@ -127,12 +126,6 @@ class TableEditorModal extends PureComponent {
     this.textarea = textarea;
   }
 
-  handleTablePopupClose() {
-    this.props.base.closePopup();
-    this.props.org.setSelectedTableCellId(null);
-    this.props.org.setSelectedTableId(null);
-  }
-
   handleTableCellSelect(cellId) {
     this.props.org.setSelectedTableCellId(cellId);
   }
@@ -214,7 +207,7 @@ class TableEditorModal extends PureComponent {
     };
 
     return (
-      <Drawer onClose={this.handleTablePopupClose}>
+      <>
         <h2 className="drawer-modal__title">Edit table</h2>
         <table className="table-part">
           <tbody>
@@ -271,7 +264,7 @@ class TableEditorModal extends PureComponent {
         <Collapse isOpened={!shouldDisableActions}>
           <TableActionButtons subPartDataAndHandlers={subPartDataAndHandlers} />
         </Collapse>
-      </Drawer>
+      </>
     );
   }
 }

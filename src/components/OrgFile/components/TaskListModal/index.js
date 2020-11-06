@@ -6,7 +6,6 @@ import './stylesheet.css';
 
 import classNames from 'classnames';
 import TaskListView from './components/TaskListView';
-import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
 
@@ -45,7 +44,7 @@ function TaskListModal(props) {
   };
 
   return (
-    <Drawer onClose={onClose} maxSize={true}>
+    <>
       <h2 className="agenda__title">Task list</h2>
 
       <datalist id="task-list__datalist-filter">
@@ -78,7 +77,7 @@ function TaskListModal(props) {
       </div>
 
       <br />
-    </Drawer>
+    </>
   );
 }
 
