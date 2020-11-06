@@ -114,8 +114,8 @@ const toggleHeaderOpened = (state, action) => {
 };
 
 const selectHeader = (state, action) => {
-   // skip after swipe action
-   if (state.get('skipNextSelectHeader')) {
+  // skip after swipe action
+  if (state.get('skipNextSelectHeader')) {
     return state.set('skipNextSelectHeader', false);
   }
   return state.set('selectedHeaderId', action.headerId);
@@ -280,6 +280,7 @@ const addHeader = (state, action) => {
   // when creating a header with no header selected..
   if (!action.headerId) {
     const narrowedHeaderId = state.get('narrowedHeaderId');
+    console.debug(narrowedHeaderId);
     if (narrowedHeaderId) {
       // insert underneath narrowed header
       const { header, headerIndex } = indexAndHeaderWithId(headers, narrowedHeaderId);

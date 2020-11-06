@@ -601,6 +601,7 @@ class OrgFile extends PureComponent {
               }
               maxSize={this.getPopupMaxSize(activePopupType)}
             >
+              {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
               {(activePopupType === 'title-editor' ||
                 activePopupType === 'description-editor' ||
                 activePopupType === 'tags-editor' ||
@@ -617,7 +618,6 @@ class OrgFile extends PureComponent {
                   }
                 />
               )}
-              {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
             </Drawer>
           ) : null}
         </div>
