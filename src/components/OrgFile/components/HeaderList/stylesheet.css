@@ -3,6 +3,8 @@
 .header-list-container {
   font-family: Courier;
   margin-top: 10px;
+  min-height: calc(100vh - 120px); /* 90px for padding-bottom, 30px for the header bar */
+  padding-bottom: 90px;
 
   z-index: 1;
 }
