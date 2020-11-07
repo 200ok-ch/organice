@@ -32,12 +32,6 @@ const ActionDrawer = ({
   const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
   const [isDisplayingSearchButtons, setIsDisplayingSearchButtons] = useState(false);
 
-  useEffect(() => {
-    document.querySelector('html').style.paddingBottom = '90px';
-
-    return () => (document.querySelector('html').style.paddingBottom = '0px');
-  });
-
   const mainArrowButton = useRef(null);
 
   const mainArrowButtonBoundingRect = useMemo(
