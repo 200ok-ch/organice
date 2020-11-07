@@ -37,12 +37,6 @@ const ActionButtons = ({
   const [isDisplayingSearchButtons, setIsDisplayingSearchButtons] = useState(false);
   const [isDisplayingEditButtons, setIsDisplayingEditButtons] = useState(false);
 
-  useEffect(() => {
-    document.querySelector('html').style.paddingBottom = '90px';
-
-    return () => (document.querySelector('html').style.paddingBottom = '0px');
-  });
-
   const mainArrowButton = useRef(null);
   const mainEditButton = useRef(null);
 
