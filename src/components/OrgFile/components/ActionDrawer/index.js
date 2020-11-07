@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useMemo, useRef } from 'react';
+import React, { Fragment, useState, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
