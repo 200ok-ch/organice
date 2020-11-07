@@ -713,10 +713,10 @@ export const getBreadcrumbsStringFunction = (allHeaders, path) => {
     breadcrumbs.unshift(filename);
     const maxBreadcrumbLength = Math.max(
       3,
-      Math.floor((80 - 5 * breadcrumbs.length) / breadcrumbs.length)
+      Math.floor((80 - 3 * breadcrumbs.length) / breadcrumbs.length)
     );
     breadcrumbs = breadcrumbs.map((b) =>
-      b.length > maxBreadcrumbLength + 2 ? b.substr(0, maxBreadcrumbLength) + '..' : b
+      b.length > maxBreadcrumbLength ? b.substr(0, maxBreadcrumbLength - 2) + '..' : b
     );
     return breadcrumbs.join(' > ');
   };
