@@ -376,6 +376,7 @@ class OrgFile extends PureComponent {
             )}
             headers={headers}
             onCapture={this.handleCapture}
+            onClose={this.getPopupCloseAction(activePopupType)}
           />
         );
       case 'tags-editor':
@@ -415,6 +416,7 @@ class OrgFile extends PureComponent {
             planningItemIndex={activePopupData.get('planningItemIndex')}
             singleTimestampOnly={!activePopupData.get('timestampId')}
             onChange={this.handleTimestampChange(activePopupData)}
+            onClose={this.getPopupCloseAction(activePopupType)}
           />
         );
 
@@ -428,13 +430,17 @@ class OrgFile extends PureComponent {
           />
         ) : null;
       case 'agenda':
-        return <AgendaModal headers={headers} />;
+        return (
+          <AgendaModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
+        );
       case 'task-list':
-        return <TaskListModal headers={headers} />;
+        return (
+          <TaskListModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
+        );
       case 'search':
-        return <SearchModal context="search" />;
+        return <SearchModal context="search" onClose={this.getPopupCloseAction(activePopupType)} />;
       case 'refile':
-        return <SearchModal context="refile" />;
+        return <SearchModal context="refile" onClose={this.getPopupCloseAction(activePopupType)} />;
       case 'title-editor':
         return (
           <TitleEditorModal

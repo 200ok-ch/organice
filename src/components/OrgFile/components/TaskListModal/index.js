@@ -30,7 +30,7 @@ function TaskListModal(props) {
     props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
   }
 
-  const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions } = props;
+  const { searchFilter, searchFilterValid, searchFilterSuggestions } = props;
 
   // On mobile devices, the Drawer already handles the touch event.
   // Hence, scrolling within the Drawers container does not work with

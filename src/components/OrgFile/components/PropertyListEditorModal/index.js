@@ -78,7 +78,7 @@ export default class PropertyListEditorModal extends PureComponent {
   }
 
   render() {
-    const { onClose, propertyListItems, allOrgProperties } = this.props;
+    const { propertyListItems, allOrgProperties } = this.props;
     const allPropertyNames = computeAllPropertyNames(allOrgProperties);
 
     const propertyListItemsWithAllPropVals = propertyListItems.map((p) => {

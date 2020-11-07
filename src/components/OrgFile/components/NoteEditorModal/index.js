@@ -50,8 +50,6 @@ class NoteEditorModal extends PureComponent {
   }
 
   render() {
-    const { onClose } = this.props;
-
     return (
       <>
         <h2 className="drawer-modal__title">Add note</h2>

@@ -59,7 +59,7 @@ export default class TagsEditorModal extends PureComponent {
   }
 
   render() {
-    const { header, onClose } = this.props;
+    const { header } = this.props;
     const { allTags } = this.state;
 
     const headerTags = header.getIn(['titleLine', 'tags']);

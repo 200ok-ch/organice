@@ -19,7 +19,6 @@ import * as orgActions from '../../../../actions/org';
 function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
   const {
-    onClose,
     searchFilter,
     searchFilterValid,
     searchFilterSuggestions,
