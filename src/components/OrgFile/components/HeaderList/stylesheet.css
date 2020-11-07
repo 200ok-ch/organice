@@ -3,13 +3,12 @@
 .header-list-container {
   font-family: Courier;
   margin-top: 10px;
-  min-height: calc(100vh - 120px); /* 90px for padding-bottom, 30px for the header bar */
   padding-bottom: 90px;
 
   z-index: 1;
 }
 
-.header-list-container--focused {
+.header-list-container--narrowed {
   box-shadow: inset 0px 0px 5px 0px var(--base0-soft);
   margin: 0;
   margin-top: 10px;
