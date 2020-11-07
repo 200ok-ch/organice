@@ -1127,9 +1127,8 @@ export const setSearchFilterInformation = (state, action) => {
         .map((headersOfFile) =>
           headersOfFile.reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0)
         )
-        .values()
-        .reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0);
-
+        .toList()
+        .reduce((acc, val) => acc + val, 0);
       state.setIn(['search', 'clockedTime'], clockedTime);
     }
 

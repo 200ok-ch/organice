@@ -27,7 +27,6 @@ function SearchModal(props) {
     context,
     showClockedTimes,
     clockedTime,
-    path,
   } = props;
 
   function handleHeaderClick(path, headerId) {

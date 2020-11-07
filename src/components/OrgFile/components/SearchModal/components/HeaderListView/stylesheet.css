@@ -1,7 +1,6 @@
 /* Currently, the markup is the same as in the AgendaDay component. Hence */
 /* the CSS rules from there apply. */
 
-
 .task-list__header-planning-type {
   color: var(--base01);
   min-width: 8em;
@@ -15,4 +14,10 @@
 
 .task-list__header-planning-date--overdue {
   color: var(--orange);
+}
+
+.search__breadcrumbs {
+  color: var(--base01);
+  font-size: 12px;
+  font-family: Courier;
 }
