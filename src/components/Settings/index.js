@@ -32,9 +32,19 @@ const Settings = ({
   showClockDisplay,
   disableInlineEditing,
   colorScheme,
+  theme,
   base,
   org,
 }) => {
+  // This looks like hardcoding where it would be possible to dispatch
+  // on the `location.origin`, but here we assure that every instance
+  // of organice has a valid link to documentation. Self-building does
+  // not insure that, because building and hosting docs is not part of
+  // the application itself.
+  const documentationHost = window.location.origin.match(/staging.organice.200ok.ch/)
+    ? 'https://staging.organice.200ok.ch'
+    : 'https://organice.200ok.ch';
+
   const handleSignOutClick = () =>
     window.confirm('Are you sure you want to sign out?') ? syncBackend.signOut() : void 0;
 
@@ -45,6 +55,8 @@ const Settings = ({
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
   const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
+
+  const handleThemeClick = (theme) => base.setTheme(theme);
 
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
@@ -99,6 +111,15 @@ const Settings = ({
           buttons={['Light', 'Dark']}
           selectedButton={colorScheme}
           onSelect={handleColorSchemeClick}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">Theme</div>
+        <TabButtons
+          buttons={['Solarized', 'One', 'Gruvbox', 'Smyck', 'Code']}
+          selectedButton={theme}
+          onSelect={handleThemeClick}
         />
       </div>
 
@@ -279,7 +300,7 @@ const Settings = ({
         </Link>
 
         <button className="btn settings-btn">
-          <ExternalLink href="https://organice.200ok.ch/documentation.html">
+          <ExternalLink href={`${documentationHost}/documentation.html`}>
             Documentation
             <i className="fas fa-external-link-alt fa-sm" />
           </ExternalLink>{' '}
@@ -303,9 +324,12 @@ const Settings = ({
 };
 
 const mapStateToProps = (state) => {
+  // The default values here only relate to the settings view. To set
+  // defaults which get loaded on an initial run of organice, look at
+  // `util/settings_persister.js::persistableFields`.
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
-    bulletStyle: state.base.get('bulletStyle') || 'Classic',
+    bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
@@ -320,6 +344,7 @@ const mapStateToProps = (state) => {
     showClockDisplay: state.org.present.get('showClockDisplay'),
     disableInlineEditing: state.org.present.get('disableInlineEditing'),
     colorScheme: state.base.get('colorScheme'),
+    theme: state.base.get('theme'),
   };
 };
 
