@@ -8,6 +8,8 @@ import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
+
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
@@ -103,6 +105,12 @@ function AgendaModal(props) {
     agendaDefaultDeadlineDelayUnit,
   } = props;
 
+  let taskListViewStyle = {
+    overflow: (() => {
+      return isMobileBrowser ? 'none' : 'auto';
+    })(),
+  };
+
   let dates = [];
   switch (timeframeType) {
     case 'Day':
@@ -140,7 +148,7 @@ function AgendaModal(props) {
         <i className="fas fa-chevron-right fa-lg" onClick={handleNextDateClick} />
       </div>
 
-      <div className="agenda__days-container">
+      <div className="agenda__days-container" style={taskListViewStyle}>
         {dates.map((date) => (
           <AgendaDay
             key={format(date, 'yyyy MM dd')}

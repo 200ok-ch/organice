@@ -48,7 +48,7 @@ function SearchModal(props) {
   // is welcome to improve on it.
   let taskListViewStyle = {
     overflow: (() => {
-      return isMobileBrowser ? 'none' : 'auto';
+      return isMobileBrowser ? 'visible' : 'auto';
     })(),
   };
 
