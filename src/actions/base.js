@@ -198,3 +198,9 @@ export const activatePopup = (popupType, data) => ({
 export const closePopup = () => ({
   type: 'CLOSE_POPUP',
 });
+
+export const setAgendaTimeframe = (agendaTimeframe) => (dispatch) =>
+  dispatch({
+    type: 'SET_AGENDA_TIMEFRAME',
+    agendaTimeframe,
+  });

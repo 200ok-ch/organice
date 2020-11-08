@@ -162,6 +162,13 @@ export const persistableFields = [
     shouldStoreInConfig: true,
     default: List(),
   },
+  {
+    category: 'base',
+    name: 'agendaTimeframe',
+    type: 'string',
+    default: 'Week',
+    shouldStoreInConfig: true,
+  },
 ];
 
 export const readOpennessState = () => {

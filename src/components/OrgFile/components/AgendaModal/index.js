@@ -8,6 +8,7 @@ import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
+import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
@@ -28,16 +29,24 @@ import format from 'date-fns/format';
 // in structure and partially in logic. When changing one, consider
 // changing all.
 function AgendaModal(props) {
+  const {
+    onClose,
+    headers,
+    todoKeywordSets,
+    agendaTimeframe,
+    agendaDefaultDeadlineDelayValue,
+    agendaDefaultDeadlineDelayUnit,
+  } = props;
+
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [timeframeType, setTimeframeType] = useState('Week');
   const [dateDisplayType, setDateDisplayType] = useState('absolute');
 
-  function handleTimeframeTypeChange(timeframeType) {
-    setTimeframeType(timeframeType);
+  function handleTimeframeTypeChange(agendaTimeframe) {
+    props.base.setAgendaTimeframe(agendaTimeframe);
   }
 
   function handleNextDateClick() {
-    switch (timeframeType) {
+    switch (agendaTimeframe) {
       case 'Day':
         setSelectedDate(addDays(selectedDate, 1));
         break;
@@ -58,7 +67,7 @@ function AgendaModal(props) {
   }
 
   function handlePreviousDateClick() {
-    switch (timeframeType) {
+    switch (agendaTimeframe) {
       case 'Day':
         setSelectedDate(subDays(selectedDate, 1));
         break;
@@ -78,7 +87,7 @@ function AgendaModal(props) {
   }
 
   function calculateTimeframeHeader() {
-    switch (timeframeType) {
+    switch (agendaTimeframe) {
       case 'Day':
         return format(selectedDate, 'MMMM do');
       case 'Week':
@@ -95,16 +104,8 @@ function AgendaModal(props) {
     }
   }
 
-  const {
-    onClose,
-    headers,
-    todoKeywordSets,
-    agendaDefaultDeadlineDelayValue,
-    agendaDefaultDeadlineDelayUnit,
-  } = props;
-
   let dates = [];
-  switch (timeframeType) {
+  switch (agendaTimeframe) {
     case 'Day':
       dates = [selectedDate];
       break;
@@ -128,7 +129,7 @@ function AgendaModal(props) {
       <div className="agenda__tab-container">
         <TabButtons
           buttons={['Day', 'Week', 'Month']}
-          selectedButton={timeframeType}
+          selectedButton={agendaTimeframe}
           onSelect={handleTimeframeTypeChange}
           useEqualWidthTabs
         />
@@ -163,12 +164,14 @@ function AgendaModal(props) {
 
 const mapStateToProps = (state) => ({
   todoKeywordSets: state.org.present.get('todoKeywordSets'),
+  agendaTimeframe: state.base.get('agendaTimeframe'),
   agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
   agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
 });
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
+  base: bindActionCreators(baseActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgendaModal);
