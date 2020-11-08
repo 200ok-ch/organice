@@ -7,12 +7,13 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 * [2020-11-08 Sun]
 
 ** Changed
-
-* [2020-11-06 Fri]
-  - Safeguard against selecting text by accident.
+ - Safeguard against selecting text by accident.
     - Before this change, it was possible to select text when doing a 'swipe'.
     - Now, selecting/copying text is only possible in 'edit mode', effectively safeguarding against accidentally selecting text.
     - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/557][PR]] 🙏
+
+
+* [2020-11-06 Fri]
 
 ** Added
    - Additional themes. You now can choose between:
