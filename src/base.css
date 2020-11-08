@@ -24,7 +24,8 @@
   }
 }
 
-body, .App {
+body,
+.App {
   height: 100%;
 }
 
@@ -34,6 +35,7 @@ body,
   color: var(--base00);
   background: var(--base3);
   scroll-padding-top: 60px;
+  user-select: none;
 }
 
 a {
