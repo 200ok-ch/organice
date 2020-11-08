@@ -331,7 +331,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -340,7 +340,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
@@ -382,7 +382,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -391,7 +391,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
@@ -433,7 +433,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -442,7 +442,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
@@ -496,7 +496,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -505,7 +505,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
@@ -554,7 +554,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -563,7 +563,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
@@ -605,7 +605,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -614,7 +614,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
@@ -656,7 +656,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         >
           <div
             class="left-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
@@ -665,7 +665,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           </div>
           <div
             class="right-swipe-action-container"
-            style="width: 0px; background-color: rgb(211, 211, 211);"
+            style="width: 0px; background-color: rgba(0, 0, 0, 0);"
           >
             <i
               class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
