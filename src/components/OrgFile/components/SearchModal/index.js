@@ -41,17 +41,6 @@ function SearchModal(props) {
     props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart, context);
   }
 
-  // On mobile devices, the Drawer already handles the touch event.
-  // Hence, scrolling within the Drawers container does not work with
-  // the same event. Therefore, we're just opting to scroll the whole
-  // drawer. That's not the best UX. And a better CSS juggler than me
-  // is welcome to improve on it.
-  let taskListViewStyle = {
-    overflow: (() => {
-      return isMobileBrowser ? 'visible' : 'auto';
-    })(),
-  };
-
   return (
     <Drawer onClose={onClose} maxSize={true}>
       <div className="task-list__modal-title">
@@ -94,7 +83,10 @@ function SearchModal(props) {
         />
       </div>
 
-      <div className="task-list__headers-container" style={taskListViewStyle}>
+      <div
+        className="task-list__headers-container"
+        style={isMobileBrowser ? undefined : { overflow: 'auto' }}
+      >
         <HeaderListView
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}

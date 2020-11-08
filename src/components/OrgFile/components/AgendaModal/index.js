@@ -105,12 +105,6 @@ function AgendaModal(props) {
     agendaDefaultDeadlineDelayUnit,
   } = props;
 
-  let taskListViewStyle = {
-    overflow: (() => {
-      return isMobileBrowser ? 'none' : 'auto';
-    })(),
-  };
-
   let dates = [];
   switch (timeframeType) {
     case 'Day':
@@ -148,7 +142,10 @@ function AgendaModal(props) {
         <i className="fas fa-chevron-right fa-lg" onClick={handleNextDateClick} />
       </div>
 
-      <div className="agenda__days-container" style={taskListViewStyle}>
+      <div
+        className="agenda__days-container"
+        style={isMobileBrowser ? undefined : { overflow: 'auto' }}
+      >
         {dates.map((date) => (
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
