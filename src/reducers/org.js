@@ -54,6 +54,7 @@ import {
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
+import { applyFileSettingsFromConfig } from '../util/settings_persister';
 
 const displayFile = (state, action) => {
   const { path, contents } = action;
@@ -1197,6 +1198,48 @@ const setShowClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 };
 
+const indexOfFileSettingWithId = (settings, settingId) =>
+  settings.findIndex((setting) => setting.get('id') === settingId);
+
+const updateFileSettingFieldPathValue = (state, action) => {
+  const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
+
+  return state.setIn(['fileSettings', settingIndex].concat(action.fieldPath), action.newValue);
+};
+
+const reorderFileSetting = (state, action) =>
+  state.update('fileSettings', (settings) =>
+    settings.splice(action.fromIndex, 1).splice(action.toIndex, 0, settings.get(action.fromIndex))
+  );
+
+const deleteFileSetting = (state, action) => {
+  const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
+
+  return state.update('fileSettings', (settings) => settings.delete(settingIndex));
+};
+
+const addNewEmptyFileSetting = (state) =>
+  state.update('fileSettings', (settings) =>
+    settings.push(
+      fromJS({
+        id: generateId(),
+        path: '',
+        loadOnStartup: false,
+        includeInAgenda: true,
+        includeInSearch: false,
+        includeInTasklist: false,
+      })
+    )
+  );
+
+const restoreFileSettings = (state, action) => {
+  if (!action.newSettings) {
+    return state;
+  }
+
+  return applyFileSettingsFromConfig(state, action.newSettings);
+};
+
 const reduceInFile = (state, action, path) => (func, ...args) => {
   return state.updateIn(['files', path], (file) => func(file ? file : Map(), action, ...args));
 };
@@ -1320,7 +1363,16 @@ const reducer = (state, action) => {
       return changePath(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
-
+    case 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE':
+      return updateFileSettingFieldPathValue(state, action);
+    case 'REORDER_FILE_SETTING':
+      return reorderFileSetting(state, action);
+    case 'DELETE_FILE_SETTING':
+      return deleteFileSetting(state, action);
+    case 'ADD_NEW_EMPTY_FILE_SETTING':
+      return addNewEmptyFileSetting(state, action);
+    case 'RESTORE_FILE_SETTINGS':
+      return restoreFileSettings(state, action);
     default:
       return state;
   }

@@ -5,6 +5,7 @@ import { getOpenHeaderPaths } from '../lib/org_utils';
 
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
+import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
 
@@ -148,6 +149,13 @@ export const persistableFields = [
     shouldStoreInConfig: true,
     default: List(),
   },
+  {
+    category: 'org',
+    name: 'fileSettings',
+    type: 'json',
+    shouldStoreInConfig: true,
+    default: List(),
+  },
 ];
 
 export const readOpennessState = () => {
@@ -159,8 +167,11 @@ const getFieldsToPersist = (state, fields) =>
   fields
     .filter((field) => !field.depreacted)
     .filter((field) => field.category === 'org')
-    .map((field) => field.name)
-    .map((field) => [field, state.org.present.get(field)])
+    .map((field) =>
+      field.type === 'json'
+        ? [field.name, JSON.stringify(state.org.present.get(field.name) || field.default || {})]
+        : [field.name, state.org.present.get(field.name)]
+    )
     .concat(
       persistableFields
         .filter((field) => field.category !== 'org')
@@ -197,6 +208,13 @@ export const applyCaptureSettingsFromConfig = (state, config) => {
 
   return state.set('captureTemplates', captureTemplates);
 };
+export const applyFileSettingsFromConfig = (state, config) => {
+  const fileSettings = fromJS(JSON.parse(config.fileSettings)).map((setting) =>
+    setting.set('id', generateId())
+  );
+
+  return state.set('fileSettings', fileSettings);
+};
 
 export const readInitialState = () => {
   if (!isLocalStorageAvailable()) {
@@ -209,6 +227,7 @@ export const readInitialState = () => {
       past: [],
       present: Map({
         files: Map(),
+        fileSettings: [],
         search: Map({
           searchFilter: '',
           searchFilterExpr: [],
@@ -253,6 +272,12 @@ export const readInitialState = () => {
       templates.map((template) => template.set('id', generateId()))
     );
   }
+  // Assign new ids to the file settings.
+  if (initialState.org.present.get('fileSettings')) {
+    initialState.org.present = initialState.org.present.update('fileSettings', (settings) =>
+      settings.map((setting) => setting.set('id', generateId()))
+    );
+  }
 
   const opennessState = readOpennessState();
   if (!!opennessState) {
@@ -294,6 +319,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
         const config = JSON.parse(configFileContents);
         dispatch(restoreBaseSettings(config));
         dispatch(restoreCaptureSettings(config));
+        dispatch(restoreFileSettings(config));
       } catch (_error) {
         // Something went wrong parsing the config file, but we don't care, we'll just
         // overwrite it with a good local copy.

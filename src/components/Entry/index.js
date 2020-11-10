@@ -26,6 +26,7 @@ import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
 import { loadTheme } from '../../lib/color';
+import FileSettingsEditor from '../FileSettingsEditor';
 
 class Entry extends PureComponent {
   constructor(props) {
@@ -164,12 +165,17 @@ class Entry extends PureComponent {
         {activeModalPage === 'changelog' ? (
           this.renderChangelogFile()
         ) : isAuthenticated ? (
-          ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(
-            activeModalPage
-          ) ? (
+          [
+            'keyboard_shortcuts_editor',
+            'settings',
+            'capture_templates_editor',
+            'file_settings_editor',
+            'sample',
+          ].includes(activeModalPage) ? (
             <Fragment>
               {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
               {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+              {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
               {activeModalPage === 'sample' && this.renderSampleFile()}
             </Fragment>
           ) : (

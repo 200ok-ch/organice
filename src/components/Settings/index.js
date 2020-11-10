@@ -50,6 +50,8 @@ const Settings = ({
 
   const handleCaptureTemplatesClick = () => base.pushModalPage('capture_templates_editor');
 
+  const handleFileSettingsClick = () => base.pushModalPage('file_settings_editor');
+
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
   const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
@@ -255,6 +257,9 @@ const Settings = ({
         </button>
         <button className="btn settings-btn" onClick={handleKeyboardShortcutsClick}>
           Keyboard shortcuts
+        </button>
+        <button className="btn settings-btn" onClick={handleFileSettingsClick}>
+          File settings
         </button>
 
         <hr className="settings-button-separator" />

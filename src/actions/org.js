@@ -592,3 +592,29 @@ export const setShowClockDisplay = (showClockDisplay) => ({
   type: 'TOGGLE_CLOCK_DISPLAY',
   showClockDisplay,
 });
+
+export const updateFileSettingFieldPathValue = (settingId, fieldPath, newValue) => ({
+  type: 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE',
+  settingId,
+  fieldPath,
+  newValue,
+});
+
+export const reorderFileSetting = (fromIndex, toIndex) => ({
+  type: 'REORDER_FILE_SETTING',
+  fromIndex,
+  toIndex,
+});
+
+export const deleteFileSetting = (settingId) => ({
+  type: 'DELETE_FILE_SETTING',
+  settingId,
+});
+
+export const addNewEmptyFileSetting = () => (dispatch) =>
+  dispatch({ type: 'ADD_NEW_EMPTY_FILE_SETTING' });
+
+export const restoreFileSettings = (newSettings) => ({
+  type: 'RESTORE_File_SETTINGS',
+  newSettings,
+});

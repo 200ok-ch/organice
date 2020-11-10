@@ -1,0 +1,170 @@
+@import '../../../../colors.css';
+
+.capture-template-container {
+  border-bottom: 2px solid var(--base2);
+  padding: 15px 5px;
+
+  -webkit-tap-highlight-color: var(--base03);
+}
+
+.capture-template-container--dragging {
+  background-color: var(--base1);
+}
+
+.capture-template-container__header {
+  display: flex;
+  align-items: center;
+
+  color: var(--base01);
+}
+
+.capture-template-container__header__title {
+  font-size: 20px;
+  margin-left: -10px;
+
+  max-width: calc(100% - 120px);
+}
+
+.capture-template-container__header__caret {
+  margin-right: 15px;
+  margin-left: 5px;
+
+  transition-property: transform;
+  transition-duration: 0.15s;
+}
+
+.capture-template-container__header__caret--rotated {
+  transform: rotate(90deg);
+}
+
+.capture-template-container__header__drag-handle {
+  margin-left: auto;
+  margin-right: 20px;
+
+  user-select: none;
+}
+
+.capture-template-container__content {
+  margin-top: 10px;
+}
+
+.capture-template__field-container {
+  margin-bottom: 5px;
+  border-bottom: 1px solid var(--base2);
+  padding-bottom: 5px;
+}
+
+.capture-template__field-container:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.capture-template__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.capture-template__help-text {
+  color: var(--base0);
+  font-size: 14px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.capture-template__letter-textfield {
+  width: 30px;
+}
+
+.capture-template__field__or-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--base01);
+  font-size: 14px;
+
+  margin-bottom: 5px;
+}
+
+.capture-template__field__or-line {
+  width: 20px;
+  height: 1px;
+  background-color: var(--base2);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.multi-textfields-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.multi-textfield-container {
+  width: 75%;
+  margin-top: 5px;
+  pdisplay: flex;
+}
+
+.multi-textfield-field {
+  font-family: Courier;
+
+  flex: 1;
+}
+
+.remove-multi-textfield-button {
+  color: var(--base0);
+  border: 0;
+  background-color: transparent;
+}
+
+.add-new-multi-textfield-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+  margin-right: 8px;
+}
+
+.add-new-multi-textfield-button {
+  background-color: var(--base2);
+  border: 0;
+  color: var(--base00);
+  width: 45px;
+  height: 45px;
+}
+
+.template-textarea {
+  border: 1px solid var(--base2);
+
+  margin-top: 5px;
+}
+
+.capture-template__delete-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.capture-template__delete-button {
+  background-color: var(--red);
+
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+.file-setting-icons {
+  display: grid;
+  grid-template-columns: repeat(2, 20px [col-start]);
+  grid-template-rows: repeat(2, 20px [row-start]);
+}
+
+.file-setting-icon {
+  font-size: small;
+}
+
+.file_setting-container__header__title {
+  font-size: 20px;
+  margin-left: 10px;
+
+  max-width: calc(100% - 120px);
+}
