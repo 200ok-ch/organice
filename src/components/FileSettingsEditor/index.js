@@ -12,7 +12,7 @@ import FileSetting from './components/FileSetting';
 
 import { List } from 'immutable';
 
-const FileSettingsEditor = ({ fileSettings, org }) => {
+const FileSettingsEditor = ({ fileSettings, loadedFilepaths, org }) => {
   const handleAddNewSettingClick = () => org.addNewEmptyFileSetting();
 
   const handleFieldPathUpdate = (settingId, fieldPath, newValue) =>
@@ -21,24 +21,24 @@ const FileSettingsEditor = ({ fileSettings, org }) => {
   const handleDeleteSetting = (settingId) => org.deleteFileSetting(settingId);
 
   const handleReorderSetting = (fromIndex, toIndex) => org.reorderFileSetting(fromIndex, toIndex);
-
+  console.debug(loadedFilepaths);
   return (
     <div>
-      <Droppable droppableId="capture-templates-editor-droppable" type="CAPTURE-TEMPLATE">
+      <Droppable droppableId="file-setting-editor-droppable" type="CAPTURE-TEMPLATE">
         {(provided) => (
           <div
-            className="capture-templates-container"
+            className="file-setting-container"
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
             {fileSettings.size === 0 ? (
-              <div className="no-capture-templates-message">
+              <div className="no-file-setting-message">
                 You don't currently have any file settings - add one by pressing the{' '}
                 <i className="fas fa-plus" /> button.
                 <br />
                 <br />
                 File settings allow you to configure how specific files are handeled when multiple
-                files are loaded.
+                files are loaded. Make sure a file is loaded to create a setting entry.
               </div>
             ) : (
               <Fragment>
@@ -47,6 +47,7 @@ const FileSettingsEditor = ({ fileSettings, org }) => {
                     key={setting.get('id')}
                     index={index}
                     setting={setting}
+                    loadedFilepaths={loadedFilepaths}
                     onFieldPathUpdate={handleFieldPathUpdate}
                     onDeleteSetting={handleDeleteSetting}
                     onReorder={handleReorderSetting}
@@ -60,16 +61,28 @@ const FileSettingsEditor = ({ fileSettings, org }) => {
         )}
       </Droppable>
 
-      <div className="new-capture-template-button-container">
-        <button className="fas fa-plus fa-lg btn btn--circle" onClick={handleAddNewSettingClick} />
-      </div>
+      {loadedFilepaths.length !== 0 && (
+        <div className="new-capture-template-button-container">
+          <button
+            className="fas fa-plus fa-lg btn btn--circle"
+            onClick={handleAddNewSettingClick}
+          />
+        </div>
+      )}
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
+  const fileSettings = state.org.present.get('fileSettings', List());
+  const existingSettings = fileSettings.map((setting) => setting.get('path'));
+  const paths = state.org.present.get('files', List()).keySeq();
+  const loadedFilepaths = paths
+    .filter((path) => !existingSettings.find((settingPath) => settingPath === path))
+    .toJS();
   return {
-    fileSettings: state.org.present.get('fileSettings', List()),
+    fileSettings,
+    loadedFilepaths,
   };
 };
 

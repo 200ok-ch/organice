@@ -104,7 +104,7 @@
 .multi-textfield-container {
   width: 75%;
   margin-top: 5px;
-  pdisplay: flex;
+  display: flex;
 }
 
 .multi-textfield-field {

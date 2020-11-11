@@ -1,16 +1,4 @@
-.capture-templates-container {
-  position: relative;
-}
-
-.new-capture-template-button-container {
-  display: flex;
-  justify-content: flex-end;
-
-  margin-top: 10px;
-  margin-right: 10px;
-}
-
-.no-capture-templates-message {
+.no-file-setting-message {
   text-align: center;
   color: var(--base0);
   padding: 20px;
