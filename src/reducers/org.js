@@ -74,7 +74,7 @@ const stopDisplayingFile = (state) =>
     .set('path', null)
     //.set('contents', null)
     //.set('headers', null)
-    .set('filteredHeaders', null);
+    .setIn(['search', 'filteredHeaders'], null);
 //.set('todoKeywordSets', null)
 //.set('fileConfigLines', null)
 //.set('linesBeforeHeadings', null);
@@ -1058,13 +1058,31 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
+const determineExcludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
+  files.mapEntries(([filePath, file]) => [
+    filePath,
+    file.update('headers', (headers) => {
+      const fileSetting = fileSettings.find((setting) => filePath === setting.get('path'));
+      // always include the viewed file
+      if (path === filePath) {
+        return headers;
+      } else if (fileSetting) {
+        if (fileSetting.get(settingValue)) {
+          return headers;
+        } else {
+          return List();
+        }
+      } else {
+        // if no setting exists
+        return includeByDefault ? headers : List();
+      }
+    }),
+  ]);
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
-  const path = state.get('path');
-  // TODO: search currently uses all loaded files.
-  // Decide which files should be used based on context or configuration.
-  const files = state.get('files');
+  let files = state.get('files');
   state = state.asMutable();
 
   let searchFilterValid = true;
@@ -1078,6 +1096,17 @@ export const setSearchFilterInformation = (state, action) => {
     // headers when given an invalid search filter.
     searchFilterValid = false;
   }
+
+  const path = state.get('path');
+  const fileSettings = state.get('fileSettings');
+  // Decide which files to include
+  if (context === 'agenda') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInAgenda', true);
+  } else if (context === 'search') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInSearch', false);
+  } else if (context === 'task-list') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInTasklist', false);
+  } // else use all files (e.g. for refile)
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successful
