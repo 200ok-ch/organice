@@ -615,6 +615,6 @@ export const addNewEmptyFileSetting = () => (dispatch) =>
   dispatch({ type: 'ADD_NEW_EMPTY_FILE_SETTING' });
 
 export const restoreFileSettings = (newSettings) => ({
-  type: 'RESTORE_File_SETTINGS',
+  type: 'RESTORE_FILE_SETTINGS',
   newSettings,
 });

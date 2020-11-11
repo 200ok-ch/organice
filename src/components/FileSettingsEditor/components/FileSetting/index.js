@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -10,7 +10,7 @@ import Switch from '../../../UI/Switch';
 import classNames from 'classnames';
 
 export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFilepaths }) => {
-  const [isCollapsed, setIsCollapsed] = useState(!!setting.get('description'));
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const handleHeaderBarClick = () => setIsCollapsed(!isCollapsed);
 
   const updateField = (fieldName) => (event) =>

@@ -21,10 +21,10 @@ const FileSettingsEditor = ({ fileSettings, loadedFilepaths, org }) => {
   const handleDeleteSetting = (settingId) => org.deleteFileSetting(settingId);
 
   const handleReorderSetting = (fromIndex, toIndex) => org.reorderFileSetting(fromIndex, toIndex);
-  console.debug(loadedFilepaths);
+
   return (
     <div>
-      <Droppable droppableId="file-setting-editor-droppable" type="CAPTURE-TEMPLATE">
+      <Droppable droppableId="file-setting-editor-droppable" type="FILE-SETTING">
         {(provided) => (
           <div
             className="file-setting-container"
