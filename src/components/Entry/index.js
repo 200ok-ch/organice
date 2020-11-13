@@ -209,6 +209,7 @@ const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path]);
   return {
+    path,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),

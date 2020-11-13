@@ -8,7 +8,7 @@ import {
   setDirty,
   setLastSyncAt,
   setOrgFileErrorMessage,
-  changePath,
+  setPath,
 } from './org';
 import { persistField } from '../util/settings_persister';
 
@@ -115,7 +115,6 @@ export const downloadFile = (path) => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
         dispatch(parseFile(path, fileContents));
-        dispatch(changePath(path));
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(setDirty(false, path));
         dispatch(applyOpennessState());
@@ -124,7 +123,7 @@ export const downloadFile = (path) => {
       .catch(() => {
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(setOrgFileErrorMessage('File not found'));
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
       });
   };
 };

@@ -37,7 +37,7 @@ import {
 } from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { fromJS } from 'immutable';
+import { fromJS, Set } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -90,7 +90,12 @@ class OrgFile extends PureComponent {
 
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
     } else if (!_.isEmpty(path) && path !== loadedPath) {
-      this.props.syncBackend.downloadFile(path);
+      if (this.props.fileIsLoaded(path)) {
+        this.props.org.sync({ path });
+      } else {
+        this.props.syncBackend.downloadFile(path);
+      }
+      this.props.org.setPath(path);
     }
 
     this.activatePopup();
@@ -124,6 +129,7 @@ class OrgFile extends PureComponent {
     const { path } = this.props;
     if (!_.isEmpty(path) && path !== prevProps.path) {
       this.props.syncBackend.downloadFile(path);
+      this.props.org.setPath(path);
     }
   }
 
@@ -497,6 +503,8 @@ class OrgFile extends PureComponent {
 
 const mapStateToProps = (state) => {
   const loadedPath = state.org.present.get('path');
+  const loadedFiles = Set.fromKeys(state.org.present.get('files'));
+  const fileIsLoaded = (path) => loadedFiles.includes(path);
   const file = state.org.present.getIn(['files', loadedPath]);
   const headers = file ? file.get('headers') : null;
   const selectedHeaderId = file ? file.get('selectedHeaderId') : null;
@@ -507,6 +515,7 @@ const mapStateToProps = (state) => {
     selectedHeaderId,
     isDirty: file ? file.get('isDirty') : null,
     loadedPath,
+    fileIsLoaded,
     selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),

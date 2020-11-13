@@ -69,14 +69,7 @@ const parseFile = (state, action) => {
 };
 
 const stopDisplayingFile = (state) =>
-  state
-    .set('path', null)
-    //.set('contents', null)
-    //.set('headers', null)
-    .setIn(['search', 'filteredHeaders'], null);
-//.set('todoKeywordSets', null)
-//.set('fileConfigLines', null)
-//.set('linesBeforeHeadings', null);
+  state.set('path', null).setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
@@ -1217,7 +1210,7 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-const changePath = (state, action) => state.set('path', action.path);
+const setPath = (state, action) => state.set('path', action.path);
 
 const setShowClockDisplay = (state, action) => {
   if (action.showClockDisplay) {
@@ -1277,7 +1270,7 @@ const reducer = (state, action) => {
   const inFile = reduceInFile(state, action, path);
 
   switch (action.type) {
-    case 'DISPLAY_FILE':
+    case 'PARSE_FILE':
       return parseFile(state, action);
     case 'STOP_DISPLAYING_FILE':
       return stopDisplayingFile(state, action);
@@ -1389,8 +1382,8 @@ const reducer = (state, action) => {
       return inFile(updateLogEntryTime);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
-    case 'CHANGE_PATH':
-      return changePath(state, action);
+    case 'SET_PATH':
+      return setPath(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
     case 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE':
