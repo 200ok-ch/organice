@@ -8,8 +8,6 @@ import { customFormatDistanceToNow } from '../../../../lib/org_utils';
 import format from 'date-fns/format';
 
 export default ({ lastServerModifiedAt, lastSyncAt, path, onPull, onPush, onCancel }) => {
-  console.debug(lastSyncAt);
-  console.debug(lastServerModifiedAt);
   return (
     <Drawer>
       <h2 className="sync-confirmation-modal__header">Sync conflict</h2>
