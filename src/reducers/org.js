@@ -15,6 +15,7 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   getTodoKeywordSetsAsFlattenedArray,
+  isRegularPlanningItem,
 } from '../lib/org_utils';
 
 import {
@@ -1371,10 +1372,39 @@ function updatePlanningItemsWithRepeaters({
   timestamp,
 }) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
+    const adjustedTimestamp = applyRepeater(planningItem.get('timestamp'), timestamp);
     state = state.setIn(
       ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-      applyRepeater(planningItem.get('timestamp'), timestamp)
+      adjustedTimestamp
     );
+    switch (planningItem.get('type')) {
+      case 'TIMESTAMP_TITLE':
+        const titleIndex = state
+          .getIn(['headers', headerIndex, 'titleLine', 'title'])
+          .findIndex((titlePart) => planningItem.get('id') === titlePart.get('id'));
+        state = state.setIn(
+          ['headers', headerIndex, 'titleLine', 'title', titleIndex, 'firstTimestamp'],
+          adjustedTimestamp
+        );
+        state = state.setIn(
+          ['headers', headerIndex, 'titleLine', 'rawTitle'],
+          attributedStringToRawText(state.getIn(['headers', headerIndex, 'titleLine', 'title']))
+        );
+        break;
+      case 'TIMESTAMP_DESCRIPTION':
+        const descriptionIndex = state
+          .getIn(['headers', headerIndex, 'description'])
+          .findIndex((descriptionPart) => planningItem.get('id') === descriptionPart.get('id'));
+        state = state.setIn(
+          ['headers', headerIndex, 'description', descriptionIndex, 'firstTimestamp'],
+          adjustedTimestamp
+        );
+        state = state.setIn(
+          ['headers', headerIndex, 'rawDescription'],
+          attributedStringToRawText(state.getIn(['headers', headerIndex, 'description']))
+        );
+        break;
+    }
   });
   state = state.setIn(
     ['headers', headerIndex, 'titleLine', 'todoKeyword'],

@@ -535,7 +535,8 @@ export const _parsePlanningItems = (rawText) => {
   }
 };
 
-const createTimestamp = ({ type, timestamp }) => fromJS({ type, timestamp, id: generateId() });
+const createTimestamp = ({ type, timestamp, id }) =>
+  fromJS({ type, timestamp, id: id || generateId() });
 
 const parsePropertyList = (rawText) => {
   const lines = rawText.split('\n');
@@ -878,7 +879,9 @@ const extractActiveTimestampsForPlanningItemsFromParse = (type, parsedData) => {
   // planningItems only accept a single timestamp -> ignore second timestamp
   return parsedData
     .filter((x) => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
-    .map((x) => createTimestamp({ type: type, timestamp: x.get('firstTimestamp') }));
+    .map((x) =>
+      createTimestamp({ type: type, timestamp: x.get('firstTimestamp'), id: x.get('id') })
+    );
 };
 
 // Merge planningItems from parsed title, description, and planning keywords.
