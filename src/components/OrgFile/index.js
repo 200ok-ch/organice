@@ -116,7 +116,7 @@ class OrgFile extends PureComponent {
     if (!!staticFile) {
       this.props.base.unloadStaticFile();
     } else {
-      this.props.org.stopDisplayingFile();
+      this.props.org.resetFileDisplay();
     }
   }
 

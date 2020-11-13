@@ -1,4 +1,4 @@
-import { parseFile, stopDisplayingFile } from './org';
+import { parseFile, resetFileDisplay } from './org';
 
 import raw from 'raw.macro';
 
@@ -45,7 +45,7 @@ export const loadStaticFile = (staticFile) => {
 
 export const unloadStaticFile = () => {
   return (dispatch, getState) => {
-    dispatch(stopDisplayingFile());
+    dispatch(resetFileDisplay());
 
     if (!!getState().base.get('lastViewedPath')) {
       dispatch(

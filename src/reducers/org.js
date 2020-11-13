@@ -68,7 +68,7 @@ const parseFile = (state, action) => {
     .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
-const stopDisplayingFile = (state) =>
+const clearSearch = (state) =>
   state.set('path', null).setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
@@ -1272,8 +1272,8 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'PARSE_FILE':
       return parseFile(state, action);
-    case 'STOP_DISPLAYING_FILE':
-      return stopDisplayingFile(state, action);
+    case 'CLEAR_SEARCH':
+      return clearSearch(state, action);
     case 'TOGGLE_HEADER_OPENED':
       return inFile(toggleHeaderOpened);
     case 'OPEN_HEADER':

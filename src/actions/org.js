@@ -29,11 +29,11 @@ export const setLastSyncAt = (lastSyncAt, path) => ({
   lastSyncAt,
 });
 
-export const stopDisplayingFile = () => {
+export const resetFileDisplay = () => {
   return (dispatch) => {
     dispatch(widenHeader());
     dispatch(closePopup());
-    dispatch({ type: 'STOP_DISPLAYING_FILE' });
+    dispatch({ type: 'CLEAR_SEARCH' });
     dispatch(ActionCreators.clearHistory());
   };
 };
