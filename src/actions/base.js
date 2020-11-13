@@ -1,4 +1,4 @@
-import { displayFile, stopDisplayingFile } from './org';
+import { parseFile, stopDisplayingFile } from './org';
 
 import raw from 'raw.macro';
 
@@ -39,7 +39,7 @@ export const loadStaticFile = (staticFile) => {
       sample: raw('../../sample.org'),
     }[staticFile];
 
-    dispatch(displayFile(null, fileContents));
+    dispatch(parseFile(null, fileContents));
   };
 };
 
@@ -49,10 +49,7 @@ export const unloadStaticFile = () => {
 
     if (!!getState().base.get('lastViewedPath')) {
       dispatch(
-        displayFile(
-          getState().base.get('lastViewedPath'),
-          getState().base.get('lastViewedContents')
-        )
+        parseFile(getState().base.get('lastViewedPath'), getState().base.get('lastViewedContents'))
       );
     }
   };

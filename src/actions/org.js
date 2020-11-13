@@ -17,7 +17,7 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
 
-export const displayFile = (path, contents) => ({
+export const parseFile = (path, contents) => ({
   type: 'DISPLAY_FILE',
   path,
   contents,
@@ -102,7 +102,8 @@ const doSync = ({
   path,
 } = {}) => (dispatch, getState) => {
   const client = getState().syncBackend.get('client');
-  path = path || getState().org.present.get('path');
+  const currentPath = getState().org.present.get('path');
+  path = path || currentPath;
   if (!path) {
     return;
   }
@@ -187,8 +188,10 @@ const doSync = ({
           dispatch(setIsLoading(false, path));
           dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt, lastSyncAt, path }));
         } else {
-          dispatch(displayFile(path, contents));
-          dispatch(applyOpennessState());
+          if (path === currentPath) {
+            dispatch(parseFile(path, contents));
+            dispatch(applyOpennessState());
+          }
           dispatch(setDirty(false, path));
           dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
           if (!shouldSuppressMessages) {
@@ -224,9 +227,9 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-// TODO: this should dispatch(ActionCreators.clearHistory()) and maybe trigger a sync like displayFile
+// TODO: this should dispatch(ActionCreators.clearHistory()) and maybe trigger a sync like parseFile
 // Maybe selectHeader or whatever is used in search etc modals to jump to a header should be path aware so this extra step is not necessary
-const changePath = (path) => ({
+export const changePath = (path) => ({
   type: 'CHANGE_PATH',
   path,
 });

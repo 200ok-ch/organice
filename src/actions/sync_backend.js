@@ -3,11 +3,12 @@ import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
 import {
-  displayFile,
+  parseFile,
   applyOpennessState,
   setDirty,
   setLastSyncAt,
   setOrgFileErrorMessage,
+  changePath,
 } from './org';
 import { persistField } from '../util/settings_persister';
 
@@ -113,7 +114,8 @@ export const downloadFile = (path) => {
       .then((fileContents) => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
-        dispatch(displayFile(path, fileContents));
+        dispatch(parseFile(path, fileContents));
+        dispatch(changePath(path));
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(setDirty(false, path));
         dispatch(applyOpennessState());

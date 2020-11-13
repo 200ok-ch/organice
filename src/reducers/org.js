@@ -56,12 +56,11 @@ import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
 import { applyFileSettingsFromConfig } from '../util/settings_persister';
 
-const displayFile = (state, action) => {
+const parseFile = (state, action) => {
   const { path, contents } = action;
   const parsedFile = parseOrg(contents);
 
   return state
-    .set('path', path)
     .setIn(['files', path, 'contents'], contents)
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
@@ -1279,7 +1278,7 @@ const reducer = (state, action) => {
 
   switch (action.type) {
     case 'DISPLAY_FILE':
-      return displayFile(state, action);
+      return parseFile(state, action);
     case 'STOP_DISPLAYING_FILE':
       return stopDisplayingFile(state, action);
     case 'TOGGLE_HEADER_OPENED':
