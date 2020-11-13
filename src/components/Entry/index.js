@@ -116,15 +116,18 @@ class Entry extends PureComponent {
     if (!!path) {
       path = '/' + path;
     }
-
-    return (
-      <OrgFile
-        path={path}
-        shouldDisableDirtyIndicator={false}
-        shouldDisableActionDrawer={false}
-        shouldDisableSyncButtons={false}
-      />
-    );
+    if (this.props.path && this.props.path !== path) {
+      return <Redirect push to={'/file' + this.props.path} />;
+    } else {
+      return (
+        <OrgFile
+          path={path}
+          shouldDisableDirtyIndicator={false}
+          shouldDisableActionDrawer={false}
+          shouldDisableSyncButtons={false}
+        />
+      );
+    }
   }
 
   shouldPromptWhenLeaving() {
