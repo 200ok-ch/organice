@@ -1329,7 +1329,7 @@ const reducer = (state, action) => {
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
-      return inFile(setDirty);
+      return action.path ? reduceInFile(state, action, action.path)(setDirty) : inFile(setDirty);
     case 'NARROW_HEADER':
       return inFile(narrowHeader);
     case 'WIDEN_HEADER':
@@ -1361,7 +1361,9 @@ const reducer = (state, action) => {
     case 'ADVANCE_CHECKBOX_STATE':
       return inFile(advanceCheckboxState);
     case 'SET_LAST_SYNC_AT':
-      return inFile(setLastSyncAt);
+      return action.path
+        ? reduceInFile(state, action, action.path)(setLastSyncAt)
+        : inFile(setLastSyncAt);
     case 'SET_HEADER_TAGS':
       return inFile(setHeaderTags);
     case 'REORDER_TAGS':
@@ -1409,8 +1411,14 @@ const reducer = (state, action) => {
 
 export default (state = Map(), action) => {
   if (action.dirtying) {
-    const path = state.get('path');
-    state = state.setIn(['files', path, 'isDirty'], true);
+    if (action.type === 'REFILE_SUBTREE') {
+      const { sourcePath, targetPath } = action;
+      state = state.setIn(['files', sourcePath, 'isDirty'], true);
+      state = state.setIn(['files', targetPath, 'isDirty'], true);
+    } else {
+      const path = state.get('path');
+      state = state.setIn(['files', path, 'isDirty'], true);
+    }
   }
 
   state = reducer(state, action);

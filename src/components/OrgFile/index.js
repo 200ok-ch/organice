@@ -229,13 +229,13 @@ class OrgFile extends PureComponent {
     }
   }
 
-  handleSyncConfirmationPull() {
-    this.props.org.sync({ forceAction: 'pull' });
+  handleSyncConfirmationPull(path) {
+    this.props.org.sync({ path, forceAction: 'pull' });
     this.props.base.closePopup();
   }
 
-  handleSyncConfirmationPush() {
-    this.props.org.sync({ forceAction: 'push' });
+  handleSyncConfirmationPush(path) {
+    this.props.org.sync({ path, forceAction: 'push' });
     this.props.base.closePopup();
   }
 
@@ -287,6 +287,8 @@ class OrgFile extends PureComponent {
         return (
           <SyncConfirmationModal
             lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
+            lastSyncAt={activePopupData.get('lastSyncAt')}
+            path={activePopupData.get('path')}
             onPull={this.handleSyncConfirmationPull}
             onPush={this.handleSyncConfirmationPush}
             onCancel={this.handleSyncConfirmationCancel}

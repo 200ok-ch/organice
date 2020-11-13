@@ -1,4 +1,4 @@
-import { Map, List, fromJS } from 'immutable';
+import { Map, List, Set, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
@@ -235,7 +235,7 @@ export const readInitialState = () => {
       }),
       future: [],
     },
-    base: Map(),
+    base: Map().set('isLoading', Set()),
     capture: Map(),
   };
 

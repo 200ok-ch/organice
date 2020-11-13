@@ -406,7 +406,7 @@ const mapStateToProps = (state) => {
     selectedTableCellId: file.get('selectedTableCellId'),
     captureTemplates: state.capture.get('captureTemplates', List()),
     path,
-    isLoading: state.base.get('isLoading'),
+    isLoading: !state.base.get('isLoading').isEmpty(),
   };
 };
 

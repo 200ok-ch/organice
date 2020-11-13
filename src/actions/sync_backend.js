@@ -114,14 +114,14 @@ export const downloadFile = (path) => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
         dispatch(displayFile(path, fileContents));
-        dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
-        dispatch(setDirty(false));
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+        dispatch(setDirty(false, path));
         dispatch(applyOpennessState());
         dispatch(ActionCreators.clearHistory());
       })
       .catch(() => {
         dispatch(hideLoadingMessage());
-        dispatch(setIsLoading(false));
+        dispatch(setIsLoading(false, path));
         dispatch(setOrgFileErrorMessage('File not found'));
       });
   };
