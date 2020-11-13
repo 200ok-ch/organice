@@ -8,7 +8,6 @@ import {
   setDirty,
   setLastSyncAt,
   setOrgFileErrorMessage,
-  setPath,
 } from './org';
 import { persistField } from '../util/settings_persister';
 
