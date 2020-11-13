@@ -227,15 +227,12 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-// TODO: this should dispatch(ActionCreators.clearHistory()) and maybe trigger a sync like parseFile
-// Maybe selectHeader or whatever is used in search etc modals to jump to a header should be path aware so this extra step is not necessary
 export const setPath = (path) => ({
   type: 'SET_PATH',
   path,
 });
 
 export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
-  // TODO: change path does not change the browser path
   dispatch(setPath(path));
   dispatch(selectHeader(headerId));
   dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });

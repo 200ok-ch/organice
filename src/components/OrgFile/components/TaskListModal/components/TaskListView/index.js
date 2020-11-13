@@ -132,7 +132,7 @@ const mapStateToProps = (state) => {
     // When no filtering has happened, yet (initial state), use all headers.
     headers:
       state.org.present.getIn(['search', 'filteredHeaders']) ||
-      // TODO: this uses only the current file when no search term is entered. Use all of them.
+      // @tarnung TODO: this uses only the current file when no search term is entered. Use all of them.
       new Map().set(path, file.get('headers')),
   };
 };
