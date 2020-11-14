@@ -15,7 +15,6 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   getTodoKeywordSetsAsFlattenedArray,
-  isRegularPlanningItem,
 } from '../lib/org_utils';
 
 import {
