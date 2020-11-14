@@ -60,6 +60,11 @@ function TaskListModal(props) {
 
       <div
         className="task-list__headers-container"
+        // On mobile devices, the Drawer already handles the touch
+        // event. Hence, scrolling within the Drawers container does
+        // not work with the same event. Therefore, we're just opting
+        // to scroll the whole drawer. That's not the best UX. And a
+        // better CSS juggler than me is welcome to improve on it.
         style={isMobileBrowser ? undefined : { overflow: 'auto' }}
       >
         <TaskListView
