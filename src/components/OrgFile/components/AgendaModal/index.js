@@ -8,6 +8,8 @@ import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
+
 import * as orgActions from '../../../../actions/org';
 
 import _ from 'lodash';
@@ -140,7 +142,15 @@ function AgendaModal(props) {
         <i className="fas fa-chevron-right fa-lg" onClick={handleNextDateClick} />
       </div>
 
-      <div className="agenda__days-container">
+      <div
+        className="agenda__days-container"
+        // On mobile devices, the Drawer already handles the touch
+        // event. Hence, scrolling within the Drawers container does
+        // not work with the same event. Therefore, we're just opting
+        // to scroll the whole drawer. That's not the best UX. And a
+        // better CSS juggler than me is welcome to improve on it.
+        style={isMobileBrowser ? undefined : { overflow: 'auto' }}
+      >
         {dates.map((date) => (
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
