@@ -37,7 +37,6 @@ export default class AgendaDay extends PureComponent {
     const {
       date,
       files,
-      todoKeywordSets,
       dateDisplayType,
       onToggleDateDisplayType,
       agendaDefaultDeadlineDelayValue,

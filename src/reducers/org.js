@@ -54,13 +54,13 @@ import {
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
+import { applyFileSettingsFromConfig } from '../util/settings_persister';
 
-const displayFile = (state, action) => {
+const parseFile = (state, action) => {
   const { path, contents } = action;
   const parsedFile = parseOrg(contents);
 
   return state
-    .set('path', path)
     .setIn(['files', path, 'contents'], contents)
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
@@ -68,15 +68,8 @@ const displayFile = (state, action) => {
     .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
-const stopDisplayingFile = (state) =>
-  state
-    .set('path', null)
-    //.set('contents', null)
-    //.set('headers', null)
-    .set('filteredHeaders', null);
-//.set('todoKeywordSets', null)
-//.set('fileConfigLines', null)
-//.set('linesBeforeHeadings', null);
+const clearSearch = (state) =>
+  state.set('path', null).setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
@@ -1057,13 +1050,31 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
+const determineExcludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
+  files.mapEntries(([filePath, file]) => [
+    filePath,
+    file.update('headers', (headers) => {
+      const fileSetting = fileSettings.find((setting) => filePath === setting.get('path'));
+      // always include the viewed file
+      if (path === filePath) {
+        return headers;
+      } else if (fileSetting) {
+        if (fileSetting.get(settingValue)) {
+          return headers;
+        } else {
+          return List();
+        }
+      } else {
+        // if no setting exists
+        return includeByDefault ? headers : List();
+      }
+    }),
+  ]);
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
-  const path = state.get('path');
-  // TODO: search currently uses all loaded files.
-  // Decide which files should be used based on context or configuration.
-  const files = state.get('files');
+  let files = state.get('files');
   state = state.asMutable();
 
   let searchFilterValid = true;
@@ -1077,6 +1088,17 @@ export const setSearchFilterInformation = (state, action) => {
     // headers when given an invalid search filter.
     searchFilterValid = false;
   }
+
+  const path = state.get('path');
+  const fileSettings = state.get('fileSettings');
+  // Decide which files to include
+  if (context === 'agenda') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInAgenda', true);
+  } else if (context === 'search') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInSearch', false);
+  } else if (context === 'task-list') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInTasklist', false);
+  } // else use all files (e.g. for refile)
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successful
@@ -1188,13 +1210,55 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
-const changePath = (state, action) => state.set('path', action.path);
+const setPath = (state, action) => state.set('path', action.path);
 
 const setShowClockDisplay = (state, action) => {
   if (action.showClockDisplay) {
     state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
   }
   return state.set('showClockDisplay', action.showClockDisplay);
+};
+
+const indexOfFileSettingWithId = (settings, settingId) =>
+  settings.findIndex((setting) => setting.get('id') === settingId);
+
+const updateFileSettingFieldPathValue = (state, action) => {
+  const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
+
+  return state.setIn(['fileSettings', settingIndex].concat(action.fieldPath), action.newValue);
+};
+
+const reorderFileSetting = (state, action) =>
+  state.update('fileSettings', (settings) =>
+    settings.splice(action.fromIndex, 1).splice(action.toIndex, 0, settings.get(action.fromIndex))
+  );
+
+const deleteFileSetting = (state, action) => {
+  const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
+
+  return state.update('fileSettings', (settings) => settings.delete(settingIndex));
+};
+
+const addNewEmptyFileSetting = (state) =>
+  state.update('fileSettings', (settings) =>
+    settings.push(
+      fromJS({
+        id: generateId(),
+        path: '',
+        loadOnStartup: false,
+        includeInAgenda: true,
+        includeInSearch: false,
+        includeInTasklist: false,
+      })
+    )
+  );
+
+const restoreFileSettings = (state, action) => {
+  if (!action.newSettings) {
+    return state;
+  }
+
+  return applyFileSettingsFromConfig(state, action.newSettings);
 };
 
 const reduceInFile = (state, action, path) => (func, ...args) => {
@@ -1206,10 +1270,10 @@ const reducer = (state, action) => {
   const inFile = reduceInFile(state, action, path);
 
   switch (action.type) {
-    case 'DISPLAY_FILE':
-      return displayFile(state, action);
-    case 'STOP_DISPLAYING_FILE':
-      return stopDisplayingFile(state, action);
+    case 'PARSE_FILE':
+      return parseFile(state, action);
+    case 'CLEAR_SEARCH':
+      return clearSearch(state, action);
     case 'TOGGLE_HEADER_OPENED':
       return inFile(toggleHeaderOpened);
     case 'OPEN_HEADER':
@@ -1257,7 +1321,7 @@ const reducer = (state, action) => {
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
     case 'SET_DIRTY':
-      return inFile(setDirty);
+      return action.path ? reduceInFile(state, action, action.path)(setDirty) : inFile(setDirty);
     case 'NARROW_HEADER':
       return inFile(narrowHeader);
     case 'WIDEN_HEADER':
@@ -1289,7 +1353,9 @@ const reducer = (state, action) => {
     case 'ADVANCE_CHECKBOX_STATE':
       return inFile(advanceCheckboxState);
     case 'SET_LAST_SYNC_AT':
-      return inFile(setLastSyncAt);
+      return action.path
+        ? reduceInFile(state, action, action.path)(setLastSyncAt)
+        : inFile(setLastSyncAt);
     case 'SET_HEADER_TAGS':
       return inFile(setHeaderTags);
     case 'REORDER_TAGS':
@@ -1316,11 +1382,20 @@ const reducer = (state, action) => {
       return inFile(updateLogEntryTime);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
-    case 'CHANGE_PATH':
-      return changePath(state, action);
+    case 'SET_PATH':
+      return setPath(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
-
+    case 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE':
+      return updateFileSettingFieldPathValue(state, action);
+    case 'REORDER_FILE_SETTING':
+      return reorderFileSetting(state, action);
+    case 'DELETE_FILE_SETTING':
+      return deleteFileSetting(state, action);
+    case 'ADD_NEW_EMPTY_FILE_SETTING':
+      return addNewEmptyFileSetting(state, action);
+    case 'RESTORE_FILE_SETTINGS':
+      return restoreFileSettings(state, action);
     default:
       return state;
   }
@@ -1328,8 +1403,14 @@ const reducer = (state, action) => {
 
 export default (state = Map(), action) => {
   if (action.dirtying) {
-    const path = state.get('path');
-    state = state.setIn(['files', path, 'isDirty'], true);
+    if (action.type === 'REFILE_SUBTREE') {
+      const { sourcePath, targetPath } = action;
+      state = state.setIn(['files', sourcePath, 'isDirty'], true);
+      state = state.setIn(['files', targetPath, 'isDirty'], true);
+    } else {
+      const path = state.get('path');
+      state = state.setIn(['files', path, 'isDirty'], true);
+    }
   }
 
   state = reducer(state, action);

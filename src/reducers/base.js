@@ -4,7 +4,10 @@ import { applyCategorySettingsFromConfig } from '../util/settings_persister';
 
 const setLoadingMessage = (state, action) => state.set('loadingMessage', action.loadingMessage);
 
-const hideLoadingMessage = (state) => state.set('loadingMessage', null);
+const hideLoadingMessage = (state) =>
+  state.update('loadingMessage', (loadingMessage) =>
+    state.get('isLoading').isEmpty() ? null : loadingMessage
+  );
 
 const setFontSize = (state, action) => state.set('fontSize', action.newFontSize);
 
@@ -109,7 +112,13 @@ const closePopup = (state) => {
   return state.set('activePopup', null);
 };
 
-const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
+const setIsLoading = (state, action) => {
+  if (action.isLoading) {
+    return state.update('isLoading', (isLoading) => isLoading.add(action.path));
+  } else {
+    return state.update('isLoading', (isLoading) => isLoading.delete(action.path));
+  }
+};
 
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);

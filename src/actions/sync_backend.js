@@ -3,7 +3,7 @@ import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
 import {
-  displayFile,
+  parseFile,
   applyOpennessState,
   setDirty,
   setLastSyncAt,
@@ -113,16 +113,16 @@ export const downloadFile = (path) => {
       .then((fileContents) => {
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
-        dispatch(displayFile(path, fileContents));
-        dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
-        dispatch(setDirty(false));
+        dispatch(parseFile(path, fileContents));
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+        dispatch(setDirty(false, path));
         dispatch(applyOpennessState());
         dispatch(ActionCreators.clearHistory());
       })
       .catch(() => {
         dispatch(hideLoadingMessage());
-        dispatch(setIsLoading(false));
-        dispatch(setOrgFileErrorMessage('File not found'));
+        dispatch(setIsLoading(false, path));
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
       });
   };
 };

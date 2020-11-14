@@ -143,6 +143,8 @@ class HeaderBar extends PureComponent {
         return this.renderSettingsSubPageBackButton();
       case 'capture_templates_editor':
         return this.renderSettingsSubPageBackButton();
+      case 'file_settings_editor':
+        return this.renderSettingsSubPageBackButton();
       case 'sample':
         return this.renderSettingsSubPageBackButton();
       default:
@@ -182,6 +184,8 @@ class HeaderBar extends PureComponent {
         return titleContainerWithText('Shortcuts');
       case 'capture_templates_editor':
         return titleContainerWithText('Capture');
+      case 'file_settings_editor':
+        return titleContainerWithText('Files');
       case 'sample':
         return titleContainerWithText('Sample');
       default:

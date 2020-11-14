@@ -1,4 +1,4 @@
-import { displayFile, stopDisplayingFile } from './org';
+import { parseFile, resetFileDisplay } from './org';
 
 import raw from 'raw.macro';
 
@@ -11,9 +11,10 @@ export const hideLoadingMessage = () => ({
   type: 'HIDE_LOADING_MESSAGE',
 });
 
-export const setIsLoading = (isLoading) => ({
+export const setIsLoading = (isLoading, path) => ({
   type: 'SET_IS_LOADING',
   isLoading,
+  path,
 });
 
 export const setDisappearingLoadingMessage = (loadingMessage, delay) => (dispatch) => {
@@ -38,20 +39,17 @@ export const loadStaticFile = (staticFile) => {
       sample: raw('../../sample.org'),
     }[staticFile];
 
-    dispatch(displayFile(null, fileContents));
+    dispatch(parseFile(null, fileContents));
   };
 };
 
 export const unloadStaticFile = () => {
   return (dispatch, getState) => {
-    dispatch(stopDisplayingFile());
+    dispatch(resetFileDisplay());
 
     if (!!getState().base.get('lastViewedPath')) {
       dispatch(
-        displayFile(
-          getState().base.get('lastViewedPath'),
-          getState().base.get('lastViewedContents')
-        )
+        parseFile(getState().base.get('lastViewedPath'), getState().base.get('lastViewedContents'))
       );
     }
   };

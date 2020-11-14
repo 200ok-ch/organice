@@ -11,7 +11,7 @@ import readFixture from '../../../test_helpers/index';
 
 import rootReducer from '../../reducers/';
 
-import { displayFile } from '../../actions/org';
+import { setPath, parseFile } from '../../actions/org';
 import { setShouldLogIntoDrawer } from '../../actions/base';
 
 import { Map, fromJS } from 'immutable';
@@ -60,7 +60,8 @@ describe('Render all views', () => {
       },
       applyMiddleware(thunk)
     );
-    store.dispatch(displayFile('fixtureTestFile.org', testOrgFile));
+    store.dispatch(parseFile('fixtureTestFile.org', testOrgFile));
+    store.dispatch(setPath('fixtureTestFile.org'));
   });
 
   describe('Org Functionality', () => {

@@ -26,6 +26,7 @@ import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
 import { loadTheme } from '../../lib/color';
+import FileSettingsEditor from '../FileSettingsEditor';
 
 class Entry extends PureComponent {
   constructor(props) {
@@ -115,15 +116,18 @@ class Entry extends PureComponent {
     if (!!path) {
       path = '/' + path;
     }
-
-    return (
-      <OrgFile
-        path={path}
-        shouldDisableDirtyIndicator={false}
-        shouldDisableActionDrawer={false}
-        shouldDisableSyncButtons={false}
-      />
-    );
+    if (this.props.path && this.props.path !== path) {
+      return <Redirect push to={'/file' + this.props.path} />;
+    } else {
+      return (
+        <OrgFile
+          path={path}
+          shouldDisableDirtyIndicator={false}
+          shouldDisableActionDrawer={false}
+          shouldDisableSyncButtons={false}
+        />
+      );
+    }
   }
 
   shouldPromptWhenLeaving() {
@@ -164,12 +168,17 @@ class Entry extends PureComponent {
         {activeModalPage === 'changelog' ? (
           this.renderChangelogFile()
         ) : isAuthenticated ? (
-          ['keyboard_shortcuts_editor', 'settings', 'capture_templates_editor', 'sample'].includes(
-            activeModalPage
-          ) ? (
+          [
+            'keyboard_shortcuts_editor',
+            'settings',
+            'capture_templates_editor',
+            'file_settings_editor',
+            'sample',
+          ].includes(activeModalPage) ? (
             <Fragment>
               {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
               {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+              {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
               {activeModalPage === 'sample' && this.renderSampleFile()}
             </Fragment>
           ) : (
@@ -203,6 +212,7 @@ const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path]);
   return {
+    path,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
