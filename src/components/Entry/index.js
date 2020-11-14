@@ -6,7 +6,7 @@ import { Route, Switch, Redirect, Prompt, withRouter } from 'react-router-dom';
 
 import './stylesheet.css';
 
-import { List } from 'immutable';
+import { List, Set } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -43,6 +43,7 @@ class Entry extends PureComponent {
 
   componentDidMount() {
     this.setChangelogUnseenChanges();
+    this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
   }
 
   // TODO: Should this maybe done on init of the application and not in the component?
@@ -211,8 +212,16 @@ class Entry extends PureComponent {
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path]);
+  const filesToLoadOnStartup = state.org.present
+    .get('fileSettings')
+    .filter((setting) => setting.get('loadOnStartup'))
+    .map((setting) => setting.get('path'));
+  const loadedFiles = Set.fromKeys(state.org.present.get('files'));
+  const fileIsLoaded = (path) => loadedFiles.includes(path);
+  const filesToLoad = filesToLoadOnStartup.filter((path) => !fileIsLoaded(path));
   return {
     path,
+    filesToLoad,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
