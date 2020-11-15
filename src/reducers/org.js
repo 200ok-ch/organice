@@ -1341,7 +1341,7 @@ function addTodoStateChangeLogItem(
   timestamp
 ) {
   // This is how the TODO state change will be logged
-  const inactiveTimestamp = getTimestampAsText(timestamp, '[]');
+  const inactiveTimestamp = getTimestampAsText(timestamp, { isActive: false, withStartTime: true });
   const newStateChangeLogText = `- State "${newTodoState}"       from "${currentTodoState}"       ${inactiveTimestamp}`;
 
   if (logIntoDrawer) {
