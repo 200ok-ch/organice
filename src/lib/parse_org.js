@@ -521,7 +521,7 @@ export const _parsePlanningItems = (rawText) => {
           _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
         );
 
-        return createTimestamp({ type, timestamp });
+        return createOrUpdateTimestamp({ type, timestamp });
       })
       .filter((item) => !!item)
   );
@@ -535,7 +535,7 @@ export const _parsePlanningItems = (rawText) => {
   }
 };
 
-const createTimestamp = ({ type, timestamp, id }) =>
+const createOrUpdateTimestamp = ({ type, timestamp, id }) =>
   fromJS({ type, timestamp, id: id || generateId() });
 
 const parsePropertyList = (rawText) => {
@@ -880,7 +880,7 @@ const extractActiveTimestampsForPlanningItemsFromParse = (type, parsedData) => {
   return parsedData
     .filter((x) => x.get('type') === 'timestamp' && x.getIn(['firstTimestamp', 'isActive']))
     .map((x) =>
-      createTimestamp({ type: type, timestamp: x.get('firstTimestamp'), id: x.get('id') })
+      createOrUpdateTimestamp({ type: type, timestamp: x.get('firstTimestamp'), id: x.get('id') })
     );
 };
 
