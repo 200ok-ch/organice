@@ -1348,7 +1348,9 @@ const reducer = (state, action) => {
     case 'UPDATE_TABLE_CELL_VALUE':
       return inFile(updateTableCellValue);
     case 'INSERT_CAPTURE':
-      return inFile(insertCapture);
+      return action.template.get('file') !== ''
+        ? reduceInFile(state, action, action.template.get('file'))(insertCapture)
+        : inFile(insertCapture);
     case 'CLEAR_PENDING_CAPTURE':
       return inFile(clearPendingCapture);
     case 'ADVANCE_CHECKBOX_STATE':
@@ -1408,6 +1410,14 @@ export default (state = Map(), action) => {
       const { sourcePath, targetPath } = action;
       state = state.setIn(['files', sourcePath, 'isDirty'], true);
       state = state.setIn(['files', targetPath, 'isDirty'], true);
+    } else if (action.type === 'INSERT_CAPTURE') {
+      const captureTarget = action.template.get('file');
+      if (captureTarget === '') {
+        const path = state.get('path');
+        state = state.setIn(['files', path, 'isDirty'], true);
+      } else {
+        state = state.setIn(['files', captureTarget, 'isDirty'], true);
+      }
     } else {
       const path = state.get('path');
       state = state.setIn(['files', path, 'isDirty'], true);
