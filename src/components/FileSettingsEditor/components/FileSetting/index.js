@@ -28,6 +28,9 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
   const toggleIncludeInTasklist = () =>
     onFieldPathUpdate(setting.get('id'), ['includeInTasklist'], !setting.get('includeInTasklist'));
 
+  const toggleIncludeInRefile = () =>
+    onFieldPathUpdate(setting.get('id'), ['includeInRefile'], !setting.get('includeInRefile'));
+
   const handleDeleteClick = () => {
     if (
       window.confirm(`Are you sure you want to delete the settings for "${setting.get('path')}"?`)
@@ -105,6 +108,18 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
           to always include this file. The currently loaded file is always included.
         </div>
       </div>
+
+      <div className="file-setting__field-container">
+        <div className="file-setting__field">
+          <div>Include in Refile?</div>
+          <Switch isEnabled={setting.get('includeInRefile')} onToggle={toggleIncludeInRefile} />
+        </div>
+
+        <div className="file-setting__help-text">
+          By default, all loaded files are available as refile targets. Disable this setting to
+          exclude this file. The currently loaded file is always included.
+        </div>
+      </div>
     </>
   );
 
@@ -137,7 +152,7 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
             <i className={caretClassName} />
             <div className="file-setting-icons">
               <div
-                className={classNames({
+                className={classNames('load-on-startup-icon', {
                   'fas fa-sync-alt fa-lg file-setting-icon': setting.get('loadOnStartup'),
                 })}
               />
@@ -154,6 +169,11 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
               <div
                 className={classNames({
                   'fas fa-tasks fa-lg file-setting-icon': setting.get('includeInTasklist'),
+                })}
+              />
+              <div
+                className={classNames({
+                  'fas fa-file-export fa-lg file-setting-icon': setting.get('includeInRefile'),
                 })}
               />
             </div>

@@ -86,10 +86,18 @@
 
 .file-setting-icons {
   display: grid;
-  grid-template-columns: repeat(2, 20px [col-start]);
+  grid-template-columns: repeat(3, 20px [col-start]);
   grid-template-rows: repeat(2, 20px [row-start]);
 }
 
 .file-setting-icon {
   font-size: small;
+}
+
+.load-on-startup-icon {
+  grid-column-start: 1;
+  grid-column-end: 1;
+  grid-row-start: 1;
+  grid-row-end: span 2;
+  align-self: center;
 }
