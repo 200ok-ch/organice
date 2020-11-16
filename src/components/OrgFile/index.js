@@ -37,7 +37,7 @@ import {
 } from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { fromJS, Set } from 'immutable';
+import { fromJS, List, Set } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -284,6 +284,7 @@ class OrgFile extends PureComponent {
       activePopupType,
       activePopupData,
       captureTemplates,
+      files,
       headers,
       selectedHeader,
     } = this.props;
@@ -301,12 +302,20 @@ class OrgFile extends PureComponent {
           />
         );
       case 'capture':
+        const template = captureTemplates.find(
+          (template) => template.get('id') === activePopupData.get('templateId')
+        );
+        const path = template.get('file');
+        let headersOfCaptureTarget = headers;
+        if (path !== '') {
+          const file = files.get(path);
+          headersOfCaptureTarget = file ? file.get('headers') : List();
+        }
+        console.debug(headersOfCaptureTarget);
         return (
           <CaptureModal
-            template={captureTemplates.find(
-              (template) => template.get('id') === activePopupData.get('templateId')
-            )}
-            headers={headers}
+            template={template}
+            headers={headersOfCaptureTarget}
             onCapture={this.handleCapture}
             onClose={this.handlePopupClose}
           />
@@ -502,8 +511,9 @@ class OrgFile extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+  const files = state.org.present.get('files');
   const loadedPath = state.org.present.get('path');
-  const loadedFiles = Set.fromKeys(state.org.present.get('files'));
+  const loadedFiles = Set.fromKeys(files);
   const fileIsLoaded = (path) => loadedFiles.includes(path);
   const file = state.org.present.getIn(['files', loadedPath]);
   const headers = file ? file.get('headers') : null;
@@ -511,6 +521,7 @@ const mapStateToProps = (state) => {
   const activePopup = state.base.get('activePopup');
 
   return {
+    files,
     headers,
     selectedHeaderId,
     isDirty: file ? file.get('isDirty') : null,

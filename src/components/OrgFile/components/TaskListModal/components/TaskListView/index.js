@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Map } from 'immutable';
+import { List } from 'immutable';
 
 import './stylesheet.css';
 
@@ -21,76 +21,71 @@ function TaskListView(props) {
     return () => props.onHeaderClick(path, headerId);
   }
 
-  const { dateDisplayType, onToggleDateDisplayType, headers, todoKeywordSets } = props;
+  const {
+    dateDisplayType,
+    onToggleDateDisplayType,
+    headersForFiles,
+    todoKeywordSetsForFiles,
+  } = props;
 
-  // TODO this uses the todokeywordset of the current file for all files
-  // use each files own todokeywordset instead
-  const planningItemsAndHeaders = headers.map((headersForFile) =>
-    getPlanningItemsAndHeaders({
-      headers: headersForFile,
-      todoKeywordSets,
-    })
-  );
+  const planningItemsAndHeaders = getPlanningItemsAndHeaders({
+    headersForFiles,
+    todoKeywordSetsForFiles,
+  });
 
   return (
     <div className="agenda-day__container">
       <div className="agenda-day__headers-container">
-        {Array.from(planningItemsAndHeaders.entries(), ([path, planningItemsAndHeadersOfFile]) => (
-          <div>
-            <span>{path}</span>
-            {planningItemsAndHeadersOfFile.map(([planningItem, header]) => {
-              const planningItemDate = planningItem
-                ? dateForTimestamp(planningItem.get('timestamp'))
-                : null;
-              const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
+        {planningItemsAndHeaders.map(([planningItem, header]) => {
+          const planningItemDate = planningItem
+            ? dateForTimestamp(planningItem.get('timestamp'))
+            : null;
+          const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
 
-              const dateClassName = classNames('task-list__header-planning-date', {
-                'task-list__header-planning-date--overdue':
-                  hasTodoKeyword && planningItem && isPast(planningItemDate),
-              });
+          const dateClassName = classNames('task-list__header-planning-date', {
+            'task-list__header-planning-date--overdue':
+              hasTodoKeyword && planningItem && isPast(planningItemDate),
+          });
 
-              let planningInformation = <div />;
-              if (planningItemDate) {
-                planningInformation = (
-                  <div className="agenda-day__header__planning-item-container">
-                    <div className="task-list__header-planning-type">
-                      {getPlanningItemTypeText(planningItem)}
-                    </div>
-                    <div className={dateClassName} onClick={onToggleDateDisplayType}>
-                      {dateDisplayType === 'absolute'
-                        ? format(planningItemDate, 'MM/dd')
-                        : customFormatDistanceToNow(planningItemDate)}
-
-                      {!!planningItem.getIn(['timestamp', 'startHour']) && (
-                        <Fragment>
-                          <br />
-                          {format(planningItemDate, 'h:mma')}
-                        </Fragment>
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-
-              return (
-                <div key={header.get('id')} className="agenda-day__header-container">
-                  <div className="agenda-day__header__header-container">
-                    <TitleLine
-                      header={header}
-                      color="var(--base03)"
-                      hasContent={false}
-                      isSelected={false}
-                      shouldDisableActions
-                      shouldDisableExplicitWidth
-                      onClick={handleHeaderClick(path, header.get('id'))}
-                    />
-                    {planningInformation}
-                  </div>
+          let planningInformation = <div />;
+          if (planningItemDate) {
+            planningInformation = (
+              <div className="agenda-day__header__planning-item-container">
+                <div className="task-list__header-planning-type">
+                  {getPlanningItemTypeText(planningItem)}
                 </div>
-              );
-            })}
-          </div>
-        ))}
+                <div className={dateClassName} onClick={onToggleDateDisplayType}>
+                  {dateDisplayType === 'absolute'
+                    ? format(planningItemDate, 'MM/dd')
+                    : customFormatDistanceToNow(planningItemDate)}
+
+                  {!!planningItem.getIn(['timestamp', 'startHour']) && (
+                    <Fragment>
+                      <br />
+                      {format(planningItemDate, 'h:mma')}
+                    </Fragment>
+                  )}
+                </div>
+              </div>
+            );
+          }
+          return (
+            <div key={header.get('id')} className="agenda-day__header-container">
+              <div className="agenda-day__header__header-container">
+                <TitleLine
+                  header={header}
+                  color="var(--base03)"
+                  hasContent={false}
+                  isSelected={false}
+                  shouldDisableActions
+                  shouldDisableExplicitWidth
+                  onClick={handleHeaderClick(header.get('path'), header.get('id'))}
+                />
+                {planningInformation}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -100,8 +95,18 @@ function TaskListView(props) {
   // on every update of the headers state when not even looking at the
   // Agenda is certainly more inefficient. Hence, we're doing it on
   // every render.
-  function getPlanningItemsAndHeaders({ headers, todoKeywordSets }) {
-    const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
+  function getPlanningItemsAndHeaders({ headersForFiles, todoKeywordSetsForFiles }) {
+    const headers = List().concat(
+      ...headersForFiles
+        .mapEntries(([path, headersOfFile]) => [
+          path,
+          headersOfFile.map((header) => header.set('path', path)),
+        ])
+        .valueSeq()
+    );
+    const isTodoKeywordInDoneState = todoKeywordSetsForFiles.map((todoKeywordSets) =>
+      createIsTodoKeywordInDoneState(todoKeywordSets)
+    );
 
     return headers
       .filter((header) => header.getIn(['titleLine', 'todoKeyword']))
@@ -113,7 +118,9 @@ function TaskListView(props) {
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
-        const doneState = isTodoKeywordInDoneState(header.getIn(['titleLine', 'todoKeyword']));
+        const doneState = isTodoKeywordInDoneState.get(header.get('path'))(
+          header.getIn(['titleLine', 'todoKeyword'])
+        );
 
         const timeAsSortCriterion = planningItem
           ? getTimeFromPlanningItem(planningItem)
@@ -125,15 +132,13 @@ function TaskListView(props) {
 }
 
 const mapStateToProps = (state) => {
-  const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path]);
+  const files = state.org.present.get('files');
   return {
-    todoKeywordSets: file.get('todoKeywordSets'),
     // When no filtering has happened, yet (initial state), use all headers.
-    headers:
+    headersForFiles:
       state.org.present.getIn(['search', 'filteredHeaders']) ||
-      // @tarnung TODO: this uses only the current file when no search term is entered. Use all of them.
-      new Map().set(path, file.get('headers')),
+      files.map((file) => file.get('headers')),
+    todoKeywordSetsForFiles: files.map((file) => file.get('todoKeywordSets')),
   };
 };
 

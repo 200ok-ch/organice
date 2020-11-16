@@ -68,8 +68,7 @@ const parseFile = (state, action) => {
     .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
-const clearSearch = (state) =>
-  state.set('path', null).setIn(['search', 'filteredHeaders'], null);
+const clearSearch = (state) => state.set('path', null).setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
@@ -1098,7 +1097,9 @@ export const setSearchFilterInformation = (state, action) => {
     files = determineExcludedFiles(files, fileSettings, path, 'includeInSearch', false);
   } else if (context === 'task-list') {
     files = determineExcludedFiles(files, fileSettings, path, 'includeInTasklist', false);
-  } // else use all files (e.g. for refile)
+  } else if (context === 'refile') {
+    files = determineExcludedFiles(files, fileSettings, path, 'includeInRefile', true);
+  } // there should not be another context, but if so use all files
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successful
@@ -1247,6 +1248,7 @@ const addNewEmptyFileSetting = (state) =>
         loadOnStartup: false,
         includeInAgenda: true,
         includeInSearch: false,
+        includeInRefile: true,
         includeInTasklist: false,
       })
     )
@@ -1346,7 +1348,9 @@ const reducer = (state, action) => {
     case 'UPDATE_TABLE_CELL_VALUE':
       return inFile(updateTableCellValue);
     case 'INSERT_CAPTURE':
-      return inFile(insertCapture);
+      return action.template.get('file') !== ''
+        ? reduceInFile(state, action, action.template.get('file'))(insertCapture)
+        : inFile(insertCapture);
     case 'CLEAR_PENDING_CAPTURE':
       return inFile(clearPendingCapture);
     case 'ADVANCE_CHECKBOX_STATE':
@@ -1406,6 +1410,14 @@ export default (state = Map(), action) => {
       const { sourcePath, targetPath } = action;
       state = state.setIn(['files', sourcePath, 'isDirty'], true);
       state = state.setIn(['files', targetPath, 'isDirty'], true);
+    } else if (action.type === 'INSERT_CAPTURE') {
+      const captureTarget = action.template.get('file');
+      if (captureTarget === '') {
+        const path = state.get('path');
+        state = state.setIn(['files', path, 'isDirty'], true);
+      } else {
+        state = state.setIn(['files', captureTarget, 'isDirty'], true);
+      }
     } else {
       const path = state.get('path');
       state = state.setIn(['files', path, 'isDirty'], true);

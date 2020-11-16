@@ -21,6 +21,7 @@ export default ({
   onRemoveTemplateHeaderPath,
   onDeleteTemplate,
   syncBackendType,
+  loadedFilePaths,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(!!template.get('description'));
   const handleHeaderBarClick = () => setIsCollapsed(!isCollapsed);
@@ -192,6 +193,32 @@ export default ({
     </div>
   );
 
+  const renderFilePath = (template) => {
+    return (
+      <div className="capture-template__field-container">
+        <div className="capture-template__field">
+          <div>File: </div>
+          <select onChange={updateField('file')} style={{ width: '90%' }}>
+            {(loadedFilePaths.find((path) => path === template.get('file'))
+              ? loadedFilePaths
+              : [template.get('file'), ...loadedFilePaths]
+            ).map((path) => (
+              <option key={path} value={path}>
+                {path}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="capture-template__help-text">
+          By default the file opened when capturing is the capture target. Select a specific file if
+          you want this template to always capture to that file. Make sure the file is loaded for it
+          to be selectable here. You might also consider to set the file to load on startup in the
+          file settings so it's always available.
+        </div>
+      </div>
+    );
+  };
+
   const renderHeaderPaths = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field" style={{ marginTop: 7 }}>
@@ -339,6 +366,7 @@ export default ({
               {renderDescriptionField(template)}
               {renderIconField(template)}
               {renderOrgFileAvailability(template)}
+              {renderFilePath(template)}
               {renderHeaderPaths(template)}
               {renderPrependField(template)}
               {renderTemplateField(template)}
