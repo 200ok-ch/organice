@@ -531,11 +531,11 @@ export const removePlanningItem = (headerId, planningItemIndex) => ({
   dirtying: true,
 });
 
-export const removeTimestamp = (headerId, timestampId) =>({
-type: 'REMOVE_TIMESTAMP',
-headerId,
-timestampId,
-dirtying: true,
+export const removeTimestamp = (headerId, timestampId) => ({
+  type: 'REMOVE_TIMESTAMP',
+  headerId,
+  timestampId,
+  dirtying: true,
 });
 
 export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
