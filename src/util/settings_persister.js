@@ -167,7 +167,7 @@ export const persistableFields = [
     name: 'agendaTimeframe',
     type: 'string',
     default: 'Week',
-    shouldStoreInConfig: true,
+    shouldStoreInConfig: false,
   },
 ];
 
@@ -197,7 +197,7 @@ const getFieldsToPersist = (state, fields) => {
 };
 
 const getConfigFileContents = (fieldsToPersist) => {
-  return JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
+  return JSON.stringify(_.fromPairs(fieldsToPersist.filter((f) => f.shouldStoreInConfig)), null, 2);
 };
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
