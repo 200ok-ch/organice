@@ -999,6 +999,33 @@ const removePlanningItem = (state, action) => {
   return state.removeIn(['headers', headerIndex, 'planningItems', planningItemIndex]);
 };
 
+const removeTimestamp = (state, action) => {
+  const { path, timestampPart } = pathAndPartOfTimestampItemWithIdInHeaders(
+    state.get('headers'),
+    action.timestampId
+  );
+
+  // remove parsed timestamp
+  state = state.removeIn(['headers', ...path]);
+
+  // in case this is an active timestamp, remove it from planning items.
+  state = state.updateIn(['headers', path[0], 'planningItems'], (planningItems) =>
+    planningItems.filter((item) => item.get('id') !== action.timestampId)
+  );
+
+  // rebuild text representation of header
+  state = state.setIn(
+    ['headers', path[0], 'titleLine', 'rawTitle'],
+    attributedStringToRawText(state.getIn(['headers', path[0], 'titleLine', 'title']))
+  );
+  state = state.setIn(
+    ['headers', path[0], 'rawDescription'],
+    attributedStringToRawText(state.getIn(['headers', path[0], 'description']))
+  );
+
+  return state;
+};
+
 export const updatePropertyListItems = (state, action) => {
   const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
 
@@ -1252,6 +1279,8 @@ const reducer = (state, action) => {
       return addNewPlanningItem(state, action);
     case 'REMOVE_PLANNING_ITEM':
       return removePlanningItem(state, action);
+    case 'REMOVE_TIMESTAMP':
+      return removeTimestamp(state, action);
     case 'UPDATE_PROPERTY_LIST_ITEMS':
       return updatePropertyListItems(state, action);
     case 'SET_ORG_FILE_ERROR_MESSAGE':
