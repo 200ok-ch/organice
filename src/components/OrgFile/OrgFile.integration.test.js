@@ -56,7 +56,7 @@ describe('Render all views', () => {
         base: new fromJS({
           customKeybindings: {},
           shouldTapTodoToAdvance: true,
-          agendaTimeframe: 'Week'
+          agendaTimeframe: 'Week',
         }),
       },
       applyMiddleware(thunk)
