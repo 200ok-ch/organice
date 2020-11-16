@@ -336,12 +336,8 @@ class TimestampEditor extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {};
-};
-
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimestampEditor);
+export default connect(null, mapDispatchToProps)(TimestampEditor);

@@ -1000,7 +1000,7 @@ const removePlanningItem = (state, action) => {
 };
 
 const removeTimestamp = (state, action) => {
-  const { path, timestampPart } = pathAndPartOfTimestampItemWithIdInHeaders(
+  const { path } = pathAndPartOfTimestampItemWithIdInHeaders(
     state.get('headers'),
     action.timestampId
   );
@@ -1431,6 +1431,8 @@ function updatePlanningItemsWithRepeaters({
           ['headers', headerIndex, 'rawDescription'],
           attributedStringToRawText(state.getIn(['headers', headerIndex, 'description']))
         );
+        break;
+      default:
         break;
     }
   });
