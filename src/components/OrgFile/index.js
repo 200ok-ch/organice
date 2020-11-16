@@ -335,6 +335,7 @@ class OrgFile extends PureComponent {
 
         return (
           <TimestampEditorModal
+            headerId={activePopupData.get('headerId')}
             timestamp={editingTimestamp}
             timestampId={activePopupData.get('timestampId')}
             planningItemIndex={activePopupData.get('planningItemIndex')}

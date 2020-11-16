@@ -44,9 +44,9 @@ class TimestampEditor extends PureComponent {
     if (_.isEmpty(event.target.value)) {
       // It's a planning item and the parser knows which one.
       if (_.isNumber(planningItemIndex)) {
-        this.props.org.removePlanningItem(this.props.selectedHeaderId, planningItemIndex);
+        this.props.org.removePlanningItem(this.props.headerId, planningItemIndex);
       } else if (_.isNumber(timestampId)) {
-        this.props.org.removeTimestamp(this.props.selectedHeaderId, timestampId);
+        this.props.org.removeTimestamp(this.props.headerId, timestampId);
       }
       this.props.onClose();
     } else {
@@ -337,10 +337,7 @@ class TimestampEditor extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const selectedHeaderId = state.org.present.get('selectedHeaderId');
-  return {
-    selectedHeaderId,
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch) => ({
