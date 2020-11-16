@@ -85,7 +85,7 @@ Replace the following variables in the example above with the desired values, as
 | Container | Variable          | Description                                                                                     | Example value                                                    |
 | :-------: | :---------------: | :--------------------------------------------------------------------------------:              | :--------------------------------------------------------------: |
 | Both      | \${HTTP_AUTH}     | User/password pair for Basic Auth <sup>1</sup>                                                  | Foobar:$$2y$$05\$\$s6HgvuWptDeM9I...                             |
-| Both      | \${DOMAIN}        | Domain name used to access Organice                                                             | https://organice.myserver.org                                    |
+| Both      | \${DOMAIN}        | Domain name used to access Organice                                                             | organice.example.com                                   |
 | webdav    | \${PUID}          | UID of the user your Org files belong to                                                        | 1000                                                             |
 | webdav    | \${PGID}          | GID of the group your Org files belong to                                                       | 1000                                                             |
 | Both      | \${WEBDAV_PREFIX} | Subpath of ${DOMAIN} the Webdav server will be providing your Org files from, without slashes. | webdav                                                           |
