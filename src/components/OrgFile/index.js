@@ -91,7 +91,9 @@ class OrgFile extends PureComponent {
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
     } else if (!_.isEmpty(path)) {
       if (this.props.fileIsLoaded(path)) {
-        this.props.org.sync({ path, shouldSuppressMessages: true });
+        if (this.props.shouldLiveSync) {
+          this.props.org.sync({ path, shouldSuppressMessages: true });
+        }
       } else {
         this.props.syncBackend.downloadFile(path);
       }
@@ -528,6 +530,7 @@ const mapStateToProps = (state) => {
     selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    shouldLiveSync: state.base.get('shouldLiveSync'),
     inEditMode: !!file ? file.get('editMode') : null,
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
