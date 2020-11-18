@@ -55,12 +55,9 @@ import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/time
 import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
 import { applyFileSettingsFromConfig } from '../util/settings_persister';
-import { saveFileContentsToLocalStorage } from '../util/file_persister';
 
 export const parseFile = (state, action) => {
   const { path, contents } = action;
-
-  saveFileContentsToLocalStorage(path, contents);
 
   const parsedFile = parseOrg(contents);
 

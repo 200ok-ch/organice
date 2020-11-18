@@ -1,4 +1,5 @@
 import { debounce } from 'lodash';
+import { parseISO, addSeconds } from 'date-fns';
 import { localStorageAvailable } from '../util/settings_persister';
 import { exportOrg } from '../lib/export_org';
 import { parseFile } from '../reducers/org';
@@ -6,12 +7,10 @@ import { parseFile } from '../reducers/org';
 export const saveFileContentsToLocalStorage = (path, contents) => {
   if (localStorageAvailable) {
     let persistedFiles = JSON.parse(localStorage.getItem('persistedFiles'));
-    persistedFiles = persistedFiles || [];
+    persistedFiles = persistedFiles || {};
 
     localStorage.setItem('files__' + path, contents);
-    if (persistedFiles.indexOf(path) === -1) {
-      persistedFiles.push(path);
-    }
+    persistedFiles[path] = addSeconds(new Date(), 5);
 
     localStorage.setItem('persistedFiles', JSON.stringify(persistedFiles));
   }
@@ -19,8 +18,7 @@ export const saveFileContentsToLocalStorage = (path, contents) => {
 
 const saveFunctionToDebounce = (state, path) => {
   if (localStorageAvailable) {
-    let persistedFiles = JSON.parse(localStorage.getItem('persistedFiles'));
-    persistedFiles = persistedFiles || [];
+    const persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || {};
 
     const contents = exportOrg({
       headers: state.org.present.getIn(['files', path, 'headers']),
@@ -28,10 +26,8 @@ const saveFunctionToDebounce = (state, path) => {
       dontIndent: state.base.get('shouldNotIndentOnExport'),
     });
     localStorage.setItem('files__' + path, contents);
-    if (persistedFiles.indexOf(path) === -1) {
-      persistedFiles.push(path);
-    }
 
+    persistedFiles[path] = state.org.present.getIn(['files', path, 'lastSyncAt']);
     localStorage.setItem('persistedFiles', JSON.stringify(persistedFiles));
   }
 };
@@ -54,11 +50,15 @@ export const saveFileToLocalStorage = (state, path) => {
 
 export const loadFilesFromLocalStorage = (state) => {
   if (localStorageAvailable) {
-    const persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || [];
-    persistedFiles.forEach((path) => {
+    const persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || {};
+    Object.entries(persistedFiles).forEach(([path, lastSyncAt]) => {
       const contents = localStorage.getItem('files__' + path);
       if (contents) {
         state.org.present = state.org.present.update((org) => parseFile(org, { path, contents }));
+        state.org.present = state.org.present.setIn(
+          ['files', path, 'lastSyncAt'],
+          parseISO(lastSyncAt)
+        );
       }
     });
   }

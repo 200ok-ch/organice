@@ -76,7 +76,7 @@ class OrgFile extends PureComponent {
   }
 
   componentDidMount() {
-    const { staticFile, path, loadedPath } = this.props;
+    const { staticFile, path } = this.props;
 
     if (!!staticFile) {
       this.props.base.loadStaticFile(staticFile);
@@ -89,9 +89,9 @@ class OrgFile extends PureComponent {
       }
 
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
-    } else if (!_.isEmpty(path) && path !== loadedPath) {
+    } else if (!_.isEmpty(path)) {
       if (this.props.fileIsLoaded(path)) {
-        this.props.org.sync({ path });
+        this.props.org.sync({ path, shouldSuppressMessages: true });
       } else {
         this.props.syncBackend.downloadFile(path);
       }
@@ -511,10 +511,10 @@ class OrgFile extends PureComponent {
 
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
-  const loadedPath = state.org.present.get('path');
+  const path = state.org.present.get('path');
   const loadedFiles = Set.fromKeys(files);
   const fileIsLoaded = (path) => loadedFiles.includes(path);
-  const file = state.org.present.getIn(['files', loadedPath]);
+  const file = state.org.present.getIn(['files', path]);
   const headers = file ? file.get('headers') : null;
   const selectedHeaderId = file ? file.get('selectedHeaderId') : null;
   const activePopup = state.base.get('activePopup');
@@ -524,7 +524,6 @@ const mapStateToProps = (state) => {
     headers,
     selectedHeaderId,
     isDirty: file ? file.get('isDirty') : null,
-    loadedPath,
     fileIsLoaded,
     selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),

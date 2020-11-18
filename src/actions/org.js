@@ -16,12 +16,16 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
+import { saveFileContentsToLocalStorage } from '../util/file_persister';
 
-export const parseFile = (path, contents) => ({
-  type: 'PARSE_FILE',
-  path,
-  contents,
-});
+export const parseFile = (path, contents) => (dispatch) => {
+  saveFileContentsToLocalStorage(path, contents);
+  dispatch({
+    type: 'PARSE_FILE',
+    path,
+    contents,
+  });
+};
 
 export const setLastSyncAt = (lastSyncAt, path) => ({
   type: 'SET_LAST_SYNC_AT',
@@ -38,18 +42,8 @@ export const resetFileDisplay = () => {
   };
 };
 
-const syncFunctionToDebounce = (dispatch, getState, options) => {
-  if (options.path) {
-    dispatch(doSync(options));
-  } else {
-    const files = getState().org.present.get('files');
-    files
-      .keySeq()
-      .forEach((path) => files.getIn([path, 'isDirty']) && dispatch(doSync({ ...options, path })));
-  }
-};
 const getDebouncedSyncFunction = () =>
-  debounce(syncFunctionToDebounce, 3000, {
+  debounce((dispatch, options) => dispatch(doSync(options)), 3000, {
     leading: true,
     trailing: true,
   });
@@ -61,6 +55,7 @@ const syncDebounced = (dispatch, getState, options) => {
   if (options.path) {
     filesToSync = [options.path];
   } else {
+    // if no path is passed in, sync all dirty files
     const files = getState().org.present.get('files');
     filesToSync = files.keySeq().filter((path) => files.getIn([path, 'isDirty']));
   }
@@ -70,7 +65,7 @@ const syncDebounced = (dispatch, getState, options) => {
       debouncedSyncFunctions[path] = getDebouncedSyncFunction();
       debouncedSyncFunction = debouncedSyncFunctions[path];
     }
-    debouncedSyncFunction(dispatch, getState, options);
+    debouncedSyncFunction(dispatch, options);
   });
 };
 
@@ -80,18 +75,9 @@ export const sync = (options) => (dispatch, getState) => {
   // user and start a sync.
   if (options.forceAction === 'manual') {
     console.log('forcing sync');
-    if (options.path) {
-      dispatch(doSync(options));
-    } else {
-      const files = getState().org.present.get('files');
-      const currentPath = getState().org.present.get('path');
-      files.keySeq().forEach(
-        (path) =>
-          // always sync the current file and all dirty files
-          (currentPath === path || files.getIn([path, 'isDirty'])) &&
-          dispatch(doSync({ ...options, path }))
-      );
-    }
+    const files = getState().org.present.get('files');
+    // sync all files on manual sync
+    files.keySeq().forEach((path) => dispatch(doSync({ ...options, path })));
   } else {
     syncDebounced(dispatch, getState, options);
   }
@@ -148,7 +134,7 @@ const doSync = ({
   }
 
   if (!shouldSuppressMessages) {
-    dispatch(setLoadingMessage('Syncing...'));
+    dispatch(setLoadingMessage(`Syncing ${path}...`));
   }
   dispatch(setIsLoading(true, path));
   dispatch(setOrgFileErrorMessage(null));
@@ -211,7 +197,7 @@ const doSync = ({
           dispatch(setDirty(false, path));
           dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
           if (!shouldSuppressMessages) {
-            dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+            dispatch(setDisappearingLoadingMessage(`Latest version pulled: ${path}`, 2000));
           }
           dispatch(setIsLoading(false, path));
         }
@@ -220,7 +206,7 @@ const doSync = ({
     .catch(() => {
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage('File not found'));
+      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
     });
 };
 
@@ -243,10 +229,13 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-export const setPath = (path) => ({
-  type: 'SET_PATH',
-  path,
-});
+export const setPath = (path) => (dispatch) => {
+  dispatch({
+    type: 'SET_PATH',
+    path,
+  });
+  dispatch(applyOpennessState());
+};
 
 export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
   dispatch(setPath(path));
