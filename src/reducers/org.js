@@ -55,13 +55,16 @@ import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/time
 import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
 import { applyFileSettingsFromConfig } from '../util/settings_persister';
+import { saveFileContentsToLocalStorage } from '../util/file_persister';
 
-const parseFile = (state, action) => {
+export const parseFile = (state, action) => {
   const { path, contents } = action;
+
+  saveFileContentsToLocalStorage(path, contents);
+
   const parsedFile = parseOrg(contents);
 
   return state
-    .setIn(['files', path, 'contents'], contents)
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
     .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
@@ -1405,24 +1408,10 @@ const reducer = (state, action) => {
 };
 
 export default (state = Map(), action) => {
-  if (action.dirtying) {
-    if (action.type === 'REFILE_SUBTREE') {
-      const { sourcePath, targetPath } = action;
-      state = state.setIn(['files', sourcePath, 'isDirty'], true);
-      state = state.setIn(['files', targetPath, 'isDirty'], true);
-    } else if (action.type === 'INSERT_CAPTURE') {
-      const captureTarget = action.template.get('file');
-      if (captureTarget === '') {
-        const path = state.get('path');
-        state = state.setIn(['files', path, 'isDirty'], true);
-      } else {
-        state = state.setIn(['files', captureTarget, 'isDirty'], true);
-      }
-    } else {
-      const path = state.get('path');
-      state = state.setIn(['files', path, 'isDirty'], true);
-    }
-  }
+  const affectedFiles = determineAffectedFiles(state, action);
+  affectedFiles.forEach((path) => {
+    state = state.setIn(['files', path, 'isDirty'], true);
+  });
 
   state = reducer(state, action);
 
@@ -1430,6 +1419,25 @@ export default (state = Map(), action) => {
     state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
   }
   return state;
+};
+
+export const determineAffectedFiles = (state, action) => {
+  if (action.dirtying) {
+    if (action.type === 'REFILE_SUBTREE') {
+      return [action.sourcePath, action.targetPath];
+    } else if (action.type === 'INSERT_CAPTURE') {
+      const captureTarget = action.template.get('file');
+      if (captureTarget === '') {
+        return [state.get('path')];
+      } else {
+        return [captureTarget];
+      }
+    } else {
+      return [state.get('path')];
+    }
+  } else {
+    return [];
+  }
 };
 
 /**

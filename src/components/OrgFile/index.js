@@ -311,7 +311,6 @@ class OrgFile extends PureComponent {
           const file = files.get(path);
           headersOfCaptureTarget = file ? file.get('headers') : List();
         }
-        console.debug(headersOfCaptureTarget);
         return (
           <CaptureModal
             template={template}

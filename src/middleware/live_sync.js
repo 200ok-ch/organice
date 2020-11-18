@@ -1,25 +1,19 @@
 import { sync } from '../actions/org';
+import { saveFileToLocalStorage } from '../util/file_persister';
+import { determineAffectedFiles } from '../reducers/org';
 
 export default (store) => (next) => (action) => {
-  if (action.dirtying && store.getState().base.get('shouldLiveSync')) {
-    if (action.type === 'REFILE_SUBTREE') {
-      store.dispatch(sync({ shouldSuppressMessages: true, path: action.sourcePath }));
-      store.dispatch(sync({ shouldSuppressMessages: true, path: action.targetPath }));
-    } else if (action.type === 'INSERT_CAPTURE') {
-      const captureTarget = action.template.get('file');
-      if (captureTarget === '') {
-        store.dispatch(
-          sync({ shouldSuppressMessages: true, path: store.getState().org.present.get('path') })
-        );
-      } else {
-        store.dispatch(sync({ shouldSuppressMessages: true, path: captureTarget }));
-      }
-    } else {
-      store.dispatch(
-        sync({ shouldSuppressMessages: true, path: store.getState().org.present.get('path') })
-      );
+  // middleware is run before the reducer. to persist the result of the action,
+  // save and sync are done in a callback so they happen after the state is changed
+  setTimeout(() => {
+    let dirtyFiles = determineAffectedFiles(store.getState().org.present, action);
+
+    dirtyFiles.forEach((path) => saveFileToLocalStorage(store.getState(), path));
+
+    if (store.getState().base.get('shouldLiveSync')) {
+      dirtyFiles.forEach((path) => store.dispatch(sync({ shouldSuppressMessages: true, path })));
     }
-  }
+  }, 0);
 
   return next(action);
 };

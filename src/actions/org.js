@@ -38,25 +38,41 @@ export const resetFileDisplay = () => {
   };
 };
 
-const syncDebounced = debounce(
-  (dispatch, getState, options) => {
-    if (options.path) {
-      dispatch(doSync(options));
-    } else {
-      const files = getState().org.present.get('files');
-      files
-        .keySeq()
-        .forEach(
-          (path) => files.getIn([path, 'isDirty']) && dispatch(doSync({ ...options, path }))
-        );
-    }
-  },
-  3000,
-  {
+const syncFunctionToDebounce = (dispatch, getState, options) => {
+  if (options.path) {
+    dispatch(doSync(options));
+  } else {
+    const files = getState().org.present.get('files');
+    files
+      .keySeq()
+      .forEach((path) => files.getIn([path, 'isDirty']) && dispatch(doSync({ ...options, path })));
+  }
+};
+const getDebouncedSyncFunction = () =>
+  debounce(syncFunctionToDebounce, 3000, {
     leading: true,
     trailing: true,
+  });
+const debouncedSyncFunctions = {};
+const syncDebounced = (dispatch, getState, options) => {
+  // to make sure no file is skipped when multiple files are dirty
+  // a seperately debounced function is used per file
+  let filesToSync = [];
+  if (options.path) {
+    filesToSync = [options.path];
+  } else {
+    const files = getState().org.present.get('files');
+    filesToSync = files.keySeq().filter((path) => files.getIn([path, 'isDirty']));
   }
-);
+  filesToSync.forEach((path) => {
+    let debouncedSyncFunction = debouncedSyncFunctions[path];
+    if (!debouncedSyncFunction) {
+      debouncedSyncFunctions[path] = getDebouncedSyncFunction();
+      debouncedSyncFunction = debouncedSyncFunctions[path];
+    }
+    debouncedSyncFunction(dispatch, getState, options);
+  });
+};
 
 export const sync = (options) => (dispatch, getState) => {
   // If the user hits the 'sync' button, no matter if there's a sync
@@ -146,19 +162,19 @@ const doSync = ({
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
+          const contents =
+            localStorage.getItem('files__' + path) ||
+            exportOrg({
+              headers: getState().org.present.getIn(['files', path, 'headers']),
+              linesBeforeHeadings: getState().org.present.getIn([
+                'files',
+                path,
+                'linesBeforeHeadings',
+              ]),
+              dontIndent: getState().base.get('shouldNotIndentOnExport'),
+            });
           client
-            .updateFile(
-              path,
-              exportOrg({
-                headers: getState().org.present.getIn(['files', path, 'headers']),
-                linesBeforeHeadings: getState().org.present.getIn([
-                  'files',
-                  path,
-                  'linesBeforeHeadings',
-                ]),
-                dontIndent: getState().base.get('shouldNotIndentOnExport'),
-              })
-            )
+            .updateFile(path, contents)
             .then(() => {
               if (!shouldSuppressMessages) {
                 dispatch(setDisappearingLoadingMessage(successMessage, 2000));

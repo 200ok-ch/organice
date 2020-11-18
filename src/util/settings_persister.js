@@ -8,15 +8,16 @@ import { restoreCaptureSettings } from '../actions/capture';
 import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
+import { loadFilesFromLocalStorage } from './file_persister';
 
-export const isLocalStorageAvailable = () => {
+export const localStorageAvailable = (() => {
   try {
     localStorage.setItem('test', 'test');
     return localStorage.getItem('test') === 'test';
   } catch (e) {
     return false;
   }
-};
+})();
 
 const debouncedPushConfigToSyncBackend = _.debounce(
   (syncBackendClient, contents) => {
@@ -217,7 +218,7 @@ export const applyFileSettingsFromConfig = (state, config) => {
 };
 
 export const readInitialState = () => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return undefined;
   }
 
@@ -289,6 +290,8 @@ export const readInitialState = () => {
     getFieldsToPersist(initialState, persistableFields)
   );
 
+  initialState = loadFilesFromLocalStorage(initialState);
+
   return initialState;
 };
 
@@ -329,7 +332,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
 };
 
 export const subscribeToChanges = (store) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return () => {};
   } else {
     return () => {
@@ -368,7 +371,7 @@ export const subscribeToChanges = (store) => {
 };
 
 export const persistField = (field, value) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return;
   } else {
     localStorage.setItem(field, value);
@@ -376,7 +379,7 @@ export const persistField = (field, value) => {
 };
 
 export const getPersistedField = (field, nullable = false) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return null;
   } else {
     const value = localStorage.getItem(field);
