@@ -1,5 +1,5 @@
 import { sync } from '../actions/org';
-import { saveFileToLocalStorage } from '../util/file_persister';
+import { persistIsDirty, saveFileToLocalStorage } from '../util/file_persister';
 import { determineAffectedFiles } from '../reducers/org';
 
 export default (store) => (next) => (action) => {
@@ -9,6 +9,7 @@ export default (store) => (next) => (action) => {
     let dirtyFiles = determineAffectedFiles(store.getState().org.present, action);
 
     dirtyFiles.forEach((path) => saveFileToLocalStorage(store.getState(), path));
+    dirtyFiles.forEach((path) => persistIsDirty(true, path));
 
     if (store.getState().base.get('shouldLiveSync')) {
       dirtyFiles.forEach((path) => store.dispatch(sync({ shouldSuppressMessages: true, path })));

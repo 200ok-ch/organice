@@ -16,7 +16,7 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
-import { saveFileContentsToLocalStorage } from '../util/file_persister';
+import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
 
 export const parseFile = (path, contents) => (dispatch) => {
   saveFileContentsToLocalStorage(path, contents);
@@ -381,11 +381,14 @@ export const applyOpennessState = () => ({
   type: 'APPLY_OPENNESS_STATE',
 });
 
-export const setDirty = (isDirty, path) => ({
-  type: 'SET_DIRTY',
-  isDirty,
-  path,
-});
+export const setDirty = (isDirty, path) => (dispatch) => {
+  persistIsDirty(isDirty, path);
+  dispatch({
+    type: 'SET_DIRTY',
+    isDirty,
+    path,
+  });
+};
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });

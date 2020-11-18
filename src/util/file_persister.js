@@ -4,6 +4,14 @@ import { localStorageAvailable } from '../util/settings_persister';
 import { exportOrg } from '../lib/export_org';
 import { parseFile } from '../reducers/org';
 
+export const persistIsDirty = (isDirty, path) => {
+  if (localStorageAvailable) {
+    const filesDirty = JSON.parse(localStorage.getItem('isDirty')) || {};
+    filesDirty[path] = isDirty;
+    localStorage.setItem('isDirty', JSON.stringify(filesDirty));
+  }
+};
+
 export const saveFileContentsToLocalStorage = (path, contents) => {
   if (localStorageAvailable) {
     let persistedFiles = JSON.parse(localStorage.getItem('persistedFiles'));
@@ -51,6 +59,7 @@ export const saveFileToLocalStorage = (state, path) => {
 export const loadFilesFromLocalStorage = (state) => {
   if (localStorageAvailable) {
     const persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || {};
+    const isDirty = JSON.parse(localStorage.getItem('isDirty')) || {};
     Object.entries(persistedFiles).forEach(([path, lastSyncAt]) => {
       const contents = localStorage.getItem('files__' + path);
       if (contents) {
@@ -59,6 +68,7 @@ export const loadFilesFromLocalStorage = (state) => {
           ['files', path, 'lastSyncAt'],
           parseISO(lastSyncAt)
         );
+        state.org.present = state.org.present.setIn(['files', path, 'isDirty'], isDirty[path]);
       }
     });
   }
