@@ -1158,8 +1158,9 @@ export const setSearchFilterInformation = (state, action) => {
     // Filter selectedHeader and its subheaders from `headers`,
     // because you don't want to refile a header to itself or to one
     // of its subheaders.
+    console.debug('SEARCHING');
     if (context === 'refile') {
-      const selectedHeaderId = state.get('selectedHeaderId');
+      const selectedHeaderId = state.getIn(['files', path, 'selectedHeaderId']);
       const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
       let filterIds = subheaders.map((s) => s.get('id')).toJS();
       filterIds.push(selectedHeaderId);
