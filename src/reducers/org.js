@@ -68,7 +68,7 @@ export const parseFile = (state, action) => {
     .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
-const clearSearch = (state) => state.set('path', null).setIn(['search', 'filteredHeaders'], null);
+const clearSearch = (state) => state.setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');

@@ -10,7 +10,7 @@ import {
 } from './base';
 import { exportOrg } from '../lib/export_org';
 import substituteTemplateVariables from '../lib/capture_template_substitution';
-import { headerWithPath } from '../lib/org_utils';
+import { headerWithPath, STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
@@ -106,7 +106,7 @@ const doSync = ({
   const client = getState().syncBackend.get('client');
   const currentPath = getState().org.present.get('path');
   path = path || currentPath;
-  if (!path) {
+  if (!path || path.startsWith(STATIC_FILE_PREFIX)) {
     return;
   }
 

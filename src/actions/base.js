@@ -1,4 +1,5 @@
-import { parseFile, resetFileDisplay } from './org';
+import { parseFile, resetFileDisplay, setPath } from './org';
+import { STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 import raw from 'raw.macro';
 
@@ -22,24 +23,22 @@ export const setDisappearingLoadingMessage = (loadingMessage, delay) => (dispatc
   setTimeout(() => dispatch(hideLoadingMessage()), delay);
 };
 
-export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
+export const setLastViewedFile = (lastViewedPath) => ({
   type: 'SET_LAST_VIEWED_FILE',
   lastViewedPath,
-  lastViewedContents,
 });
 
 export const loadStaticFile = (staticFile) => {
   return (dispatch, getState) => {
-    dispatch(
-      setLastViewedFile(getState().org.present.get('path'), getState().org.present.get('contents'))
-    );
+    dispatch(setLastViewedFile(getState().org.present.get('path')));
 
     const fileContents = {
       changelog: raw('../../changelog.org'),
       sample: raw('../../sample.org'),
     }[staticFile];
 
-    dispatch(parseFile(null, fileContents));
+    dispatch(parseFile(STATIC_FILE_PREFIX + staticFile, fileContents));
+    dispatch(setPath(STATIC_FILE_PREFIX + staticFile));
   };
 };
 
@@ -47,10 +46,9 @@ export const unloadStaticFile = () => {
   return (dispatch, getState) => {
     dispatch(resetFileDisplay());
 
-    if (!!getState().base.get('lastViewedPath')) {
-      dispatch(
-        parseFile(getState().base.get('lastViewedPath'), getState().base.get('lastViewedContents'))
-      );
+    const path = getState().base.get('lastViewedPath');
+    if (!!path) {
+      dispatch(setPath(path));
     }
   };
 };

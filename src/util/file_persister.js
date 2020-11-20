@@ -3,6 +3,7 @@ import { parseISO, addSeconds } from 'date-fns';
 import { localStorageAvailable } from '../util/settings_persister';
 import { exportOrg } from '../lib/export_org';
 import { parseFile } from '../reducers/org';
+import { STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 export const persistIsDirty = (isDirty, path) => {
   if (localStorageAvailable) {
@@ -13,7 +14,7 @@ export const persistIsDirty = (isDirty, path) => {
 };
 
 export const saveFileContentsToLocalStorage = (path, contents) => {
-  if (localStorageAvailable) {
+  if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
     let persistedFiles = JSON.parse(localStorage.getItem('persistedFiles'));
     persistedFiles = persistedFiles || {};
 
@@ -25,7 +26,7 @@ export const saveFileContentsToLocalStorage = (path, contents) => {
 };
 
 const saveFunctionToDebounce = (state, path) => {
-  if (localStorageAvailable) {
+  if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
     const persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || {};
 
     const contents = exportOrg({
