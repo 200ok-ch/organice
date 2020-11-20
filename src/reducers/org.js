@@ -1116,7 +1116,7 @@ export const setSearchFilterInformation = (state, action) => {
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
 
     // Only search subheaders if a header is narrowed
-    const narrowedHeaderId = state.get('narrowedHeaderId');
+    const narrowedHeaderId = state.getIn(['files', path, 'narrowedHeaderId']);
     let headersToSearch;
     if (!narrowedHeaderId || context === 'refile') {
       headersToSearch = headers;
