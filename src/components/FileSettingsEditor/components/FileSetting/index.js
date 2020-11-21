@@ -63,13 +63,14 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
     <>
       <div className="file-setting__field-container">
         <div className="file-setting__field">
-          <div>Load on startup?</div>
+          <div>Sync on startup?</div>
           <Switch isEnabled={setting.get('loadOnStartup')} onToggle={toggleLoadOnStartup} />
         </div>
 
         <div className="file-setting__help-text">
-          By default, only the files you visit are loaded. Enable this setting to always load this
-          file when opening organice.
+          By default, files are loaded from localStorage where available and only synced when
+          visited and the corresponding settings like live sync are turned on. Enable this setting
+          to always sync this file when opening organice.
         </div>
       </div>
 

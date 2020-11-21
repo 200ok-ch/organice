@@ -1379,7 +1379,7 @@ const reducer = (state, action) => {
         ? reduceInFile(state, action, action.template.get('file'))(insertCapture)
         : inFile(insertCapture);
     case 'CLEAR_PENDING_CAPTURE':
-      return inFile(clearPendingCapture);
+      return clearPendingCapture(state, action);
     case 'ADVANCE_CHECKBOX_STATE':
       return inFile(advanceCheckboxState);
     case 'SET_LAST_SYNC_AT':

@@ -39,6 +39,7 @@ describe('org reducer', () => {
 
   function check_is_undoable(state, action) {
     const store = createStore(undoable(reducer), state.org.present);
+    const path = state.org.present.get('path');
 
     // Perform an undoable action to warm up the redux-undo history.
     // Without this action, and without the
@@ -48,7 +49,7 @@ describe('org reducer', () => {
     // The ADD_HEADER action is undoable so it gets saved
     // in _lastUnfiltered and then gets into the 'past' only to
     // be successfuly restored when we perform the UNDO.
-    const firstHeader = state.org.present.get('headers').get(0).get('id');
+    const firstHeader = state.org.present.getIn(['files', path, 'headers']).get(0).get('id');
     store.dispatch({ type: 'ADD_HEADER', headerId: firstHeader });
 
     const oldState = store.getState().present;
@@ -71,7 +72,7 @@ describe('org reducer', () => {
   }
 
   function check_just_dirtying(oldState, action) {
-    const justDirty = reducer(oldState, types.setDirty(true));
+    const justDirty = reducer(oldState, types.dirtyAction(true));
     const newState = reducer(oldState, action);
     expect(newState).toEqual(justDirty);
   }
@@ -129,7 +130,7 @@ describe('org reducer', () => {
         ]
       );
 
-      const action = types.refileSubtree(sourceHeaderId, targetHeaderId);
+      const action = types.refileSubtree(path, sourceHeaderId, path, targetHeaderId);
       const newState = reducer(state.org.present, action);
 
       // PROJECT Foo is now beneath "A nested header" and is
@@ -154,7 +155,9 @@ describe('org reducer', () => {
     it('is undoable', () => {
       check_is_undoable(state, {
         type: 'REFILE_SUBTREE',
+        sourcePath: path,
         sourceHeaderId,
+        targetPath: path,
         targetHeaderId,
         dirtying: true,
       });
@@ -175,6 +178,7 @@ describe('org reducer', () => {
         id: generateId(),
         isAvailableInAllOrgFiles: false,
         letter: '',
+        file: '',
         orgFilesWhereAvailable: [],
         shouldPrepend: false,
         template: '* TODO %?',
@@ -187,6 +191,7 @@ describe('org reducer', () => {
         id: generateId(),
         isAvailableInAllOrgFiles: false,
         letter: '',
+        file: '',
         orgFilesWhereAvailable: [],
         shouldPrepend: false,
         template: '* TODO %?',
@@ -213,21 +218,21 @@ describe('org reducer', () => {
       expect(extractTitleAndNesting(headers.last())).toEqual(['A second nested header', 2]);
     }
 
-    function insertCapture(template, shouldPrepend) {
+    function insertCapture(path, template, shouldPrepend) {
       // Check initially parsed file looks as expected
-      let headers = store.getState().org.present.get('headers');
+      let headers = store.getState().org.present.getIn(['files', path, 'headers']);
       expect(headers.size).toEqual(4);
       expectOrigFirstHeader(headers);
       expectOrigLastHeader(headers);
       const action = types.insertCapture(template.id, content, shouldPrepend);
       store.dispatch(action);
-      const newHeaders = store.getState().org.present.get('headers');
+      const newHeaders = store.getState().org.present.getIn(['files', path, 'headers']);
       expect(newHeaders.size).toEqual(5);
       return newHeaders;
     }
 
     it('should insert at the top of file', () => {
-      const newHeaders = insertCapture(templateTopLevel, true);
+      const newHeaders = insertCapture(path, templateTopLevel, true);
       expectOrigLastHeader(newHeaders);
       const first = newHeaders.first();
       expect(first.getIn(['titleLine', 'rawTitle'])).toEqual('My task');
@@ -236,7 +241,7 @@ describe('org reducer', () => {
     });
 
     it('should insert at the bottom of file', () => {
-      const newHeaders = insertCapture(templateTopLevel, false);
+      const newHeaders = insertCapture(path, templateTopLevel, false);
       expectOrigFirstHeader(newHeaders);
       const last = newHeaders.last();
       expect(last.getIn(['titleLine', 'rawTitle'])).toEqual('My task');
@@ -245,7 +250,7 @@ describe('org reducer', () => {
     });
 
     it('should insert as the first child', () => {
-      const newHeaders = insertCapture(templateNested, true);
+      const newHeaders = insertCapture(path, templateNested, true);
       expectOrigFirstHeader(newHeaders);
       expectOrigLastHeader(newHeaders);
       expect(extractTitlesAndNestings(newHeaders)).toEqual([
@@ -258,7 +263,7 @@ describe('org reducer', () => {
     });
 
     it('should insert as the last child', () => {
-      const newHeaders = insertCapture(templateNested, false);
+      const newHeaders = insertCapture(path, templateNested, false);
       expectOrigFirstHeader(newHeaders);
       expectOrigLastHeader(newHeaders);
       expect(extractTitlesAndNestings(newHeaders)).toEqual([
@@ -287,8 +292,7 @@ describe('org reducer', () => {
     let nestedHeader2Id;
     let deepNestedHeaderId;
     let state;
-    const fileName = 'nested_header';
-    const testOrgFile = readFixture(fileName);
+    const testOrgFile = readFixture('nested_header');
     const path = 'testfile';
 
     beforeEach(() => {
@@ -309,7 +313,9 @@ describe('org reducer', () => {
       it('should handle MOVE_HEADER_LEFT', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -320,7 +326,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A nested header', 1],
           ['A deep nested header', 3],
@@ -337,7 +343,9 @@ describe('org reducer', () => {
       it('should handle MOVE_HEADER_RIGHT', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -348,7 +356,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A nested header', 3],
           ['A deep nested header', 3],
@@ -365,7 +373,9 @@ describe('org reducer', () => {
       it('should handle MOVE_HEADER_DOWN', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -376,7 +386,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A second nested header', 2],
           ['A nested header', 2],
@@ -397,7 +407,9 @@ describe('org reducer', () => {
       it('should handle MOVE_HEADER_UP', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -408,7 +420,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A second nested header', 2],
           ['A nested header', 2],
@@ -429,7 +441,9 @@ describe('org reducer', () => {
       it('should handle MOVE_SUBTREE_LEFT', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -440,7 +454,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A nested header', 1],
           ['A deep nested header', 2],
@@ -461,7 +475,9 @@ describe('org reducer', () => {
       it('should handle MOVE_SUBTREE_RIGHT', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -472,7 +488,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A nested header', 3],
           ['A deep nested header', 4],
@@ -489,7 +505,9 @@ describe('org reducer', () => {
       it('should handle REMOVE_HEADER', () => {
         // Mapping the headers to their nesting level. This is how the
         // initially parsed file should look like.
-        expect(extractTitlesAndNestings(state.org.present.get('headers'))).toEqual([
+        expect(
+          extractTitlesAndNestings(state.org.present.getIn(['files', path, 'headers']))
+        ).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -500,7 +518,7 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A second nested header', 2],
         ]);
@@ -508,9 +526,9 @@ describe('org reducer', () => {
 
       it('should reset header narrowing', () => {
         const narrowedState = reducer(state.org.present, types.narrowHeader(nestedHeaderId));
-        expect(narrowedState.get('narrowedHeaderId')).toEqual(nestedHeaderId);
+        expect(narrowedState.getIn(['files', path, 'narrowedHeaderId'])).toEqual(nestedHeaderId);
         const newState = reducer(narrowedState, types.removeHeader(nestedHeaderId));
-        expect(newState.get('narrowedHeaderId')).toEqual(null);
+        expect(newState.getIn(['files', path, 'narrowedHeaderId'])).toEqual(null);
       });
 
       it('is undoable', () => {
@@ -521,7 +539,7 @@ describe('org reducer', () => {
     describe('ADD_HEADER', () => {
       it('should handle ADD_HEADER and widen', () => {
         const oldState = state.org.present;
-        expect(extractTitlesAndNestings(oldState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(oldState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -529,12 +547,12 @@ describe('org reducer', () => {
         ]);
 
         const stateSelected = reducer(oldState, types.narrowHeader(nestedHeaderId));
-        expect(stateSelected.get('narrowedHeaderId')).toEqual(nestedHeaderId);
+        expect(stateSelected.getIn(['files', path, 'narrowedHeaderId'])).toEqual(nestedHeaderId);
         const newState = reducer(stateSelected, types.addHeader(nestedHeaderId));
-        expect(newState.get('narrowedHeaderId')).toBeNull();
+        expect(newState.getIn(['files', path, 'narrowedHeaderId'])).toBeNull();
 
         // "A nested header" is not at the top level.
-        expect(extractTitlesAndNestings(newState.get('headers'))).toEqual([
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
           ['Top level header', 1],
           ['A nested header', 2],
           ['A deep nested header', 3],
@@ -545,9 +563,9 @@ describe('org reducer', () => {
 
       it('should reset header narrowing', () => {
         const narrowedState = reducer(state.org.present, types.narrowHeader(nestedHeaderId));
-        expect(narrowedState.get('narrowedHeaderId')).toEqual(nestedHeaderId);
+        expect(narrowedState.getIn(['files', path, 'narrowedHeaderId'])).toEqual(nestedHeaderId);
         const newState = reducer(narrowedState, types.removeHeader(nestedHeaderId));
-        expect(newState.get('narrowedHeaderId')).toEqual(null);
+        expect(newState.getIn(['files', path, 'narrowedHeaderId'])).toEqual(null);
       });
 
       it('is undoable', () => {
@@ -557,10 +575,10 @@ describe('org reducer', () => {
 
     describe('selecting ', () => {
       let openOnlyTop = fromJS({
-        [fileName]: [['Top level header']],
+        [path]: [['Top level header']],
       });
       let openAll = fromJS({
-        [fileName]: [['Top level header', 'A nested header']],
+        [path]: [['Top level header', 'A nested header']],
       });
 
       function openHeaders(state, opennessState) {
@@ -676,11 +694,11 @@ describe('org reducer', () => {
         it('ignore when on the last sibling', () => {
           const oldState = selectHeader(state.org.present, topLevelHeaderId);
           const newState = reducer(oldState, types.selectNextSiblingHeader(nestedHeader2Id));
-          expect(newState.get('selectedHeaderId')).toEqual(topLevelHeaderId);
+          expect(newState.getIn(['files', path, 'selectedHeaderId'])).toEqual(topLevelHeaderId);
 
           const oldState2 = selectHeader(state.org.present, nestedHeader2Id);
           const newState2 = reducer(oldState2, types.selectNextSiblingHeader(nestedHeader2Id));
-          expect(newState2.get('selectedHeaderId')).toEqual(nestedHeader2Id);
+          expect(newState2.getIn(['files', path, 'selectedHeaderId'])).toEqual(nestedHeader2Id);
         });
       });
     });
@@ -694,15 +712,24 @@ describe('org reducer', () => {
         const newState = reducer(state.org.present, action);
         const check_kept = check_kept_factory(state.org.present, newState);
         check_kept((st) =>
-          headerWithId(st.get('headers'), nestedHeaderId).getIn(['titleLine', 'rawTitle'])
-        );
-        expect(headerWithId(newState.get('headers'), nestedHeaderId).get('rawDescription')).toEqual(
-          newDescription
+          headerWithId(st.getIn(['files', path, 'headers']), nestedHeaderId).getIn([
+            'titleLine',
+            'rawTitle',
+          ])
         );
         expect(
-          headerWithId(newState.get('headers'), nestedHeaderId).get('description')
+          headerWithId(newState.getIn(['files', path, 'headers']), nestedHeaderId).get(
+            'rawDescription'
+          )
+        ).toEqual(newDescription);
+        expect(
+          headerWithId(newState.getIn(['files', path, 'headers']), nestedHeaderId).get(
+            'description'
+          )
         ).not.toEqual(
-          headerWithId(state.org.present.get('headers'), nestedHeaderId).get('description')
+          headerWithId(state.org.present.getIn(['files', path, 'headers']), nestedHeaderId).get(
+            'description'
+          )
         );
       });
 
@@ -717,8 +744,12 @@ describe('org reducer', () => {
           state.org.present,
           types.toggleHeaderOpened(topLevelHeaderId, true)
         );
-        expect(headerWithId(newState.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
-        expect(headerWithId(newState.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
+        expect(
+          headerWithId(newState.getIn(['files', path, 'headers']), topLevelHeaderId).get('opened')
+        ).toEqual(true);
+        expect(
+          headerWithId(newState.getIn(['files', path, 'headers']), nestedHeaderId).get('opened')
+        ).toEqual(false);
       });
 
       it('should close the header and subheaders on the second toggle', () => {
@@ -733,11 +764,15 @@ describe('org reducer', () => {
         );
         const allClosed = reducer(deepNestedOpen, types.toggleHeaderOpened(topLevelHeaderId, true));
         const reopened = reducer(allClosed, types.toggleHeaderOpened(topLevelHeaderId, true));
-        expect(headerWithId(reopened.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
-        expect(headerWithId(reopened.get('headers'), nestedHeaderId).get('opened')).toEqual(false);
-        expect(headerWithId(reopened.get('headers'), deepNestedHeaderId).get('opened')).toEqual(
-          false
-        );
+        expect(
+          headerWithId(reopened.getIn(['files', path, 'headers']), topLevelHeaderId).get('opened')
+        ).toEqual(true);
+        expect(
+          headerWithId(reopened.getIn(['files', path, 'headers']), nestedHeaderId).get('opened')
+        ).toEqual(false);
+        expect(
+          headerWithId(reopened.getIn(['files', path, 'headers']), deepNestedHeaderId).get('opened')
+        ).toEqual(false);
       });
 
       it('should close only the header when said so', () => {
@@ -755,15 +790,21 @@ describe('org reducer', () => {
           types.toggleHeaderOpened(topLevelHeaderId, false)
         );
         const reopened = reducer(allClosed, types.toggleHeaderOpened(topLevelHeaderId, false));
-        expect(headerWithId(reopened.get('headers'), topLevelHeaderId).get('opened')).toEqual(true);
-        expect(headerWithId(reopened.get('headers'), nestedHeaderId).get('opened')).toEqual(true);
-        expect(headerWithId(reopened.get('headers'), deepNestedHeaderId).get('opened')).toEqual(
-          true
-        );
+        expect(
+          headerWithId(reopened.getIn(['files', path, 'headers']), topLevelHeaderId).get('opened')
+        ).toEqual(true);
+        expect(
+          headerWithId(reopened.getIn(['files', path, 'headers']), nestedHeaderId).get('opened')
+        ).toEqual(true);
+        expect(
+          headerWithId(reopened.getIn(['files', path, 'headers']), deepNestedHeaderId).get('opened')
+        ).toEqual(true);
       });
 
       it('should ignore if narrowed and open', () => {
-        expect(state.org.present.get('headers').every((hdr) => !hdr.get('opened'))).toEqual(true);
+        expect(
+          state.org.present.getIn(['files', path, 'headers']).every((hdr) => !hdr.get('opened'))
+        ).toEqual(true);
         const openState = reducer(
           state.org.present,
           types.toggleHeaderOpened(topLevelHeaderId, true)
@@ -786,17 +827,20 @@ describe('org reducer', () => {
     const path = 'testfile';
 
     beforeEach(() => {
-      state = setUpStateForFile(path, testOrgFile)
+      state = setUpStateForFile(path, testOrgFile);
       // "This is done" is the 1st header
       // "Header with repeater" is the 2nd header
       // "This is not a todo" is 3rd header
       // "Active timestamp task with repeater" is 4th header
       // "Repeating task" is 5th header
-      doneHeaderId = state.org.present.get('headers').get(0).get('id');
-      todoHeaderId = state.org.present.get('headers').get(1).get('id');
-      regularHeaderId = state.org.present.get('headers').get(2).get('id');
-      activeTimestampWithRepeaterHeaderId = state.org.present.get('headers').get(3).get('id');
-      repeatingHeaderId = state.org.present.get('headers').get(4).get('id');
+      doneHeaderId = state.org.present.getIn(['files', path, 'headers']).get(0).get('id');
+      todoHeaderId = state.org.present.getIn(['files', path, 'headers']).get(1).get('id');
+      regularHeaderId = state.org.present.getIn(['files', path, 'headers']).get(2).get('id');
+      activeTimestampWithRepeaterHeaderId = state.org.present
+        .getIn(['files', path, 'headers'])
+        .get(3)
+        .get('id');
+      repeatingHeaderId = state.org.present.getIn(['files', path, 'headers']).get(4).get('id');
     });
 
     function check_todo_keyword_kept(oldHeaders, newHeaders, headerId) {
@@ -814,10 +858,12 @@ describe('org reducer', () => {
     }
 
     it('should advance TODO state', () => {
-      const oldHeaders = state.org.present.get('headers');
-      const newHeaders = reducer(state.org.present, types.advanceTodoState(todoHeaderId)).get(
-        'headers'
-      );
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(todoHeaderId)).getIn([
+        'files',
+        path,
+        'headers',
+      ]);
       check_header_kept(oldHeaders, newHeaders, regularHeaderId);
       check_todo_keyword_changed(oldHeaders, newHeaders, todoHeaderId);
       check_header_kept(oldHeaders, newHeaders, doneHeaderId);
@@ -827,10 +873,12 @@ describe('org reducer', () => {
     });
 
     it('should advance DONE state', () => {
-      const oldHeaders = state.org.present.get('headers');
-      const newHeaders = reducer(state.org.present, types.advanceTodoState(doneHeaderId)).get(
-        'headers'
-      );
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(doneHeaderId)).getIn([
+        'files',
+        path,
+        'headers',
+      ]);
       check_header_kept(oldHeaders, newHeaders, regularHeaderId);
       check_header_kept(oldHeaders, newHeaders, todoHeaderId);
       check_todo_keyword_changed(oldHeaders, newHeaders, doneHeaderId);
@@ -840,10 +888,12 @@ describe('org reducer', () => {
     });
 
     it('should advance non-TODO state', () => {
-      const oldHeaders = state.org.present.get('headers');
-      const newHeaders = reducer(state.org.present, types.advanceTodoState(regularHeaderId)).get(
-        'headers'
-      );
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+      const newHeaders = reducer(state.org.present, types.advanceTodoState(regularHeaderId)).getIn([
+        'files',
+        path,
+        'headers',
+      ]);
       check_todo_keyword_changed(oldHeaders, newHeaders, regularHeaderId);
       check_header_kept(oldHeaders, newHeaders, todoHeaderId);
       check_header_kept(oldHeaders, newHeaders, doneHeaderId);
@@ -853,10 +903,11 @@ describe('org reducer', () => {
     });
 
     it('should advance repeating task', () => {
-      const oldHeaders = state.org.present.get('headers');
-      const newHeaders = reducer(state.org.present, types.advanceTodoState(repeatingHeaderId)).get(
-        'headers'
-      );
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+      const newHeaders = reducer(
+        state.org.present,
+        types.advanceTodoState(repeatingHeaderId)
+      ).getIn(['files', path, 'headers']);
       check_todo_keyword_kept(oldHeaders, newHeaders, repeatingHeaderId);
       expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
         headerWithId(oldHeaders, repeatingHeaderId).get('description').size
@@ -875,10 +926,12 @@ describe('org reducer', () => {
 
     it('should advance repeating task again', () => {
       const intermState = reducer(state.org.present, types.advanceTodoState(repeatingHeaderId));
-      const intermHeaders = intermState.get('headers');
-      const newHeaders = reducer(intermState, types.advanceTodoState(repeatingHeaderId)).get(
-        'headers'
-      );
+      const intermHeaders = intermState.getIn(['files', path, 'headers']);
+      const newHeaders = reducer(intermState, types.advanceTodoState(repeatingHeaderId)).getIn([
+        'files',
+        path,
+        'headers',
+      ]);
       check_todo_keyword_kept(intermHeaders, newHeaders, repeatingHeaderId);
       expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
         headerWithId(intermHeaders, repeatingHeaderId).get('description').size
@@ -893,11 +946,11 @@ describe('org reducer', () => {
     });
 
     it('should advance active timestamp with repeater in header', () => {
-      const oldHeaders = state.org.present.get('headers');
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
       const newHeaders = reducer(
         state.org.present,
         types.advanceTodoState(activeTimestampWithRepeaterHeaderId)
-      ).get('headers');
+      ).getIn(['files', path, 'headers']);
       check_todo_keyword_kept(oldHeaders, newHeaders, activeTimestampWithRepeaterHeaderId);
 
       expect(
@@ -955,7 +1008,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = setUpStateForFile(path, testOrgFile);
       headerId = state.org.present.getIn(['files', path, 'headers']).get(0).get('id');
-      irrelevantHeaderId = state.org.present.get('headers').get(1).get('id');
+      irrelevantHeaderId = state.org.present.getIn(['files', path, 'headers']).get(1).get('id');
     });
 
     it('should handle UPDATE_LOG_ENTRY_TIME', () => {
@@ -965,22 +1018,40 @@ describe('org reducer', () => {
       );
       expect(
         dateForTimestamp(
-          headerWithId(newState.get('headers'), headerId).getIn(['logBookEntries', 0, 'start'])
+          headerWithId(newState.getIn(['files', path, 'headers']), headerId).getIn([
+            'logBookEntries',
+            0,
+            'start',
+          ])
         )
       ).toEqual(date);
 
       const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => st.get('headers').size);
-      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
+      check_kept((st) => headerWithId(st.getIn(['files', path, 'headers']), irrelevantHeaderId));
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
       );
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries').size);
-      check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['logBookEntries', 1, 'start'])
+      check_kept(
+        (st) =>
+          headerWithId(st.getIn(['files', path, 'headers']), headerId).get('logBookEntries').size
       );
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['logBookEntries', 1, 'end'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'logBookEntries',
+          1,
+          'start',
+        ])
+      );
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'logBookEntries',
+          1,
+          'end',
+        ])
       );
     });
   });
@@ -998,7 +1069,9 @@ describe('org reducer', () => {
     it('should handle SET_ORG_FILE_ERROR_MESSAGE', () => {
       const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message));
       expect(newState.get('orgFileErrorMessage')).toEqual(message);
-      expect(newState.get('headers')).toEqual(state.org.present.get('headers'));
+      expect(newState.getIn(['files', path, 'headers'])).toEqual(
+        state.org.present.getIn(['files', path, 'headers'])
+      );
     });
   });
 
@@ -1016,7 +1089,7 @@ describe('org reducer', () => {
     beforeEach(() => {
       state = setUpStateForFile(path, testOrgFile);
       headerId = state.org.present.getIn(['files', path, 'headers']).get(1).get('id');
-      irrelevantHeaderId = state.org.present.get('headers').get(0).get('id');
+      irrelevantHeaderId = state.org.present.getIn(['files', path, 'headers']).get(0).get('id');
     });
 
     it('should handle UPDATE_PROPERTY_LIST_ITEMS', () => {
@@ -1025,17 +1098,22 @@ describe('org reducer', () => {
         types.updatePropertyListItems(headerId, properties)
       );
 
-      expect(headerWithId(newState.get('headers'), headerId).get('propertyListItems')).toEqual(
-        properties
-      );
+      expect(
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId).get('propertyListItems')
+      ).toEqual(properties);
 
       const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => st.get('headers').size);
-      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
+      check_kept((st) => headerWithId(st.getIn(['files', path, 'headers']), irrelevantHeaderId));
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
       );
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('logBookEntries')
+      );
     });
   });
 
@@ -1052,23 +1130,39 @@ describe('org reducer', () => {
 
     it('should handle ADD_NEW_PLANNING_ITEM', () => {
       const newState = reducer(state.org.present, types.addNewPlanningItem(headerId, 'DEADLINE'));
-      expect(headerWithId(newState.get('headers'), headerId).get('planningItems').size).toEqual(2);
       expect(
-        headerWithId(newState.get('headers'), headerId).get('planningItems').get(0).get('type')
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId).get('planningItems').size
+      ).toEqual(2);
+      expect(
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
+          .get('planningItems')
+          .get(0)
+          .get('type')
       ).toEqual('SCHEDULED');
       expect(
-        headerWithId(newState.get('headers'), headerId).get('planningItems').get(1).get('type')
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
+          .get('planningItems')
+          .get(1)
+          .get('type')
       ).toEqual('DEADLINE');
 
       const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => st.get('headers').size);
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
       );
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'todoKeyword'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'todoKeyword',
+        ])
       );
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('logBookEntries')
+      );
     });
   });
 
@@ -1091,23 +1185,40 @@ describe('org reducer', () => {
         types.updatePlanningItemTimestamp(headerId, 0, ts)
       );
       expect(
-        headerWithId(newState.get('headers'), headerId).get('planningItems').get(0).get('type')
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
+          .get('planningItems')
+          .get(0)
+          .get('type')
       ).toEqual('SCHEDULED');
 
       expect(
-        headerWithId(newState.get('headers'), headerId).get('planningItems').get(0).get('timestamp')
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
+          .get('planningItems')
+          .get(0)
+          .get('timestamp')
       ).toEqual(ts);
 
       const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => st.get('headers').size);
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('planningItems').size);
-      check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
+      check_kept(
+        (st) =>
+          headerWithId(st.getIn(['files', path, 'headers']), headerId).get('planningItems').size
       );
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'todoKeyword'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
       );
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('logBookEntries'));
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'todoKeyword',
+        ])
+      );
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('logBookEntries')
+      );
     });
   });
 
@@ -1148,15 +1259,19 @@ describe('org reducer', () => {
         )
       );
       expect(
-        headerWithId(newState.get('headers'), headerId)
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
           .getIn(['titleLine', 'title', 0, 'firstTimestamp'])
           .toJS()
       ).toEqual(ts);
 
       const check_kept = check_kept_factory(oldState, newState);
-      check_kept((st) => st.get('headers').size);
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('description'));
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('rawDescription'));
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('description')
+      );
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('rawDescription')
+      );
     });
 
     it('should update timestamp in a description', () => {
@@ -1169,13 +1284,15 @@ describe('org reducer', () => {
         )
       );
       expect(
-        headerWithId(newState.get('headers'), headerId)
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
           .getIn(['description', 2, 'firstTimestamp'])
           .toJS()
       ).toEqual(ts);
       const check_kept = check_kept_factory(oldState, newState);
-      check_kept((st) => st.get('headers').size);
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('titleLine'));
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('titleLine')
+      );
     });
 
     it('should just dirty when trying to update invalid id', () => {
@@ -1258,19 +1375,28 @@ describe('org reducer', () => {
       const stateSelected = reducer(state.org.present, { type: 'SELECT_HEADER', headerId });
       const newState = reducer(stateSelected, types.reorderTags(fromIndex, toIndex));
 
-      expect(stateSelected.get('selectedHeaderId')).toEqual(headerId);
-      expect(newState.get('selectedHeaderId')).toEqual(headerId);
+      expect(stateSelected.getIn(['files', path, 'selectedHeaderId'])).toEqual(headerId);
+      expect(newState.getIn(['files', path, 'selectedHeaderId'])).toEqual(headerId);
       expect(
-        headerWithId(newState.get('headers'), headerId).getIn(['titleLine', 'tags']).toJS()
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId)
+          .getIn(['titleLine', 'tags'])
+          .toJS()
       ).toEqual(['t2', 't3', 't1', 'spec_tag']);
 
       const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => st.get('headers').size);
-      check_kept((st) => headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'title']));
+      check_kept((st) => st.getIn(['files', path, 'headers']).size);
       check_kept((st) =>
-        headerWithId(st.get('headers'), headerId).getIn(['titleLine', 'rawTitle'])
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn(['titleLine', 'title'])
       );
-      check_kept((st) => headerWithId(st.get('headers'), headerId).get('description'));
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
+      );
+      check_kept((st) =>
+        headerWithId(st.getIn(['files', path, 'headers']), headerId).get('description')
+      );
     });
 
     it('should just dirty when working with invalid header id', () => {
@@ -1294,15 +1420,18 @@ describe('org reducer', () => {
 
     it('should handle SET_HEADER_TAGS', () => {
       const stateInserted = reducer(state.org.present, types.addHeader(0));
-      const headerId = stateInserted.get('headers').get(0).get('id');
+      const headerId = stateInserted.getIn(['files', path, 'headers']).get(0).get('id');
       const newState = reducer(stateInserted, types.setHeaderTags(headerId, tags));
 
-      expect(headerWithId(newState.get('headers'), headerId).getIn(['titleLine', 'tags'])).toEqual(
-        tags
-      );
+      expect(
+        headerWithId(newState.getIn(['files', path, 'headers']), headerId).getIn([
+          'titleLine',
+          'tags',
+        ])
+      ).toEqual(tags);
 
       const check_kept = check_kept_factory(state.org.present, newState);
-      check_kept((st) => headerWithId(st.get('headers'), irrelevantHeaderId));
+      check_kept((st) => headerWithId(st.getIn(['files', path, 'headers']), irrelevantHeaderId));
     });
 
     it('should just dirty when working with invalid header id', () => {
@@ -1391,7 +1520,7 @@ describe('org reducer', () => {
       const newState = reducer(oldState, types.advanceCheckboxState(uncheckedBoxB));
 
       expect(
-        headerWithId(newState.get('headers'), topHeaderId)
+        headerWithId(newState.getIn(['files', path, 'headers']), topHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
@@ -1399,9 +1528,14 @@ describe('org reducer', () => {
 
       const check_kept = check_kept_factory(oldState, newState);
       check_kept((st) =>
-        headerWithId(st.get('headers'), topHeaderId).getIn(['description', 0, 'items', 0])
+        headerWithId(st.getIn(['files', path, 'headers']), topHeaderId).getIn([
+          'description',
+          0,
+          'items',
+          0,
+        ])
       );
-      check_kept((st) => headerWithId(st.get('headers'), bottomHeaderId));
+      check_kept((st) => headerWithId(st.getIn(['files', path, 'headers']), bottomHeaderId));
     });
 
     it('should uncheck the box', () => {
@@ -1409,7 +1543,7 @@ describe('org reducer', () => {
       const newState = reducer(oldState, types.advanceCheckboxState(checkedBoxC));
 
       expect(
-        headerWithId(newState.get('headers'), topHeaderId)
+        headerWithId(newState.getIn(['files', path, 'headers']), topHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
@@ -1417,9 +1551,14 @@ describe('org reducer', () => {
 
       const check_kept = check_kept_factory(oldState, newState);
       check_kept((st) =>
-        headerWithId(st.get('headers'), topHeaderId).getIn(['description', 0, 'items', 0])
+        headerWithId(st.getIn(['files', path, 'headers']), topHeaderId).getIn([
+          'description',
+          0,
+          'items',
+          0,
+        ])
       );
-      check_kept((st) => headerWithId(st.get('headers'), bottomHeaderId));
+      check_kept((st) => headerWithId(st.getIn(['files', path, 'headers']), bottomHeaderId));
     });
 
     it('should just dirty when checkbox is a nest header', () => {
@@ -1431,20 +1570,20 @@ describe('org reducer', () => {
       const newState = reducer(oldState, types.advanceCheckboxState(deepNestedBoxH));
 
       expect(
-        headerWithId(newState.get('headers'), bottomHeaderId)
+        headerWithId(newState.getIn(['files', path, 'headers']), bottomHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
       ).toEqual(['checked', 'checked', 'partial', null]);
 
       expect(
-        headerWithId(newState.get('headers'), bottomHeaderId)
+        headerWithId(newState.getIn(['files', path, 'headers']), bottomHeaderId)
           .getIn(['titleLine', 'title', 1, 'fraction'])
           .toJS()
       ).toEqual([2, 3]);
 
       expect(
-        headerWithId(newState.get('headers'), bottomHeaderId).getIn([
+        headerWithId(newState.getIn(['files', path, 'headers']), bottomHeaderId).getIn([
           'description',
           0,
           'items', // compoundBoxE
@@ -1460,7 +1599,7 @@ describe('org reducer', () => {
       const oldState = state.org.present;
       const newState = reducer(oldState, types.advanceCheckboxState(bottomNestedBoxK));
       expect(
-        headerWithId(newState.get('headers'), bottomHeaderId)
+        headerWithId(newState.getIn(['files', path, 'headers']), bottomHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
@@ -1471,7 +1610,7 @@ describe('org reducer', () => {
       const oldState = state.org.present;
       const newState = reducer(oldState, types.advanceCheckboxState(bottomDeepNestedBoxN));
       expect(
-        headerWithId(newState.get('headers'), bottomHeaderId)
+        headerWithId(newState.getIn(['files', path, 'headers']), bottomHeaderId)
           .getIn(['description', 0, 'items'])
           .toJS()
           .map((x) => x.checkboxState)
@@ -1481,8 +1620,10 @@ describe('org reducer', () => {
     function insertBugIntoCheckboxM(oldState, bug) {
       return oldState.updateIn(
         [
+          'files',
+          path,
           'headers',
-          indexOfHeaderWithId(oldState.get('headers'), bottomHeaderId),
+          indexOfHeaderWithId(oldState.getIn(['files', path, 'headers']), bottomHeaderId),
           'description',
           0,
           'items',
@@ -1525,7 +1666,7 @@ describe('org reducer', () => {
         reducer(buggyState, types.advanceCheckboxState(bottomDeepNestedBoxN))
       );
       expect(
-        headerWithId(newState.get('headers'), bottomHeaderId).getIn([
+        headerWithId(newState.getIn(['files', path, 'headers']), bottomHeaderId).getIn([
           'description',
           0,
           'items',
@@ -1578,9 +1719,6 @@ describe('org reducer', () => {
 
     describe('UPDATE_TABLE_CELL_VALUE', () => {
       it('should handle UPDATE_TABLE_CELL_VALUE', () => {
-        expect(reducer(state.org.present, types.updateTableCellValue(cellId, newValue))).toEqual(
-          true
-        );
         const newState = reducer(state.org.present, types.updateTableCellValue(cellId, newValue));
         expect(
           firstTable(newState, path).getIn([
@@ -1597,7 +1735,7 @@ describe('org reducer', () => {
           firstTable(newState, path).getIn(['contents', 1, 'contents', 1, 'rawContents'])
         ).toEqual(newValue);
         const check_kept = check_kept_factory(state.org.present, newState);
-        check_kept((st) => st.getIn('headers', 0, 'titleLine'));
+        check_kept((st) => st.getIn(['files', path, 'headers', 0, 'titleLine']));
         check_kept((st) => firstTable(st, path).getIn(['contents', 0, 'contents']));
         check_kept((st) => firstTable(st, path).getIn(['contents', 2, 'contents']));
         check_kept((st) => firstTable(st, path).getIn(['contents', 1, 'contents', 0]));
@@ -1871,14 +2009,10 @@ describe('org reducer', () => {
 
   describe('APPLY_OPENNESS_STATE', () => {
     let state;
-    const fileName = 'main_test_file';
-    const testOrgFile = readFixture(fileName);
+    const testOrgFile = readFixture('main_test_file');
     const path = 'testfile';
     let opennessState = fromJS({
-      [fileName]: [
-        ['Top level header', 'A nested header'],
-        ['A header with various links as content'],
-      ],
+      [path]: [['Top level header', 'A nested header'], ['A header with various links as content']],
     });
 
     beforeEach(() => {
@@ -1886,7 +2020,7 @@ describe('org reducer', () => {
     });
 
     it('should handle APPLY_OPENNESS_STATE', () => {
-      const stateWithOpenness = state.org.present.setIn(['opennessState', path], opennessState);
+      const stateWithOpenness = state.org.present.set('opennessState', opennessState);
       const newState = reducer(stateWithOpenness, types.applyOpennessState());
 
       expect(
@@ -1928,7 +2062,7 @@ describe('org reducer', () => {
     });
 
     it('should do nothing when no openness state is set for the file', () => {
-      const stateWithOpenness = state.org.present.set('opennessState', fromJS({}));
+      const stateWithOpenness = state.org.present.setIn(['opennessState', path], fromJS({}));
       const newState = reducer(stateWithOpenness, types.applyOpennessState());
       expect(newState).toEqual(stateWithOpenness);
     });
@@ -1999,19 +2133,19 @@ describe('org reducer', () => {
   describe('show clock display', () => {
     let state;
     const testOrgFile = readFixture('clock_entries');
+    const path = 'testfile';
 
     beforeEach(() => {
-      state = readInitialState();
-      state.org.present = parseOrg(testOrgFile);
+      state = setUpStateForFile(path, testOrgFile);
     });
 
     it('sets no `totalTimeLogged` for headers without clock entries', () => {
-      const header = state.org.present.get('headers').get(0);
+      const header = state.org.present.getIn(['files', path, 'headers']).get(0);
       expect(header.get('totalTimeLogged')).toEqual(0);
     });
 
     it('sets a `totalTimeLogged` for headers with clock entries within LOGBOOK', () => {
-      const header = state.org.present.get('headers').get(1);
+      const header = state.org.present.getIn(['files', path, 'headers']).get(1);
       expect(header.get('totalTimeLogged')).toEqual(25200000);
     });
   });
