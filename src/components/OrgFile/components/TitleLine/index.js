@@ -154,7 +154,10 @@ class TitleLine extends PureComponent {
   }
 
   handleTimestampClick(timestampId) {
-    this.props.base.activatePopup('timestamp-editor', { timestampId });
+    this.props.base.activatePopup('timestamp-editor', {
+      headerId: this.props.header.get('id'),
+      timestampId,
+    });
   }
 
   handleInsertTimestamp(event) {

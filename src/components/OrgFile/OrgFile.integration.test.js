@@ -64,6 +64,7 @@ describe('Render all views', () => {
           customKeybindings: {},
           shouldTapTodoToAdvance: true,
           isLoading: Set(),
+          agendaTimeframe: 'Week',
         }),
       },
       applyMiddleware(thunk)

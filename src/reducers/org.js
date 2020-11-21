@@ -1012,6 +1012,33 @@ const removePlanningItem = (state, action) => {
   return state.removeIn(['headers', headerIndex, 'planningItems', planningItemIndex]);
 };
 
+const removeTimestamp = (state, action) => {
+  const { path } = pathAndPartOfTimestampItemWithIdInHeaders(
+    state.get('headers'),
+    action.timestampId
+  );
+
+  // remove parsed timestamp
+  state = state.removeIn(['headers', ...path]);
+
+  // in case this is an active timestamp, remove it from planning items.
+  state = state.updateIn(['headers', path[0], 'planningItems'], (planningItems) =>
+    planningItems.filter((item) => item.get('id') !== action.timestampId)
+  );
+
+  // rebuild text representation of header
+  state = state.setIn(
+    ['headers', path[0], 'titleLine', 'rawTitle'],
+    attributedStringToRawText(state.getIn(['headers', path[0], 'titleLine', 'title']))
+  );
+  state = state.setIn(
+    ['headers', path[0], 'rawDescription'],
+    attributedStringToRawText(state.getIn(['headers', path[0], 'description']))
+  );
+
+  return state;
+};
+
 export const updatePropertyListItems = (state, action) => {
   const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
 
@@ -1373,6 +1400,8 @@ const reducer = (state, action) => {
       return inFile(addNewPlanningItem);
     case 'REMOVE_PLANNING_ITEM':
       return inFile(removePlanningItem);
+    case 'REMOVE_TIMESTAMP':
+      return inFile(removeTimestamp);
     case 'UPDATE_PROPERTY_LIST_ITEMS':
       return inFile(updatePropertyListItems);
     case 'SET_ORG_FILE_ERROR_MESSAGE':
@@ -1525,10 +1554,58 @@ function updatePlanningItemsWithRepeaters({
   timestamp,
 }) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
+    const adjustedTimestamp = applyRepeater(planningItem.get('timestamp'), timestamp);
     state = state.setIn(
       ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
-      applyRepeater(planningItem.get('timestamp'), timestamp)
+      adjustedTimestamp
     );
+
+    // INFO: Active timestamps are now manually updated in place.
+    // Rationale: The active timestamps in title and description are
+    // added to `planningItems` on parse. Since there can be an
+    // arbitrary amount of timestamps it makes sense not to have one
+    // `planningItem` representing the title or the description. We
+    // need to preserve the place of a timestamp in title/description
+    // and we want to have it in a list of `planningItems`. So they
+    // necessarily exist in more than one place. There might be a
+    // cleaner solution where we store the timestamp only in one place
+    // and use references to that place but I don't see any extra
+    // benefit for what would be no negligible refactoring effort.
+
+    // Scheduled / deadline timestamps on the other hand are part of
+    // `rawDescription` but not of the parsed description. These
+    // timestamps only exist in one place (`planningItems`) so
+    // changing them there is visible and will be persisted.
+    switch (planningItem.get('type')) {
+      case 'TIMESTAMP_TITLE':
+        const titleIndex = state
+          .getIn(['headers', headerIndex, 'titleLine', 'title'])
+          .findIndex((titlePart) => planningItem.get('id') === titlePart.get('id'));
+        state = state.setIn(
+          ['headers', headerIndex, 'titleLine', 'title', titleIndex, 'firstTimestamp'],
+          adjustedTimestamp
+        );
+        state = state.setIn(
+          ['headers', headerIndex, 'titleLine', 'rawTitle'],
+          attributedStringToRawText(state.getIn(['headers', headerIndex, 'titleLine', 'title']))
+        );
+        break;
+      case 'TIMESTAMP_DESCRIPTION':
+        const descriptionIndex = state
+          .getIn(['headers', headerIndex, 'description'])
+          .findIndex((descriptionPart) => planningItem.get('id') === descriptionPart.get('id'));
+        state = state.setIn(
+          ['headers', headerIndex, 'description', descriptionIndex, 'firstTimestamp'],
+          adjustedTimestamp
+        );
+        state = state.setIn(
+          ['headers', headerIndex, 'rawDescription'],
+          attributedStringToRawText(state.getIn(['headers', headerIndex, 'description']))
+        );
+        break;
+      default:
+        break;
+    }
   });
   state = state.setIn(
     ['headers', headerIndex, 'titleLine', 'todoKeyword'],

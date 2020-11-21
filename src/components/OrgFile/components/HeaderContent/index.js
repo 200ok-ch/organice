@@ -152,7 +152,10 @@ class HeaderContent extends PureComponent {
   }
 
   handleTimestampClick(timestampId) {
-    this.props.base.activatePopup('timestamp-editor', { timestampId });
+    this.props.base.activatePopup('timestamp-editor', {
+      timestampId,
+      headerId: this.props.header.get('id'),
+    });
   }
 
   handleLogEntryTimestampClick(headerId) {
