@@ -843,8 +843,6 @@ describe('org reducer', () => {
       expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
         headerWithId(oldHeaders, repeatingHeaderId).get('description').size
       );
-      console.log(headerWithId(newHeaders, repeatingHeaderId).toJS());
-      console.log(headerWithId(oldHeaders, repeatingHeaderId).toJS());
       expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toBeGreaterThan(
         headerWithId(oldHeaders, repeatingHeaderId).get('logNotes').size
       );
