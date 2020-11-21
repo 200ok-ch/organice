@@ -336,15 +336,6 @@ class TimestampEditor extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path]);
-  const selectedHeaderId = file.get('selectedHeaderId');
-  return {
-    selectedHeaderId,
-  };
-};
-
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });

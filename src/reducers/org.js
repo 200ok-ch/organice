@@ -576,7 +576,7 @@ const narrowHeader = (state, action) => {
 
 const widenHeader = (state) => state.set('narrowedHeaderId', null);
 
-const applyOpennessState = (state, action) => {
+const applyOpennessState = (state) => {
   const path = state.get('path');
   const opennessState = state.get('opennessState');
   if (!opennessState) {
