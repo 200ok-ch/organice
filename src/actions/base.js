@@ -146,6 +146,11 @@ export const setColorScheme = (colorScheme) => ({
   colorScheme,
 });
 
+export const setTheme = (theme) => ({
+  type: 'SET_THEME',
+  theme,
+});
+
 export const setHasUnseenChangelog = (newHasUnseenChangelog) => ({
   type: 'SET_HAS_UNSEEN_CHANGELOG',
   newHasUnseenChangelog,

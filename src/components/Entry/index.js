@@ -20,13 +20,13 @@ import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
+import FileSettingsEditor from '../FileSettingsEditor';
 import SyncServiceSignIn from '../SyncServiceSignIn';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
 import { loadTheme } from '../../lib/color';
-import FileSettingsEditor from '../FileSettingsEditor';
 
 class Entry extends PureComponent {
   constructor(props) {
@@ -153,9 +153,10 @@ class Entry extends PureComponent {
       pendingCapture,
       location: { pathname },
       colorScheme,
+      theme,
     } = this.props;
 
-    loadTheme(colorScheme);
+    loadTheme(theme, colorScheme);
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
@@ -165,15 +166,15 @@ class Entry extends PureComponent {
     });
 
     return (
-      <div className={className}>
+      <>
         <HeaderBar />
+        <div className={className}>
+          <LoadingIndicator message={loadingMessage} />
 
-        <LoadingIndicator message={loadingMessage} />
-
-        <Prompt
-          when={this.shouldPromptWhenLeaving()}
-          message={() => 'You have unpushed changes - are you sure you want to leave this page?'}
-        />
+          <Prompt
+            when={this.shouldPromptWhenLeaving()}
+            message={() => 'You have unpushed changes - are you sure you want to leave this page?'}
+          />
 
         {activeModalPage === 'changelog' ? (
           this.renderChangelogFile()
@@ -214,6 +215,7 @@ class Entry extends PureComponent {
           </Switch>
         )}
       </div>
+      </>
     );
   }
 }
@@ -239,6 +241,7 @@ const mapStateToProps = (state) => {
     pendingCapture: state.org.present.get('pendingCapture'),
     isDirty: file ? file.get('isDirty') : null,
     colorScheme: state.base.get('colorScheme'),
+    theme: state.base.get('theme'),
   };
 };
 

@@ -1,0 +1,12 @@
+* Running organice with [[https://traefik.io/][Traefik]]
+
+This uses the [[https://organice.200ok.ch/documentation.html#docker][official organice Docker image]], but adds instructions on
+how to build a Docker image using [[https://traefik.io/][Traefik]] to set up a WebDAV back-end
+for organice.
+
+Author:
+ - Github: https://github.com/edgar-vincent
+ - Sourcehut: https://git.sr.ht/~e-v/
+ - Email: e-v@posteo.net
+
+Upstream repository: https://git.sr.ht/~e-v/docker-organice-webdav

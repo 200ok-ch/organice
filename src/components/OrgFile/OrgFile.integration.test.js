@@ -220,6 +220,14 @@ describe('Render all views', () => {
 
     describe('Renders everything starting from an Org file', () => {
       test('renders an Org file', () => {
+        // INFO: This snapshot is semantically correct, but it does
+        // not have color theme information. We're implementing the
+        // color themes with an API that mutates the DOM in place (see
+        // `color.js::loadTheme`. We cannot use this API in jest
+        // tests, because calling the API does not yield the same
+        // side-effect as in a browser. Hence, some colors in this
+        // snapshot are off, but that's ok. We do colorScheme testing
+        // by eye and not with automated tests.
         expect(getAllByText(/\*/)).toHaveLength(7);
         expect(container).toMatchSnapshot();
       });

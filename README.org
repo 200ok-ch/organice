@@ -251,6 +251,52 @@ organice implements this customization strategy:
 #+END_EXAMPLE
 
 
+** Themes
+   :PROPERTIES:
+   :CUSTOM_ID: themes
+   :END:
+
+organice implements a strategy pattern, so that adding new themes is
+quite easy. These themes come bundled with organice, each in =light= and
+=dark mode=:
+
+*** Solarized
+
+#+html: <p align="center">
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/solarized_light.png"/>
+#+html: &nbsp;
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/solarized_dark.png"/>
+#+html: </p>
+
+*** One
+
+#+html: <p align="center">
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/one_light.png"/>
+#+html: &nbsp;
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/one_dark.png"/>
+#+html: </p>
+
+*** Gruvbox
+#+html: <p align="center">
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/gruvbox_light.png"/>
+#+html: &nbsp;
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/gruvbox_dark.png"/>
+#+html: </p>
+
+*** Smyck
+#+html: <p align="center">
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/smyck_light.png"/>
+#+html: &nbsp;
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/smyck_dark.png"/>
+#+html: </p>
+
+*** Code
+#+html: <p align="center">
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/one_light.png"/>
+#+html: &nbsp;
+#+html: <img style="height: 30em;"src="https://github.com/200ok-ch/organice/wiki/images/themes/one_dark.png"/>
+#+html: </p>
+
 ** Other customizations
 
 For some customizations, organice exposes a mobile friendly user

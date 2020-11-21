@@ -21,12 +21,7 @@ export const isMobileSafari13 = (() => {
 
 /** Is the OS iOS or Android? */
 export const isMobileBrowser = (() => {
-  return browser.satisfies({
-    mobile: {
-      safari: '>=6',
-      'android browser': '>3',
-    },
-  });
+  return browser.getPlatformType() !== 'desktop';
 })();
 
 export const isIos = () => {

@@ -13,7 +13,9 @@ import { loadFilesFromLocalStorage } from './file_persister';
 export const localStorageAvailable = (() => {
   try {
     localStorage.setItem('test', 'test');
-    return localStorage.getItem('test') === 'test';
+    const localStorageRes = localStorage.getItem('test') === 'test';
+    localStorage.removeItem('test');
+    return localStorageRes && localStorage;
   } catch (e) {
     return false;
   }
@@ -55,6 +57,7 @@ export const persistableFields = [
     category: 'base',
     name: 'bulletStyle',
     type: 'nullable',
+    default: 'Fancy',
     shouldStoreInConfig: true,
   },
   {
@@ -81,6 +84,7 @@ export const persistableFields = [
     category: 'base',
     name: 'shouldStoreSettingsInSyncBackend',
     type: 'boolean',
+    default: true,
     shouldStoreInConfig: true,
   },
   {
@@ -99,12 +103,14 @@ export const persistableFields = [
     category: 'base',
     name: 'shouldLiveSync',
     type: 'boolean',
+    default: true,
     shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldSyncOnBecomingVisibile',
     type: 'boolean',
+    default: true,
     shouldStoreInConfig: true,
   },
   {
@@ -141,6 +147,14 @@ export const persistableFields = [
     category: 'base',
     name: 'colorScheme',
     type: 'string',
+    default: 'Light',
+    shouldStoreInConfig: true,
+  },
+  {
+    category: 'base',
+    name: 'theme',
+    type: 'string',
+    default: 'Solarized',
     shouldStoreInConfig: true,
   },
   {
@@ -164,8 +178,8 @@ export const readOpennessState = () => {
   return !!opennessStateJSONString ? JSON.parse(opennessStateJSONString) : null;
 };
 
-const getFieldsToPersist = (state, fields) =>
-  fields
+const getFieldsToPersist = (state, fields) => {
+  return fields
     .filter((field) => !field.depreacted)
     .filter((field) => field.category === 'org')
     .map((field) =>
@@ -176,18 +190,20 @@ const getFieldsToPersist = (state, fields) =>
     .concat(
       persistableFields
         .filter((field) => field.category !== 'org')
-        .map((field) =>
-          field.type === 'json'
+        .map((field) => {
+          return field.type === 'json'
             ? [
                 field.name,
                 JSON.stringify(state[field.category].get(field.name) || field.default || {}),
               ]
-            : [field.name, state[field.category].get(field.name)]
-        )
+            : [field.name, state[field.category].get(field.name) || field.default];
+        })
     );
+};
 
-const getConfigFileContents = (fieldsToPersist) =>
-  JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
+const getConfigFileContents = (fieldsToPersist) => {
+  return JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
+};
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
   persistableFields
@@ -258,6 +274,9 @@ export const readInitialState = () => {
       }
     }
 
+    // When nothing has been saved to localStorage before, load the default.
+    value = value || field.default;
+
     if (field.category === 'org') {
       initialState[field.category].present = initialState[field.category].present.set(
         field.name,
@@ -286,7 +305,8 @@ export const readInitialState = () => {
     initialState.org.present = initialState.org.present.set('opennessState', fromJS(opennessState));
   }
 
-  // Cache the config file contents locally so we don't overwrite on initial page load.
+  // Cache the config file contents locally so we don't overwrite on
+  // initial page load.
   window.previousSettingsFileContents = getConfigFileContents(
     getFieldsToPersist(initialState, persistableFields)
   );
@@ -341,7 +361,9 @@ export const subscribeToChanges = (store) => {
 
       const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
-      fieldsToPersist.forEach(([name, value]) => localStorage.setItem(name, value));
+      fieldsToPersist.forEach(([name, value]) => {
+        if (name && value) localStorage.setItem(name, value);
+      });
 
       if (state.base.get('shouldStoreSettingsInSyncBackend')) {
         const settingsFileContents = getConfigFileContents(fieldsToPersist);

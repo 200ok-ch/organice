@@ -20,7 +20,10 @@
 
 # Complex TODO with priority, active timestamp, link to an email and a tag
 **** TODO [#B] <2019-05-02 Thu> Some Person [[mu4e:msgid:CAN6MX5o-i9koRnBXGOFQ-wLUhp82mGCwFSxo0b2i0+TROYNZkg@mail.gmail.com][Re: HÖCHENSCHWAND 05.Februar 2019]] :200ok:
-
+*** Header with =CUSTOM_ID= property
+    :PROPERTIES:
+    :CUSTOM_ID: link_to_me
+    :END:
 *** Planning items
 
 **** TODO I am scheduled
