@@ -38,6 +38,7 @@ export const resetFileDisplay = () => {
     dispatch(widenHeader());
     dispatch(closePopup());
     dispatch({ type: 'CLEAR_SEARCH' });
+    dispatch(setPath(null));
     dispatch(ActionCreators.clearHistory());
   };
 };
@@ -381,13 +382,15 @@ export const applyOpennessState = () => ({
   type: 'APPLY_OPENNESS_STATE',
 });
 
+export const dirtyAction = (isDirty, path) => ({
+  type: 'SET_DIRTY',
+  isDirty,
+  path,
+});
+
 export const setDirty = (isDirty, path) => (dispatch) => {
   persistIsDirty(isDirty, path);
-  dispatch({
-    type: 'SET_DIRTY',
-    isDirty,
-    path,
-  });
+  dispatch(dirtyAction(isDirty, path));
 };
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {

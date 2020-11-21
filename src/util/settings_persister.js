@@ -218,10 +218,6 @@ export const applyFileSettingsFromConfig = (state, config) => {
 };
 
 export const readInitialState = () => {
-  if (!localStorageAvailable) {
-    return undefined;
-  }
-
   let initialState = {
     syncBackend: Map(),
     org: {
@@ -229,6 +225,7 @@ export const readInitialState = () => {
       present: Map({
         files: Map(),
         fileSettings: [],
+        opennessState: Map(),
         search: Map({
           searchFilter: '',
           searchFilterExpr: [],
@@ -236,9 +233,13 @@ export const readInitialState = () => {
       }),
       future: [],
     },
-    base: Map().set('isLoading', Set()),
+    base: Map({ isLoading: Set() }),
     capture: Map(),
   };
+
+  if (!localStorageAvailable) {
+    return initialState;
+  }
 
   persistableFields.forEach((field) => {
     let value = localStorage.getItem(field.name);

@@ -1158,7 +1158,6 @@ export const setSearchFilterInformation = (state, action) => {
     // Filter selectedHeader and its subheaders from `headers`,
     // because you don't want to refile a header to itself or to one
     // of its subheaders.
-    console.debug('SEARCHING');
     if (context === 'refile') {
       const selectedHeaderId = state.getIn(['files', path, 'selectedHeaderId']);
       const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
@@ -1414,7 +1413,9 @@ export default (state = Map(), action) => {
   state = reducer(state, action);
 
   if (action.dirtying && state.get('showClockDisplay')) {
-    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
+    affectedFiles.forEach((path) => {
+      state = state.updateIn(['files', path, 'headers'], updateHeadersTotalTimeLoggedRecursive);
+    });
   }
   return state;
 };

@@ -14,7 +14,7 @@ import rootReducer from '../../reducers/';
 import { setPath, parseFile } from '../../actions/org';
 import { setShouldLogIntoDrawer } from '../../actions/base';
 
-import { Map, fromJS } from 'immutable';
+import { Map, Set, fromJS } from 'immutable';
 import { formatDistanceToNow } from 'date-fns';
 
 import { render, fireEvent, cleanup } from '@testing-library/react';
@@ -46,7 +46,14 @@ describe('Render all views', () => {
       {
         org: {
           past: [],
-          present: Map(),
+          present: Map({
+            files: Map(),
+            fileSettings: [],
+            search: Map({
+              searchFilter: '',
+              searchFilterExpr: [],
+            }),
+          }),
           future: [],
         },
         syncBackend: Map({
@@ -56,6 +63,7 @@ describe('Render all views', () => {
         base: new fromJS({
           customKeybindings: {},
           shouldTapTodoToAdvance: true,
+          isLoading: Set(),
         }),
       },
       applyMiddleware(thunk)

@@ -298,8 +298,8 @@ class OrgFile extends PureComponent {
             lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
             lastSyncAt={activePopupData.get('lastSyncAt')}
             path={activePopupData.get('path')}
-            onPull={this.handleSyncConfirmationPull}
-            onPush={this.handleSyncConfirmationPush}
+            onPull={() => this.handleSyncConfirmationPull(activePopupData.get('path'))}
+            onPush={() => this.handleSyncConfirmationPush(activePopupData.get('path'))}
             onCancel={this.handleSyncConfirmationCancel}
           />
         );
