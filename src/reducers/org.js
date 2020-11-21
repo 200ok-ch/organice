@@ -1405,6 +1405,23 @@ function updatePlanningItemsWithRepeaters({
       ['headers', headerIndex, 'planningItems', planningItemIndex, 'timestamp'],
       adjustedTimestamp
     );
+
+    // INFO: Active timestamps are now manually updated in place.
+    // Rationale: The active timestamps in title and description are
+    // added to `planningItems` on parse. Since there can be an
+    // arbitrary amount of timestamps it makes sense not to have one
+    // `planningItem` representing the title or the description. We
+    // need to preserve the place of a timestamp in title/description
+    // and we want to have it in a list of `planningItems`. So they
+    // necessarily exist in more than one place. There might be a
+    // cleaner solution where we store the timestamp only in one place
+    // and use references to that place but I don't see any extra
+    // benefit for what would be no negligible refactoring effort.
+
+    // Scheduled / deadline timestamps on the other hand are part of
+    // `rawDescription` but not of the parsed description. These
+    // timestamps only exist in one place (`planningItems`) so
+    // changing them there is visible and will be persisted.
     switch (planningItem.get('type')) {
       case 'TIMESTAMP_TITLE':
         const titleIndex = state
