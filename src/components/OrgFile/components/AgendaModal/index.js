@@ -31,8 +31,8 @@ import format from 'date-fns/format';
 // changing all.
 function AgendaModal(props) {
   const {
+    files,
     onClose,
-    headers,
     todoKeywordSets,
     agendaTimeframe,
     agendaDefaultDeadlineDelayValue,
@@ -105,14 +105,6 @@ function AgendaModal(props) {
     }
   }
 
-  const {
-    onClose,
-    files,
-    todoKeywordSets,
-    agendaDefaultDeadlineDelayValue,
-    agendaDefaultDeadlineDelayUnit,
-  } = props;
-
   let dates = [];
   switch (agendaTimeframe) {
     case 'Day':
@@ -176,7 +168,7 @@ function AgendaModal(props) {
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files',path]);
+  const file = state.org.present.getIn(['files', path]);
   return {
     files: state.org.present.get('files'),
     todoKeywordSets: file.get('todoKeywordSets'),
