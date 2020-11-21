@@ -292,7 +292,7 @@ class TitleLine extends PureComponent {
 
 const mapStateToProps = (state, ownProps) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files',path]);
+  const file = state.org.present.getIn(['files', path]);
   return {
     inEditMode:
       file.get('editMode') === 'title' &&

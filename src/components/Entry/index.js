@@ -176,45 +176,45 @@ class Entry extends PureComponent {
             message={() => 'You have unpushed changes - are you sure you want to leave this page?'}
           />
 
-        {activeModalPage === 'changelog' ? (
-          this.renderChangelogFile()
-        ) : isAuthenticated ? (
-          [
-            'keyboard_shortcuts_editor',
-            'settings',
-            'capture_templates_editor',
-            'file_settings_editor',
-            'sample',
-          ].includes(activeModalPage) ? (
-            <Fragment>
-              {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
-              {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
-              {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
-              {activeModalPage === 'sample' && this.renderSampleFile()}
-            </Fragment>
+          {activeModalPage === 'changelog' ? (
+            this.renderChangelogFile()
+          ) : isAuthenticated ? (
+            [
+              'keyboard_shortcuts_editor',
+              'settings',
+              'capture_templates_editor',
+              'file_settings_editor',
+              'sample',
+            ].includes(activeModalPage) ? (
+              <Fragment>
+                {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
+                {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+                {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
+                {activeModalPage === 'sample' && this.renderSampleFile()}
+              </Fragment>
+            ) : (
+              <Switch>
+                {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
+                <Route path="/privacy-policy" exact component={PrivacyPolicy} />
+                <Route path="/file/:path+" render={this.renderFile} />
+                <Route path="/files/:path*" render={this.renderFileBrowser} />
+                <Route path="/sample" exact={true} render={this.renderSampleFile} />
+                <Route path="/settings" exact={true}>
+                  <Settings />
+                </Route>
+                <Redirect to="/files" />
+              </Switch>
+            )
           ) : (
             <Switch>
-              {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
               <Route path="/privacy-policy" exact component={PrivacyPolicy} />
-              <Route path="/file/:path+" render={this.renderFile} />
-              <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Route path="/sample" exact={true} render={this.renderSampleFile} />
-              <Route path="/settings" exact={true}>
-                <Settings />
-              </Route>
-              <Redirect to="/files" />
+              <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
+              <Route path="/" exact={true} component={Landing} />
+              <Redirect to="/" />
             </Switch>
-          )
-        ) : (
-          <Switch>
-            <Route path="/privacy-policy" exact component={PrivacyPolicy} />
-            <Route path="/sample" exact={true} render={this.renderSampleFile} />
-            <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
-            <Route path="/" exact={true} component={Landing} />
-            <Redirect to="/" />
-          </Switch>
-        )}
-      </div>
+          )}
+        </div>
       </>
     );
   }
