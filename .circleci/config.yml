@@ -130,8 +130,8 @@ workflows:
               only: master
       - deploy-stage:
           requires:
-            - build
-            - build-docs
+            # - build
+            # - build-docs
           filters:
             branches:
               only: develop
