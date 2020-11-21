@@ -762,20 +762,23 @@ describe('org reducer', () => {
     let todoHeaderId;
     let doneHeaderId;
     let repeatingHeaderId;
+    let activeTimestampWithRepeaterHeaderId;
     let state;
     const testOrgFile = readFixture('various_todos');
 
     beforeEach(() => {
       state = readInitialState();
       state.org.present = parseOrg(testOrgFile);
-      // "This is done" is the 1st header,
-      // "Header with repeater" is the 2nd,
-      // "This is not a todo" is 3rd item, and
-      // "Repeating task" is 4th item; we count from 1.
+      // "This is done" is the 1st header
+      // "Header with repeater" is the 2nd header
+      // "This is not a todo" is 3rd header
+      // "Active timestamp task with repeater" is 4th header
+      // "Repeating task" is 5th header
       doneHeaderId = state.org.present.get('headers').get(0).get('id');
       todoHeaderId = state.org.present.get('headers').get(1).get('id');
       regularHeaderId = state.org.present.get('headers').get(2).get('id');
-      repeatingHeaderId = state.org.present.get('headers').get(3).get('id');
+      activeTimestampWithRepeaterHeaderId = state.org.present.get('headers').get(3).get('id');
+      repeatingHeaderId = state.org.present.get('headers').get(4).get('id');
     });
 
     function check_todo_keyword_kept(oldHeaders, newHeaders, headerId) {
@@ -840,7 +843,6 @@ describe('org reducer', () => {
       expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
         headerWithId(oldHeaders, repeatingHeaderId).get('description').size
       );
-
       expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toBeGreaterThan(
         headerWithId(oldHeaders, repeatingHeaderId).get('logNotes').size
       );
@@ -870,6 +872,47 @@ describe('org reducer', () => {
 
       // The nesting levels remain intact.
       expect(extractTitlesAndNestings(intermHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+    });
+
+    it('should advance active timestamp with repeater in header', () => {
+      const oldHeaders = state.org.present.get('headers');
+      const newHeaders = reducer(
+        state.org.present,
+        types.advanceTodoState(activeTimestampWithRepeaterHeaderId)
+      ).get('headers');
+      check_todo_keyword_kept(oldHeaders, newHeaders, activeTimestampWithRepeaterHeaderId);
+
+      expect(
+        headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).get('planningItems')
+      ).not.toEqual(
+        headerWithId(oldHeaders, activeTimestampWithRepeaterHeaderId).get('planningItems')
+      );
+
+      // The active timestamp with repeater get's replaced in place
+      expect(
+        headerWithId(oldHeaders, activeTimestampWithRepeaterHeaderId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
+      ).toMatch(/<2020-11-15 Sun \+1d>/);
+      expect(
+        headerWithId(oldHeaders, activeTimestampWithRepeaterHeaderId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
+      ).not.toMatch(/<2020-11-16 Mon \+1d>/);
+      expect(
+        headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
+      ).not.toMatch(/<2020-11-15 Sun \+1d>/);
+      expect(
+        headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).getIn([
+          'titleLine',
+          'rawTitle',
+        ])
+      ).toMatch(/<2020-11-16 Mon \+1d>/);
     });
 
     it('should just dirty when applied to no header', () => {

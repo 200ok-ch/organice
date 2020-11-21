@@ -1,5 +1,6 @@
 * DONE This is done
 * TODO Header with repeater
 * This is not a todo
+* TODO Task with active timestamp and repeater <2020-11-15 Sun +1d>
 * TODO Repeating task
   SCHEDULED: <2019-11-27 Wed +1d>

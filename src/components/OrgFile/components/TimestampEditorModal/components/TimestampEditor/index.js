@@ -39,13 +39,14 @@ class TimestampEditor extends PureComponent {
     this.props.onChange(this.props.timestamp.update('isActive', (isActive) => !isActive));
   }
 
-  handleDateChange(event, planningItemIndex) {
+  handleDateChange(event, planningItemIndex, timestampId) {
     // The user deleted the timestamp
     if (_.isEmpty(event.target.value)) {
       // It's a planning item and the parser knows which one.
-      // TODO: Also delete timestamps which are not planningItems
       if (_.isNumber(planningItemIndex)) {
-        this.props.org.removePlanningItem(this.props.selectedHeaderId, planningItemIndex);
+        this.props.org.removePlanningItem(this.props.headerId, planningItemIndex);
+      } else if (_.isNumber(timestampId)) {
+        this.props.org.removeTimestamp(this.props.headerId, timestampId);
       }
       this.props.onClose();
     } else {
@@ -285,7 +286,7 @@ class TimestampEditor extends PureComponent {
   }
 
   render() {
-    const { timestamp, planningItemIndex } = this.props;
+    const { timestamp, timestampId, planningItemIndex } = this.props;
     const {
       isActive,
       year,
@@ -296,7 +297,6 @@ class TimestampEditor extends PureComponent {
       endHour,
       endMinute,
     } = timestamp.toJS();
-
     return (
       <div>
         <div className="timestamp-editor__render">{renderAsText(timestamp)}</div>
@@ -316,7 +316,7 @@ class TimestampEditor extends PureComponent {
                 data-testid="timestamp-selector"
                 type="date"
                 className="timestamp-editor__date-input"
-                onChange={(event) => this.handleDateChange(event, planningItemIndex)}
+                onChange={(event) => this.handleDateChange(event, planningItemIndex, timestampId)}
                 // Needed for iOS due to React bug
                 // https://github.com/facebook/react/issues/8938#issuecomment-519074141
                 onFocus={(event) => (event.nativeEvent.target.defaultValue = '')}
@@ -336,15 +336,8 @@ class TimestampEditor extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  const selectedHeaderId = state.org.present.get('selectedHeaderId');
-  return {
-    selectedHeaderId,
-  };
-};
-
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimestampEditor);
+export default connect(null, mapDispatchToProps)(TimestampEditor);
