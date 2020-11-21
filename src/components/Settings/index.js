@@ -31,6 +31,7 @@ const Settings = ({
   syncBackend,
   showClockDisplay,
   colorScheme,
+  theme,
   base,
   org,
 }) => {
@@ -55,6 +56,8 @@ const Settings = ({
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
   const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
+
+  const handleThemeClick = (theme) => base.setTheme(theme);
 
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
 
@@ -107,6 +110,15 @@ const Settings = ({
           buttons={['Light', 'Dark']}
           selectedButton={colorScheme}
           onSelect={handleColorSchemeClick}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">Theme</div>
+        <TabButtons
+          buttons={['Solarized', 'One', 'Gruvbox', 'Smyck', 'Code']}
+          selectedButton={theme}
+          onSelect={handleThemeClick}
         />
       </div>
 
@@ -303,9 +315,12 @@ const Settings = ({
 };
 
 const mapStateToProps = (state) => {
+  // The default values here only relate to the settings view. To set
+  // defaults which get loaded on an initial run of organice, look at
+  // `util/settings_persister.js::persistableFields`.
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
-    bulletStyle: state.base.get('bulletStyle') || 'Classic',
+    bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
@@ -319,6 +334,7 @@ const mapStateToProps = (state) => {
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
     colorScheme: state.base.get('colorScheme'),
+    theme: state.base.get('theme'),
   };
 };
 
