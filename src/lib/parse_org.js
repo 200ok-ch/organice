@@ -562,7 +562,14 @@ const parsePropertyList = (rawText) => {
           return null;
         }
 
-        const value = !!match[2] ? parseMarkupAndCookies(match[2]) : null;
+        // Parse the properties value even though most values would
+        // not need parsing. Only timestamps are interactive, the rest
+        // will be saved as plain text.
+        let value = !!match[2] ? parseMarkupAndCookies(match[2]) : null;
+
+        if (value && value[0].type !== 'timestamp') {
+          value = [{ contents: match[2], type: 'text' }];
+        }
 
         return {
           property: match[1],

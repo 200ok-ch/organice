@@ -4,16 +4,31 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
-* [2020-11-08 Sun]
+* [2020-11-20 Fri]
+** Fixed
+   - organice understands =:PROPERTIES:= drawers and smartly parses the values in case one of the values is a timestamp.
+     - However, parsing all the values and saving the parsed result in any case will lead to wrong results. Most values of properties are just plain text and non-interactive things in Org mode.
+     - For example, a value like =something_with_underscores= would have been treated as 'underlined text' which doesn't make sense for a property drawer. When saving the value back, organice would have squashed the underlines.
+     - Now, the values are used and preserved as they are. Timestamps still work, of course.
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/578
+* [2020-11-15 Sun]
+** Fixed
+   - When repeating a task, an active date timestamp was logged instead of an inactive datetime timestamp.
 
+* [2020-11-14 Sat]
+** Fixed
+   - The task list was not scrollable on Android.
+      - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/561][PR]] 🙏
+
+* [2020-11-08 Sun]
 ** Changed
+   - Safeguard against selecting text by accident.
+      - Before this change, it was possible to select text when doing a 'swipe'.
+      - Now, selecting/copying text is only possible in 'edit mode', effectively safeguarding against accidentally selecting text.
+      - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/557][PR]] 🙏
+
 
 * [2020-11-06 Fri]
-  - Safeguard against selecting text by accident.
-    - Before this change, it was possible to select text when doing a 'swipe'.
-    - Now, selecting/copying text is only possible in 'edit mode', effectively safeguarding against accidentally selecting text.
-    - Thank you [[https://github.com/tarnung][tarnung]] for your [[https://github.com/200ok-ch/organice/pull/557][PR]] 🙏
-
 ** Added
    - Additional themes. You now can choose between:
      - Solarized

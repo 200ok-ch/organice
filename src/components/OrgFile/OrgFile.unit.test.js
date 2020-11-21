@@ -127,7 +127,7 @@ ${text}`;
 
   describe('Parsing and exporting should not alter the original file', () => {
     test("Parsing and exporting shouldn't alter the original file", () => {
-      const testOrgFile = readFixture('indented_list');
+      const testOrgFile = readFixture('all_the_features');
       const exportedFile = parseAndExportOrgFile(testOrgFile);
 
       // Should have the same amount of lines. Safeguard for the next
@@ -167,6 +167,12 @@ ${text}`;
 
     test('Parse very basic file with one header, one line of description', () => {
       const testOrgFile = '* Header\nabc\n';
+      const exportedFile = parseAndExportOrgFile(testOrgFile);
+      expect(exportedFile).toEqual(testOrgFile);
+    });
+
+    test('Parse a header with PROPERTIES', () => {
+      const testOrgFile = '* Header\n  :PROPERTIES:\n  :CUSTOM_ID: link_to_me\n  :END:\n';
       const exportedFile = parseAndExportOrgFile(testOrgFile);
       expect(exportedFile).toEqual(testOrgFile);
     });

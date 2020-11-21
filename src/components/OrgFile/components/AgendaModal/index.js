@@ -8,6 +8,7 @@ import AgendaDay from './components/AgendaDay';
 import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
 import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
 
@@ -141,7 +142,7 @@ function AgendaModal(props) {
         <i className="fas fa-chevron-right fa-lg" onClick={handleNextDateClick} />
       </div>
 
-      <div className="agenda__days-container">
+      <div className="agenda__days-container" style={isMobileBrowser ? undefined : { overflow: 'auto' }}>
         {dates.map((date) => (
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
