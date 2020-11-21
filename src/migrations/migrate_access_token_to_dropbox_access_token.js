@@ -1,7 +1,7 @@
-import { isLocalStorageAvailable } from '../util/settings_persister';
+import { localStorageAvailable } from '../util/settings_persister';
 
 export default () => {
-  if (!isLocalStorageAvailable) {
+  if (!localStorageAvailable) {
     return;
   }
 

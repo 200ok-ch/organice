@@ -10,18 +10,22 @@ import {
 } from './base';
 import { exportOrg } from '../lib/export_org';
 import substituteTemplateVariables from '../lib/capture_template_substitution';
-import { headerWithPath } from '../lib/org_utils';
+import { headerWithPath, STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
+import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
 
-export const parseFile = (path, contents) => ({
-  type: 'PARSE_FILE',
-  path,
-  contents,
-});
+export const parseFile = (path, contents) => (dispatch) => {
+  saveFileContentsToLocalStorage(path, contents);
+  dispatch({
+    type: 'PARSE_FILE',
+    path,
+    contents,
+  });
+};
 
 export const setLastSyncAt = (lastSyncAt, path) => ({
   type: 'SET_LAST_SYNC_AT',
@@ -34,29 +38,37 @@ export const resetFileDisplay = () => {
     dispatch(widenHeader());
     dispatch(closePopup());
     dispatch({ type: 'CLEAR_SEARCH' });
+    dispatch(setPath(null));
     dispatch(ActionCreators.clearHistory());
   };
 };
 
-const syncDebounced = debounce(
-  (dispatch, getState, options) => {
-    if (options.path) {
-      dispatch(doSync(options));
-    } else {
-      const files = getState().org.present.get('files');
-      files
-        .keySeq()
-        .forEach(
-          (path) => files.getIn([path, 'isDirty']) && dispatch(doSync({ ...options, path }))
-        );
-    }
-  },
-  3000,
-  {
+const getDebouncedSyncFunction = () =>
+  debounce((dispatch, options) => dispatch(doSync(options)), 3000, {
     leading: true,
     trailing: true,
+  });
+const debouncedSyncFunctions = {};
+const syncDebounced = (dispatch, getState, options) => {
+  // to make sure no file is skipped when multiple files are dirty
+  // a seperately debounced function is used per file
+  let filesToSync = [];
+  if (options.path) {
+    filesToSync = [options.path];
+  } else {
+    // if no path is passed in, sync all dirty files
+    const files = getState().org.present.get('files');
+    filesToSync = files.keySeq().filter((path) => files.getIn([path, 'isDirty']));
   }
-);
+  filesToSync.forEach((path) => {
+    let debouncedSyncFunction = debouncedSyncFunctions[path];
+    if (!debouncedSyncFunction) {
+      debouncedSyncFunctions[path] = getDebouncedSyncFunction();
+      debouncedSyncFunction = debouncedSyncFunctions[path];
+    }
+    debouncedSyncFunction(dispatch, options);
+  });
+};
 
 export const sync = (options) => (dispatch, getState) => {
   // If the user hits the 'sync' button, no matter if there's a sync
@@ -64,18 +76,9 @@ export const sync = (options) => (dispatch, getState) => {
   // user and start a sync.
   if (options.forceAction === 'manual') {
     console.log('forcing sync');
-    if (options.path) {
-      dispatch(doSync(options));
-    } else {
-      const files = getState().org.present.get('files');
-      const currentPath = getState().org.present.get('path');
-      files.keySeq().forEach(
-        (path) =>
-          // always sync the current file and all dirty files
-          (currentPath === path || files.getIn([path, 'isDirty'])) &&
-          dispatch(doSync({ ...options, path }))
-      );
-    }
+    const files = getState().org.present.get('files');
+    // sync all files on manual sync
+    files.keySeq().forEach((path) => dispatch(doSync({ ...options, path })));
   } else {
     syncDebounced(dispatch, getState, options);
   }
@@ -104,7 +107,7 @@ const doSync = ({
   const client = getState().syncBackend.get('client');
   const currentPath = getState().org.present.get('path');
   path = path || currentPath;
-  if (!path) {
+  if (!path || path.startsWith(STATIC_FILE_PREFIX)) {
     return;
   }
 
@@ -132,7 +135,7 @@ const doSync = ({
   }
 
   if (!shouldSuppressMessages) {
-    dispatch(setLoadingMessage('Syncing...'));
+    dispatch(setLoadingMessage(`Syncing ${path}...`));
   }
   dispatch(setIsLoading(true, path));
   dispatch(setOrgFileErrorMessage(null));
@@ -146,19 +149,19 @@ const doSync = ({
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
+          const contents =
+            localStorage.getItem('files__' + path) ||
+            exportOrg({
+              headers: getState().org.present.getIn(['files', path, 'headers']),
+              linesBeforeHeadings: getState().org.present.getIn([
+                'files',
+                path,
+                'linesBeforeHeadings',
+              ]),
+              dontIndent: getState().base.get('shouldNotIndentOnExport'),
+            });
           client
-            .updateFile(
-              path,
-              exportOrg({
-                headers: getState().org.present.getIn(['files', path, 'headers']),
-                linesBeforeHeadings: getState().org.present.getIn([
-                  'files',
-                  path,
-                  'linesBeforeHeadings',
-                ]),
-                dontIndent: getState().base.get('shouldNotIndentOnExport'),
-              })
-            )
+            .updateFile(path, contents)
             .then(() => {
               if (!shouldSuppressMessages) {
                 dispatch(setDisappearingLoadingMessage(successMessage, 2000));
@@ -195,7 +198,7 @@ const doSync = ({
           dispatch(setDirty(false, path));
           dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
           if (!shouldSuppressMessages) {
-            dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+            dispatch(setDisappearingLoadingMessage(`Latest version pulled: ${path}`, 2000));
           }
           dispatch(setIsLoading(false, path));
         }
@@ -204,7 +207,7 @@ const doSync = ({
     .catch(() => {
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage('File not found'));
+      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
     });
 };
 
@@ -227,10 +230,13 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-export const setPath = (path) => ({
-  type: 'SET_PATH',
-  path,
-});
+export const setPath = (path) => (dispatch) => {
+  dispatch({
+    type: 'SET_PATH',
+    path,
+  });
+  dispatch(applyOpennessState());
+};
 
 export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
   dispatch(setPath(path));
@@ -376,11 +382,16 @@ export const applyOpennessState = () => ({
   type: 'APPLY_OPENNESS_STATE',
 });
 
-export const setDirty = (isDirty, path) => ({
+export const dirtyAction = (isDirty, path) => ({
   type: 'SET_DIRTY',
   isDirty,
   path,
 });
+
+export const setDirty = (isDirty, path) => (dispatch) => {
+  persistIsDirty(isDirty, path);
+  dispatch(dirtyAction(isDirty, path));
+};
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });

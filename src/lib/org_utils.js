@@ -7,6 +7,8 @@ import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
 import substituteTemplateVariables from './capture_template_substitution';
 
+export const STATIC_FILE_PREFIX = 'organice_internal_';
+
 function generateHash(list) {
   return new Promise((resolve, reject) => {
     if (crypto.subtle) {
@@ -706,7 +708,13 @@ const getBreadcrumbs = (headers, headerId) => {
 
 export const getBreadcrumbsStringFunction = (allHeaders, path) => {
   const allHeadersOfFile = allHeaders.get(path);
-  const filename = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+
+  let filename;
+  if (path.startsWith(STATIC_FILE_PREFIX)) {
+    filename = path.substring(STATIC_FILE_PREFIX.length);
+  } else {
+    filename = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+  }
 
   return (header) => {
     let breadcrumbs = getBreadcrumbs(allHeadersOfFile, header.get('id'));

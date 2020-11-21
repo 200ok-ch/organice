@@ -53,10 +53,7 @@ const setHasUnseenChangelog = (state, action) =>
 const setLastSeenChangelogHeader = (state, action) =>
   state.set('lastSeenChangelogHash', action.newLastSeenChangelogHash);
 
-const setLastViewedFile = (state, action) =>
-  state
-    .set('lastViewedPath', action.lastViewedPath)
-    .set('lastViewedContents', action.lastViewedContents);
+const setLastViewedFile = (state, action) => state.set('lastViewedPath', action.lastViewedPath);
 
 const setCustomKeybinding = (state, action) => {
   if (!state.get('customKeybindings')) {

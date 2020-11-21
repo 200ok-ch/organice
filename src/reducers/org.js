@@ -56,19 +56,19 @@ import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
 import { applyFileSettingsFromConfig } from '../util/settings_persister';
 
-const parseFile = (state, action) => {
+export const parseFile = (state, action) => {
   const { path, contents } = action;
+
   const parsedFile = parseOrg(contents);
 
   return state
-    .setIn(['files', path, 'contents'], contents)
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
     .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
     .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
-const clearSearch = (state) => state.set('path', null).setIn(['search', 'filteredHeaders'], null);
+const clearSearch = (state) => state.setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
@@ -1116,7 +1116,7 @@ export const setSearchFilterInformation = (state, action) => {
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
 
     // Only search subheaders if a header is narrowed
-    const narrowedHeaderId = state.get('narrowedHeaderId');
+    const narrowedHeaderId = state.getIn(['files', path, 'narrowedHeaderId']);
     let headersToSearch;
     if (!narrowedHeaderId || context === 'refile') {
       headersToSearch = headers;
@@ -1159,7 +1159,7 @@ export const setSearchFilterInformation = (state, action) => {
     // because you don't want to refile a header to itself or to one
     // of its subheaders.
     if (context === 'refile') {
-      const selectedHeaderId = state.get('selectedHeaderId');
+      const selectedHeaderId = state.getIn(['files', path, 'selectedHeaderId']);
       const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
       let filterIds = subheaders.map((s) => s.get('id')).toJS();
       filterIds.push(selectedHeaderId);
@@ -1405,31 +1405,38 @@ const reducer = (state, action) => {
 };
 
 export default (state = Map(), action) => {
-  if (action.dirtying) {
-    if (action.type === 'REFILE_SUBTREE') {
-      const { sourcePath, targetPath } = action;
-      state = state.setIn(['files', sourcePath, 'isDirty'], true);
-      state = state.setIn(['files', targetPath, 'isDirty'], true);
-    } else if (action.type === 'INSERT_CAPTURE') {
-      const captureTarget = action.template.get('file');
-      if (captureTarget === '') {
-        const path = state.get('path');
-        state = state.setIn(['files', path, 'isDirty'], true);
-      } else {
-        state = state.setIn(['files', captureTarget, 'isDirty'], true);
-      }
-    } else {
-      const path = state.get('path');
-      state = state.setIn(['files', path, 'isDirty'], true);
-    }
-  }
+  const affectedFiles = determineAffectedFiles(state, action);
+  affectedFiles.forEach((path) => {
+    state = state.setIn(['files', path, 'isDirty'], true);
+  });
 
   state = reducer(state, action);
 
   if (action.dirtying && state.get('showClockDisplay')) {
-    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
+    affectedFiles.forEach((path) => {
+      state = state.updateIn(['files', path, 'headers'], updateHeadersTotalTimeLoggedRecursive);
+    });
   }
   return state;
+};
+
+export const determineAffectedFiles = (state, action) => {
+  if (action.dirtying) {
+    if (action.type === 'REFILE_SUBTREE') {
+      return [action.sourcePath, action.targetPath];
+    } else if (action.type === 'INSERT_CAPTURE') {
+      const captureTarget = action.template.get('file');
+      if (captureTarget === '') {
+        return [state.get('path')];
+      } else {
+        return [captureTarget];
+      }
+    } else {
+      return [state.get('path')];
+    }
+  } else {
+    return [];
+  }
 };
 
 /**

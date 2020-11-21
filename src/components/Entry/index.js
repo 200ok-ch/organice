@@ -10,7 +10,7 @@ import { List, Set } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-import { changelogHash } from '../../lib/org_utils';
+import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -117,7 +117,11 @@ class Entry extends PureComponent {
     if (!!path) {
       path = '/' + path;
     }
-    if (this.props.path && this.props.path !== path) {
+    if (
+      this.props.path &&
+      !this.props.path.startsWith(STATIC_FILE_PREFIX) &&
+      this.props.path !== path
+    ) {
       return <Redirect push to={'/file' + this.props.path} />;
     } else {
       return (
@@ -132,7 +136,12 @@ class Entry extends PureComponent {
   }
 
   shouldPromptWhenLeaving() {
-    return this.props.location.pathname.startsWith('/file/') && this.props.isDirty;
+    return (
+      this.props.location.pathname.startsWith('/file/') &&
+      this.props.path &&
+      !this.props.path.startsWith(STATIC_FILE_PREFIX) &&
+      this.props.isDirty
+    );
   }
 
   render() {

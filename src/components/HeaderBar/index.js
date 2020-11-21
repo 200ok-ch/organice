@@ -26,7 +26,7 @@ class HeaderBar extends PureComponent {
       'handleChangelogClick',
       'handleModalPageDoneClick',
       'handleHeaderBarTitleClick',
-      'handleSettingsSubPageBackClick',
+      'handleBackClick',
       'handleUndoClick',
       'handleRedoClick',
       'handleHelpClick',
@@ -86,7 +86,11 @@ class HeaderBar extends PureComponent {
     const directoryPath = pathParts.slice(0, pathParts.length - 1).join('/');
 
     return (
-      <Link to={`/files${directoryPath}`} className="header-bar__back-button">
+      <Link
+        to={`/files${directoryPath}`}
+        onClick={this.handleBackClick}
+        className="header-bar__back-button"
+      >
         <i className="fas fa-chevron-left" />
         <span className="header-bar__back-button__directory-path">File browser</span>
       </Link>
@@ -120,13 +124,13 @@ class HeaderBar extends PureComponent {
     );
   }
 
-  handleSettingsSubPageBackClick() {
+  handleBackClick() {
     this.props.base.popModalPage();
   }
 
   renderSettingsSubPageBackButton() {
     return (
-      <div className="header-bar__back-button" onClick={this.handleSettingsSubPageBackClick}>
+      <div className="header-bar__back-button" onClick={this.handleBackClick}>
         <i className="fas fa-chevron-left" />
         <span className="header-bar__back-button__directory-path">Settings</span>
       </div>
@@ -146,7 +150,7 @@ class HeaderBar extends PureComponent {
       case 'file_settings_editor':
         return this.renderSettingsSubPageBackButton();
       case 'sample':
-        return this.renderSettingsSubPageBackButton();
+        return this.renderOrgFileBackButton();
       default:
     }
 
@@ -229,7 +233,6 @@ class HeaderBar extends PureComponent {
   }
 
   handleHelpClick() {
-    this.props.base.pushModalPage('settings');
     this.props.base.pushModalPage('sample');
   }
 

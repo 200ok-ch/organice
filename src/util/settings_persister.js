@@ -8,15 +8,16 @@ import { restoreCaptureSettings } from '../actions/capture';
 import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
+import { loadFilesFromLocalStorage } from './file_persister';
 
-export const isLocalStorageAvailable = () => {
+export const localStorageAvailable = (() => {
   try {
     localStorage.setItem('test', 'test');
     return localStorage.getItem('test') === 'test';
   } catch (e) {
     return false;
   }
-};
+})();
 
 const debouncedPushConfigToSyncBackend = _.debounce(
   (syncBackendClient, contents) => {
@@ -217,10 +218,6 @@ export const applyFileSettingsFromConfig = (state, config) => {
 };
 
 export const readInitialState = () => {
-  if (!isLocalStorageAvailable()) {
-    return undefined;
-  }
-
   let initialState = {
     syncBackend: Map(),
     org: {
@@ -228,6 +225,7 @@ export const readInitialState = () => {
       present: Map({
         files: Map(),
         fileSettings: [],
+        opennessState: Map(),
         search: Map({
           searchFilter: '',
           searchFilterExpr: [],
@@ -235,9 +233,13 @@ export const readInitialState = () => {
       }),
       future: [],
     },
-    base: Map().set('isLoading', Set()),
+    base: Map({ isLoading: Set() }),
     capture: Map(),
   };
+
+  if (!localStorageAvailable) {
+    return initialState;
+  }
 
   persistableFields.forEach((field) => {
     let value = localStorage.getItem(field.name);
@@ -289,6 +291,8 @@ export const readInitialState = () => {
     getFieldsToPersist(initialState, persistableFields)
   );
 
+  initialState = loadFilesFromLocalStorage(initialState);
+
   return initialState;
 };
 
@@ -329,7 +333,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
 };
 
 export const subscribeToChanges = (store) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return () => {};
   } else {
     return () => {
@@ -368,7 +372,7 @@ export const subscribeToChanges = (store) => {
 };
 
 export const persistField = (field, value) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return;
   } else {
     localStorage.setItem(field, value);
@@ -376,7 +380,7 @@ export const persistField = (field, value) => {
 };
 
 export const getPersistedField = (field, nullable = false) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return null;
   } else {
     const value = localStorage.getItem(field);

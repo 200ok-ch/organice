@@ -2,16 +2,10 @@ import { parseOrg } from '../../../../../../lib/parse_org';
 
 import AgendaDay from './index';
 
+import { Map } from 'immutable';
 import { parseISO } from 'date-fns';
 
 import readFixture from '../../../../../../../test_helpers/index';
-
-function parseOrgFile(testOrgFile) {
-  const parsedFile = parseOrg(testOrgFile);
-  const headers = parsedFile.get('headers');
-  const todoKeywordSets = parsedFile.get('todoKeywordSets');
-  return { headers, todoKeywordSets };
-}
 
 describe('Unit Tests for AgendaDay', () => {
   const component = new AgendaDay();
@@ -47,6 +41,7 @@ describe('Unit Tests for AgendaDay', () => {
           rawDescription: '\n',
           description: [{ type: 'text', contents: '\n' }],
           opened: false,
+          path: '/testfile.org',
           id: 4,
           logNotes: [],
           nestingLevel: 1,
@@ -65,9 +60,8 @@ describe('Unit Tests for AgendaDay', () => {
       ],
     ];
     const testOrgFile = readFixture('multiple_headlines_with_timestamps_simple');
-    const parsedOrgFile = parseOrgFile(testOrgFile);
-    input.headers = parsedOrgFile.headers;
-    input.todoKeywordSets = parsedOrgFile.todoKeywordSets;
+    const parsedOrgFile = parseOrg(testOrgFile);
+    input.files = Map({ '/testfile.org': parsedOrgFile });
 
     expect(JSON.parse(JSON.stringify(component.getPlanningItemsAndHeaders(input)))).toEqual(output);
   });
