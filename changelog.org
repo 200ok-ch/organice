@@ -4,6 +4,19 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2020-11-21 Sat]
+
+** Added
+   - When going to the Agenda view, the selected tab is persisted - meaning it will be pre-selected when you go to the Agenda next time.
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/562
+
+** Fixed
+   - Having an active timestamp with a repeater was broken.
+     - When the TODO state changes for a header that has a repeater (either as SCHEDULED, DEADLINE or active timestamp), a log entry is written and the timestamp is updated.
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/568
+   - Removing an active timestamp was broken.
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/568
+
 * [2020-11-20 Fri]
 ** Fixed
    - organice understands =:PROPERTIES:= drawers and smartly parses the values in case one of the values is a timestamp.

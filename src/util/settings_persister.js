@@ -171,6 +171,13 @@ export const persistableFields = [
     shouldStoreInConfig: true,
     default: List(),
   },
+  {
+    category: 'base',
+    name: 'agendaTimeframe',
+    type: 'string',
+    default: 'Week',
+    shouldStoreInConfig: false,
+  },
 ];
 
 export const readOpennessState = () => {
@@ -202,7 +209,7 @@ const getFieldsToPersist = (state, fields) => {
 };
 
 const getConfigFileContents = (fieldsToPersist) => {
-  return JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
+  return JSON.stringify(_.fromPairs(fieldsToPersist.filter((f) => f.shouldStoreInConfig)), null, 2);
 };
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
@@ -233,7 +240,7 @@ export const applyFileSettingsFromConfig = (state, config) => {
   return state.set('fileSettings', fileSettings);
 };
 
-export const readInitialState = () => {
+const getInitialStateWithDefaultValues = () => {
   let initialState = {
     syncBackend: Map(),
     org: {
@@ -253,10 +260,23 @@ export const readInitialState = () => {
     capture: Map(),
   };
 
-  if (!localStorageAvailable) {
-    return initialState;
-  }
+  persistableFields.forEach((field) => {
+    const value = field.default;
 
+    if (field.category === 'org') {
+      initialState[field.category].present = initialState[field.category].present.set(
+        field.name,
+        value
+      );
+    } else {
+      initialState[field.category] = initialState[field.category].set(field.name, value);
+    }
+  });
+
+  return initialState;
+};
+
+const loadContentFromLocalStorage = (initialState) => {
   persistableFields.forEach((field) => {
     let value = localStorage.getItem(field.name);
 
@@ -273,8 +293,7 @@ export const readInitialState = () => {
         value = fromJS(JSON.parse(value));
       }
     }
-
-    // When nothing has been saved to localStorage before, load the default.
+    // When nothing has been saved to localStorage before, keep the default.
     value = value || field.default;
 
     if (field.category === 'org') {
@@ -311,9 +330,13 @@ export const readInitialState = () => {
     getFieldsToPersist(initialState, persistableFields)
   );
 
-  initialState = loadFilesFromLocalStorage(initialState);
+  return loadFilesFromLocalStorage(initialState);
+};
 
-  return initialState;
+export const readInitialState = () => {
+  let initialState = getInitialStateWithDefaultValues();
+
+  return localStorageAvailable ? loadContentFromLocalStorage(initialState) : initialState;
 };
 
 export const loadSettingsFromConfigFile = (dispatch, getState) => {

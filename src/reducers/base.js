@@ -117,6 +117,8 @@ const setIsLoading = (state, action) => {
   }
 };
 
+const setAgendaTimeframe = (state, action) => state.set('agendaTimeframe', action.agendaTimeframe);
+
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
 };
@@ -184,6 +186,8 @@ export default (state = Map(), action) => {
       return closePopup(state, action);
     case 'SET_IS_LOADING':
       return setIsLoading(state, action);
+    case 'SET_AGENDA_TIMEFRAME':
+      return setAgendaTimeframe(state, action);
     default:
       return state;
   }
