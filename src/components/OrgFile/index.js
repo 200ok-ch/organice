@@ -10,15 +10,21 @@ import './stylesheet.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
+import ActionButtons from './components/ActionButtons';
 import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
+import TitleEditorModal from './components/TitleEditorModal';
+import DescriptionEditorModal from './components/DescriptionEditorModal';
+import TableEditorModal from './components/TableEditorModal';
+import NoteEditorModal from './components/NoteEditorModal';
 import AgendaModal from './components/AgendaModal';
 import TaskListModal from './components/TaskListModal';
 import SearchModal from './components/SearchModal';
 import ExternalLink from '../UI/ExternalLink';
+import Drawer from '../UI/Drawer/';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -38,6 +44,7 @@ import {
 
 import _ from 'lodash';
 import { fromJS } from 'immutable';
+import DrawerActionBar from './components/DrawerActionBar';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -63,11 +70,17 @@ class OrgFile extends PureComponent {
       'handlePopupClose',
       'handleSearchPopupClose',
       'handleRefilePopupClose',
+      'handleTitlePopupClose',
+      'handleTitlePopupSwitch',
+      'handleDescriptionPopupClose',
+      'handleDescriptionPopupSwitch',
+      'handleTablePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
       'handleSyncConfirmationCancel',
       'handleTagsChange',
       'handlePropertyListItemsChange',
+      'getPopupCloseAction',
     ]);
 
     this.state = {
@@ -227,6 +240,30 @@ class OrgFile extends PureComponent {
     }
   }
 
+  handleTitlePopupSwitch(titleValue) {
+    this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+  }
+
+  handleTitlePopupClose(titleValue) {
+    this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+    this.props.base.closePopup();
+  }
+
+  handleDescriptionPopupSwitch(descriptionValue) {
+    this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+  }
+
+  handleDescriptionPopupClose(descriptionValue) {
+    this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    this.props.base.closePopup();
+  }
+
+  handleTablePopupClose() {
+    this.props.base.closePopup();
+    this.props.org.setSelectedTableCellId(null);
+    this.props.org.setSelectedTableId(null);
+  }
+
   handleSyncConfirmationPull() {
     this.props.org.sync({ forceAction: 'pull' });
     this.props.base.closePopup();
@@ -271,13 +308,54 @@ class OrgFile extends PureComponent {
     }
   }
 
-  renderActivePopup() {
+  getPopupSwitchAction(activePopupType) {
+    switch (activePopupType) {
+      case 'title-editor':
+        return this.handleTitlePopupSwitch;
+      case 'description-editor':
+        return this.handleDescriptionPopupSwitch;
+      default:
+        return () => {};
+    }
+  }
+
+  getPopupCloseAction(activePopupType) {
+    switch (activePopupType) {
+      case 'search':
+        return this.handleSearchPopupClose;
+      case 'refile':
+        return this.handleRefilePopupClose;
+      case 'title-editor':
+        return this.handleTitlePopupClose;
+      case 'description-editor':
+        return this.handleDescriptionPopupClose;
+      case 'table-editor':
+        return this.handleTablePopupClose;
+      default:
+        return this.handlePopupClose;
+    }
+  }
+
+  getPopupMaxSize(activePopupType) {
+    switch (activePopupType) {
+      case 'agenda':
+      case 'task-list':
+      case 'search':
+      case 'refile':
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  renderActivePopup(setPopupCloseActionValuesAccessor) {
     const {
       activePopupType,
       activePopupData,
       captureTemplates,
       headers,
       selectedHeader,
+      shouldDisableActions,
     } = this.props;
 
     switch (activePopupType) {
@@ -298,19 +376,18 @@ class OrgFile extends PureComponent {
             )}
             headers={headers}
             onCapture={this.handleCapture}
-            onClose={this.handlePopupClose}
+            onClose={this.getPopupCloseAction(activePopupType)}
           />
         );
       case 'tags-editor':
         const allTags = extractAllOrgTags(headers);
-        return !!selectedHeader ? (
+        return (
           <TagsEditorModal
             header={selectedHeader}
             allTags={allTags}
-            onClose={this.handlePopupClose}
             onChange={this.handleTagsChange}
           />
-        ) : null;
+        );
       case 'timestamp-editor':
         let editingTimestamp = null;
         if (activePopupData.get('timestampId')) {
@@ -338,8 +415,8 @@ class OrgFile extends PureComponent {
             timestamp={editingTimestamp}
             planningItemIndex={activePopupData.get('planningItemIndex')}
             singleTimestampOnly={!activePopupData.get('timestampId')}
-            onClose={this.handlePopupClose}
             onChange={this.handleTimestampChange(activePopupData)}
+            onClose={this.getPopupCloseAction(activePopupType)}
           />
         );
 
@@ -347,20 +424,43 @@ class OrgFile extends PureComponent {
         const allOrgProperties = extractAllOrgProperties(headers);
         return selectedHeader ? (
           <PropertyListEditorModal
-            onClose={this.handlePopupClose}
             onChange={this.handlePropertyListItemsChange}
             propertyListItems={selectedHeader.get('propertyListItems')}
             allOrgProperties={allOrgProperties}
           />
         ) : null;
       case 'agenda':
-        return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
+        return (
+          <AgendaModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
+        );
       case 'task-list':
-        return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
+        return (
+          <TaskListModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
+        );
       case 'search':
-        return <SearchModal onClose={this.handleSearchPopupClose} context="search" />;
+        return <SearchModal context="search" onClose={this.getPopupCloseAction(activePopupType)} />;
       case 'refile':
-        return <SearchModal onClose={this.handleRefilePopupClose} context="refile" />;
+        return <SearchModal context="refile" onClose={this.getPopupCloseAction(activePopupType)} />;
+      case 'title-editor':
+        return (
+          <TitleEditorModal
+            onClose={this.getPopupCloseAction('title-editor')}
+            header={selectedHeader}
+            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
+          />
+        );
+      case 'description-editor':
+        return (
+          <DescriptionEditorModal
+            header={selectedHeader}
+            dontIndent={this.props.dontIndent}
+            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
+          />
+        );
+      case 'table-editor':
+        return <TableEditorModal shouldDisableActions={shouldDisableActions} />;
+      case 'note-editor':
+        return <NoteEditorModal shouldDisableActions={shouldDisableActions} />;
       default:
         return null;
     }
@@ -378,7 +478,9 @@ class OrgFile extends PureComponent {
       staticFile,
       customKeybindings,
       inEditMode,
+      disableInlineEditing,
       orgFileErrorMessage,
+      activePopupType,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -450,6 +552,10 @@ class OrgFile extends PureComponent {
       undo: preventDefaultAndHandleEditMode(this.handleUndoHotKey),
     };
 
+    const setPopupCloseActionValuesAccessor = (v) => {
+      this.setState({ popupCloseActionValuesAccessor: v });
+    };
+
     return (
       <HotKeys keyMap={keyMap} handlers={handlers}>
         <div className="org-file-container" tabIndex="-1" ref={this.handleContainerRef}>
@@ -477,14 +583,49 @@ class OrgFile extends PureComponent {
             <div className="dirty-indicator">Unpushed changes</div>
           )}
 
-          {!shouldDisableActions && (
-            <ActionDrawer
-              shouldDisableSyncButtons={shouldDisableSyncButtons}
-              staticFile={staticFile}
-            />
-          )}
+          {!shouldDisableActions &&
+            (disableInlineEditing ? (
+              <ActionButtons
+                shouldDisableSyncButtons={shouldDisableSyncButtons}
+                staticFile={staticFile}
+              />
+            ) : (
+              <ActionDrawer
+                shouldDisableSyncButtons={shouldDisableSyncButtons}
+                staticFile={staticFile}
+              />
+            ))}
 
-          {this.renderActivePopup()}
+          {activePopupType ? (
+            <Drawer
+              onClose={() =>
+                this.getPopupCloseAction(activePopupType)(
+                  ...(this.state.popupCloseActionValuesAccessor
+                    ? this.state.popupCloseActionValuesAccessor()
+                    : [])
+                )
+              }
+              maxSize={this.getPopupMaxSize(activePopupType)}
+            >
+              {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
+              {(activePopupType === 'title-editor' ||
+                activePopupType === 'description-editor' ||
+                activePopupType === 'tags-editor' ||
+                activePopupType === 'property-list-editor' ||
+                activePopupType === 'timestamp-editor' ||
+                activePopupType === 'note-editor') && (
+                <DrawerActionBar
+                  onSwitch={() =>
+                    this.getPopupSwitchAction(activePopupType)(
+                      ...(this.state.popupCloseActionValuesAccessor
+                        ? this.state.popupCloseActionValuesAccessor()
+                        : [])
+                    )
+                  }
+                />
+              )}
+            </Drawer>
+          ) : null}
         </div>
       </HotKeys>
     );
@@ -503,8 +644,10 @@ const mapStateToProps = (state) => {
     loadedPath: state.org.present.get('path'),
     selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
+    dontIndent: state.base.get('shouldNotIndentOnExport'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     inEditMode: !!state.org.present.get('editMode'),
+    disableInlineEditing: state.org.present.get('disableInlineEditing'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),

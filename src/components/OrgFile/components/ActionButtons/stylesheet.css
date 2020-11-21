@@ -1,0 +1,49 @@
+.action-drawer-container {
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  right: 10px;
+  white-space: nowrap;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  z-index: 2;
+}
+
+.action-drawer__btn {
+  outline: 0;
+  box-shadow: 2px 2px 5px 0px var(--base0-soft);
+
+  position: relative;
+
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+.action-drawer__done-btn {
+  font-weight: bold;
+  font-size: 18px;
+
+  height: 60px;
+  width: 100%;
+}
+
+.action-drawer__arrow-buttons-container {
+  position: relative;
+}
+
+.action-drawer__arrow-button {
+  position: absolute;
+  z-index: 0;
+}
+
+.action-drawer__main-arrow-button {
+  position: relative;
+  z-index: 1;
+}
+
+.action-drawer__capture-buttons-container {
+  position: relative;
+}

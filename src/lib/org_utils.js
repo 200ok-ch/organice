@@ -65,7 +65,7 @@ const subheaderIndexRangeForHeaderIndex = (headers, headerIndex) => {
   }
 };
 
-const subheaderIndexRangeForHeaderId = (headers, headerId) => {
+export const subheaderIndexRangeForHeaderId = (headers, headerId) => {
   const headerIndex = indexOfHeaderWithId(headers, headerId);
   return subheaderIndexRangeForHeaderIndex(headers, headerIndex);
 };
@@ -152,6 +152,36 @@ export const indexOfPreviousSibling = (headers, headerIndex) => {
   }
 
   return null;
+};
+
+export const isHeaderOpenedRecursively = (headers, headerId) => {
+  const subheaders = subheadersOfHeaderWithId(headers, headerId);
+  return !subheaders.find((s) => !s.get('opened'));
+};
+
+export const openHeaderRecursively = (headers, headerId) => {
+  const indices = subheaderIndicesOfHeaderWithId(headers, headerId);
+  console.debug(indices);
+  if (indices.length == 0) {
+    return (headers = headers.setIn([indexOfHeaderWithId(headers, headerId), 'opened'], true));
+  }
+  headers = headers.setIn([indices[0] - 1, 'opened'], true);
+  indices.forEach((i) => {
+    headers = headers.setIn([i, 'opened'], true);
+  });
+  return headers;
+};
+
+export const closeHeaderRecursively = (headers, headerId) => {
+  const indices = subheaderIndicesOfHeaderWithId(headers, headerId);
+  if (indices.length == 0) {
+    return (headers = headers.setIn([indexOfHeaderWithId(headers, headerId), 'opened'], false));
+  }
+  headers = headers.setIn([indices[0] - 1, 'opened'], false);
+  indices.forEach((i) => {
+    headers = headers.setIn([i, 'opened'], false);
+  });
+  return headers;
 };
 
 const isHeaderVisible = (headers, headerId) => {

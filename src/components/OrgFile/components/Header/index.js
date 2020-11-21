@@ -20,6 +20,7 @@ import HeaderActionDrawer from './components/HeaderActionDrawer';
 import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString, readRgbaVariable } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
+import org from '../../../../reducers/org';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -129,10 +130,14 @@ class Header extends PureComponent {
       }
 
       if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
-        this.setState({
-          isPlayingRemoveAnimation: true,
-          heightBeforeRemove: this.containerDiv.offsetHeight,
-        });
+        if (this.props.disableInlineEditing) {
+          this.props.org.cycleHeaderVisibility(this.props.header.get('id'));
+        } else {
+          this.setState({
+            isPlayingRemoveAnimation: true,
+            heightBeforeRemove: this.containerDiv.offsetHeight,
+          });
+        }
       }
     }
 
@@ -227,7 +232,7 @@ class Header extends PureComponent {
 
   handleRest() {
     if (this.state.isPlayingRemoveAnimation) {
-      this.props.org.removeHeader(this.props.header.get('id'));
+      this.props.org.cycleHeaderVisibility(this.props.header.get('id'));
     }
   }
 
@@ -334,6 +339,7 @@ ${header.get('rawDescription')}`;
       isNarrowed,
       shouldDisableActions,
       showClockDisplay,
+      disableInlineEditing,
     } = this.props;
 
     const indentLevel = !!narrowedHeader
@@ -501,29 +507,31 @@ ${header.get('rawDescription')}`;
                 }
               />
 
-              <Collapse
-                isOpened={isSelected && !shouldDisableActions}
-                springConfig={{ stiffness: 300 }}
-                style={{ marginRight: rightSwipeActionContainerStyle.width }}
-              >
-                <HeaderActionDrawer
-                  onEnterTitleEditMode={this.handleEnterTitleEditMode}
-                  onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
-                  isNarrowed={isNarrowed}
-                  onTagsClick={this.handleShowTagsModal}
-                  onPropertiesClick={this.handleShowPropertyListEditorModal}
-                  onNarrow={this.handleNarrow}
-                  onWiden={this.handleWiden}
-                  onAddNewHeader={this.handleAddNewHeader}
-                  onDeadlineClick={this.handleDeadlineClick}
-                  onClockInOutClick={this.handleClockInOutClick}
-                  onScheduledClick={this.handleScheduledClick}
-                  hasActiveClock={hasActiveClock}
-                  onShareHeader={this.handleShareHeaderClick}
-                  onRefileHeader={this.handleRefileHeaderRequest}
-                  onAddNote={this.handleAddNoteClick}
-                />
-              </Collapse>
+              {!disableInlineEditing ? (
+                <Collapse
+                  isOpened={isSelected && !shouldDisableActions}
+                  springConfig={{ stiffness: 300 }}
+                  style={{ marginRight: rightSwipeActionContainerStyle.width }}
+                >
+                  <HeaderActionDrawer
+                    onEnterTitleEditMode={this.handleEnterTitleEditMode}
+                    onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
+                    isNarrowed={isNarrowed}
+                    onTagsClick={this.handleShowTagsModal}
+                    onPropertiesClick={this.handleShowPropertyListEditorModal}
+                    onNarrow={this.handleNarrow}
+                    onWiden={this.handleWiden}
+                    onAddNewHeader={this.handleAddNewHeader}
+                    onDeadlineClick={this.handleDeadlineClick}
+                    onClockInOutClick={this.handleClockInOutClick}
+                    onScheduledClick={this.handleScheduledClick}
+                    hasActiveClock={hasActiveClock}
+                    onShareHeader={this.handleShareHeaderClick}
+                    onRefileHeader={this.handleRefileHeaderRequest}
+                    onAddNote={this.handleAddNoteClick}
+                  />
+                </Collapse>
+              ) : null}
 
               <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
             </div>
@@ -547,6 +555,7 @@ const mapStateToProps = (state, ownProps) => {
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     inEditMode: !!state.org.present.get('editMode'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    disableInlineEditing: state.org.present.get('disableInlineEditing'),
   };
 };
 

@@ -27,6 +27,7 @@ class HeaderContent extends PureComponent {
       'handleTextareaRef',
       'handleDescriptionChange',
       'handleTextareaBlur',
+      'handleTableSelect',
       'handleTableCellSelect',
       'handleExitTableEditMode',
       'handleTableCellValueUpdate',
@@ -115,6 +116,12 @@ class HeaderContent extends PureComponent {
     }, 200);
   }
 
+  handleTableSelect(tableId) {
+    this.props.org.selectHeader(this.props.header.get('id'));
+    this.props.org.setSelectedTableId(tableId);
+    this.props.base.activatePopup('table-editor');
+  }
+
   handleTableCellSelect(cellId) {
     this.props.org.setSelectedTableCellId(cellId);
   }
@@ -196,6 +203,7 @@ class HeaderContent extends PureComponent {
       inEditMode,
       selectedTableCellId,
       inTableEditMode,
+      disableInlineEditing,
       shouldDisableActions,
     } = this.props;
     const { containerWidth } = this.state;
@@ -255,21 +263,32 @@ class HeaderContent extends PureComponent {
             />
             <AttributedString
               parts={header.get('description')}
-              subPartDataAndHandlers={{
-                onTableCellSelect: this.handleTableCellSelect,
-                selectedTableCellId: selectedTableCellId,
-                inTableEditMode: inTableEditMode,
-                onExitTableEditMode: this.handleExitTableEditMode,
-                onTableCellValueUpdate: this.handleTableCellValueUpdate,
-                onEnterTableEditMode: this.handleEnterTableEditMode,
-                onAddNewTableRow: this.handleAddNewTableRow,
-                onRemoveTableRow: this.handleRemoveTableRow,
-                onAddNewTableColumn: this.handleAddNewTableColumn,
-                onRemoveTableColumn: this.handleRemoveTableColumn,
-                onCheckboxClick: this.handleCheckboxClick,
-                onTimestampClick: this.handleTimestampClick,
-                shouldDisableActions,
-              }}
+              subPartDataAndHandlers={
+                disableInlineEditing
+                  ? {
+                      disableInlineEditing,
+                      onTableSelect: this.handleTableSelect,
+                      onCheckboxClick: this.handleCheckboxClick,
+                      onTimestampClick: this.handleTimestampClick,
+                      shouldDisableActions,
+                    }
+                  : {
+                      disableInlineEditing,
+                      onTableCellSelect: this.handleTableCellSelect,
+                      selectedTableCellId: selectedTableCellId,
+                      inTableEditMode: inTableEditMode,
+                      onExitTableEditMode: this.handleExitTableEditMode,
+                      onTableCellValueUpdate: this.handleTableCellValueUpdate,
+                      onEnterTableEditMode: this.handleEnterTableEditMode,
+                      onAddNewTableRow: this.handleAddNewTableRow,
+                      onRemoveTableRow: this.handleRemoveTableRow,
+                      onAddNewTableColumn: this.handleAddNewTableColumn,
+                      onRemoveTableColumn: this.handleRemoveTableColumn,
+                      onCheckboxClick: this.handleCheckboxClick,
+                      onTimestampClick: this.handleTimestampClick,
+                      shouldDisableActions,
+                    }
+              }
             />
           </Fragment>
         )}
@@ -286,6 +305,7 @@ const mapStateToProps = (state, ownProps) => {
     isSelected: state.org.present.get('selectedHeaderId') === ownProps.header.get('id'),
     selectedTableCellId: state.org.present.get('selectedTableCellId'),
     inTableEditMode: state.org.present.get('editMode') === 'table',
+    disableInlineEditing: state.org.present.get('disableInlineEditing'),
     dontIndent: state.base.get('shouldNotIndentOnExport'),
   };
 };

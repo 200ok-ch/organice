@@ -15,6 +15,9 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   getTodoKeywordSetsAsFlattenedArray,
+  isHeaderOpenedRecursively,
+  openHeaderRecursively,
+  closeHeaderRecursively,
 } from '../lib/org_utils';
 
 import {
@@ -30,11 +33,13 @@ import {
 } from '../lib/parse_org';
 import { attributedStringToRawText } from '../lib/export_org';
 import {
+  subheadersOfHeaderWithIndex,
   indexOfHeaderWithId,
   indexAndHeaderWithId,
   parentIdOfHeaderWithId,
   subheadersOfHeaderWithId,
   subheaderIndicesOfHeaderWithId,
+  subheaderIndexRangeForHeaderId,
   numSubheadersOfHeaderWithId,
   indexOfPreviousSibling,
   openDirectParent,
@@ -85,6 +90,10 @@ const openHeader = (state, action) => {
 };
 
 const toggleHeaderOpened = (state, action) => {
+  // skip after swipe action
+  if (state.get('skipNextToggleHeaderOpened')) {
+    return state.set('skipNextToggleHeaderOpened', false);
+  }
   const headers = state.get('headers');
 
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
@@ -105,6 +114,10 @@ const toggleHeaderOpened = (state, action) => {
 };
 
 const selectHeader = (state, action) => {
+  // skip after swipe action
+  if (state.get('skipNextSelectHeader')) {
+    return state.set('skipNextSelectHeader', false);
+  }
   return state.set('selectedHeaderId', action.headerId);
 };
 
@@ -192,6 +205,9 @@ const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
 };
 
 const advanceTodoState = (state, action) => {
+  // swiping also triggeres a click action that is hereby disabled
+  state = state.set('skipNextToggleHeaderOpened', true);
+
   const { headerId, logIntoDrawer, timestamp } = action;
   const existingHeaderId = headerId || state.get('selectedHeaderId');
   if (!existingHeaderId) {
@@ -260,6 +276,27 @@ const updateHeaderDescription = (state, action) => {
 
 const addHeader = (state, action) => {
   const headers = state.get('headers');
+
+  // when creating a header with no header selected..
+  if (!action.headerId) {
+    const narrowedHeaderId = state.get('narrowedHeaderId');
+    console.debug(narrowedHeaderId);
+    if (narrowedHeaderId) {
+      // insert underneath narrowed header
+      const { header, headerIndex } = indexAndHeaderWithId(headers, narrowedHeaderId);
+      const nestingLevel = header.get('nestingLevel');
+      const subheaders = subheadersOfHeaderWithIndex(headers, headerIndex);
+      const newHeader = newHeaderWithTitle('', nestingLevel + 1, state.get('todoKeywordSets'));
+      return state.update('headers', (headers) =>
+        headers.insert(headerIndex + subheaders.size + 1, newHeader)
+      );
+    } else {
+      // insert top level at the end of the document
+      const newHeader = newHeaderWithTitle('', 1, state.get('todoKeywordSets'));
+      return state.update('headers', (headers) => headers.push(newHeader));
+    }
+  }
+
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
 
   const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
@@ -282,9 +319,23 @@ const addHeader = (state, action) => {
 };
 
 const selectNextSiblingHeader = (state, action) => {
+  let headerId = action.headerId;
   const headers = state.get('headers');
-  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
-  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+
+  // after creating a header with no header selected..
+  if (!action.headerId) {
+    if (state.get('narrowedHeaderId')) {
+      // if there is a narrowed header take the last header under it
+      const subheaders = subheadersOfHeaderWithId(headers, state.get('narrowedHeaderId'));
+      return state.set('selectedHeaderId', subheaders.get(subheaders.size - 1).get('id'));
+    } else {
+      // take the last header
+      const lastHeaderId = headers.get(headers.size - 1).get('id');
+      return state.set('selectedHeaderId', lastHeaderId);
+    }
+  }
+  const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
+  const subheaders = subheadersOfHeaderWithId(headers, headerId);
 
   const nextSibling = headers.get(headerIndex + subheaders.size + 1);
 
@@ -326,6 +377,26 @@ const selectPreviousVisibleHeader = (state) => {
   return state.set('selectedHeaderId', previousVisibleHeader.get('id'));
 };
 
+const cycleHeaderVisibility = (state, action) => {
+  const headers = state.get('headers');
+  const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
+
+  // swiping also triggeres a click action that is hereby disabled
+  state = state.set('skipNextToggleHeaderOpened', true);
+  state = state.set('skipNextSelectHeader', true);
+
+  if (header.get('opened')) {
+    if (isHeaderOpenedRecursively(headers, action.headerId)) {
+      return state.update('headers', (h) => closeHeaderRecursively(h, action.headerId));
+    } else {
+      return state.update('headers', (h) => openHeaderRecursively(h, action.headerId));
+    }
+  } else {
+    state = state.update('headers', (h) => closeHeaderRecursively(h, action.headerId));
+    return state.setIn(['headers', headerIndex, 'opened'], true);
+  }
+};
+
 const removeHeader = (state, action) => {
   let headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
@@ -334,6 +405,10 @@ const removeHeader = (state, action) => {
   const numHeadersToRemove = 1 + subheaders.size;
 
   const parentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
+
+  if (action.headerId === state.get('selectedHeaderId')) {
+    state = state.set('selectedHeaderId', null);
+  }
 
   _.times(numHeadersToRemove).forEach(() => {
     headers = headers.delete(headerIndex);
@@ -584,6 +659,8 @@ const applyOpennessState = (state) => {
 };
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
+
+const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
 
 const setSelectedTableCellId = (state, action) => state.set('selectedTableCellId', action.cellId);
 
@@ -1152,6 +1229,9 @@ const setShowClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 };
 
+const setDisableInlineEditing = (state, action) =>
+  state.set('disableInlineEditing', action.disableInlineEditing);
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'DISPLAY_FILE':
@@ -1184,6 +1264,8 @@ const reducer = (state, action) => {
       return selectNextVisibleHeader(state, action);
     case 'SELECT_PREVIOUS_VISIBLE_HEADER':
       return selectPreviousVisibleHeader(state, action);
+    case 'CYCLE_HEADER_VISIBILITY':
+      return cycleHeaderVisibility(state, action);
     case 'REMOVE_HEADER':
       return removeHeader(state, action);
     case 'MOVE_HEADER_UP':
@@ -1210,6 +1292,8 @@ const reducer = (state, action) => {
       return narrowHeader(state, action);
     case 'WIDEN_HEADER':
       return widenHeader(state, action);
+    case 'SET_SELECTED_TABLE_ID':
+      return setSelectedTableId(state, action);
     case 'SET_SELECTED_TABLE_CELL_ID':
       return setSelectedTableCellId(state, action);
     case 'ADD_NEW_TABLE_ROW':
@@ -1266,7 +1350,8 @@ const reducer = (state, action) => {
       return setSearchFilterInformation(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
-
+    case 'DISABLE_INLINE_EDITING':
+      return setDisableInlineEditing(state, action);
     default:
       return state;
   }

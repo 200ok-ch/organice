@@ -2,14 +2,12 @@ import React from 'react';
 
 import './stylesheet.css';
 
-import Drawer from '../../../UI/Drawer/';
-
 import { customFormatDistanceToNow } from '../../../../lib/org_utils';
 import format from 'date-fns/format';
 
 export default ({ lastServerModifiedAt, onPull, onPush, onCancel }) => {
   return (
-    <Drawer>
+    <>
       <h2 className="sync-confirmation-modal__header">Sync conflict</h2>
       Since you last pulled, a newer version of the file has been pushed to the server. The newer
       version is from:
@@ -31,6 +29,6 @@ export default ({ lastServerModifiedAt, onPull, onPush, onCancel }) => {
         </button>
       </div>
       <br />
-    </Drawer>
+    </>
   );
 };

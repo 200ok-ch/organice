@@ -255,6 +255,12 @@ export const addHeaderAndEdit = (headerId) => (dispatch) => {
   dispatch(enterEditMode('title'));
 };
 
+export const addHeaderAndOpenEditor = (headerId) => (dispatch) => {
+  dispatch(addHeader(headerId));
+  dispatch(selectNextSiblingHeader(headerId));
+  dispatch(activatePopup('title-editor'));
+};
+
 export const selectNextVisibleHeader = (headerId) => ({
   type: 'SELECT_NEXT_VISIBLE_HEADER',
   headerId,
@@ -264,6 +270,10 @@ export const selectPreviousVisibleHeader = (headerId) => ({
   type: 'SELECT_PREVIOUS_VISIBLE_HEADER',
   headerId,
 });
+
+export const cycleHeaderVisibility = (headerId) => (dispatch) => {
+  dispatch({ type: 'CYCLE_HEADER_VISIBILITY', headerId });
+};
 
 export const removeHeader = (headerId) => ({
   type: 'REMOVE_HEADER',
@@ -339,11 +349,16 @@ export const setDirty = (isDirty) => ({
   isDirty,
 });
 
+export const setSelectedTableId = (tableId) => (dispatch) => {
+  dispatch({ type: 'SET_SELECTED_TABLE_ID', tableId });
+};
+
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
 
   if (!!cellId) {
-    dispatch(selectHeader(null));
+    // TODO restore for inline action bar
+    //dispatch(selectHeader(null));
   }
 };
 
@@ -577,4 +592,9 @@ export const setSearchFilterInformation = (searchFilter, cursorPosition, context
 export const setShowClockDisplay = (showClockDisplay) => ({
   type: 'TOGGLE_CLOCK_DISPLAY',
   showClockDisplay,
+});
+
+export const setDisableInlineEditing = (disableInlineEditing) => ({
+  type: 'DISABLE_INLINE_EDITING',
+  disableInlineEditing,
 });

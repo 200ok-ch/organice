@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import './stylesheet.css';
 
 import TablePart from './components/TablePart';
+import StaticTablePart from './components/StaticTablePart';
 import ListPart from './components/ListPart';
 import TimestampPart from './components/TimestampPart';
 import ExternalLink from '../../../UI/ExternalLink';
@@ -107,7 +108,13 @@ export default ({ parts, subPartDataAndHandlers }) => {
               </span>
             );
           case 'table':
-            return (
+            return subPartDataAndHandlers.disableInlineEditing ? (
+              <StaticTablePart
+                key={part.get('id')}
+                table={part}
+                subPartDataAndHandlers={subPartDataAndHandlers}
+              />
+            ) : (
               <TablePart
                 key={part.get('id')}
                 table={part}

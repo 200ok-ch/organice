@@ -142,6 +142,12 @@ export const persistableFields = [
     shouldStoreInConfig: true,
   },
   {
+    category: 'org',
+    name: 'disableInlineEditing',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
+  {
     category: 'base',
     name: 'colorScheme',
     type: 'string',
