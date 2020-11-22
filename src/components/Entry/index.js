@@ -122,6 +122,7 @@ class Entry extends PureComponent {
       !this.props.path.startsWith(STATIC_FILE_PREFIX) &&
       this.props.path !== path
     ) {
+      this.org.sync({ path: this.props.path });
       return <Redirect push to={'/file' + this.props.path} />;
     } else {
       return (
