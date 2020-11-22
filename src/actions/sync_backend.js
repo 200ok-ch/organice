@@ -9,7 +9,7 @@ import {
   setLastSyncAt,
   setOrgFileErrorMessage,
 } from './org';
-import { persistField } from '../util/settings_persister';
+import { localStorageAvailable, persistField } from '../util/settings_persister';
 
 import { addSeconds } from 'date-fns';
 
@@ -34,6 +34,10 @@ export const signOut = () => (dispatch, getState) => {
   dispatch({ type: 'SIGN_OUT' });
   dispatch(clearModalStack());
   dispatch(hideLoadingMessage());
+
+  if (localStorageAvailable) {
+    localStorage.clear();
+  }
 };
 
 export const setCurrentFileBrowserDirectoryListing = (
