@@ -21,6 +21,7 @@ import { render, fireEvent, cleanup } from '@testing-library/react';
 // Debugging help:
 // console.log(prettyDOM(container, 999999999999999999999999));
 import '@testing-library/jest-dom/extend-expect';
+import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 
 afterEach(cleanup);
 
@@ -69,8 +70,8 @@ describe('Render all views', () => {
       },
       applyMiddleware(thunk)
     );
-    store.dispatch(parseFile('fixtureTestFile.org', testOrgFile));
-    store.dispatch(setPath('fixtureTestFile.org'));
+    store.dispatch(parseFile(STATIC_FILE_PREFIX + 'fixtureTestFile.org', testOrgFile));
+    store.dispatch(setPath(STATIC_FILE_PREFIX + 'fixtureTestFile.org'));
   });
 
   describe('Org Functionality', () => {
@@ -87,7 +88,7 @@ describe('Render all views', () => {
         <MemoryRouter keyLength={0} initialEntries={['/file/dir1/dir2/fixtureTestFile.org']}>
           <Provider store={store}>
             <HeaderBar />
-            <OrgFile path="fixtureTestFile.org" />
+            <OrgFile path={STATIC_FILE_PREFIX + 'fixtureTestFile.org'} />
           </Provider>
         </MemoryRouter>
       );
