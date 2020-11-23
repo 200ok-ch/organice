@@ -79,8 +79,6 @@ class OrgFile extends PureComponent {
     const { staticFile, path } = this.props;
 
     if (!!staticFile) {
-      this.props.base.loadStaticFile(staticFile);
-
       if (staticFile === 'changelog') {
         this.props.base.setHasUnseenChangelog(false);
         changelogHash().then((hash) => {

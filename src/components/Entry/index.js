@@ -70,7 +70,9 @@ class Entry extends PureComponent {
   }
 
   renderChangelogFile() {
-    return (
+    this.props.base.loadStaticFile('changelog');
+    // Wait for the file to be loaded. loadStaticFile will set the path once it's ready.
+    return this.props.path === STATIC_FILE_PREFIX + 'changelog' ? (
       <OrgFile
         staticFile="changelog"
         shouldDisableDirtyIndicator={true}
@@ -80,11 +82,15 @@ class Entry extends PureComponent {
           "The contents of changelog.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
         }
       />
+    ) : (
+      <div />
     );
   }
 
   renderSampleFile() {
-    return (
+    this.props.base.loadStaticFile('sample');
+    // Wait for the file to be loaded. loadStaticFile will set the path once it's ready.
+    return this.props.path === STATIC_FILE_PREFIX + 'sample' ? (
       <OrgFile
         staticFile="sample"
         shouldDisableDirtyIndicator={true}
@@ -94,6 +100,8 @@ class Entry extends PureComponent {
           "The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
         }
       />
+    ) : (
+      <div />
     );
   }
 
@@ -122,7 +130,7 @@ class Entry extends PureComponent {
       !this.props.path.startsWith(STATIC_FILE_PREFIX) &&
       this.props.path !== path
     ) {
-      this.org.sync({ path: this.props.path });
+      this.props.org.sync({ path: this.props.path });
       return <Redirect push to={'/file' + this.props.path} />;
     } else {
       return (
