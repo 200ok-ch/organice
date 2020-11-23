@@ -11,6 +11,7 @@ import * as captureActions from '../../actions/capture';
 import CaptureTemplate from './components/CaptureTemplate';
 
 import { List } from 'immutable';
+import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 
 const CaptureTemplatesEditor = ({
   captureTemplates,
@@ -92,7 +93,11 @@ const CaptureTemplatesEditor = ({
 };
 
 const mapStateToProps = (state) => {
-  const loadedFilePaths = state.org.present.get('files', List()).keySeq().toJS();
+  const loadedFilePaths = state.org.present
+    .get('files', List())
+    .keySeq()
+    .toJS()
+    .filter((path) => !path.startsWith(STATIC_FILE_PREFIX));
   loadedFilePaths.unshift('');
   return {
     captureTemplates: state.capture.get('captureTemplates', List()),

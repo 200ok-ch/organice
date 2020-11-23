@@ -11,6 +11,7 @@ import * as orgActions from '../../actions/org';
 import FileSetting from './components/FileSetting';
 
 import { List } from 'immutable';
+import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 
 const FileSettingsEditor = ({ fileSettings, loadedFilepaths, org }) => {
   const handleAddNewSettingClick = () => org.addNewEmptyFileSetting();
@@ -78,6 +79,7 @@ const mapStateToProps = (state) => {
   const existingSettings = fileSettings.map((setting) => setting.get('path'));
   const paths = state.org.present.get('files', List()).keySeq();
   const loadedFilepaths = paths
+    .filter((path) => !path.startsWith(STATIC_FILE_PREFIX))
     .filter((path) => !existingSettings.find((settingPath) => settingPath === path))
     .toJS();
   return {

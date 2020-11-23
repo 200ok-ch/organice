@@ -712,8 +712,10 @@ export const getBreadcrumbsStringFunction = (allHeaders, path) => {
   let filename;
   if (path.startsWith(STATIC_FILE_PREFIX)) {
     filename = path.substring(STATIC_FILE_PREFIX.length);
-  } else {
+  } else if (path.endsWith('.org')) {
     filename = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+  } else {
+    filename = path.substring(path.lastIndexOf('/') + 1);
   }
 
   return (header) => {

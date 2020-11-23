@@ -15,6 +15,7 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   getTodoKeywordSetsAsFlattenedArray,
+  STATIC_FILE_PREFIX,
 } from '../lib/org_utils';
 
 import {
@@ -1076,7 +1077,7 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
-const determineExcludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
+const determineIncludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
   files.mapEntries(([filePath, file]) => [
     filePath,
     file.update('headers', (headers) => {
@@ -1090,6 +1091,9 @@ const determineExcludedFiles = (files, fileSettings, path, settingValue, include
         } else {
           return List();
         }
+      } else if (filePath.startsWith(STATIC_FILE_PREFIX)) {
+        // never include static files
+        return List();
       } else {
         // if no setting exists
         return includeByDefault ? headers : List();
@@ -1119,13 +1123,13 @@ export const setSearchFilterInformation = (state, action) => {
   const fileSettings = state.get('fileSettings');
   // Decide which files to include
   if (context === 'agenda') {
-    files = determineExcludedFiles(files, fileSettings, path, 'includeInAgenda', true);
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInAgenda', true);
   } else if (context === 'search') {
-    files = determineExcludedFiles(files, fileSettings, path, 'includeInSearch', false);
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInSearch', false);
   } else if (context === 'task-list') {
-    files = determineExcludedFiles(files, fileSettings, path, 'includeInTasklist', false);
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInTasklist', false);
   } else if (context === 'refile') {
-    files = determineExcludedFiles(files, fileSettings, path, 'includeInRefile', true);
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInRefile', true);
   } // there should not be another context, but if so use all files
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
