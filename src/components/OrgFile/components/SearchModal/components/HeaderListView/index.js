@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Map } from 'immutable';
 
 import * as orgActions from '../../../../../../actions/org';
 import './stylesheet.css';
@@ -10,6 +9,7 @@ import { millisDuration } from '../../../../../../lib/timestamps';
 
 import TitleLine from '../../../TitleLine';
 import { getBreadcrumbsStringFunction } from '../../../../../../lib/org_utils';
+import { determineIncludedFiles } from '../../../../../../reducers/org';
 
 function HeaderListView(props) {
   const { context } = props;
@@ -63,15 +63,16 @@ function HeaderListView(props) {
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const files = state.org.present.get('files');
-  const file = files.get(path);
+  const allFiles = state.org.present.get('files');
+  const fileSettings = state.org.present.get('fileSettings');
   return {
-    // When no filtering has happened, yet (initial state), use all headers.
-    // TODO: currently only headers of opened file are initially shown.
-    // Decide if it should be all files.
     allHeaders: files.map((file) => file.get('headers')),
     headers:
       state.org.present.getIn(['search', 'filteredHeaders']) ||
-      new Map().set(path, file.get('headers')),
+      // When no filtering has happened, yet (initial state), use all headers.
+      determineIncludedFiles(allFiles, fileSettings, path, 'includeInSearch', false).map((file) =>
+        file.get('headers')
+      ),
     showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
   };
 };

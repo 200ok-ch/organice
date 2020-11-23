@@ -15,6 +15,7 @@ import {
 
 import { format, isPast } from 'date-fns';
 import classNames from 'classnames';
+import { determineIncludedFiles } from '../../../../../../reducers/org';
 
 function TaskListView(props) {
   function handleHeaderClick(path, headerId) {
@@ -133,11 +134,16 @@ function TaskListView(props) {
 
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
+  const path = state.org.present.get('path');
+  const allFiles = state.org.present.get('files');
+  const fileSettings = state.org.present.get('fileSettings');
   return {
     // When no filtering has happened, yet (initial state), use all headers.
     headersForFiles:
       state.org.present.getIn(['search', 'filteredHeaders']) ||
-      files.map((file) => file.get('headers')),
+      determineIncludedFiles(allFiles, fileSettings, path, 'includeInTasklist', false).map((file) =>
+        file.get('headers')
+      ),
     todoKeywordSetsForFiles: files.map((file) => file.get('todoKeywordSets')),
   };
 };
