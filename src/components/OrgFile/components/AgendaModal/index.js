@@ -11,6 +11,7 @@ import TabButtons from '../../../UI/TabButtons';
 import { isMobileBrowser } from '../../../../lib/browser_utils';
 import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
+import { determineIncludedFiles } from '../../../../reducers/org';
 
 import _ from 'lodash';
 import {
@@ -169,8 +170,10 @@ function AgendaModal(props) {
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path]);
+  const allFiles = state.org.present.get('files');
+  const fileSettings = state.org.present.get('fileSettings');
   return {
-    files: state.org.present.get('files'),
+    files: determineIncludedFiles(allFiles, fileSettings, path, 'includeInAgenda', true),
     todoKeywordSets: file.get('todoKeywordSets'),
     agendaTimeframe: state.base.get('agendaTimeframe'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,

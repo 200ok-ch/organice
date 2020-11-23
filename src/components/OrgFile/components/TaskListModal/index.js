@@ -28,7 +28,11 @@ function TaskListModal(props) {
   }
 
   function handleFilterChange(event) {
-    props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
+    props.org.setSearchFilterInformation(
+      event.target.value,
+      event.target.selectionStart,
+      'task-list'
+    );
   }
 
   const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions } = props;

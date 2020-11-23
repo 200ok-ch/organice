@@ -1077,7 +1077,7 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
-const determineIncludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
+export const determineIncludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
   files.mapEntries(([filePath, file]) => [
     filePath,
     file.update('headers', (headers) => {
