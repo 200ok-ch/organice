@@ -10,7 +10,7 @@ if ! which pandoc >/dev/null 2>&1; then
     exit 1
 fi
 
-echo "#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup" > documentation.org
+echo "#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/org/theme-readtheorg.setup" > documentation.org
 cat README.org | \
     grep -v api.codeclimate | \
     grep -v "^Documentation: https://organice.200ok.ch/documentation.html" \
