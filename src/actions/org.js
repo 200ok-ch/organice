@@ -191,8 +191,9 @@ const doSync = ({
           dispatch(setIsLoading(false, path));
           dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt, lastSyncAt, path }));
         } else {
+          dispatch(parseFile(path, contents));
           if (path === currentPath) {
-            dispatch(parseFile(path, contents));
+            // TODO: @tarnung - this happens before the file is parsed so the openness is lost
             dispatch(applyOpennessState());
           }
           dispatch(setDirty(false, path));
