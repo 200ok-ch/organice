@@ -17,14 +17,22 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
 import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
+import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
 
 export const parseFile = (path, contents) => (dispatch) => {
   saveFileContentsToLocalStorage(path, contents);
+  if (localStorageAvailable) {
+    const opennessState = readOpennessState();
+    if (!!opennessState) {
+      dispatch(setOpennessState(path, opennessState[path]));
+    }
+  }
   dispatch({
     type: 'PARSE_FILE',
     path,
     contents,
   });
+  dispatch(applyOpennessState(path));
 };
 
 export const setLastSyncAt = (lastSyncAt, path) => ({
@@ -192,10 +200,6 @@ const doSync = ({
           dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt, lastSyncAt, path }));
         } else {
           dispatch(parseFile(path, contents));
-          if (path === currentPath) {
-            // TODO: @tarnung - this happens before the file is parsed so the openness is lost
-            dispatch(applyOpennessState());
-          }
           dispatch(setDirty(false, path));
           dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
           if (!shouldSuppressMessages) {
@@ -231,13 +235,10 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-export const setPath = (path) => (dispatch) => {
-  dispatch({
-    type: 'SET_PATH',
-    path,
-  });
-  dispatch(applyOpennessState());
-};
+export const setPath = (path) => ({
+  type: 'SET_PATH',
+  path,
+});
 
 export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
   dispatch(setPath(path));
@@ -379,8 +380,15 @@ export const widenHeader = () => ({
   type: 'WIDEN_HEADER',
 });
 
-export const applyOpennessState = () => ({
+export const setOpennessState = (path, opennessState) => ({
+  type: 'SET_OPENNESS_STATE',
+  path,
+  opennessState,
+});
+
+export const applyOpennessState = (path) => ({
   type: 'APPLY_OPENNESS_STATE',
+  path,
 });
 
 export const dirtyAction = (isDirty, path) => ({

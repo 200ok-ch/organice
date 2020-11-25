@@ -2,13 +2,7 @@
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
-import {
-  parseFile,
-  applyOpennessState,
-  setDirty,
-  setLastSyncAt,
-  setOrgFileErrorMessage,
-} from './org';
+import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
 
 import { addSeconds } from 'date-fns';
@@ -120,7 +114,6 @@ export const downloadFile = (path) => {
         dispatch(parseFile(path, fileContents));
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(setDirty(false, path));
-        dispatch(applyOpennessState());
         dispatch(ActionCreators.clearHistory());
       })
       .catch(() => {

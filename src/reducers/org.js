@@ -577,8 +577,8 @@ const narrowHeader = (state, action) => {
 
 const widenHeader = (state) => state.set('narrowedHeaderId', null);
 
-const applyOpennessState = (state) => {
-  const path = state.get('path');
+const applyOpennessState = (state, action) => {
+  const { path } = action;
   const opennessState = state.get('opennessState');
   if (!opennessState) {
     return state;
@@ -595,6 +595,11 @@ const applyOpennessState = (state) => {
   });
 
   return state.setIn(['files', path, 'headers'], headers);
+};
+
+const setOpennessState = (state, action) => {
+  const { path, opennessState } = action;
+  return state.setIn(['opennessState', path], fromJS(opennessState));
 };
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
@@ -1352,6 +1357,8 @@ const reducer = (state, action) => {
       return inFile(addNote);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
+    case 'SET_OPENNESS_STATE':
+      return setOpennessState(state, action);
     case 'SET_DIRTY':
       return action.path ? reduceInFile(state, action, action.path)(setDirty) : inFile(setDirty);
     case 'NARROW_HEADER':

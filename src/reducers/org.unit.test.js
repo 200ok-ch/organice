@@ -582,7 +582,7 @@ describe('org reducer', () => {
       });
 
       function openHeaders(state, opennessState) {
-        return reducer(state.set('opennessState', opennessState), types.applyOpennessState());
+        return reducer(state.set('opennessState', opennessState), types.applyOpennessState(path));
       }
 
       describe('SELECT_PREVIOUS_VISIBLE_HEADER', () => {
@@ -2021,7 +2021,7 @@ describe('org reducer', () => {
 
     it('should handle APPLY_OPENNESS_STATE', () => {
       const stateWithOpenness = state.org.present.set('opennessState', opennessState);
-      const newState = reducer(stateWithOpenness, types.applyOpennessState());
+      const newState = reducer(stateWithOpenness, types.applyOpennessState(path));
 
       expect(
         headerWithPath(
@@ -2057,13 +2057,13 @@ describe('org reducer', () => {
 
     it('should do nothing when no openness state is set', () => {
       const oldState = state.org.present;
-      const newState = reducer(oldState, types.applyOpennessState());
+      const newState = reducer(oldState, types.applyOpennessState(path));
       expect(newState).toEqual(oldState);
     });
 
     it('should do nothing when no openness state is set for the file', () => {
       const stateWithOpenness = state.org.present.setIn(['opennessState', path], fromJS({}));
-      const newState = reducer(stateWithOpenness, types.applyOpennessState());
+      const newState = reducer(stateWithOpenness, types.applyOpennessState(path));
       expect(newState).toEqual(stateWithOpenness);
     });
   });
