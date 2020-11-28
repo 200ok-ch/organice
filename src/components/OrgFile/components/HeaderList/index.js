@@ -38,7 +38,7 @@ class HeaderList extends PureComponent {
   }
 
   render() {
-    const { headers, selectedHeaderId, narrowedHeaderId, shouldDisableActions } = this.props;
+    const { headers, selectedHeaderId, narrowedHeaderId, shouldDisableActions, shouldDisableSwipe } = this.props;
     const headerRenderData = headers
       .map((header) => {
         return {
@@ -125,7 +125,8 @@ class HeaderList extends PureComponent {
               isSelected={header.get('id') === selectedHeaderId}
               onRef={this.handleHeaderRef(header.get('id'))}
               shouldDisableActions={shouldDisableActions}
-            />
+              shouldDisableSwipe={shouldDisableSwipe}
+              />
           );
         })}
       </div>

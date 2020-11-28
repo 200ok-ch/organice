@@ -35,6 +35,9 @@ export default class HeaderActionDrawer extends PureComponent {
       onShareHeader,
       onRefileHeader,
       onAddNote,
+      onAdvanceToDoState,
+      onDeleteHeader,
+      swipeDisabled,
     } = this.props;
 
     return (
@@ -85,6 +88,15 @@ export default class HeaderActionDrawer extends PureComponent {
             testId: 'header-action-plus',
             title: 'Create new header below',
           })}
+          
+          { swipeDisabled 
+            ? this.iconWithFFClickCatcher({
+                className: 'fas btn fa-lg',
+                onClick: onDeleteHeader,
+                title: 'Remove Header',
+              })
+            : null
+          }
         </div>
 
         <div className="header-action-drawer__row">
@@ -129,6 +141,14 @@ export default class HeaderActionDrawer extends PureComponent {
             onClick: onAddNote,
             title: 'Add a note',
           })}
+          { swipeDisabled
+            ? this.iconWithFFClickCatcher({
+                className: 'fas btn fa-lg',
+                onClick: onAdvanceToDoState,
+                title: 'Advance ToDo State',
+              })
+            : null 
+          }
         </div>
       </div>
     );
