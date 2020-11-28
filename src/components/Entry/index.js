@@ -145,12 +145,7 @@ class Entry extends PureComponent {
   }
 
   shouldPromptWhenLeaving() {
-    return (
-      this.props.location.pathname.startsWith('/file/') &&
-      this.props.path &&
-      !this.props.path.startsWith(STATIC_FILE_PREFIX) &&
-      this.props.isDirty
-    );
+    return this.props.hasDirtyFiles;
   }
 
   render() {
@@ -179,11 +174,6 @@ class Entry extends PureComponent {
         <HeaderBar />
         <div className={className}>
           <LoadingIndicator message={loadingMessage} />
-
-          <Prompt
-            when={this.shouldPromptWhenLeaving()}
-            message={() => 'You have unpushed changes - are you sure you want to leave this page?'}
-          />
 
           {activeModalPage === 'changelog' ? (
             this.renderChangelogFile()
@@ -230,15 +220,16 @@ class Entry extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+  const files = state.org.present.get('files');
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path]);
   const filesToLoadOnStartup = state.org.present
     .get('fileSettings')
     .filter((setting) => setting.get('loadOnStartup'))
     .map((setting) => setting.get('path'));
-  const loadedFiles = Set.fromKeys(state.org.present.get('files'));
+  const loadedFiles = Set.fromKeys(files);
   const fileIsLoaded = (path) => loadedFiles.includes(path);
   const filesToLoad = filesToLoadOnStartup.filter((path) => !fileIsLoaded(path));
+  const hasDirtyFiles = !!files.find((file) => file.get('isDirty'));
   return {
     path,
     filesToLoad,
@@ -248,7 +239,7 @@ const mapStateToProps = (state) => {
     lastSeenChangelogHash: state.base.get('lastSeenChangelogHash'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
-    isDirty: file ? file.get('isDirty') : null,
+    hasDirtyFiles,
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
   };
