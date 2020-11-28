@@ -40,14 +40,16 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
           if (!uri.match(orgFileExtensions)) {
             // Optimistically assume that the link is pointing to a
             // directory.
+            target = target.replace(/^\/file\//, '/files/');
             return (
-              <Link key={id} to={'/files' + target}>
+              <Link key={id} to={target}>
                 {title}
               </Link>
             );
           }
         }
       }
+      target = target.replace(/^\/file\//, '/');
       return (
         <span key={id} style={{ textDecoration: 'underline' }} onClick={() => org.setPath(target)}>
           {title}
@@ -74,7 +76,7 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
       normalised = normalised.substr(3);
       dir = dir.match(/(.*)\//)[1];
     }
-    return '/' + normalised;
+    return dir + '/' + normalised;
   };
 
   return (
