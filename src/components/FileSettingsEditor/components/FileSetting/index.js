@@ -9,7 +9,7 @@ import Switch from '../../../UI/Switch';
 
 import classNames from 'classnames';
 
-export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFilepaths }) => {
+export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFilepaths, path }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const handleHeaderBarClick = () => setIsCollapsed(!isCollapsed);
 
@@ -41,7 +41,7 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
 
   const renderPathField = (setting) => {
     if (setting.get('path') === '') {
-      updateField('path')({ target: { value: loadedFilepaths[0] } });
+      updateField('path')({ target: { value: path || loadedFilepaths[0] } });
     }
     return (
       <div className="file-setting__field-container">

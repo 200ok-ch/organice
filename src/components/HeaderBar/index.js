@@ -30,6 +30,7 @@ class HeaderBar extends PureComponent {
       'handleUndoClick',
       'handleRedoClick',
       'handleHelpClick',
+      'handleSettingsClick',
     ]);
   }
 
@@ -236,6 +237,10 @@ class HeaderBar extends PureComponent {
     this.props.base.pushModalPage('sample');
   }
 
+  handleSettingsClick() {
+    this.props.base.setLastViewedFile(this.props.path);
+  }
+
   renderActions() {
     const {
       isAuthenticated,
@@ -298,7 +303,7 @@ class HeaderBar extends PureComponent {
                   onClick={this.handleChangelogClick}
                 />
               )}
-              <Link to="/settings">
+              <Link to="/settings" onClick={this.handleSettingsClick}>
                 <i className={settingsIconClassName} title="Settings" />
               </Link>
             </div>

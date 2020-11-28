@@ -13,7 +13,12 @@ import FileSetting from './components/FileSetting';
 import { List } from 'immutable';
 import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 
-const FileSettingsEditor = ({ fileSettings, loadedFilepaths, org }) => {
+const FileSettingsEditor = ({
+  fileSettings,
+  loadedFilepaths,
+  currentPathIfWithoutFileSetting,
+  org,
+}) => {
   const handleAddNewSettingClick = () => org.addNewEmptyFileSetting();
 
   const handleFieldPathUpdate = (settingId, fieldPath, newValue) =>
@@ -48,6 +53,7 @@ const FileSettingsEditor = ({ fileSettings, loadedFilepaths, org }) => {
                     key={setting.get('id')}
                     index={index}
                     setting={setting}
+                    path={currentPathIfWithoutFileSetting}
                     loadedFilepaths={loadedFilepaths}
                     onFieldPathUpdate={handleFieldPathUpdate}
                     onDeleteSetting={handleDeleteSetting}
@@ -75,9 +81,13 @@ const FileSettingsEditor = ({ fileSettings, loadedFilepaths, org }) => {
 };
 
 const mapStateToProps = (state) => {
+  const path = state.base.get('lastViewedPath');
   const fileSettings = state.org.present.get('fileSettings', List());
   const existingSettings = fileSettings.map((setting) => setting.get('path'));
   const paths = state.org.present.get('files', List()).keySeq();
+  const currentPathIfWithoutFileSetting = !existingSettings.find((filePath) => filePath === path)
+    ? path
+    : null;
   const loadedFilepaths = paths
     .filter((path) => !path.startsWith(STATIC_FILE_PREFIX))
     .filter((path) => !existingSettings.find((settingPath) => settingPath === path))
@@ -85,6 +95,7 @@ const mapStateToProps = (state) => {
   return {
     fileSettings,
     loadedFilepaths,
+    currentPathIfWithoutFileSetting,
   };
 };
 
