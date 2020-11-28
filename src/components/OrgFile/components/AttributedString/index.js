@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import './stylesheet.css';
 
@@ -40,7 +40,11 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
           if (!uri.match(orgFileExtensions)) {
             // Optimistically assume that the link is pointing to a
             // directory.
-            target = target.replace(/^\/file\//, '/files/');
+            return (
+              <Link key={id} to={'/files' + target}>
+                {title}
+              </Link>
+            );
           }
         }
       }
