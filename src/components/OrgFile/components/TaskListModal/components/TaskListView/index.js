@@ -1,6 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
+
+import * as orgActions from '../../../../../../actions/org';
 
 import './stylesheet.css';
 
@@ -15,7 +18,6 @@ import {
 
 import { format, isPast } from 'date-fns';
 import classNames from 'classnames';
-import { determineIncludedFiles } from '../../../../../../reducers/org';
 
 function TaskListView(props) {
   function handleHeaderClick(path, headerId) {
@@ -28,6 +30,11 @@ function TaskListView(props) {
     headersForFiles,
     todoKeywordSetsForFiles,
   } = props;
+
+  // Populate filteredHeaders
+  useEffect(() => {
+    props.org.setSearchFilterInformation('', 0, 'task-list');
+  }, []);
 
   const planningItemsAndHeaders = getPlanningItemsAndHeaders({
     headersForFiles,
@@ -134,21 +141,18 @@ function TaskListView(props) {
 
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
-  const path = state.org.present.get('path');
-  const allFiles = state.org.present.get('files');
-  const fileSettings = state.org.present.get('fileSettings');
   return {
     // When no filtering has happened, yet (initial state), use all headers.
-    headersForFiles:
-      state.org.present.getIn(['search', 'filteredHeaders']) ||
-      determineIncludedFiles(allFiles, fileSettings, path, 'includeInTasklist', false).map((file) =>
-        file.get('headers')
-      ),
+    headersForFiles: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
     todoKeywordSetsForFiles: files.map((file) => file.get('todoKeywordSets')),
   };
 };
 
+const mapDispatchToProps = (dispatch) => ({
+  org: bindActionCreators(orgActions, dispatch),
+});
+
 const getTimeFromPlanningItem = (planningItem) =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(mapStateToProps)(TaskListView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
