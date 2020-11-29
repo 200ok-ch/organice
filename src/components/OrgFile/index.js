@@ -520,6 +520,7 @@ const mapStateToProps = (state) => {
   const activePopup = state.base.get('activePopup');
 
   return {
+    loadedPath: path,
     files,
     headers,
     selectedHeaderId,
