@@ -44,6 +44,7 @@ class Entry extends PureComponent {
   componentDidMount() {
     this.setChangelogUnseenChanges();
     this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
+    this.props.filesToSync.forEach((path) => this.props.org.sync({ path }));
   }
 
   // TODO: Should this maybe done on init of the application and not in the component?
@@ -229,10 +230,12 @@ const mapStateToProps = (state) => {
   const loadedFiles = Set.fromKeys(files);
   const fileIsLoaded = (path) => loadedFiles.includes(path);
   const filesToLoad = filesToLoadOnStartup.filter((path) => !fileIsLoaded(path));
+  const filesToSync = filesToLoadOnStartup.filter((path) => fileIsLoaded(path));
   const hasDirtyFiles = !!files.find((file) => file.get('isDirty'));
   return {
     path,
     filesToLoad,
+    filesToSync,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
