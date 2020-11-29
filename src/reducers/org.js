@@ -1141,7 +1141,6 @@ export const setSearchFilterInformation = (state, action) => {
   // Only run filter if a filter is given and parsing was successful
   if (searchFilterValid) {
     const headers = files.map((file) => file.get('headers'));
-    let filteredHeaders;
 
     // show clocked times & sum if there is a clock search term
     const clockFilters = searchFilterExpr
@@ -1177,9 +1176,31 @@ export const setSearchFilterInformation = (state, action) => {
       );
     }
 
-    filteredHeaders = headersToSearch.map((headersOfFile) =>
-      headersOfFile.filter(isMatch(searchFilterExpr))
-    );
+    // perform the actual search
+    let filteredHeaders;
+    let nrOfHeadersToSearch = 200;
+    const searchFilterFunction = isMatch(searchFilterExpr);
+
+    // search the current file first
+    const headersFoundInCurrentFile = headersToSearch
+      .get(path)
+      .filter(searchFilterFunction)
+      .take(nrOfHeadersToSearch);
+    nrOfHeadersToSearch -= headersFoundInCurrentFile.count();
+    filteredHeaders = Map().set(path, headersFoundInCurrentFile);
+
+    // search rest of files until nrOfHeadersToDisplay results are found
+    const filePathsToSearch = headersToSearch.keySeq().filter((p) => p !== path);
+    filePathsToSearch.forEach((filePath) => {
+      if (nrOfHeadersToSearch > 0) {
+        const headersFoundInFile = headersToSearch
+          .get(filePath)
+          .filter(searchFilterFunction)
+          .take(nrOfHeadersToSearch);
+        nrOfHeadersToSearch -= headersFoundInFile.count();
+        filteredHeaders = filteredHeaders.set(filePath, headersFoundInFile);
+      }
+    });
 
     if (showClockedTimes) {
       const clockedTime = filteredHeaders
