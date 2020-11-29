@@ -34,7 +34,7 @@ function TaskListView(props) {
   // Populate filteredHeaders
   useEffect(() => {
     props.org.setSearchFilterInformation('', 0, 'task-list');
-  }, []);
+  }, [props.org]);
 
   const planningItemsAndHeaders = getPlanningItemsAndHeaders({
     headersForFiles,
