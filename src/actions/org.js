@@ -242,8 +242,9 @@ export const setPath = (path) => ({
 
 export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
   dispatch(setPath(path));
-  dispatch(selectHeader(headerId));
   dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });
+  // select header after the file is displayed to allow the header to scroll into view
+  setTimeout(() => dispatch(selectHeader(headerId)), 0);
 };
 
 /**
