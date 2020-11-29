@@ -68,9 +68,9 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
         </div>
 
         <div className="file-setting__help-text">
-          By default, files are loaded from localStorage where available and only synced when
-          visited and the corresponding settings like live sync are turned on. Enable this setting
-          to always sync this file when opening organice.
+          By default, files are loaded from localStorage when available and are only synced when
+          visited or when a sync is manually triggered. Enable this setting to always sync this file
+          when opening organice.
         </div>
       </div>
 
@@ -81,8 +81,8 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
         </div>
 
         <div className="file-setting__help-text">
-          By default, all loaded files are included in the agenda. Disable this setting to exclude
-          this file. The currently viewed file is always included.
+          By default, only the currently opened file is included in the agenda. Enable this setting
+          to always include this file. The currently viewed file is always included.
         </div>
       </div>
 
@@ -117,8 +117,8 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
         </div>
 
         <div className="file-setting__help-text">
-          By default, all loaded files are available as refile targets. Disable this setting to
-          exclude this file. The currently loaded file is always included.
+          By default, only the currently viewed file is available as a refile targets. Enable this
+          setting to always include this file. The currently loaded file is always included.
         </div>
       </div>
     </>

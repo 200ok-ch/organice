@@ -1128,13 +1128,13 @@ export const setSearchFilterInformation = (state, action) => {
   const fileSettings = state.get('fileSettings');
   // Decide which files to include
   if (context === 'agenda') {
-    files = determineIncludedFiles(files, fileSettings, path, 'includeInAgenda', true);
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInAgenda', false);
   } else if (context === 'search') {
     files = determineIncludedFiles(files, fileSettings, path, 'includeInSearch', false);
   } else if (context === 'task-list') {
     files = determineIncludedFiles(files, fileSettings, path, 'includeInTasklist', false);
   } else if (context === 'refile') {
-    files = determineIncludedFiles(files, fileSettings, path, 'includeInRefile', true);
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInRefile', false);
   } // there should not be another context, but if so use all files
 
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
@@ -1282,9 +1282,9 @@ const addNewEmptyFileSetting = (state) =>
         id: generateId(),
         path: '',
         loadOnStartup: false,
-        includeInAgenda: true,
+        includeInAgenda: false,
         includeInSearch: false,
-        includeInRefile: true,
+        includeInRefile: false,
         includeInTasklist: false,
       })
     )
