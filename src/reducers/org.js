@@ -1106,6 +1106,34 @@ export const determineIncludedFiles = (files, fileSettings, path, settingValue, 
     }),
   ]);
 
+const searchHeaders = ({ searchFilterExpr = [], headersToSearch, path }) => {
+  let filteredHeaders;
+  let nrOfHeadersToSearch = 200;
+  const searchFilterFunction = isMatch(searchFilterExpr);
+
+  // search the current file first
+  const headersFoundInCurrentFile = headersToSearch
+    .get(path)
+    .filter(searchFilterFunction)
+    .take(nrOfHeadersToSearch);
+  nrOfHeadersToSearch -= headersFoundInCurrentFile.count();
+  filteredHeaders = Map().set(path, headersFoundInCurrentFile);
+
+  // search rest of files until nrOfHeadersToDisplay results are found
+  const filePathsToSearch = headersToSearch.keySeq().filter((p) => p !== path);
+  filePathsToSearch.forEach((filePath) => {
+    if (nrOfHeadersToSearch > 0) {
+      const headersFoundInFile = headersToSearch
+        .get(filePath)
+        .filter(searchFilterFunction)
+        .take(nrOfHeadersToSearch);
+      nrOfHeadersToSearch -= headersFoundInFile.count();
+      filteredHeaders = filteredHeaders.set(filePath, headersFoundInFile);
+    }
+  });
+  return filteredHeaders;
+};
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
@@ -1177,30 +1205,7 @@ export const setSearchFilterInformation = (state, action) => {
     }
 
     // perform the actual search
-    let filteredHeaders;
-    let nrOfHeadersToSearch = 200;
-    const searchFilterFunction = isMatch(searchFilterExpr);
-
-    // search the current file first
-    const headersFoundInCurrentFile = headersToSearch
-      .get(path)
-      .filter(searchFilterFunction)
-      .take(nrOfHeadersToSearch);
-    nrOfHeadersToSearch -= headersFoundInCurrentFile.count();
-    filteredHeaders = Map().set(path, headersFoundInCurrentFile);
-
-    // search rest of files until nrOfHeadersToDisplay results are found
-    const filePathsToSearch = headersToSearch.keySeq().filter((p) => p !== path);
-    filePathsToSearch.forEach((filePath) => {
-      if (nrOfHeadersToSearch > 0) {
-        const headersFoundInFile = headersToSearch
-          .get(filePath)
-          .filter(searchFilterFunction)
-          .take(nrOfHeadersToSearch);
-        nrOfHeadersToSearch -= headersFoundInFile.count();
-        filteredHeaders = filteredHeaders.set(filePath, headersFoundInFile);
-      }
-    });
+    let filteredHeaders = searchHeaders({ searchFilterExpr, headersToSearch, path });
 
     if (showClockedTimes) {
       const clockedTime = filteredHeaders
