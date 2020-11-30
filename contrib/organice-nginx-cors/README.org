@@ -16,7 +16,7 @@ WebDAV server with the necessary CORS headers.
 
         add_header 'Access-Control-Allow-Origin' 'https://organice.200ok.ch' always;
         add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS, POST, PROPFIND, PUT' always;
-        add_header 'Access-Control-Allow-Headers' 'Authorization,Depth,DNT,User-Agent,X-Requested-With,If-Mod
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Depth,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
         add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
         if ($request_method = 'OPTIONS') {
             return 204;
