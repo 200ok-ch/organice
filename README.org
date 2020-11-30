@@ -11,7 +11,7 @@
   :CUSTOM_ID: general
   :END:
 
-Tests: [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
+#+html: <p>Tests: <a href="https://circleci.com/gh/200ok-ch/organice"><img src="https://circleci.com/gh/200ok-ch/organice.svg?style=svg"></a></p>
 
 Documentation: https://organice.200ok.ch/documentation.html
 
