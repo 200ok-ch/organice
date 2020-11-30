@@ -1,0 +1,5 @@
+root = true
+
+[**.js{,on}]
+indent_style = space
+indent_size = 2
