@@ -6,6 +6,7 @@ WebDAV server with the necessary CORS headers.
 
 #+begin_example
   location /dav {
+        root /data/www;
         client_body_temp_path /tmp;
         client_max_body_size 0;
         dav_methods PUT DELETE MKCOL COPY MOVE;
