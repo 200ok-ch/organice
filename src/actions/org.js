@@ -1,4 +1,4 @@
-import { ActionCreators } from 'redux-undo';
+import { ActionCreators, ActionTypes } from 'redux-undo';
 import { debounce } from 'lodash';
 import {
   setLoadingMessage,
@@ -235,10 +235,13 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-export const setPath = (path) => ({
-  type: 'SET_PATH',
-  path,
-});
+export const setPath = (path) => (dispatch) => {
+  dispatch({
+    type: 'SET_PATH',
+    path,
+  });
+  dispatch({ type: ActionTypes.CLEAR_HISTORY });
+};
 
 export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
   dispatch(setPath(path));
