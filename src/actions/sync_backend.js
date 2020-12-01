@@ -104,7 +104,7 @@ export const pushBackup = (pathOrFileId, contents) => {
 
 export const downloadFile = (path) => {
   return (dispatch, getState) => {
-    dispatch(setLoadingMessage(`Downloading file ${path}...`));
+    dispatch(setLoadingMessage(`Downloading file ...`));
     getState()
       .syncBackend.get('client')
       .getFileContents(path)

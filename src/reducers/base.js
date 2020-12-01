@@ -4,10 +4,7 @@ import { applyCategorySettingsFromConfig } from '../util/settings_persister';
 
 const setLoadingMessage = (state, action) => state.set('loadingMessage', action.loadingMessage);
 
-const hideLoadingMessage = (state) =>
-  state.update('loadingMessage', (loadingMessage) =>
-    state.get('isLoading').isEmpty() ? null : loadingMessage
-  );
+const hideLoadingMessage = (state) => state.set('loadingMessage', null);
 
 const setFontSize = (state, action) => state.set('fontSize', action.newFontSize);
 

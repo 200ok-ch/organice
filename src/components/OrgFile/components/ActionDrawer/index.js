@@ -367,7 +367,6 @@ const ActionDrawer = ({
 
           <ActionButton
             iconName="calendar-alt"
-            shouldSpinSubIcon={isLoading}
             isDisabled={false}
             onClick={handleAgendaClick}
             style={{

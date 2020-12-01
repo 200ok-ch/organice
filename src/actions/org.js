@@ -143,7 +143,7 @@ const doSync = ({
   }
 
   if (!shouldSuppressMessages) {
-    dispatch(setLoadingMessage(`Syncing ${path}...`));
+    dispatch(setLoadingMessage(`Syncing ...`));
   }
   dispatch(setIsLoading(true, path));
   dispatch(setOrgFileErrorMessage(null));
@@ -173,6 +173,8 @@ const doSync = ({
             .then(() => {
               if (!shouldSuppressMessages) {
                 dispatch(setDisappearingLoadingMessage(successMessage, 2000));
+              } else {
+                setTimeout(() => dispatch(hideLoadingMessage()), 2000);
               }
               dispatch(setIsLoading(false, path));
               dispatch(setDirty(false, path));
@@ -190,6 +192,8 @@ const doSync = ({
         } else {
           if (!shouldSuppressMessages) {
             dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+          } else {
+            setTimeout(() => dispatch(hideLoadingMessage()), 2000);
           }
           dispatch(setIsLoading(false, path));
         }
@@ -204,6 +208,8 @@ const doSync = ({
           dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
           if (!shouldSuppressMessages) {
             dispatch(setDisappearingLoadingMessage(`Latest version pulled: ${path}`, 2000));
+          } else {
+            setTimeout(() => dispatch(hideLoadingMessage()), 2000);
           }
           dispatch(setIsLoading(false, path));
         }
