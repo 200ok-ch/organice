@@ -199,7 +199,7 @@ export default ({
         <div className="capture-template__field">
           <div>File: </div>
           <select onChange={updateField('file')} style={{ width: '90%' }}>
-            {(loadedFilePaths.find((path) => path === template.get('file'))
+            {(loadedFilePaths.find((path) => path === template.get('file', ''))
               ? loadedFilePaths
               : [template.get('file'), ...loadedFilePaths]
             ).map((path) => (
