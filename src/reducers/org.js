@@ -1412,7 +1412,7 @@ const reducer = (state, action) => {
     case 'UPDATE_TABLE_CELL_VALUE':
       return inFile(updateTableCellValue);
     case 'INSERT_CAPTURE':
-      return action.template.get('file') !== ''
+      return action.template.get('file')
         ? reduceInFile(state, action, action.template.get('file'))(insertCapture)
         : inFile(insertCapture);
     case 'CLEAR_PENDING_CAPTURE':

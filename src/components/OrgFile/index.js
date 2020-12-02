@@ -305,7 +305,7 @@ class OrgFile extends PureComponent {
         );
         const path = template.get('file');
         let headersOfCaptureTarget = headers;
-        if (path !== '') {
+        if (path) {
           const file = files.get(path);
           headersOfCaptureTarget = file ? file.get('headers') : List();
         }
