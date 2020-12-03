@@ -1492,10 +1492,10 @@ export const determineAffectedFiles = (state, action) => {
       return [action.sourcePath, action.targetPath];
     } else if (action.type === 'INSERT_CAPTURE') {
       const captureTarget = action.template.get('file');
-      if (captureTarget === '') {
-        return [state.get('path')];
-      } else {
+      if (captureTarget) {
         return [captureTarget];
+      } else {
+        return [state.get('path')];
       }
     } else {
       return [state.get('path')];
