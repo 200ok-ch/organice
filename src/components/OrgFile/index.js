@@ -34,10 +34,11 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   changelogHash,
+  STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { fromJS, List, Set } from 'immutable';
+import { fromJS, List, Map, Set } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -79,6 +80,7 @@ class OrgFile extends PureComponent {
     const { staticFile, path } = this.props;
 
     if (!!staticFile) {
+      this.props.org.setPath(STATIC_FILE_PREFIX + staticFile);
       if (staticFile === 'changelog') {
         this.props.base.setHasUnseenChangelog(false);
         changelogHash().then((hash) => {
@@ -514,23 +516,23 @@ const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const loadedFiles = Set.fromKeys(files);
   const fileIsLoaded = (path) => loadedFiles.includes(path);
-  const file = state.org.present.getIn(['files', path]);
-  const headers = file ? file.get('headers') : null;
-  const selectedHeaderId = file ? file.get('selectedHeaderId') : null;
-  const activePopup = state.base.get('activePopup');
+  const file = state.org.present.getIn(['files', path], Map());
+  const headers = file.get('headers', List());
+  const selectedHeaderId = file.get('selectedHeaderId', null);
+  const activePopup = state.base.get('activePopup', Map());
 
   return {
     loadedPath: path,
     files,
     headers,
     selectedHeaderId,
-    isDirty: file ? file.get('isDirty') : null,
+    isDirty: file.get('isDirty'),
     fileIsLoaded,
-    selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
+    selectedHeader: headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
-    inEditMode: !!file ? file.get('editMode') : null,
+    inEditMode: file.get('editMode'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),

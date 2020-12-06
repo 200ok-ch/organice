@@ -9,6 +9,7 @@ import { numSubheadersOfHeaderWithId, hasHeaderContent } from '../../../../lib/o
 
 import _ from 'lodash';
 import classNames from 'classnames';
+import { List, Map } from 'immutable';
 
 class HeaderList extends PureComponent {
   constructor(props) {
@@ -135,9 +136,9 @@ class HeaderList extends PureComponent {
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path]);
+  const file = state.org.present.getIn(['files', path], Map());
   return {
-    headers: file.get('headers'),
+    headers: file.get('headers', List()),
     selectedHeaderId: file.get('selectedHeaderId'),
     narrowedHeaderId: file.get('narrowedHeaderId'),
   };

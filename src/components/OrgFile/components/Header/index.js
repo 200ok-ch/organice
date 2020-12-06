@@ -20,6 +20,7 @@ import HeaderActionDrawer from './components/HeaderActionDrawer';
 import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString, readRgbaVariable } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
+import { Map } from 'immutable';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -535,7 +536,7 @@ ${header.get('rawDescription')}`;
 
 const mapStateToProps = (state, ownProps) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path]);
+  const file = state.org.present.getIn(['files', path], Map());
   const narrowedHeader = !!file.get('narrowedHeaderId')
     ? headerWithId(file.get('headers'), file.get('narrowedHeaderId'))
     : null;

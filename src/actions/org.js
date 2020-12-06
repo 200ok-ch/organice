@@ -20,8 +20,8 @@ import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_per
 import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
 
 export const parseFile = (path, contents) => (dispatch) => {
-  saveFileContentsToLocalStorage(path, contents);
-  if (localStorageAvailable) {
+  if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
+    saveFileContentsToLocalStorage(path, contents);
     const opennessState = readOpennessState();
     if (!!opennessState) {
       dispatch(setOpennessState(path, opennessState[path]));

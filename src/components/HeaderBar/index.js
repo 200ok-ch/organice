@@ -210,6 +210,7 @@ class HeaderBar extends PureComponent {
   }
 
   handleChangelogClick() {
+    this.props.base.restoreStaticFile('changelog');
     this.props.base.pushModalPage('changelog');
   }
 
@@ -234,6 +235,7 @@ class HeaderBar extends PureComponent {
   }
 
   handleHelpClick() {
+    this.props.base.restoreStaticFile('sample');
     this.props.base.pushModalPage('sample');
   }
 

@@ -6,7 +6,7 @@ import { Motion, spring } from 'react-motion';
 
 import './stylesheet.css';
 
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 
 import * as orgActions from '../../../../actions/org';
 import * as captureActions from '../../../../actions/capture';
@@ -390,7 +390,7 @@ const ActionDrawer = ({
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path]);
+  const file = state.org.present.getIn(['files', path], Map());
   return {
     inEditMode: !!file.get('editMode'),
     selectedHeaderId: file.get('selectedHeaderId'),

@@ -28,9 +28,9 @@ export const setLastViewedFile = (lastViewedPath) => ({
   lastViewedPath,
 });
 
-export const loadStaticFile = (staticFile) => {
-  return (dispatch, getState) => {
-    dispatch(setLastViewedFile(getState().org.present.get('path')));
+export const restoreStaticFile = (staticFile, lastViewedFilePath) => {
+  return (dispatch) => {
+    dispatch(setLastViewedFile(lastViewedFilePath));
 
     const fileContents = {
       changelog: raw('../../changelog.org'),
@@ -38,7 +38,6 @@ export const loadStaticFile = (staticFile) => {
     }[staticFile];
 
     dispatch(parseFile(STATIC_FILE_PREFIX + staticFile, fileContents));
-    dispatch(setPath(STATIC_FILE_PREFIX + staticFile));
   };
 };
 
