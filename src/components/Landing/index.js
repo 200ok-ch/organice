@@ -1,11 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 
 import './stylesheet.css';
 import logo from '../../images/organice.svg';
 import ExternalLink from '../UI/ExternalLink';
+import * as baseActions from '../../actions/base';
 
-export default () => {
+const Landing = ({ base }) => {
   return (
     <main className="landing-container-wrapper">
       <div className="landing-container">
@@ -29,7 +32,7 @@ export default () => {
         <Link to="/sign_in">
           <div className="btn landing-button">Sign in</div>
         </Link>
-        <Link to="/sample">
+        <Link to="/sample" onClick={() => base.restoreStaticFile('sample')}>
           <div className="btn landing-button doc-button">View sample</div>
         </Link>
         <ExternalLink href="https://organice.200ok.ch/documentation.html">
@@ -42,3 +45,11 @@ export default () => {
     </main>
   );
 };
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    base: bindActionCreators(baseActions, dispatch),
+  };
+};
+
+export default withRouter(connect(null, mapDispatchToProps)(Landing));
