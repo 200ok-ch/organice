@@ -96,6 +96,11 @@ const Settings = ({
     base.pushModalPage('changelog');
   };
 
+  const handleHelpClick = () => {
+    base.restoreStaticFile('sample');
+    base.pushModalPage('sample');
+  };
+
   return (
     <div className="settings-container">
       <div className="setting-container">
@@ -289,7 +294,7 @@ const Settings = ({
           )}
         </button>
 
-        <Link to="/sample" className="btn settings-btn">
+        <Link to="/sample" className="btn settings-btn" onClick={handleHelpClick}>
           Help
         </Link>
 
