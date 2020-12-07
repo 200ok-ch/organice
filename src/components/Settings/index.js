@@ -91,7 +91,10 @@ const Settings = ({
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
 
-  const handleChangelogClick = () => base.pushModalPage('changelog');
+  const handleChangelogClick = () => {
+    base.restoreStaticFile('changelog');
+    base.pushModalPage('changelog');
+  };
 
   return (
     <div className="settings-container">
