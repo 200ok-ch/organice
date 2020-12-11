@@ -517,7 +517,7 @@ const mapStateToProps = (state) => {
   const loadedFiles = Set.fromKeys(files);
   const fileIsLoaded = (path) => loadedFiles.includes(path);
   const file = state.org.present.getIn(['files', path], Map());
-  const headers = file.get('headers', List());
+  const headers = file.get('headers');
   const selectedHeaderId = file.get('selectedHeaderId', null);
   const activePopup = state.base.get('activePopup', Map());
 
@@ -528,7 +528,7 @@ const mapStateToProps = (state) => {
     selectedHeaderId,
     isDirty: file.get('isDirty'),
     fileIsLoaded,
-    selectedHeader: headers.find((header) => header.get('id') === selectedHeaderId),
+    selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
