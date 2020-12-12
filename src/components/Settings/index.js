@@ -17,6 +17,7 @@ import ExternalLink from '../UI/ExternalLink';
 const Settings = ({
   fontSize,
   bulletStyle,
+  shouldUseWideEditor,
   shouldTapTodoToAdvance,
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
@@ -58,6 +59,9 @@ const Settings = ({
   const handleThemeClick = (theme) => base.setTheme(theme);
 
   const handleBulletStyleChange = (newBulletStyle) => base.setBulletStyle(newBulletStyle);
+
+  const handleShouldUseWideEditor = () =>
+    base.setShouldUseWideEditor(!shouldUseWideEditor);
 
   const handleShouldTapTodoToAdvanceChange = () =>
     base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
@@ -118,6 +122,16 @@ const Settings = ({
           selectedButton={theme}
           onSelect={handleThemeClick}
         />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Use wide editor
+          <div className="setting-label__description">
+            Expand the editor area horizontally for large screen.
+          </div>
+        </div>
+        <Switch isEnabled={shouldUseWideEditor} onToggle={handleShouldUseWideEditor} />
       </div>
 
       <div className="setting-container">
@@ -316,6 +330,7 @@ const mapStateToProps = (state) => {
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle'),
+    shouldUseWideEditor: state.base.get('shouldUseWideEditor'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
