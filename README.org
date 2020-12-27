@@ -11,13 +11,13 @@
   :CUSTOM_ID: general
   :END:
 
-Tests: [[https://circleci.com/gh/200ok-ch/organice][https://circleci.com/gh/200ok-ch/organice.svg?style=svg]]
+# REPO_PLACEHOLDER
+
+#+html: <p>Tests: <a href="https://circleci.com/gh/200ok-ch/organice"><img src="https://circleci.com/gh/200ok-ch/organice.svg?style=svg"></a></p>
 
 Documentation: https://organice.200ok.ch/documentation.html
 
 Community chat: #organice on IRC [[https://freenode.net/][Freenode]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix
-
-# REPO_PLACEHOLDER
 
 ** What does this project do?
 
@@ -45,7 +45,7 @@ If you prefer a video to some text, we've got you covered! For
 [[https://emacsconf.org/2019/][EmacsConf 2019]], we've created a 10 minute introductory video into the
 rationale and usability of organice.
 
-[[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-introduction.png]]
+#+html: <p align="center"><a href="https://www.youtube.com/watch?v=aQKc0hcFXCk"><img src="https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-introduction.png"/></a></p>
 
 You can watch it on:
 

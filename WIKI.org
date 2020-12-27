@@ -57,6 +57,9 @@ to your Dropbox, here are your options:
  [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav.gif]]
 
 *** WebDAV test server
+    :PROPERTIES:
+    :CUSTOM_ID: webdav_faq_test_server
+    :END:
 
 For testing purposes, we use a Docker image with a proven and well
 documented server: Apache2 running on Debian. You can build the Docker

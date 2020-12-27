@@ -1,0 +1,37 @@
+* Setting up Nginx with CORS
+
+This is a snippet configuring the official instance of
+https://organice.200ok.ch together with a custom instance of Nginx as
+WebDAV server with the necessary CORS headers.
+
+#+begin_example
+  location /dav {
+        root /data/www;
+        client_body_temp_path /tmp;
+        client_max_body_size 0;
+        dav_methods PUT DELETE MKCOL COPY MOVE;
+        dav_ext_methods PROPFIND OPTIONS;
+        #create_full_put_path on;
+        dav_access user:rw group:rw all:r;
+        autoindex on;
+
+        add_header 'Access-Control-Allow-Origin' 'https://organice.200ok.ch' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS, POST, PROPFIND, PUT' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Depth,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+        if ($request_method = 'OPTIONS') {
+            return 204;
+        }
+
+        auth_basic "Restricted access";
+        auth_basic_user_file auth/.htpasswd;
+  }
+#+end_example
+
+This snippet was contributed by ﻿@Varajada:matrix.org in the
+[[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] channel for public use.
+
+Here you can find more information on organice and WebDAV: https://organice.200ok.ch/documentation.html#faq_webdav
+
+We also have an official WebDAV test server which uses Apache.
+More information on that here: https://organice.200ok.ch/documentation.html#webdav_faq_test_server
