@@ -51,7 +51,12 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
       }
       target = target.replace(/^\/file\//, '/');
       return (
-        <span key={id} style={{ textDecoration: 'underline' }} onClick={() => org.setPath(target)}>
+        <span
+          key={id}
+          style={{ textDecoration: 'underline' }}
+          data-target={target}
+          onClick={() => org.setPath(target)}
+        >
           {title}
         </span>
       );

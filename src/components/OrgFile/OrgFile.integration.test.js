@@ -560,7 +560,10 @@ describe('Render all views', () => {
             // There's exactly one such URL
             expect(elem.length).toEqual(1);
             // And it renders as such
-            expect(elem[0]).toHaveAttribute('href', '/file/dir1/dir2/schedule_and_timestamps.org');
+            expect(elem[0]).toHaveAttribute(
+              'data-target',
+              '/dir1/dir2/schedule_and_timestamps.org'
+            );
             expect(elem[0]).toHaveTextContent('an existing .org file in the same directory');
           });
 
@@ -581,14 +584,14 @@ describe('Render all views', () => {
           test('relative link to fictitious .org file in subdir', () => {
             const elem = getAllByText('a fictitious .org file in a sub-directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', '/file/dir1/dir2/subdir/foo.org');
+            expect(elem[0]).toHaveAttribute('data-target', '/dir1/dir2/subdir/foo.org');
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a sub-directory');
           });
 
           test('relative link to fictitious .org file in a parent directory', () => {
             const elem = getAllByText('a fictitious .org file in a parent directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', '/file/dir1/foo.org_archive');
+            expect(elem[0]).toHaveAttribute('data-target', '/dir1/foo.org_archive');
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a parent directory');
           });
 
@@ -609,14 +612,17 @@ describe('Render all views', () => {
           test('relative link to fictitious .org file in a grand-parent directory', () => {
             const elem = getAllByText('a fictitious .org file in a grand-parent directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', '/file/foo.org');
+            expect(elem[0]).toHaveAttribute('data-target', '/foo.org');
             expect(elem[0]).toHaveTextContent('a fictitious .org file in a grand-parent directory');
           });
 
           test('relative link to fictitious .org file in a too-high ancestor directory', () => {
             const elem = getAllByText('a fictitious .org file in a too-high ancestor directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high.org');
+            expect(elem[0]).toHaveAttribute(
+              'data-target',
+              '../../../../too-high-to-access-file.org'
+            );
             expect(elem[0]).toHaveTextContent(
               'a fictitious .org file in a too-high ancestor directory'
             );
@@ -625,21 +631,32 @@ describe('Render all views', () => {
           test('relative link to too-high ancestor directory', () => {
             const elem = getAllByText('a too-high ancestor directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', 'file://../../../../too-high');
+            // INFO: This file cannot be opened, because it is not
+            // visible from within the share given to organice.
+            expect(elem[0]).toHaveAttribute(
+              'data-target',
+              '../../../../too-high-to-access-directory'
+            );
             expect(elem[0]).toHaveTextContent('a too-high ancestor directory');
           });
 
           test('absolute link to fictitious .org file in home directory', () => {
             const elem = getAllByText('a fictitious .org file in home directory');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', 'file://~/foo/bar/baz.org');
+            expect(elem[0]).toHaveAttribute('data-target', '~/foo/bar/baz.org');
+            // INFO: This file cannot really be opened, because
+            // organice doesn't know the directory structure of the
+            // user. I.e. the file link might be
+            // `file:~/Dropbox/org/things.org`. Then, organice would
+            // have to remove the `Dropbox` folder and try and see if
+            // it can find the file underneath.
             expect(elem[0]).toHaveTextContent('a fictitious .org file in home directory');
           });
 
           test('absolute link to fictitious .org file', () => {
             const elem = getAllByText('a fictitious .org file');
             expect(elem.length).toEqual(1);
-            expect(elem[0]).toHaveAttribute('href', 'file:///foo/bar/baz.org');
+            expect(elem[0]).toHaveAttribute('data-target', '/foo/bar/baz.org');
             expect(elem[0]).toHaveTextContent('a fictitious .org file');
           });
         });
