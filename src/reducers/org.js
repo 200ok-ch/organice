@@ -478,10 +478,6 @@ const refileSubtree = (state, action) => {
   );
   let targetHeaderIndex = indexOfHeaderWithId(targetHeaders, targetHeaderId);
 
-  // Do not attempt to move a header to itself
-  // TODO: this should be handeled by search not showing the selected header on refile
-  //if (sourceHeaderIndex === targetHeaderIndex) return state;
-
   let subheadersOfSourceHeader = subheadersOfHeaderWithId(sourceHeaders, sourceHeaderId);
 
   const nestingLevelSource = sourceHeaders.getIn([sourceHeaderIndex, 'nestingLevel']);
