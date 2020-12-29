@@ -26,6 +26,7 @@ const ActionDrawer = ({
   selectedTableCellId,
   inEditMode,
   isLoading,
+  online,
   shouldDisableSyncButtons,
 }) => {
   const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
@@ -354,7 +355,7 @@ const ActionDrawer = ({
             iconName="cloud"
             subIconName="sync-alt"
             shouldSpinSubIcon={isLoading}
-            isDisabled={shouldDisableSyncButtons}
+            isDisabled={shouldDisableSyncButtons || !online}
             onClick={handleSync}
             style={{
               opacity:
@@ -400,6 +401,7 @@ const mapStateToProps = (state) => {
     captureTemplates: state.capture.get('captureTemplates', List()),
     path,
     isLoading: !state.base.get('isLoading').isEmpty(),
+    online: state.base.get('online'),
   };
 };
 

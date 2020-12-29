@@ -28,7 +28,11 @@ import './base.css';
 
 import Entry from './components/Entry';
 
-import { listenToBrowserButtons, syncOnBecomingVisible } from './lib/initial_setup';
+import {
+  listenToBrowserButtons,
+  syncOnBecomingVisible,
+  listenToNetworkConnectionEvents,
+} from './lib/initial_setup';
 
 import _ from 'lodash';
 import { Map } from 'immutable';
@@ -145,6 +149,7 @@ export default class App extends PureComponent {
 
     listenToBrowserButtons(this.store);
     syncOnBecomingVisible(this.store);
+    listenToNetworkConnectionEvents(this.store);
 
     _.bindAll(this, ['handleDragEnd']);
   }

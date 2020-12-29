@@ -1,7 +1,29 @@
 import { debounce } from 'lodash';
 
 import { setPath, sync } from '../actions/org';
+import { setIsOnline } from '../actions/base';
 import { STATIC_FILE_PREFIX } from './org_utils';
+
+// When offline, don't sync and don't enable sync button. When online,
+// enable sync button. When newly online, force sync of all things
+// possibly dirty.
+export function listenToNetworkConnectionEvents(store) {
+  // Is the user online when starting up the application?
+  store.dispatch(setIsOnline(navigator.onLine));
+
+  window.onoffline = function () {
+    store.dispatch(setIsOnline(false));
+  };
+
+  window.ononline = function () {
+    store.dispatch(setIsOnline(true));
+    // Add grace period, because browsers might get the event `onLine`
+    // too soon to actually do network requests.
+    setTimeout(() => {
+      sync({ shouldSuppressMessages: true, forceAction: 'manual' })(store.dispatch, store.getState);
+    }, 2000);
+  };
+}
 
 // Generally, opening files and other routing is done with the
 // `react-router-dom` package (i.e. `<Link/ > tags). However, organice
