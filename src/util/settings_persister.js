@@ -51,33 +51,28 @@ export const persistableFields = [
     category: 'base',
     name: 'fontSize',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'bulletStyle',
     type: 'nullable',
     default: 'Fancy',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldTapTodoToAdvance',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
 
   {
     category: 'base',
     name: 'agendaDefaultDeadlineDelayUnit',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'agendaDefaultDeadlineDelayValue',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
 
   {
@@ -85,90 +80,76 @@ export const persistableFields = [
     name: 'shouldStoreSettingsInSyncBackend',
     type: 'boolean',
     default: true,
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'lastSeenChangelogHash',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'customKeybindings',
     type: 'json',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldLiveSync',
     type: 'boolean',
     default: true,
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldSyncOnBecomingVisibile',
     type: 'boolean',
     default: true,
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldShowTitleInOrgFile',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldLogIntoDrawer',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'closeSubheadersRecursively',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldNotIndentOnExport',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'org',
     name: 'showClockDisplay',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'colorScheme',
     type: 'string',
     default: 'Light',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'theme',
     type: 'string',
     default: 'Solarized',
-    shouldStoreInConfig: true,
   },
   {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',
-    shouldStoreInConfig: true,
     default: List(),
   },
   {
     category: 'org',
     name: 'fileSettings',
     type: 'json',
-    shouldStoreInConfig: true,
     default: List(),
   },
   {
@@ -176,7 +157,6 @@ export const persistableFields = [
     name: 'agendaTimeframe',
     type: 'string',
     default: 'Week',
-    shouldStoreInConfig: false,
   },
 ];
 
@@ -209,13 +189,12 @@ const getFieldsToPersist = (state, fields) => {
 };
 
 const getConfigFileContents = (fieldsToPersist) => {
-  return JSON.stringify(_.fromPairs(fieldsToPersist.filter((f) => f.shouldStoreInConfig)), null, 2);
+  return JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
 };
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
   persistableFields
     .filter((field) => field.category === category)
-    .filter((field) => field.shouldStoreInConfig)
     .forEach((field) => {
       field.type === 'json'
         ? (state = state.set(field.name, fromJS(JSON.parse(config[field.name]))))
