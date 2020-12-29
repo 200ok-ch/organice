@@ -8,6 +8,7 @@ import {
   persistField,
   getPersistedField,
 } from './util/settings_persister';
+
 import runAllMigrations from './migrations';
 import parseQueryString from './util/parse_query_string';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -26,6 +27,8 @@ import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_ba
 import './base.css';
 
 import Entry from './components/Entry';
+
+import { listenToBrowserButtons } from './lib/initial_setup';
 
 import _ from 'lodash';
 import { Map } from 'immutable';
@@ -139,6 +142,8 @@ export default class App extends PureComponent {
 
     // Initially load the sample file.
     this.store.dispatch(restoreStaticFile('sample'));
+
+    listenToBrowserButtons(this.store);
 
     _.bindAll(this, ['handleDragEnd']);
   }
