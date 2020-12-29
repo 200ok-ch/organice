@@ -424,12 +424,9 @@ organice supports using multiple files.
 
 default behaviour:
 - When you first open a file it is loaded from the backend. At this point the file is persisted to local storage. It will be loaded from there on future application starts. To ensure consistency whenever a file is opened it will be synced with the backend.
-- Contents of all loaded files are displayed in the agenda.
-- All loaded files are refile targets.
-- Search only shows results from the currently viewed file.
-- Task list only shows tasks from the currently viewed file.
+- Agenda, Refile, Search and Task List by default show results from the currently viewed file.
 
-You can adjust these defaults on a file per file basis by creating file settings in the settings menu.
+You can adjust these defaults on a file per file basis by creating file settings in the [[/settings][settings menu]].
 
 * organice operates completely client side
 You don't log in to organice directly because organice doesn't have a
