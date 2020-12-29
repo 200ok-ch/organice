@@ -79,16 +79,20 @@ const syncDebounced = (dispatch, getState, options) => {
 };
 
 export const sync = (options) => (dispatch, getState) => {
-  // If the user hits the 'sync' button, no matter if there's a sync
-  // in progress or if the sync 'should' be debounced, listen to the
-  // user and start a sync.
-  if (options.forceAction === 'manual') {
-    console.log('forcing sync');
-    const files = getState().org.present.get('files');
-    // sync all files on manual sync
-    files.keySeq().forEach((path) => dispatch(doSync({ ...options, path })));
-  } else {
-    syncDebounced(dispatch, getState, options);
+  // Don't do anything if the browser is not online. When it gets back
+  // from an offline state, a new `sync`action will be triggered then.
+  if (getState().base.get('online')) {
+    // If the user hits the 'sync' button, no matter if there's a sync
+    // in progress or if the sync 'should' be debounced, listen to the
+    // user and start a sync.
+    if (options.forceAction === 'manual') {
+      console.log('forcing sync');
+      const files = getState().org.present.get('files');
+      // sync all files on manual sync
+      files.keySeq().forEach((path) => dispatch(doSync({ ...options, path })));
+    } else {
+      syncDebounced(dispatch, getState, options);
+    }
   }
 };
 

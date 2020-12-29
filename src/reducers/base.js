@@ -114,6 +114,10 @@ const setIsLoading = (state, action) => {
   }
 };
 
+const setIsOnline = (state, action) => {
+  return state.set('online', action.online);
+};
+
 const setAgendaTimeframe = (state, action) => state.set('agendaTimeframe', action.agendaTimeframe);
 
 const setColorScheme = (state, action) => {
@@ -183,6 +187,8 @@ export default (state = Map(), action) => {
       return closePopup(state, action);
     case 'SET_IS_LOADING':
       return setIsLoading(state, action);
+    case 'SET_IS_ONLINE':
+      return setIsOnline(state, action);
     case 'SET_AGENDA_TIMEFRAME':
       return setAgendaTimeframe(state, action);
     default:

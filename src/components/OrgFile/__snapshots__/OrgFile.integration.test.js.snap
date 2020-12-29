@@ -720,7 +720,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         class="action-drawer-container nice-scroll"
       >
         <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-cloud action-drawer__btn--with-sub-icon"
+          class="btn btn--circle action-drawer__btn fas fa-lg fa-cloud action-drawer__btn--with-sub-icon btn--disabled"
           style="opacity: 1;"
           title="Sync changes"
         >

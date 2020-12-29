@@ -18,6 +18,11 @@ export const setIsLoading = (isLoading, path) => ({
   path,
 });
 
+export const setIsOnline = (online) => ({
+  type: 'SET_IS_ONLINE',
+  online,
+});
+
 export const setDisappearingLoadingMessage = (loadingMessage, delay) => (dispatch) => {
   dispatch(setLoadingMessage(loadingMessage));
   setTimeout(() => dispatch(hideLoadingMessage()), delay);

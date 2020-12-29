@@ -23,6 +23,7 @@ a 'gift' icon appear on the top right corner.
      - https://github.com/200ok-ch/organice/pull/574
      - https://github.com/200ok-ch/organice/pull/575
      - https://github.com/200ok-ch/organice/pull/570
+     - https://github.com/200ok-ch/organice/pull/607
 
 * [2020-11-21 Sat]
 
