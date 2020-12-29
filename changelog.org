@@ -2,7 +2,27 @@
 
 All user visible changes to organice will be documented in this file.
 
-When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
+When there are updates to the changelog, you will be notified and see
+a 'gift' icon appear on the top right corner.
+
+* [2020-12-29 Tue]
+** Added
+   - *EPIC*: Multiple file support
+     - Agenda, Search, Task List, Refile and Capture Templates have the ability to work on multiple files.
+     - You can adjust the behavior for these on a file per file basis by creating "file settings" in the settings menu.
+
+   - *EPIC*: Offline file support
+     - Every file opened in organice will automatically be cached on your device.
+     - When visiting the file, again, it will immediately be loaded from the local storage and then loaded from the remote back-end.
+     - That makes loading and switching between files instant _and_ gives you the ability to work on multiple files when being offline.
+
+   - Relevant PRs:
+     - https://github.com/200ok-ch/organice/pull/550
+     - https://github.com/200ok-ch/organice/pull/560
+     - https://github.com/200ok-ch/organice/pull/565
+     - https://github.com/200ok-ch/organice/pull/574
+     - https://github.com/200ok-ch/organice/pull/575
+     - https://github.com/200ok-ch/organice/pull/570
 
 * [2020-11-21 Sat]
 
