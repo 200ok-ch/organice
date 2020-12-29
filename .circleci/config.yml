@@ -137,8 +137,12 @@ workflows:
               only: develop
       - push-image:
           requires:
-            - build # because of tests
-            - build-docs
+            # Staging deployments are free of linting and test checks,
+            # so that we can quickly build, deploy and iterate.
+            # There's still visual feedback on Github on whether or
+            # not the tasks failed.
+            # - build # because of tests
+            # - build-docs
           filters:
             branches:
               only: master
