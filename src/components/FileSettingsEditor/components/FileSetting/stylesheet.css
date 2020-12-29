@@ -1,0 +1,103 @@
+@import '../../../../colors.css';
+
+.file-setting-container {
+  border-bottom: 2px solid var(--base2);
+  padding: 15px 5px;
+
+  -webkit-tap-highlight-color: var(--base03);
+}
+
+.file-setting-container--dragging {
+  background-color: var(--base1);
+}
+
+.file-setting-container__header {
+  display: flex;
+  align-items: center;
+
+  color: var(--base01);
+}
+
+.file_setting-container__header__title {
+  font-size: 20px;
+  margin-left: 10px;
+
+  max-width: calc(100% - 120px);
+}
+
+.file-setting-container__header__caret {
+  margin-right: 15px;
+  margin-left: 5px;
+
+  transition-property: transform;
+  transition-duration: 0.15s;
+}
+
+.file-setting-container__header__caret--rotated {
+  transform: rotate(90deg);
+}
+
+.file-setting-container__header__drag-handle {
+  margin-left: auto;
+  margin-right: 20px;
+
+  user-select: none;
+}
+
+.file-setting-container__content {
+  margin-top: 10px;
+}
+
+.file-setting__field-container {
+  margin-bottom: 5px;
+  border-bottom: 1px solid var(--base2);
+  padding-bottom: 5px;
+}
+
+.file-setting__field-container:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.file-setting__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-setting__help-text {
+  color: var(--base0);
+  font-size: 14px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.file-setting__delete-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.file-setting__delete-button {
+  background-color: var(--red);
+
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+.file-setting-icons {
+  display: grid;
+  grid-template-columns: repeat(3, 20px [col-start]);
+  grid-template-rows: repeat(2, 20px [row-start]);
+}
+
+.file-setting-icon {
+  font-size: small;
+}
+
+.load-on-startup-icon {
+  grid-column-start: 1;
+  grid-column-end: 1;
+  grid-row-start: 1;
+  grid-row-end: span 2;
+  align-self: center;
+}

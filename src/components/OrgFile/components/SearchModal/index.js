@@ -29,8 +29,8 @@ function SearchModal(props) {
     clockedTime,
   } = props;
 
-  function handleHeaderClick(headerId) {
-    props.onClose(headerId);
+  function handleHeaderClick(path, headerId) {
+    props.onClose(path, headerId);
   }
 
   function handleToggleDateDisplayType() {
@@ -85,6 +85,11 @@ function SearchModal(props) {
 
       <div
         className="task-list__headers-container"
+        // On mobile devices, the Drawer already handles the touch
+        // event. Hence, scrolling within the Drawers container does
+        // not work with the same event. Therefore, we're just opting
+        // to scroll the whole drawer. That's not the best UX. And a
+        // better CSS juggler than me is welcome to improve on it.
         style={isMobileBrowser ? undefined : { overflow: 'auto' }}
       >
         <HeaderListView
@@ -101,6 +106,7 @@ function SearchModal(props) {
 }
 
 const mapStateToProps = (state) => ({
+  path: state.org.present.get('path'),
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],

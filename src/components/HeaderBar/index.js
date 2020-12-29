@@ -26,10 +26,11 @@ class HeaderBar extends PureComponent {
       'handleChangelogClick',
       'handleModalPageDoneClick',
       'handleHeaderBarTitleClick',
-      'handleSettingsSubPageBackClick',
+      'handleBackClick',
       'handleUndoClick',
       'handleRedoClick',
       'handleHelpClick',
+      'handleSettingsClick',
     ]);
   }
 
@@ -86,7 +87,11 @@ class HeaderBar extends PureComponent {
     const directoryPath = pathParts.slice(0, pathParts.length - 1).join('/');
 
     return (
-      <Link to={`/files${directoryPath}`} className="header-bar__back-button">
+      <Link
+        to={`/files${directoryPath}`}
+        onClick={this.handleBackClick}
+        className="header-bar__back-button"
+      >
         <i className="fas fa-chevron-left" />
         <span className="header-bar__back-button__directory-path">File browser</span>
       </Link>
@@ -120,13 +125,13 @@ class HeaderBar extends PureComponent {
     );
   }
 
-  handleSettingsSubPageBackClick() {
+  handleBackClick() {
     this.props.base.popModalPage();
   }
 
   renderSettingsSubPageBackButton() {
     return (
-      <div className="header-bar__back-button" onClick={this.handleSettingsSubPageBackClick}>
+      <div className="header-bar__back-button" onClick={this.handleBackClick}>
         <i className="fas fa-chevron-left" />
         <span className="header-bar__back-button__directory-path">Settings</span>
       </div>
@@ -143,8 +148,10 @@ class HeaderBar extends PureComponent {
         return this.renderSettingsSubPageBackButton();
       case 'capture_templates_editor':
         return this.renderSettingsSubPageBackButton();
-      case 'sample':
+      case 'file_settings_editor':
         return this.renderSettingsSubPageBackButton();
+      case 'sample':
+        return this.renderOrgFileBackButton();
       default:
     }
 
@@ -182,6 +189,8 @@ class HeaderBar extends PureComponent {
         return titleContainerWithText('Shortcuts');
       case 'capture_templates_editor':
         return titleContainerWithText('Capture');
+      case 'file_settings_editor':
+        return titleContainerWithText('Files');
       case 'sample':
         return titleContainerWithText('Sample');
       default:
@@ -201,6 +210,7 @@ class HeaderBar extends PureComponent {
   }
 
   handleChangelogClick() {
+    this.props.base.restoreStaticFile('changelog');
     this.props.base.pushModalPage('changelog');
   }
 
@@ -225,8 +235,12 @@ class HeaderBar extends PureComponent {
   }
 
   handleHelpClick() {
-    this.props.base.pushModalPage('settings');
+    this.props.base.restoreStaticFile('sample');
     this.props.base.pushModalPage('sample');
+  }
+
+  handleSettingsClick() {
+    this.props.base.setLastViewedFile(this.props.path);
   }
 
   renderActions() {
@@ -291,7 +305,7 @@ class HeaderBar extends PureComponent {
                   onClick={this.handleChangelogClick}
                 />
               )}
-              <Link to="/settings">
+              <Link to="/settings" onClick={this.handleSettingsClick}>
                 <i className={settingsIconClassName} title="Settings" />
               </Link>
             </div>

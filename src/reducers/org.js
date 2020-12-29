@@ -15,6 +15,7 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   getTodoKeywordSetsAsFlattenedArray,
+  STATIC_FILE_PREFIX,
 } from '../lib/org_utils';
 
 import {
@@ -54,28 +55,21 @@ import {
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
 import { formatTextWrap } from '../util/misc';
+import { applyFileSettingsFromConfig } from '../util/settings_persister';
 
-const displayFile = (state, action) => {
-  const parsedFile = parseOrg(action.contents);
+export const parseFile = (state, action) => {
+  const { path, contents } = action;
+
+  const parsedFile = parseOrg(contents);
 
   return state
-    .set('path', action.path)
-    .set('contents', action.contents)
-    .set('headers', parsedFile.get('headers'))
-    .set('todoKeywordSets', parsedFile.get('todoKeywordSets'))
-    .set('fileConfigLines', parsedFile.get('fileConfigLines'))
-    .set('linesBeforeHeadings', parsedFile.get('linesBeforeHeadings'));
+    .setIn(['files', path, 'headers'], parsedFile.get('headers'))
+    .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
+    .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
+    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
 };
 
-const stopDisplayingFile = (state) =>
-  state
-    .set('path', null)
-    .set('contents', null)
-    .set('headers', null)
-    .set('filteredHeaders', null)
-    .set('todoKeywordSets', null)
-    .set('fileConfigLines', null)
-    .set('linesBeforeHeadings', null);
+const clearSearch = (state) => state.setIn(['search', 'filteredHeaders'], null);
 
 const openHeader = (state, action) => {
   const headers = state.get('headers');
@@ -138,8 +132,8 @@ const updateCookiesInAttributedStringWithChildCompletionStates = (parts, complet
   });
 };
 
-const updateCookiesOfHeaderWithId = (state, headerId) => {
-  const headers = state.get('headers');
+const updateCookiesOfHeaderWithId = (file, headerId) => {
+  const headers = file.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, headerId);
   const subheaders = subheadersOfHeaderWithId(headers, headerId);
 
@@ -156,7 +150,7 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
     .map((header) => header.getIn(['titleLine', 'todoKeyword']))
     .filter((todoKeyword) => !!todoKeyword)
     .map((todoKeyword) =>
-      todoKeywordSetForKeyword(state.get('todoKeywordSets'), todoKeyword)
+      todoKeywordSetForKeyword(file.get('todoKeywordSets'), todoKeyword)
         .get('completedKeywords')
         .contains(todoKeyword)
     );
@@ -173,7 +167,7 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
       .toJS();
   }
 
-  return state
+  return file
     .updateIn(['headers', headerIndex, 'titleLine', 'title'], (title) =>
       updateCookiesInAttributedStringWithChildCompletionStates(title, completionStates)
     )
@@ -182,13 +176,13 @@ const updateCookiesOfHeaderWithId = (state, headerId) => {
     );
 };
 
-const updateCookiesOfParentOfHeaderWithId = (state, headerId) => {
-  const parentHeaderId = parentIdOfHeaderWithId(state.get('headers'), headerId);
+const updateCookiesOfParentOfHeaderWithId = (file, headerId) => {
+  const parentHeaderId = parentIdOfHeaderWithId(file.get('headers'), headerId);
   if (!parentHeaderId) {
-    return state;
+    return file;
   }
 
-  return updateCookiesOfHeaderWithId(state, parentHeaderId);
+  return updateCookiesOfHeaderWithId(file, parentHeaderId);
 };
 
 const advanceTodoState = (state, action) => {
@@ -450,44 +444,53 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
-const refileSubtree = (state, action) => {
-  /**
-   * Move an item in an immutablejs List from one index to another.
-   * @param {list} List
-   * @param {integer} fromIndex
-   * @param {integer} toIndex
-   * @param {any} integer
-   */
-  function moveItem({ list, fromIndex, toIndex, item }) {
-    const targetItem = list.get(toIndex);
-    list = list.delete(fromIndex);
-    const targetIndex = list.indexOf(targetItem);
-    return list.insert(targetIndex + 1, item);
-  }
+/**
+ * Move an item in immutablejs Lists.
+ * @param {list} List
+ * @param {integer} fromIndex
+ * @param {integer} toIndex
+ * @param {any} integer
+ */
+const moveItemInFile = ({ fromList, fromIndex, toIndex, item }) => {
+  const targetItem = fromList.get(toIndex);
+  fromList = fromList.delete(fromIndex);
+  const targetIndex = fromList.indexOf(targetItem);
+  fromList = fromList.insert(targetIndex + 1, item);
+  return [fromList, fromList];
+};
 
-  const { sourceHeaderId, targetHeaderId } = action;
-  let headers = state.get('headers');
+const moveItemAcrossFiles = ({ fromList, fromIndex, toList, toIndex, item }) => {
+  const targetItem = toList.get(toIndex);
+  fromList = fromList.delete(fromIndex);
+  const targetIndex = toList.indexOf(targetItem);
+  toList = toList.insert(targetIndex + 1, item);
+  return [fromList, toList];
+};
+
+const refileSubtree = (state, action) => {
+  const { sourcePath, sourceHeaderId, targetPath, targetHeaderId } = action;
+  const moveItem = sourcePath === targetPath ? moveItemInFile : moveItemAcrossFiles;
+  let sourceHeaders = state.getIn(['files', sourcePath, 'headers']);
+  let targetHeaders = state.getIn(['files', targetPath, 'headers']);
   let { header: sourceHeader, headerIndex: sourceHeaderIndex } = indexAndHeaderWithId(
-    headers,
+    sourceHeaders,
     sourceHeaderId
   );
-  let targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+  let targetHeaderIndex = indexOfHeaderWithId(targetHeaders, targetHeaderId);
 
-  // Do not attempt to move a header to itself
-  if (sourceHeaderIndex === targetHeaderIndex) return state;
+  let subheadersOfSourceHeader = subheadersOfHeaderWithId(sourceHeaders, sourceHeaderId);
 
-  let subheadersOfSourceHeader = subheadersOfHeaderWithId(headers, sourceHeaderId);
-
-  const nestingLevelSource = state.getIn(['headers', sourceHeaderIndex, 'nestingLevel']);
-  const nestingLevelTarget = state.getIn(['headers', targetHeaderIndex, 'nestingLevel']);
+  const nestingLevelSource = sourceHeaders.getIn([sourceHeaderIndex, 'nestingLevel']);
+  const nestingLevelTarget = targetHeaders.getIn([targetHeaderIndex, 'nestingLevel']);
 
   // Indent the newly placed sourceheader so that it fits underneath the targetHeader
   sourceHeader = sourceHeader.set('nestingLevel', nestingLevelTarget + 1);
 
   // Put the sourceHeader into the right slot after the targetHeader
-  headers = moveItem({
-    list: headers,
+  [sourceHeaders, targetHeaders] = moveItem({
+    fromList: sourceHeaders,
     fromIndex: sourceHeaderIndex,
+    toList: targetHeaders,
     toIndex: targetHeaderIndex,
     item: sourceHeader,
   });
@@ -506,23 +509,29 @@ const refileSubtree = (state, action) => {
       //       4 (3)
       subheader.get('nestingLevel') - nestingLevelSource + nestingLevelTarget + 1
     );
-    const fromIndex = indexOfHeaderWithId(headers, subheader.get('id'));
+    const fromIndex = indexOfHeaderWithId(sourceHeaders, subheader.get('id'));
 
-    targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+    targetHeaderIndex = indexOfHeaderWithId(targetHeaders, targetHeaderId);
     const toIndex = targetHeaderIndex + index + 1;
 
-    headers = moveItem({
-      list: headers,
+    [sourceHeaders, targetHeaders] = moveItem({
+      fromList: sourceHeaders,
       fromIndex,
+      toList: targetHeaders,
       toIndex,
       item: subheader,
     });
   });
 
-  state = updateCookies(state, sourceHeaderId, action);
-  state = updateCookies(state, targetHeaderId, action);
+  state = state.setIn(['files', sourcePath, 'headers'], sourceHeaders);
+  state = state.setIn(['files', targetPath, 'headers'], targetHeaders);
 
-  state = state.set('headers', headers);
+  state = state.updateIn(['files', sourcePath], (file) =>
+    updateCookies(file, sourceHeaderId, action)
+  );
+  state = state.updateIn(['files', targetPath], (file) =>
+    updateCookies(file, targetHeaderId, action)
+  );
 
   return state;
 };
@@ -564,23 +573,29 @@ const narrowHeader = (state, action) => {
 
 const widenHeader = (state) => state.set('narrowedHeaderId', null);
 
-const applyOpennessState = (state) => {
+const applyOpennessState = (state, action) => {
+  const { path } = action;
   const opennessState = state.get('opennessState');
   if (!opennessState) {
     return state;
   }
 
-  const fileOpennessState = opennessState.get(state.get('path'));
+  const fileOpennessState = opennessState.get(path);
   if (!fileOpennessState || fileOpennessState.size === 0) {
     return state;
   }
 
-  let headers = state.get('headers');
+  let headers = state.getIn(['files', path, 'headers']);
   fileOpennessState.forEach((openHeaderPath) => {
     headers = openHeaderWithPath(headers, openHeaderPath);
   });
 
-  return state.set('headers', headers);
+  return state.setIn(['files', path, 'headers'], headers);
+};
+
+const setOpennessState = (state, action) => {
+  const { path, opennessState } = action;
+  return state.setIn(['opennessState', path], fromJS(opennessState));
 };
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
@@ -1063,9 +1078,62 @@ export const updateLogEntryTime = (state, action) => {
   );
 };
 
+export const determineIncludedFiles = (files, fileSettings, path, settingValue, includeByDefault) =>
+  files.mapEntries(([filePath, file]) => [
+    filePath,
+    file.update('headers', (headers) => {
+      const fileSetting = fileSettings.find((setting) => filePath === setting.get('path'));
+      // always include the viewed file
+      if (path === filePath) {
+        return headers;
+      } else if (fileSetting) {
+        if (fileSetting.get(settingValue)) {
+          return headers;
+        } else {
+          return List();
+        }
+      } else if (filePath.startsWith(STATIC_FILE_PREFIX)) {
+        // never include static files
+        return List();
+      } else {
+        // if no setting exists
+        return includeByDefault ? headers : List();
+      }
+    }),
+  ]);
+
+const searchHeaders = ({ searchFilterExpr = [], headersToSearch, path }) => {
+  let filteredHeaders;
+  let nrOfHeadersToSearch = 200;
+  const searchFilterFunction = isMatch(searchFilterExpr);
+
+  // search the current file first
+  const headersFoundInCurrentFile = headersToSearch
+    .get(path)
+    .filter(searchFilterFunction)
+    .take(nrOfHeadersToSearch);
+  nrOfHeadersToSearch -= headersFoundInCurrentFile.count();
+  filteredHeaders = Map().set(path, headersFoundInCurrentFile);
+
+  // search rest of files until nrOfHeadersToDisplay results are found
+  const filePathsToSearch = headersToSearch.keySeq().filter((p) => p !== path);
+  filePathsToSearch.forEach((filePath) => {
+    if (nrOfHeadersToSearch > 0) {
+      const headersFoundInFile = headersToSearch
+        .get(filePath)
+        .filter(searchFilterFunction)
+        .take(nrOfHeadersToSearch);
+      nrOfHeadersToSearch -= headersFoundInFile.count();
+      filteredHeaders = filteredHeaders.set(filePath, headersFoundInFile);
+    }
+  });
+  return filteredHeaders;
+};
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
-  const headers = state.get('headers');
+
+  let files = state.get('files');
   state = state.asMutable();
 
   let searchFilterValid = true;
@@ -1080,10 +1148,23 @@ export const setSearchFilterInformation = (state, action) => {
     searchFilterValid = false;
   }
 
+  const path = state.get('path');
+  const fileSettings = state.get('fileSettings');
+  // Decide which files to include
+  if (context === 'agenda') {
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInAgenda', false);
+  } else if (context === 'search') {
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInSearch', false);
+  } else if (context === 'task-list') {
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInTasklist', false);
+  } else if (context === 'refile') {
+    files = determineIncludedFiles(files, fileSettings, path, 'includeInRefile', false);
+  } // there should not be another context, but if so use all files
+
   state.setIn(['search', 'searchFilterValid'], searchFilterValid);
   // Only run filter if a filter is given and parsing was successful
   if (searchFilterValid) {
-    let filteredHeaders;
+    const headers = files.map((file) => file.get('headers'));
 
     // show clocked times & sum if there is a clock search term
     const clockFilters = searchFilterExpr
@@ -1094,32 +1175,41 @@ export const setSearchFilterInformation = (state, action) => {
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
 
     // Only search subheaders if a header is narrowed
-    const narrowedHeaderId = state.get('narrowedHeaderId');
+    const narrowedHeaderId = state.getIn(['files', path, 'narrowedHeaderId']);
     let headersToSearch;
     if (!narrowedHeaderId || context === 'refile') {
       headersToSearch = headers;
     } else {
-      headersToSearch = subheadersOfHeaderWithId(headers, narrowedHeaderId);
+      headersToSearch = Map().set(
+        path,
+        subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
+      );
     }
 
     // calculate relevant clocked times and total
     if (showClockedTimes) {
-      headersToSearch = headersToSearch.map((header) =>
-        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        headersOfFile.map((header) =>
+          header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+        )
       );
-      headersToSearch = updateHeadersTotalFilteredTimeLoggedRecursive(
-        filterFunctions,
-        headersToSearch
-      ).filter((header) => header.get('totalFilteredTimeLoggedRecursive') !== 0);
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        updateHeadersTotalFilteredTimeLoggedRecursive(filterFunctions, headersOfFile).filter(
+          (header) => header.get('totalFilteredTimeLoggedRecursive') !== 0
+        )
+      );
     }
 
-    filteredHeaders = headersToSearch.filter(isMatch(searchFilterExpr));
+    // perform the actual search
+    let filteredHeaders = searchHeaders({ searchFilterExpr, headersToSearch, path });
 
     if (showClockedTimes) {
-      const clockedTime = filteredHeaders.reduce(
-        (acc, val) => acc + val.get('totalFilteredTimeLogged'),
-        0
-      );
+      const clockedTime = filteredHeaders
+        .map((headersOfFile) =>
+          headersOfFile.reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0)
+        )
+        .toList()
+        .reduce((acc, val) => acc + val, 0);
       state.setIn(['search', 'clockedTime'], clockedTime);
     }
 
@@ -1127,13 +1217,15 @@ export const setSearchFilterInformation = (state, action) => {
     // because you don't want to refile a header to itself or to one
     // of its subheaders.
     if (context === 'refile') {
-      const selectedHeaderId = state.get('selectedHeaderId');
-      const subheaders = subheadersOfHeaderWithId(headers, selectedHeaderId);
+      const selectedHeaderId = state.getIn(['files', path, 'selectedHeaderId']);
+      const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
       let filterIds = subheaders.map((s) => s.get('id')).toJS();
       filterIds.push(selectedHeaderId);
-      filteredHeaders = filteredHeaders.filter((h) => {
-        return !filterIds.includes(h.get('id'));
-      });
+      filteredHeaders = filteredHeaders.update(path, (headersOfFile) =>
+        headersOfFile.filter((h) => {
+          return !filterIds.includes(h.get('id'));
+        })
+      );
     }
 
     state.setIn(['search', 'filteredHeaders'], filteredHeaders);
@@ -1155,9 +1247,13 @@ export const setSearchFilterInformation = (state, action) => {
     // Only for an empty filter string,  provide last used filters as suggestions.
     searchFilterSuggestions = lastUsedFilterStrings;
   } else {
-    const todoKeywords = getTodoKeywordSetsAsFlattenedArray(state);
-    const tagNames = extractAllOrgTags(headers).toJS();
-    const allProperties = extractAllOrgProperties(headers).toJS();
+    // TODO: Currently only showing suggestions based on opened file.
+    // Decide if they should be based on all files.
+    const currentFile = files.get(path);
+    const headersOfFile = currentFile.get('headers');
+    const todoKeywords = getTodoKeywordSetsAsFlattenedArray(currentFile);
+    const tagNames = extractAllOrgTags(headersOfFile).toJS();
+    const allProperties = extractAllOrgProperties(headersOfFile).toJS();
     searchFilterSuggestions = computeCompletionsForDatalist(todoKeywords, tagNames, allProperties)(
       searchFilterExpr,
       searchFilter,
@@ -1172,6 +1268,8 @@ export const setSearchFilterInformation = (state, action) => {
 
 const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
 
+const setPath = (state, action) => state.set('path', action.path);
+
 const setShowClockDisplay = (state, action) => {
   if (action.showClockDisplay) {
     state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
@@ -1179,139 +1277,228 @@ const setShowClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 };
 
+const indexOfFileSettingWithId = (settings, settingId) =>
+  settings.findIndex((setting) => setting.get('id') === settingId);
+
+const updateFileSettingFieldPathValue = (state, action) => {
+  const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
+
+  return state.setIn(['fileSettings', settingIndex].concat(action.fieldPath), action.newValue);
+};
+
+const reorderFileSetting = (state, action) =>
+  state.update('fileSettings', (settings) =>
+    settings.splice(action.fromIndex, 1).splice(action.toIndex, 0, settings.get(action.fromIndex))
+  );
+
+const deleteFileSetting = (state, action) => {
+  const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
+
+  return state.update('fileSettings', (settings) => settings.delete(settingIndex));
+};
+
+const addNewEmptyFileSetting = (state) =>
+  state.update('fileSettings', (settings) =>
+    settings.push(
+      fromJS({
+        id: generateId(),
+        path: '',
+        loadOnStartup: false,
+        includeInAgenda: false,
+        includeInSearch: false,
+        includeInRefile: false,
+        includeInTasklist: false,
+      })
+    )
+  );
+
+const restoreFileSettings = (state, action) => {
+  if (!action.newSettings) {
+    return state;
+  }
+
+  return applyFileSettingsFromConfig(state, action.newSettings);
+};
+
+const reduceInFile = (state, action, path) => (func, ...args) => {
+  return state.updateIn(['files', path], (file) => func(file ? file : Map(), action, ...args));
+};
+
 const reducer = (state, action) => {
+  const path = state.get('path');
+  const inFile = reduceInFile(state, action, path);
+
   switch (action.type) {
-    case 'DISPLAY_FILE':
-      return displayFile(state, action);
-    case 'STOP_DISPLAYING_FILE':
-      return stopDisplayingFile(state, action);
+    case 'PARSE_FILE':
+      return parseFile(state, action);
+    case 'CLEAR_SEARCH':
+      return clearSearch(state, action);
     case 'TOGGLE_HEADER_OPENED':
-      return toggleHeaderOpened(state, action);
+      return inFile(toggleHeaderOpened);
     case 'OPEN_HEADER':
-      return openHeader(state, action);
+      return inFile(openHeader);
     case 'SELECT_HEADER':
-      return selectHeader(state, action);
+      return inFile(selectHeader);
     case 'OPEN_PARENTS_OF_HEADER':
-      return openParentsOfHeader(state, action);
+      return inFile(openParentsOfHeader);
     case 'ADVANCE_TODO_STATE':
-      return advanceTodoState(state, action);
+      return inFile(advanceTodoState);
     case 'ENTER_EDIT_MODE':
-      return enterEditMode(state, action);
+      return inFile(enterEditMode);
     case 'EXIT_EDIT_MODE':
-      return exitEditMode(state, action);
+      return inFile(exitEditMode);
     case 'UPDATE_HEADER_TITLE':
-      return updateHeaderTitle(state, action);
+      return inFile(updateHeaderTitle);
     case 'UPDATE_HEADER_DESCRIPTION':
-      return updateHeaderDescription(state, action);
+      return inFile(updateHeaderDescription);
     case 'ADD_HEADER':
-      return addHeader(state, action);
+      return inFile(addHeader);
     case 'SELECT_NEXT_SIBLING_HEADER':
-      return selectNextSiblingHeader(state, action);
+      return inFile(selectNextSiblingHeader);
     case 'SELECT_NEXT_VISIBLE_HEADER':
-      return selectNextVisibleHeader(state, action);
+      return inFile(selectNextVisibleHeader);
     case 'SELECT_PREVIOUS_VISIBLE_HEADER':
-      return selectPreviousVisibleHeader(state, action);
+      return inFile(selectPreviousVisibleHeader);
     case 'REMOVE_HEADER':
-      return removeHeader(state, action);
+      return inFile(removeHeader);
     case 'MOVE_HEADER_UP':
-      return moveHeaderUp(state, action);
+      return inFile(moveHeaderUp);
     case 'MOVE_HEADER_DOWN':
-      return moveHeaderDown(state, action);
+      return inFile(moveHeaderDown);
     case 'MOVE_HEADER_LEFT':
-      return moveHeaderLeft(state, action);
+      return inFile(moveHeaderLeft);
     case 'MOVE_HEADER_RIGHT':
-      return moveHeaderRight(state, action);
+      return inFile(moveHeaderRight);
     case 'MOVE_SUBTREE_LEFT':
-      return moveSubtreeLeft(state, action);
+      return inFile(moveSubtreeLeft);
     case 'MOVE_SUBTREE_RIGHT':
-      return moveSubtreeRight(state, action);
+      return inFile(moveSubtreeRight);
     case 'REFILE_SUBTREE':
       return refileSubtree(state, action);
     case 'HEADER_ADD_NOTE':
-      return addNote(state, action);
+      return inFile(addNote);
     case 'APPLY_OPENNESS_STATE':
       return applyOpennessState(state, action);
+    case 'SET_OPENNESS_STATE':
+      return setOpennessState(state, action);
     case 'SET_DIRTY':
-      return setDirty(state, action);
+      return action.path ? reduceInFile(state, action, action.path)(setDirty) : inFile(setDirty);
     case 'NARROW_HEADER':
-      return narrowHeader(state, action);
+      return inFile(narrowHeader);
     case 'WIDEN_HEADER':
-      return widenHeader(state, action);
+      return inFile(widenHeader);
     case 'SET_SELECTED_TABLE_CELL_ID':
-      return setSelectedTableCellId(state, action);
+      return inFile(setSelectedTableCellId);
     case 'ADD_NEW_TABLE_ROW':
-      return addNewTableRow(state, action);
+      return inFile(addNewTableRow);
     case 'REMOVE_TABLE_ROW':
-      return removeTableRow(state, action);
+      return inFile(removeTableRow);
     case 'ADD_NEW_TABLE_COLUMN':
-      return addNewTableColumn(state, action);
+      return inFile(addNewTableColumn);
     case 'REMOVE_TABLE_COLUMN':
-      return removeTableColumn(state, action);
+      return inFile(removeTableColumn);
     case 'MOVE_TABLE_ROW_DOWN':
-      return moveTableRowDown(state, action);
+      return inFile(moveTableRowDown);
     case 'MOVE_TABLE_ROW_UP':
-      return moveTableRowUp(state, action);
+      return inFile(moveTableRowUp);
     case 'MOVE_TABLE_COLUMN_LEFT':
-      return moveTableColumnLeft(state, action);
+      return inFile(moveTableColumnLeft);
     case 'MOVE_TABLE_COLUMN_RIGHT':
-      return moveTableColumnRight(state, action);
+      return inFile(moveTableColumnRight);
     case 'UPDATE_TABLE_CELL_VALUE':
-      return updateTableCellValue(state, action);
+      return inFile(updateTableCellValue);
     case 'INSERT_CAPTURE':
-      return insertCapture(state, action);
+      return action.template.get('file')
+        ? reduceInFile(state, action, action.template.get('file'))(insertCapture)
+        : inFile(insertCapture);
     case 'CLEAR_PENDING_CAPTURE':
       return clearPendingCapture(state, action);
     case 'ADVANCE_CHECKBOX_STATE':
-      return advanceCheckboxState(state, action);
+      return inFile(advanceCheckboxState);
     case 'SET_LAST_SYNC_AT':
-      return setLastSyncAt(state, action);
+      return action.path
+        ? reduceInFile(state, action, action.path)(setLastSyncAt)
+        : inFile(setLastSyncAt);
     case 'SET_HEADER_TAGS':
-      return setHeaderTags(state, action);
+      return inFile(setHeaderTags);
     case 'REORDER_TAGS':
-      return reorderTags(state, action);
+      return inFile(reorderTags);
     case 'REORDER_PROPERTY_LIST':
-      return reorderPropertyList(state, action);
+      return inFile(reorderPropertyList);
     case 'UPDATE_TIMESTAMP_WITH_ID':
-      return updateTimestampWithId(state, action);
+      return inFile(updateTimestampWithId);
     case 'UPDATE_PLANNING_ITEM_TIMESTAMP':
-      return updatePlanningItemTimestamp(state, action);
+      return inFile(updatePlanningItemTimestamp);
     case 'ADD_NEW_PLANNING_ITEM':
-      return addNewPlanningItem(state, action);
+      return inFile(addNewPlanningItem);
     case 'REMOVE_PLANNING_ITEM':
-      return removePlanningItem(state, action);
+      return inFile(removePlanningItem);
     case 'REMOVE_TIMESTAMP':
-      return removeTimestamp(state, action);
+      return inFile(removeTimestamp);
     case 'UPDATE_PROPERTY_LIST_ITEMS':
-      return updatePropertyListItems(state, action);
+      return inFile(updatePropertyListItems);
     case 'SET_ORG_FILE_ERROR_MESSAGE':
       return setOrgFileErrorMessage(state, action);
     case 'SET_LOG_ENTRY_STOP':
-      return setLogEntryStop(state, action);
+      return inFile(setLogEntryStop);
     case 'CREATE_LOG_ENTRY_START':
-      return createLogEntryStart(state, action);
+      return inFile(createLogEntryStart);
     case 'UPDATE_LOG_ENTRY_TIME':
-      return updateLogEntryTime(state, action);
+      return inFile(updateLogEntryTime);
     case 'SET_SEARCH_FILTER_INFORMATION':
       return setSearchFilterInformation(state, action);
+    case 'SET_PATH':
+      return setPath(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
-
+    case 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE':
+      return updateFileSettingFieldPathValue(state, action);
+    case 'REORDER_FILE_SETTING':
+      return reorderFileSetting(state, action);
+    case 'DELETE_FILE_SETTING':
+      return deleteFileSetting(state, action);
+    case 'ADD_NEW_EMPTY_FILE_SETTING':
+      return addNewEmptyFileSetting(state, action);
+    case 'RESTORE_FILE_SETTINGS':
+      return restoreFileSettings(state, action);
     default:
       return state;
   }
 };
 
 export default (state = Map(), action) => {
-  if (action.dirtying) {
-    state = state.set('isDirty', true);
-  }
+  const affectedFiles = determineAffectedFiles(state, action);
+  affectedFiles.forEach((path) => {
+    state = state.setIn(['files', path, 'isDirty'], true);
+  });
 
   state = reducer(state, action);
 
   if (action.dirtying && state.get('showClockDisplay')) {
-    state = state.update('headers', updateHeadersTotalTimeLoggedRecursive);
+    affectedFiles.forEach((path) => {
+      state = state.updateIn(['files', path, 'headers'], updateHeadersTotalTimeLoggedRecursive);
+    });
   }
   return state;
+};
+
+export const determineAffectedFiles = (state, action) => {
+  if (action.dirtying) {
+    if (action.type === 'REFILE_SUBTREE') {
+      return [action.sourcePath, action.targetPath];
+    } else if (action.type === 'INSERT_CAPTURE') {
+      const captureTarget = action.template.get('file');
+      if (captureTarget) {
+        return [captureTarget];
+      } else {
+        return [state.get('path')];
+      }
+    } else {
+      return [state.get('path')];
+    }
+  } else {
+    return [];
+  }
 };
 
 /**
@@ -1521,10 +1708,10 @@ export function noLogRepeatEnabledP({ state, headerIndex }) {
  * Function wrapper around `updateCookiesOfHeaderWithId` and
  * `updateCookiesOfParentOfHeaderWithId`.
  */
-function updateCookies(state, previousParentHeaderId, action) {
-  state = updateCookiesOfHeaderWithId(state, previousParentHeaderId);
-  state = updateCookiesOfParentOfHeaderWithId(state, action.headerId);
-  return state;
+function updateCookies(file, previousParentHeaderId, action) {
+  file = updateCookiesOfHeaderWithId(file, previousParentHeaderId);
+  file = updateCookiesOfParentOfHeaderWithId(file, action.headerId);
+  return file;
 }
 
 /**

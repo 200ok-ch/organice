@@ -51,6 +51,8 @@ const Settings = ({
 
   const handleCaptureTemplatesClick = () => base.pushModalPage('capture_templates_editor');
 
+  const handleFileSettingsClick = () => base.pushModalPage('file_settings_editor');
+
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
 
   const handleColorSchemeClick = (colorScheme) => base.setColorScheme(colorScheme);
@@ -89,7 +91,15 @@ const Settings = ({
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
 
-  const handleChangelogClick = () => base.pushModalPage('changelog');
+  const handleChangelogClick = () => {
+    base.restoreStaticFile('changelog');
+    base.pushModalPage('changelog');
+  };
+
+  const handleHelpClick = () => {
+    base.restoreStaticFile('sample');
+    base.pushModalPage('sample');
+  };
 
   return (
     <div className="settings-container">
@@ -268,6 +278,9 @@ const Settings = ({
         <button className="btn settings-btn" onClick={handleKeyboardShortcutsClick}>
           Keyboard shortcuts
         </button>
+        <button className="btn settings-btn" onClick={handleFileSettingsClick}>
+          File settings
+        </button>
 
         <hr className="settings-button-separator" />
 
@@ -281,7 +294,7 @@ const Settings = ({
           )}
         </button>
 
-        <Link to="/sample" className="btn settings-btn">
+        <Link to="/sample" className="btn settings-btn" onClick={handleHelpClick}>
           Help
         </Link>
 

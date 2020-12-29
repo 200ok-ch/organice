@@ -1,7 +1,30 @@
-import { sync } from '../actions/org';
 import { debounce } from 'lodash';
+import { sync } from '../actions/org';
+import { STATIC_FILE_PREFIX } from '../lib/org_utils';
 
-const dispatchSync = (store) => store.dispatch(sync({ shouldSuppressMessages: true }));
+const dispatchSync = (store) => {
+  if (
+    store.getState().syncBackend.get('client') &&
+    store.getState().base.get('shouldSyncOnBecomingVisibile')
+  ) {
+    const path = store.getState().org.present.get('path');
+    const filesToLoadOnStartup = store
+      .getState()
+      .org.present.get('fileSettings')
+      .filter((setting) => setting.get('loadOnStartup'))
+      .map((setting) => setting.get('path'));
+    if (
+      path &&
+      !path.startsWith(STATIC_FILE_PREFIX) &&
+      !filesToLoadOnStartup.find((filepath) => path === filepath)
+    ) {
+      filesToLoadOnStartup.push(path);
+    }
+    filesToLoadOnStartup.forEach((path) =>
+      sync({ path, shouldSuppressMessages: true })(store.dispatch, store.getState)
+    );
+  }
+};
 
 // The 'visibilitychange' event might get triggered in some browsers many times for one 'real'
 // event of the browser becoming visible to the user. Debouncing through lodash ensures that
@@ -28,14 +51,7 @@ export default (store) => (next) => (action) => {
   let visProp = getHiddenProp();
   if (visProp) {
     const evtname = visProp.replace(/[H|h]idden/, '') + 'visibilitychange';
-    document.addEventListener(evtname, () => {
-      if (
-        store.getState().syncBackend.get('client') &&
-        store.getState().base.get('shouldSyncOnBecomingVisibile')
-      ) {
-        debouncedDispatchSync(store);
-      }
-    });
+    document.addEventListener(evtname, () => debouncedDispatchSync(store));
   }
 
   return next(action);

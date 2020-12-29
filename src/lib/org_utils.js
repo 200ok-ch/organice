@@ -7,6 +7,8 @@ import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
 import substituteTemplateVariables from './capture_template_substitution';
 
+export const STATIC_FILE_PREFIX = 'organice_internal_';
+
 function generateHash(list) {
   return new Promise((resolve, reject) => {
     if (crypto.subtle) {
@@ -88,14 +90,14 @@ export const subheadersOfHeaderWithId = (headers, headerId) => {
 export const numSubheadersOfHeaderWithId = (headers, headerId) =>
   subheadersOfHeaderWithId(headers, headerId).size;
 
-export const directParentIdOfHeaderWithId = (headers, headerId) => {
+export const directParentOfHeaderWithId = (headers, headerId) => {
   const { header, headerIndex } = indexAndHeaderWithId(headers, headerId);
 
   for (let i = headerIndex - 1; i >= 0; --i) {
     const previousHeader = headers.get(i);
 
     if (previousHeader.get('nestingLevel') === header.get('nestingLevel') - 1) {
-      return previousHeader.get('id');
+      return previousHeader;
     }
 
     if (previousHeader.get('nestingLevel') < header.get('nestingLevel')) {
@@ -104,6 +106,15 @@ export const directParentIdOfHeaderWithId = (headers, headerId) => {
   }
 
   return null;
+};
+
+export const directParentIdOfHeaderWithId = (headers, headerId) => {
+  const parent = directParentOfHeaderWithId(headers, headerId);
+  if (!parent) {
+    return null;
+  } else {
+    return parent.get('id');
+  }
 };
 
 export const parentIdOfHeaderWithId = (headers, headerId) => {
@@ -681,3 +692,42 @@ export const getTodoKeywordSetsAsFlattenedArray = (state) => {
 
 /** Regular expression of file extensions to validate a filename. */
 export const orgFileExtensions = /\.org(_archive)?$/;
+
+const addBreadcrumbs = (headers, breadcrumbs, headerId) => {
+  const parent = directParentOfHeaderWithId(headers, headerId);
+  if (!parent) {
+    return breadcrumbs;
+  }
+  breadcrumbs.unshift(parent.get('titleLine').get('rawTitle'));
+  return addBreadcrumbs(headers, breadcrumbs, parent.get('id'));
+};
+
+const getBreadcrumbs = (headers, headerId) => {
+  return addBreadcrumbs(headers, [], headerId);
+};
+
+export const getBreadcrumbsStringFunction = (allHeaders, path) => {
+  const allHeadersOfFile = allHeaders.get(path);
+
+  let filename;
+  if (path.startsWith(STATIC_FILE_PREFIX)) {
+    filename = path.substring(STATIC_FILE_PREFIX.length);
+  } else if (path.endsWith('.org')) {
+    filename = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+  } else {
+    filename = path.substring(path.lastIndexOf('/') + 1);
+  }
+
+  return (header) => {
+    let breadcrumbs = getBreadcrumbs(allHeadersOfFile, header.get('id'));
+    breadcrumbs.unshift(filename);
+    const maxBreadcrumbLength = Math.max(
+      3,
+      Math.floor((80 - 3 * breadcrumbs.length) / breadcrumbs.length)
+    );
+    breadcrumbs = breadcrumbs.map((b) =>
+      b.length > maxBreadcrumbLength ? b.substr(0, maxBreadcrumbLength - 2) + '..' : b
+    );
+    return breadcrumbs.join(' > ');
+  };
+};

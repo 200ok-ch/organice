@@ -6,7 +6,7 @@ import { Motion, spring } from 'react-motion';
 
 import './stylesheet.css';
 
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 
 import * as orgActions from '../../../../actions/org';
 import * as captureActions from '../../../../actions/capture';
@@ -367,7 +367,6 @@ const ActionDrawer = ({
 
           <ActionButton
             iconName="calendar-alt"
-            shouldSpinSubIcon={isLoading}
             isDisabled={false}
             onClick={handleAgendaClick}
             style={{
@@ -390,15 +389,17 @@ const ActionDrawer = ({
 };
 
 const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path], Map());
   return {
-    inEditMode: !!state.org.present.get('editMode'),
-    selectedHeaderId: state.org.present.get('selectedHeaderId'),
-    isDirty: state.org.present.get('isDirty'),
-    isNarrowedHeaderActive: !!state.org.present.get('narrowedHeaderId'),
-    selectedTableCellId: state.org.present.get('selectedTableCellId'),
+    inEditMode: !!file.get('editMode'),
+    selectedHeaderId: file.get('selectedHeaderId'),
+    isDirty: file.get('isDirty'),
+    isNarrowedHeaderActive: !!file.get('narrowedHeaderId'),
+    selectedTableCellId: file.get('selectedTableCellId'),
     captureTemplates: state.capture.get('captureTemplates', List()),
-    path: state.org.present.get('path'),
-    isLoading: state.base.get('isLoading'),
+    path,
+    isLoading: !state.base.get('isLoading').isEmpty(),
   };
 };
 

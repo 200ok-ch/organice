@@ -16,7 +16,17 @@ exports[`Render all views Org Functionality Renders everything starting from an 
   </h2>
   <datalist
     id="task-list__datalist-filter"
-  />
+  >
+    <option
+      value="TODO organice"
+    />
+    <option
+      value="-organice :medium"
+    />
+    <option
+      value="-DONE doc|man :assignee:none"
+    />
+  </datalist>
   <div
     class="task-list__input-container"
   >

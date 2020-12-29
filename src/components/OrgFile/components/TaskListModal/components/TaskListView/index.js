@@ -1,5 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { List, Map } from 'immutable';
+
+import * as orgActions from '../../../../../../actions/org';
 
 import './stylesheet.css';
 
@@ -16,15 +20,25 @@ import { format, isPast } from 'date-fns';
 import classNames from 'classnames';
 
 function TaskListView(props) {
-  function handleHeaderClick(headerId) {
-    return () => props.onHeaderClick(headerId);
+  function handleHeaderClick(path, headerId) {
+    return () => props.onHeaderClick(path, headerId);
   }
 
-  const { dateDisplayType, onToggleDateDisplayType, headers, todoKeywordSets } = props;
+  const {
+    dateDisplayType,
+    onToggleDateDisplayType,
+    headersForFiles,
+    todoKeywordSetsForFiles,
+  } = props;
+
+  // Populate filteredHeaders
+  useEffect(() => {
+    props.org.setSearchFilterInformation('', 0, 'task-list');
+  }, [props.org]);
 
   const planningItemsAndHeaders = getPlanningItemsAndHeaders({
-    headers,
-    todoKeywordSets,
+    headersForFiles,
+    todoKeywordSetsForFiles,
   });
 
   return (
@@ -63,7 +77,6 @@ function TaskListView(props) {
               </div>
             );
           }
-
           return (
             <div key={header.get('id')} className="agenda-day__header-container">
               <div className="agenda-day__header__header-container">
@@ -74,7 +87,7 @@ function TaskListView(props) {
                   isSelected={false}
                   shouldDisableActions
                   shouldDisableExplicitWidth
-                  onClick={handleHeaderClick(header.get('id'))}
+                  onClick={handleHeaderClick(header.get('path'), header.get('id'))}
                 />
                 {planningInformation}
               </div>
@@ -90,8 +103,18 @@ function TaskListView(props) {
   // on every update of the headers state when not even looking at the
   // Agenda is certainly more inefficient. Hence, we're doing it on
   // every render.
-  function getPlanningItemsAndHeaders({ headers, todoKeywordSets }) {
-    const isTodoKeywordInDoneState = createIsTodoKeywordInDoneState(todoKeywordSets);
+  function getPlanningItemsAndHeaders({ headersForFiles, todoKeywordSetsForFiles }) {
+    const headers = List().concat(
+      ...headersForFiles
+        .mapEntries(([path, headersOfFile]) => [
+          path,
+          headersOfFile.map((header) => header.set('path', path)),
+        ])
+        .valueSeq()
+    );
+    const isTodoKeywordInDoneState = todoKeywordSetsForFiles.map((todoKeywordSets) =>
+      createIsTodoKeywordInDoneState(todoKeywordSets)
+    );
 
     return headers
       .filter((header) => header.getIn(['titleLine', 'todoKeyword']))
@@ -103,7 +126,9 @@ function TaskListView(props) {
         return [earliestPlanningItem, header];
       })
       .sortBy(([planningItem, header]) => {
-        const doneState = isTodoKeywordInDoneState(header.getIn(['titleLine', 'todoKeyword']));
+        const doneState = isTodoKeywordInDoneState.get(header.get('path'))(
+          header.getIn(['titleLine', 'todoKeyword'])
+        );
 
         const timeAsSortCriterion = planningItem
           ? getTimeFromPlanningItem(planningItem)
@@ -114,14 +139,20 @@ function TaskListView(props) {
   }
 }
 
-const mapStateToProps = (state) => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  // When no filtering has happened, yet (initial state), use all headers.
-  headers:
-    state.org.present.getIn(['search', 'filteredHeaders']) || state.org.present.get('headers'),
+const mapStateToProps = (state) => {
+  const files = state.org.present.get('files');
+  return {
+    // When no filtering has happened, yet (initial state), use all headers.
+    headersForFiles: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
+    todoKeywordSetsForFiles: files.map((file) => file.get('todoKeywordSets')),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  org: bindActionCreators(orgActions, dispatch),
 });
 
 const getTimeFromPlanningItem = (planningItem) =>
   dateForTimestamp(planningItem.get('timestamp')).getTime();
 
-export default connect(mapStateToProps)(TaskListView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);

@@ -19,6 +19,7 @@ const addNewEmptyCaptureTemplate = (state) => {
         letter: '',
         iconName: '',
         isAvailableInAllOrgFiles: true,
+        file: '',
         orgFilesWhereAvailable: [''],
         headerPaths: [''],
         shouldPrepend: false,

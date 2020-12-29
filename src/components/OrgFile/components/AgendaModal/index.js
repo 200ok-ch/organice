@@ -11,6 +11,7 @@ import TabButtons from '../../../UI/TabButtons';
 import { isMobileBrowser } from '../../../../lib/browser_utils';
 import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
+import { determineIncludedFiles } from '../../../../reducers/org';
 
 import _ from 'lodash';
 import {
@@ -31,8 +32,8 @@ import format from 'date-fns/format';
 // changing all.
 function AgendaModal(props) {
   const {
+    files,
     onClose,
-    headers,
     todoKeywordSets,
     agendaTimeframe,
     agendaDefaultDeadlineDelayValue,
@@ -62,9 +63,9 @@ function AgendaModal(props) {
     }
   }
 
-  function handleHeaderClick(headerId) {
+  function handleHeaderClick(path, headerId) {
     props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.org.selectHeaderAndOpenParents(path, headerId);
   }
 
   function handlePreviousDateClick() {
@@ -150,7 +151,7 @@ function AgendaModal(props) {
           <AgendaDay
             key={format(date, 'yyyy MM dd')}
             date={date}
-            headers={headers}
+            files={files}
             onHeaderClick={handleHeaderClick}
             todoKeywordSets={todoKeywordSets}
             dateDisplayType={dateDisplayType}
@@ -166,12 +167,19 @@ function AgendaModal(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  todoKeywordSets: state.org.present.get('todoKeywordSets'),
-  agendaTimeframe: state.base.get('agendaTimeframe'),
-  agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
-  agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-});
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path]);
+  const allFiles = state.org.present.get('files');
+  const fileSettings = state.org.present.get('fileSettings');
+  return {
+    files: determineIncludedFiles(allFiles, fileSettings, path, 'includeInAgenda', false),
+    todoKeywordSets: file.get('todoKeywordSets'),
+    agendaTimeframe: state.base.get('agendaTimeframe'),
+    agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
+    agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),

@@ -18,9 +18,9 @@ import * as orgActions from '../../../../actions/org';
 function TaskListModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
-  function handleHeaderClick(headerId) {
+  function handleHeaderClick(path, headerId) {
     props.onClose();
-    props.org.selectHeaderAndOpenParents(headerId);
+    props.org.selectHeaderAndOpenParents(path, headerId);
   }
 
   function handleToggleDateDisplayType() {
@@ -28,7 +28,11 @@ function TaskListModal(props) {
   }
 
   function handleFilterChange(event) {
-    props.org.setSearchFilterInformation(event.target.value, event.target.selectionStart);
+    props.org.setSearchFilterInformation(
+      event.target.value,
+      event.target.selectionStart,
+      'task-list'
+    );
   }
 
   const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions } = props;

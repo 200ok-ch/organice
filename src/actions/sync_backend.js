@@ -2,14 +2,8 @@
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
-import {
-  displayFile,
-  applyOpennessState,
-  setDirty,
-  setLastSyncAt,
-  setOrgFileErrorMessage,
-} from './org';
-import { persistField } from '../util/settings_persister';
+import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
+import { localStorageAvailable, persistField } from '../util/settings_persister';
 
 import { addSeconds } from 'date-fns';
 
@@ -34,6 +28,10 @@ export const signOut = () => (dispatch, getState) => {
   dispatch({ type: 'SIGN_OUT' });
   dispatch(clearModalStack());
   dispatch(hideLoadingMessage());
+
+  if (localStorageAvailable) {
+    localStorage.clear();
+  }
 };
 
 export const setCurrentFileBrowserDirectoryListing = (
@@ -106,24 +104,22 @@ export const pushBackup = (pathOrFileId, contents) => {
 
 export const downloadFile = (path) => {
   return (dispatch, getState) => {
-    dispatch(setLoadingMessage('Downloading file...'));
-
+    dispatch(setLoadingMessage(`Downloading file ...`));
     getState()
       .syncBackend.get('client')
       .getFileContents(path)
       .then((fileContents) => {
-        dispatch(setDirty(false));
         dispatch(hideLoadingMessage());
         dispatch(pushBackup(path, fileContents));
-        dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
-        dispatch(displayFile(path, fileContents));
-        dispatch(applyOpennessState());
+        dispatch(parseFile(path, fileContents));
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+        dispatch(setDirty(false, path));
         dispatch(ActionCreators.clearHistory());
       })
       .catch(() => {
         dispatch(hideLoadingMessage());
-        dispatch(setIsLoading(false));
-        dispatch(setOrgFileErrorMessage('File not found'));
+        dispatch(setIsLoading(false, path));
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
       });
   };
 };

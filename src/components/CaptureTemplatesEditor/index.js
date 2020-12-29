@@ -11,8 +11,14 @@ import * as captureActions from '../../actions/capture';
 import CaptureTemplate from './components/CaptureTemplate';
 
 import { List } from 'immutable';
+import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 
-const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) => {
+const CaptureTemplatesEditor = ({
+  captureTemplates,
+  syncBackendType,
+  capture,
+  loadedFilePaths,
+}) => {
   const handleAddNewTemplateClick = () => capture.addNewEmptyCaptureTemplate();
 
   const handleFieldPathUpdate = (templateId, fieldPath, newValue) =>
@@ -61,6 +67,7 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
                     index={index}
                     template={template}
                     syncBackendType={syncBackendType}
+                    loadedFilePaths={loadedFilePaths}
                     onFieldPathUpdate={handleFieldPathUpdate}
                     onAddNewTemplateOrgFileAvailability={handleAddNewTemplateOrgFileAvailability}
                     onRemoveTemplateOrgFileAvailability={handleRemoveTemplateOrgFileAvailability}
@@ -86,9 +93,16 @@ const CaptureTemplatesEditor = ({ captureTemplates, syncBackendType, capture }) 
 };
 
 const mapStateToProps = (state) => {
+  const loadedFilePaths = state.org.present
+    .get('files', List())
+    .keySeq()
+    .toJS()
+    .filter((path) => !path.startsWith(STATIC_FILE_PREFIX));
+  loadedFilePaths.unshift('');
   return {
     captureTemplates: state.capture.get('captureTemplates', List()),
     syncBackendType: state.syncBackend.get('client').type,
+    loadedFilePaths,
   };
 };
 

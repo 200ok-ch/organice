@@ -34,10 +34,11 @@ import {
   extractAllOrgTags,
   extractAllOrgProperties,
   changelogHash,
+  STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
 
 import _ from 'lodash';
-import { fromJS } from 'immutable';
+import { fromJS, List, Map, Set } from 'immutable';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -76,11 +77,10 @@ class OrgFile extends PureComponent {
   }
 
   componentDidMount() {
-    const { staticFile, path, loadedPath } = this.props;
+    const { staticFile, path } = this.props;
 
     if (!!staticFile) {
-      this.props.base.loadStaticFile(staticFile);
-
+      this.props.org.setPath(STATIC_FILE_PREFIX + staticFile);
       if (staticFile === 'changelog') {
         this.props.base.setHasUnseenChangelog(false);
         changelogHash().then((hash) => {
@@ -89,8 +89,13 @@ class OrgFile extends PureComponent {
       }
 
       setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
-    } else if (!_.isEmpty(path) && path !== loadedPath) {
-      this.props.syncBackend.downloadFile(path);
+    } else if (!_.isEmpty(path)) {
+      if (this.props.fileIsLoaded(path)) {
+        this.props.org.sync({ path, shouldSuppressMessages: true });
+      } else {
+        this.props.syncBackend.downloadFile(path);
+      }
+      this.props.org.setPath(path);
     }
 
     this.activatePopup();
@@ -111,7 +116,7 @@ class OrgFile extends PureComponent {
     if (!!staticFile) {
       this.props.base.unloadStaticFile();
     } else {
-      this.props.org.stopDisplayingFile();
+      this.props.org.resetFileDisplay();
     }
   }
 
@@ -124,6 +129,7 @@ class OrgFile extends PureComponent {
     const { path } = this.props;
     if (!_.isEmpty(path) && path !== prevProps.path) {
       this.props.syncBackend.downloadFile(path);
+      this.props.org.setPath(path);
     }
   }
 
@@ -212,28 +218,30 @@ class OrgFile extends PureComponent {
     this.props.base.closePopup();
   }
 
-  handleSearchPopupClose(headerId) {
+  handleSearchPopupClose(path, headerId) {
     this.props.base.closePopup();
-    this.props.org.selectHeaderAndOpenParents(headerId);
+    if (path && headerId) {
+      this.props.org.selectHeaderAndOpenParents(path, headerId);
+    }
   }
 
-  handleRefilePopupClose(targetHeaderId) {
+  handleRefilePopupClose(targetPath, targetHeaderId) {
     this.props.base.closePopup();
     // When the user closes the drawer without selecting a header, do
     // not trigger refiling.
     if (targetHeaderId) {
-      const { selectedHeaderId } = this.props;
-      this.props.org.refileSubtree(selectedHeaderId, targetHeaderId);
+      const { loadedPath, selectedHeaderId } = this.props;
+      this.props.org.refileSubtree(loadedPath, selectedHeaderId, targetPath, targetHeaderId);
     }
   }
 
-  handleSyncConfirmationPull() {
-    this.props.org.sync({ forceAction: 'pull' });
+  handleSyncConfirmationPull(path) {
+    this.props.org.sync({ path, forceAction: 'pull' });
     this.props.base.closePopup();
   }
 
-  handleSyncConfirmationPush() {
-    this.props.org.sync({ forceAction: 'push' });
+  handleSyncConfirmationPush(path) {
+    this.props.org.sync({ path, forceAction: 'push' });
     this.props.base.closePopup();
   }
 
@@ -276,6 +284,7 @@ class OrgFile extends PureComponent {
       activePopupType,
       activePopupData,
       captureTemplates,
+      files,
       headers,
       selectedHeader,
     } = this.props;
@@ -285,18 +294,27 @@ class OrgFile extends PureComponent {
         return (
           <SyncConfirmationModal
             lastServerModifiedAt={activePopupData.get('lastServerModifiedAt')}
-            onPull={this.handleSyncConfirmationPull}
-            onPush={this.handleSyncConfirmationPush}
+            lastSyncAt={activePopupData.get('lastSyncAt')}
+            path={activePopupData.get('path')}
+            onPull={() => this.handleSyncConfirmationPull(activePopupData.get('path'))}
+            onPush={() => this.handleSyncConfirmationPush(activePopupData.get('path'))}
             onCancel={this.handleSyncConfirmationCancel}
           />
         );
       case 'capture':
+        const template = captureTemplates.find(
+          (template) => template.get('id') === activePopupData.get('templateId')
+        );
+        const path = template.get('file');
+        let headersOfCaptureTarget = headers;
+        if (path) {
+          const file = files.get(path);
+          headersOfCaptureTarget = file ? file.get('headers') : List();
+        }
         return (
           <CaptureModal
-            template={captureTemplates.find(
-              (template) => template.get('id') === activePopupData.get('templateId')
-            )}
-            headers={headers}
+            template={template}
+            headers={headersOfCaptureTarget}
             onCapture={this.handleCapture}
             onClose={this.handlePopupClose}
           />
@@ -356,9 +374,9 @@ class OrgFile extends PureComponent {
           />
         ) : null;
       case 'agenda':
-        return <AgendaModal onClose={this.handlePopupClose} headers={headers} />;
+        return <AgendaModal onClose={this.handlePopupClose} />;
       case 'task-list':
-        return <TaskListModal onClose={this.handlePopupClose} headers={headers} />;
+        return <TaskListModal onClose={this.handlePopupClose} />;
       case 'search':
         return <SearchModal onClose={this.handleSearchPopupClose} context="search" />;
       case 'refile':
@@ -494,19 +512,27 @@ class OrgFile extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const headers = state.org.present.get('headers');
-  const selectedHeaderId = state.org.present.get('selectedHeaderId');
-  const activePopup = state.base.get('activePopup');
+  const files = state.org.present.get('files');
+  const path = state.org.present.get('path');
+  const loadedFiles = Set.fromKeys(files);
+  const fileIsLoaded = (path) => loadedFiles.includes(path);
+  const file = state.org.present.getIn(['files', path], Map());
+  const headers = file.get('headers');
+  const selectedHeaderId = file.get('selectedHeaderId', null);
+  const activePopup = state.base.get('activePopup', Map());
 
   return {
+    loadedPath: path,
+    files,
     headers,
     selectedHeaderId,
-    isDirty: state.org.present.get('isDirty'),
-    loadedPath: state.org.present.get('path'),
+    isDirty: file.get('isDirty'),
+    fileIsLoaded,
     selectedHeader: headers && headers.find((header) => header.get('id') === selectedHeaderId),
     customKeybindings: state.base.get('customKeybindings'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
-    inEditMode: !!state.org.present.get('editMode'),
+    shouldLiveSync: state.base.get('shouldLiveSync'),
+    inEditMode: file.get('editMode'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),

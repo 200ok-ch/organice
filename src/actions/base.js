@@ -1,4 +1,5 @@
-import { displayFile, stopDisplayingFile } from './org';
+import { parseFile, resetFileDisplay, setPath } from './org';
+import { STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 import raw from 'raw.macro';
 
@@ -11,9 +12,10 @@ export const hideLoadingMessage = () => ({
   type: 'HIDE_LOADING_MESSAGE',
 });
 
-export const setIsLoading = (isLoading) => ({
+export const setIsLoading = (isLoading, path) => ({
   type: 'SET_IS_LOADING',
   isLoading,
+  path,
 });
 
 export const setDisappearingLoadingMessage = (loadingMessage, delay) => (dispatch) => {
@@ -21,38 +23,31 @@ export const setDisappearingLoadingMessage = (loadingMessage, delay) => (dispatc
   setTimeout(() => dispatch(hideLoadingMessage()), delay);
 };
 
-export const setLastViewedFile = (lastViewedPath, lastViewedContents) => ({
+export const setLastViewedFile = (lastViewedPath) => ({
   type: 'SET_LAST_VIEWED_FILE',
   lastViewedPath,
-  lastViewedContents,
 });
 
-export const loadStaticFile = (staticFile) => {
-  return (dispatch, getState) => {
-    dispatch(
-      setLastViewedFile(getState().org.present.get('path'), getState().org.present.get('contents'))
-    );
+export const restoreStaticFile = (staticFile, lastViewedFilePath) => {
+  return (dispatch) => {
+    dispatch(setLastViewedFile(lastViewedFilePath));
 
     const fileContents = {
       changelog: raw('../../changelog.org'),
       sample: raw('../../sample.org'),
     }[staticFile];
 
-    dispatch(displayFile(null, fileContents));
+    dispatch(parseFile(STATIC_FILE_PREFIX + staticFile, fileContents));
   };
 };
 
 export const unloadStaticFile = () => {
   return (dispatch, getState) => {
-    dispatch(stopDisplayingFile());
+    dispatch(resetFileDisplay());
 
-    if (!!getState().base.get('lastViewedPath')) {
-      dispatch(
-        displayFile(
-          getState().base.get('lastViewedPath'),
-          getState().base.get('lastViewedContents')
-        )
-      );
+    const path = getState().base.get('lastViewedPath');
+    if (!!path) {
+      dispatch(setPath(path));
     }
   };
 };

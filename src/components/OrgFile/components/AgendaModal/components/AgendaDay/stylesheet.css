@@ -36,6 +36,7 @@
 
 .agenda-day__header-container {
   display: flex;
+  flex-direction: column;
 
   font-family: Courier;
 

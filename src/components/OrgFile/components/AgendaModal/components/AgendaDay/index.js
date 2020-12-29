@@ -27,17 +27,17 @@ import {
   isPast,
 } from 'date-fns';
 import classNames from 'classnames';
+import { List } from 'immutable';
 
 export default class AgendaDay extends PureComponent {
-  handleHeaderClick(headerId) {
-    return () => this.props.onHeaderClick(headerId);
+  handleHeaderClick(path, headerId) {
+    return () => this.props.onHeaderClick(path, headerId);
   }
 
   render() {
     const {
       date,
-      headers,
-      todoKeywordSets,
+      files,
       dateDisplayType,
       onToggleDateDisplayType,
       agendaDefaultDeadlineDelayValue,
@@ -48,8 +48,7 @@ export default class AgendaDay extends PureComponent {
     const dateEnd = endOfDay(date);
 
     const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
-      headers,
-      todoKeywordSets,
+      files,
       date,
       agendaDefaultDeadlineDelayValue,
       agendaDefaultDeadlineDelayUnit,
@@ -66,62 +65,73 @@ export default class AgendaDay extends PureComponent {
         </div>
 
         <div className="agenda-day__headers-container">
-          {planningItemsAndHeaders.map(([planningItem, header]) => {
-            const planningItemDate = dateForTimestamp(planningItem.get('timestamp'));
-            const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
+          <div>
+            {planningItemsAndHeaders.map(([planningItem, header]) => {
+              const planningItemDate = dateForTimestamp(planningItem.get('timestamp'));
+              const hasTodoKeyword = !!header.getIn(['titleLine', 'todoKeyword']);
 
-            const dateClassName = classNames('agenda-day__header-planning-date', {
-              'agenda-day__header-planning-date--overdue':
-                hasTodoKeyword && isPast(planningItemDate),
-            });
+              const dateClassName = classNames('agenda-day__header-planning-date', {
+                'agenda-day__header-planning-date--overdue':
+                  hasTodoKeyword && isPast(planningItemDate),
+              });
 
-            return (
-              <div key={planningItem.get('id')} className="agenda-day__header-container">
-                <div className="agenda-day__header__planning-item-container">
-                  <div className="agenda-day__header-planning-type">
-                    {getPlanningItemTypeText(planningItem)}
+              return (
+                <div key={planningItem.get('id')} className="agenda-day__header-container">
+                  <div className="agenda-day__header__planning-item-container">
+                    <div className="agenda-day__header-planning-type">
+                      {getPlanningItemTypeText(planningItem)}
+                    </div>
+                    <div className={dateClassName} onClick={onToggleDateDisplayType}>
+                      {dateDisplayType === 'absolute'
+                        ? format(planningItemDate, 'MM/dd')
+                        : customFormatDistanceToNow(planningItemDate)}
+
+                      {planningItem.getIn(['timestamp', 'startHour']) && (
+                        <Fragment>
+                          <br />
+                          {format(planningItemDate, 'h:mma')}
+                        </Fragment>
+                      )}
+                    </div>
                   </div>
-                  <div className={dateClassName} onClick={onToggleDateDisplayType}>
-                    {dateDisplayType === 'absolute'
-                      ? format(planningItemDate, 'MM/dd')
-                      : customFormatDistanceToNow(planningItemDate)}
-
-                    {planningItem.getIn(['timestamp', 'startHour']) && (
-                      <Fragment>
-                        <br />
-                        {format(planningItemDate, 'h:mma')}
-                      </Fragment>
-                    )}
+                  <div className="agenda-day__header__header-container">
+                    <TitleLine
+                      header={header}
+                      color="var(--base03)"
+                      hasContent={false}
+                      isSelected={false}
+                      shouldDisableActions
+                      shouldDisableExplicitWidth
+                      onClick={this.handleHeaderClick(header.get('path'), header.get('id'))}
+                    />
                   </div>
                 </div>
-                <div className="agenda-day__header__header-container">
-                  <TitleLine
-                    header={header}
-                    color="var(--base03)"
-                    hasContent={false}
-                    isSelected={false}
-                    shouldDisableActions
-                    shouldDisableExplicitWidth
-                    onClick={this.handleHeaderClick(header.get('id'))}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     );
   }
 
   getPlanningItemsAndHeaders({
-    headers,
-    todoKeywordSets,
+    files,
     date,
     agendaDefaultDeadlineDelayValue,
     agendaDefaultDeadlineDelayUnit,
     dateStart,
     dateEnd,
   }) {
+    const headers = List().concat(
+      ...files
+        .mapEntries(([path, file]) => [
+          path,
+          file.get('headers').map((header) => header.set('path', path)),
+        ])
+        .valueSeq()
+    );
+    const todoKeywordSets = files.map((file) => file.get('todoKeywordSets'));
+
     return headers
       .flatMap((header) => {
         const planningItemsforDate = header.get('planningItems').filter((planningItem) => {
@@ -132,7 +142,8 @@ export default class AgendaDay extends PureComponent {
           const planningItemDate = dateForTimestamp(timestamp);
           const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
           const isCompletedTodo =
-            todoKeyword && isTodoKeywordCompleted(todoKeywordSets, todoKeyword);
+            todoKeyword &&
+            isTodoKeywordCompleted(todoKeywordSets.get(header.get('path')), todoKeyword);
           if (isCompletedTodo) {
             return false;
           }

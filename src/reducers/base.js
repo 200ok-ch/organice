@@ -50,10 +50,7 @@ const setHasUnseenChangelog = (state, action) =>
 const setLastSeenChangelogHeader = (state, action) =>
   state.set('lastSeenChangelogHash', action.newLastSeenChangelogHash);
 
-const setLastViewedFile = (state, action) =>
-  state
-    .set('lastViewedPath', action.lastViewedPath)
-    .set('lastViewedContents', action.lastViewedContents);
+const setLastViewedFile = (state, action) => state.set('lastViewedPath', action.lastViewedPath);
 
 const setCustomKeybinding = (state, action) => {
   if (!state.get('customKeybindings')) {
@@ -109,7 +106,13 @@ const closePopup = (state) => {
   return state.set('activePopup', null);
 };
 
-const setIsLoading = (state, action) => state.set('isLoading', action.isLoading);
+const setIsLoading = (state, action) => {
+  if (action.isLoading) {
+    return state.update('isLoading', (isLoading) => isLoading.add(action.path));
+  } else {
+    return state.update('isLoading', (isLoading) => isLoading.delete(action.path));
+  }
+};
 
 const setAgendaTimeframe = (state, action) => state.set('agendaTimeframe', action.agendaTimeframe);
 

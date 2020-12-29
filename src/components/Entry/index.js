@@ -2,16 +2,17 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Route, Switch, Redirect, Prompt, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import './stylesheet.css';
 
-import { List } from 'immutable';
+import { List, Set } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-import { changelogHash } from '../../lib/org_utils';
+import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
 import PrivacyPolicy from '../PrivacyPolicy';
+import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
 import FileBrowser from '../FileBrowser';
 import LoadingIndicator from '../LoadingIndicator';
@@ -19,13 +20,13 @@ import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
+import FileSettingsEditor from '../FileSettingsEditor';
 import SyncServiceSignIn from '../SyncServiceSignIn';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
 import * as baseActions from '../../actions/base';
 import { loadTheme } from '../../lib/color';
-import HeaderBar from '../HeaderBar';
 
 class Entry extends PureComponent {
   constructor(props) {
@@ -42,6 +43,8 @@ class Entry extends PureComponent {
 
   componentDidMount() {
     this.setChangelogUnseenChanges();
+    this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
+    this.props.filesToSync.forEach((path) => this.props.org.sync({ path }));
   }
 
   // TODO: Should this maybe done on init of the application and not in the component?
@@ -115,19 +118,27 @@ class Entry extends PureComponent {
     if (!!path) {
       path = '/' + path;
     }
-
-    return (
-      <OrgFile
-        path={path}
-        shouldDisableDirtyIndicator={false}
-        shouldDisableActionDrawer={false}
-        shouldDisableSyncButtons={false}
-      />
-    );
+    if (
+      this.props.path &&
+      !this.props.path.startsWith(STATIC_FILE_PREFIX) &&
+      this.props.path !== path
+    ) {
+      this.props.org.sync({ path: this.props.path });
+      return <Redirect push to={'/file' + this.props.path} />;
+    } else {
+      return (
+        <OrgFile
+          path={path}
+          shouldDisableDirtyIndicator={false}
+          shouldDisableActionDrawer={false}
+          shouldDisableSyncButtons={false}
+        />
+      );
+    }
   }
 
   shouldPromptWhenLeaving() {
-    return this.props.location.pathname.startsWith('/file/') && this.props.isDirty;
+    return this.props.hasDirtyFiles;
   }
 
   render() {
@@ -157,11 +168,6 @@ class Entry extends PureComponent {
         <div className={className}>
           <LoadingIndicator message={loadingMessage} />
 
-          <Prompt
-            when={this.shouldPromptWhenLeaving()}
-            message={() => 'You have unpushed changes - are you sure you want to leave this page?'}
-          />
-
           {activeModalPage === 'changelog' ? (
             this.renderChangelogFile()
           ) : isAuthenticated ? (
@@ -169,11 +175,13 @@ class Entry extends PureComponent {
               'keyboard_shortcuts_editor',
               'settings',
               'capture_templates_editor',
+              'file_settings_editor',
               'sample',
             ].includes(activeModalPage) ? (
               <Fragment>
                 {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
                 {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+                {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
                 {activeModalPage === 'sample' && this.renderSampleFile()}
               </Fragment>
             ) : (
@@ -205,14 +213,28 @@ class Entry extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+  const files = state.org.present.get('files');
+  const path = state.org.present.get('path');
+  const filesToLoadOnStartup = state.org.present
+    .get('fileSettings')
+    .filter((setting) => setting.get('loadOnStartup'))
+    .map((setting) => setting.get('path'));
+  const loadedFiles = Set.fromKeys(files);
+  const fileIsLoaded = (path) => loadedFiles.includes(path);
+  const filesToLoad = filesToLoadOnStartup.filter((path) => !fileIsLoaded(path));
+  const filesToSync = filesToLoadOnStartup.filter((path) => fileIsLoaded(path));
+  const hasDirtyFiles = !!files.find((file) => file.get('isDirty'));
   return {
+    path,
+    filesToLoad,
+    filesToSync,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
     lastSeenChangelogHash: state.base.get('lastSeenChangelogHash'),
     activeModalPage: state.base.get('modalPageStack', List()).last(),
     pendingCapture: state.org.present.get('pendingCapture'),
-    isDirty: state.org.present.get('isDirty'),
+    hasDirtyFiles,
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
   };

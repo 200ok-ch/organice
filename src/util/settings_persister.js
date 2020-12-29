@@ -1,14 +1,16 @@
-import { Map, List, fromJS } from 'immutable';
+import { Map, List, Set, fromJS } from 'immutable';
 import _ from 'lodash';
 
 import { getOpenHeaderPaths } from '../lib/org_utils';
 
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
+import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
+import { loadFilesFromLocalStorage } from './file_persister';
 
-export const isLocalStorageAvailable = () => {
+export const localStorageAvailable = (() => {
   try {
     localStorage.setItem('test', 'test');
     const localStorageRes = localStorage.getItem('test') === 'test';
@@ -17,7 +19,7 @@ export const isLocalStorageAvailable = () => {
   } catch (e) {
     return false;
   }
-};
+})();
 
 const debouncedPushConfigToSyncBackend = _.debounce(
   (syncBackendClient, contents) => {
@@ -49,33 +51,28 @@ export const persistableFields = [
     category: 'base',
     name: 'fontSize',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'bulletStyle',
     type: 'nullable',
     default: 'Fancy',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldTapTodoToAdvance',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
 
   {
     category: 'base',
     name: 'agendaDefaultDeadlineDelayUnit',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'agendaDefaultDeadlineDelayValue',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
 
   {
@@ -83,83 +80,76 @@ export const persistableFields = [
     name: 'shouldStoreSettingsInSyncBackend',
     type: 'boolean',
     default: true,
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'lastSeenChangelogHash',
     type: 'nullable',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'customKeybindings',
     type: 'json',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldLiveSync',
     type: 'boolean',
     default: true,
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldSyncOnBecomingVisibile',
     type: 'boolean',
     default: true,
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldShowTitleInOrgFile',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldLogIntoDrawer',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'closeSubheadersRecursively',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'shouldNotIndentOnExport',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'org',
     name: 'showClockDisplay',
     type: 'boolean',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'colorScheme',
     type: 'string',
     default: 'Light',
-    shouldStoreInConfig: true,
   },
   {
     category: 'base',
     name: 'theme',
     type: 'string',
     default: 'Solarized',
-    shouldStoreInConfig: true,
   },
   {
     category: 'capture',
     name: 'captureTemplates',
     type: 'json',
-    shouldStoreInConfig: true,
+    default: List(),
+  },
+  {
+    category: 'org',
+    name: 'fileSettings',
+    type: 'json',
     default: List(),
   },
   {
@@ -167,7 +157,6 @@ export const persistableFields = [
     name: 'agendaTimeframe',
     type: 'string',
     default: 'Week',
-    shouldStoreInConfig: false,
   },
 ];
 
@@ -180,8 +169,11 @@ const getFieldsToPersist = (state, fields) => {
   return fields
     .filter((field) => !field.depreacted)
     .filter((field) => field.category === 'org')
-    .map((field) => field.name)
-    .map((field) => [field, state.org.present.get(field)])
+    .map((field) =>
+      field.type === 'json'
+        ? [field.name, JSON.stringify(state.org.present.get(field.name) || field.default || {})]
+        : [field.name, state.org.present.get(field.name)]
+    )
     .concat(
       persistableFields
         .filter((field) => field.category !== 'org')
@@ -197,13 +189,12 @@ const getFieldsToPersist = (state, fields) => {
 };
 
 const getConfigFileContents = (fieldsToPersist) => {
-  return JSON.stringify(_.fromPairs(fieldsToPersist.filter((f) => f.shouldStoreInConfig)), null, 2);
+  return JSON.stringify(_.fromPairs(fieldsToPersist), null, 2);
 };
 
 export const applyCategorySettingsFromConfig = (state, config, category) => {
   persistableFields
     .filter((field) => field.category === category)
-    .filter((field) => field.shouldStoreInConfig)
     .forEach((field) => {
       field.type === 'json'
         ? (state = state.set(field.name, fromJS(JSON.parse(config[field.name]))))
@@ -220,17 +211,23 @@ export const applyCaptureSettingsFromConfig = (state, config) => {
 
   return state.set('captureTemplates', captureTemplates);
 };
+export const applyFileSettingsFromConfig = (state, config) => {
+  const fileSettings = fromJS(JSON.parse(config.fileSettings)).map((setting) =>
+    setting.set('id', generateId())
+  );
 
-export const readInitialState = () => {
-  if (!isLocalStorageAvailable()) {
-    return undefined;
-  }
+  return state.set('fileSettings', fileSettings);
+};
 
+const getInitialStateWithDefaultValues = () => {
   let initialState = {
     syncBackend: Map(),
     org: {
       past: [],
       present: Map({
+        files: Map(),
+        fileSettings: [],
+        opennessState: Map(),
         search: Map({
           searchFilter: '',
           searchFilterExpr: [],
@@ -238,10 +235,27 @@ export const readInitialState = () => {
       }),
       future: [],
     },
-    base: Map(),
+    base: Map({ isLoading: Set() }),
     capture: Map(),
   };
 
+  persistableFields.forEach((field) => {
+    const value = field.default;
+
+    if (field.category === 'org') {
+      initialState[field.category].present = initialState[field.category].present.set(
+        field.name,
+        value
+      );
+    } else {
+      initialState[field.category] = initialState[field.category].set(field.name, value);
+    }
+  });
+
+  return initialState;
+};
+
+const loadContentFromLocalStorage = (initialState) => {
   persistableFields.forEach((field) => {
     let value = localStorage.getItem(field.name);
 
@@ -258,8 +272,7 @@ export const readInitialState = () => {
         value = fromJS(JSON.parse(value));
       }
     }
-
-    // When nothing has been saved to localStorage before, load the default.
+    // When nothing has been saved to localStorage before, keep the default.
     value = value || field.default;
 
     if (field.category === 'org') {
@@ -278,6 +291,12 @@ export const readInitialState = () => {
       templates.map((template) => template.set('id', generateId()))
     );
   }
+  // Assign new ids to the file settings.
+  if (initialState.org.present.get('fileSettings')) {
+    initialState.org.present = initialState.org.present.update('fileSettings', (settings) =>
+      settings.map((setting) => setting.set('id', generateId()))
+    );
+  }
 
   const opennessState = readOpennessState();
   if (!!opennessState) {
@@ -290,7 +309,13 @@ export const readInitialState = () => {
     getFieldsToPersist(initialState, persistableFields)
   );
 
-  return initialState;
+  return loadFilesFromLocalStorage(initialState);
+};
+
+export const readInitialState = () => {
+  let initialState = getInitialStateWithDefaultValues();
+
+  return localStorageAvailable ? loadContentFromLocalStorage(initialState) : initialState;
 };
 
 export const loadSettingsFromConfigFile = (dispatch, getState) => {
@@ -320,6 +345,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
         const config = JSON.parse(configFileContents);
         dispatch(restoreBaseSettings(config));
         dispatch(restoreCaptureSettings(config));
+        dispatch(restoreFileSettings(config));
       } catch (_error) {
         // Something went wrong parsing the config file, but we don't care, we'll just
         // overwrite it with a good local copy.
@@ -329,7 +355,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
 };
 
 export const subscribeToChanges = (store) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return () => {};
   } else {
     return () => {
@@ -352,8 +378,9 @@ export const subscribeToChanges = (store) => {
       }
 
       const currentFilePath = state.org.present.get('path');
-      if (!!currentFilePath && state.org.present.get('headers')) {
-        const openHeaderPaths = getOpenHeaderPaths(state.org.present.get('headers'));
+      const headers = state.org.present.getIn(['files', currentFilePath, 'headers']);
+      if (!!currentFilePath && headers) {
+        const openHeaderPaths = getOpenHeaderPaths(headers);
 
         let opennessState = {};
         const opennessStateJSONString = localStorage.getItem('headerOpenness');
@@ -369,7 +396,7 @@ export const subscribeToChanges = (store) => {
 };
 
 export const persistField = (field, value) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return;
   } else {
     localStorage.setItem(field, value);
@@ -377,7 +404,7 @@ export const persistField = (field, value) => {
 };
 
 export const getPersistedField = (field, nullable = false) => {
-  if (!isLocalStorageAvailable()) {
+  if (!localStorageAvailable) {
     return null;
   } else {
     const value = localStorage.getItem(field);

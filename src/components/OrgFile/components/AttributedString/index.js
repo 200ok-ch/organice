@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { Link, useLocation } from 'react-router-dom';
 
@@ -10,10 +12,11 @@ import TimestampPart from './components/TimestampPart';
 import ExternalLink from '../../../UI/ExternalLink';
 
 import { orgFileExtensions } from '../../../../lib/org_utils';
+import * as orgActions from '../../../../actions/org';
 
 import classNames from 'classnames';
 
-export default ({ parts, subPartDataAndHandlers }) => {
+const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
   let className;
 
   let location = useLocation();
@@ -38,18 +41,25 @@ export default ({ parts, subPartDataAndHandlers }) => {
             // Optimistically assume that the link is pointing to a
             // directory.
             target = target.replace(/^\/file\//, '/files/');
+            return (
+              <Link key={id} to={target}>
+                {title}
+              </Link>
+            );
           }
-          return (
-            <Link key={id} to={target}>
-              {title}
-            </Link>
-          );
         }
       }
-
-      // Best effort in other cases; the file:// href may or may not work,
-      // but either way it should help show the user what's going on.
-      target = 'file://' + target;
+      target = target.replace(/^\/file\//, '/');
+      return (
+        <span
+          key={id}
+          style={{ textDecoration: 'underline' }}
+          data-target={target}
+          onClick={() => org.setPath(target)}
+        >
+          {title}
+        </span>
+      );
     }
 
     return (
@@ -173,3 +183,11 @@ export default ({ parts, subPartDataAndHandlers }) => {
     </span>
   );
 };
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    org: bindActionCreators(orgActions, dispatch),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(AttributedString);

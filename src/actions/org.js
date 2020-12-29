@@ -1,4 +1,4 @@
-import { ActionCreators } from 'redux-undo';
+import { ActionCreators, ActionTypes } from 'redux-undo';
 import { debounce } from 'lodash';
 import {
   setLoadingMessage,
@@ -10,48 +10,85 @@ import {
 } from './base';
 import { exportOrg } from '../lib/export_org';
 import substituteTemplateVariables from '../lib/capture_template_substitution';
-import { headerWithPath } from '../lib/org_utils';
+import { headerWithPath, STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
+import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
+import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
 
-export const displayFile = (path, contents) => ({
-  type: 'DISPLAY_FILE',
-  path,
-  contents,
-});
+export const parseFile = (path, contents) => (dispatch) => {
+  if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
+    saveFileContentsToLocalStorage(path, contents);
+    const opennessState = readOpennessState();
+    if (!!opennessState) {
+      dispatch(setOpennessState(path, opennessState[path]));
+    }
+  }
+  dispatch({
+    type: 'PARSE_FILE',
+    path,
+    contents,
+  });
+  dispatch(applyOpennessState(path));
+};
 
-export const setLastSyncAt = (lastSyncAt) => ({
+export const setLastSyncAt = (lastSyncAt, path) => ({
   type: 'SET_LAST_SYNC_AT',
+  path,
   lastSyncAt,
 });
 
-export const stopDisplayingFile = () => {
+export const resetFileDisplay = () => {
   return (dispatch) => {
-    dispatch({ type: 'STOP_DISPLAYING_FILE' });
-    dispatch(ActionCreators.clearHistory());
     dispatch(widenHeader());
     dispatch(closePopup());
-    dispatch(setLastSyncAt(null));
+    dispatch({ type: 'CLEAR_SEARCH' });
+    dispatch(setPath(null));
+    dispatch(ActionCreators.clearHistory());
   };
 };
 
-const syncDebounced = debounce((dispatch, ...args) => dispatch(doSync(...args)), 3000, {
-  leading: true,
-  trailing: true,
-});
+const getDebouncedSyncFunction = () =>
+  debounce((dispatch, options) => dispatch(doSync(options)), 3000, {
+    leading: true,
+    trailing: true,
+  });
+const debouncedSyncFunctions = {};
+const syncDebounced = (dispatch, getState, options) => {
+  // to make sure no file is skipped when multiple files are dirty
+  // a seperately debounced function is used per file
+  let filesToSync = [];
+  if (options.path) {
+    filesToSync = [options.path];
+  } else {
+    // if no path is passed in, sync all dirty files
+    const files = getState().org.present.get('files');
+    filesToSync = files.keySeq().filter((path) => files.getIn([path, 'isDirty']));
+  }
+  filesToSync.forEach((path) => {
+    let debouncedSyncFunction = debouncedSyncFunctions[path];
+    if (!debouncedSyncFunction) {
+      debouncedSyncFunctions[path] = getDebouncedSyncFunction();
+      debouncedSyncFunction = debouncedSyncFunctions[path];
+    }
+    debouncedSyncFunction(dispatch, options);
+  });
+};
 
-export const sync = (...args) => (dispatch) => {
+export const sync = (options) => (dispatch, getState) => {
   // If the user hits the 'sync' button, no matter if there's a sync
   // in progress or if the sync 'should' be debounced, listen to the
   // user and start a sync.
-  if (args[0].forceAction === 'manual') {
+  if (options.forceAction === 'manual') {
     console.log('forcing sync');
-    dispatch(doSync(...args));
+    const files = getState().org.present.get('files');
+    // sync all files on manual sync
+    files.keySeq().forEach((path) => dispatch(doSync({ ...options, path })));
   } else {
-    syncDebounced(dispatch, ...args);
+    syncDebounced(dispatch, getState, options);
   }
 };
 
@@ -73,10 +110,12 @@ const doSync = ({
   forceAction = null,
   successMessage = 'Changes pushed',
   shouldSuppressMessages = false,
+  path,
 } = {}) => (dispatch, getState) => {
   const client = getState().syncBackend.get('client');
-  const path = getState().org.present.get('path');
-  if (!path) {
+  const currentPath = getState().org.present.get('path');
+  path = path || currentPath;
+  if (!path || path.startsWith(STATIC_FILE_PREFIX)) {
     return;
   }
 
@@ -91,7 +130,7 @@ const doSync = ({
   // That is, unless the user manually hits the 'sync' button
   // (indicated by `forceAction === 'manual'`). Then, do what the user
   // requests.
-  if (getState().base.get('isLoading') && forceAction !== 'manual') {
+  if (getState().base.get('isLoading').includes(path) && forceAction !== 'manual') {
     // Since there is a quick succession of debounced requests to
     // synchronize, the user likely is in a undo/redo workflow with
     // potential new changes to the Org file in between. In such a
@@ -104,73 +143,82 @@ const doSync = ({
   }
 
   if (!shouldSuppressMessages) {
-    dispatch(setLoadingMessage('Syncing...'));
+    dispatch(setLoadingMessage(`Syncing ...`));
   }
-  dispatch(setIsLoading(true));
+  dispatch(setIsLoading(true, path));
   dispatch(setOrgFileErrorMessage(null));
 
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
-      const isDirty = getState().org.present.get('isDirty');
+      const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
       const lastServerModifiedAt = parseISO(lastModifiedAt);
-      const lastSyncAt = getState().org.present.get('lastSyncAt');
+      const lastSyncAt = getState().org.present.getIn(['files', path, 'lastSyncAt']);
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
+          const contents =
+            localStorage.getItem('files__' + path) ||
+            exportOrg({
+              headers: getState().org.present.getIn(['files', path, 'headers']),
+              linesBeforeHeadings: getState().org.present.getIn([
+                'files',
+                path,
+                'linesBeforeHeadings',
+              ]),
+              dontIndent: getState().base.get('shouldNotIndentOnExport'),
+            });
           client
-            .updateFile(
-              path,
-              exportOrg({
-                headers: getState().org.present.get('headers'),
-                linesBeforeHeadings: getState().org.present.get('linesBeforeHeadings'),
-                dontIndent: getState().base.get('shouldNotIndentOnExport'),
-              })
-            )
+            .updateFile(path, contents)
             .then(() => {
               if (!shouldSuppressMessages) {
                 dispatch(setDisappearingLoadingMessage(successMessage, 2000));
+              } else {
+                setTimeout(() => dispatch(hideLoadingMessage()), 2000);
               }
-              dispatch(setIsLoading(false));
-              dispatch(setDirty(false));
-              dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
+              dispatch(setIsLoading(false, path));
+              dispatch(setDirty(false, path));
+              dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
             })
             .catch((error) => {
-              const err = `There was an error pushing the file: ${error.toString()}`;
+              const err = `There was an error pushing the file ${path}: ${error.toString()}`;
               console.error(err);
               dispatch(setDisappearingLoadingMessage(err, 5000));
               dispatch(hideLoadingMessage());
-              dispatch(setIsLoading(false));
+              dispatch(setIsLoading(false, path));
               // Re-enqueue the file to be synchronized again
-              dispatch(sync());
+              dispatch(sync({ path }));
             });
         } else {
           if (!shouldSuppressMessages) {
             dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+          } else {
+            setTimeout(() => dispatch(hideLoadingMessage()), 2000);
           }
-          dispatch(setIsLoading(false));
+          dispatch(setIsLoading(false, path));
         }
       } else {
         if (isDirty && forceAction !== 'pull') {
           dispatch(hideLoadingMessage());
-          dispatch(setIsLoading(false));
-          dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt }));
+          dispatch(setIsLoading(false, path));
+          dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt, lastSyncAt, path }));
         } else {
-          dispatch(displayFile(path, contents));
-          dispatch(applyOpennessState());
-          dispatch(setDirty(false));
-          dispatch(setLastSyncAt(addSeconds(new Date(), 5)));
+          dispatch(parseFile(path, contents));
+          dispatch(setDirty(false, path));
+          dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
           if (!shouldSuppressMessages) {
-            dispatch(setDisappearingLoadingMessage('Latest version pulled', 2000));
+            dispatch(setDisappearingLoadingMessage(`Latest version pulled: ${path}`, 2000));
+          } else {
+            setTimeout(() => dispatch(hideLoadingMessage()), 2000);
           }
-          dispatch(setIsLoading(false));
+          dispatch(setIsLoading(false, path));
         }
       }
     })
     .catch(() => {
       dispatch(hideLoadingMessage());
-      dispatch(setIsLoading(false));
-      dispatch(setOrgFileErrorMessage('File not found'));
+      dispatch(setIsLoading(false, path));
+      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
     });
 };
 
@@ -193,9 +241,19 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
-export const selectHeaderAndOpenParents = (headerId) => (dispatch) => {
-  dispatch(selectHeader(headerId));
+export const setPath = (path) => (dispatch) => {
+  dispatch({
+    type: 'SET_PATH',
+    path,
+  });
+  dispatch({ type: ActionTypes.CLEAR_HISTORY });
+};
+
+export const selectHeaderAndOpenParents = (path, headerId) => (dispatch) => {
+  dispatch(setPath(path));
   dispatch({ type: 'OPEN_PARENTS_OF_HEADER', headerId });
+  // select header after the file is displayed to allow the header to scroll into view
+  setTimeout(() => dispatch(selectHeader(headerId)), 0);
 };
 
 /**
@@ -307,9 +365,11 @@ export const moveSubtreeRight = (headerId) => ({
   dirtying: true,
 });
 
-export const refileSubtree = (sourceHeaderId, targetHeaderId) => ({
+export const refileSubtree = (sourcePath, sourceHeaderId, targetPath, targetHeaderId) => ({
   type: 'REFILE_SUBTREE',
+  sourcePath,
   sourceHeaderId,
+  targetPath,
   targetHeaderId,
   dirtying: true,
 });
@@ -330,14 +390,27 @@ export const widenHeader = () => ({
   type: 'WIDEN_HEADER',
 });
 
-export const applyOpennessState = () => ({
-  type: 'APPLY_OPENNESS_STATE',
+export const setOpennessState = (path, opennessState) => ({
+  type: 'SET_OPENNESS_STATE',
+  path,
+  opennessState,
 });
 
-export const setDirty = (isDirty) => ({
+export const applyOpennessState = (path) => ({
+  type: 'APPLY_OPENNESS_STATE',
+  path,
+});
+
+export const dirtyAction = (isDirty, path) => ({
   type: 'SET_DIRTY',
   isDirty,
+  path,
 });
+
+export const setDirty = (isDirty, path) => (dispatch) => {
+  persistIsDirty(isDirty, path);
+  dispatch(dirtyAction(isDirty, path));
+};
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
@@ -409,6 +482,7 @@ export const clearPendingCapture = () => ({
 });
 
 export const insertPendingCapture = () => (dispatch, getState) => {
+  const path = getState().org.present.get('path');
   const pendingCapture = getState().org.present.get('pendingCapture');
   const templateName = pendingCapture.get('captureTemplateName');
   const captureContent = pendingCapture.get('captureContent');
@@ -436,7 +510,7 @@ export const insertPendingCapture = () => (dispatch, getState) => {
   }
 
   const targetHeader = headerWithPath(
-    getState().org.present.get('headers'),
+    getState().org.present.getIn(['files', path, 'headers']),
     template.get('headerPaths')
   );
   if (!targetHeader) {
@@ -584,4 +658,30 @@ export const setSearchFilterInformation = (searchFilter, cursorPosition, context
 export const setShowClockDisplay = (showClockDisplay) => ({
   type: 'TOGGLE_CLOCK_DISPLAY',
   showClockDisplay,
+});
+
+export const updateFileSettingFieldPathValue = (settingId, fieldPath, newValue) => ({
+  type: 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE',
+  settingId,
+  fieldPath,
+  newValue,
+});
+
+export const reorderFileSetting = (fromIndex, toIndex) => ({
+  type: 'REORDER_FILE_SETTING',
+  fromIndex,
+  toIndex,
+});
+
+export const deleteFileSetting = (settingId) => ({
+  type: 'DELETE_FILE_SETTING',
+  settingId,
+});
+
+export const addNewEmptyFileSetting = () => (dispatch) =>
+  dispatch({ type: 'ADD_NEW_EMPTY_FILE_SETTING' });
+
+export const restoreFileSettings = (newSettings) => ({
+  type: 'RESTORE_FILE_SETTINGS',
+  newSettings,
 });

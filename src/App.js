@@ -15,9 +15,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { reorderCaptureTemplate } from './actions/capture';
-import { reorderTags, reorderPropertyList } from './actions/org';
+import { reorderTags, reorderPropertyList, reorderFileSetting } from './actions/org';
 import { signOut } from './actions/sync_backend';
-import { setDisappearingLoadingMessage } from './actions/base';
+import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base';
 
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
 import createGoogleDriveSyncBackendClient from './sync_backend_clients/google_drive_sync_backend_client';
@@ -137,6 +137,9 @@ export default class App extends PureComponent {
       }
     }
 
+    // Initially load the sample file.
+    this.store.dispatch(restoreStaticFile('sample'));
+
     _.bindAll(this, ['handleDragEnd']);
   }
 
@@ -145,12 +148,14 @@ export default class App extends PureComponent {
       return;
     }
 
-    if (result.type === 'CAPTURE-TEMPLATE') {
-      this.store.dispatch(reorderCaptureTemplate(result.source.index, result.destination.index));
-    } else if (result.type === 'TAG') {
+    if (result.type === 'TAG') {
       this.store.dispatch(reorderTags(result.source.index, result.destination.index));
     } else if (result.type === 'PROPERTY-LIST') {
       this.store.dispatch(reorderPropertyList(result.source.index, result.destination.index));
+    } else if (result.type === 'CAPTURE-TEMPLATE') {
+      this.store.dispatch(reorderCaptureTemplate(result.source.index, result.destination.index));
+    } else if (result.type === 'FILE-SETTING') {
+      this.store.dispatch(reorderFileSetting(result.source.index, result.destination.index));
     }
   }
 
