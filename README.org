@@ -58,9 +58,10 @@ You can watch it on:
   :END:
 
 organice is a web application. You can use it from any browser. On iOS
-and Android, you can install organice to your homescreen. When
-started from there, it will run in full-screen as a Progressive Web
-Application (PWA) which will add some [[#offline_support][offline capabilities]].
+and Android, you can install organice to your homescreen. When started
+from there, it will run in full-screen as a Progressive Web
+Application (PWA) which will add offline capabilities (see chapters
+[[#progressive_web_app][progressive web app]] and [[#offline_support][offline support]]).
 
 First, go to the page that you want to use as your start screen when
 using organice as an app from your homescreen. This could be the
@@ -162,18 +163,18 @@ The strategy we're using with regards to the parser is this:
   between both parsers.
 - When the new one is finished, integrate it into organice.
 
-** Progressive Web App / Offline Support
+** Progressive Web App
    :PROPERTIES:
-   :CUSTOM_ID: offline_support
+   :CUSTOM_ID: progressive_web_app
    :END:
 
-organice can run as a PWA (Progressive Web App) - see the [[#installation][installation
-instructions]] and does have offline support. From your home screen,
-organice will start up in full screen and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]]
-to cache the application. On a desktop browser, the Service Worker
-will be used automatically. This is implemented using the Create React
-App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]] functionality which enables the following
-features:
+organice can run as a PWA (Progressive Web App) - see the
+[[#installation][installation instructions]] and does have offline
+support. From your home screen, organice will start up in full screen
+and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]] to cache the application. On a
+desktop browser, the Service Worker will be used automatically. This
+is implemented using the Create React App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]]
+functionality which enables the following features:
 
 - All static assets are cached so that organice loads fast on
   subsequent visits, regardless of network connectivity.
@@ -194,6 +195,33 @@ at least two machines at the same time without synchronizing them in
 the meantime. For this, we recommend to put your Org file under
 version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
+
+** Offline Support
+   :PROPERTIES:
+   :CUSTOM_ID: offline_support
+   :END:
+
+Additionally to the offline support provided through implementing
+organice as a [[#progressive_web_app][progressive web app]] (see above) organice has the
+following offline capabilities:
+
+- Every file opened in organice will automatically be cached on your
+  device (through =localStorage=).
+- When visiting the file, again, it will immediately be loaded from
+  the local storage and then loaded from the remote back-end.
+- That makes loading and switching between files instant _and_ gives
+  you the ability to work on multiple files when being offline.
+
+** Multi file support
+   :PROPERTIES:
+   :CUSTOM_ID: multi_file_support
+   :END:
+
+Agenda, Search, Task List, Refile and Capture Templates have the
+ability to work on multiple files. You can adjust the behavior for
+these on a file per file basis by creating "file settings" in the
+settings menu. Multi file support works well with the offline
+capabilities documented in [[#progressive_web_app][progressive web app]] and [[#offline_support][offline support]].
 
 * Customization
   :PROPERTIES:
@@ -866,8 +894,6 @@ The important differences to him were:
   Beorg is proprietary
 - organice is web based, so there is no lock-in to a specific device
   or OS
-- Beorg currently has better offline support
-
 
 ** org-web
 
