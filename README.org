@@ -377,9 +377,13 @@ feature that does not need synchronization, you can skip this step.
 
 **** WebDAV
 
-organice has support for WebDAV and ships with a Docker container with
-a WebDAV server based on Apache. You can make use of that and use this
-WebDAV back-end for local development.
+organice has support for WebDAV and you can make use of that for local development.
+We offer instructions for two options for setting up WebDAV servers but you
+may use any other standard solution. 
+
+- Option 1: A Docker Container with Apache
+  organice ships with a Docker container with a WebDAV server based on Apache.
+- Option 2: A WebDAV server in go (Docker image also available)
 
 Having said that, if you're a Dropbox or Google Drive user, then it's
 convenient to have working setups for either of them if you want to
@@ -387,7 +391,8 @@ test on files that are already in those back-ends. But it doesn't have
 to be a barrier, just to get started. And maybe you don't want to host
 your files with either of them anyway and use WebDAV all the way.
 
-In any case, [[#faq_webdav][here's how to get running locally with a WebDAV setup]].
+In any case, see the [[#faq_webdav][FAQ section on WebDAV]]
+for details on how to get running locally with a WebDAV setup.
 
 **** Dropbox or Google Drive
 

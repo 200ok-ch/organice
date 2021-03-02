@@ -56,7 +56,7 @@ to your Dropbox, here are your options:
 
  [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav.gif]]
 
-*** WebDAV test server
+*** WebDAV test server, option 1
     :PROPERTIES:
     :CUSTOM_ID: webdav_faq_test_server
     :END:
@@ -107,6 +107,40 @@ If you have any trouble connecting to WebDAV using organice, it could
 be your setup (please consult [[#webdav_cors][CORS]] and [[#webdav_gotchas][Gotchas with WebDAV]]). In any
 case, if you want to open a bug report, please document your issue by
 referencing how it doesn't work using the official WebDAV test server.
+
+*** WebDAV test server, option 2
+
+An alternative option is downloading either the binary for your platform or 
+a docker image from 
+[[https://github.com/hacdias/webdav/][webdav]] project and creating a configuration file
+following an example displayed in the instructions.
+This is a WebDAV implemented in go and has binaries for many platforms. It can 
+be even run on Android in Termux, so you can have a full offline and mobile solution.
+
+Here is the minimum configuration that will get you going. Note that it does not use
+authentication. If you want a more involved configuration, consult the documentation 
+linked above.
+
+#+BEGIN_SRC yaml
+# Server settings
+port: 8080
+auth: false
+
+# Default user settings (will be merged)
+scope: .
+modify: true
+
+# CORS
+cors:
+  enabled: true
+  credentials: false
+  exposed_headers:
+    - Content-Length
+    - Content-Range
+#+END_SRC
+
+Save this as =config.yaml= and then simply run =webdav= from the same directory.
+Otherwise, you may specify the config file with =-c path-to-config.yaml= parameter.
 
 *** CORS
     :PROPERTIES:
