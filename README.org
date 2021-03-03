@@ -381,11 +381,15 @@ organice has support for WebDAV and you can make use of that for local developme
 We offer instructions for two options for setting up WebDAV servers but you
 may use any other standard solution. 
 
-- Option 1: A Docker Container with Apache
-  organice ships with a Docker container with a WebDAV server based on Apache.
-- Option 2: A WebDAV server in go (Docker image also available)
+1. Docker Container with Apache
 
-Having said that, if you're a Dropbox or Google Drive user, then it's
+  organice ships with a Docker container with a WebDAV server based on Apache.
+
+2. WebDAV server in go 
+
+  A Docker image is also available.
+
+Having said that, if you're a Dropbox +or Google Drive+ user, then it's
 convenient to have working setups for either of them if you want to
 test on files that are already in those back-ends. But it doesn't have
 to be a barrier, just to get started. And maybe you don't want to host
