@@ -48,7 +48,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.6.0",
     "eslint-nibble": "^5.1.0",
-    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-jest": "^24.3.4",
     "eslint-plugin-react": "^7.21.4",
     "eslint-plugin-react-redux": "^3.3.0",
     "prettier-eslint": "^11.0.0",
