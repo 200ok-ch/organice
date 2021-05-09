@@ -21,6 +21,10 @@ describe('Test the parser', () => {
       const result = parseMarkupAndCookies(' *bold*;');
       expectType(result).toEqual(['text', 'inline-markup', 'text']);
     });
+    test('Slashes between words do not imply italic text', () => {
+      const result = parseMarkupAndCookies('Foo/Bar/Baz');
+      expect(result).toEqual([{ contents: 'Foo/Bar/Baz', type: 'text' }]);
+    });
   });
 
   describe('Parse an header with empty description', () => {
