@@ -7,7 +7,7 @@ import _ from 'lodash';
 // TODO: Extract all match groups of `beginningRegexp` (for example
 // like `emailRegexp`), so that they can be documented and are less
 // unwieldly.
-const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))|(([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]](?:--([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]])?)/;
+const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))/;
 
 // Regexp taken from https://stackoverflow.com/a/3809435/999007
 const httpUrlRegexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
@@ -29,9 +29,25 @@ const swissPhoneRegexp2 = /(0[0-9]{9,11})/;
 
 const wwwUrlRegexp = /(www(\.[-_a-zA-Z0-9]+){2,}(\/[-_a-zA-Z0-9]+)*)/;
 
+const timestampOptionalRepeaterOrDelayRegexp = /(?: (\+|\+\+|\.\+|-|--)(\d+)([hdwmy])(?:\/(\d+)([hdwmy]))?)?/;
+const timestampRegex = new RegExp(
+  [
+    /([<[])/,
+    /(\d{4})-(\d{2})-(\d{2})/,
+    /(?: ([^0-9\s]{1,9}))?/,
+    /(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?/,
+    timestampOptionalRepeaterOrDelayRegexp,
+    timestampOptionalRepeaterOrDelayRegexp,
+    /[>\]]/,
+  ]
+    .map((re) => re.source)
+    .join('')
+);
+
 const markupAndCookieRegex = new RegExp(
   [
     beginningRegexp.source,
+    `(${timestampRegex.source}(?:--${timestampRegex.source})?)`,
     httpUrlRegexp.source,
     urlRegexp.source,
     internationalPhoneRegexp.source,
@@ -47,8 +63,6 @@ const markupAndCookieRegex = new RegExp(
 // matches work.
 // console.log(markupAndCookieRegex);
 
-const timestampRegex = /* scroll to the right --->                                                                                                                     */ /([<[])(\d{4})-(\d{2})-(\d{2})(?: ([^0-9\s]{1,9}))?(?: ([012]?\d:[0-5]\d))?(?:-([012]?\d:[0-5]\d))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?(?: ((?:\+)|(?:\+\+)|(?:\.\+)|(?:-)|(?:--))(\d+)([hdwmy]))?[>\]]/;
-
 const timestampFromRegexMatch = (match, partIndices) => {
   const [
     typeBracket,
@@ -61,9 +75,13 @@ const timestampFromRegexMatch = (match, partIndices) => {
     firstDelayRepeatType,
     firstDelayRepeatValue,
     firstDelayRepeatUnit,
+    firstRepeaterDeadlineValue,
+    firstRepeaterDeadlineUnit,
     secondDelayRepeatType,
     secondDelayRepeatValue,
     secondDelayRepeatUnit,
+    secondRepeaterDeadlineValue,
+    secondRepeaterDeadlineUnit,
   ] = partIndices.map((partIndex) => match[partIndex]);
 
   if (!year) {
@@ -73,13 +91,15 @@ const timestampFromRegexMatch = (match, partIndices) => {
   const [startHour, startMinute] = !!timeStart ? timeStart.split(':') : [];
   const [endHour, endMinute] = !!timeEnd ? timeEnd.split(':') : [];
 
-  let repeaterType, repeaterValue, repeaterUnit;
+  let repeaterType, repeaterValue, repeaterUnit, repeaterDeadlineValue, repeaterDeadlineUnit;
   let delayType, delayValue, delayUnit;
 
   if (['+', '++', '.+'].includes(firstDelayRepeatType)) {
     repeaterType = firstDelayRepeatType;
     repeaterValue = firstDelayRepeatValue;
     repeaterUnit = firstDelayRepeatUnit;
+    repeaterDeadlineValue = firstRepeaterDeadlineValue;
+    repeaterDeadlineUnit = firstRepeaterDeadlineUnit;
   } else if (['-', '--'].includes(firstDelayRepeatType)) {
     delayType = firstDelayRepeatType;
     delayValue = firstDelayRepeatValue;
@@ -89,6 +109,8 @@ const timestampFromRegexMatch = (match, partIndices) => {
     repeaterType = secondDelayRepeatType;
     repeaterValue = secondDelayRepeatValue;
     repeaterUnit = secondDelayRepeatUnit;
+    repeaterDeadlineValue = secondRepeaterDeadlineValue;
+    repeaterDeadlineUnit = secondRepeaterDeadlineUnit;
   } else if (['-', '--'].includes(secondDelayRepeatType)) {
     delayType = secondDelayRepeatType;
     delayValue = secondDelayRepeatValue;
@@ -111,6 +133,8 @@ const timestampFromRegexMatch = (match, partIndices) => {
     delayType,
     delayValue,
     delayUnit,
+    repeaterDeadlineValue,
+    repeaterDeadlineUnit,
   };
 };
 
@@ -169,8 +193,8 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false } =
         markupType,
       });
     } else if (!!match[15]) {
-      const firstTimestamp = timestampFromRegexMatch(match, _.range(16, 29));
-      const secondTimestamp = timestampFromRegexMatch(match, _.range(29, 42));
+      const firstTimestamp = timestampFromRegexMatch(match, _.range(16, 33));
+      const secondTimestamp = timestampFromRegexMatch(match, _.range(33, 50));
 
       matches.push({
         type: 'timestamp',
@@ -179,25 +203,25 @@ export const parseMarkupAndCookies = (rawText, { shouldAppendNewline = false } =
         firstTimestamp,
         secondTimestamp,
       });
-    } else if (!!match[42]) {
+    } else if (!!match[50]) {
       matches.push({
         type: 'url',
         rawText: match[0],
         index: match.index,
       });
-    } else if (!!match[45]) {
+    } else if (!!match[53]) {
       matches.push({
         type: 'e-mail',
         rawText: match[0],
         index: match.index,
       });
-    } else if (!!match[46] || !!match[48] || !!match[50] || !!match[51]) {
+    } else if (!!match[54] || !!match[56] || !!match[58] || !!match[59]) {
       matches.push({
         type: 'phone-number',
         rawText: match[0],
         index: match.index,
       });
-    } else if (!!match[52]) {
+    } else if (!!match[60]) {
       matches.push({
         type: 'www-url',
         rawText: match[0],
@@ -505,7 +529,7 @@ export const _parsePlanningItems = (rawText) => {
     optionalSinglePlanningItemRegex,
     /[ \t]*\n?/
   );
-  const planningRegexCaptureGroupsOfType = [2, 17, 32]; // depends on timestampRegex
+  const planningRegexCaptureGroupsOfType = [2, 21, 40]; // depends on timestampRegex
   const planningMatch = rawText.match(planningRegex);
 
   const planningItems = fromJS(
@@ -518,7 +542,7 @@ export const _parsePlanningItems = (rawText) => {
 
         const timestamp = timestampFromRegexMatch(
           planningMatch,
-          _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 13)
+          _.range(planningTypeIndex + 1, planningTypeIndex + 1 + 17)
         );
 
         return createOrUpdateTimestamp({ type, timestamp });
@@ -612,15 +636,15 @@ const parseLogbook = (rawText) => {
       const lineFullMatch = line.trim().match(logBookEntryFullRegex);
       if (lineFullMatch) {
         return {
-          start: timestampFromRegexMatch(lineFullMatch, _.range(1, 14)),
-          end: timestampFromRegexMatch(lineFullMatch, _.range(14, 31)),
+          start: timestampFromRegexMatch(lineFullMatch, _.range(1, 18)),
+          end: timestampFromRegexMatch(lineFullMatch, _.range(18, 39)),
           id: generateId(),
         };
       }
       const lineStartMatch = line.trim().match(logBookEntryStartRegex);
       if (lineStartMatch) {
         return {
-          start: timestampFromRegexMatch(lineStartMatch, _.range(1, 14)),
+          start: timestampFromRegexMatch(lineStartMatch, _.range(1, 18)),
           end: null,
           id: generateId(),
         };
