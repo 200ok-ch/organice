@@ -45,7 +45,7 @@ function AgendaModal(props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dateDisplayType, setDateDisplayType] = useState('absolute');
 
-  const weekStartsOn = agendaStartOnWeekday === null ? getDay(selectedDate) : agendaStartOnWeekday;
+  const weekStartsOn = agendaStartOnWeekday < 0 ? getDay(selectedDate) : agendaStartOnWeekday;
 
   function handleTimeframeTypeChange(agendaTimeframe) {
     props.base.setAgendaTimeframe(agendaTimeframe);
@@ -183,7 +183,7 @@ const mapStateToProps = (state) => {
     agendaTimeframe: state.base.get('agendaTimeframe'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-    agendaStartOnWeekday: agendaStartOnWeekday === undefined ? 1 : +agendaStartOnWeekday,
+    agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
   };
 };
 

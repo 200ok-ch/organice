@@ -274,8 +274,8 @@ const Settings = ({
           </div>
         </div>
         <TabButtons
-          buttons={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Today']}
-          values={[0, 1, 2, 3, 4, 5, 6, null]}
+          buttons={['S', 'M', 'T', 'W', 'T', 'F', 'S', 'Today']}
+          values={[0, 1, 2, 3, 4, 5, 6, -1]}
           selectedButton={agendaStartOnWeekday}
           onSelect={handleAgendaStartOnWeekdayChange}
         />
@@ -354,7 +354,7 @@ const mapStateToProps = (state) => {
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-    agendaStartOnWeekday: agendaStartOnWeekday === undefined ? 1 : +agendaStartOnWeekday,
+    agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
