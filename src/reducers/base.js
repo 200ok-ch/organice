@@ -19,6 +19,9 @@ const setAgendaDefaultDeadlineDelayUnit = (state, action) =>
 const setAgendaDefaultDeadlineDelayValue = (state, action) =>
   state.set('agendaDefaultDeadlineDelayValue', action.newAgendaDefaultDeadlineDelayValue);
 
+const setAgendaStartOnWeekday = (state, action) =>
+  state.set('agendaStartOnWeekday', action.newAgendaStartOnWeekday);
+
 const setShouldStoreSettingsInSyncBackend = (state, action) =>
   state.set('shouldStoreSettingsInSyncBackend', action.newShouldStoreSettingsInSyncBackend);
 
@@ -147,6 +150,8 @@ export default (state = Map(), action) => {
       return setAgendaDefaultDeadlineDelayUnit(state, action);
     case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_VALUE':
       return setAgendaDefaultDeadlineDelayValue(state, action);
+    case 'SET_AGENDA_START_ON_WEEKDAY':
+      return setAgendaStartOnWeekday(state, action);
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
       return setShouldStoreSettingsInSyncBackend(state, action);
     case 'SET_COLOR_SCHEME':

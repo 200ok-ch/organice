@@ -27,6 +27,7 @@ const Settings = ({
   shouldNotIndentOnExport,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
+  agendaStartOnWeekday,
   hasUnseenChangelog,
   syncBackend,
   showClockDisplay,
@@ -69,6 +70,8 @@ const Settings = ({
 
   const handleAgendaDefaultDeadlineDelayUnitChange = (newDelayUnit) =>
     base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
+
+  const handleAgendaStartOnWeekdayChange = (value) => base.setAgendaStartOnWeekday(value);
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
 
@@ -262,6 +265,24 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
+          Start of week for weekly agenda
+          <div className="setting-label__description">
+            Akin to{' '}
+            <ExternalLink href="https://orgmode.org/manual/Weekly_002fdaily-agenda.html">
+              <code>org-agenda-start-on-weekday</code>
+            </ExternalLink>
+          </div>
+        </div>
+        <TabButtons
+          buttons={['S', 'M', 'T', 'W', 'T', 'F', 'S', 'Today']}
+          values={[0, 1, 2, 3, 4, 5, 6, -1]}
+          selectedButton={agendaStartOnWeekday}
+          onSelect={handleAgendaStartOnWeekdayChange}
+        />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
           Display time summaries
           <div className="setting-label__description">
             This puts overlays at the end of each headline, showing the total time recorded under
@@ -326,12 +347,14 @@ const mapStateToProps = (state) => {
   // The default values here only relate to the settings view. To set
   // defaults which get loaded on an initial run of organice, look at
   // `util/settings_persister.js::persistableFields`.
+  const agendaStartOnWeekday = state.base.get('agendaStartOnWeekday');
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
+    agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),

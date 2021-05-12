@@ -82,6 +82,11 @@ export const setAgendaDefaultDeadlineDelayValue = (newAgendaDefaultDeadlineDelay
   newAgendaDefaultDeadlineDelayValue,
 });
 
+export const setAgendaStartOnWeekday = (newAgendaStartOnWeekday) => ({
+  type: 'SET_AGENDA_START_ON_WEEKDAY',
+  newAgendaStartOnWeekday,
+});
+
 export const setShouldLiveSync = (shouldLiveSync) => ({
   type: 'SET_SHOULD_LIVE_SYNC',
   shouldLiveSync,

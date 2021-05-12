@@ -18,6 +18,7 @@ import {
   addDays,
   addWeeks,
   addMonths,
+  getDay,
   subDays,
   subWeeks,
   subMonths,
@@ -38,10 +39,13 @@ function AgendaModal(props) {
     agendaTimeframe,
     agendaDefaultDeadlineDelayValue,
     agendaDefaultDeadlineDelayUnit,
+    agendaStartOnWeekday,
   } = props;
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dateDisplayType, setDateDisplayType] = useState('absolute');
+
+  const weekStartsOn = agendaStartOnWeekday < 0 ? getDay(selectedDate) : agendaStartOnWeekday;
 
   function handleTimeframeTypeChange(agendaTimeframe) {
     props.base.setAgendaTimeframe(agendaTimeframe);
@@ -93,7 +97,7 @@ function AgendaModal(props) {
       case 'Day':
         return format(selectedDate, 'MMMM do');
       case 'Week':
-        const weekStart = startOfWeek(selectedDate);
+        const weekStart = startOfWeek(selectedDate, { weekStartsOn });
         const weekEnd = addWeeks(weekStart, 1);
         return `${format(weekStart, 'MMM do')} - ${format(weekEnd, 'MMM do')} (W${format(
           weekStart,
@@ -112,7 +116,7 @@ function AgendaModal(props) {
       dates = [selectedDate];
       break;
     case 'Week':
-      const weekStart = startOfWeek(selectedDate);
+      const weekStart = startOfWeek(selectedDate, { weekStartsOn });
       dates = _.range(7).map((daysAfter) => addDays(weekStart, daysAfter));
       break;
     case 'Month':
@@ -172,12 +176,14 @@ const mapStateToProps = (state) => {
   const file = state.org.present.getIn(['files', path]);
   const allFiles = state.org.present.get('files');
   const fileSettings = state.org.present.get('fileSettings');
+  const agendaStartOnWeekday = state.base.get('agendaStartOnWeekday');
   return {
     files: determineIncludedFiles(allFiles, fileSettings, path, 'includeInAgenda', false),
     todoKeywordSets: file.get('todoKeywordSets'),
     agendaTimeframe: state.base.get('agendaTimeframe'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
+    agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
   };
 };
 

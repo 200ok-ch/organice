@@ -74,6 +74,11 @@ export const persistableFields = [
     name: 'agendaDefaultDeadlineDelayValue',
     type: 'nullable',
   },
+  {
+    category: 'base',
+    name: 'agendaStartOnWeekday',
+    type: 'nullable',
+  },
 
   {
     category: 'base',
