@@ -18,7 +18,7 @@ export default ({ buttons, titles, values, selectedButton, useEqualWidthTabs, on
   return (
     <div className={containerClassName} style={style}>
       {buttons.map((buttonName, index) => {
-        const value = values ? values[index] : buttonName
+        const value = values ? values[index] : buttonName;
         const className = classNames('tab-buttons__btn', {
           'tab-buttons__btn--selected': value === selectedButton,
         });

@@ -71,8 +71,7 @@ const Settings = ({
   const handleAgendaDefaultDeadlineDelayUnitChange = (newDelayUnit) =>
     base.setAgendaDefaultDeadlineDelayUnit(newDelayUnit);
 
-  const handleAgendaStartOnWeekdayChange = (value) =>
-    base.setAgendaStartOnWeekday(value);
+  const handleAgendaStartOnWeekdayChange = (value) => base.setAgendaStartOnWeekday(value);
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
 
