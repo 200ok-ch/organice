@@ -30,7 +30,7 @@ export default ({ buttons, titles, values, selectedButton, useEqualWidthTabs, on
 
         return (
           <div
-            key={buttonName}
+            key={buttonName + index}
             title={title}
             className={className}
             onClick={handleButtonClick(value)}

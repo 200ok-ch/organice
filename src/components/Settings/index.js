@@ -276,6 +276,7 @@ const Settings = ({
         <TabButtons
           buttons={['S', 'M', 'T', 'W', 'T', 'F', 'S', 'Today']}
           values={[0, 1, 2, 3, 4, 5, 6, -1]}
+          titles={['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']}
           selectedButton={agendaStartOnWeekday}
           onSelect={handleAgendaStartOnWeekdayChange}
         />
@@ -347,14 +348,13 @@ const mapStateToProps = (state) => {
   // The default values here only relate to the settings view. To set
   // defaults which get loaded on an initial run of organice, look at
   // `util/settings_persister.js::persistableFields`.
-  const agendaStartOnWeekday = state.base.get('agendaStartOnWeekday');
   return {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-    agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
+    agendaStartOnWeekday: state.base.get('agendaStartOnWeekday') || 1,
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
