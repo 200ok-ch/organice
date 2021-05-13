@@ -176,13 +176,14 @@ const mapStateToProps = (state) => {
   const file = state.org.present.getIn(['files', path]);
   const allFiles = state.org.present.get('files');
   const fileSettings = state.org.present.get('fileSettings');
+  const agendaStartOnWeekday = state.base.get('agendaStartOnWeekday');
   return {
     files: determineIncludedFiles(allFiles, fileSettings, path, 'includeInAgenda', false),
     todoKeywordSets: file.get('todoKeywordSets'),
     agendaTimeframe: state.base.get('agendaTimeframe'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
-    agendaStartOnWeekday: state.base.get('agendaStartOnWeekday') || 1,
+    agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
   };
 };
 
