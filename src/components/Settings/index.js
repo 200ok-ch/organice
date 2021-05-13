@@ -276,6 +276,7 @@ const Settings = ({
         <TabButtons
           buttons={['S', 'M', 'T', 'W', 'T', 'F', 'S', 'Today']}
           values={[0, 1, 2, 3, 4, 5, 6, -1]}
+          titles={['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']}
           selectedButton={agendaStartOnWeekday}
           onSelect={handleAgendaStartOnWeekdayChange}
         />

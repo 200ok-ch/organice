@@ -448,6 +448,13 @@ describe('Render all views', () => {
           expect(queryAllByText('A todo item with schedule and deadline')).toBeTruthy();
         });
 
+        test('Agenda starts on Monday by default', () => {
+          fireEvent.click(getByTitle('Show agenda'));
+          expect(container.querySelectorAll('.agenda-day__title__day-name')[0]).toHaveTextContent(
+            'Monday'
+          );
+        });
+
         test('Clicking a TODO within the agenda highlights it in the main view', () => {
           expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
           fireEvent.click(getByTitle('Show agenda'));
