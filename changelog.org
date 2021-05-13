@@ -5,6 +5,20 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see
 a 'gift' icon appear on the top right corner.
 
+* [2021-05-13 Thu]
+
+** Changed
+   - Agenda starts on Monday by default (as it does in Emacs Org mode)
+
+** Added
+   - Ability to set the "Start of week for weekly agenda" in the Settings
+     - Akin to the Emacs org mode variable
+       =org-agenda-start-on-weekday=
+   - Relevant PRs:
+     - https://github.com/200ok-ch/organice/pull/676
+       - Thank you [[https://github.com/tomonacci][tomonacci]] for the PR🙏
+     - https://github.com/200ok-ch/organice/pull/677
+
 * [2020-12-29 Tue]
 ** Added
    - *EPIC*: Multiple file support
