@@ -26,7 +26,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
-    "webdav": "^3.3.0"
+    "webdav": "^4.4.0"
   },
   "scripts": {
     "start": "./bin/compile_search_parser.sh && react-scripts start",
