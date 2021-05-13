@@ -10,7 +10,12 @@ if ! which pandoc >/dev/null 2>&1; then
     exit 1
 fi
 
-echo "#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/org/theme-readtheorg.setup" > documentation.org
+# The SETUPFILE is a verbatim copy of:
+# https://raw.githubusercontent.com/fniessen/org-html-themes/master/org/theme-readtheorg.setup
+# It normally wouldn't be necessary to download it into this
+# repository, however, CircleCI at some point refused to download the
+# file for months. Therefore, now it's included in the repository.
+echo "#+SETUPFILE: doc/setupfile" > documentation.org
 cat README.org | \
     grep -v api.codeclimate | \
     grep -v "^Documentation: https://organice.200ok.ch/documentation.html" \
