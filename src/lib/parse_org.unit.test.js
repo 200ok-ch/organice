@@ -83,7 +83,7 @@ describe('Parse raw text', () => {
         );
       }
     }
-    function testTimestampText(text, expectedFirstTimestamp, expectedSecondTimestamp?) {
+    function testTimestampText(text, expectedFirstTimestamp, expectedSecondTimestamp) {
       // eslint-disable-next-line jest/expect-expect
       test(`Parse ${text}`, () => {
         const [{ firstTimestamp, secondTimestamp }] = parseRawText(text).toJS();
