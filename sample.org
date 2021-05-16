@@ -184,6 +184,23 @@ Try tapping on the timestamps below to get a feel for the editor:
 [2018-09-17 Sun 10:00-11:30]
 
 <2018-09-17 Sun>--<2018-09-25 Tue>
+
+** Habit tracking
+
+Org has the ability to track the consistency of a special category of
+TODO, called "habits." From the [[https://orgmode.org/manual/Tracking-your-habits.html][upstream doc]]: A timestamp may have
+minimum and maximum ranges specified by using the syntax =.+2d/3d=,
+which says that you want to do the task at least every three days, but
+at most every two days.
+
+Example timestamp: <2009-10-17 Sat .+2d/4d>
+
+organice supports parsing and preserving the minimum/maximum range
+timestamps. Alas, only the minimum range is handled as a [[https://orgmode.org/manual/Repeated-tasks.html][repeated
+task]]. There's no UI for the maximum range, it can be edited as raw
+text. Also, there is no UI to show how well a habit has been
+exercised.
+
 * Automatic/Implicit links
 
 organice recognizes various types of hyperlinks automatically which Emacs Org mode would not necessarily do. That makes sense, because mobile devices, or browsers, enable a different feature set.

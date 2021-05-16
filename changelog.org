@@ -5,6 +5,17 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see
 a 'gift' icon appear on the top right corner.
 
+* [2021-05-16 Sun]
+** Added
+   - Parse and preserve habit timestamp ranges
+     - A timestamp may have minimum and maximum ranges specified by
+       using the syntax =.+2d/3d=, which says that you want to do the
+       task at least every three days, but at most every two days.
+     - Upstream documentation:
+       https://orgmode.org/manual/Tracking-your-habits.html
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/674
+     - Thank you [[https://github.com/tomonacci][tomonacci]] for the PR🙏
+
 * [2021-05-13 Thu]
 
 ** Changed
