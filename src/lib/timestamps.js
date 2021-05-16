@@ -29,6 +29,8 @@ export const renderAsText = (timestamp) => {
     repeaterType,
     repeaterValue,
     repeaterUnit,
+    repeaterDeadlineValue,
+    repeaterDeadlineUnit,
     delayType,
     delayValue,
     delayUnit,
@@ -41,6 +43,10 @@ export const renderAsText = (timestamp) => {
   timestampText += !!startHour ? ` ${startHour}:${startMinute}` : '';
   timestampText += !!endHour ? `-${endHour}:${endMinute}` : '';
   timestampText += !!repeaterType ? ` ${repeaterType}${repeaterValue}${repeaterUnit}` : '';
+  timestampText +=
+    !!repeaterType && !!repeaterDeadlineValue
+      ? `/${repeaterDeadlineValue}${repeaterDeadlineUnit}`
+      : '';
   timestampText += !!delayType ? ` ${delayType}${delayValue}${delayUnit}` : '';
   timestampText += isActive ? '>' : ']';
 
@@ -64,6 +70,8 @@ export const timestampForDate = (time, { isActive = true, withStartTime = false 
     repeaterType: null,
     repeaterValue: null,
     repeaterUnit: null,
+    repeaterDeadlineValue: null,
+    repeaterDeadlineUnit: null,
     delayType: null,
     delayValue: null,
     delayUnit: null,

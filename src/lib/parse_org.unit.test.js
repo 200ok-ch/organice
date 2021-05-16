@@ -69,6 +69,121 @@ describe('Parse raw text', () => {
   test('Parses simple line', () => {
     expect(parseRawText('test').toJS()).toEqual([{ type: 'text', contents: 'test' }]);
   });
+  describe('Parse various timestamps', () => {
+    function testTimestamp(actual, expected) {
+      if (expected == null) expect(actual).toBeNull();
+      else {
+        // Every key in expected should be present in actual and the values should match
+        Object.keys(expected).forEach((key) => expect(actual[key]).toEqual(expected[key]));
+        // Keys in actual that are not in expected must map to undefined
+        Object.keys(actual).forEach(
+          (key) =>
+            Object.prototype.hasOwnProperty.call(expected, key) ||
+            expect(actual[key]).toBeUndefined()
+        );
+      }
+    }
+    function testTimestampText(text, expectedFirstTimestamp, expectedSecondTimestamp) {
+      // eslint-disable-next-line jest/expect-expect
+      test(`Parse ${text}`, () => {
+        const [{ firstTimestamp, secondTimestamp }] = parseRawText(text).toJS();
+        testTimestamp(firstTimestamp, expectedFirstTimestamp);
+        testTimestamp(secondTimestamp, expectedSecondTimestamp);
+      });
+    }
+    testTimestampText('<2021-05-16>', { isActive: true, year: '2021', month: '05', day: '16' });
+    testTimestampText('[2021-05-16]', { isActive: false, year: '2021', month: '05', day: '16' });
+    testTimestampText('<2021-05-16 Sun>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+    });
+    testTimestampText('<2021-05-16 Sun 12:45>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      startHour: '12',
+      startMinute: '45',
+    });
+    testTimestampText('<2021-05-16 Sun 12:45-13:15>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      startHour: '12',
+      startMinute: '45',
+      endHour: '13',
+      endMinute: '15',
+    });
+    testTimestampText('<2021-05-16 Sun +1w>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      repeaterType: '+',
+      repeaterValue: '1',
+      repeaterUnit: 'w',
+    });
+    testTimestampText('<2021-05-16 Sun .+1w>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      repeaterType: '.+',
+      repeaterValue: '1',
+      repeaterUnit: 'w',
+    });
+    testTimestampText('<2021-05-16 Sun .+2d/4d>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      repeaterType: '.+',
+      repeaterValue: '2',
+      repeaterUnit: 'd',
+      repeaterDeadlineValue: '4',
+      repeaterDeadlineUnit: 'd',
+    });
+    testTimestampText('<2021-05-16 Sun .+1w -2d>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      repeaterType: '.+',
+      repeaterValue: '1',
+      repeaterUnit: 'w',
+      delayType: '-',
+      delayValue: '2',
+      delayUnit: 'd',
+    });
+    testTimestampText('<2021-05-16 Sun -2d .+1w>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      repeaterType: '.+',
+      repeaterValue: '1',
+      repeaterUnit: 'w',
+      delayType: '-',
+      delayValue: '2',
+      delayUnit: 'd',
+    });
+    testTimestampText(
+      '<2021-05-16>--<2021-05-23>',
+      { isActive: true, year: '2021', month: '05', day: '16' },
+      { isActive: true, year: '2021', month: '05', day: '23' }
+    );
+  });
 });
 
 describe('Parse headline with planning items and active timestamps', () => {
