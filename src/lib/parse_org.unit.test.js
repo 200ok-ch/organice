@@ -140,6 +140,18 @@ describe('Parse raw text', () => {
       repeaterValue: '1',
       repeaterUnit: 'w',
     });
+    testTimestampText('<2021-05-16 Sun .+2d/4d>', {
+      isActive: true,
+      year: '2021',
+      month: '05',
+      day: '16',
+      dayName: 'Sun',
+      repeaterType: '.+',
+      repeaterValue: '2',
+      repeaterUnit: 'd',
+      repeaterDeadlineValue: '4',
+      repeaterDeadlineUnit: 'd',
+    });
     testTimestampText('<2021-05-16 Sun .+1w -2d>', {
       isActive: true,
       year: '2021',
