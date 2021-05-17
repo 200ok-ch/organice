@@ -392,6 +392,7 @@ class OrgFile extends PureComponent {
       shouldDisableDirtyIndicator,
       shouldDisableSyncButtons,
       shouldDisableActions,
+      shouldDisableSwipe,
       isDirty,
       parsingErrorMessage,
       path,
@@ -490,7 +491,7 @@ class OrgFile extends PureComponent {
               )}
             </div>
           ) : (
-            <HeaderList shouldDisableActions={shouldDisableActions} />
+            <HeaderList shouldDisableActions={shouldDisableActions} shouldDisableSwipe={shouldDisableSwipe} />
           )}
 
           {isDirty && !shouldDisableDirtyIndicator && (
