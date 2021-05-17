@@ -136,12 +136,10 @@ When a table cell is selected, a table-specific action drawer appears.
 
 The leftmost icon allows you to edit a cell.
 
-On the right side, the top two icons let you add and remove rows. The
-bottom two icons let you add and remove columns.
+On the right side, the top two icons let you add and remove rows. The bottom two icons let you add and remove columns.
 
 ** Moving rows and columns
-When a table cell is selected, the four-way arrow button at the bottom
-of the screen changes to manipulate tables.
+When a table cell is selected, the four-way arrow button at the bottom of the screen changes to manipulate tables.
 
 Press up and down to move rows, and left and right to move columns.
 * Lists and checkboxes
@@ -187,19 +185,11 @@ Try tapping on the timestamps below to get a feel for the editor:
 
 ** Habit tracking
 
-Org has the ability to track the consistency of a special category of
-TODO, called "habits." From the [[https://orgmode.org/manual/Tracking-your-habits.html][upstream doc]]: A timestamp may have
-minimum and maximum ranges specified by using the syntax =.+2d/3d=,
-which says that you want to do the task at least every three days, but
-at most every two days.
+Org has the ability to track the consistency of a special category of TODO, called "habits." From the [[https://orgmode.org/manual/Tracking-your-habits.html][upstream doc]]: A timestamp may have minimum and maximum ranges specified by using the syntax =.+2d/3d=, which says that you want to do the task at least every three days, but at most every two days.
 
 Example timestamp: <2009-10-17 Sat .+2d/4d>
 
-organice supports parsing and preserving the minimum/maximum range
-timestamps. Alas, only the minimum range is handled as a [[https://orgmode.org/manual/Repeated-tasks.html][repeated
-task]]. There's no UI for the maximum range, it can be edited as raw
-text. Also, there is no UI to show how well a habit has been
-exercised.
+organice supports parsing and preserving the minimum/maximum range timestamps. Alas, only the minimum range is handled as a [[https://orgmode.org/manual/Repeated-tasks.html][repeated task]]. There's no UI for the maximum range, it can be edited as raw text. Also, there is no UI to show how well a habit has been exercised.
 
 * Automatic/Implicit links
 
@@ -420,21 +410,12 @@ SCHEDULED: <2018-09-17 Mon>
 ** This entry also only shows on exactly one day
    <2020-02-17 Mon>
 * Syncing
-organice pulls down your org files from Dropbox, Google Drive or
-WebDAV. Click the "Sign in" button in the upper right hand corner to
-sign in with either of them and authenticate organice.
+organice pulls down your org files from Dropbox, Google Drive or WebDAV. Click the "Sign in" button in the upper right hand corner to sign in with either of them and authenticate organice.
 
 ** Backups
-The first time you push changes from organice back up to your chosen
-sync service, organice will make a backup of the original file first.
-It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive
-also both keep a full version history of your files for you, but this
-is an additional precaution in case something goes wrong pushing the
-file back up.
+The first time you push changes from organice back up to your chosen sync service, organice will make a backup of the original file first. It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive also both keep a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up.
 
-Generally, when working with distributed Org files, we're recommending
-to put them under version control and to check for bugs and racing
-conditions between clients.
+Generally, when working with distributed Org files, we're recommending to put them under version control and to check for bugs and racing conditions between clients.
 
 * Multiple files
 organice supports using multiple files.
@@ -447,9 +428,7 @@ Default behaviour:
 You can adjust these defaults on a file per file basis by creating file settings in the [[/settings][settings menu]].
 
 * organice operates completely client side
-You don't log in to organice directly because organice doesn't have a
-back end - it operates completely client side using Dropbox, Google
-Drive or WebDAV as back-ends.
+You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox, Google Drive or WebDAV as back-ends.
 * Capture URL params and Siri support
 organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 
