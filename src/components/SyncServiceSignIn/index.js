@@ -128,8 +128,9 @@ export default class SyncServiceSignIn extends PureComponent {
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    const authURL = dropbox.auth.getAuthenticationUrl(window.location.origin + '/');
-    window.location = authURL;
+    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
+      window.location = authURL;
+    });
   }
 
   handleGoogleDriveClick() {
