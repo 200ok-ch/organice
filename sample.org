@@ -1,3 +1,5 @@
+# organice will not reflow if there's hard-wrapped content
+# -*- eval: (auto-fill-mode 0) -*-
 #+TODO: TODO | DONE
 #+TODO: START INPROGRESS STALLED | FINISHED
 
