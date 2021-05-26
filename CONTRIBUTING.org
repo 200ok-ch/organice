@@ -55,8 +55,8 @@ These are the steps we take to ensure a high quality in the backlog:
 If you just want to start a discussion about a new feature or a
 different kind of change, but do not plan on working on it yourself,
 you are very welcome to join the community chat: #organice on IRC
-[[https://freenode.net/][Freenode]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix. We are looking forward to
-seeing you there!
+[[https://libera.chat/][Libera.Chat]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix on Matrix. We are
+looking forward to seeing you there!
 
 Alternatively, if you really want a change implemented, you can hire
 one of the maintainers to do the work. If you want to hire us to
