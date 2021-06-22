@@ -210,6 +210,17 @@ ${text}`;
       });
     });
 
+    describe('regex collisions of inline-markup and different links', () => {
+      test('Parse /italic/ followed by URL with /', () => {
+        const result = parseMarkupAndCookies('/italic/ word http://example.com/ text');
+        expect(result.length).toEqual(4);
+      });
+      test('Parse =verb= followed by URL with = in query', () => {
+        const result = parseMarkupAndCookies('=URL=: http://example.com/?a=b');
+        expect(result.length).toEqual(3);
+      });
+    });
+
     describe('HTTP URLs', () => {
       test('Parse a line containing an URL but no /italic/ text before the URL', () => {
         const testOrgFile = readFixture('url');
