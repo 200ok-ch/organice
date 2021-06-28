@@ -237,7 +237,7 @@ ${text}`;
 
     describe('File with no headings', () => {
       test('Parses a file with no headings', () => {
-        const testOrgFile = readFixture('no-headings');
+        const testOrgFile = readFixture('no_headings');
         const exportedFile = parseAndExportOrgFile(testOrgFile);
         expect(exportedFile).toEqual(testOrgFile);
       });
