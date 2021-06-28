@@ -879,6 +879,25 @@ export const parseOrg = (fileContents) => {
     }
   });
 
+  // WIP: assuming that we can push an empty header, to allow handling empty files.
+  //
+  // TODO: Note that this will cause organice's parse/export to break
+  // files that *intentionally* contain an empty header ... would a
+  // better design decision be to create a special header token
+  // (e.g. "* SOME_TOKEN_HERE") that is never displayed and never
+  // exported?
+  //
+  // I'm also not sure what is the best way to handle files that
+  // already contain some plain text, as was described initially in
+  // https://github.com/200ok-ch/organice/issues/583 ... if we add a
+  // header, this might cause strange data regroupings.  That scenario
+  // might need its own test fixture.
+  //
+  // end WIP comments.
+  if (headers.size === 0) {
+    headers = headers.push(newHeaderWithTitle('', 1, todoKeywordSets));
+  }
+
   headers = headers.map((header) => {
     // Normally, rawDescription contains the "stripped" raw description text,
     // i.e. no log book, properties, or planning items.
