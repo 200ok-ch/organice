@@ -259,7 +259,19 @@ export const generateTitleLine = (header, includeStars) => {
  */
 export const exportOrg = ({ headers, linesBeforeHeadings, dontIndent }) => {
   let configContent = linesBeforeHeadings.map((x) => x + '\n').join('');
-  const headerContent = headers.map((x) => createRawDescriptionText(x, true, dontIndent)).join('');
+  let headerContent = headers.map((x) => createRawDescriptionText(x, true, dontIndent)).join('');
+
+  // WIP
+  // Don't export the ORGANICE_DUMMY header.
+  if (/DUMMY/.test(headerContent)) {
+    console.log('headercontent = ');
+    console.log(JSON.stringify(headerContent));
+  }
+  if (headerContent === '* ORGANICE_DUMMY\n') {
+    headerContent = '';
+  }
+  // END WIP
+
   return configContent + headerContent;
 };
 

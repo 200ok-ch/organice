@@ -879,13 +879,12 @@ export const parseOrg = (fileContents) => {
     }
   });
 
-  // WIP: assuming that we can push an empty header, to allow handling empty files.
+  // WIP: pushing a dummy header to allow handling empty files.
   //
-  // TODO: Note that this will cause organice's parse/export to break
-  // files that *intentionally* contain an empty header ... would a
-  // better design decision be to create a special header token
-  // (e.g. "* SOME_TOKEN_HERE") that is never displayed and never
-  // exported?
+  // Note that I initially had this add an empty header, but that caused
+  // one of the unit tests to break (there's a test with an empty header,
+  // and if I arbitrarily remove the pre-existing empty header then I'm changing
+  // the org file ...).  So, adding a dummy token here instead, to allow for file handling.
   //
   // I'm also not sure what is the best way to handle files that
   // already contain some plain text, as was described initially in
@@ -895,7 +894,7 @@ export const parseOrg = (fileContents) => {
   //
   // end WIP comments.
   if (headers.size === 0) {
-    headers = headers.push(newHeaderWithTitle('', 1, todoKeywordSets));
+    headers = headers.push(newHeaderWithTitle('ORGANICE_DUMMY', 1, todoKeywordSets));
   }
 
   headers = headers.map((header) => {
