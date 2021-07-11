@@ -62,6 +62,11 @@ export const setFontSize = (newFontSize) => ({
   newFontSize,
 });
 
+export const setShouldUseWideEditor = (shouldUseWideEditor) => ({
+  type: 'SET_SHOULD_USE_WIDE_EDITOR',
+  shouldUseWideEditor,
+});
+
 export const setBulletStyle = (newBulletStyle) => ({
   type: 'SET_BULLET_STYLE',
   newBulletStyle,
