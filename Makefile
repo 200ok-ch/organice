@@ -20,3 +20,7 @@ test:
 .PHONY: docs
 docs:
 	./bin/compile_doc.sh
+
+.PHONY: customer-docs
+deploy-docs: docs
+	./bin/compile_doc_and_upload.sh

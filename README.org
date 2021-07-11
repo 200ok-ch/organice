@@ -282,14 +282,25 @@ organice implements this customization strategy:
 #+END_EXAMPLE
 
 
-** Themes
+** Themes / Color scheme / Dark Mode / Light Mode
    :PROPERTIES:
    :CUSTOM_ID: themes
    :END:
 
-organice implements a strategy pattern, so that adding new themes is
-quite easy. These themes come bundled with organice, each in =light= and
-=dark mode=:
+organice bundles several popular color themes, each in =light mode=
+and =dark mode=.
+
+If you've set up a color scheme preference in your operating system,
+organice will honor this preference. It uses the
+=prefers-color-scheme= media query for this. Here, you can see if your
+browser supports this media query: https://caniuse.com/?search=prefers-color-scheme
+
+If you change your color scheme preference directly within organice,
+this naturally overrides your operating system preference. The color
+schemes in organice are implemented in a strategy pattern, so that
+adding new themes is quite easy.
+
+These themes come bundled with organice:
 
 *** Solarized
 
