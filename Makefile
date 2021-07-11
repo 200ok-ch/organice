@@ -14,7 +14,7 @@ run: setup
 	yarn start
 
 .PHONY: test
-test:
+test: setup
 	yarn test
 
 .PHONY: docs
