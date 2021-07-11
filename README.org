@@ -145,6 +145,9 @@ Please [[https://github.com/200ok-ch/organice/issues/new][file an issue]] if you
 or bugs that you you wouldn’t have expected.
 
 *** Background information
+    :PROPERTIES:
+    :CUSTOM_ID: background-information
+    :END:
 
 organice has [[https://github.com/200ok-ch/organice/blob/master/src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
 has unit tests to prove it. One of the quality goals for the parser is
