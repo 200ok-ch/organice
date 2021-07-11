@@ -542,6 +542,29 @@ automatically deployed to stage.
 
 Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
+** Mockups
+   :PROPERTIES:
+   :CUSTOM_ID: mockups
+   :END:
+
+When discussing new UX, it is often helpful to add a mockup to the
+discussion to ensure that everyone is on the same page. When a new
+contributor suggests a UX change and it's not trivial, we will ask to
+included a mockup to the issue.
+
+Of course, you're completely free to create such a mockup with
+whatever tool you feel comfortable with. A scan of a pen and paper
+will do, using [[https://inkscape.org/][Inkscape]] or Illustrator is nice and so on. If you don't
+have a personal preference, and want to get going quickly, you can use
+the mockup included in this repository. Find the file
+=/doc/mockups/organice-mockup.excalidraw= and upload it to the open
+source sketching tool [[https://excalidraw.com/][excalidraw.com]]. There, make any changes you
+like, and export the result as either .png or .excalidraw and attach
+it to the original issue.
+
+NB: The .excalidraw file can also be opened by any SVG capable tool
+like [[https://inkscape.org/][Inkscape]].
+
 * Deployment
   :PROPERTIES:
   :CUSTOM_ID: deployment
@@ -577,9 +600,9 @@ END_SCRIPT
 exit 0
 #+END_SRC
 
-The reference instance (https://organice.200ok.ch) is actually
+The reference instance (https://organice.200ok.ch), for example, is
 deployed via FTP. The full build script is in
-[[file:bin/compile_and_upload.sh][bin/compile_and_upload.sh]].
+[[https://github.com/200ok-ch/organice/blob/master/bin/compile_and_upload.sh][bin/compile\_and\_upload.sh]].
 
 ** Docker
    :PROPERTIES:
