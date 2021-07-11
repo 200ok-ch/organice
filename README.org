@@ -557,7 +557,7 @@ whatever tool you feel comfortable with. A scan of a pen and paper
 will do, using [[https://inkscape.org/][Inkscape]] or Illustrator is nice and so on. If you don't
 have a personal preference, and want to get going quickly, you can use
 the mockup included in this repository. Find the file
-=/doc/mockups/organice-mockup.excalidraw= and upload it to the open
+/[[https://github.com/200ok-ch/organice/blob/master/doc/mockups/organice-mockup.excalidraw][doc/mockups/organice-mockup.excalidraw]] and upload it to the open
 source sketching tool [[https://excalidraw.com/][excalidraw.com]]. There, make any changes you
 like, and export the result as either .png or .excalidraw and attach
 it to the original issue.
