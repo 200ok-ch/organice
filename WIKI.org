@@ -1,307 +1,325 @@
 # NOTE: This file holds additional documentation which doesn't need to
 # be in the main README which also gets displayed on Github.
 
-* FAQ synchronization back-ends
+* FAQ
+  :PROPERTIES:
+  :CUSTOM_ID: faq
+  :END:
+
+** Synchronization back-ends
   :PROPERTIES:
   :CUSTOM_ID: sync_backends
   :END:
 
-** Dropbox
-   :PROPERTIES:
-   :CUSTOM_ID: faq_dropbox
-   :END:
-*** Permissions ("Full Dropbox" vs. "App folder")
-
-The reference organice host [[https://organice.200ok.ch/]] has the
-permission type "[[https://www.dropbox.com/developers/reference/developer-guide][Full Dropbox]]". This serves many users well -
-especially those who have Org files in various locations that they
-want to access.
-
-If you're a user and have concerns to give an application full access
-to your Dropbox, here are your options:
-
-1. You might not need to change anything after reading this: organice
-   is a front-end application, there is no back-end and no monitoring
-   whatsoever. So, when you login to Dropbox, only your browser will
-   have access to your Dropbox. So, from a security perspective,
-   you're not giving too much access to a server - your data cannot be
-   seen by anyone else but you.
-
-2. organice is a free and open source application. Therefore, you can
-   review the synchronization code anytime. For Dropbox, this is
-   pretty straight forward since the synchronization code is less than
-   200loc.
-
-3. If you still have concerns, you can take full control! Since
-   organice is free and open source, you are free to host it yourself.
-   You can also create your own integration with Dropbox and select
-   the permissions as you wish. Here's [[#deployment][more documentation on deploying
-   organice]].
-
-** WebDAV
-   :PROPERTIES:
-   :CUSTOM_ID: faq_webdav
-   :END:
-
-*** Demo
-
- Here's a demo of how organice works when logging in to a WebDAV
- server.
-
- On the left, you see a branded version of OwnCloud, on the right you
- see organice. After logging in and making a minute change, you can see
- that the =last edited= timestamp in OwnCloud changes. Also, we're
- verifying the change directly in Emacs using Emacs and you can see the
- change has also been synchronized to my local machine.
-
- [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav.gif]]
-
-*** WebDAV test server
+*** Dropbox
     :PROPERTIES:
-    :CUSTOM_ID: webdav_faq_test_server
+    :CUSTOM_ID: faq_dropbox
+    :END:
+**** Permissions ("Full Dropbox" vs. "App folder")
+
+ The reference organice host [[https://organice.200ok.ch/]] has the
+ permission type "[[https://www.dropbox.com/developers/reference/developer-guide][Full Dropbox]]". This serves many users well -
+ especially those who have Org files in various locations that they
+ want to access.
+
+ If you're a user and have concerns to give an application full access
+ to your Dropbox, here are your options:
+
+ 1. You might not need to change anything after reading this: organice
+    is a front-end application, there is no back-end and no monitoring
+    whatsoever. So, when you login to Dropbox, only your browser will
+    have access to your Dropbox. So, from a security perspective,
+    you're not giving too much access to a server - your data cannot be
+    seen by anyone else but you.
+
+ 2. organice is a free and open source application. Therefore, you can
+    review the synchronization code anytime. For Dropbox, this is
+    pretty straight forward since the synchronization code is less than
+    200loc.
+
+ 3. If you still have concerns, you can take full control! Since
+    organice is free and open source, you are free to host it yourself.
+    You can also create your own integration with Dropbox and select
+    the permissions as you wish. Here's [[#deployment][more documentation on deploying
+    organice]].
+
+*** WebDAV
+    :PROPERTIES:
+    :CUSTOM_ID: faq_webdav
     :END:
 
-For testing purposes, we use a Docker image with a proven and well
-documented server: Apache2 running on Debian. You can build the Docker
-image yourself - and customize the Apache configuration to your needs:
+**** Demo
 
-#+BEGIN_SRC shell
-docker build -f doc/webdav/Dockerfile -t apache-webdav .
-#+END_SRC
+  Here's a demo of how organice works when logging in to a WebDAV
+  server.
 
-Then run the Apache2 WebDAV server with:
+  On the left, you see a branded version of OwnCloud, on the right you
+  see organice. After logging in and making a minute change, you can see
+  that the =last edited= timestamp in OwnCloud changes. Also, we're
+  verifying the change directly in Emacs using Emacs and you can see the
+  change has also been synchronized to my local machine.
 
-#+BEGIN_SRC shell
-docker run -dit --name apache-webdav-app -p 8080:80 apache-webdav
-#+END_SRC
+  [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav.gif]]
 
-On your host machine, you can now login with any WebDAV client using
-the URL =http://localhost:8080/webdav=. There is no authentication
-configuration, so any user account works (including omitted user
-accounts). It goes without saying that if you wanted to use this for
-production, please enable authentication. Within the test image,
-you'll find the [[file:sample.org][sample.org]] file, so you can get started developing and
-testing right away.
-
-For testing WebDAV outside of organice, and you're an Emacs user, you
-can open [[/dav:localhost#8080:/webdav/][this]] link (=C-c C-o=). Then, you will get a [[https://www.gnu.org/software/tramp/][TRAMP]] session
-with [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] open and you'll see the sample file. You can interact with
-it like in any other dired buffer. Obviously, this link will not work
-when looking at the documentation in the browser, you'll have to open
-the file [[https://github.com/200ok-ch/organice/blob/master/WIKI.org][WIKI.org]] in Emacs.
-
-If you prefer a command line client, you could use [[https://linux.die.net/man/1/cadaver][cadaver]]. Install and use
-it like this:
-
-#+BEGIN_SRC shell
-sudo apt -y install cadaver
-cadaver http://localhost:8080/webdav/
-#+END_SRC
-
-**** Bug reports
+**** WebDAV test server
      :PROPERTIES:
-     :CUSTOM_ID: webdav_bug_reports
+     :CUSTOM_ID: webdav_faq_test_server
      :END:
 
-If you have any trouble connecting to WebDAV using organice, it could
-be your setup (please consult [[#webdav_cors][CORS]] and [[#webdav_gotchas][Gotchas with WebDAV]]). In any
-case, if you want to open a bug report, please document your issue by
-referencing how it doesn't work using the official WebDAV test server.
+ For testing purposes, we use a Docker image with a proven and well
+ documented server: Apache2 running on Debian. You can build the Docker
+ image yourself - and customize the Apache configuration to your needs:
 
-*** CORS
-    :PROPERTIES:
-    :CUSTOM_ID: webdav_cors
-    :END:
+ #+BEGIN_SRC shell
+ docker build -f doc/webdav/Dockerfile -t apache-webdav .
+ #+END_SRC
 
-Since organice is a front-end application, it will login with
-JavaScript from within the browser - in turn the [[https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS][Cross-Origin Resource
-Sharing (CORS)]] headers must be set appropriately. If they are not set,
-you will not be able to login to your service from a browser.
-Alternatively, if you're using a server like Apache or Nginx, you can
-simply get around CORS by hosting organice on the same domain as your
-service.
+ Then run the Apache2 WebDAV server with:
 
-Please note, that when your back-end does not set the correct CORS
-headers, organice cannot show you a really semantic error message on
-that. The reason is that browsers [[https://www.w3.org/TR/cors/#handling-a-response-to-a-cross-origin-request][hide this information]] from
-JavaScript. You will simply get a network error. However, you can
-easily debug it yourself by looking into the JavaScript console. No
-worries, you don't have to be a (JavaScript) developer to find out
-about that - here's a screencast showing you how to do it:
+ #+BEGIN_SRC shell
+ docker run -dit --name apache-webdav-app -p 8080:80 apache-webdav
+ #+END_SRC
 
-[[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav-failing-cors.gif]]
+ On your host machine, you can now login with any WebDAV client using
+ the URL =http://localhost:8080/webdav=. There is no authentication
+ configuration, so any user account works (including omitted user
+ accounts). It goes without saying that if you wanted to use this for
+ production, please enable authentication. Within the test image,
+ you'll find the [[file:sample.org][sample.org]] file, so you can get started developing and
+ testing right away.
 
-*** Gotchas with WebDAV
-    :PROPERTIES:
-    :CUSTOM_ID: webdav_gotchas
-    :END:
+ For testing WebDAV outside of organice, and you're an Emacs user, you
+ can open [[/dav:localhost#8080:/webdav/][this]] link (=C-c C-o=). Then, you will get a [[https://www.gnu.org/software/tramp/][TRAMP]] session
+ with [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] open and you'll see the sample file. You can interact with
+ it like in any other dired buffer. Obviously, this link will not work
+ when looking at the documentation in the browser, you'll have to open
+ the file [[https://github.com/200ok-ch/organice/blob/master/WIKI.org][WIKI.org]] in Emacs.
 
-**** =preflight request doesn't pass access control check= error
+ If you prefer a command line client, you could use [[https://linux.die.net/man/1/cadaver][cadaver]]. Install and use
+ it like this:
 
- If you are getting an error like
+ #+BEGIN_SRC shell
+ sudo apt -y install cadaver
+ cadaver http://localhost:8080/webdav/
+ #+END_SRC
 
- #+BEGIN_EXAMPLE
- Access to XMLHttpRequest at 'https://my.site/dav/' from origin
- 'https://organice.200ok.ch' has been blocked by CORS policy: Response
- to preflight request doesn't pass access control check: It does not
- have HTTP ok status.
- #+END_EXAMPLE
+***** Bug reports
+      :PROPERTIES:
+      :CUSTOM_ID: webdav_bug_reports
+      :END:
 
- then something is wrong with your webserver config.  You can check
- whether a CORS preflight check is returning the right headers via:
+ If you have any trouble connecting to WebDAV using organice, it could
+ be your setup (please consult [[#webdav_cors][CORS]] and [[#webdav_gotchas][Gotchas with WebDAV]]). In any
+ case, if you want to open a bug report, please document your issue by
+ referencing how it doesn't work using the official WebDAV test server.
 
- #+BEGIN_EXAMPLE
- curl -v -X OPTIONS https://my.server/webdav/
-
- # For the official organice Apache2 WebDAV test server:
- # curl -v -X OPTIONS http://localhost:8080/webdav/
- #+END_EXAMPLE
-
- The output should include lines like this:
-
- #+BEGIN_EXAMPLE
- ...
- < HTTP/1.1 200 OK
- ...
- < Access-Control-Allow-Origin: *
- < Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
- < Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
- < Access-Control-Allow-Credentials: true
- < Allow: OPTIONS,GET,HEAD,POST,DELETE,TRACE,PROPFIND,PROPPATCH,COPY,MOVE,LOCK,UNLOCK
- #+END_EXAMPLE
-
- If your server doesn't give a =200 OK= response, or if the
- =Access-Control-Allow-*= headers are missing, you may find these
- articles helpful:
-
- - https://stackoverflow.com/questions/27703871/return-empty-response-from-apache/
- - https://serverfault.com/questions/231766/returning-200-ok-in-apache-on-http-options-requests/
-
-**** Using Apache =RewriteEngine=
+**** CORS
      :PROPERTIES:
-     :CUSTOM_ID: webdav_apache_rewrite_engine
+     :CUSTOM_ID: webdav_cors
      :END:
 
-If your WebDAV directory happens to be not only on the same webserver,
-but also within a subdirectory of the directory containing a
-=.htaccess= file containing a =RewriteRule= that also applies to the
-WebDAV directory (for example like [[#routing][this]]), then you will need to create
-another =.htaccess= file in the top-level WebDAV directory containing
-this:
+ Since organice is a front-end application, it will login with
+ JavaScript from within the browser - in turn the [[https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS][Cross-Origin Resource
+ Sharing (CORS)]] headers must be set appropriately. If they are not set,
+ you will not be able to login to your service from a browser.
+ Alternatively, if you're using a server like Apache or Nginx, you can
+ simply get around CORS by hosting organice on the same domain as your
+ service.
 
-#+BEGIN_EXAMPLE
-RewriteEngine Off
-#+END_EXAMPLE
+ Please note, that when your back-end does not set the correct CORS
+ headers, organice cannot show you a really semantic error message on
+ that. The reason is that browsers [[https://www.w3.org/TR/cors/#handling-a-response-to-a-cross-origin-request][hide this information]] from
+ JavaScript. You will simply get a network error. However, you can
+ easily debug it yourself by looking into the JavaScript console. No
+ worries, you don't have to be a (JavaScript) developer to find out
+ about that - here's a screencast showing you how to do it:
 
-Otherwise any attempts to use WebDAV to upload new files via =HTTP
-PUT= requests will fall foul of the =/index.html= rewrite rule above,
-resulting in a =403 Forbidden= response.
+ [[https://github.com/200ok-ch/organice/wiki/videos/demo-webdav-failing-cors.gif]]
 
-Another way to avoid this more selectively is to precede that rule
-with:
+**** Gotchas with WebDAV
+     :PROPERTIES:
+     :CUSTOM_ID: webdav_gotchas
+     :END:
 
-#+BEGIN_EXAMPLE
-RewriteCond %{REQUEST_METHOD} !PUT
-#+END_EXAMPLE
+***** =preflight request doesn't pass access control check= error
 
-**** Symlinks don't work
+  If you are getting an error like
 
- Unfortunately, [[https://serverfault.com/questions/453807/best-practice-to-link-with-webdav-as-followsymlinks-doesn-t-allow-to-show-symli][symlink support never made it into Apache's =mod_dav=]].
+  #+BEGIN_EXAMPLE
+  Access to XMLHttpRequest at 'https://my.site/dav/' from origin
+  'https://organice.200ok.ch' has been blocked by CORS policy: Response
+  to preflight request doesn't pass access control check: It does not
+  have HTTP ok status.
+  #+END_EXAMPLE
 
-**** Bind-mounts of individual files don't work
+  then something is wrong with your webserver config.  You can check
+  whether a CORS preflight check is returning the right headers via:
 
- In an Apache =mod_dav= context, unfortunately you can't use [[https://unix.stackexchange.com/questions/198590/what-is-a-bind-mount][bind
- mounts]] of a single file instead of symlinks, because =mod_dav=
- attempts to write any changes to a file atomically, by first writing
- to a temporary file and then [[https://github.com/apache/httpd/blob/c3db73ca8a5aa7b79231a11fe2eb15de3ce943dc/modules/dav/fs/repos.c#L991][atomically renaming it to the target
- file]], and Linux prevents renaming to bind mounts with a =Device or
- resource busy= error.
+  #+BEGIN_EXAMPLE
+  curl -v -X OPTIONS https://my.server/webdav/
 
-**** =HTTP PUT= requests fail with =403 Forbidden=
+  # For the official organice Apache2 WebDAV test server:
+  # curl -v -X OPTIONS http://localhost:8080/webdav/
+  #+END_EXAMPLE
 
- As mentioned in [[#routing][the section routing]], you should avoid having
- =mod_rewrite= rules apply to (=PUT=) requests in the WebDAV
- directories.
+  The output should include lines like this:
 
-*** Configuring Nextcloud behind haproxy to allow WebDAV
- If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
- organice using WebDAV. ...it's just a little bit convoluted.
+  #+BEGIN_EXAMPLE
+  ...
+  < HTTP/1.1 200 OK
+  ...
+  < Access-Control-Allow-Origin: *
+  < Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
+  < Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
+  < Access-Control-Allow-Credentials: true
+  < Allow: OPTIONS,GET,HEAD,POST,DELETE,TRACE,PROPFIND,PROPPATCH,COPY,MOVE,LOCK,UNLOCK
+  #+END_EXAMPLE
 
- The first part is the haproxy config. It should look a little bit like this:
+  If your server doesn't give a =200 OK= response, or if the
+  =Access-Control-Allow-*= headers are missing, you may find these
+  articles helpful:
 
- #+NAME: /etc/haproxy/haproxy.conf
- #+BEGIN_SRC conf
-   frontend www
-     acl host_nextcloud hdr(host) nextcloud.example.org
-     acl path_nextcloud_public_webdav path_beg /public.php/webdav
-     # Because we need to inspect the path in the backend section we set a variable
-     # containing the path.
-     http-request set-var(txn.path) path
-     # Because the OPTIONS requests from organice doesn't include authentication we
-     # need to fake it. We can do that by redirecting all requests that satisfy these conditions:
-     #
-     # + host is Nextcloud
-     # + path is for public webdav
-     # + HTTP method is OPTIONS
-     use_backend always200ok if host_nextcloud path_nextcloud_public_webdav METH_OPTIONS
+  - https://stackoverflow.com/questions/27703871/return-empty-response-from-apache/
+  - https://serverfault.com/questions/231766/returning-200-ok-in-apache-on-http-options-requests/
 
-   # haproxy doesn't really have a way of returning an arbitrary response, unless
-   # you want to drop down to Lua. There's no need for that, though, as this works
-   # perfectly fine. This backend doesn't have any servers attached, so it'll
-   # always result in a 503. We override the 503 by setting a custom errorfile,
-   # which incidentally looks just like an HTTP 200 response and contains all the
-   # headers we need to satisfy a CORS request.
-   backend always200ok
-     mode http
-     errorfile 503 /etc/haproxy/errors/200-ok.http
+***** Using Apache =RewriteEngine=
+      :PROPERTIES:
+      :CUSTOM_ID: webdav_apache_rewrite_engine
+      :END:
 
-   # The Nextcloud server backend is configured here. We inject CORS headers if URL
-   # starts with `/public.php/webdav`.
-   backend nextcloud
-     mode http
-     option httplog
-     acl is_webdav var(txn.path) -m beg /public.php/webdav
-     http-response add-header Access-Control-Allow-Origin "*" if is_webdav
-     http-response add-header Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT,PROPFIND" if is_webdav
-     http-response add-header Access-Control-Allow-Headers "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth" if is_webdav
-     http-response add-header Access-Control-Allow-Credentials "true" if is_webdav
-     server backend01 127.0.0.1:8001
- #+END_SRC
+ If your WebDAV directory happens to be not only on the same webserver,
+ but also within a subdirectory of the directory containing a
+ =.htaccess= file containing a =RewriteRule= that also applies to the
+ WebDAV directory (for example like [[#routing][this]]), then you will need to create
+ another =.htaccess= file in the top-level WebDAV directory containing
+ this:
 
- The ~errorfile~ needs to look something like the below. Note that the text below
- has carriage returns (~13~, ~o15~ or ~0x0d~); these are required as per the HTTP
- RFC!
+ #+BEGIN_EXAMPLE
+ RewriteEngine Off
+ #+END_EXAMPLE
 
- #+NAME: /etc/haproxy/errors/200-ok.http
- #+BEGIN_SRC text
-   HTTP/1.1 200 OK
-   Cache-Control: no-cache
-   Connection: close
-   Content-Type: text/html
-   Access-Control-Allow-Origin: *
-   Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
-   Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
-   Access-Control-Allow-Credentials: true
+ Otherwise any attempts to use WebDAV to upload new files via =HTTP
+ PUT= requests will fall foul of the =/index.html= rewrite rule above,
+ resulting in a =403 Forbidden= response.
 
-   <html><body><h1>200 Stuff is good!</h1>
-   Something something dark side.
-   </body></html>
- #+END_SRC
+ Another way to avoid this more selectively is to precede that rule
+ with:
 
-*** Nextcloud sharing
- In order to share a document using WebDAV you might be inclined to try to follow
- the [[https://docs.nextcloud.com/server/16/user_manual/files/access_webdav.html#accessing-public-shares-over-webdav][official documentation]], but it can be a tad confusing. Here's the executive
- summary for how to share things from Nextcloud using WebDAV:
+ #+BEGIN_EXAMPLE
+ RewriteCond %{REQUEST_METHOD} !PUT
+ #+END_EXAMPLE
 
- + share a link to a folder/file
- + remove everything but the token from the link; the token matches
-   ~/[a-zA-Z0-9]+$/~ (hit the button right of "Share link" if using the web
-   interface)
- + use these details when logging in:
-   + URL :: https://nextcloud.example.org/public.php/webdav
-   + Username :: the token, e.g. ~ed65Fxw9Bz3MTn3~
-   + Password :: if you've set a password for the shared folder, here's where you
-                 input it
+***** Symlinks don't work
+
+  Unfortunately, [[https://serverfault.com/questions/453807/best-practice-to-link-with-webdav-as-followsymlinks-doesn-t-allow-to-show-symli][symlink support never made it into Apache's =mod_dav=]].
+
+***** Bind-mounts of individual files don't work
+
+  In an Apache =mod_dav= context, unfortunately you can't use [[https://unix.stackexchange.com/questions/198590/what-is-a-bind-mount][bind
+  mounts]] of a single file instead of symlinks, because =mod_dav=
+  attempts to write any changes to a file atomically, by first writing
+  to a temporary file and then [[https://github.com/apache/httpd/blob/c3db73ca8a5aa7b79231a11fe2eb15de3ce943dc/modules/dav/fs/repos.c#L991][atomically renaming it to the target
+  file]], and Linux prevents renaming to bind mounts with a =Device or
+  resource busy= error.
+
+***** =HTTP PUT= requests fail with =403 Forbidden=
+
+  As mentioned in [[#routing][the section routing]], you should avoid having
+  =mod_rewrite= rules apply to (=PUT=) requests in the WebDAV
+  directories.
+
+**** Configuring Nextcloud behind haproxy to allow WebDAV
+  If you're running Nextcloud behind [[https://www.haproxy.com/][haproxy]] it's entirely possible to use it with
+  organice using WebDAV. ...it's just a little bit convoluted.
+
+  The first part is the haproxy config. It should look a little bit like this:
+
+  #+NAME: /etc/haproxy/haproxy.conf
+  #+BEGIN_SRC conf
+    frontend www
+      acl host_nextcloud hdr(host) nextcloud.example.org
+      acl path_nextcloud_public_webdav path_beg /public.php/webdav
+      # Because we need to inspect the path in the backend section we set a variable
+      # containing the path.
+      http-request set-var(txn.path) path
+      # Because the OPTIONS requests from organice doesn't include authentication we
+      # need to fake it. We can do that by redirecting all requests that satisfy these conditions:
+      #
+      # + host is Nextcloud
+      # + path is for public webdav
+      # + HTTP method is OPTIONS
+      use_backend always200ok if host_nextcloud path_nextcloud_public_webdav METH_OPTIONS
+
+    # haproxy doesn't really have a way of returning an arbitrary response, unless
+    # you want to drop down to Lua. There's no need for that, though, as this works
+    # perfectly fine. This backend doesn't have any servers attached, so it'll
+    # always result in a 503. We override the 503 by setting a custom errorfile,
+    # which incidentally looks just like an HTTP 200 response and contains all the
+    # headers we need to satisfy a CORS request.
+    backend always200ok
+      mode http
+      errorfile 503 /etc/haproxy/errors/200-ok.http
+
+    # The Nextcloud server backend is configured here. We inject CORS headers if URL
+    # starts with `/public.php/webdav`.
+    backend nextcloud
+      mode http
+      option httplog
+      acl is_webdav var(txn.path) -m beg /public.php/webdav
+      http-response add-header Access-Control-Allow-Origin "*" if is_webdav
+      http-response add-header Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT,PROPFIND" if is_webdav
+      http-response add-header Access-Control-Allow-Headers "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth" if is_webdav
+      http-response add-header Access-Control-Allow-Credentials "true" if is_webdav
+      server backend01 127.0.0.1:8001
+  #+END_SRC
+
+  The ~errorfile~ needs to look something like the below. Note that the text below
+  has carriage returns (~13~, ~o15~ or ~0x0d~); these are required as per the HTTP
+  RFC!
+
+  #+NAME: /etc/haproxy/errors/200-ok.http
+  #+BEGIN_SRC text
+    HTTP/1.1 200 OK
+    Cache-Control: no-cache
+    Connection: close
+    Content-Type: text/html
+    Access-Control-Allow-Origin: *
+    Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT,PROPFIND
+    Access-Control-Allow-Headers: Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,X-CSRF-Token,Depth
+    Access-Control-Allow-Credentials: true
+
+    <html><body><h1>200 Stuff is good!</h1>
+    Something something dark side.
+    </body></html>
+  #+END_SRC
+
+**** Nextcloud sharing
+  In order to share a document using WebDAV you might be inclined to try to follow
+  the [[https://docs.nextcloud.com/server/16/user_manual/files/access_webdav.html#accessing-public-shares-over-webdav][official documentation]], but it can be a tad confusing. Here's the executive
+  summary for how to share things from Nextcloud using WebDAV:
+
+  + share a link to a folder/file
+  + remove everything but the token from the link; the token matches
+    ~/[a-zA-Z0-9]+$/~ (hit the button right of "Share link" if using the web
+    interface)
+  + use these details when logging in:
+    + URL :: https://nextcloud.example.org/public.php/webdav
+    + Username :: the token, e.g. ~ed65Fxw9Bz3MTn3~
+    + Password :: if you've set a password for the shared folder, here's where you
+                  input it
+
+** Can we add feature X from plugin Y?
+   :PROPERTIES:
+   :CUSTOM_ID: can-we-add-feature-x-from-plugin-y
+   :END:
+
+   organice is an implementation of [[http://orgmode.org/][Org mode]] (see [[#what-does-this-project-do][What does this
+   project do?]]). Therefore, it is important that the changes in the
+   markup made by organice are 100% compatible with Org mode itself.
+
+   Hence, if feature X from plugin Y can be implemented in a
+   compatible way, and the feature follows the [[#contributing][contribution guideline]],
+   then: Yes, the feature can be added to organice.
 
 * Building this documentation
   :PROPERTIES:
@@ -312,5 +330,9 @@ This comprehensive documentation is an aggregation of multiple files
 which all reside in the [[https://github.com/200ok-ch/organice][organice code repository]] (=README.org=,
 =WIKI.org=, =CONTRIBUTING.org=, and =CODE_OF_CONDUCT.md=).
 
-Building this documentation is part of the [[https://github.com/200ok-ch/organice/blob/master/.circleci/config.yml][CI/CD workflow]]. The actual
-compilation happens [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc.sh][here]] and the result gets uploaded [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc_and_upload.sh][here]].
+To build the documentation locally, run =make docs=.
+
+Building the documentation and uploading it to
+https://organice.200ok.ch/documentation.html is part of the [[https://github.com/200ok-ch/organice/blob/master/.circleci/config.yml][CI/CD
+workflow]]. The actual compilation happens [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc.sh][here]] and the result gets
+uploaded [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc_and_upload.sh][here]].

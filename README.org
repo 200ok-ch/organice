@@ -20,6 +20,9 @@ Documentation: https://organice.200ok.ch/documentation.html
 Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix
 
 ** What does this project do?
+   :PROPERTIES:
+   :CUSTOM_ID: what-does-this-project-do
+   :END:
 
 organice is an implementation of [[http://orgmode.org/][Org mode]] without the dependency of
 [[https://www.gnu.org/software/emacs/][Emacs]]. It is built for mobile and desktop browsers and syncs with
@@ -730,6 +733,9 @@ upload new files! [[#webdav_apache_rewrite_engine][Here's documentation]] on how
 features together correctly.
 
 * Contrib
+  :PROPERTIES:
+  :CUSTOM_ID: contrib
+  :END:
 
 organice aims to follow the 'batteries included' philosophy. For
 example, the documentation is rather extensive and includes wider
