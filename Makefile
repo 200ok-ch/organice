@@ -21,6 +21,6 @@ test: setup
 docs:
 	./bin/compile_doc.sh
 
-.PHONY: customer-docs
+.PHONY: deploy-docs
 deploy-docs: docs
 	./bin/compile_doc_and_upload.sh
