@@ -1,0 +1,25 @@
+* Allow organice as an origin for Nextcloud running behind nginx-proxy
+
+The following assumes that the Nextcloud server is at =webdav.my.domain= and is running behind nginx-proxy.
+Also it assumes that the organice webapp resides at =organice.my.domain=.
+
+It has been confirmed to work with Nextcloud 21.0.1
+
+** Configuring nginx proxy
+Create the file =/etc/nginx/vhost.d/webdav.my.domain_location= with the following contents.
+#+begin_example
+add_header "Access-Control-Allow-Origin" https://organice.my.domain always;
+add_header "Access-Control-Allow-Methods" "GET, HEAD, POST, PUT, OPTIONS, MOVE, DELETE, COPY, LOCK, UNLOCK, PROPFIND" always;
+add_header "Access-Control-Allow-Headers" "Authorization, Origin, X-Requested-With, Content-Type, Accept, DNT, X-CustomHeader, Keep-Alive,User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Range, Range, Depth" always;
+#+end_example
+
+** Setting organice.my.domain as an allowed origin for nextcloud
+Log into the Nextcloud instance as an admininstrator and install the [[https://apps.nextcloud.com/apps/webapppassword][WebAppPassword]] app.
+Go to =Settings=, =Administration=, =WebAppPassword= 
+
+Add =https://organice.my.domain,http://organice.my.domain= to the =Allowed Origins= field.
+
+
+
+
+
