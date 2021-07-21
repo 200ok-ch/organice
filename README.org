@@ -20,6 +20,9 @@ Documentation: https://organice.200ok.ch/documentation.html
 Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix
 
 ** What does this project do?
+   :PROPERTIES:
+   :CUSTOM_ID: what-does-this-project-do
+   :END:
 
 organice is an implementation of [[http://orgmode.org/][Org mode]] without the dependency of
 [[https://www.gnu.org/software/emacs/][Emacs]]. It is built for mobile and desktop browsers and syncs with
@@ -142,6 +145,9 @@ Please [[https://github.com/200ok-ch/organice/issues/new][file an issue]] if you
 or bugs that you you wouldn’t have expected.
 
 *** Background information
+    :PROPERTIES:
+    :CUSTOM_ID: background-information
+    :END:
 
 organice has [[https://github.com/200ok-ch/organice/blob/master/src/lib/parse_org.js][a custom parser]] for Org files. It works quite fine and
 has unit tests to prove it. One of the quality goals for the parser is
@@ -279,14 +285,25 @@ organice implements this customization strategy:
 #+END_EXAMPLE
 
 
-** Themes
+** Themes / Color scheme / Dark Mode / Light Mode
    :PROPERTIES:
    :CUSTOM_ID: themes
    :END:
 
-organice implements a strategy pattern, so that adding new themes is
-quite easy. These themes come bundled with organice, each in =light= and
-=dark mode=:
+organice bundles several popular color themes, each in =light mode=
+and =dark mode=.
+
+If you've set up a color scheme preference in your operating system,
+organice will honor this preference. It uses the
+=prefers-color-scheme= media query for this. Here, you can see if your
+browser supports this media query: https://caniuse.com/?search=prefers-color-scheme
+
+If you change your color scheme preference directly within organice,
+this naturally overrides your operating system preference. The color
+schemes in organice are implemented in a strategy pattern, so that
+adding new themes is quite easy.
+
+These themes come bundled with organice:
 
 *** Solarized
 
@@ -525,6 +542,29 @@ automatically deployed to stage.
 
 Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
+** Mockups
+   :PROPERTIES:
+   :CUSTOM_ID: mockups
+   :END:
+
+When discussing new UX, it is often helpful to add a mockup to the
+discussion to ensure that everyone is on the same page. When a new
+contributor suggests a UX change and it's not trivial, we will ask to
+included a mockup to the issue.
+
+Of course, you're completely free to create such a mockup with
+whatever tool you feel comfortable with. A scan of a pen and paper
+will do, using [[https://inkscape.org/][Inkscape]] or Illustrator is nice and so on. If you don't
+have a personal preference, and want to get going quickly, you can use
+the mockup included in this repository. Find the file
+/[[https://github.com/200ok-ch/organice/blob/master/doc/mockups/organice-mockup.excalidraw][doc/mockups/organice-mockup.excalidraw]] and upload it to the open
+source sketching tool [[https://excalidraw.com/][excalidraw.com]]. There, make any changes you
+like, and export the result as either .png or .excalidraw and attach
+it to the original issue.
+
+NB: The .excalidraw file can also be opened by any SVG capable tool
+like [[https://inkscape.org/][Inkscape]].
+
 * Deployment
   :PROPERTIES:
   :CUSTOM_ID: deployment
@@ -560,9 +600,9 @@ END_SCRIPT
 exit 0
 #+END_SRC
 
-The reference instance (https://organice.200ok.ch) is actually
+The reference instance (https://organice.200ok.ch), for example, is
 deployed via FTP. The full build script is in
-[[file:bin/compile_and_upload.sh][bin/compile_and_upload.sh]].
+[[https://github.com/200ok-ch/organice/blob/master/bin/compile_and_upload.sh][bin/compile\_and\_upload.sh]].
 
 ** Docker
    :PROPERTIES:
@@ -730,6 +770,9 @@ upload new files! [[#webdav_apache_rewrite_engine][Here's documentation]] on how
 features together correctly.
 
 * Contrib
+  :PROPERTIES:
+  :CUSTOM_ID: contrib
+  :END:
 
 organice aims to follow the 'batteries included' philosophy. For
 example, the documentation is rather extensive and includes wider
