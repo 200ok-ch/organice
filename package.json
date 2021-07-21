@@ -6,6 +6,7 @@
     "node": "^12.13.1"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.15.0",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",
@@ -51,8 +52,8 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-redux": "^3.3.0",
-    "prettier-eslint": "^11.0.0",
     "prettier": "^2.0.5",
+    "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "raw.macro": "0.4.2",
     "react-test-renderer": "^17.0.1"
