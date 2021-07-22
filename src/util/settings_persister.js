@@ -39,6 +39,8 @@ const debouncedPushConfigToSyncBackend = _.debounce(
             alert(`There was an error trying to push settings to your sync backend: ${error}`)
           );
         break;
+      case 'OneDrive':
+        break;
       default:
     }
   },
@@ -333,6 +335,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   let fileContentsPromise = null;
   switch (syncBackendClient.type) {
     case 'Dropbox':
+    case 'OneDrive':
     case 'WebDAV':
       fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
       break;

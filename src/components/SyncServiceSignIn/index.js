@@ -6,10 +6,13 @@ import './stylesheet.css';
 
 import DropboxLogo from './dropbox.svg';
 import GoogleDriveLogo from './google_drive.png';
+import OneDriveLogo from './onedrive.svg';
 
 import { persistField } from '../../util/settings_persister';
 
 import { Dropbox } from 'dropbox';
+
+import { OneDrive } from '../../sync_backend_clients/onedrive';
 
 import _ from 'lodash';
 
@@ -107,7 +110,7 @@ function GoogleDriveNote() {
       </a>{' '}
       on running your own instance of organice with Google Drive enabled.
       <p>
-        If you don't want to do that, you are welcome to use Dropbox or WebDAV as synchronisation
+        If you dont want to do that, you are welcome to use Dropbox or WebDAV as synchronisation
         back-ends.
       </p>
     </div>
@@ -118,7 +121,7 @@ export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick']);
+      _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick', 'handleOneDriveClick']);
   }
 
   handleDropboxClick() {
@@ -146,7 +149,7 @@ export default class SyncServiceSignIn extends PureComponent {
           .then(() => {
             persistField('authenticatedSyncService', 'Google Drive');
 
-            gapi.auth2.getAuthInstance().signIn({
+              gapi.auth2.getAuthInstance().signIn({
               ux_mode: 'redirect',
               redirect_uri: window.location.origin,
             });
@@ -158,6 +161,18 @@ export default class SyncServiceSignIn extends PureComponent {
       );
       return;
     }
+  }
+
+  handleOneDriveClick() {
+      persistField('authenticatedSyncService', 'OneDrive');
+      console.log('handleOneDriveClick');
+      const onedrive = new OneDrive({
+          clientId: process.env.REACT_APP_ONEDRIVE_CLIENT_ID,
+          tenantId: process.env.REACT_APP_ONEDRIVE_TENANT_ID
+      });
+      onedrive.signIn().then(() => {
+          window.location = window.location.origin + '/files';
+      });
   }
 
   render() {
@@ -172,18 +187,17 @@ export default class SyncServiceSignIn extends PureComponent {
           <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
         </div>
 
-        <div className="sync-service-container">
-          <img
-            src={GoogleDriveLogo}
-            onClick={this.handleGoogleDriveClick}
-            alt="Google Drive logo"
-            className="google-drive-logo"
-          />
+        <div className="sync-service-container" onClick={this.handleGoogleDriveClick}>
+          <img src={GoogleDriveLogo} alt="Google Drive logo" className="google-drive-logo" />
           <GoogleDriveNote />
         </div>
 
         <div className="sync-service-container">
           <WebDAVForm />
+        </div>
+
+	<div className="sync-service-container" onClick={this.handleOneDriveClick}>
+          <img src={OneDriveLogo} alt="OneDrive logo" className="onedrive-logo" />
         </div>
       </div>
     );

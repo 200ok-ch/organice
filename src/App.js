@@ -23,6 +23,7 @@ import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
 import createGoogleDriveSyncBackendClient from './sync_backend_clients/google_drive_sync_backend_client';
 import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_backend_client';
+import createOneDriveSyncBackendClient from './sync_backend_clients/onedrive_sync_backend_client';
 
 import './base.css';
 
@@ -89,6 +90,16 @@ export default class App extends PureComponent {
           initialState.syncBackend = Map({
             isAuthenticated: true,
             client,
+          });
+          break;
+        case 'OneDrive':
+          client = createOneDriveSyncBackendClient(
+              process.env.REACT_APP_ONEDRIVE_CLIENT_ID,
+              process.env.REACT_APP_ONEDRIVE_TENANT_ID
+          );
+          initialState.syncBackend = Map({
+              isAuthenticated: true,
+              client,
           });
           break;
         default:

@@ -20,6 +20,8 @@ export const signOut = () => (dispatch, getState) => {
     case 'Google Drive':
       gapi.auth2.getAuthInstance().signOut();
       break;
+  case 'OneDrive':
+      break;
     default:
   }
 
