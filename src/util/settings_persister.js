@@ -350,7 +350,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
       try {
         let config;
 
-        if (typeof configFileContents === "string") {
+        if (typeof configFileContents === 'string') {
           config = JSON.parse(configFileContents);
         } else {
           config = configFileContents;
