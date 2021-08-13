@@ -348,7 +348,14 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   fileContentsPromise
     .then((configFileContents) => {
       try {
-        const config = JSON.parse(configFileContents);
+        let config;
+
+        if (typeof configFileContents === "string") {
+          config = JSON.parse(configFileContents);
+        } else {
+          config = configFileContents;
+        }
+
         dispatch(restoreBaseSettings(config));
         dispatch(restoreCaptureSettings(config));
         dispatch(restoreFileSettings(config));
