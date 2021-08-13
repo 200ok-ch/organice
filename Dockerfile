@@ -8,11 +8,15 @@ RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/http\:\/\/mirror.clarkson.edu/g' 
 
 RUN apk add --no-cache bash yarn
 
-COPY . /opt/organice
 WORKDIR /opt/organice
 
-RUN yarn install \
-    && yarn global add serve \
+COPY package.json yarn.lock /opt/organice/
+
+RUN yarn install
+
+COPY . /opt/organice
+
+RUN yarn global add serve \
     && yarn build \
     && yarn cache clean \
     && rm -rf node_modules
