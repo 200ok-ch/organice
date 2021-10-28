@@ -4,6 +4,7 @@ import { ActionCreators } from 'redux-undo';
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
 import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
+import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
 import { addSeconds } from 'date-fns';
 
@@ -19,6 +20,10 @@ export const signOut = () => (dispatch, getState) => {
       break;
     case 'Google Drive':
       gapi.auth2.getAuthInstance().signOut();
+      break;
+    case 'GitLab':
+      persistField('gitLabProject', null);
+      createGitlabOAuth().reset();
       break;
     default:
   }
@@ -90,6 +95,7 @@ export const pushBackup = (pathOrFileId, contents) => {
     const client = getState().syncBackend.get('client');
     switch (client.type) {
       case 'Dropbox':
+      case 'GitLab':
       case 'WebDAV':
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;

@@ -6,11 +6,15 @@ import './stylesheet.css';
 
 import DropboxLogo from './dropbox.svg';
 import GoogleDriveLogo from './google_drive.png';
+import GitLabLogo from './gitlab.svg';
 
 import { persistField } from '../../util/settings_persister';
+import {
+  createGitlabOAuth,
+  gitLabProjectIdFromURL,
+} from '../../sync_backend_clients/gitlab_sync_backend_client';
 
 import { Dropbox } from 'dropbox';
-
 import _ from 'lodash';
 
 function WebDAVForm() {
@@ -108,6 +112,45 @@ function GoogleDriveNote() {
   );
 }
 
+function GitLab() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
+
+  const [project, setProject] = useState('');
+  const handleSubmit = (evt) => {
+    const projectId = gitLabProjectIdFromURL(project);
+    if (projectId) {
+      persistField('authenticatedSyncService', 'GitLab');
+      persistField('gitLabProject', projectId);
+      createGitlabOAuth().fetchAuthorizationCode();
+    } else {
+      evt.preventDefault();
+      alert('Project does not appear to be a valid gitlab.com URL');
+    }
+  };
+
+  return (
+    <>
+      <img src={GitLabLogo} alt="GitLab logo" onClick={toggleVisible} />
+      {isVisible && (
+        <form onSubmit={handleSubmit}>
+          <p>
+            <label>Project:</label>
+            <input
+              type="text"
+              className="textfield"
+              placeholder="gitlab.com/your/project"
+              value={project}
+              onChange={(e) => setProject(e.target.value)}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
+    </>
+  );
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -174,6 +217,10 @@ export default class SyncServiceSignIn extends PureComponent {
             className="google-drive-logo"
           />
           <GoogleDriveNote />
+        </div>
+
+        <div className="sync-service-container">
+          <GitLab />
         </div>
 
         <div className="sync-service-container">

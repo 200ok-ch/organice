@@ -23,6 +23,9 @@ import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
 import createGoogleDriveSyncBackendClient from './sync_backend_clients/google_drive_sync_backend_client';
 import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_backend_client';
+import createGitLabSyncBackendClient, {
+  createGitlabOAuth,
+} from './sync_backend_clients/gitlab_sync_backend_client';
 
 import './base.css';
 
@@ -36,6 +39,30 @@ import {
 
 import _ from 'lodash';
 import { Map } from 'immutable';
+
+const handleGitLabAuthResponse = async (oauthClient) => {
+  let success = false;
+  try {
+    success = await oauthClient.isReturningFromAuthServer();
+    await oauthClient.getAccessToken();
+  } catch {
+    success = false;
+  }
+  if (!success) {
+    // Edge case: somehow OAuth success redirect occurred but there isn't a code in
+    // the current location's search params. This /shouldn't/ happen in practice.
+    alert('Unexpected sign in error, please try again');
+    return;
+  }
+
+  const syncClient = createGitLabSyncBackendClient(oauthClient);
+  const isAccessible = await syncClient.isProjectAccessible();
+  if (!isAccessible) {
+    alert('Failed to access GitLab project - is the URL is correct?');
+  } else {
+    window.location.search = '';
+  }
+};
 
 export default class App extends PureComponent {
   constructor(props) {
@@ -79,6 +106,18 @@ export default class App extends PureComponent {
             isAuthenticated: true,
             client,
           });
+          break;
+        case 'GitLab':
+          const gitlabOAuth = createGitlabOAuth();
+          if (gitlabOAuth.isAuthorized()) {
+            client = createGitLabSyncBackendClient(gitlabOAuth);
+            initialState.syncBackend = Map({
+              isAuthenticated: true,
+              client,
+            });
+          } else {
+            handleGitLabAuthResponse(gitlabOAuth);
+          }
           break;
         case 'WebDAV':
           client = createWebDAVSyncBackendClient(

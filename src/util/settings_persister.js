@@ -25,6 +25,7 @@ const debouncedPushConfigToSyncBackend = _.debounce(
   (syncBackendClient, contents) => {
     switch (syncBackendClient.type) {
       case 'Dropbox':
+      case 'GitLab':
       case 'WebDAV':
         syncBackendClient
           .createFile('/.organice-config.json', contents)
@@ -333,6 +334,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   let fileContentsPromise = null;
   switch (syncBackendClient.type) {
     case 'Dropbox':
+    case 'GitLab':
     case 'WebDAV':
       fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
       break;
