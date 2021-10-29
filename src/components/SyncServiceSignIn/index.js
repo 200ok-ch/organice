@@ -15,68 +15,62 @@ import _ from 'lodash';
 
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
   const [url, setUrl] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  return !isVisible ? (
-    <div
-      id="webdavLogin"
-      onClick={() => {
-        setIsVisible(true);
-      }}
-    >
-      <h2>WebDAV</h2>
-    </div>
-  ) : (
+  return (
     <div id="webdavLogin">
-      <h2>WebDAV</h2>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          persistField('authenticatedSyncService', 'WebDAV');
-          persistField('webdavEndpoint', url);
-          persistField('webdavUsername', username);
-          persistField('webdavPassword', password);
-          window.location = window.location.origin + '/';
-        }}
-      >
-        <p>
-          <label>URL:</label>
-          <input
-            name="url"
-            type="url"
-            value={url}
-            className="textfield"
-            onChange={(e) => {
-              setUrl(e.target.value);
-            }}
-          />
-        </p>
-        <p>
-          <label>Username:</label>
-          <input
-            type="text"
-            className="textfield"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-        </p>
-        <p>
-          <label>Password:</label>
-          <input
-            type="password"
-            className="textfield"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </p>
-        <input type="submit" value="Sign-in" />
-      </form>
+      <h2 onClick={toggleVisible}>WebDAV</h2>
+      {isVisible && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            persistField('authenticatedSyncService', 'WebDAV');
+            persistField('webdavEndpoint', url);
+            persistField('webdavUsername', username);
+            persistField('webdavPassword', password);
+            window.location = window.location.origin + '/';
+          }}
+        >
+          <p>
+            <label>URL:</label>
+            <input
+              name="url"
+              type="url"
+              value={url}
+              className="textfield"
+              onChange={(e) => {
+                setUrl(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            <label>Username:</label>
+            <input
+              type="text"
+              className="textfield"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            <label>Password:</label>
+            <input
+              type="password"
+              className="textfield"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
     </div>
   );
 }
