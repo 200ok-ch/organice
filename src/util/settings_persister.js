@@ -348,7 +348,22 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   fileContentsPromise
     .then((configFileContents) => {
       try {
-        const config = JSON.parse(configFileContents);
+        let config;
+
+        /* Rationale for the type check:
+          When loading the settings file, `configFileContents` is
+          sometimes already an object. Therefore, when JSON.parse is
+          run, it throws an error which is silently swallowed by the
+          catch below. This appears to be the cause of
+          https:github.com/200ok-ch/organice/issues/472. Settings will
+          never load from file and default config always loads.
+          */
+        if (typeof configFileContents === 'string') {
+          config = JSON.parse(configFileContents);
+        } else {
+          config = configFileContents;
+        }
+
         dispatch(restoreBaseSettings(config));
         dispatch(restoreCaptureSettings(config));
         dispatch(restoreFileSettings(config));

@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2021-10-29 Fri]
+** Fixed
+   - Loading settings when using WebDAV as synchronization back-end
+     - PR: https://github.com/200ok-ch/organice/pull/727
+     - Thank you [[https://github.com/mcordell][mcordell]] for the PR🙏
+
 * [2021-05-16 Sun]
 ** Added
    - Parse and preserve habit timestamp ranges
