@@ -7,6 +7,7 @@
 
 .sync-service-container form {
   display: table;
+  width: 100%;
 }
 .sync-service-container form p {
   display: table-row;
@@ -14,8 +15,9 @@
 .sync-service-container form label {
   display: table-cell;
 }
-.sync-service-container form input {
+.sync-service-container form input:not([type='submit']) {
   display: table-cell;
+  width: calc(100% - 10px);
 }
 
 .sync-service-sign-in-container {
