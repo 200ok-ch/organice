@@ -1,6 +1,5 @@
 /* global process */
 import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
-import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
 
@@ -106,6 +105,9 @@ export const treeToDirectoryListing = (tree) => {
 const API_URL = 'https://gitlab.com/api/v4';
 
 /**
+ * GitLab sync backend, implemented using their REST API.
+ *
+ * @see https://docs.gitlab.com/ee/api/api_resources.html
  * @param {OAuth2AuthCodePKCE} oauthClient
  */
 export default (oauthClient) => {
@@ -205,23 +207,52 @@ export default (oauthClient) => {
   // FIXME stub
   const createFile = (path, contents) => new Promise((resolve) => resolve());
 
-  // FIXME stub
-  const getFileContentsAndMetadata = (path) =>
-    new Promise((resolve) =>
-      resolve({
-        contents: '* FIXME',
-        lastModifiedAt: new Date(),
-      })
+  const getRawFile = async (path) => {
+    const params = new URLSearchParams({
+      ref: await getDefaultBranch(),
+    });
+    const encodedPath = encodeURIComponent(path.replace(/^\//, ''));
+    // https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository
+    const response = await decoratedFetch(
+      `${getProjectApi()}/repository/files/${encodedPath}/raw?${params}`
     );
+    if (!response.ok) {
+      throw new Error(`Unexpected response from file API. Status code: ${response.status}`);
+    }
+    return {
+      contents: await response.text(),
+      commit: response.headers.get('x-gitlab-last-commit-id'),
+    };
+  };
 
-  // FIXME stub
-  const getFileContents = (path) => {
-    if (isEmpty(path)) return Promise.reject('No path given');
-    return new Promise((resolve, reject) =>
-      getFileContentsAndMetadata(path)
-        .then(({ contents }) => resolve(contents))
-        .catch(reject)
+  const getCommitDate = async (sha) => {
+    // https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit
+    const response = await decoratedFetch(
+      `${getProjectApi()}/repository/commits/${sha}?stats=false`
     );
+    if (!response.ok) {
+      throw new Error(`Unexpected response from commit API. Status code: ${response.status}`);
+    }
+    const body = await response.json();
+    // Dates are ISO-8601.
+    // Note: while commit date *should* generally be the same as or later than the author date,
+    // that isn't guaranteed since history can be rewritten at will. So we pick the newer of the
+    // two.
+    const committed = new Date(body.committed_date);
+    const authored = new Date(body.authored_date);
+    return committed > authored ? committed : authored;
+  };
+
+  const getFileContentsAndMetadata = async (path) => {
+    const file = await getRawFile(path);
+    return {
+      contents: file.contents,
+      lastModifiedAt: await getCommitDate(file.commit),
+    };
+  };
+
+  // Parentheses are necessarily to await the actual promise. Yay, foot-guns.
+  const getFileContents = async (path) => (await getRawFile(path)).contents;
   };
 
   // FIXME stub
