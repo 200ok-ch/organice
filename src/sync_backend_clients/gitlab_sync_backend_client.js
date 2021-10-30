@@ -1,7 +1,10 @@
 /* global process */
 import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
 import { isEmpty } from 'lodash';
+import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
+
+import { fromJS, Map } from 'immutable';
 
 export const createGitlabOAuth = () =>
   new OAuth2AuthCodePKCE({
@@ -48,9 +51,57 @@ export const gitLabProjectIdFromURL = (projectURL) => {
   }
 };
 
-// TODO implement parsing
-// TODO apparently want to use immutable's fromJS
-// const treeToDirectoryListing = (tree)
+/**
+ * Parse 'link' pagination response header.
+ *
+ * @see https://docs.gitlab.com/ee/api/index.html#keyset-based-pagination
+ * @param {string|null} links raw header value
+ * @return {Object.<string, string>} Key-value mapping of link name to url. Empty object if none.
+ */
+export const parseLinkHeader = (links) => {
+  if (!links) {
+    return {};
+  }
+  // Based on https://stackoverflow.com/a/48109741
+  return links.split(',').reduce((acc, link) => {
+    const match = link.match(/<(.*)>; rel="(\w*)"/);
+    const url = match[1];
+    const rel = match[2];
+    acc[rel] = url;
+    return acc;
+  }, {});
+};
+
+/**
+ * Converts response from GitLab's list repo tree API into organice format.
+ *
+ * @see https://docs.gitlab.com/ee/api/repositories.html#list-repository-tree
+ */
+export const treeToDirectoryListing = (tree) => {
+  const isDirectory = (it) => it.type === 'tree';
+  return fromJS(
+    tree
+      .filter((it) => isDirectory(it) || it.name.match(orgFileExtensions))
+      .map((it) => ({
+        id: it.id,
+        name: it.name,
+        // Organice requires a leading "/", whereas GitLab API doesn't use one.
+        path: `/${it.path}`,
+        isDirectory: isDirectory(it),
+      }))
+      .sort((a, b) => {
+        // Folders first.
+        if (a.isDirectory && !b.isDirectory) {
+          return -1;
+        } else if (!a.isDirectory && b.isDirectory) {
+          return 1;
+        } else {
+          // Can't have same name, so don't need to check if equal/return 0.
+          return a.name > b.name ? 1 : -1;
+        }
+      })
+  );
+};
 
 const API_URL = 'https://gitlab.com/api/v4';
 
@@ -60,7 +111,7 @@ const API_URL = 'https://gitlab.com/api/v4';
 export default (oauthClient) => {
   const decoratedFetch = oauthClient.decorateFetchHTTPClient(fetch);
 
-  const getProjectId = () => getPersistedField('gitLabProject');
+  const getProjectApi = () => `${API_URL}/projects/${getPersistedField('gitLabProject')}`;
 
   const isSignedIn = async () => {
     if (!oauthClient.isAuthorized()) {
@@ -85,11 +136,12 @@ export default (oauthClient) => {
    * page is loaded.
    */
   const isProjectAccessible = async () => {
-    const projectId = getProjectId();
     // Check project exists and user is a member who can *probably* commit.
     const [userResponse, membersResponse] = await Promise.all([
+      // https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users
       decoratedFetch(`${API_URL}/user`),
-      decoratedFetch(`${API_URL}/projects/${projectId}/members`),
+      // https://docs.gitlab.com/ee/api/members.html#list-all-members-of-a-group-or-project
+      decoratedFetch(`${getProjectApi()}/members`),
     ]);
     if (!userResponse.ok || !membersResponse.ok) {
       return false;
@@ -103,28 +155,49 @@ export default (oauthClient) => {
     return matched && matched.access_level >= 30;
   };
 
-  const getDirectoryListing = async (path) => {
-    // FIXME use path param/finish implementing this
-    const project = getProjectId();
-    const response = await decoratedFetch(
-      `${API_URL}/projects/${project}/repository/tree?pagination=keyset`
-    );
+  let cachedDefaultBranch;
+  const getDefaultBranch = async () => {
+    if (!cachedDefaultBranch) {
+      // https://docs.gitlab.com/ee/api/projects.html#get-single-project
+      const response = await decoratedFetch(getProjectApi());
+      if (!response.ok) {
+        throw new Error(`Unexpected response from project API. Status code: ${response.status}`);
+      }
+      const body = await response.json();
+      cachedDefaultBranch = body.default_branch;
+    }
+    return cachedDefaultBranch;
+  };
+
+  const fetchDirectory = async (url) => {
+    const response = await decoratedFetch(url);
+    if (!response.ok) {
+      throw new Error(`Unexpected response from directory API. Status code: ${response.status}`);
+    }
+    const pages = parseLinkHeader(response.headers.get('link'));
     const data = await response.json();
-    console.log(data);
     return {
-      listing: [],
-      hasMore: false,
+      listing: treeToDirectoryListing(data),
+      hasMore: !!pages.next,
+      additionalSyncBackendState: Map({
+        cursor: pages.next,
+      }),
     };
   };
 
-  // FIXME stub
-  const getMoreDirectoryListing = (additionalSyncBackendState) =>
-    new Promise((resolve) =>
-      resolve({
-        listing: [],
-        hasMore: false,
-      })
-    );
+  const getDirectoryListing = async (path) => {
+    const params = new URLSearchParams({
+      pagination: 'keyset',
+      ref: await getDefaultBranch(),
+      // Organice requires a leading "/", whereas GitLab API requires there *not* be one.
+      path: path.replace(/^\//, ''),
+    });
+    // https://docs.gitlab.com/ee/api/repositories.html#list-repository-tree
+    return await fetchDirectory(`${getProjectApi()}/repository/tree?${params}`);
+  };
+
+  const getMoreDirectoryListing = async (additionalSyncBackendState) =>
+    await fetchDirectory(additionalSyncBackendState.get('cursor'));
 
   // FIXME stub
   const updateFile = (path, contents) => new Promise((resolve) => resolve());
