@@ -201,12 +201,6 @@ export default (oauthClient) => {
   const getMoreDirectoryListing = async (additionalSyncBackendState) =>
     await fetchDirectory(additionalSyncBackendState.get('cursor'));
 
-  // FIXME stub
-  const updateFile = (path, contents) => new Promise((resolve) => resolve());
-
-  // FIXME stub
-  const createFile = (path, contents) => new Promise((resolve) => resolve());
-
   const getRawFile = async (path) => {
     const params = new URLSearchParams({
       ref: await getDefaultBranch(),
@@ -253,10 +247,57 @@ export default (oauthClient) => {
 
   // Parentheses are necessarily to await the actual promise. Yay, foot-guns.
   const getFileContents = async (path) => (await getRawFile(path)).contents;
+
+  const doCommit = async (action) => {
+    const capitalizedAction = action.action.charAt(0).toUpperCase() + action.action.slice(1);
+    const message =
+      `[organice] ${capitalizedAction} ${action.file_path}\n` +
+      'Automatic commit from organice app.';
+    // It's also possible to modify files using the files API instead of commits API. For this use
+    // case they're about equal, but I picked commits because it doesn't require non-standard
+    // encoding for file paths, whereas the files API requires URI encoding plus converting period
+    // characters to %2E. Also, the commits API is more flexible in case of future changes, since it
+    // allows modifying multiple files at a time.
+    //
+    // https://docs.gitlab.com/ee/api/commits.html#create-a-commit-with-multiple-files-and-actions
+    // https://docs.gitlab.com/ee/api/repository_files.html
+    await decoratedFetch(`${getProjectApi()}/repository/commits`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        branch: await getDefaultBranch(),
+        commit_message: message,
+        // Organice only modifies a single file at a time, so only one action.
+        actions: [action],
+        stats: false,
+      }),
+    });
   };
 
-  // FIXME stub
-  const deleteFile = (path) => new Promise((resolve) => resolve());
+  const createFile = async (path, content) => {
+    await doCommit({
+      action: 'create',
+      file_path: path.replace(/^\//, ''),
+      content,
+    });
+  };
+
+  const updateFile = async (path, content) => {
+    await doCommit({
+      action: 'update',
+      file_path: path.replace(/^\//, ''),
+      content,
+    });
+  };
+
+  const deleteFile = async (path) => {
+    await doCommit({
+      action: 'delete',
+      file_path: path.replace(/^\//, ''),
+    });
+  };
 
   return {
     type: 'GitLab',
