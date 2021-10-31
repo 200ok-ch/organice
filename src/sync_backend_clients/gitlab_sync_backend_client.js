@@ -234,7 +234,8 @@ export default (oauthClient) => {
     // two.
     const committed = new Date(body.committed_date);
     const authored = new Date(body.authored_date);
-    return committed > authored ? committed : authored;
+    // Use Date objects for comparison, but need to return as strings.
+    return committed > authored ? committed.toISOString() : authored.toISOString();
   };
 
   const getFileContentsAndMetadata = async (path) => {
