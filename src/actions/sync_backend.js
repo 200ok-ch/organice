@@ -95,13 +95,15 @@ export const pushBackup = (pathOrFileId, contents) => {
     const client = getState().syncBackend.get('client');
     switch (client.type) {
       case 'Dropbox':
-      case 'GitLab':
       case 'WebDAV':
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;
       case 'Google Drive':
         pathOrFileId = pathOrFileId.startsWith('/') ? pathOrFileId.substr(1) : pathOrFileId;
         client.duplicateFile(pathOrFileId, (fileName) => `${fileName}.organice-bak`);
+        break;
+      case 'GitLab':
+        // No-op for GitLab, because the beauty of version control makes backup files redundant.
         break;
       default:
     }
