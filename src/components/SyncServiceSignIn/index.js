@@ -232,7 +232,7 @@ export default class SyncServiceSignIn extends PureComponent {
           <a
             href="https://organice.200ok.ch/documentation.html#sync_backends"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             documentation
           </a>
