@@ -42,6 +42,13 @@
   cursor: pointer;
 
   padding: 20px 10px;
+  text-align: center;
+}
+
+/* Sync back-end logos or titles are the same height. */
+.sync-service-container img,
+.sync-service-container h2 {
+  max-height: 87px;
 }
 
 .sync-service-container:last-of-type {

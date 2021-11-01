@@ -201,12 +201,20 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox, Google Drive and WebDAV.
+          organice syncs your files with Dropbox, GitLab, WebDAV and Google Drive.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
         <div className="sync-service-container" onClick={this.handleDropboxClick}>
           <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+        </div>
+
+        <div className="sync-service-container">
+          <GitLab />
+        </div>
+
+        <div className="sync-service-container">
+          <WebDAVForm />
         </div>
 
         <div className="sync-service-container">
@@ -219,13 +227,17 @@ export default class SyncServiceSignIn extends PureComponent {
           <GoogleDriveNote />
         </div>
 
-        <div className="sync-service-container">
-          <GitLab />
-        </div>
-
-        <div className="sync-service-container">
-          <WebDAVForm />
-        </div>
+        <footer>
+          For questions regarding synchronization back-ends, please consult the{' '}
+          <a
+            href="https://organice.200ok.ch/documentation.html#sync_backends"
+            target="_blank"
+            rel="noreferrer"
+          >
+            documentation
+          </a>
+          .
+        </footer>
       </div>
     );
   }
