@@ -56,6 +56,9 @@ const debouncedPushConfigToSyncBackend = _.debounce(
           );
         break;
       case 'GitLab':
+        // INFO: Not calling syncBackendClient.createFile is a
+        // workaround for
+        // https://github.com/200ok-ch/organice/issues/736
         updateConfigForGitLab(syncBackendClient, contents).catch((error) =>
           alert(`There was an error trying to push settings to your sync backend: ${error}`)
         );
