@@ -5,17 +5,19 @@
   margin: 0;
 }
 
-#webdavLogin form {
+.sync-service-container form {
   display: table;
+  width: 100%;
 }
-#webdavLogin p {
+.sync-service-container form p {
   display: table-row;
 }
-#webdavLogin label {
+.sync-service-container form label {
   display: table-cell;
 }
-#webdavLogin input {
+.sync-service-container form input:not([type='submit']) {
   display: table-cell;
+  width: calc(100% - 10px);
 }
 
 .sync-service-sign-in-container {
@@ -40,6 +42,13 @@
   cursor: pointer;
 
   padding: 20px 10px;
+  text-align: center;
+}
+
+/* Sync back-end logos or titles are the same height. */
+.sync-service-container img,
+.sync-service-container h2 {
+  max-height: 87px;
 }
 
 .sync-service-container:last-of-type {

@@ -4,6 +4,7 @@ import { ActionCreators } from 'redux-undo';
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
 import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
+import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
 import { addSeconds } from 'date-fns';
 
@@ -19,6 +20,10 @@ export const signOut = () => (dispatch, getState) => {
       break;
     case 'Google Drive':
       gapi.auth2.getAuthInstance().signOut();
+      break;
+    case 'GitLab':
+      persistField('gitLabProject', null);
+      createGitlabOAuth().reset();
       break;
     default:
   }
@@ -96,6 +101,9 @@ export const pushBackup = (pathOrFileId, contents) => {
       case 'Google Drive':
         pathOrFileId = pathOrFileId.startsWith('/') ? pathOrFileId.substr(1) : pathOrFileId;
         client.duplicateFile(pathOrFileId, (fileName) => `${fileName}.organice-bak`);
+        break;
+      case 'GitLab':
+        // No-op for GitLab, because the beauty of version control makes backup files redundant.
         break;
       default:
     }

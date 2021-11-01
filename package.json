@@ -6,6 +6,7 @@
     "node": "^12.13.1"
   },
   "dependencies": {
+    "@bity/oauth2-auth-code-pkce": "^2.13.0",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",

@@ -6,77 +6,75 @@ import './stylesheet.css';
 
 import DropboxLogo from './dropbox.svg';
 import GoogleDriveLogo from './google_drive.png';
+import GitLabLogo from './gitlab.svg';
 
 import { persistField } from '../../util/settings_persister';
+import {
+  createGitlabOAuth,
+  gitLabProjectIdFromURL,
+} from '../../sync_backend_clients/gitlab_sync_backend_client';
 
 import { Dropbox } from 'dropbox';
-
 import _ from 'lodash';
 
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
   const [url, setUrl] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  return !isVisible ? (
-    <div
-      id="webdavLogin"
-      onClick={() => {
-        setIsVisible(true);
-      }}
-    >
-      <h2>WebDAV</h2>
-    </div>
-  ) : (
+  return (
     <div id="webdavLogin">
-      <h2>WebDAV</h2>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          persistField('authenticatedSyncService', 'WebDAV');
-          persistField('webdavEndpoint', url);
-          persistField('webdavUsername', username);
-          persistField('webdavPassword', password);
-          window.location = window.location.origin + '/';
-        }}
-      >
-        <p>
-          <label>URL:</label>
-          <input
-            name="url"
-            type="url"
-            value={url}
-            className="textfield"
-            onChange={(e) => {
-              setUrl(e.target.value);
-            }}
-          />
-        </p>
-        <p>
-          <label>Username:</label>
-          <input
-            type="text"
-            className="textfield"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-        </p>
-        <p>
-          <label>Password:</label>
-          <input
-            type="password"
-            className="textfield"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </p>
-        <input type="submit" value="Sign-in" />
-      </form>
+      <h2 onClick={toggleVisible}>WebDAV</h2>
+      {isVisible && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            persistField('authenticatedSyncService', 'WebDAV');
+            persistField('webdavEndpoint', url);
+            persistField('webdavUsername', username);
+            persistField('webdavPassword', password);
+            window.location = window.location.origin + '/';
+          }}
+        >
+          <p>
+            <label>URL:</label>
+            <input
+              name="url"
+              type="url"
+              value={url}
+              className="textfield"
+              onChange={(e) => {
+                setUrl(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            <label>Username:</label>
+            <input
+              type="text"
+              className="textfield"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            <label>Password:</label>
+            <input
+              type="password"
+              className="textfield"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
     </div>
   );
 }
@@ -111,6 +109,45 @@ function GoogleDriveNote() {
         back-ends.
       </p>
     </div>
+  );
+}
+
+function GitLab() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
+
+  const [project, setProject] = useState('');
+  const handleSubmit = (evt) => {
+    const projectId = gitLabProjectIdFromURL(project);
+    if (projectId) {
+      persistField('authenticatedSyncService', 'GitLab');
+      persistField('gitLabProject', projectId);
+      createGitlabOAuth().fetchAuthorizationCode();
+    } else {
+      evt.preventDefault();
+      alert('Project does not appear to be a valid gitlab.com URL');
+    }
+  };
+
+  return (
+    <>
+      <img src={GitLabLogo} alt="GitLab logo" onClick={toggleVisible} />
+      {isVisible && (
+        <form onSubmit={handleSubmit}>
+          <p>
+            <label>Project:</label>
+            <input
+              type="text"
+              className="textfield"
+              placeholder="gitlab.com/your/project"
+              value={project}
+              onChange={(e) => setProject(e.target.value)}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
+    </>
   );
 }
 
@@ -164,12 +201,20 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox, Google Drive and WebDAV.
+          organice syncs your files with Dropbox, GitLab, WebDAV and Google Drive.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
         <div className="sync-service-container" onClick={this.handleDropboxClick}>
           <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+        </div>
+
+        <div className="sync-service-container">
+          <GitLab />
+        </div>
+
+        <div className="sync-service-container">
+          <WebDAVForm />
         </div>
 
         <div className="sync-service-container">
@@ -182,9 +227,17 @@ export default class SyncServiceSignIn extends PureComponent {
           <GoogleDriveNote />
         </div>
 
-        <div className="sync-service-container">
-          <WebDAVForm />
-        </div>
+        <footer>
+          For questions regarding synchronization back-ends, please consult the{' '}
+          <a
+            href="https://organice.200ok.ch/documentation.html#sync_backends"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            documentation
+          </a>
+          .
+        </footer>
       </div>
     );
   }

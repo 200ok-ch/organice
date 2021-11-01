@@ -7,6 +7,11 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2021-11-01 Mon]
+** Added
+   - *EPIC* Add GitLab as a sync back-end
+     - PR: https://github.com/200ok-ch/organice/pull/734
+     - Thank you [[https://github.com/chasecaleb][chasecaleb]] for the PR🙏
 * [2021-10-29 Fri]
 ** Fixed
    - Loading settings when using WebDAV as synchronization back-end
