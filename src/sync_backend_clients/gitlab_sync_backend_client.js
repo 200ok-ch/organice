@@ -193,6 +193,7 @@ export default (oauthClient) => {
       ref: await getDefaultBranch(),
       // Organice requires a leading "/", whereas GitLab API requires there *not* be one.
       path: path.replace(/^\//, ''),
+      per_page: 100,
     });
     // https://docs.gitlab.com/ee/api/repositories.html#list-repository-tree
     return await fetchDirectory(`${getProjectApi()}/repository/tree?${params}`);
