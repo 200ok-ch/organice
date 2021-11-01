@@ -21,16 +21,20 @@ export const localStorageAvailable = (() => {
   }
 })();
 
+/**
+ * GitLab doesn't allow updating a file that doesn't exist or creating one that already exists, so
+ * need to figure out which to do.
+ */
 const updateConfigForGitLab = async (client, contents) => {
   const filename = '/.organice-config.json';
-  // GitLab doesn't allow updating a file that doesn't exist or creating one that already exists, so
-  // need to figure out whether or not it exists.
   let exists = false;
   try {
     const existingContents = await client.getFileContents(filename);
     exists = true;
+    // INFO: Not calling syncBackendClient.createFile is a
+    // workaround for
+    // https://github.com/200ok-ch/organice/issues/736
     if (existingContents === contents) {
-      // Also avoid a pointless empty commit if file didn't actually change.
       return;
     }
   } catch {
@@ -56,9 +60,6 @@ const debouncedPushConfigToSyncBackend = _.debounce(
           );
         break;
       case 'GitLab':
-        // INFO: Not calling syncBackendClient.createFile is a
-        // workaround for
-        // https://github.com/200ok-ch/organice/issues/736
         updateConfigForGitLab(syncBackendClient, contents).catch((error) =>
           alert(`There was an error trying to push settings to your sync backend: ${error}`)
         );
