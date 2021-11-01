@@ -27,13 +27,13 @@ Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[htt
 
 organice is an implementation of [[http://orgmode.org/][Org mode]] without the dependency of
 [[https://www.gnu.org/software/emacs/][Emacs]]. It is built for mobile and desktop browsers and syncs with
-Dropbox, Google Drive and WebDAV.
+[[https://www.dropbox.com/][Dropbox]], [[https://gitlab.com/][GitLab]], [[https://en.wikipedia.org/wiki/WebDAV][WebDAV]] and [[https://drive.google.com][Google Drive]].
 
 At [[https://200ok.ch/][200ok]], we run an instance of organice at https://organice.200ok.ch,
 which is open for anyone to use! organice does not have a back-end
-(it's just a front-end application, which uses either Dropbox, Google
-Drive or WebDAV as back-end storage). We don't store any kind of data
-on our servers - we also don't use analytics on organice.200ok.ch.
+(it's just a front-end application, which uses different back-end
+storage providers). We don't store any kind of data on our servers -
+we also don't use analytics on organice.200ok.ch.
 
 [[https://raw.githubusercontent.com/200ok-ch/organice/master/images/screenshot-overview.png]]
 
@@ -386,8 +386,8 @@ yarn install --production=false
 
 *** Setup any of the synchronization back-ends
 
-organice can sync your Org files using Dropbox, Google Drive, GitLab,
-and WebDAV as back-ends.
+organice can sync your Org files using Dropbox, GitLab, WebDAV or
+Google Drive as back-ends.
 
 If you want to develop a feature that needs synchronization, then you
 will have to set up any of those options. If you want to work on a
@@ -730,7 +730,7 @@ the following variables:
 - =REACT_APP_GITLAB_CLIENT_ID=: The value that GitLab provides for
   =Application ID=
 - =REACT_APP_GITLAB_SECRET=: The value that GitLab provides for =Secret=.
-  
+
 You may also refer to [[https://docs.gitlab.com/ee/integration/oauth_provider.html#user-owned-applications][GitLab's documentation]] for more information
 regarding OAuth applications, if interested.
 
@@ -740,16 +740,18 @@ regarding OAuth applications, if interested.
     :END:
 
 If you do not trust your data with Dropbox or Google, you are free to
-host your own [[#webdav][WebDAV]] server and take any number of precautionary
-measures. For example, you can encrypt your data on disk. organice
-itself is just a front-end application, requires no server and has no
-tracking system. Therefore, the data within any organice instance
-(self hosted or not) is already only accessible to you, your browser
-and the network between your browser and your chosen back-end.
-Therefore, if have a strong SSL certificate configured on your WebDAV
-server and organice instance, then organice will communicate securely
-via HTTPS to your server where your data is as secure as you make it.
-Then, your data will be encrypted and inaccessible to any third party.
+use Gitlab ([[https://about.gitlab.com/solutions/open-source/][which is open-source]]) or host your own [[#webdav][WebDAV]] server and
+take any number of precautionary measures.
+
+For example, you can encrypt your data on disk. organice itself is
+just a front-end application, requires no server and has no tracking
+system. Therefore, the data within any organice instance (self hosted
+or not) is already only accessible to you, your browser and the
+network between your browser and your chosen back-end. Therefore, if
+have a strong SSL certificate configured on your WebDAV server and
+organice instance, then organice will communicate securely via HTTPS
+to your server where your data is as secure as you make it. Then, your
+data will be encrypted and inaccessible to any third party.
 
 Of course, security is hard. So the above statement is not a
 guarantee, but a guideline. You're responsible to ensure that the
