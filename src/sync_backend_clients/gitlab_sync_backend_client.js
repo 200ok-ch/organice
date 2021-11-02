@@ -252,8 +252,9 @@ export default (oauthClient) => {
 
   const doCommit = async (action) => {
     const capitalizedAction = action.action.charAt(0).toUpperCase() + action.action.slice(1);
+    // Two newlines because Git commits should have an empty line between title and body.
     const message =
-      `[organice] ${capitalizedAction} ${action.file_path}\n` +
+      `[organice] ${capitalizedAction} ${action.file_path}\n\n` +
       'Automatic commit from organice app.';
     // It's also possible to modify files using the files API instead of commits API. For this use
     // case they're about equal, but I picked commits because it doesn't require non-standard
