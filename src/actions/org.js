@@ -14,7 +14,7 @@ import { headerWithPath, STATIC_FILE_PREFIX } from '../lib/org_utils';
 
 import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
-import { isAfter, addSeconds } from 'date-fns';
+import { isAfter, isEqual, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
 import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
 import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
@@ -123,7 +123,7 @@ const doSync = ({
     return;
   }
 
-  // Calls do `doSync` are already debounced using a timer, but on big
+  // Calls to `doSync` are already debounced using a timer, but on big
   // Org files or slow connections, it's still possible to have
   // concurrent requests to `doSync` which has no merit. When
   // `isLoading`, don't trigger another sync in parallel. Instead,
@@ -152,6 +152,10 @@ const doSync = ({
   dispatch(setIsLoading(true, path));
   dispatch(setOrgFileErrorMessage(null));
 
+  // Before stuff happens asynchronously, remember the current count
+  // of dirtied actions.
+  const currentDirtyCount = getState().org.present.getIn(['files', path, 'isDirtyNew', 'id']);
+
   client
     .getFileContentsAndMetadata(path)
     .then(({ contents, lastModifiedAt }) => {
@@ -159,7 +163,11 @@ const doSync = ({
       const lastServerModifiedAt = parseISO(lastModifiedAt);
       const lastSyncAt = getState().org.present.getIn(['files', path, 'lastSyncAt']);
 
-      if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
+      if (
+        isAfter(lastSyncAt, lastServerModifiedAt) ||
+        isEqual(lastSyncAt, lastServerModifiedAt) ||
+        forceAction === 'push'
+      ) {
         if (isDirty) {
           const contents =
             localStorage.getItem('files__' + path) ||
@@ -172,6 +180,7 @@ const doSync = ({
               ]),
               dontIndent: getState().base.get('shouldNotIndentOnExport'),
             });
+
           client
             .updateFile(path, contents)
             .then(() => {
@@ -180,9 +189,29 @@ const doSync = ({
               } else {
                 setTimeout(() => dispatch(hideLoadingMessage()), 2000);
               }
-              dispatch(setIsLoading(false, path));
-              dispatch(setDirty(false, path));
-              dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+
+              // INFO: This could be made more efficient if
+              // `updateFile` would already return the new
+              // `lastModifiedAt` date.
+              client.getFileContentsAndMetadata(path).then(({ lastModifiedAt }) => {
+                dispatch(setIsLoading(false, path));
+                dispatch(setLastSyncAt(parseISO(lastModifiedAt)), path);
+
+                // TODO: Get the latest one that actually has isDirty: true.
+                const newDirtyCount = getState().org.present.getIn([
+                  'files',
+                  path,
+                  'isDirtyNew',
+                  'id',
+                ]);
+
+                // Set isDirty to false only if there were no more
+                // dirtying actions since last we started syncing.
+                // Otherwise, the flag should be kept.
+                if (newDirtyCount >= currentDirtyCount) {
+                  dispatch(setDirty(false, path));
+                }
+              });
             })
             .catch((error) => {
               const err = `There was an error pushing the file ${path}: ${error.toString()}`;
@@ -190,6 +219,7 @@ const doSync = ({
               dispatch(setDisappearingLoadingMessage(err, 5000));
               dispatch(hideLoadingMessage());
               dispatch(setIsLoading(false, path));
+              dispatch(setDirty(true, path));
               // Re-enqueue the file to be synchronized again
               dispatch(sync({ path }));
             });
