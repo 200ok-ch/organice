@@ -71,14 +71,26 @@
  image yourself - and customize the Apache configuration to your needs:
 
  #+BEGIN_SRC shell
- docker build -f doc/webdav/Dockerfile -t apache-webdav .
+   docker build -f doc/webdav/Dockerfile -t apache-webdav .
  #+END_SRC
+
+ or with docker-compose:
+
+ #+begin_src shell
+   docker-compose build apache-webdav
+ #+end_src
 
  Then run the Apache2 WebDAV server with:
 
  #+BEGIN_SRC shell
- docker run -dit --name apache-webdav-app -p 8080:80 apache-webdav
+   docker run -dit --name apache-webdav-app -p 8080:80 apache-webdav
  #+END_SRC
+
+ or with docker-compose:
+
+ #+begin_src shell
+   docker-compose up apache-webdav
+ #+end_src
 
  On your host machine, you can now login with any WebDAV client using
  the URL =http://localhost:8080/webdav=. There is no authentication
