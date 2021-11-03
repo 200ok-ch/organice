@@ -5,8 +5,13 @@ import { getPersistedField } from '../util/settings_persister';
 
 import { fromJS, Map } from 'immutable';
 
-export const createGitlabOAuth = () =>
-  new OAuth2AuthCodePKCE({
+export const createGitlabOAuth = () => {
+  // Use promises as mutex to prevent concurrent token refresh attempts, which causes problems.
+  // More info: https://github.com/BitySA/oauth2-auth-code-pkce/issues/29
+  // TODO: remove this workaround if/when oauth2-auth-code-pkce fixes the issue.
+  let expiryPromise;
+  let invalidGrantPromise;
+  return new OAuth2AuthCodePKCE({
     authorizationUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
@@ -15,9 +20,25 @@ export const createGitlabOAuth = () =>
     extraAuthorizationParams: {
       clientSecret: process.env.REACT_APP_GITLAB_SECRET,
     },
-    onAccessTokenExpiry: (refreshToken) => refreshToken(),
-    onInvalidGrant: (refreshAuthCodeOrToken) => refreshAuthCodeOrToken(),
+    onAccessTokenExpiry: async (refreshToken) => {
+      if (!expiryPromise) {
+        expiryPromise = refreshToken();
+      }
+      const result = await expiryPromise;
+      expiryPromise = undefined;
+      return result;
+    },
+    onInvalidGrant: async (refreshAuthCodeOrToken) => {
+      if (!invalidGrantPromise) {
+        invalidGrantPromise = refreshAuthCodeOrToken();
+      }
+      // This is a void promise, so don't need to return the result. Refer to the TypeScript source
+      // of OAuth2AuthCodePKCE. Types are great.
+      await invalidGrantPromise;
+      invalidGrantPromise = undefined;
+    },
   });
+};
 
 /**
  * Convert project URL to identifier for use with API, since explaining how to find the ID of a
