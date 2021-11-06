@@ -1167,9 +1167,7 @@ export const setSearchFilterInformation = (state, action) => {
     const headers = files.map((file) => file.get('headers'));
 
     // show clocked times & sum if there is a clock search term
-    const clockFilters = searchFilterExpr
-      .filter((f) => f.type === 'field')
-      .filter((f) => f.field.type === 'clock');
+    // TODO these depend on clockFilters which is now in isMatch() ...
     const filterFunctions = clockFilters.map(timeFilter);
     const showClockedTimes = clockFilters.length !== 0;
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);

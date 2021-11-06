@@ -207,6 +207,7 @@ export const isMatch = (filterExpr) => {
   //const filterClock = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
   const filterSchedule = filterField.filter((f) => f.field.type === 'scheduled').map(timeFilter);
   const filterDeadline = filterField.filter((f) => f.field.type === 'deadline').map(timeFilter);
+  const clockFilters = filterField.filter((f) => f.field.type === 'clock').map(timeFilter);
 
   const filterTagsExcl = filterExpr.filter(filterFilter('tag', true)).map(words);
   const filterCSExcl = filterExpr.filter(filterFilter('case-sensitive', true)).map(words);
