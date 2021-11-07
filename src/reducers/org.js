@@ -728,14 +728,14 @@ const moveTableColumnLeft = (state) => {
       columnIndex === 0
         ? rows
         : rows.map((row) =>
-          row.update('contents', (contents) =>
-            contents.size === 0
-              ? contents
-              : contents
-                .insert(columnIndex - 1, contents.get(columnIndex))
-                .delete(columnIndex + 1)
+            row.update('contents', (contents) =>
+              contents.size === 0
+                ? contents
+                : contents
+                    .insert(columnIndex - 1, contents.get(columnIndex))
+                    .delete(columnIndex + 1)
+            )
           )
-        )
     )
   );
 
@@ -753,14 +753,14 @@ const moveTableColumnRight = (state) => {
       columnIndex + 1 >= rows.getIn([0, 'contents']).size
         ? rows
         : rows.map((row) =>
-          row.update('contents', (contents) =>
-            contents.size === 0
-              ? contents
-              : contents
-                .insert(columnIndex, contents.get(columnIndex + 1))
-                .delete(columnIndex + 2)
+            row.update('contents', (contents) =>
+              contents.size === 0
+                ? contents
+                : contents
+                    .insert(columnIndex, contents.get(columnIndex + 1))
+                    .delete(columnIndex + 2)
+            )
           )
-        )
     )
   );
 
@@ -1131,9 +1131,10 @@ const searchHeaders = ({ searchFilterExpr = [], headersToSearch, path }) => {
   return filteredHeaders;
 };
 
-const isActiveClockFilter = clockFilter => clockFilter.field.timerange.type === "point"
-  && clockFilter.field.timerange.point.type === "special"
-  && clockFilter.field.timerange.point.value === "now";
+const isActiveClockFilter = (clockFilter) =>
+  clockFilter.field.timerange.type === 'point' &&
+  clockFilter.field.timerange.point.type === 'special' &&
+  clockFilter.field.timerange.point.value === 'now';
 
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
@@ -1175,7 +1176,7 @@ export const setSearchFilterInformation = (state, action) => {
     const clockedTimeAndActiveClockFilters = searchFilterExpr
       .filter((f) => f.type === 'field')
       .filter((f) => f.field.type === 'clock');
-    const clockFilters = clockedTimeAndActiveClockFilters.filter(f => !isActiveClockFilter(f));
+    const clockFilters = clockedTimeAndActiveClockFilters.filter((f) => !isActiveClockFilter(f));
     // check for special case "clock:now" which searches active clocks
     const hasActiveClockFilter = clockedTimeAndActiveClockFilters.length !== clockFilters.length;
 
@@ -1196,7 +1197,9 @@ export const setSearchFilterInformation = (state, action) => {
     }
 
     if (hasActiveClockFilter) {
-      headersToSearch = headersToSearch.map((headersOfFile) => headersOfFile.filter(hasActiveClock))
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        headersOfFile.filter(hasActiveClock)
+      );
     }
 
     // calculate relevant clocked times and total
@@ -1674,17 +1677,17 @@ function updatePlanningItemsWithRepeaters({
     state = state.updateIn(['headers', headerIndex, 'propertyListItems'], (propertyListItems) =>
       propertyListItems.some((item) => item.get('property') === 'LAST_REPEAT')
         ? propertyListItems.map((item) =>
-          item.get('property') === 'LAST_REPEAT'
-            ? item.set('value', fromJS(newLastRepeatValue))
-            : item
-        )
+            item.get('property') === 'LAST_REPEAT'
+              ? item.set('value', fromJS(newLastRepeatValue))
+              : item
+          )
         : propertyListItems.push(
-          fromJS({
-            property: 'LAST_REPEAT',
-            value: newLastRepeatValue,
-            id: generateId(),
-          })
-        )
+            fromJS({
+              property: 'LAST_REPEAT',
+              value: newLastRepeatValue,
+              id: generateId(),
+            })
+          )
     );
     state = addTodoStateChangeLogItem(
       state,
