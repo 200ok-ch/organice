@@ -9,6 +9,7 @@ import {
   updateHeadersTotalTimeLoggedRecursive,
   totalFilteredTimeLogged,
   updateHeadersTotalFilteredTimeLoggedRecursive,
+  hasActiveClock,
 } from '../lib/clocking';
 
 import {
@@ -727,14 +728,14 @@ const moveTableColumnLeft = (state) => {
       columnIndex === 0
         ? rows
         : rows.map((row) =>
-            row.update('contents', (contents) =>
-              contents.size === 0
-                ? contents
-                : contents
-                    .insert(columnIndex - 1, contents.get(columnIndex))
-                    .delete(columnIndex + 1)
-            )
+          row.update('contents', (contents) =>
+            contents.size === 0
+              ? contents
+              : contents
+                .insert(columnIndex - 1, contents.get(columnIndex))
+                .delete(columnIndex + 1)
           )
+        )
     )
   );
 
@@ -752,14 +753,14 @@ const moveTableColumnRight = (state) => {
       columnIndex + 1 >= rows.getIn([0, 'contents']).size
         ? rows
         : rows.map((row) =>
-            row.update('contents', (contents) =>
-              contents.size === 0
-                ? contents
-                : contents
-                    .insert(columnIndex, contents.get(columnIndex + 1))
-                    .delete(columnIndex + 2)
-            )
+          row.update('contents', (contents) =>
+            contents.size === 0
+              ? contents
+              : contents
+                .insert(columnIndex, contents.get(columnIndex + 1))
+                .delete(columnIndex + 2)
           )
+        )
     )
   );
 
@@ -1130,6 +1131,10 @@ const searchHeaders = ({ searchFilterExpr = [], headersToSearch, path }) => {
   return filteredHeaders;
 };
 
+const isActiveClockFilter = clockFilter => clockFilter.field.timerange.type === "point"
+  && clockFilter.field.timerange.point.type === "special"
+  && clockFilter.field.timerange.point.value === "now";
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
@@ -1167,9 +1172,13 @@ export const setSearchFilterInformation = (state, action) => {
     const headers = files.map((file) => file.get('headers'));
 
     // show clocked times & sum if there is a clock search term
-    const clockFilters = searchFilterExpr
+    const clockedTimeAndActiveClockFilters = searchFilterExpr
       .filter((f) => f.type === 'field')
       .filter((f) => f.field.type === 'clock');
+    const clockFilters = clockedTimeAndActiveClockFilters.filter(f => !isActiveClockFilter(f));
+    // check for special case "clock:now" which searches active clocks
+    const hasActiveClockFilter = clockedTimeAndActiveClockFilters.length !== clockFilters.length;
+
     const filterFunctions = clockFilters.map(timeFilter);
     const showClockedTimes = clockFilters.length !== 0;
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
@@ -1184,6 +1193,10 @@ export const setSearchFilterInformation = (state, action) => {
         path,
         subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
       );
+    }
+
+    if (hasActiveClockFilter) {
+      headersToSearch = headersToSearch.map((headersOfFile) => headersOfFile.filter(hasActiveClock))
     }
 
     // calculate relevant clocked times and total
@@ -1661,17 +1674,17 @@ function updatePlanningItemsWithRepeaters({
     state = state.updateIn(['headers', headerIndex, 'propertyListItems'], (propertyListItems) =>
       propertyListItems.some((item) => item.get('property') === 'LAST_REPEAT')
         ? propertyListItems.map((item) =>
-            item.get('property') === 'LAST_REPEAT'
-              ? item.set('value', fromJS(newLastRepeatValue))
-              : item
-          )
+          item.get('property') === 'LAST_REPEAT'
+            ? item.set('value', fromJS(newLastRepeatValue))
+            : item
+        )
         : propertyListItems.push(
-            fromJS({
-              property: 'LAST_REPEAT',
-              value: newLastRepeatValue,
-              id: generateId(),
-            })
-          )
+          fromJS({
+            property: 'LAST_REPEAT',
+            value: newLastRepeatValue,
+            id: generateId(),
+          })
+        )
     );
     state = addTodoStateChangeLogItem(
       state,
