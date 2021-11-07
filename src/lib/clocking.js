@@ -4,9 +4,6 @@ import { dateForTimestamp } from './timestamps';
 export const hasActiveClock = (header) => {
   const logBookEntries = header.get('logBookEntries', []);
   const activeEntries = logBookEntries.filter((entry) => entry.get('start') && !entry.get('end'));
-  if (activeEntries.size !== 0) {
-    console.debug(activeEntries);
-  }
   return activeEntries.size !== 0;
 };
 
