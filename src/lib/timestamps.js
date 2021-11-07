@@ -179,7 +179,7 @@ export const applyRepeater = (timestamp, currentDate) => {
         timestamp.get('repeaterValue'),
         timestamp.get('repeaterUnit')
       );
-      if(timestamp.get('repeaterUnit') != "h"){
+      if (timestamp.get('repeaterUnit') != "h") {
         let timestampDate = dateForTimestamp(timestamp);
         newDate = setHours(newDate, getHours(timestampDate));
         newDate = setMinutes(newDate, getMinutes(timestampDate));
