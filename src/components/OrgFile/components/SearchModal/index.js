@@ -7,7 +7,6 @@ import './stylesheet.css';
 
 import classNames from 'classnames';
 import HeaderListView from './components/HeaderListView';
-import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
 import { millisDuration } from '../../../../lib/timestamps';
@@ -20,7 +19,6 @@ import * as orgActions from '../../../../actions/org';
 function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
   const {
-    onClose,
     searchFilter,
     searchFilterValid,
     searchFilterSuggestions,
@@ -42,7 +40,7 @@ function SearchModal(props) {
   }
 
   return (
-    <Drawer onClose={onClose} maxSize={true}>
+    <>
       <div className="task-list__modal-title">
         <h2 className="agenda__title">{capitalize(context)}</h2>
         {showClockedTimes ? (
@@ -101,7 +99,7 @@ function SearchModal(props) {
       </div>
 
       <br />
-    </Drawer>
+    </>
   );
 }
 

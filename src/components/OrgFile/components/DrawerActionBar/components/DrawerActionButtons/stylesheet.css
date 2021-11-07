@@ -1,0 +1,55 @@
+@import '../../../../../../colors.css';
+
+.header-action-drawer-container {
+  color: var(--base01);
+
+  padding-bottom: 10px;
+
+  padding-right: 20px;
+}
+
+.header-action-drawer__row {
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 10px;
+}
+
+.header-action-drawer__ff-click-catcher-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.header-action-drawer__ff-click-catcher-container:hover {
+  color: var(--base02);
+}
+
+.header-action-drawer__ff-click-catcher {
+  height: 20px;
+  width: 20px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.header-action-drawer__separator {
+  background-color: var(--base01);
+
+  height: 15px;
+  width: 1px;
+
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.header-action-drawer__deadline-scheduled-button {
+  cursor: pointer;
+  text-transform: uppercase;
+  width: 90px;
+  text-align: center;
+}
+
+.header-action-drawer__deadline-scheduled-button:hover {
+  color: var(--base02);
+}

@@ -40,8 +40,8 @@ class Header extends PureComponent {
       'handleTouchEnd',
       'handleTouchCancel',
       'handleHeaderClick',
-      'handleEnterTitleEditMode',
-      'handleEnterDescriptionEditMode',
+      'handleShowTitleModal',
+      'handleShowDescriptionModal',
       'handleShowTagsModal',
       'handleShowPropertyListEditorModal',
       'handleNarrow',
@@ -81,9 +81,6 @@ class Header extends PureComponent {
 
   handleDragStart(event, dragX, dragY) {
     if (this.props.shouldDisableActions) {
-      return;
-    }
-    if (this.props.inEditMode) {
       return;
     }
 
@@ -197,13 +194,12 @@ class Header extends PureComponent {
     }
   }
 
-  handleEnterTitleEditMode() {
-    this.props.org.enterEditMode('title');
+  handleShowTitleModal() {
+    this.props.base.activatePopup('title-editor');
   }
 
-  handleEnterDescriptionEditMode() {
-    this.props.org.openHeader(this.props.header.get('id'));
-    this.props.org.enterEditMode('description');
+  handleShowDescriptionModal() {
+    this.props.base.activatePopup('description-editor');
   }
 
   handleShowTagsModal() {
@@ -309,11 +305,7 @@ ${header.get('rawDescription')}`;
   }
 
   handleAddNoteClick() {
-    let input = prompt('Enter a note to add to the header:');
-    if (input !== null) input = input.trim();
-    if (!input) return;
-
-    this.props.org.addNote(input, new Date());
+    this.props.base.activatePopup('note-editor');
   }
 
   handlePopupClose() {
@@ -507,8 +499,8 @@ ${header.get('rawDescription')}`;
                 style={{ marginRight: rightSwipeActionContainerStyle.width }}
               >
                 <HeaderActionDrawer
-                  onEnterTitleEditMode={this.handleEnterTitleEditMode}
-                  onEnterDescriptionEditMode={this.handleEnterDescriptionEditMode}
+                  onTitleClick={this.handleShowTitleModal}
+                  onDescriptionClick={this.handleShowDescriptionModal}
                   isNarrowed={isNarrowed}
                   onTagsClick={this.handleShowTagsModal}
                   onPropertiesClick={this.handleShowPropertyListEditorModal}
@@ -547,7 +539,6 @@ const mapStateToProps = (state, ownProps) => {
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     narrowedHeader,
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
-    inEditMode: !!file.get('editMode'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
   };
 };

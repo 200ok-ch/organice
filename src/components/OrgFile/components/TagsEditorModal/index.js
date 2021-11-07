@@ -4,8 +4,6 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import './stylesheet.css';
 
-import Drawer from '../../../UI/Drawer/';
-
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -61,13 +59,13 @@ export default class TagsEditorModal extends PureComponent {
   }
 
   render() {
-    const { header, onClose } = this.props;
+    const { header } = this.props;
     const { allTags } = this.state;
 
     const headerTags = header.getIn(['titleLine', 'tags']);
 
     return (
-      <Drawer onClose={onClose}>
+      <>
         <h2 className="drawer-modal__title">Edit tags</h2>
 
         <datalist id="drawer-modal__datalist-tag-names">
@@ -152,7 +150,7 @@ export default class TagsEditorModal extends PureComponent {
               );
             })}
         </div>
-      </Drawer>
+      </>
     );
   }
 }

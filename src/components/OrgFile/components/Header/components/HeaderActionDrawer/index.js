@@ -20,8 +20,8 @@ export default class HeaderActionDrawer extends PureComponent {
 
   render() {
     const {
-      onEnterTitleEditMode,
-      onEnterDescriptionEditMode,
+      onTitleClick,
+      onDescriptionClick,
       onTagsClick,
       onPropertiesClick,
       isNarrowed,
@@ -42,13 +42,13 @@ export default class HeaderActionDrawer extends PureComponent {
         <div className="header-action-drawer__row">
           {this.iconWithFFClickCatcher({
             className: 'fas fa-pencil-alt fa-lg',
-            onClick: onEnterTitleEditMode,
+            onClick: onTitleClick,
             title: 'Edit header title',
           })}
 
           {this.iconWithFFClickCatcher({
             className: 'fas fa-edit fa-lg',
-            onClick: onEnterDescriptionEditMode,
+            onClick: onDescriptionClick,
             title: 'Edit header description',
             testId: 'edit-header-title',
           })}

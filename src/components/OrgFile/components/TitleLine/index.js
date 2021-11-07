@@ -21,17 +21,9 @@ class TitleLine extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleRef',
-      'handleTitleSpanRef',
-      'handleTextareaRef',
       'handleTitleClick',
-      'handleTextareaBlur',
-      'handleTextareaFocus',
-      'handleTitleChange',
-      'handleTitleFieldClick',
       'handleTodoClick',
       'handleTimestampClick',
-      'handleInsertTimestamp',
     ]);
 
     this.state = {
@@ -54,10 +46,6 @@ class TitleLine extends PureComponent {
   componentDidUpdate(prevProps) {
     const { header } = this.props;
 
-    if (prevProps.inEditMode && !this.props.inEditMode) {
-      this.props.org.updateHeaderTitle(header.get('id'), this.state.titleValue);
-    }
-
     if (prevProps.header !== this.props.header) {
       this.setState(
         {
@@ -66,18 +54,6 @@ class TitleLine extends PureComponent {
         () => this.storeContainerWidth()
       );
     }
-  }
-
-  handleRef(div) {
-    this.containerDiv = div;
-  }
-
-  handleTitleSpanRef(span) {
-    this.titleSpan = span;
-  }
-
-  handleTextareaRef(textarea) {
-    this.textarea = textarea;
   }
 
   calculateRawTitle(header) {
@@ -113,42 +89,6 @@ class TitleLine extends PureComponent {
     }
   }
 
-  // Rationale for setTimeout documented in HeaderContent/index.js
-  handleTextareaBlur() {
-    setTimeout(() => {
-      if (!this.state.shouldIgnoreBlur) {
-        this.props.org.exitEditMode();
-      } else {
-        this.setState({ shouldIgnoreBlur: false });
-      }
-    }, 200);
-  }
-
-  handleTextareaFocus(event) {
-    const { header } = this.props;
-    const rawTitle = header.getIn(['titleLine', 'rawTitle']);
-    if (rawTitle === '') {
-      const text = event.target.value;
-      event.target.selectionStart = text.length;
-      event.target.selectionEnd = text.length;
-    }
-  }
-
-  handleTitleChange(event) {
-    // If the last character typed was a newline at the end, exit edit mode.
-    const newTitle = event.target.value;
-    const lastCharacter = newTitle[newTitle.length - 1];
-    if (
-      this.state.titleValue === newTitle.substring(0, newTitle.length - 1) &&
-      lastCharacter === '\n'
-    ) {
-      this.props.org.exitEditMode();
-      return;
-    }
-
-    this.setState({ titleValue: newTitle });
-  }
-
   handleTitleFieldClick(event) {
     event.stopPropagation();
   }
@@ -160,29 +100,11 @@ class TitleLine extends PureComponent {
     });
   }
 
-  handleInsertTimestamp(event) {
-    this.setState({ shouldIgnoreBlur: true });
-
-    const { titleValue } = this.state;
-    const insertionIndex = this.textarea.selectionStart;
-    this.setState({
-      titleValue:
-        titleValue.substring(0, insertionIndex) +
-        getCurrentTimestampAsText() +
-        titleValue.substring(this.textarea.selectionEnd || insertionIndex),
-    });
-
-    this.textarea.focus();
-
-    event.stopPropagation();
-  }
-
   render() {
     const {
       header,
       color,
       hasContent,
-      inEditMode,
       shouldDisableActions,
       shouldDisableExplicitWidth,
       todoKeywordSets,
@@ -209,10 +131,9 @@ class TitleLine extends PureComponent {
       <div
         className="title-line"
         onClick={this.handleTitleClick}
-        ref={this.handleRef}
         style={{ width: shouldDisableExplicitWidth ? '' : containerWidth }}
       >
-        {!inEditMode && !!todoKeyword ? (
+        {!!todoKeyword ? (
           <span
             // INFO: Instead of `todoKeyword.toLowerCase()` it would
             // be best to render todo-keyword--done if the keyword is
@@ -232,32 +153,10 @@ class TitleLine extends PureComponent {
           ''
         )}
 
-        {inEditMode ? (
-          <div className="title-line__edit-container">
-            <textarea
-              autoFocus
-              className="textarea"
-              data-testid="titleLineInput"
-              rows="3"
-              ref={this.handleTextareaRef}
-              value={this.state.titleValue}
-              onBlur={this.handleTextareaBlur}
-              onFocus={this.handleTextareaFocus}
-              onChange={this.handleTitleChange}
-              onClick={this.handleTitleFieldClick}
-            />
-            <div
-              className="title-line__insert-timestamp-button"
-              onClick={this.handleInsertTimestamp}
-            >
-              <i className="fas fa-plus insert-timestamp-icon" />
-              Insert timestamp
-            </div>
-          </div>
-        ) : (
+        {
           <div style={{ width: '100%' }}>
             <div className="title-line-text">
-              <span style={titleStyle} ref={this.handleTitleSpanRef}>
+              <span style={titleStyle}>
                 <AttributedString
                   parts={header.getIn(['titleLine', 'title'])}
                   subPartDataAndHandlers={{
@@ -284,7 +183,7 @@ class TitleLine extends PureComponent {
               </div>
             )}
           </div>
-        )}
+        }
       </div>
     );
   }
@@ -294,9 +193,6 @@ const mapStateToProps = (state, ownProps) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path]);
   return {
-    inEditMode:
-      file.get('editMode') === 'title' &&
-      file.get('selectedHeaderId') === ownProps.header.get('id'),
     setShouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),

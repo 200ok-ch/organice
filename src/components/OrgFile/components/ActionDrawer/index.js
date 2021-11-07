@@ -24,7 +24,6 @@ const ActionDrawer = ({
   captureTemplates,
   path,
   selectedTableCellId,
-  inEditMode,
   isLoading,
   online,
   shouldDisableSyncButtons,
@@ -55,8 +54,6 @@ const ActionDrawer = ({
   const handleMoveSubtreeLeftClick = () => org.moveSubtreeLeft(selectedHeaderId);
 
   const handleMoveSubtreeRightClick = () => org.moveSubtreeRight(selectedHeaderId);
-
-  const handleDoneClick = () => org.exitEditMode();
 
   const handleCaptureButtonClick = (templateId) => () => {
     setIsDisplayingCaptureButtons(false);
@@ -345,11 +342,7 @@ const ActionDrawer = ({
 
   return (
     <div className="action-drawer-container nice-scroll">
-      {inEditMode ? (
-        <button className="btn action-drawer__done-btn" onClick={handleDoneClick}>
-          Done
-        </button>
-      ) : (
+      {
         <Fragment>
           <ActionButton
             iconName="cloud"
@@ -384,7 +377,7 @@ const ActionDrawer = ({
           {renderSearchButtons()}
           {renderCaptureButtons()}
         </Fragment>
-      )}
+      }
     </div>
   );
 };
@@ -393,7 +386,6 @@ const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path], Map());
   return {
-    inEditMode: !!file.get('editMode'),
     selectedHeaderId: file.get('selectedHeaderId'),
     isDirty: file.get('isDirty'),
     isNarrowedHeaderActive: !!file.get('narrowedHeaderId'),

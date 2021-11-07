@@ -600,6 +600,8 @@ const setOpennessState = (state, action) => {
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
 
+const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
+
 const setSelectedTableCellId = (state, action) => state.set('selectedTableCellId', action.cellId);
 
 const updateDescriptionOfHeaderContainingTableCell = (state, cellId, header = null) => {
@@ -1387,6 +1389,8 @@ const reducer = (state, action) => {
       return inFile(narrowHeader);
     case 'WIDEN_HEADER':
       return inFile(widenHeader);
+      case 'SET_SELECTED_TABLE_ID':
+      return inFile(setSelectedTableId);
     case 'SET_SELECTED_TABLE_CELL_ID':
       return inFile(setSelectedTableCellId);
     case 'ADD_NEW_TABLE_ROW':
