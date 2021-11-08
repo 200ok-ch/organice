@@ -208,13 +208,7 @@ class TableEditorModal extends PureComponent {
     return (
       <>
         <h2 className="drawer-modal__title">Edit table</h2>
-        <div
-          style={{
-            overflowX: 'auto',
-            overflowY: 'auto',
-            maxHeight: selectedTableCellId ? '76.5vh' : undefined,
-          }}
-        >
+        <div style={{ overflowX: 'auto', overflowY: 'auto' }}>
           <table className="table-part">
             <tbody>
               {table.get('contents').map((row) => (
@@ -268,7 +262,10 @@ class TableEditorModal extends PureComponent {
           </table>
         </div>
 
-        <Collapse isOpened={!shouldDisableActions}>
+        <Collapse
+          isOpened={!shouldDisableActions}
+          style={{ minHeight: selectedTableCellId ? '100px' : undefined }}
+        >
           <TableActionButtons subPartDataAndHandlers={subPartDataAndHandlers} />
         </Collapse>
       </>
