@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Map } from 'immutable';
+
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
@@ -107,7 +109,7 @@ class DrawerActionBar extends PureComponent {
 
 const getSelectedHeader = (state) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path], new Map());
+  const file = state.org.present.getIn(['files', path], Map());
   const headerId = file.get('selectedHeaderId');
   const headers = file.get('headers');
   if (!headers) {
@@ -122,7 +124,7 @@ const getSelectedHeader = (state) => {
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path], new Map());
+  const file = state.org.present.getIn(['files', path], Map());
   const activePopup = state.base.get('activePopup');
   return {
     selectedHeaderId: file.get('selectedHeaderId'),
