@@ -28,6 +28,7 @@ const ActionDrawer = ({
   isLoading,
   online,
   shouldDisableSyncButtons,
+  activeClocks,
 }) => {
   const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
   const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
@@ -183,6 +184,7 @@ const ActionDrawer = ({
               iconName={isDisplayingSearchButtons ? 'times' : 'search'}
               isDisabled={false}
               onClick={handleMainSearchButtonClick}
+              additionalClassName={activeClocks !== 0 ? 'active-clock-indicator' : undefined}
               style={mainButtonStyle}
               tooltip={
                 isDisplayingSearchButtons ? 'Hide Search / Task List' : 'Show Search / Task List'
@@ -402,6 +404,7 @@ const mapStateToProps = (state) => {
     path,
     isLoading: !state.base.get('isLoading').isEmpty(),
     online: state.base.get('online'),
+    activeClocks: file.get('activeClocks'),
   };
 };
 

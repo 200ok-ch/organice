@@ -47,3 +47,7 @@
 .action-drawer__capture-buttons-container {
   position: relative;
 }
+
+.active-clock-indicator {
+  background-color: red;
+}

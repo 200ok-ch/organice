@@ -67,7 +67,8 @@ export const parseFile = (state, action) => {
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
     .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
-    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
+    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'))
+    .setIn(['files', path, 'activeClocks'], parsedFile.get('activeClocks'));
 };
 
 const clearSearch = (state) => state.setIn(['search', 'filteredHeaders'], null);
@@ -1054,6 +1055,7 @@ export const setLogEntryStop = (state, action) => {
   const entryIndex = state
     .getIn(['headers', headerIdx, 'logBookEntries'])
     .findIndex((entry) => entry.get('id') === entryId);
+  state = state.update('activeClocks', (i) => i - 1);
   return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
 };
 
@@ -1065,6 +1067,7 @@ export const createLogEntryStart = (state, action) => {
     start: time,
     end: null,
   });
+  state = state.update('activeClocks', (i) => i + 1);
   return state.updateIn(['headers', headerIdx, 'logBookEntries'], (entries) =>
     !!entries ? entries.unshift(newEntry) : List([newEntry])
   );
