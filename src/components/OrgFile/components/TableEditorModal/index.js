@@ -208,57 +208,65 @@ class TableEditorModal extends PureComponent {
     return (
       <>
         <h2 className="drawer-modal__title">Edit table</h2>
-        <table className="table-part">
-          <tbody>
-            {table.get('contents').map((row) => (
-              <tr key={row.get('id')}>
-                {row.get('contents').map((cell) => {
-                  const isCellSelected = cell.get('id') === selectedTableCellId;
+        <div
+          style={{
+            overflowX: 'auto',
+            overflowY: 'auto',
+            maxHeight: selectedTableCellId ? '76.5vh' : undefined,
+          }}
+        >
+          <table className="table-part">
+            <tbody>
+              {table.get('contents').map((row) => (
+                <tr key={row.get('id')}>
+                  {row.get('contents').map((cell) => {
+                    const isCellSelected = cell.get('id') === selectedTableCellId;
 
-                  const className = classNames('table-part__cell', {
-                    'table-part__cell--selected': isCellSelected,
-                  });
+                    const className = classNames('table-part__cell', {
+                      'table-part__cell--selected': isCellSelected,
+                    });
 
-                  return (
-                    <td
-                      className={className}
-                      key={cell.get('id')}
-                      onClick={this.handleCellSelect(cell.get('id'))}
-                    >
-                      {isCellSelected && inTableEditMode ? (
-                        <div className="table-cell__edit-container">
-                          <textarea
-                            autoFocus
-                            className="textarea"
-                            rows="3"
-                            value={rawCellValues.get(cell.get('id'))}
-                            onBlur={this.handleTextareaBlur}
-                            onChange={this.handleCellChange}
-                            ref={this.handleTextareaRef}
-                          />
-                          <div
-                            className="table-cell__insert-timestamp-button"
-                            onClick={this.handleInsertTimestamp}
-                          >
-                            <i className="fas fa-plus insert-timestamp-icon" />
-                            Insert timestamp
+                    return (
+                      <td
+                        className={className}
+                        key={cell.get('id')}
+                        onClick={this.handleCellSelect(cell.get('id'))}
+                      >
+                        {isCellSelected && inTableEditMode ? (
+                          <div className="table-cell__edit-container">
+                            <textarea
+                              autoFocus
+                              className="textarea"
+                              rows="3"
+                              value={rawCellValues.get(cell.get('id'))}
+                              onBlur={this.handleTextareaBlur}
+                              onChange={this.handleCellChange}
+                              ref={this.handleTextareaRef}
+                            />
+                            <div
+                              className="table-cell__insert-timestamp-button"
+                              onClick={this.handleInsertTimestamp}
+                            >
+                              <i className="fas fa-plus insert-timestamp-icon" />
+                              Insert timestamp
+                            </div>
                           </div>
-                        </div>
-                      ) : cell.get('contents').size > 0 ? (
-                        <AttributedString
-                          parts={cell.get('contents')}
-                          subPartDataAndHandlers={subPartDataAndHandlers}
-                        />
-                      ) : (
-                        '   '
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                        ) : cell.get('contents').size > 0 ? (
+                          <AttributedString
+                            parts={cell.get('contents')}
+                            subPartDataAndHandlers={subPartDataAndHandlers}
+                          />
+                        ) : (
+                          '   '
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <Collapse isOpened={!shouldDisableActions}>
           <TableActionButtons subPartDataAndHandlers={subPartDataAndHandlers} />
