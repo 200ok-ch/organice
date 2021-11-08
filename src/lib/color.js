@@ -354,6 +354,14 @@ const themes = {
 };
 
 export const loadTheme = (theme = 'Solarized', colorScheme = 'Light') => {
+  if (colorScheme === 'OS') {
+    const osPreference = window.matchMedia('(prefers-color-scheme: dark)');
+    if ('matches' in osPreference) {
+      colorScheme = osPreference.matches ? 'Dark' : 'Light';
+    } else {
+      colorScheme = 'Light';
+    }
+  }
   const style = document.documentElement.style;
   Object.entries(themes[theme][colorScheme]).forEach(([k, v]) => style.setProperty(k, v));
 
