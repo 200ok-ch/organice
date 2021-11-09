@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2021-11-09 Tue]
+** Fixed
+   - Fix repeater adjusting time of date when using =.+=
+     - When repeaterUnit is not "h", hour and minutes are never touched.
+     - When repeaterUnit is "h", hour and minutes are set to n hour(s) from now (as it was already implemented before this fix).
+   - Relevant PR: https://github.com/200ok-ch/organice/pull/746
 * [2021-11-03 Wed]
 ** Fixed
    - Fix GitLab OAuth token refresh
