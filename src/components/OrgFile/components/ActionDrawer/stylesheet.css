@@ -49,5 +49,5 @@
 }
 
 .active-clock-indicator {
-  background-color: red;
+  background-color: var(--orange);
 }
