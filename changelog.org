@@ -8,6 +8,10 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 * [2021-11-09 Tue]
+** Added
+   - Setting to respect OS light/dark-mode preferences
+     - organice already queried the OS for light/dark-mode preference. But changing the setting in organice would override the OS preference.
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/749
 ** Fixed
    - Fix repeater adjusting time of date when using =.+=
      - When repeaterUnit is not "h", hour and minutes are never touched.
