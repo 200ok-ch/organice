@@ -134,6 +134,7 @@ class TableEditorModal extends PureComponent {
 
   handleExitTableEditMode() {
     this.props.org.exitEditMode();
+    this.props.base.closePopup();
   }
 
   handleEnterTableEditMode() {
@@ -203,6 +204,10 @@ class TableEditorModal extends PureComponent {
       onRightClick: this.handleRightClick,
       shouldDisableActions,
     };
+
+    if (table.get('contents').size === 0) {
+      this.handleExitTableEditMode();
+    }
 
     return (
       <>
