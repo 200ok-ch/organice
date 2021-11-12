@@ -250,7 +250,7 @@ class OrgFile extends PureComponent {
   }
 
   handleTitlePopupSwitch(selectedHeader, titleValue) {
-    if (generateTitleLine(selectedHeader.toJS()) !== titleValue) {
+    if (generateTitleLine(selectedHeader.toJS(), false) !== titleValue) {
       this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
     }
   }
