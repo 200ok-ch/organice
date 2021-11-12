@@ -412,6 +412,8 @@ class OrgFile extends PureComponent {
           />
         );
       case 'timestamp-editor':
+      case 'scheduled-editor':
+      case 'deadline-editor':
         let editingTimestamp = null;
         if (activePopupData.get('timestampId')) {
           editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
@@ -438,6 +440,7 @@ class OrgFile extends PureComponent {
             headerId={activePopupData.get('headerId')}
             timestamp={editingTimestamp}
             timestampId={activePopupData.get('timestampId')}
+            timestampType={activePopupType}
             planningItemIndex={activePopupData.get('planningItemIndex')}
             singleTimestampOnly={!activePopupData.get('timestampId')}
             onClose={this.getPopupCloseAction(activePopupType)}
@@ -615,6 +618,8 @@ class OrgFile extends PureComponent {
                 activePopupType === 'tags-editor' ||
                 activePopupType === 'property-list-editor' ||
                 activePopupType === 'timestamp-editor' ||
+                activePopupType === 'scheduled-editor' ||
+                activePopupType === 'deadline-editor' ||
                 activePopupType === 'note-editor') && (
                 <DrawerActionBar
                   onSwitch={() =>

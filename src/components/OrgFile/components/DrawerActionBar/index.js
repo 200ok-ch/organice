@@ -53,6 +53,10 @@ class DrawerActionBar extends PureComponent {
 
   handleDeadlineAndScheduledClick(planningType) {
     const { header, selectedHeaderId } = this.props;
+    const popupType = {
+      DEADLINE: 'deadline-editor',
+      SCHEDULED: 'scheduled-editor',
+    }[planningType];
 
     const existingDeadlinePlanningItemIndex = header
       .get('planningItems', [])
@@ -60,12 +64,12 @@ class DrawerActionBar extends PureComponent {
 
     if (existingDeadlinePlanningItemIndex === -1) {
       this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
-      this.props.base.activatePopup('timestamp-editor', {
+      this.props.base.activatePopup(popupType, {
         headerId: selectedHeaderId,
         planningItemIndex: header.get('planningItems').size,
       });
     } else {
-      this.props.base.activatePopup('timestamp-editor', {
+      this.props.base.activatePopup(popupType, {
         headerId: header.get('id'),
         planningItemIndex: existingDeadlinePlanningItemIndex,
       });

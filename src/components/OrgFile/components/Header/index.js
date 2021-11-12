@@ -230,6 +230,10 @@ class Header extends PureComponent {
 
   handleDeadlineAndScheduledClick(planningType) {
     const { header } = this.props;
+    const popupType = {
+      DEADLINE: 'deadline-editor',
+      SCHEDULED: 'scheduled-editor',
+    }[planningType];
 
     const existingDeadlinePlanningItemIndex = header
       .get('planningItems', [])
@@ -237,12 +241,12 @@ class Header extends PureComponent {
 
     if (existingDeadlinePlanningItemIndex === -1) {
       this.props.org.addNewPlanningItem(header.get('id'), planningType);
-      this.props.base.activatePopup('timestamp-editor', {
+      this.props.base.activatePopup(popupType, {
         headerId: header.get('id'),
         planningItemIndex: header.get('planningItems').size,
       });
     } else {
-      this.props.base.activatePopup('timestamp-editor', {
+      this.props.base.activatePopup(popupType, {
         headerId: header.get('id'),
         planningItemIndex: existingDeadlinePlanningItemIndex,
       });

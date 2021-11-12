@@ -14,8 +14,8 @@ export default class PlanningItems extends PureComponent {
     _.bindAll(this, ['handleTimestampClick']);
   }
 
-  handleTimestampClick(planningItemIndex) {
-    return () => this.props.onClick(planningItemIndex);
+  handleTimestampClick(planningType, planningItemIndex) {
+    return () => this.props.onClick(planningType, planningItemIndex);
   }
 
   render() {
@@ -29,7 +29,10 @@ export default class PlanningItems extends PureComponent {
         {planningItemsToRender.map((planningItem, index) => (
           <div key={planningItem.get('id')} className="planning-items__item-container">
             <div className="planning-item__type">{planningItem.get('type')}: </div>
-            <div className="planning-item__timestamp" onClick={this.handleTimestampClick(index)}>
+            <div
+              className="planning-item__timestamp"
+              onClick={this.handleTimestampClick(planningItem.get('type'), index)}
+            >
               {renderAsText(planningItem.get('timestamp'))}
             </div>
           </div>

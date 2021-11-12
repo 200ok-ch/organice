@@ -111,8 +111,15 @@ class HeaderContent extends PureComponent {
   }
 
   handlePlanningItemTimestampClick(headerId) {
-    return (planningItemIndex) =>
-      this.props.base.activatePopup('timestamp-editor', { headerId, planningItemIndex });
+    return (planningType, planningItemIndex) => {
+      const popupType =
+        {
+          DEADLINE: 'deadline-editor',
+          SCHEDULED: 'scheduled-editor',
+        }[planningType] || 'timestamp-editor';
+      console.debug(popupType);
+      this.props.base.activatePopup(popupType, { headerId, planningItemIndex });
+    };
   }
 
   handlePropertyListEdit() {
