@@ -52,10 +52,10 @@ class HeaderContent extends PureComponent {
   componentDidUpdate(prevProps) {
     const { header } = this.props;
 
-    if (prevProps.header !== this.props.header) {
+    if (prevProps.header !== header) {
       this.setState(
         {
-          descriptionValue: this.calculateRawDescription(this.props.header),
+          descriptionValue: this.calculateRawDescription(header),
         },
         () => this.storeContainerWidth()
       );

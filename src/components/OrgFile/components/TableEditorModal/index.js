@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { UnmountClosed as Collapse } from 'react-collapse';
 
 import './stylesheet.css';
 

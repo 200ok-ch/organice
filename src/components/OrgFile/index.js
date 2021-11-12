@@ -261,7 +261,7 @@ class OrgFile extends PureComponent {
   }
 
   handleDescriptionPopupSwitch(selectedHeader, descriptionValue) {
-    if (selectedHeader.get('rawDescription') === descriptionValue) {
+    if (selectedHeader.get('rawDescription') !== descriptionValue) {
       this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
     }
   }

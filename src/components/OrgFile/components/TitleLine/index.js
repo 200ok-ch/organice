@@ -10,7 +10,6 @@ import classNames from 'classnames';
 import * as orgActions from '../../../../actions/org';
 import * as baseActions from '../../../../actions/base';
 
-import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 import { createIsTodoKeywordInDoneState } from '../../../../lib/org_utils';
 
 import { generateTitleLine } from '../../../../lib/export_org';
@@ -20,11 +19,7 @@ class TitleLine extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, [
-      'handleTitleClick',
-      'handleTodoClick',
-      'handleTimestampClick',
-    ]);
+    _.bindAll(this, ['handleTitleClick', 'handleTodoClick', 'handleTimestampClick']);
 
     this.state = {
       titleValue: this.calculateRawTitle(props.header),
@@ -46,10 +41,10 @@ class TitleLine extends PureComponent {
   componentDidUpdate(prevProps) {
     const { header } = this.props;
 
-    if (prevProps.header !== this.props.header) {
+    if (prevProps.header !== header) {
       this.setState(
         {
-          titleValue: this.calculateRawTitle(this.props.header),
+          titleValue: this.calculateRawTitle(header),
         },
         () => this.storeContainerWidth()
       );
