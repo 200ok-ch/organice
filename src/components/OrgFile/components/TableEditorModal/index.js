@@ -261,13 +261,7 @@ class TableEditorModal extends PureComponent {
             </tbody>
           </table>
         </div>
-
-        <Collapse
-          isOpened={!shouldDisableActions}
-          style={{ minHeight: selectedTableCellId ? '100px' : undefined }}
-        >
-          <TableActionButtons subPartDataAndHandlers={subPartDataAndHandlers} />
-        </Collapse>
+        <TableActionButtons subPartDataAndHandlers={subPartDataAndHandlers} />
       </>
     );
   }

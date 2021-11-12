@@ -129,10 +129,7 @@ class HeaderContent extends PureComponent {
     }
 
     return (
-      <div
-        className="header-content-container nice-scroll"
-        style={{ width: containerWidth }}
-      >
+      <div className="header-content-container nice-scroll" style={{ width: containerWidth }}>
         {
           <Fragment>
             <PlanningItems
@@ -160,7 +157,7 @@ class HeaderContent extends PureComponent {
             <AttributedString
               parts={header.get('description')}
               subPartDataAndHandlers={{
-                onTableSelect: this.handleTableSelect,
+                onTableSelect: shouldDisableActions ? undefined : this.handleTableSelect,
                 onCheckboxClick: this.handleCheckboxClick,
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,

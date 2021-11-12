@@ -3,6 +3,7 @@
 .table-action-drawer {
   display: flex;
   justify-content: space-around;
+  min-height: '100px';
 }
 
 .table-action-drawer-container {
