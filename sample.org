@@ -117,7 +117,7 @@ If you'd like to automatically push changes as you make them, you can enable "Li
 * Tables
 organice has native support for viewing and editing tables.
 
-Try playing around with this one by first clicking on a cell:
+Try playing around with this one by first clicking on the table:
 
 | Dog name | Age | Weight (in lbs) | Parent   | Score (1-10) |
 |----------+-----+-----------------+----------+--------------|
@@ -133,15 +133,18 @@ Try playing around with this one by first clicking on a cell:
 |----------+-----+-----------------+----------+--------------|
 | Murphy   | 0.5 |              25 | Jordan   |           15 |
 
-** New action drawer items
-When a table cell is selected, a table-specific action drawer appears.
+** Table actions
+When a table is selected, the table editor is opened.
+
+Below the table a table-specific action drawer appears.
+
+For the icons to trigger any actions, you first need to select a table cell.
 
 The leftmost icon allows you to edit a cell.
 
-On the right side, the top two icons let you add and remove rows. The bottom two icons let you add and remove columns.
+In the Middle, the top two icons let you add and remove rows. The bottom two icons let you add and remove columns.
 
-** Moving rows and columns
-When a table cell is selected, the four-way arrow button at the bottom of the screen changes to manipulate tables.
+On the right side, the four-way arrow buttons allow you to manipulate tables by moving rows and columns.
 
 Press up and down to move rows, and left and right to move columns.
 * Lists and checkboxes
