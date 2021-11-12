@@ -45,6 +45,7 @@ import {
 
 import _ from 'lodash';
 import { fromJS, List, Map, Set } from 'immutable';
+import { generateTitleLine } from '../../lib/export_org';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -81,6 +82,7 @@ class OrgFile extends PureComponent {
       'handleTagsChange',
       'handlePropertyListItemsChange',
       'getPopupCloseAction',
+      'getPopupSwitchAction',
     ]);
 
     this.state = {
@@ -247,8 +249,10 @@ class OrgFile extends PureComponent {
     }
   }
 
-  handleTitlePopupSwitch(titleValue) {
-    this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+  handleTitlePopupSwitch(selectedHeader, titleValue) {
+    if (generateTitleLine(selectedHeader.toJS()) !== titleValue) {
+      this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+    }
   }
 
   handleTitlePopupClose(titleValue) {
@@ -256,8 +260,10 @@ class OrgFile extends PureComponent {
     this.props.base.closePopup();
   }
 
-  handleDescriptionPopupSwitch(descriptionValue) {
-    this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+  handleDescriptionPopupSwitch(selectedHeader, descriptionValue) {
+    if (selectedHeader.get('rawDescription') === descriptionValue) {
+      this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    }
   }
 
   handleDescriptionPopupClose(descriptionValue) {
@@ -318,9 +324,10 @@ class OrgFile extends PureComponent {
   getPopupSwitchAction(activePopupType) {
     switch (activePopupType) {
       case 'title-editor':
-        return this.handleTitlePopupSwitch;
+        return (titleValue) => this.handleTitlePopupSwitch(this.props.selectedHeader, titleValue);
       case 'description-editor':
-        return this.handleDescriptionPopupSwitch;
+        return (descriptionValue) =>
+          this.handleDescriptionPopupSwitch(this.props.selectedHeader, descriptionValue);
       default:
         return () => {};
     }
