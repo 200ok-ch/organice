@@ -1389,7 +1389,7 @@ const reducer = (state, action) => {
       return inFile(narrowHeader);
     case 'WIDEN_HEADER':
       return inFile(widenHeader);
-      case 'SET_SELECTED_TABLE_ID':
+    case 'SET_SELECTED_TABLE_ID':
       return inFile(setSelectedTableId);
     case 'SET_SELECTED_TABLE_CELL_ID':
       return inFile(setSelectedTableCellId);
