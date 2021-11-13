@@ -84,6 +84,7 @@ class OrgFile extends PureComponent {
       'getPopupCloseAction',
       'getPopupSwitchAction',
       'checkPopupAndHeader',
+      'checkPopup',
     ]);
 
     this.state = {
@@ -513,7 +514,20 @@ class OrgFile extends PureComponent {
   // Some keyboard shortcuts only make sense when a header is selected and no popup is open
   checkPopupAndHeader(callback) {
     return (event) => {
-      if (this.props.selectedHeader && !this.props.activePopupType && !this.props.shouldDisableActions) {
+      if (
+        this.props.selectedHeader &&
+        !this.props.activePopupType &&
+        !this.props.shouldDisableActions
+      ) {
+        callback(event);
+      }
+    };
+  }
+
+  // Read only actions only need to be disabled when a popup is open
+  checkPopup(callback) {
+    return (event) => {
+      if (!this.props.activePopupType) {
         callback(event);
       }
     };
@@ -572,13 +586,13 @@ class OrgFile extends PureComponent {
     };
 
     const handlers = {
-      selectNextVisibleHeader: this.checkPopupAndHeader(
+      selectNextVisibleHeader: this.checkPopup(
         preventDefault(this.handleSelectNextVisibleHeaderHotKey)
       ),
-      selectPreviousVisibleHeader: this.checkPopupAndHeader(
+      selectPreviousVisibleHeader: this.checkPopup(
         preventDefault(this.handleSelectPreviousVisibleHeaderHotKey)
       ),
-      toggleHeaderOpened: this.checkPopupAndHeader(
+      toggleHeaderOpened: this.checkPopup(
         preventDefault(this.handleToggleHeaderOpenedHotKey, true)
       ),
       advanceTodo: this.checkPopupAndHeader(preventDefault(this.handleAdvanceTodoHotKey)),
