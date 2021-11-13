@@ -117,7 +117,6 @@ class HeaderContent extends PureComponent {
           DEADLINE: 'deadline-editor',
           SCHEDULED: 'scheduled-editor',
         }[planningType] || 'timestamp-editor';
-      console.debug(popupType);
       this.props.base.activatePopup(popupType, { headerId, planningItemIndex });
     };
   }
