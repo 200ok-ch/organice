@@ -66,7 +66,7 @@ class NoteEditorModal extends PureComponent {
         />
         <button
           className="btn note-editor__done-btn"
-          onClick={(e) => this.addNote(this.textarea.value)}
+          onClick={() => this.addNote(this.textarea.value)}
         >
           Add
         </button>
