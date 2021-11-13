@@ -45,7 +45,7 @@ import {
 
 import _ from 'lodash';
 import { fromJS, List, Map, Set } from 'immutable';
-import { generateTitleLine } from '../../lib/export_org';
+import { createRawDescriptionText, generateTitleLine } from '../../lib/export_org';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -250,23 +250,32 @@ class OrgFile extends PureComponent {
 
   handleTitlePopupSwitch(selectedHeader, titleValue) {
     if (generateTitleLine(selectedHeader.toJS(), false) !== titleValue) {
-      this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+      this.props.org.updateHeaderTitle(selectedHeader.get('id'), titleValue);
     }
   }
 
   handleTitlePopupClose(titleValue) {
-    this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+    if (generateTitleLine(this.props.selectedHeader.toJS(), false) !== titleValue) {
+      this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+    }
     this.props.base.closePopup();
   }
 
   handleDescriptionPopupSwitch(selectedHeader, descriptionValue) {
-    if (selectedHeader.get('rawDescription') !== descriptionValue) {
-      this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    if (
+      createRawDescriptionText(selectedHeader, false, this.props.dontIndent) !== descriptionValue
+    ) {
+      this.props.org.updateHeaderDescription(selectedHeader.get('id'), descriptionValue);
     }
   }
 
   handleDescriptionPopupClose(descriptionValue) {
-    this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    if (
+      createRawDescriptionText(this.props.selectedHeader, false, this.props.dontIndent) !==
+      descriptionValue
+    ) {
+      this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    }
     this.props.base.closePopup();
   }
 
