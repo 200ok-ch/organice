@@ -66,18 +66,20 @@ export default class DrawerActionButtons extends PureComponent {
             className: 'fas fa-calendar-check fa-lg',
             onClick: onDeadlineClick,
             title: 'Set deadline datetime',
+            disabled: 'deadline-editor' === activePopupType,
           })}
           {this.iconWithFFClickCatcher({
             className: 'far fa-calendar-times fa-lg',
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
+            disabled: 'scheduled-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({
             className: 'far fa-sticky-note fa-lg',
             onClick: onAddNote,
             title: 'Add a note',
-            disabled: 'property-list-editor' === activePopupType,
+            disabled: 'note-editor' === activePopupType,
           })}
         </div>
       </div>
