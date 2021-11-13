@@ -28,6 +28,7 @@ class TableEditorModal extends PureComponent {
       'handleTextareaRef',
       'handleTableCellSelect',
       'handleTableCellValueUpdate',
+      'handlePopupClose',
       'handleExitTableEditMode',
       'handleEnterTableEditMode',
       'handleAddNewTableRow',
@@ -132,9 +133,12 @@ class TableEditorModal extends PureComponent {
     this.props.org.updateTableCellValue(cellId, newValue);
   }
 
+  handlePopupClose() {
+    this.props.base.closePopup();
+  }
+
   handleExitTableEditMode() {
     this.props.org.exitEditMode();
-    this.props.base.closePopup();
   }
 
   handleEnterTableEditMode() {
@@ -205,8 +209,8 @@ class TableEditorModal extends PureComponent {
       shouldDisableActions,
     };
 
-    if (table.get('contents').size === 0) {
-      this.handleExitTableEditMode();
+    if (table.get('contents').size === 0 || table.getIn(['contents', 0, 'contents']).size === 0) {
+      this.handlePopupClose();
     }
 
     return (
