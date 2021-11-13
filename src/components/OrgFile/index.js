@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { Redirect } from 'react-router-dom';
 
-import { HotKeys } from 'react-hotkeys';
+import { GlobalHotKeys } from 'react-hotkeys';
 
 import './stylesheet.css';
 
@@ -83,6 +83,7 @@ class OrgFile extends PureComponent {
       'handlePropertyListItemsChange',
       'getPopupCloseAction',
       'getPopupSwitchAction',
+      'checkPopupAndHeader',
     ]);
 
     this.state = {
@@ -181,7 +182,13 @@ class OrgFile extends PureComponent {
   }
 
   handleExitEditModeHotKey() {
-    this.props.org.closePopup();
+    const onClose = this.getPopupSwitchAction(this.props.activePopupType);
+    onClose(
+      ...(this.state.popupCloseActionValuesAccessor
+        ? this.state.popupCloseActionValuesAccessor()
+        : [])
+    );
+    this.props.base.closePopup();
     this.container.focus();
   }
 
@@ -503,6 +510,15 @@ class OrgFile extends PureComponent {
     }
   }
 
+  // Some keyboard shortcuts only make sense when a header is selected and no popup is open
+  checkPopupAndHeader(callback) {
+    return (event) => {
+      if (this.props.selectedHeader && !this.props.activePopupType && !this.props.shouldDisableActions) {
+        callback(event);
+      }
+    };
+  }
+
   render() {
     const {
       headers,
@@ -556,20 +572,26 @@ class OrgFile extends PureComponent {
     };
 
     const handlers = {
-      selectNextVisibleHeader: preventDefault(this.handleSelectNextVisibleHeaderHotKey),
-      selectPreviousVisibleHeader: preventDefault(this.handleSelectPreviousVisibleHeaderHotKey),
-      toggleHeaderOpened: preventDefault(this.handleToggleHeaderOpenedHotKey, true),
-      advanceTodo: preventDefault(this.handleAdvanceTodoHotKey),
-      editTitle: preventDefault(this.handleEditTitleHotKey),
-      editDescription: preventDefault(this.handleEditDescriptionHotKey),
+      selectNextVisibleHeader: this.checkPopupAndHeader(
+        preventDefault(this.handleSelectNextVisibleHeaderHotKey)
+      ),
+      selectPreviousVisibleHeader: this.checkPopupAndHeader(
+        preventDefault(this.handleSelectPreviousVisibleHeaderHotKey)
+      ),
+      toggleHeaderOpened: this.checkPopupAndHeader(
+        preventDefault(this.handleToggleHeaderOpenedHotKey, true)
+      ),
+      advanceTodo: this.checkPopupAndHeader(preventDefault(this.handleAdvanceTodoHotKey)),
+      editTitle: this.checkPopupAndHeader(preventDefault(this.handleEditTitleHotKey)),
+      editDescription: this.checkPopupAndHeader(preventDefault(this.handleEditDescriptionHotKey)),
       exitEditMode: preventDefault(this.handleExitEditModeHotKey),
-      addHeader: preventDefault(this.handleAddHeaderHotKey),
-      removeHeader: preventDefault(this.handleRemoveHeaderHotKey, true),
-      moveHeaderUp: preventDefault(this.handleMoveHeaderUpHotKey),
-      moveHeaderDown: preventDefault(this.handleMoveHeaderDownHotKey),
-      moveHeaderLeft: preventDefault(this.handleMoveHeaderLeftHotKey),
-      moveHeaderRight: preventDefault(this.handleMoveHeaderRightHotKey),
-      undo: preventDefault(this.handleUndoHotKey),
+      addHeader: this.checkPopupAndHeader(preventDefault(this.handleAddHeaderHotKey)),
+      removeHeader: this.checkPopupAndHeader(preventDefault(this.handleRemoveHeaderHotKey, true)),
+      moveHeaderUp: this.checkPopupAndHeader(preventDefault(this.handleMoveHeaderUpHotKey)),
+      moveHeaderDown: this.checkPopupAndHeader(preventDefault(this.handleMoveHeaderDownHotKey)),
+      moveHeaderLeft: this.checkPopupAndHeader(preventDefault(this.handleMoveHeaderLeftHotKey)),
+      moveHeaderRight: this.checkPopupAndHeader(preventDefault(this.handleMoveHeaderRightHotKey)),
+      undo: this.checkPopupAndHeader(preventDefault(this.handleUndoHotKey)),
     };
 
     const setPopupCloseActionValuesAccessor = (v) => {
@@ -577,7 +599,7 @@ class OrgFile extends PureComponent {
     };
 
     return (
-      <HotKeys keyMap={keyMap} handlers={handlers}>
+      <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
         <div className="org-file-container" tabIndex="-1" ref={this.handleContainerRef}>
           {headers.size === 0 ? (
             <div className="org-file__parsing-error-message">
@@ -643,7 +665,7 @@ class OrgFile extends PureComponent {
             </Drawer>
           ) : null}
         </div>
-      </HotKeys>
+      </GlobalHotKeys>
     );
   }
 }

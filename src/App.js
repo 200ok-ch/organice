@@ -40,6 +40,10 @@ import {
 import _ from 'lodash';
 import { Map } from 'immutable';
 
+import { configure } from 'react-hotkeys';
+// do handle hotkeys even if they come from within 'input', 'select' or 'textarea'
+configure({ ignoreTags: [] });
+
 const handleGitLabAuthResponse = async (oauthClient) => {
   let success = false;
   try {

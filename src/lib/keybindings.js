@@ -5,7 +5,7 @@ const DEFAULT_BINDINGS = [
   ['Advance todo state', 'advanceTodo', 'alt+t'],
   ['Edit title', 'editTitle', 'ctrl+h'],
   ['Edit description', 'editDescription', 'ctrl+d'],
-  //['Exit edit mode', 'exitEditMode', 'alt+enter'],
+  ['Exit edit mode', 'exitEditMode', 'alt+enter'],
   ['Add header', 'addHeader', 'ctrl+enter'],
   ['Remove header', 'removeHeader', 'backspace'],
   ['Move header up', 'moveHeaderUp', 'alt+up'],
