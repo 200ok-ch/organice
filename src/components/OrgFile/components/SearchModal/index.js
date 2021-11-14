@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { capitalize } from 'lodash';
 
 import './stylesheet.css';
 
@@ -42,7 +41,6 @@ function SearchModal(props) {
   return (
     <>
       <div className="task-list__modal-title">
-        <h2 className="agenda__title">{capitalize(context)}</h2>
         {showClockedTimes ? (
           <span title="Sum of time logged on all search results directly (not including time logged on their children)">
             {millisDuration(clockedTime)}
@@ -97,8 +95,6 @@ function SearchModal(props) {
           context={context}
         />
       </div>
-
-      <br />
     </>
   );
 }

@@ -46,6 +46,7 @@ import {
 import _ from 'lodash';
 import { fromJS, List, Map, Set } from 'immutable';
 import { createRawDescriptionText, generateTitleLine } from '../../lib/export_org';
+import FinderModal from './components/FinderModal';
 
 class OrgFile extends PureComponent {
   constructor(props) {
@@ -478,12 +479,11 @@ class OrgFile extends PureComponent {
         return (
           <AgendaModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
         );
+      case 'search':
       case 'task-list':
         return (
-          <TaskListModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
+          <FinderModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
         );
-      case 'search':
-        return <SearchModal context="search" onClose={this.getPopupCloseAction(activePopupType)} />;
       case 'refile':
         return <SearchModal context="refile" onClose={this.getPopupCloseAction(activePopupType)} />;
       case 'title-editor':

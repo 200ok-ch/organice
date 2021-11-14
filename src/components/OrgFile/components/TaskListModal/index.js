@@ -38,8 +38,6 @@ function TaskListModal(props) {
 
   return (
     <>
-      <h2 className="agenda__title">Task list</h2>
-
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
           <option key={idx} value={string} />
@@ -76,8 +74,6 @@ function TaskListModal(props) {
           onToggleDateDisplayType={handleToggleDateDisplayType}
         />
       </div>
-
-      <br />
     </>
   );
 }

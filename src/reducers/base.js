@@ -123,6 +123,8 @@ const setIsOnline = (state, action) => {
 
 const setAgendaTimeframe = (state, action) => state.set('agendaTimeframe', action.agendaTimeframe);
 
+const setFinderTab = (state, action) => state.set('finderTab', action.finderTab);
+
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
 };
@@ -196,6 +198,8 @@ export default (state = Map(), action) => {
       return setIsOnline(state, action);
     case 'SET_AGENDA_TIMEFRAME':
       return setAgendaTimeframe(state, action);
+    case 'SET_FINDER_TAB':
+      return setFinderTab(state, action);
     default:
       return state;
   }
