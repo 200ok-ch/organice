@@ -31,7 +31,6 @@ const ActionDrawer = ({
 }) => {
   const [isDisplayingArrowButtons, setIsDisplayingArrowButtons] = useState(false);
   const [isDisplayingCaptureButtons, setIsDisplayingCaptureButtons] = useState(false);
-  const [isDisplayingSearchButtons, setIsDisplayingSearchButtons] = useState(false);
 
   const mainArrowButton = useRef(null);
 
@@ -83,8 +82,8 @@ const ActionDrawer = ({
 
   const handleMainArrowButtonClick = () => setIsDisplayingArrowButtons(!isDisplayingArrowButtons);
 
-  const handleMainSearchButtonClick = () => {
-    setIsDisplayingSearchButtons(!isDisplayingSearchButtons);
+  const handleSearchButtonClick = () => {
+    base.activatePopup('search');
   };
 
   const handleMainCaptureButtonClick = () => {
@@ -105,14 +104,14 @@ const ActionDrawer = ({
       position: 'absolute',
       zIndex: 0,
       left: 0,
-      opacity: isDisplayingArrowButtons || isDisplayingSearchButtons ? 0 : 1,
+      opacity: isDisplayingArrowButtons ? 0 : 1,
     };
     if (!isDisplayingCaptureButtons) {
       baseCaptureButtonStyle.boxShadow = 'none';
     }
 
     const mainButtonStyle = {
-      opacity: isDisplayingArrowButtons || isDisplayingSearchButtons ? 0 : 1,
+      opacity: isDisplayingArrowButtons ? 0 : 1,
       position: 'relative',
       zIndex: 1,
     };
@@ -152,66 +151,9 @@ const ActionDrawer = ({
     );
   };
 
-  const renderSearchButtons = () => {
-    const baseSearchButtonStyle = {
-      position: 'absolute',
-      zIndex: 0,
-      left: 0,
-      opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
-    };
-    if (!isDisplayingSearchButtons) {
-      baseSearchButtonStyle.boxShadow = 'none';
-    }
-
-    const mainButtonStyle = {
-      opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
-      position: 'relative',
-      zIndex: 1,
-    };
-
-    const animatedStyle = {
-      bottom: spring(isDisplayingSearchButtons ? 70 : 0, { stiffness: 300 }),
-    };
-
-    return (
-      <Motion style={animatedStyle}>
-        {(style) => (
-          <div className="action-drawer__capture-buttons-container">
-            <ActionButton
-              iconName={isDisplayingSearchButtons ? 'times' : 'search'}
-              isDisabled={false}
-              onClick={handleMainSearchButtonClick}
-              additionalClassName={activeClocks !== 0 ? 'active-clock-indicator' : undefined}
-              style={mainButtonStyle}
-              tooltip={
-                isDisplayingSearchButtons ? 'Hide Search / Task List' : 'Show Search / Task List'
-              }
-            />
-
-            <ActionButton
-              iconName="search"
-              isDisabled={false}
-              onClick={handleSearchClick}
-              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 1 }}
-              tooltip="Show search"
-            />
-
-            <ActionButton
-              iconName="tasks"
-              isDisabled={false}
-              onClick={handleTaskListClick}
-              style={{ ...baseSearchButtonStyle, bottom: style.bottom * 2 }}
-              tooltip="Show task list"
-            />
-          </div>
-        )}
-      </Motion>
-    );
-  };
-
   const renderMovementButtons = () => {
     const baseArrowButtonStyle = {
-      opacity: isDisplayingCaptureButtons || isDisplayingSearchButtons ? 0 : 1,
+      opacity: isDisplayingCaptureButtons ? 0 : 1,
     };
     if (!isDisplayingArrowButtons) {
       baseArrowButtonStyle.boxShadow = 'none';
@@ -322,7 +264,7 @@ const ActionDrawer = ({
               additionalClassName="action-drawer__main-arrow-button"
               isDisabled={false}
               onClick={handleMainArrowButtonClick}
-              style={{ opacity: isDisplayingCaptureButtons || isDisplayingSearchButtons ? 0 : 1 }}
+              style={{ opacity: isDisplayingCaptureButtons ? 0 : 1 }}
               tooltip={isDisplayingArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
               onRef={mainArrowButton}
             />
@@ -333,14 +275,6 @@ const ActionDrawer = ({
   };
 
   const handleAgendaClick = () => base.activatePopup('agenda');
-  const handleTaskListClick = () => {
-    setIsDisplayingSearchButtons(false);
-    base.activatePopup('task-list');
-  };
-  const handleSearchClick = () => {
-    setIsDisplayingSearchButtons(false);
-    base.activatePopup('search');
-  };
 
   return (
     <div className="action-drawer-container nice-scroll">
@@ -353,10 +287,7 @@ const ActionDrawer = ({
             isDisabled={shouldDisableSyncButtons || !online}
             onClick={handleSync}
             style={{
-              opacity:
-                isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingSearchButtons
-                  ? 0
-                  : 1,
+              opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
             }}
             tooltip="Sync changes"
           />
@@ -366,17 +297,26 @@ const ActionDrawer = ({
             isDisabled={false}
             onClick={handleAgendaClick}
             style={{
-              opacity:
-                isDisplayingArrowButtons || isDisplayingCaptureButtons || isDisplayingSearchButtons
-                  ? 0
-                  : 1,
+              opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
             }}
             tooltip="Show agenda"
           />
 
           {renderMovementButtons()}
 
-          {renderSearchButtons()}
+          <ActionButton
+            iconName={'search'}
+            isDisabled={false}
+            onClick={handleSearchButtonClick}
+            additionalClassName={activeClocks !== 0 ? 'active-clock-indicator' : undefined}
+            style={{
+              opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
+              position: 'relative',
+              zIndex: 1,
+            }}
+            tooltip="Show Search / Task List"
+          />
+
           {renderCaptureButtons()}
         </Fragment>
       }
