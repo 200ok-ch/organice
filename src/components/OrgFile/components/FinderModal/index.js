@@ -26,7 +26,7 @@ function FinderModal(props) {
     }
     switch (finderTab) {
       case 'Search':
-        return <SearchModal context="Search" onClose={onClose} />;
+        return <SearchModal context="search" onClose={onClose} />;
       case 'Task List':
         return <TaskListModal headers={headers} onClose={onClose} />;
       case 'Clock List':
