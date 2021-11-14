@@ -11,6 +11,7 @@ import SearchModal from '../SearchModal';
 
 import * as baseActions from '../../../../actions/base';
 import * as orgActions from '../../../../actions/org';
+import { determineIncludedFiles } from '../../../../reducers/org';
 
 function FinderModal(props) {
   const { finderTab, onClose, headers, activeClocks } = props;
@@ -29,7 +30,7 @@ function FinderModal(props) {
   function renderTab(finderTab) {
     switch (finderTab) {
       case 'search':
-        return <SearchModal context="search" onClose={onClose} />;
+        return <SearchModal activeClocks={activeClocks} context="search" onClose={onClose} />;
       case 'task-list':
         return <TaskListModal headers={headers} onClose={onClose} />;
       default:
@@ -55,10 +56,16 @@ function FinderModal(props) {
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
+  const files = state.org.present.get('files');
   const file = state.org.present.getIn(['files', path], Map());
+  const fileSettings = state.org.present.get('fileSettings');
+  const searchFiles = determineIncludedFiles(files, fileSettings, path, 'includeInSearch', false);
+  const activeClocks = Object.values(
+    searchFiles.map((f) => (f.get('headers').size ? f.get('activeClocks') : 0)).toJS()
+  ).reduce((acc, val) => (typeof val === 'number' ? acc + val : acc), 0);
   return {
     finderTab: state.base.get('finderTab'),
-    activeClocks: file.get('activeClocks'),
+    activeClocks,
   };
 };
 

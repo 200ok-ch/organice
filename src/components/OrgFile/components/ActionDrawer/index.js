@@ -15,6 +15,7 @@ import * as baseActions from '../../../../actions/base';
 import sampleCaptureTemplates from '../../../../lib/sample_capture_templates';
 
 import ActionButton from './components/ActionButton/';
+import { determineIncludedFiles } from '../../../../reducers/org';
 
 const ActionDrawer = ({
   org,
@@ -326,7 +327,13 @@ const ActionDrawer = ({
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
+  const files = state.org.present.get('files');
   const file = state.org.present.getIn(['files', path], Map());
+  const fileSettings = state.org.present.get('fileSettings');
+  const searchFiles = determineIncludedFiles(files, fileSettings, path, 'includeInSearch', false);
+  const activeClocks = Object.values(
+    searchFiles.map((f) => (f.get('headers').size ? f.get('activeClocks') : 0)).toJS()
+  ).reduce((acc, val) => (typeof val === 'number' ? acc + val : acc), 0);
   return {
     selectedHeaderId: file.get('selectedHeaderId'),
     isDirty: file.get('isDirty'),
@@ -336,7 +343,7 @@ const mapStateToProps = (state) => {
     path,
     isLoading: !state.base.get('isLoading').isEmpty(),
     online: state.base.get('online'),
-    activeClocks: file.get('activeClocks'),
+    activeClocks,
   };
 };
 

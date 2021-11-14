@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Map } from 'immutable';
 
 import './stylesheet.css';
 
@@ -108,8 +107,6 @@ function SearchModal(props) {
 }
 
 const mapStateToProps = (state) => {
-  const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path], Map());
   return {
     path: state.org.present.get('path'),
     searchFilter: state.org.present.getIn(['search', 'searchFilter']),
@@ -117,7 +114,6 @@ const mapStateToProps = (state) => {
     searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
     showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
     clockedTime: state.org.present.getIn(['search', 'clockedTime']),
-    activeClocks: file.get('activeClocks'),
   };
 };
 
