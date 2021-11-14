@@ -41,16 +41,20 @@ function SearchModal(props) {
   }
 
   return (
-    // h2 is included with empty string in case of "search" to preserve the offset to show clocked time summary
     <>
-      <div className="task-list__modal-title">
-        {context === 'search' ? null : <h2 className="agenda__title">{capitalize(context)}</h2>}
-        {showClockedTimes ? (
-          <span title="Sum of time logged on all search results directly (not including time logged on their children)">
-            {millisDuration(clockedTime)}
-          </span>
-        ) : null}
-      </div>
+      {context === 'search' ? (
+        <div className="task-list__modal-title_search">
+          {showClockedTimes ? (
+            <span title="Sum of time logged on all search results directly (not including time logged on their children)">
+              {millisDuration(clockedTime)}
+            </span>
+          ) : null}
+        </div>
+      ) : (
+        <div className="task-list__modal-title">
+          <h2 className="agenda__title">{capitalize(context)}</h2>
+        </div>
+      )}
 
       {activeClocks ? null : (
         <>
