@@ -20,7 +20,6 @@ import DescriptionEditorModal from './components/DescriptionEditorModal';
 import TableEditorModal from './components/TableEditorModal';
 import NoteEditorModal from './components/NoteEditorModal';
 import AgendaModal from './components/AgendaModal';
-import TaskListModal from './components/TaskListModal';
 import SearchModal from './components/SearchModal';
 import ExternalLink from '../UI/ExternalLink';
 import Drawer from '../UI/Drawer/';
