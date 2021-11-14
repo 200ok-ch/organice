@@ -646,13 +646,14 @@ class OrgFile extends PureComponent {
 
           {activePopupType ? (
             <Drawer
-              onClose={() =>
+              onClose={() => {
                 this.getPopupCloseAction(activePopupType)(
                   ...(this.state.popupCloseActionValuesAccessor
                     ? this.state.popupCloseActionValuesAccessor()
                     : [])
-                )
-              }
+                );
+                this.container.focus();
+              }}
               maxSize={this.getPopupMaxSize(activePopupType)}
             >
               {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
