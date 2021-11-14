@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Map } from 'immutable';
 
 import './stylesheet.css';
 
@@ -24,7 +25,14 @@ function SearchModal(props) {
     context,
     showClockedTimes,
     clockedTime,
+    activeClocks,
   } = props;
+
+  useEffect(() => {
+    if (activeClocks) {
+      props.org.setSearchFilterInformation('clock:now', 0, 'search');
+    }
+  }, []);
 
   function handleHeaderClick(path, headerId) {
     props.onClose(path, headerId);
@@ -99,14 +107,19 @@ function SearchModal(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  path: state.org.present.get('path'),
-  searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
-  searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
-  searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
-  showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
-  clockedTime: state.org.present.getIn(['search', 'clockedTime']),
-});
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path], Map());
+  return {
+    path: state.org.present.get('path'),
+    searchFilter: state.org.present.getIn(['search', 'searchFilter']),
+    searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
+    searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
+    showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
+    clockedTime: state.org.present.getIn(['search', 'clockedTime']),
+    activeClocks: file.get('activeClocks'),
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
