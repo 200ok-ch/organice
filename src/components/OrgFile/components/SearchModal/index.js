@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { capitalize } from 'lodash';
@@ -28,12 +28,6 @@ function SearchModal(props) {
     activeClocks,
   } = props;
 
-  useEffect(() => {
-    if (activeClocks) {
-      props.org.setSearchFilterInformation('clock:now', 0, 'search');
-    }
-  }, []);
-
   function handleHeaderClick(path, headerId) {
     props.onClose(path, headerId);
   }
@@ -58,36 +52,40 @@ function SearchModal(props) {
         ) : null}
       </div>
 
-      <datalist id="task-list__datalist-filter">
-        {searchFilterSuggestions.map((string, idx) => (
-          <option key={idx} value={string} />
-        ))}
-      </datalist>
+      {activeClocks ? null : (
+        <>
+          <datalist id="task-list__datalist-filter">
+            {searchFilterSuggestions.map((string, idx) => (
+              <option key={idx} value={string} />
+            ))}
+          </datalist>
 
-      <div className="task-list__input-container">
-        <input
-          type="text"
-          value={searchFilter}
-          // On iOS, setting autoFocus here will move the contents of
-          // the drawer off the screen, because the keyboard pops up
-          // late when the height is already set to '92%'. Some other
-          // complications: There's no API to check if the keyboard is
-          // open or not. When setting the height of the container to
-          // something like 48% for iOS, this works on iPhone (tested
-          // on Xs and 6S), but when the keyboard is closed, the
-          // container is still small when the user wants to read the
-          // longer list without the keyboard in the way. There might
-          // be a better way: If the drawer wouldn't move, iOS likely
-          // would set the heights correctly automatically.
-          autoFocus={!isIos()}
-          className={classNames('textfield', 'task-list__filter-input', {
-            'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
-          })}
-          placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
-          list="task-list__datalist-filter"
-          onChange={handleFilterChange}
-        />
-      </div>
+          <div className="task-list__input-container">
+            <input
+              type="text"
+              value={searchFilter}
+              // On iOS, setting autoFocus here will move the contents of
+              // the drawer off the screen, because the keyboard pops up
+              // late when the height is already set to '92%'. Some other
+              // complications: There's no API to check if the keyboard is
+              // open or not. When setting the height of the container to
+              // something like 48% for iOS, this works on iPhone (tested
+              // on Xs and 6S), but when the keyboard is closed, the
+              // container is still small when the user wants to read the
+              // longer list without the keyboard in the way. There might
+              // be a better way: If the drawer wouldn't move, iOS likely
+              // would set the heights correctly automatically.
+              autoFocus={!isIos()}
+              className={classNames('textfield', 'task-list__filter-input', {
+                'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
+              })}
+              placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
+              list="task-list__datalist-filter"
+              onChange={handleFilterChange}
+            />
+          </div>
+        </>
+      )}
 
       <div
         className="task-list__headers-container"
@@ -102,7 +100,7 @@ function SearchModal(props) {
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
-          context={context}
+          context={activeClocks ? 'Clock List' : context}
         />
       </div>
     </>

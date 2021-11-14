@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -15,23 +15,22 @@ import { determineIncludedFiles } from '../../../../reducers/org';
 function FinderModal(props) {
   const { finderTab, onClose, headers, activeClocks } = props;
 
-  function handleTabChange(tabTitle) {
-    const finderTab = { Search: 'search', 'Task List': 'task-list' }[tabTitle];
+  function handleTabChange(finderTab) {
     props.base.setFinderTab(finderTab);
   }
 
-  useEffect(() => {
-    if (activeClocks) {
-      handleTabChange('Search');
-    }
-  }, []);
-
   function renderTab(finderTab) {
+    if (!activeClocks && finderTab === 'Clock List') {
+      props.base.setFinderTab('Search');
+      return;
+    }
     switch (finderTab) {
-      case 'search':
-        return <SearchModal activeClocks={activeClocks} context="search" onClose={onClose} />;
-      case 'task-list':
+      case 'Search':
+        return <SearchModal context="Search" onClose={onClose} />;
+      case 'Task List':
         return <TaskListModal headers={headers} onClose={onClose} />;
+      case 'Clock List':
+        return <SearchModal activeClocks={activeClocks} context="search" onClose={onClose} />;
       default:
         return <h2>Error</h2>;
     }
@@ -41,8 +40,8 @@ function FinderModal(props) {
     <>
       <div className="agenda__tab-container">
         <TabButtons
-          buttons={['Search', 'Task List']}
-          selectedButton={{ search: 'Search', 'task-list': 'Task List' }[finderTab]}
+          buttons={activeClocks ? ['Search', 'Task List', 'Clock List'] : ['Search', 'Task List']}
+          selectedButton={finderTab}
           onSelect={handleTabChange}
           useEqualWidthTabs
         />

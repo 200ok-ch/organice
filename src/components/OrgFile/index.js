@@ -479,7 +479,6 @@ class OrgFile extends PureComponent {
           <AgendaModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
         );
       case 'search':
-      case 'task-list':
         return (
           <FinderModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
         );

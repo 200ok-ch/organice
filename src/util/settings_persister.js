@@ -273,7 +273,7 @@ const getInitialStateWithDefaultValues = () => {
       }),
       future: [],
     },
-    base: Map({ isLoading: Set(), finderTab: 'search' }),
+    base: Map({ isLoading: Set(), finderTab: 'Search' }),
     capture: Map(),
   };
 
