@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { capitalize } from 'lodash';
 
 import './stylesheet.css';
 
@@ -46,8 +47,10 @@ function SearchModal(props) {
   }
 
   return (
+    // h2 is included with empty string in case of "search" to preserve the offset to show clocked time summary
     <>
       <div className="task-list__modal-title">
+        <h2 className="agenda__title">{context === 'search' ? '' : capitalize(context)}</h2>
         {showClockedTimes ? (
           <span title="Sum of time logged on all search results directly (not including time logged on their children)">
             {millisDuration(clockedTime)}

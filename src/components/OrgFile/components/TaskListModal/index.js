@@ -37,7 +37,9 @@ function TaskListModal(props) {
   const { searchFilter, searchFilterValid, searchFilterSuggestions } = props;
 
   return (
+    // h2 is included with empty string to keep layout on par with SearchModal
     <>
+      <h2 className="agenda__title"></h2>
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
           <option key={idx} value={string} />
