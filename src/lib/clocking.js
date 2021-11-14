@@ -1,6 +1,12 @@
 import { subheadersOfHeaderWithIndex } from './org_utils';
 import { dateForTimestamp } from './timestamps';
 
+export const hasActiveClock = (header) => {
+  const logBookEntries = header.get('logBookEntries', []);
+  const activeEntries = logBookEntries.filter((entry) => entry.get('start') && !entry.get('end'));
+  return activeEntries.size !== 0;
+};
+
 const totalTimeLogged = (header) => {
   const logBookEntries = header.get('logBookEntries', []);
 

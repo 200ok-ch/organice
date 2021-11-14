@@ -9,6 +9,7 @@ import {
   updateHeadersTotalTimeLoggedRecursive,
   totalFilteredTimeLogged,
   updateHeadersTotalFilteredTimeLoggedRecursive,
+  hasActiveClock,
 } from '../lib/clocking';
 
 import {
@@ -66,7 +67,8 @@ export const parseFile = (state, action) => {
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
     .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
-    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
+    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'))
+    .setIn(['files', path, 'activeClocks'], parsedFile.get('activeClocks'));
 };
 
 const clearSearch = (state) => state.setIn(['search', 'filteredHeaders'], null);
@@ -1055,6 +1057,7 @@ export const setLogEntryStop = (state, action) => {
   const entryIndex = state
     .getIn(['headers', headerIdx, 'logBookEntries'])
     .findIndex((entry) => entry.get('id') === entryId);
+  state = state.update('activeClocks', (i) => i - 1);
   return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
 };
 
@@ -1066,6 +1069,7 @@ export const createLogEntryStart = (state, action) => {
     start: time,
     end: null,
   });
+  state = state.update('activeClocks', (i) => i + 1);
   return state.updateIn(['headers', headerIdx, 'logBookEntries'], (entries) =>
     !!entries ? entries.unshift(newEntry) : List([newEntry])
   );
@@ -1132,6 +1136,11 @@ const searchHeaders = ({ searchFilterExpr = [], headersToSearch, path }) => {
   return filteredHeaders;
 };
 
+const isActiveClockFilter = (clockFilter) =>
+  clockFilter.field.timerange.type === 'point' &&
+  clockFilter.field.timerange.point.type === 'special' &&
+  clockFilter.field.timerange.point.value === 'now';
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
@@ -1169,9 +1178,13 @@ export const setSearchFilterInformation = (state, action) => {
     const headers = files.map((file) => file.get('headers'));
 
     // show clocked times & sum if there is a clock search term
-    const clockFilters = searchFilterExpr
+    const clockedTimeAndActiveClockFilters = searchFilterExpr
       .filter((f) => f.type === 'field')
       .filter((f) => f.field.type === 'clock');
+    const clockFilters = clockedTimeAndActiveClockFilters.filter((f) => !isActiveClockFilter(f));
+    // check for special case "clock:now" which searches active clocks
+    const hasActiveClockFilter = clockedTimeAndActiveClockFilters.length !== clockFilters.length;
+
     const filterFunctions = clockFilters.map(timeFilter);
     const showClockedTimes = clockFilters.length !== 0;
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
@@ -1185,6 +1198,12 @@ export const setSearchFilterInformation = (state, action) => {
       headersToSearch = Map().set(
         path,
         subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
+      );
+    }
+
+    if (hasActiveClockFilter) {
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        headersOfFile.filter(hasActiveClock)
       );
     }
 

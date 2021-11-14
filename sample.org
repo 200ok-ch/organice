@@ -377,6 +377,7 @@ Next to units, =START= and =END= can also be expressed in dates like. Dates can 
 Some examples on how to use time ranges:
 
 - =clock:..= searches for all items with time clocked. This includes headers that have time logged on their children.
+  - =clock:now= searches for currently clocked in headers.
 - =sched:w= searches for all scheduled items in the current week (same for other units).
 - =dead:..w= searches for all deadlines between now and the end of the week.
 - =date:today= searches for all planning items (scheduled and deadline items) as well as items with active timestamps.
