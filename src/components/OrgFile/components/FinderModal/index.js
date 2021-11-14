@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Map } from 'immutable';
 
 import './stylesheet.css';
 
@@ -57,7 +56,6 @@ function FinderModal(props) {
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');
   const files = state.org.present.get('files');
-  const file = state.org.present.getIn(['files', path], Map());
   const fileSettings = state.org.present.get('fileSettings');
   const searchFiles = determineIncludedFiles(files, fileSettings, path, 'includeInSearch', false);
   const activeClocks = Object.values(
