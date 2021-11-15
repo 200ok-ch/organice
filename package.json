@@ -14,6 +14,7 @@
     "dropbox": "^9.8.0",
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
+    "native-file-system-adapter": "jimmywarting/native-file-system-adapter",
     "pegjs": "^0.10.0",
     "react": "^16.8.3",
     "react-beautiful-dnd": "^13.0.0",
@@ -52,8 +53,8 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-redux": "^3.3.0",
-    "prettier-eslint": "^11.0.0",
     "prettier": "^2.0.5",
+    "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "raw.macro": "0.4.2",
     "react-test-renderer": "^17.0.1"
