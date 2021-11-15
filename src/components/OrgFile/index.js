@@ -457,7 +457,7 @@ class OrgFile extends PureComponent {
             headerId={activePopupData.get('headerId')}
             timestamp={editingTimestamp}
             timestampId={activePopupData.get('timestampId')}
-            timestampType={activePopupType}
+            popupType={activePopupType}
             planningItemIndex={activePopupData.get('planningItemIndex')}
             singleTimestampOnly={!activePopupData.get('timestampId')}
             onClose={this.getPopupCloseAction(activePopupType)}

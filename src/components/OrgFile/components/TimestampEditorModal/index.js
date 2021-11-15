@@ -45,13 +45,13 @@ export default class TimestampEditorModal extends PureComponent {
       headerId,
       timestamp,
       timestampId,
-      timestampType,
+      popupType,
       onClose,
       singleTimestampOnly,
       planningItemIndex,
     } = this.props;
 
-    const timestampTypes = {
+    const timestampTitles = {
       'timestamp-editor': 'Edit timestamp',
       'scheduled-editor': 'Edit scheduled timestamp',
       'deadline-editor': 'Edit deadline',
@@ -59,7 +59,7 @@ export default class TimestampEditorModal extends PureComponent {
 
     return (
       <>
-        <h2 className="timestamp-editor__title">{timestampTypes[timestampType]}</h2>
+        <h2 className="timestamp-editor__title">{timestampTitles[popupType]}</h2>
 
         <TimestampEditor
           headerId={headerId}
