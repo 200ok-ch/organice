@@ -63,7 +63,7 @@ export default class TimestampEditorModal extends PureComponent {
 
         <TimestampEditor
           headerId={headerId}
-          timestamp={timestamp.get('firstTimestamp')}
+          timestamp={timestamp && timestamp.get('firstTimestamp')}
           timestampId={timestampId}
           planningItemIndex={planningItemIndex}
           onClose={onClose}

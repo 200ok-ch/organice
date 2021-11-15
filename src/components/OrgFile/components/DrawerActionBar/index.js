@@ -13,7 +13,7 @@ import _ from 'lodash';
 
 import DrawerActionButtons from './components/DrawerActionButtons';
 
-import { indexOfHeaderWithId } from '../../../../lib/org_utils';
+import { getSelectedHeader } from '../../../../lib/org_utils';
 
 class DrawerActionBar extends PureComponent {
   constructor(props) {
@@ -61,19 +61,10 @@ class DrawerActionBar extends PureComponent {
     const existingDeadlinePlanningItemIndex = header
       .get('planningItems', [])
       .findIndex((planningItem) => planningItem.get('type') === planningType);
-
-    if (existingDeadlinePlanningItemIndex === -1) {
-      this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
-      this.props.base.activatePopup(popupType, {
-        headerId: selectedHeaderId,
-        planningItemIndex: header.get('planningItems').size,
-      });
-    } else {
-      this.props.base.activatePopup(popupType, {
-        headerId: header.get('id'),
-        planningItemIndex: existingDeadlinePlanningItemIndex,
-      });
-    }
+    this.props.base.activatePopup(popupType, {
+      headerId: header.get('id'),
+      planningItemIndex: existingDeadlinePlanningItemIndex,
+    });
 
     this.props.org.openHeader(selectedHeaderId);
   }
@@ -110,21 +101,6 @@ class DrawerActionBar extends PureComponent {
     );
   }
 }
-
-const getSelectedHeader = (state) => {
-  const path = state.org.present.get('path');
-  const file = state.org.present.getIn(['files', path], Map());
-  const headerId = file.get('selectedHeaderId');
-  const headers = file.get('headers');
-  if (!headers) {
-    return null;
-  }
-  const headerIdx = indexOfHeaderWithId(headers, headerId);
-  if (headerIdx === -1) {
-    return null;
-  }
-  return file.getIn(['headers', headerIdx]);
-};
 
 const mapStateToProps = (state) => {
   const path = state.org.present.get('path');

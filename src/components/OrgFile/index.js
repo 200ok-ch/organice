@@ -442,7 +442,11 @@ class OrgFile extends PureComponent {
               activePopupData.get('entryType'),
             ]),
           });
-        } else {
+        } else if (
+          // for scheduled timestamp and deadline the modal can be opened when no timestamp exists
+          (activePopupType !== 'scheduled-editor' && activePopupType !== 'deadline-editor') ||
+          activePopupData.get('planningItemIndex') !== -1
+        ) {
           editingTimestamp = fromJS({
             firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
               'planningItems',

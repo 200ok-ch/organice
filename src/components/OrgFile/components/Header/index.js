@@ -239,18 +239,10 @@ class Header extends PureComponent {
       .get('planningItems', [])
       .findIndex((planningItem) => planningItem.get('type') === planningType);
 
-    if (existingDeadlinePlanningItemIndex === -1) {
-      this.props.org.addNewPlanningItem(header.get('id'), planningType);
-      this.props.base.activatePopup(popupType, {
-        headerId: header.get('id'),
-        planningItemIndex: header.get('planningItems').size,
-      });
-    } else {
-      this.props.base.activatePopup(popupType, {
-        headerId: header.get('id'),
-        planningItemIndex: existingDeadlinePlanningItemIndex,
-      });
-    }
+    this.props.base.activatePopup(popupType, {
+      headerId: header.get('id'),
+      planningItemIndex: existingDeadlinePlanningItemIndex,
+    });
 
     this.props.org.openHeader(header.get('id'));
   }

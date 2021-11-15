@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Map } from 'immutable';
 
 import './stylesheet.css';
 
@@ -8,8 +9,10 @@ import Switch from '../../../../../UI/Switch/';
 import TabButtons from '../../../../../UI/TabButtons/';
 
 import * as orgActions from '../../../../../../actions/org';
+import * as baseActions from '../../../../../../actions/base';
 
 import { renderAsText } from '../../../../../../lib/timestamps';
+import { getSelectedHeader } from '../../../../../../lib/org_utils';
 
 import _ from 'lodash';
 import { parseISO } from 'date-fns';
@@ -32,6 +35,7 @@ class TimestampEditor extends PureComponent {
       'handleDelayTypeChange',
       'handleDelayValueChange',
       'handleDelayUnitChange',
+      'createPlanningItem',
     ]);
   }
 
@@ -48,7 +52,13 @@ class TimestampEditor extends PureComponent {
       } else if (_.isNumber(timestampId)) {
         this.props.org.removeTimestamp(this.props.headerId, timestampId);
       }
-      this.props.onClose();
+      if (
+        this.props.activePopupType !== 'scheduled-editor' &&
+        this.props.activePopupType !== 'deadline-editor'
+      ) {
+        // for scheduled timestamp and deadline the modal can be open when no timestamp exists
+        this.props.onClose();
+      }
     } else {
       const { onChange, timestamp } = this.props;
 
@@ -285,8 +295,34 @@ class TimestampEditor extends PureComponent {
     );
   }
 
+  createPlanningItem() {
+    const { selectedHeaderId, header, activePopupType } = this.props;
+    const planningType = { 'deadline-editor': 'DEADLINE', 'scheduled-editor': 'SCHEDULED' }[
+      activePopupType
+    ];
+    this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
+    this.props.base.activatePopup(activePopupType, {
+      headerId: selectedHeaderId,
+      planningItemIndex: header.get('planningItems').size,
+    });
+  }
+
   render() {
     const { timestamp, timestampId, planningItemIndex } = this.props;
+    if (!timestamp) {
+      // for scheduled timestamp and deadline the modal can be opened when no timestamp exists
+      return (
+        <>
+          <div className="timestamp-editor__field-title">Add Timestamp</div>
+          <div className="timestamp-editor__field">
+            <i
+              className="fas fa-plus timestamp-editor__icon timestamp-editor__icon--add"
+              onClick={this.createPlanningItem}
+            />
+          </div>
+        </>
+      );
+    }
     const {
       isActive,
       year,
@@ -336,8 +372,21 @@ class TimestampEditor extends PureComponent {
   }
 }
 
+const mapStateToProps = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path], Map());
+  const activePopup = state.base.get('activePopup');
+  return {
+    selectedHeaderId: file.get('selectedHeaderId'),
+    header: getSelectedHeader(state),
+    activePopupType: !!activePopup ? activePopup.get('type') : null,
+    activePopupData: !!activePopup ? activePopup.get('data') : null,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),
+  base: bindActionCreators(baseActions, dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(TimestampEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(TimestampEditor);
