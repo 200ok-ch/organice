@@ -16,6 +16,7 @@ import {
 
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
+import { showDirectoryPicker } from 'native-file-system-adapter';
 
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
@@ -155,7 +156,7 @@ export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick']);
+    _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick', 'handleFileSystemClick']);
   }
 
   handleDropboxClick() {
@@ -168,6 +169,12 @@ export default class SyncServiceSignIn extends PureComponent {
     dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
       window.location = authURL;
     });
+  }
+
+  handleFileSystemClick() {
+    persistField('authenticatedSyncService', 'File System');
+    let directoryHandle = showDirectoryPicker();
+    window.location = window.location.origin + '/';
   }
 
   handleGoogleDriveClick() {
@@ -204,6 +211,10 @@ export default class SyncServiceSignIn extends PureComponent {
           organice syncs your files with Dropbox, GitLab, WebDAV and Google Drive.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
+
+        <div className="sync-service-container" onClick={this.handleFileSystemClick}>
+          <h2>File System</h2>
+        </div>
 
         <div className="sync-service-container" onClick={this.handleDropboxClick}>
           <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />

@@ -26,6 +26,7 @@ import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_ba
 import createGitLabSyncBackendClient, {
   createGitlabOAuth,
 } from './sync_backend_clients/gitlab_sync_backend_client';
+import createFileSystemBackendClient from './sync_backend_clients/fs_sync_backend_client';
 
 import './base.css';
 
@@ -125,6 +126,13 @@ export default class App extends PureComponent {
             getPersistedField('webdavUsername'),
             getPersistedField('webdavPassword')
           );
+          initialState.syncBackend = Map({
+            isAuthenticated: true,
+            client,
+          });
+          break;
+        case 'File System':
+          client = createFileSystemBackendClient();
           initialState.syncBackend = Map({
             isAuthenticated: true,
             client,

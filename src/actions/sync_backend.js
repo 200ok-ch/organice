@@ -105,6 +105,9 @@ export const pushBackup = (pathOrFileId, contents) => {
       case 'GitLab':
         // No-op for GitLab, because the beauty of version control makes backup files redundant.
         break;
+      case 'File System':
+        client.createFile(`${pathOrFileId}.organice-bak`, contents);
+        break;
       default:
     }
   };

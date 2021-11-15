@@ -367,6 +367,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
     case 'Dropbox':
     case 'GitLab':
     case 'WebDAV':
+    case 'File System':
       fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
       break;
     case 'Google Drive':
