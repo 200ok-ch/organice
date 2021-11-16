@@ -8,7 +8,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { Map } from 'immutable';
 
-export default class StaticTablePart extends PureComponent {
+export default class TablePart extends PureComponent {
   constructor(props) {
     super(props);
 
