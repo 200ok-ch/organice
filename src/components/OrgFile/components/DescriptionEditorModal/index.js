@@ -62,7 +62,7 @@ export default class DescriptionEditorModal extends PureComponent {
         <div className="header-content__edit-container">
           <textarea
             autoFocus
-            className="textarea"
+            className="textarea drag-handle"
             rows="8"
             ref={this.handleTextareaRef}
             value={this.state.descriptionValue}
