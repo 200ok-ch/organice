@@ -422,11 +422,6 @@ export const setSelectedTableId = (tableId) => (dispatch) => {
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
-  /*
-  if (!!cellId) {
-    dispatch(selectHeader(null));
-  }
-  */
 };
 
 export const addNewTableRow = () => ({
