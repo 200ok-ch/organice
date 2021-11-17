@@ -13,7 +13,7 @@ class NoteEditorModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleTextareaRef', 'addNote', 'handleNoteChange']);
+    _.bindAll(this, ['handleTextareaRef', 'addNote']);
 
     this.state = {
       allTags: props.allTags,
@@ -32,19 +32,6 @@ class NoteEditorModal extends PureComponent {
     this.setState({ note: '' });
   }
 
-  handleNoteChange(event) {
-    // If the last character typed was a newline at the end, exit edit mode.
-    const note = event.target.value;
-    const lastCharacter = note[note.length - 1];
-    if (this.state.note === note.substring(0, note.length - 1) && lastCharacter === '\n') {
-      this.props.org.addNote(note, new Date());
-      this.setState({ note: '' });
-      return;
-    }
-
-    this.setState({ note });
-  }
-
   handleNoteFieldClick(event) {
     event.stopPropagation();
   }
@@ -61,7 +48,6 @@ class NoteEditorModal extends PureComponent {
           rows="3"
           ref={this.handleTextareaRef}
           value={this.state.note}
-          onChange={this.handleNoteChange}
           onClick={this.handleNoteFieldClick}
         />
         <button
