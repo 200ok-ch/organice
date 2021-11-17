@@ -96,7 +96,7 @@ export default class TitleEditorModal extends PureComponent {
         <div className="title-line__edit-container">
           <textarea
             autoFocus
-            className="textarea"
+            className="textarea drag-handle"
             data-testid="titleLineInput"
             rows="3"
             ref={this.handleTextareaRef}
