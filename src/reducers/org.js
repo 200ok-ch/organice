@@ -561,7 +561,7 @@ const addNote = (state, action) => {
   const { inputText, currentDate } = action;
   // Wrap line at 70 characters, see Emacs `fill-column` in "Insert
   // note" window (C-c C-z)
-  const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
+  const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/g, '\n  $1');
   // Generate note based on a template string (as defined in Emacs Org
   // mode `org-log-note-headings`):
   const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
