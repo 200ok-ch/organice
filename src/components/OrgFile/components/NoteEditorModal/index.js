@@ -13,10 +13,11 @@ class NoteEditorModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleTextareaRef', 'addNote']);
+    _.bindAll(this, ['handleTextareaRef', 'addNote', 'handleDescriptionChange']);
 
     this.state = {
       allTags: props.allTags,
+      note: '',
     };
   }
 
@@ -24,7 +25,8 @@ class NoteEditorModal extends PureComponent {
     this.textarea = textarea;
   }
 
-  addNote(note) {
+  addNote() {
+    let { note } = this.state;
     if (note !== null) note = note.trim();
     if (!note) return;
 
@@ -34,6 +36,10 @@ class NoteEditorModal extends PureComponent {
 
   handleNoteFieldClick(event) {
     event.stopPropagation();
+  }
+
+  handleDescriptionChange(event) {
+    this.setState({ note: event.target.value });
   }
 
   render() {
@@ -49,11 +55,9 @@ class NoteEditorModal extends PureComponent {
           ref={this.handleTextareaRef}
           value={this.state.note}
           onClick={this.handleNoteFieldClick}
+          onChange={this.handleDescriptionChange}
         />
-        <button
-          className="btn note-editor__done-btn"
-          onClick={() => this.addNote(this.textarea.value)}
-        >
+        <button className="btn note-editor__done-btn" onClick={() => this.addNote()}>
           Add
         </button>
       </>
