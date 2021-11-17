@@ -43,7 +43,7 @@ class NoteEditorModal extends PureComponent {
         <div>Enter a note to add to the header:</div>
         <textarea
           autoFocus
-          className="textarea"
+          className="textarea drag-handle"
           data-testid="titleLineInput"
           rows="3"
           ref={this.handleTextareaRef}
