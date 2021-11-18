@@ -4,8 +4,11 @@ import './stylesheet.css';
 
 import _ from 'lodash';
 
+import TabButtons from '../../../UI/TabButtons';
+
 import { generateTitleLine } from '../../../../lib/export_org';
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { todoKeywordSetForKeyword } from '../../../../lib/org_utils';
 
 export default class TitleEditorModal extends PureComponent {
   constructor(props) {
@@ -17,10 +20,22 @@ export default class TitleEditorModal extends PureComponent {
       'handleTitleChange',
       'handleTitleFieldClick',
       'handleInsertTimestamp',
+      'chooseTodoKeywordSet',
+      'handleTodoChange',
+      'handleNextTodoKeywordSet',
     ]);
 
+    const todoKeywordSet = this.chooseTodoKeywordSet(
+      props.todoKeywordSets,
+      props.header.getIn(['titleLine', 'todoKeyword'])
+    );
+
     this.state = {
-      titleValue: this.calculateRawTitle(props.header),
+      todoKeywordSet,
+      todoKeywordSetIndex: props.todoKeywordSets.indexOf(todoKeywordSet),
+      titleValue: props.editRawValues
+        ? this.calculateRawTitle(props.header)
+        : props.header.getIn(['titleLine', 'rawTitle']),
     };
   }
 
@@ -33,9 +48,13 @@ export default class TitleEditorModal extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.header !== this.props.header) {
+    const { header, editRawValues } = this.props;
+    if (prevProps.header !== header || prevProps.editRawValues !== editRawValues) {
       this.setState({
-        titleValue: this.calculateRawTitle(this.props.header),
+        ...this.state,
+        titleValue: this.props.editRawValues
+          ? this.calculateRawTitle(header)
+          : this.props.header.getIn(['titleLine', 'rawTitle']),
       });
     }
   }
@@ -62,7 +81,7 @@ export default class TitleEditorModal extends PureComponent {
       return;
     }
 
-    this.setState({ titleValue: newTitle });
+    this.setState({ ...this.state, titleValue: newTitle });
   }
 
   handleTitleFieldClick(event) {
@@ -77,6 +96,7 @@ export default class TitleEditorModal extends PureComponent {
     const { titleValue } = this.state;
     const insertionIndex = this.textarea.selectionStart;
     this.setState({
+      ...this.state,
       titleValue:
         titleValue.substring(0, insertionIndex) +
         getCurrentTimestampAsText() +
@@ -88,10 +108,53 @@ export default class TitleEditorModal extends PureComponent {
     event.stopPropagation();
   }
 
+  chooseTodoKeywordSet(todoKeywordSets, todoKeyword) {
+    return todoKeywordSetForKeyword(todoKeywordSets, todoKeyword);
+  }
+
+  handleTodoChange(newTodoKeyword) {
+    this.props.onTodoClicked(newTodoKeyword);
+  }
+
+  handleNextTodoKeywordSet() {
+    const { todoKeywordSets } = this.props;
+    const newIndex =
+      this.state.todoKeywordSetIndex + 1 !== todoKeywordSets.size
+        ? this.state.todoKeywordSetIndex + 1
+        : 0;
+    const newTodoKeywordSet =
+      newIndex !== todoKeywordSets.size ? todoKeywordSets.get(newIndex) : todoKeywordSets.get(0);
+    this.setState({
+      ...this.state,
+      todoKeywordSet: newTodoKeywordSet,
+      todoKeywordSetIndex: newIndex,
+    });
+  }
+
   render() {
     return (
       <>
-        <h2 className="drawer-modal__title">Edit title</h2>
+        <h2 className="drawer-modal__title">
+          {this.props.editRawValues ? 'Edit full title' : 'Edit title'}
+        </h2>
+
+        {this.props.editRawValues ? null : (
+          <div className="todo-editor">
+            <i
+              className="fas fa-ellipsis-h fa-lg todo-editor__icon"
+              onClick={this.handleNextTodoKeywordSet}
+            />
+            <TabButtons
+              buttons={this.state.todoKeywordSet.get('keywords').filter((todo) => todo !== '')}
+              selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
+              onSelect={this.handleTodoChange}
+            />
+            <i
+              className="fas fa-trash fa-lg todo-editor__icon"
+              onClick={() => this.handleTodoChange('')}
+            />
+          </div>
+        )}
 
         <div className="title-line__edit-container">
           <textarea

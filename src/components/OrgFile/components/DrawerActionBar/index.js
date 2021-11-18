@@ -89,6 +89,7 @@ class DrawerActionBar extends PureComponent {
       <div className="static-action-bar">
         <DrawerActionButtons
           activePopupType={this.props.activePopupType}
+          onSwitch={this.props.onSwitch}
           onTitleClick={this.handleShowTitleEditModal}
           onDescriptionClick={this.handleShowDescriptionEditModal}
           onTagsClick={this.handleShowTagsModal}
@@ -96,6 +97,9 @@ class DrawerActionBar extends PureComponent {
           onDeadlineClick={this.handleShowDeadlineModal}
           onScheduledClick={this.handleShowScheduledModal}
           onAddNote={this.handleShowNoteModal}
+          setEditRawValues={this.props.base.setEditRawValues}
+          editRawValues={this.props.editRawValues}
+          restorePreferEditRawValues={this.props.restorePreferEditRawValues}
         />
       </div>
     );
@@ -110,6 +114,7 @@ const mapStateToProps = (state) => {
     selectedHeaderId: file.get('selectedHeaderId'),
     header: getSelectedHeader(state),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
+    editRawValues: state.base.get('editRawValues'),
   };
 };
 

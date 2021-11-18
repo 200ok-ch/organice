@@ -1,5 +1,9 @@
 @import '../../../../../../colors.css';
 
+.drawer-action-button--selected {
+  color: var(--orange);
+}
+
 .header-action-drawer-container {
   color: var(--base01);
 

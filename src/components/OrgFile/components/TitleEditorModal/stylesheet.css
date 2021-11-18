@@ -1,5 +1,21 @@
 @import '../../../../colors.css';
 
+.todo-editor {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  justify-content: space-between;
+}
+
+.todo-editor__icon {
+  color: var(--magenta);
+  cursor: pointer;
+}
+
 .no-tags-message {
   color: var(--base0);
   text-align: center;

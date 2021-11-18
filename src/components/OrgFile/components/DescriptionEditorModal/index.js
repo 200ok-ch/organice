@@ -13,7 +13,11 @@ export default class DescriptionEditorModal extends PureComponent {
 
     _.bindAll(this, ['handleTextareaRef', 'handleDescriptionChange', 'handleInsertTimestamp']);
 
-    this.state = { descriptionValue: this.calculateRawDescription(props.header) };
+    this.state = {
+      descriptionValue: props.editRawValues
+        ? this.calculateRawDescription(props.header)
+        : props.header.get('rawDescription'),
+    };
   }
 
   componentDidMount() {
@@ -21,9 +25,12 @@ export default class DescriptionEditorModal extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.header !== this.props.header) {
+    const { header, editRawValues } = this.props;
+    if (prevProps.header !== header || prevProps.editRawValues !== editRawValues) {
       this.setState({
-        descriptionValue: this.calculateRawDescription(this.props.header),
+        descriptionValue: this.props.editRawValues
+          ? this.calculateRawDescription(header)
+          : header.get('rawDescription'),
       });
     }
   }
@@ -57,7 +64,9 @@ export default class DescriptionEditorModal extends PureComponent {
   render() {
     return (
       <>
-        <h2 className="drawer-modal__title">Edit description</h2>
+        <h2 className="drawer-modal__title">
+          {this.props.editRawValues ? 'Edit full description' : 'Edit description'}
+        </h2>
 
         <div className="header-content__edit-container">
           <textarea

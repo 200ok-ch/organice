@@ -274,6 +274,15 @@ export const advanceTodoState = (headerId, logIntoDrawer) => ({
   timestamp: new Date(),
 });
 
+export const setTodoState = (headerId, newTodoState, logIntoDrawer) => ({
+  type: 'SET_TODO_STATE',
+  newTodoState,
+  headerId,
+  logIntoDrawer,
+  dirtying: true,
+  timestamp: new Date(),
+});
+
 export const enterEditMode = (editModeType) => ({
   type: 'ENTER_EDIT_MODE',
   editModeType,

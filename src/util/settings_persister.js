@@ -196,6 +196,16 @@ export const persistableFields = [
     type: 'string',
     default: 'Week',
   },
+  {
+    category: 'base',
+    name: 'editRawValues',
+    type: 'boolean',
+  },
+  {
+    category: 'base',
+    name: 'preferEditRawValues',
+    type: 'boolean',
+  },
 ];
 
 export const readOpennessState = () => {

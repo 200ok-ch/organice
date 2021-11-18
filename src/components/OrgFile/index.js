@@ -72,9 +72,8 @@ class OrgFile extends PureComponent {
       'handleSearchPopupClose',
       'handleRefilePopupClose',
       'handleTitlePopupClose',
-      'handleTitlePopupSwitch',
+      'handleTodoChange',
       'handleDescriptionPopupClose',
-      'handleDescriptionPopupSwitch',
       'handleTablePopupClose',
       'handleSyncConfirmationPull',
       'handleSyncConfirmationPush',
@@ -256,33 +255,45 @@ class OrgFile extends PureComponent {
     }
   }
 
-  handleTitlePopupSwitch(selectedHeader, titleValue) {
-    if (generateTitleLine(selectedHeader.toJS(), false) !== titleValue) {
-      this.props.org.updateHeaderTitle(selectedHeader.get('id'), titleValue);
-    }
-  }
-
   handleTitlePopupClose(titleValue) {
-    if (generateTitleLine(this.props.selectedHeader.toJS(), false) !== titleValue) {
-      this.props.org.updateHeaderTitle(this.props.selectedHeader.get('id'), titleValue);
+    const { selectedHeader } = this.props;
+    if (this.props.editRawValues) {
+      if (generateTitleLine(selectedHeader.toJS(), false) !== titleValue) {
+        this.props.org.updateHeaderTitle(selectedHeader.get('id'), titleValue);
+      }
+    } else {
+      if (selectedHeader.getIn(['titleLine', 'rawTitle']) !== titleValue) {
+        this.props.org.updateHeaderTitle(
+          selectedHeader.get('id'),
+          generateTitleLine(
+            selectedHeader.setIn(['titleLine', 'rawTitle'], titleValue).toJS(),
+            false
+          )
+        );
+      }
     }
     this.props.base.closePopup();
   }
 
-  handleDescriptionPopupSwitch(selectedHeader, descriptionValue) {
-    if (
-      createRawDescriptionText(selectedHeader, false, this.props.dontIndent) !== descriptionValue
-    ) {
-      this.props.org.updateHeaderDescription(selectedHeader.get('id'), descriptionValue);
-    }
-  }
-
   handleDescriptionPopupClose(descriptionValue) {
-    if (
-      createRawDescriptionText(this.props.selectedHeader, false, this.props.dontIndent) !==
-      descriptionValue
-    ) {
-      this.props.org.updateHeaderDescription(this.props.selectedHeader.get('id'), descriptionValue);
+    const { selectedHeader } = this.props;
+    if (this.props.editRawValues) {
+      if (
+        createRawDescriptionText(selectedHeader, false, this.props.dontIndent) !== descriptionValue
+      ) {
+        this.props.org.updateHeaderDescription(selectedHeader.get('id'), descriptionValue);
+      }
+    } else {
+      if (selectedHeader.get('rawDescription') !== descriptionValue) {
+        this.props.org.updateHeaderDescription(
+          selectedHeader.get('id'),
+          createRawDescriptionText(
+            selectedHeader.set('rawDescription', descriptionValue),
+            false,
+            this.props.dontIndent
+          )
+        );
+      }
     }
     this.props.base.closePopup();
   }
@@ -337,13 +348,20 @@ class OrgFile extends PureComponent {
     }
   }
 
+  handleTodoChange(newTodoKeyword) {
+    this.props.org.setTodoState(
+      this.props.selectedHeaderId,
+      newTodoKeyword,
+      this.props.shouldLogIntoDrawer
+    );
+  }
+
   getPopupSwitchAction(activePopupType) {
     switch (activePopupType) {
       case 'title-editor':
-        return (titleValue) => this.handleTitlePopupSwitch(this.props.selectedHeader, titleValue);
+        return (titleValue) => this.handleTitlePopupClose(titleValue);
       case 'description-editor':
-        return (descriptionValue) =>
-          this.handleDescriptionPopupSwitch(this.props.selectedHeader, descriptionValue);
+        return (descriptionValue) => this.handleDescriptionPopupClose(descriptionValue);
       default:
         return () => {};
     }
@@ -387,6 +405,8 @@ class OrgFile extends PureComponent {
       headers,
       selectedHeader,
       shouldDisableActions,
+      editRawValues,
+      todoKeywordSets,
     } = this.props;
 
     switch (activePopupType) {
@@ -491,7 +511,10 @@ class OrgFile extends PureComponent {
       case 'title-editor':
         return (
           <TitleEditorModal
+            editRawValues={editRawValues}
+            todoKeywordSets={todoKeywordSets}
             onClose={this.getPopupCloseAction('title-editor')}
+            onTodoClicked={this.handleTodoChange}
             header={selectedHeader}
             setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
           />
@@ -499,6 +522,7 @@ class OrgFile extends PureComponent {
       case 'description-editor':
         return (
           <DescriptionEditorModal
+            editRawValues={editRawValues}
             header={selectedHeader}
             dontIndent={this.props.dontIndent}
             setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
@@ -656,6 +680,7 @@ class OrgFile extends PureComponent {
                     ? this.state.popupCloseActionValuesAccessor()
                     : [])
                 );
+                this.props.base.restorePreferEditRawValues();
                 this.container.focus();
               }}
               maxSize={this.getPopupMaxSize(activePopupType)}
@@ -670,13 +695,14 @@ class OrgFile extends PureComponent {
                 activePopupType === 'deadline-editor' ||
                 activePopupType === 'note-editor') && (
                 <DrawerActionBar
-                  onSwitch={() =>
+                  onSwitch={() => {
                     this.getPopupSwitchAction(activePopupType)(
                       ...(this.state.popupCloseActionValuesAccessor
                         ? this.state.popupCloseActionValuesAccessor()
                         : [])
-                    )
-                  }
+                    );
+                  }}
+                  restorePreferEditRawValues={this.props.base.restorePreferEditRawValues}
                 />
               )}
             </Drawer>
@@ -715,6 +741,8 @@ const mapStateToProps = (state) => {
     pendingCapture: state.org.present.get('pendingCapture'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
+    editRawValues: state.base.get('editRawValues'),
+    todoKeywordSets: file.get('todoKeywordSets'),
   };
 };
 

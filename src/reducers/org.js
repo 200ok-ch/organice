@@ -225,6 +225,46 @@ const advanceTodoState = (state, action) => {
   return state;
 };
 
+const setTodoState = (state, action) => {
+  const { headerId, logIntoDrawer, newTodoState, timestamp } = action;
+  const existingHeaderId = headerId || state.get('selectedHeaderId');
+  if (!existingHeaderId) {
+    return state;
+  }
+
+  const headers = state.get('headers');
+  const { header, headerIndex } = indexAndHeaderWithId(headers, existingHeaderId);
+
+  const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
+  const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
+  const newTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), newTodoState);
+  const isInSameTodoSet = currentTodoSet === newTodoSet;
+
+  if (isInSameTodoSet) {
+    const indexedPlanningItemsWithRepeaters = header
+      .get('planningItems')
+      .map((planningItem, index) => [planningItem, index])
+      .filter(([planningItem]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
+
+    state = updateHeadlines({
+      currentTodoSet,
+      newTodoState,
+      indexedPlanningItemsWithRepeaters,
+      state,
+      headerIndex,
+      currentTodoState,
+      logIntoDrawer,
+      timestamp,
+    });
+  } else {
+    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  }
+
+  state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
+
+  return state;
+};
+
 const enterEditMode = (state, action) => state.set('editMode', action.editModeType);
 
 const exitEditMode = (state) => state.set('editMode', null);
@@ -1364,6 +1404,8 @@ const reducer = (state, action) => {
       return inFile(openParentsOfHeader);
     case 'ADVANCE_TODO_STATE':
       return inFile(advanceTodoState);
+    case 'SET_TODO_STATE':
+      return inFile(setTodoState);
     case 'ENTER_EDIT_MODE':
       return inFile(enterEditMode);
     case 'EXIT_EDIT_MODE':

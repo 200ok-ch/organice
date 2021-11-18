@@ -30,6 +30,7 @@ const Settings = ({
   agendaStartOnWeekday,
   hasUnseenChangelog,
   syncBackend,
+  preferEditRawValues,
   showClockDisplay,
   colorScheme,
   theme,
@@ -93,6 +94,8 @@ const Settings = ({
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
+
+  const handlePreferEditRawValues = () => base.setPreferEditRawValues(!preferEditRawValues);
 
   const handleChangelogClick = () => {
     base.restoreStaticFile('changelog');
@@ -293,6 +296,20 @@ const Settings = ({
         <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
       </div>
 
+      <div className="setting-container">
+        <div className="setting-label">
+          Prefer raw values
+          <div className="setting-label__description">
+            When editing title or description of a header, you can switch between editing the text
+            part or the full content (including text representation of todo keywords, tags, schedule
+            items, properties etc.) by clicking the "edit title" or "edit description" icon in the
+            popup. This option allows you to view the full content first instead of on a second
+            click.
+          </div>
+        </div>
+        <Switch isEnabled={preferEditRawValues} onToggle={handlePreferEditRawValues} />
+      </div>
+
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>
           Capture templates
@@ -365,6 +382,7 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    preferEditRawValues: state.base.get('preferEditRawValues'),
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
   };

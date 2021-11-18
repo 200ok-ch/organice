@@ -20,6 +20,7 @@ export default class DrawerActionButtons extends PureComponent {
 
   render() {
     const {
+      onSwitch,
       onTitleClick,
       onDescriptionClick,
       onTagsClick,
@@ -28,55 +29,86 @@ export default class DrawerActionButtons extends PureComponent {
       onScheduledClick,
       onAddNote,
       activePopupType,
+      setEditRawValues,
+      editRawValues,
+      restorePreferEditRawValues,
     } = this.props;
 
     return (
       <div className="header-action-drawer-container">
         <div className="header-action-drawer__row">
           {this.iconWithFFClickCatcher({
-            className: 'fas fa-pencil-alt fa-lg',
-            onClick: onTitleClick,
+            className:
+              'fas fa-pencil-alt fa-lg' +
+              ('title-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
+            onClick: () => {
+              if ('title-editor' === activePopupType) {
+                onSwitch();
+                setEditRawValues(!editRawValues);
+              } else {
+                restorePreferEditRawValues();
+              }
+              onTitleClick();
+            },
             title: 'Edit header title',
-            disabled: 'title-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({
-            className: 'fas fa-edit fa-lg',
-            onClick: onDescriptionClick,
+            className:
+              'fas fa-edit fa-lg' +
+              ('description-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
+            onClick: () => {
+              if ('description-editor' === activePopupType) {
+                onSwitch();
+                setEditRawValues(!editRawValues);
+              } else {
+                restorePreferEditRawValues();
+              }
+              onDescriptionClick();
+            },
             title: 'Edit header description',
-            disabled: 'description-editor' === activePopupType,
             testId: 'edit-header-title',
           })}
 
           {this.iconWithFFClickCatcher({
-            className: 'fas fa-tags fa-lg',
+            className:
+              'fas fa-tags fa-lg' +
+              ('tags-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onTagsClick,
             title: 'Modify tags',
             disabled: 'tags-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({
-            className: 'fas fa-list fa-lg',
+            className:
+              'fas fa-list fa-lg' +
+              ('property-list-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onPropertiesClick,
             title: 'Modify properties',
             disabled: 'property-list-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({
-            className: 'fas fa-calendar-check fa-lg',
+            className:
+              'fas fa-calendar-check fa-lg' +
+              ('deadline-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onDeadlineClick,
             title: 'Set deadline datetime',
             disabled: 'deadline-editor' === activePopupType,
           })}
           {this.iconWithFFClickCatcher({
-            className: 'far fa-calendar-times fa-lg',
+            className:
+              'far fa-calendar-times fa-lg' +
+              ('scheduled-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
             disabled: 'scheduled-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({
-            className: 'far fa-sticky-note fa-lg',
+            className:
+              'far fa-sticky-note fa-lg' +
+              ('note-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onAddNote,
             title: 'Add a note',
             disabled: 'note-editor' === activePopupType,
