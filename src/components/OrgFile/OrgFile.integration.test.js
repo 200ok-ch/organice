@@ -65,6 +65,7 @@ describe('Render all views', () => {
           customKeybindings: {},
           shouldTapTodoToAdvance: true,
           isLoading: Set(),
+          finderTab: 'Search',
           agendaTimeframe: 'Week',
         }),
       },
@@ -333,14 +334,13 @@ describe('Render all views', () => {
           expect(queryByText('Search')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
 
-          fireEvent.click(getByTitle('Show search'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
           const drawerElem = getByTestId('drawer');
-          expect(drawerElem).toHaveTextContent('Search');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
         });
 
         test('searches in all headers', () => {
-          fireEvent.click(getByTitle('Show search'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
           const drawerElem = getByTestId('drawer');
           const input = getByPlaceholderText(
             'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
@@ -363,7 +363,7 @@ describe('Render all views', () => {
           fireEvent.click(queryByText('Top level header'));
           fireEvent.click(container.querySelectorAll("[data-testid='header-action-narrow']")[0]);
 
-          fireEvent.click(getByTitle('Show search'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
           const drawerElem = getByTestId('drawer');
 
           // Only sub-headers are visible
@@ -390,22 +390,23 @@ describe('Render all views', () => {
           expect(queryByText('Task list')).toBeFalsy();
           expect(queryByText('A todo item with schedule and deadline')).toBeFalsy();
 
-          fireEvent.click(getByTitle('Show task list'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
+          fireEvent.click(getByText('Task List'));
           const drawerElem = getByTestId('drawer');
-          expect(drawerElem).toHaveTextContent('Task list');
+          expect(drawerElem).not.toHaveTextContent('Top level header');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
         });
 
         // Order by state first and then by date. Ergo TODO is before
         // DONE and yesterday is before today.
         test('orders tasks for an Org file', () => {
-          fireEvent.click(getByTitle('Show task list'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
           const drawerElem = getByTestId('drawer');
           expect(drawerElem).toMatchSnapshot();
         });
 
         test('search in TaskList filters headers (by default only with todoKeywords)', () => {
-          fireEvent.click(getByTitle('Show task list'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
           const drawerElem = getByTestId('drawer');
           const input = getByPlaceholderText(
             'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
@@ -421,7 +422,8 @@ describe('Render all views', () => {
         // More rigorous testing of the search parser is here:
         // headline_filter_parser.unit.test.js
         test('search in TaskList filters headers (on demand without todoKeywords)', () => {
-          fireEvent.click(getByTitle('Show task list'));
+          fireEvent.click(getByTitle('Show Search / Task List'));
+          fireEvent.click(getByText('Task List'));
           const drawerElem = getByTestId('drawer');
           getByPlaceholderText('e.g. -DONE doc|man :simple|easy :assignee:nobody|none');
 

@@ -9,11 +9,30 @@ exports[`Render all views Org Functionality Renders everything starting from an 
   <div
     class="drawer__grabber"
   />
-  <h2
-    class="agenda__title"
+  <div
+    class="agenda__tab-container"
   >
-    Task list
-  </h2>
+    <div
+      class="tab-buttons tab-buttons--equal-width-tabs"
+      style="grid-template-columns: repeat(2, 1fr);"
+    >
+      <div
+        class="tab-buttons__btn tab-buttons__btn--selected"
+        title=""
+      >
+        Search
+      </div>
+      <div
+        class="tab-buttons__btn"
+        title=""
+      >
+        Task List
+      </div>
+    </div>
+  </div>
+  <div
+    class="task-list__modal-title_search"
+  />
   <datalist
     id="task-list__datalist-filter"
   >
@@ -52,6 +71,79 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           class="agenda-day__header-container"
         >
           <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      Top level header
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org &gt; Top level header
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A nested header
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org &gt; Top level header
+          </div>
+          <div
             class="agenda-day__header__header-container"
           >
             <div
@@ -79,18 +171,38 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
             <div
-              class="agenda-day__header__planning-item-container"
+              class="title-line"
             >
+              
               <div
-                class="task-list__header-planning-type"
+                style="width: 100%;"
               >
-                DEADLINE
-              </div>
-              <div
-                class="task-list__header-planning-date task-list__header-planning-date--overdue"
-              >
-                10/05
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      Another top level header
+                    </span>
+                    
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -98,6 +210,11 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         <div
           class="agenda-day__header-container"
         >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org &gt; Another top level header
+          </div>
           <div
             class="agenda-day__header__header-container"
           >
@@ -126,36 +243,23 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 </div>
               </div>
             </div>
-            <div
-              class="agenda-day__header__planning-item-container"
-            >
-              <div
-                class="task-list__header-planning-type"
-              >
-                SCHEDULED
-              </div>
-              <div
-                class="task-list__header-planning-date task-list__header-planning-date--overdue"
-              >
-                04/05
-              </div>
-            </div>
           </div>
         </div>
         <div
           class="agenda-day__header-container"
         >
           <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
             class="agenda-day__header__header-container"
           >
             <div
               class="title-line"
             >
-              <span
-                class="todo-keyword todo-keyword--done-state"
-              >
-                FINISHED
-              </span>
+              
               <div
                 style="width: 100%;"
               >
@@ -166,30 +270,42 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                     style="word-break: break-word;"
                   >
                     <span>
-                      A header with a custom todo sequence in DONE state
+                      A header with tags                                              
                     </span>
                     
                   </span>
                 </div>
+                <div>
+                  <div
+                    class="header-tag"
+                  >
+                    tag1
+                  </div>
+                  <div
+                    class="header-tag"
+                  >
+                    tag2
+                  </div>
+                </div>
               </div>
             </div>
-            <div />
           </div>
         </div>
         <div
           class="agenda-day__header-container"
         >
           <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
             class="agenda-day__header__header-container"
           >
             <div
               class="title-line"
             >
-              <span
-                class="todo-keyword todo-keyword--done-state"
-              >
-                DONE
-              </span>
+              
               <div
                 style="width: 100%;"
               >
@@ -200,25 +316,18 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                     style="word-break: break-word;"
                   >
                     <span>
-                      A headline that's done a day earlier even
+                      A header with 
+                      <a
+                        href="https://organice.200ok.ch"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        a link
+                      </a>
                     </span>
                     
                   </span>
                 </div>
-              </div>
-            </div>
-            <div
-              class="agenda-day__header__planning-item-container"
-            >
-              <div
-                class="task-list__header-planning-type"
-              >
-                SCHEDULED
-              </div>
-              <div
-                class="task-list__header-planning-date task-list__header-planning-date--overdue"
-              >
-                01/02
               </div>
             </div>
           </div>
@@ -226,6 +335,113 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         <div
           class="agenda-day__header-container"
         >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A header with various links as content
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A header with a URL, mail address and phone number as content
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org &gt; A header with a URL, mail address a..
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      PROJECT Foo
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org &gt; A header with a URL, .. &gt; PROJECT Foo
+          </div>
           <div
             class="agenda-day__header__header-container"
           >
@@ -254,18 +470,80 @@ exports[`Render all views Org Functionality Renders everything starting from an 
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org &gt; A header with a URL, .. &gt; PROJECT Foo
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
             <div
-              class="agenda-day__header__planning-item-container"
+              class="title-line"
             >
-              <div
-                class="task-list__header-planning-type"
+              <span
+                class="todo-keyword todo-keyword--done-state"
               >
-                SCHEDULED
+                DONE
+              </span>
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A headline that's done a day earlier even
+                    </span>
+                    
+                  </span>
+                </div>
               </div>
-              <div
-                class="task-list__header-planning-date task-list__header-planning-date--overdue"
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
+              <span
+                class="todo-keyword todo-keyword--done-state"
               >
-                01/03
+                FINISHED
+              </span>
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A header with a custom todo sequence in DONE state
+                    </span>
+                    
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -770,25 +1048,11 @@ exports[`Render all views Org Functionality Renders everything starting from an 
           title="Show movement buttons"
         />
       </div>
-      <div
-        class="action-drawer__capture-buttons-container"
-      >
-        <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
-          style="opacity: 1; position: relative; z-index: 1;"
-          title="Show Search / Task List"
-        />
-        <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
-          style="position: absolute; z-index: 0; left: 0px; opacity: 1; box-shadow: none; bottom: 0px;"
-          title="Show search"
-        />
-        <button
-          class="btn btn--circle action-drawer__btn fas fa-lg fa-tasks"
-          style="position: absolute; z-index: 0; left: 0px; opacity: 1; box-shadow: none; bottom: 0px;"
-          title="Show task list"
-        />
-      </div>
+      <button
+        class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
+        style="opacity: 1; position: relative; z-index: 1;"
+        title="Show Search / Task List"
+      />
       <div
         class="action-drawer__capture-buttons-container"
       >
