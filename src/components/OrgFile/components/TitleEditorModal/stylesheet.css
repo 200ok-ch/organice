@@ -6,9 +6,16 @@
   align-items: center;
   margin-top: -15px;
   margin-bottom: 10px;
-  margin-right: 10px;
-  margin-left: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
   justify-content: space-between;
+}
+
+.todo-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .todo-editor__icon {

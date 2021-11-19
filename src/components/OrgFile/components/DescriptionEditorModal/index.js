@@ -32,6 +32,7 @@ export default class DescriptionEditorModal extends PureComponent {
           ? this.calculateRawDescription(header)
           : header.get('rawDescription'),
       });
+      this.textarea.focus();
     }
   }
 
