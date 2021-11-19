@@ -50,7 +50,7 @@ export default class DrawerActionButtons extends PureComponent {
               }
               onTitleClick();
             },
-            title: 'Edit header title',
+            title: 'Edit title',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -66,7 +66,7 @@ export default class DrawerActionButtons extends PureComponent {
               }
               onDescriptionClick();
             },
-            title: 'Edit header description',
+            title: 'Edit description',
             testId: 'edit-header-title',
           })}
 

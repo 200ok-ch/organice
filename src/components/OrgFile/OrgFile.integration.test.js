@@ -67,6 +67,7 @@ describe('Render all views', () => {
           isLoading: Set(),
           finderTab: 'Search',
           agendaTimeframe: 'Week',
+          preferEditRawValues: false,
         }),
       },
       applyMiddleware(thunk)
@@ -143,11 +144,29 @@ describe('Render all views', () => {
         fireEvent.click(queryByText('Top level header'));
         // Click 'plus' on the first header which is _not_ a todoKeyword header
         fireEvent.click(container.querySelectorAll("[data-testid='header-action-plus']")[0]);
+        // "edit title" view has buttons to choose TODO or DONE
+        let drawerElem = getByTestId('drawer');
+        expect(drawerElem).toHaveTextContent('DONE');
+        // switch to "edit full title", which has no such buttons
+        fireEvent.click(getByTitle('Edit title'));
+        drawerElem = getByTestId('drawer');
+        expect(drawerElem).not.toHaveTextContent('DONE');
         expect(getByTestId('titleLineInput').value).toEqual('');
+
+        // switch back to "edit title"
+        // TODO: Find out why resetting "editRawValues" is broken here
+        // maybe the popup is not closed properly? how to simulate that?
+        // clicking the top of the screen with
+        // fireEvent.click(container.querySelector('.header-bar__title'));
+        // crashes the tests
+        fireEvent.click(getByTitle('Edit title'));
 
         // Click 'plus' on the second header which _is_ a todoKeyword header
         fireEvent.click(queryByText('A todo item with schedule and deadline'));
         fireEvent.click(container.querySelectorAll("[data-testid='header-action-plus']")[1]);
+        expect(getByTestId('titleLineInput').value).toEqual('');
+        // switch to "edit full title"
+        fireEvent.click(getByTitle('Edit title'));
         expect(getByTestId('titleLineInput').value).toEqual('TODO ');
       });
 
