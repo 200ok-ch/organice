@@ -67,8 +67,7 @@ const restoreBaseSettings = (state, action) => {
   if (!action.newSettings) {
     return state;
   }
-  state = applyCategorySettingsFromConfig(state, action.newSettings, 'base');
-  return state.set('editRawValues', state.get('preferEditRawValues'));
+  return applyCategorySettingsFromConfig(state, action.newSettings, 'base');
 };
 
 const pushModalPage = (state, action) =>
@@ -125,15 +124,8 @@ const setAgendaTimeframe = (state, action) => state.set('agendaTimeframe', actio
 
 const setFinderTab = (state, action) => state.set('finderTab', action.finderTab);
 
-const setEditRawValues = (state, action) => state.set('editRawValues', action.editRawValues);
-
 const setPreferEditRawValues = (state, action) =>
-  state
-    .set('preferEditRawValues', action.preferEditRawValues)
-    .set('editRawValues', action.preferEditRawValues);
-
-const restorePreferEditRawValues = (state) =>
-  state.set('editRawValues', state.get('preferEditRawValues'));
+  state.set('preferEditRawValues', action.preferEditRawValues);
 
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
@@ -210,12 +202,8 @@ export default (state = Map(), action) => {
       return setAgendaTimeframe(state, action);
     case 'SET_FINDER_TAB':
       return setFinderTab(state, action);
-    case 'EDIT_RAW_VALUES':
-      return setEditRawValues(state, action);
     case 'PREFER_EDIT_RAW_VALUES':
       return setPreferEditRawValues(state, action);
-    case 'RESTORE_PREFER_EDIT_RAW_VALUES':
-      return restorePreferEditRawValues(state, action);
     default:
       return state;
   }

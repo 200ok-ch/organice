@@ -51,7 +51,6 @@ export default class TitleEditorModal extends PureComponent {
     const { header, editRawValues } = this.props;
     if (prevProps.header !== header || prevProps.editRawValues !== editRawValues) {
       this.setState({
-        ...this.state,
         titleValue: this.props.editRawValues
           ? this.calculateRawTitle(header)
           : this.props.header.getIn(['titleLine', 'rawTitle']),
@@ -81,7 +80,7 @@ export default class TitleEditorModal extends PureComponent {
       return;
     }
 
-    this.setState({ ...this.state, titleValue: newTitle });
+    this.setState({ titleValue: newTitle });
   }
 
   handleTitleFieldClick(event) {
@@ -96,7 +95,6 @@ export default class TitleEditorModal extends PureComponent {
     const { titleValue } = this.state;
     const insertionIndex = this.textarea.selectionStart;
     this.setState({
-      ...this.state,
       titleValue:
         titleValue.substring(0, insertionIndex) +
         getCurrentTimestampAsText() +
@@ -125,7 +123,6 @@ export default class TitleEditorModal extends PureComponent {
     const newTodoKeywordSet =
       newIndex !== todoKeywordSets.size ? todoKeywordSets.get(newIndex) : todoKeywordSets.get(0);
     this.setState({
-      ...this.state,
       todoKeywordSet: newTodoKeywordSet,
       todoKeywordSetIndex: newIndex,
     });

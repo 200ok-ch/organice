@@ -88,6 +88,7 @@ class OrgFile extends PureComponent {
 
     this.state = {
       hasUncaughtError: false,
+      editRawValues: props.preferEditRawValues,
     };
   }
 
@@ -257,7 +258,7 @@ class OrgFile extends PureComponent {
 
   handleTitlePopupClose(titleValue) {
     const { selectedHeader } = this.props;
-    if (this.props.editRawValues) {
+    if (this.state.editRawValues) {
       if (generateTitleLine(selectedHeader.toJS(), false) !== titleValue) {
         this.props.org.updateHeaderTitle(selectedHeader.get('id'), titleValue);
       }
@@ -277,7 +278,7 @@ class OrgFile extends PureComponent {
 
   handleDescriptionPopupClose(descriptionValue) {
     const { selectedHeader } = this.props;
-    if (this.props.editRawValues) {
+    if (this.state.editRawValues) {
       if (
         createRawDescriptionText(selectedHeader, false, this.props.dontIndent) !== descriptionValue
       ) {
@@ -405,7 +406,6 @@ class OrgFile extends PureComponent {
       headers,
       selectedHeader,
       shouldDisableActions,
-      editRawValues,
       todoKeywordSets,
     } = this.props;
 
@@ -511,7 +511,7 @@ class OrgFile extends PureComponent {
       case 'title-editor':
         return (
           <TitleEditorModal
-            editRawValues={editRawValues}
+            editRawValues={this.state.editRawValues}
             todoKeywordSets={todoKeywordSets}
             onClose={this.getPopupCloseAction('title-editor')}
             onTodoClicked={this.handleTodoChange}
@@ -522,7 +522,7 @@ class OrgFile extends PureComponent {
       case 'description-editor':
         return (
           <DescriptionEditorModal
-            editRawValues={editRawValues}
+            editRawValues={this.state.editRawValues}
             header={selectedHeader}
             dontIndent={this.props.dontIndent}
             setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
@@ -680,7 +680,7 @@ class OrgFile extends PureComponent {
                     ? this.state.popupCloseActionValuesAccessor()
                     : [])
                 );
-                this.props.base.restorePreferEditRawValues();
+                this.setState({ editRawValues: this.props.preferEditRawValues });
                 this.container.focus();
               }}
               maxSize={this.getPopupMaxSize(activePopupType)}
@@ -702,7 +702,11 @@ class OrgFile extends PureComponent {
                         : [])
                     );
                   }}
-                  restorePreferEditRawValues={this.props.base.restorePreferEditRawValues}
+                  editRawValues={this.state.editRawValues}
+                  setEditRawValues={(editRawValues) => this.setState({ editRawValues })}
+                  restorePreferEditRawValues={() =>
+                    this.setState({ editRawValues: this.props.preferEditRawValues })
+                  }
                 />
               )}
             </Drawer>
@@ -741,7 +745,7 @@ const mapStateToProps = (state) => {
     pendingCapture: state.org.present.get('pendingCapture'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
-    editRawValues: state.base.get('editRawValues'),
+    preferEditRawValues: state.base.get('preferEditRawValues'),
     todoKeywordSets: file.get('todoKeywordSets'),
   };
 };

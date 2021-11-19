@@ -198,11 +198,6 @@ export const persistableFields = [
   },
   {
     category: 'base',
-    name: 'editRawValues',
-    type: 'boolean',
-  },
-  {
-    category: 'base',
     name: 'preferEditRawValues',
     type: 'boolean',
   },

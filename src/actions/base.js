@@ -222,13 +222,3 @@ export const setPreferEditRawValues = (preferEditRawValues) => (dispatch) =>
     type: 'PREFER_EDIT_RAW_VALUES',
     preferEditRawValues,
   });
-
-export const restorePreferEditRawValues = () => ({
-  type: 'RESTORE_PREFER_EDIT_RAW_VALUES',
-});
-
-export const setEditRawValues = (editRawValues) => (dispatch) =>
-  dispatch({
-    type: 'EDIT_RAW_VALUES',
-    editRawValues,
-  });

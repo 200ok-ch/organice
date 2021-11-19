@@ -97,8 +97,8 @@ class DrawerActionBar extends PureComponent {
           onDeadlineClick={this.handleShowDeadlineModal}
           onScheduledClick={this.handleShowScheduledModal}
           onAddNote={this.handleShowNoteModal}
-          setEditRawValues={this.props.base.setEditRawValues}
           editRawValues={this.props.editRawValues}
+          setEditRawValues={this.props.setEditRawValues}
           restorePreferEditRawValues={this.props.restorePreferEditRawValues}
         />
       </div>
@@ -114,7 +114,6 @@ const mapStateToProps = (state) => {
     selectedHeaderId: file.get('selectedHeaderId'),
     header: getSelectedHeader(state),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
-    editRawValues: state.base.get('editRawValues'),
   };
 };
 

@@ -29,8 +29,8 @@ export default class DrawerActionButtons extends PureComponent {
       onScheduledClick,
       onAddNote,
       activePopupType,
-      setEditRawValues,
       editRawValues,
+      setEditRawValues,
       restorePreferEditRawValues,
     } = this.props;
 
