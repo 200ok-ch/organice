@@ -5,6 +5,9 @@
   margin-top: 10px;
 
   z-index: 1;
+
+  height: '100%';
+  overflow: 'auto';
 }
 
 .header-list-container--narrowed {
