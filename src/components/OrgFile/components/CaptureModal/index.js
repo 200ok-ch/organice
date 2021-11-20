@@ -11,12 +11,11 @@ import './stylesheet.css';
 
 import ActionButton from '../ActionDrawer/components/ActionButton/';
 import Switch from '../../../UI/Switch/';
-import Drawer from '../../../UI/Drawer/';
 
 import { headerWithPath } from '../../../../lib/org_utils';
 import substituteTemplateVariables from '../../../../lib/capture_template_substitution';
 
-export default ({ template, onCapture, headers, onClose }) => {
+export default ({ template, onCapture, headers }) => {
   const [substitutedTemplate, initialCursorIndex] = useMemo(
     () => substituteTemplateVariables(template.get('template')),
     [template]
@@ -99,7 +98,7 @@ export default ({ template, onCapture, headers, onClose }) => {
   const handlePrependSwitchToggle = () => setShouldPrepend(!shouldPrepend);
 
   return (
-    <Drawer onClose={onClose}>
+    <>
       <div className="capture-modal-header">
         <ActionButton
           letter={template.get('letter')}
@@ -150,6 +149,6 @@ export default ({ template, onCapture, headers, onClose }) => {
       )}
 
       <br />
-    </Drawer>
+    </>
   );
 };
