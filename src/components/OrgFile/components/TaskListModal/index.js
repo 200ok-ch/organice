@@ -6,7 +6,6 @@ import './stylesheet.css';
 
 import classNames from 'classnames';
 import TaskListView from './components/TaskListView';
-import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
 
@@ -35,12 +34,11 @@ function TaskListModal(props) {
     );
   }
 
-  const { onClose, searchFilter, searchFilterValid, searchFilterSuggestions } = props;
+  const { searchFilter, searchFilterValid, searchFilterSuggestions } = props;
 
   return (
-    <Drawer onClose={onClose} maxSize={true}>
-      <h2 className="agenda__title">Task list</h2>
-
+    <>
+      <div className="task-list__modal-title" />
       <datalist id="task-list__datalist-filter">
         {searchFilterSuggestions.map((string, idx) => (
           <option key={idx} value={string} />
@@ -77,9 +75,7 @@ function TaskListModal(props) {
           onToggleDateDisplayType={handleToggleDateDisplayType}
         />
       </div>
-
-      <br />
-    </Drawer>
+    </>
   );
 }
 

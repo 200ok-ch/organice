@@ -23,6 +23,18 @@
 
 .task-list__modal-title {
   width: 100%;
+  height: 20px;
+  min-height: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.task-list__modal-title_search {
+  width: 100%;
+  height: 20px;
+  min-height: 20px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }

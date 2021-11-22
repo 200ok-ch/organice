@@ -1,0 +1,101 @@
+@import '../../../../colors.css';
+
+.todo-editor {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+  justify-content: space-between;
+}
+
+.todo-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.todo-editor__icon {
+  color: var(--magenta);
+  cursor: pointer;
+}
+
+.no-tags-message {
+  color: var(--base0);
+  text-align: center;
+}
+
+.tag-container {
+  display: flex;
+
+  padding: 3px 5px;
+}
+
+.tag-container--dragging {
+  background-color: var(--base1);
+}
+
+.tag-container__drag-handle {
+  user-select: none;
+}
+
+.tag-container__textfield {
+  flex: 3;
+}
+
+.tag-container__actions-container {
+  flex: 1;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-left: 10px;
+
+  color: var(--base1);
+}
+
+.tags-editor__add-new-container {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 10px;
+}
+
+.tags-editor__separator {
+  width: calc(100% - 20px);
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  border: none;
+  border-bottom: 1px solid var(--base2);
+}
+
+.all-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  margin-bottom: 15px;
+}
+
+.all-tags__tag {
+  cursor: pointer;
+  color: var(--base00);
+  background-color: var(--base2);
+
+  padding: 8px;
+  margin: 5px;
+}
+
+.all-tags__tag:hover {
+  color: var(--base2);
+  background-color: var(--base00);
+}
+
+.all-tags__tag--in-use {
+  background-color: var(--base01);
+  color: var(--base2);
+}

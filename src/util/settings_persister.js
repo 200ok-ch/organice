@@ -196,6 +196,11 @@ export const persistableFields = [
     type: 'string',
     default: 'Week',
   },
+  {
+    category: 'base',
+    name: 'preferEditRawValues',
+    type: 'boolean',
+  },
 ];
 
 export const readOpennessState = () => {
@@ -273,7 +278,7 @@ const getInitialStateWithDefaultValues = () => {
       }),
       future: [],
     },
-    base: Map({ isLoading: Set() }),
+    base: Map({ isLoading: Set(), finderTab: 'Search' }),
     capture: Map(),
   };
 

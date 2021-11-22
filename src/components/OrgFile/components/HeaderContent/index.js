@@ -23,18 +23,7 @@ class HeaderContent extends PureComponent {
     super(props);
 
     _.bindAll(this, [
-      'handleRef',
-      'handleTextareaRef',
-      'handleDescriptionChange',
-      'handleTextareaBlur',
-      'handleTableCellSelect',
-      'handleExitTableEditMode',
-      'handleTableCellValueUpdate',
-      'handleEnterTableEditMode',
-      'handleAddNewTableRow',
-      'handleRemoveTableRow',
-      'handleAddNewTableColumn',
-      'handleRemoveTableColumn',
+      'handleTableSelect',
       'handleCheckboxClick',
       'handleTimestampClick',
       'handleLogEntryTimestampClick',
@@ -63,14 +52,10 @@ class HeaderContent extends PureComponent {
   componentDidUpdate(prevProps) {
     const { header } = this.props;
 
-    if (prevProps.inEditMode && !this.props.inEditMode) {
-      this.props.org.updateHeaderDescription(header.get('id'), this.state.descriptionValue);
-    }
-
-    if (prevProps.header !== this.props.header) {
+    if (prevProps.header !== header) {
       this.setState(
         {
-          descriptionValue: this.calculateRawDescription(this.props.header),
+          descriptionValue: this.calculateRawDescription(header),
         },
         () => this.storeContainerWidth()
       );
@@ -83,68 +68,10 @@ class HeaderContent extends PureComponent {
     return createRawDescriptionText(header, false, dontIndent);
   }
 
-  handleTextareaRef(textarea) {
-    this.textarea = textarea;
-  }
-
-  handleRef(div) {
-    this.containerDiv = div;
-  }
-
-  handleDescriptionChange(event) {
-    this.setState({ descriptionValue: event.target.value });
-  }
-
-  // Exits from edit mode if a 'blur' happens. One exception: If an
-  // 'insert timestamp' event happened before, this actually also
-  // triggered a 'blur'. Since the 'blur' and 'click' events are
-  // non-deterministic in their order, the only option to prevent the
-  // blur is to mark it as 'should be ignored' in the 'click' event.
-  // However, sufficient time needs to pass for this workaround to be
-  // consistent. Hence, the functionality is wrapped in a setTimeout.
-  // Original workaround taken from an old blog post:
-  // https://medium.com/@jessebeach/dealing-with-focus-and-blur-in-a-composite-widget-in-react-90d3c3b49a9b
-  // The same workaround is used in TitleLine/index.js
-  handleTextareaBlur() {
-    setTimeout(() => {
-      if (!this.state.shouldIgnoreBlur) {
-        this.props.org.exitEditMode();
-      } else {
-        this.setState({ shouldIgnoreBlur: false });
-      }
-    }, 200);
-  }
-
-  handleTableCellSelect(cellId) {
-    this.props.org.setSelectedTableCellId(cellId);
-  }
-
-  handleExitTableEditMode() {
-    this.props.org.exitEditMode();
-  }
-
-  handleTableCellValueUpdate(cellId, newValue) {
-    this.props.org.updateTableCellValue(cellId, newValue);
-  }
-
-  handleEnterTableEditMode() {
-    this.props.org.enterEditMode('table');
-  }
-
-  handleAddNewTableRow() {
-    this.props.org.addNewTableRow();
-  }
-
-  handleRemoveTableRow() {
-    this.props.org.removeTableRow();
-  }
-
-  handleAddNewTableColumn() {
-    this.props.org.addNewTableColumn();
-  }
-
-  handleRemoveTableColumn() {
-    this.props.org.removeTableColumn();
+  handleTableSelect(tableId) {
+    this.props.org.selectHeader(this.props.header.get('id'));
+    this.props.org.setSelectedTableId(tableId);
+    this.props.base.activatePopup('table-editor');
   }
 
   handleCheckboxClick(listItemId) {
@@ -184,8 +111,14 @@ class HeaderContent extends PureComponent {
   }
 
   handlePlanningItemTimestampClick(headerId) {
-    return (planningItemIndex) =>
-      this.props.base.activatePopup('timestamp-editor', { headerId, planningItemIndex });
+    return (planningType, planningItemIndex) => {
+      const popupType =
+        {
+          DEADLINE: 'deadline-editor',
+          SCHEDULED: 'scheduled-editor',
+        }[planningType] || 'timestamp-editor';
+      this.props.base.activatePopup(popupType, { headerId, planningItemIndex });
+    };
   }
 
   handlePropertyListEdit() {
@@ -194,13 +127,7 @@ class HeaderContent extends PureComponent {
   }
 
   render() {
-    const {
-      header,
-      inEditMode,
-      selectedTableCellId,
-      inTableEditMode,
-      shouldDisableActions,
-    } = this.props;
+    const { header, shouldDisableActions } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
@@ -208,31 +135,8 @@ class HeaderContent extends PureComponent {
     }
 
     return (
-      <div
-        className="header-content-container nice-scroll"
-        ref={this.handleRef}
-        style={{ width: containerWidth }}
-      >
-        {inEditMode ? (
-          <div className="header-content__edit-container">
-            <textarea
-              autoFocus
-              className="textarea"
-              rows="8"
-              ref={this.handleTextareaRef}
-              value={this.state.descriptionValue}
-              onBlur={this.handleTextareaBlur}
-              onChange={this.handleDescriptionChange}
-            />
-            <div
-              className="header-content__insert-timestamp-button"
-              onClick={this.handleInsertTimestamp}
-            >
-              <i className="fas fa-plus insert-timestamp-icon" />
-              Insert timestamp
-            </div>
-          </div>
-        ) : (
+      <div className="header-content-container nice-scroll" style={{ width: containerWidth }}>
+        {
           <Fragment>
             <PlanningItems
               planningItems={header.get('planningItems')}
@@ -259,23 +163,14 @@ class HeaderContent extends PureComponent {
             <AttributedString
               parts={header.get('description')}
               subPartDataAndHandlers={{
-                onTableCellSelect: this.handleTableCellSelect,
-                selectedTableCellId: selectedTableCellId,
-                inTableEditMode: inTableEditMode,
-                onExitTableEditMode: this.handleExitTableEditMode,
-                onTableCellValueUpdate: this.handleTableCellValueUpdate,
-                onEnterTableEditMode: this.handleEnterTableEditMode,
-                onAddNewTableRow: this.handleAddNewTableRow,
-                onRemoveTableRow: this.handleRemoveTableRow,
-                onAddNewTableColumn: this.handleAddNewTableColumn,
-                onRemoveTableColumn: this.handleRemoveTableColumn,
+                onTableSelect: shouldDisableActions ? undefined : this.handleTableSelect,
                 onCheckboxClick: this.handleCheckboxClick,
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,
               }}
             />
           </Fragment>
-        )}
+        }
       </div>
     );
   }
@@ -285,12 +180,7 @@ const mapStateToProps = (state, ownProps) => {
   const path = state.org.present.get('path');
   const file = state.org.present.getIn(['files', path]);
   return {
-    inEditMode:
-      file.get('editMode') === 'description' &&
-      file.get('selectedHeaderId') === ownProps.header.get('id'),
     isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),
-    selectedTableCellId: file.get('selectedTableCellId'),
-    inTableEditMode: file.get('editMode') === 'table',
     dontIndent: state.base.get('shouldNotIndentOnExport'),
   };
 };

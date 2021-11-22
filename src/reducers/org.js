@@ -9,6 +9,7 @@ import {
   updateHeadersTotalTimeLoggedRecursive,
   totalFilteredTimeLogged,
   updateHeadersTotalFilteredTimeLoggedRecursive,
+  hasActiveClock,
 } from '../lib/clocking';
 
 import {
@@ -66,7 +67,8 @@ export const parseFile = (state, action) => {
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))
     .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
     .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
-    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'));
+    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'))
+    .setIn(['files', path, 'activeClocks'], parsedFile.get('activeClocks'));
 };
 
 const clearSearch = (state) => state.setIn(['search', 'filteredHeaders'], null);
@@ -217,6 +219,46 @@ const advanceTodoState = (state, action) => {
     logIntoDrawer,
     timestamp,
   });
+
+  state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
+
+  return state;
+};
+
+const setTodoState = (state, action) => {
+  const { headerId, logIntoDrawer, newTodoState, timestamp } = action;
+  const existingHeaderId = headerId || state.get('selectedHeaderId');
+  if (!existingHeaderId) {
+    return state;
+  }
+
+  const headers = state.get('headers');
+  const { header, headerIndex } = indexAndHeaderWithId(headers, existingHeaderId);
+
+  const currentTodoState = header.getIn(['titleLine', 'todoKeyword']);
+  const currentTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), currentTodoState);
+  const newTodoSet = todoKeywordSetForKeyword(state.get('todoKeywordSets'), newTodoState);
+  const isInSameTodoSet = currentTodoSet === newTodoSet;
+
+  if (isInSameTodoSet) {
+    const indexedPlanningItemsWithRepeaters = header
+      .get('planningItems')
+      .map((planningItem, index) => [planningItem, index])
+      .filter(([planningItem]) => !!planningItem.getIn(['timestamp', 'repeaterType']));
+
+    state = updateHeadlines({
+      currentTodoSet,
+      newTodoState,
+      indexedPlanningItemsWithRepeaters,
+      state,
+      headerIndex,
+      currentTodoState,
+      logIntoDrawer,
+      timestamp,
+    });
+  } else {
+    state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  }
 
   state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
 
@@ -559,7 +601,7 @@ const addNote = (state, action) => {
   const { inputText, currentDate } = action;
   // Wrap line at 70 characters, see Emacs `fill-column` in "Insert
   // note" window (C-c C-z)
-  const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/, '\n  $1');
+  const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/g, '\n  $1');
   // Generate note based on a template string (as defined in Emacs Org
   // mode `org-log-note-headings`):
   const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
@@ -599,6 +641,8 @@ const setOpennessState = (state, action) => {
 };
 
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
+
+const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
 
 const setSelectedTableCellId = (state, action) => state.set('selectedTableCellId', action.cellId);
 
@@ -1053,6 +1097,7 @@ export const setLogEntryStop = (state, action) => {
   const entryIndex = state
     .getIn(['headers', headerIdx, 'logBookEntries'])
     .findIndex((entry) => entry.get('id') === entryId);
+  state = state.update('activeClocks', (i) => i - 1);
   return state.setIn(['headers', headerIdx, 'logBookEntries', entryIndex, 'end'], fromJS(time));
 };
 
@@ -1064,6 +1109,7 @@ export const createLogEntryStart = (state, action) => {
     start: time,
     end: null,
   });
+  state = state.update('activeClocks', (i) => i + 1);
   return state.updateIn(['headers', headerIdx, 'logBookEntries'], (entries) =>
     !!entries ? entries.unshift(newEntry) : List([newEntry])
   );
@@ -1130,6 +1176,11 @@ const searchHeaders = ({ searchFilterExpr = [], headersToSearch, path }) => {
   return filteredHeaders;
 };
 
+const isActiveClockFilter = (clockFilter) =>
+  clockFilter.field.timerange.type === 'point' &&
+  clockFilter.field.timerange.point.type === 'special' &&
+  clockFilter.field.timerange.point.value === 'now';
+
 export const setSearchFilterInformation = (state, action) => {
   const { searchFilter, cursorPosition, context } = action;
 
@@ -1167,9 +1218,13 @@ export const setSearchFilterInformation = (state, action) => {
     const headers = files.map((file) => file.get('headers'));
 
     // show clocked times & sum if there is a clock search term
-    const clockFilters = searchFilterExpr
+    const clockedTimeAndActiveClockFilters = searchFilterExpr
       .filter((f) => f.type === 'field')
       .filter((f) => f.field.type === 'clock');
+    const clockFilters = clockedTimeAndActiveClockFilters.filter((f) => !isActiveClockFilter(f));
+    // check for special case "clock:now" which searches active clocks
+    const hasActiveClockFilter = clockedTimeAndActiveClockFilters.length !== clockFilters.length;
+
     const filterFunctions = clockFilters.map(timeFilter);
     const showClockedTimes = clockFilters.length !== 0;
     state.setIn(['search', 'showClockedTimes'], showClockedTimes);
@@ -1183,6 +1238,12 @@ export const setSearchFilterInformation = (state, action) => {
       headersToSearch = Map().set(
         path,
         subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
+      );
+    }
+
+    if (hasActiveClockFilter) {
+      headersToSearch = headersToSearch.map((headersOfFile) =>
+        headersOfFile.filter(hasActiveClock)
       );
     }
 
@@ -1343,6 +1404,8 @@ const reducer = (state, action) => {
       return inFile(openParentsOfHeader);
     case 'ADVANCE_TODO_STATE':
       return inFile(advanceTodoState);
+    case 'SET_TODO_STATE':
+      return inFile(setTodoState);
     case 'ENTER_EDIT_MODE':
       return inFile(enterEditMode);
     case 'EXIT_EDIT_MODE':
@@ -1387,6 +1450,8 @@ const reducer = (state, action) => {
       return inFile(narrowHeader);
     case 'WIDEN_HEADER':
       return inFile(widenHeader);
+    case 'SET_SELECTED_TABLE_ID':
+      return inFile(setSelectedTableId);
     case 'SET_SELECTED_TABLE_CELL_ID':
       return inFile(setSelectedTableCellId);
     case 'ADD_NEW_TABLE_ROW':

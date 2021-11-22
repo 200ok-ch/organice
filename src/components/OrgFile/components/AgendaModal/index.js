@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import './stylesheet.css';
 
 import AgendaDay from './components/AgendaDay';
-import Drawer from '../../../UI/Drawer';
 import TabButtons from '../../../UI/TabButtons';
 
 import { isMobileBrowser } from '../../../../lib/browser_utils';
@@ -34,7 +33,6 @@ import format from 'date-fns/format';
 function AgendaModal(props) {
   const {
     files,
-    onClose,
     todoKeywordSets,
     agendaTimeframe,
     agendaDefaultDeadlineDelayValue,
@@ -129,7 +127,7 @@ function AgendaModal(props) {
   }
 
   return (
-    <Drawer onClose={onClose} maxSize={true}>
+    <>
       <h2 className="agenda__title">Agenda</h2>
 
       <div className="agenda__tab-container">
@@ -167,7 +165,7 @@ function AgendaModal(props) {
       </div>
 
       <br />
-    </Drawer>
+    </>
   );
 }
 

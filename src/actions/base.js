@@ -210,3 +210,15 @@ export const setAgendaTimeframe = (agendaTimeframe) => (dispatch) =>
     type: 'SET_AGENDA_TIMEFRAME',
     agendaTimeframe,
   });
+
+export const setFinderTab = (finderTab) => (dispatch) =>
+  dispatch({
+    type: 'SET_FINDER_TAB',
+    finderTab,
+  });
+
+export const setPreferEditRawValues = (preferEditRawValues) => (dispatch) =>
+  dispatch({
+    type: 'PREFER_EDIT_RAW_VALUES',
+    preferEditRawValues,
+  });

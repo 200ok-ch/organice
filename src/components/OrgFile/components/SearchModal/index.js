@@ -7,7 +7,6 @@ import './stylesheet.css';
 
 import classNames from 'classnames';
 import HeaderListView from './components/HeaderListView';
-import Drawer from '../../../UI/Drawer';
 
 import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
 import { millisDuration } from '../../../../lib/timestamps';
@@ -20,13 +19,13 @@ import * as orgActions from '../../../../actions/org';
 function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
   const {
-    onClose,
     searchFilter,
     searchFilterValid,
     searchFilterSuggestions,
     context,
     showClockedTimes,
     clockedTime,
+    activeClocks,
   } = props;
 
   function handleHeaderClick(path, headerId) {
@@ -42,46 +41,55 @@ function SearchModal(props) {
   }
 
   return (
-    <Drawer onClose={onClose} maxSize={true}>
-      <div className="task-list__modal-title">
-        <h2 className="agenda__title">{capitalize(context)}</h2>
-        {showClockedTimes ? (
-          <span title="Sum of time logged on all search results directly (not including time logged on their children)">
-            {millisDuration(clockedTime)}
-          </span>
-        ) : null}
-      </div>
+    <>
+      {context === 'search' ? (
+        <div className="task-list__modal-title_search">
+          {showClockedTimes ? (
+            <span title="Sum of time logged on all search results directly (not including time logged on their children)">
+              {millisDuration(clockedTime)}
+            </span>
+          ) : null}
+        </div>
+      ) : (
+        <div className="task-list__modal-title">
+          <h2 className="agenda__title">{capitalize(context)}</h2>
+        </div>
+      )}
 
-      <datalist id="task-list__datalist-filter">
-        {searchFilterSuggestions.map((string, idx) => (
-          <option key={idx} value={string} />
-        ))}
-      </datalist>
+      {activeClocks ? null : (
+        <>
+          <datalist id="task-list__datalist-filter">
+            {searchFilterSuggestions.map((string, idx) => (
+              <option key={idx} value={string} />
+            ))}
+          </datalist>
 
-      <div className="task-list__input-container">
-        <input
-          type="text"
-          value={searchFilter}
-          // On iOS, setting autoFocus here will move the contents of
-          // the drawer off the screen, because the keyboard pops up
-          // late when the height is already set to '92%'. Some other
-          // complications: There's no API to check if the keyboard is
-          // open or not. When setting the height of the container to
-          // something like 48% for iOS, this works on iPhone (tested
-          // on Xs and 6S), but when the keyboard is closed, the
-          // container is still small when the user wants to read the
-          // longer list without the keyboard in the way. There might
-          // be a better way: If the drawer wouldn't move, iOS likely
-          // would set the heights correctly automatically.
-          autoFocus={!isIos()}
-          className={classNames('textfield', 'task-list__filter-input', {
-            'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
-          })}
-          placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
-          list="task-list__datalist-filter"
-          onChange={handleFilterChange}
-        />
-      </div>
+          <div className="task-list__input-container">
+            <input
+              type="text"
+              value={searchFilter}
+              // On iOS, setting autoFocus here will move the contents of
+              // the drawer off the screen, because the keyboard pops up
+              // late when the height is already set to '92%'. Some other
+              // complications: There's no API to check if the keyboard is
+              // open or not. When setting the height of the container to
+              // something like 48% for iOS, this works on iPhone (tested
+              // on Xs and 6S), but when the keyboard is closed, the
+              // container is still small when the user wants to read the
+              // longer list without the keyboard in the way. There might
+              // be a better way: If the drawer wouldn't move, iOS likely
+              // would set the heights correctly automatically.
+              autoFocus={!isIos()}
+              className={classNames('textfield', 'task-list__filter-input', {
+                'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
+              })}
+              placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
+              list="task-list__datalist-filter"
+              onChange={handleFilterChange}
+            />
+          </div>
+        </>
+      )}
 
       <div
         className="task-list__headers-container"
@@ -96,23 +104,23 @@ function SearchModal(props) {
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
-          context={context}
+          context={activeClocks ? 'Clock List' : context}
         />
       </div>
-
-      <br />
-    </Drawer>
+    </>
   );
 }
 
-const mapStateToProps = (state) => ({
-  path: state.org.present.get('path'),
-  searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
-  searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
-  searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
-  showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
-  clockedTime: state.org.present.getIn(['search', 'clockedTime']),
-});
+const mapStateToProps = (state) => {
+  return {
+    path: state.org.present.get('path'),
+    searchFilter: state.org.present.getIn(['search', 'searchFilter']),
+    searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
+    searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
+    showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
+    clockedTime: state.org.present.getIn(['search', 'clockedTime']),
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   org: bindActionCreators(orgActions, dispatch),

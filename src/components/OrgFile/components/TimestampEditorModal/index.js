@@ -3,7 +3,6 @@ import React, { PureComponent, Fragment } from 'react';
 import './stylesheet.css';
 
 import TimestampEditor from './components/TimestampEditor';
-import Drawer from '../../../UI/Drawer/';
 
 import _ from 'lodash';
 import format from 'date-fns/format';
@@ -46,18 +45,25 @@ export default class TimestampEditorModal extends PureComponent {
       headerId,
       timestamp,
       timestampId,
+      popupType,
       onClose,
       singleTimestampOnly,
       planningItemIndex,
     } = this.props;
 
+    const timestampTitles = {
+      'timestamp-editor': 'Edit timestamp',
+      'scheduled-editor': 'Edit scheduled timestamp',
+      'deadline-editor': 'Edit deadline',
+    };
+
     return (
-      <Drawer onClose={onClose}>
-        <h2 className="timestamp-editor__title">Edit timestamp</h2>
+      <>
+        <h2 className="timestamp-editor__title">{timestampTitles[popupType]}</h2>
 
         <TimestampEditor
           headerId={headerId}
-          timestamp={timestamp.get('firstTimestamp')}
+          timestamp={timestamp && timestamp.get('firstTimestamp')}
           timestampId={timestampId}
           planningItemIndex={planningItemIndex}
           onClose={onClose}
@@ -101,7 +107,7 @@ export default class TimestampEditorModal extends PureComponent {
           ))}
 
         <br />
-      </Drawer>
+      </>
     );
   }
 }

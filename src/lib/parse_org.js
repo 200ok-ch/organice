@@ -1,5 +1,5 @@
 import generateId from './id_generator';
-import { updateHeadersTotalTimeLoggedRecursive } from './clocking';
+import { hasActiveClock, updateHeadersTotalTimeLoggedRecursive } from './clocking';
 
 import { fromJS, List } from 'immutable';
 import _ from 'lodash';
@@ -890,9 +890,11 @@ export const parseOrg = (fileContents) => {
   });
 
   headers = updateHeadersTotalTimeLoggedRecursive(headers);
+  const activeClocks = fromJS(headers).filter(hasActiveClock).size;
 
   return fromJS({
     headers,
+    activeClocks,
     todoKeywordSets,
     fileConfigLines,
     linesBeforeHeadings,

@@ -22,7 +22,11 @@ function HeaderListView(props) {
   useEffect(() => {
     // No specific searchFilter and cursorPosition, but set the
     // context (like 'search' or 'refile')
-    props.org.setSearchFilterInformation('', 0, context);
+    if (context === 'Clock List') {
+      props.org.setSearchFilterInformation('clock:now', 0, 'search');
+    } else {
+      props.org.setSearchFilterInformation('', 0, context);
+    }
   }, [context, props.org]);
 
   const { headers, allHeaders, showClockedTimes } = props;

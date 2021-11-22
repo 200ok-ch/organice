@@ -1,4 +1,4 @@
-import { List, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import _ from 'lodash';
 import raw from 'raw.macro';
 import { formatDistanceToNow } from 'date-fns';
@@ -220,6 +220,21 @@ export const getOpenHeaderPaths = (headers) => {
   }
 
   return openedHeaders;
+};
+
+export const getSelectedHeader = (state) => {
+  const path = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', path], Map());
+  const headerId = file.get('selectedHeaderId');
+  const headers = file.get('headers');
+  if (!headers) {
+    return null;
+  }
+  const headerIdx = indexOfHeaderWithId(headers, headerId);
+  if (headerIdx === -1) {
+    return null;
+  }
+  return file.getIn(['headers', headerIdx]);
 };
 
 export const headerWithPath = (headers, headerPath) => {

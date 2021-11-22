@@ -42,8 +42,11 @@ const tablePartToRawText = (tablePart) => {
       )
     )
     .toJS();
-
-  const numColumns = tablePart.getIn(['contents', 0, 'contents']).size;
+  const columns = tablePart.getIn(['contents', 0, 'contents']);
+  if (columns === undefined) {
+    return '';
+  }
+  const numColumns = columns.size;
   const columnWidths = _.times(numColumns).map((columnIndex) =>
     Math.max(
       ...tablePart.get('contents').map((row) => {
