@@ -19,6 +19,6 @@ describe('Settings persister', () => {
   });
 
   test('Does persist given default values, for example colorScheme', () => {
-    expect(localStorage.getItem('colorScheme')).toBe('Light');
+    expect(localStorage.getItem('colorScheme')).toBe('OS');
   });
 });

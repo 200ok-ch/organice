@@ -13,6 +13,10 @@ import {
   subYears,
   isBefore,
   differenceInMinutes,
+  getHours,
+  setHours,
+  getMinutes,
+  setMinutes,
 } from 'date-fns';
 
 export const renderAsText = (timestamp) => {
@@ -175,6 +179,11 @@ export const applyRepeater = (timestamp, currentDate) => {
         timestamp.get('repeaterValue'),
         timestamp.get('repeaterUnit')
       );
+      if (timestamp.get('repeaterUnit') !== 'h') {
+        let timestampDate = dateForTimestamp(timestamp);
+        newDate = setHours(newDate, getHours(timestampDate));
+        newDate = setMinutes(newDate, getMinutes(timestampDate));
+      }
       break;
     default:
       console.error(`Unrecognized timestamp repeater type: ${timestamp.get('repeaterType')}`);

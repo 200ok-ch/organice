@@ -170,7 +170,7 @@ export const persistableFields = [
     category: 'base',
     name: 'colorScheme',
     type: 'string',
-    default: 'Light',
+    default: 'OS',
   },
   {
     category: 'base',
