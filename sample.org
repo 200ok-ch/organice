@@ -12,12 +12,16 @@ This header has some description text and a couple subheaders. Look through the 
 ** Editing headers
 When you select a header the "header action drawer" appears. The first two icons in this drawer edit the header and description respectively. Try editing this header.
 
+Now, you see the title in "semantic editing mode". For example, you can visually select TODO states. If you want to edit the header as raw text, click the 'pencil' icon, again. The same will apply to selection - different metadata will not be visible in semantic editing mode so that you can focus on the actual text value.
+
 If you want the "header action drawer" to disappear or to deselect the current header, tap into the title (or empty space) in the headerbar.
 
 ** All icons in the header action bar
 
 1. Pen: Edit header title
+   - To edit the header in raw text mode, click the pen icon, again in the opened drawer.
 2. Pen in square: Edit header description
+   - To edit the description in raw text mode, click the pen in square icon, again in the opened drawer.
 3. Tags: [[https://orgmode.org/manual/Tags.html][Modify tags]]
 4. Properties: [[https://orgmode.org/manual/Properties-and-columns.html][Modify properties]]
 5. Expand: [[https://orgmode.org/manual/Structure-editing.html][Narrow to subtree]] (/Narrowing/ means focusing on this header, making the rest temporarily inaccessible.)
