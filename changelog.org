@@ -7,6 +7,19 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2021-11-22 Mon]
+
+** Changed
+   - Title and Description fields are not edited as raw text by default.
+     - Instead, a semantic editor comes up when editing them.
+     - To edit raw values, click the 'edit' icon, again.
+   - Search and Task List open in one modal with tabs.
+     - Modal opens to "Search" by default, but remembers what was opened last.
+   - If there are open clocks, a third modal "Clock List" is added
+     that looks like "Search" for =clock:now= without the search input
+     field.
+   - Notes can be multi-line and are properly indented.
+
 * [2021-11-09 Tue]
 ** Added
    - Setting to respect OS light/dark-mode preferences
