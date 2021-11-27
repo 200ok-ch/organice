@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Map } from 'immutable';
-
 import * as orgActions from '../../../../../../actions/org';
 import './stylesheet.css';
 
@@ -13,21 +11,9 @@ import TitleLine from '../../../TitleLine';
 import { getBreadcrumbsStringFunction } from '../../../../../../lib/org_utils';
 
 function HeaderListView(props) {
-  const { context } = props;
   function handleHeaderClick(path, headerId) {
     return () => props.onHeaderClick(path, headerId);
   }
-
-  // Populate filteredHeaders
-  useEffect(() => {
-    // No specific searchFilter and cursorPosition, but set the
-    // context (like 'search' or 'refile')
-    if (context === 'Clock List') {
-      props.org.setSearchFilterInformation('clock:now', 0, 'search');
-    } else {
-      props.org.setSearchFilterInformation('', 0, context);
-    }
-  }, [context, props.org]);
 
   const { headers, allHeaders, showClockedTimes } = props;
 
@@ -69,8 +55,6 @@ const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
   return {
     allHeaders: files.map((file) => file.get('headers')),
-    headers: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
-    showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
   };
 };
 

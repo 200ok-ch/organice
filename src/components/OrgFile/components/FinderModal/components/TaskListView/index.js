@@ -31,11 +31,6 @@ function TaskListView(props) {
     todoKeywordSetsForFiles,
   } = props;
 
-  // Populate filteredHeaders
-  useEffect(() => {
-    props.org.setSearchFilterInformation('', 0, 'task-list');
-  }, [props.org]);
-
   const planningItemsAndHeaders = getPlanningItemsAndHeaders({
     headersForFiles,
     todoKeywordSetsForFiles,
@@ -142,8 +137,6 @@ function TaskListView(props) {
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
   return {
-    // When no filtering has happened, yet (initial state), use all headers.
-    headersForFiles: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
     todoKeywordSetsForFiles: files.map((file) => file.get('todoKeywordSets')),
   };
 };

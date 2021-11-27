@@ -5,6 +5,7 @@ import baseReducer from './base';
 import syncBackendReducer from './sync_backend';
 import orgReducer from './org';
 import captureReducer from './capture';
+import queryReducer from './query';
 import { setDirty, sync } from '../actions/org';
 
 const UNDOABLE_ACTIONS = [
@@ -77,4 +78,5 @@ export default combineReducers({
     filter: includeAction(UNDOABLE_ACTIONS),
   }),
   capture: captureReducer,
+  query: queryReducer,
 });

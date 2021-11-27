@@ -698,3 +698,12 @@ export const restoreFileSettings = (newSettings) => ({
   type: 'RESTORE_FILE_SETTINGS',
   newSettings,
 });
+
+export const executeQuery = (query) => ({
+  type: 'EXECUTE_QUERY',
+  query,
+});
+
+export const removeQueryResults = () => ({
+  type: 'REMOVE_QUERY_RESULTS',
+});

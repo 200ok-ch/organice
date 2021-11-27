@@ -1,0 +1,40 @@
+@import '../../../../../../colors.css';
+
+/* Currently, the markup is the same as in the AgendaModal component.
+ * Hence the CSS rules from there apply. */
+
+.task-list__filter-input,
+.task-list__filter-input-invalid {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.task-list__input-container {
+  flex-shrink: 0;
+  margin-bottom: 2em;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.task-list__filter-input-invalid {
+  border: 2px solid var(--red);
+}
+
+.task-list__modal-title {
+  width: 100%;
+  height: 20px;
+  min-height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-list__modal-title_search {
+  width: 100%;
+  height: 20px;
+  min-height: 20px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}

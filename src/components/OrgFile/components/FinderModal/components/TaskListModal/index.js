@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Map } from 'immutable';
 
 import './stylesheet.css';
 
 import classNames from 'classnames';
-import TaskListView from './components/TaskListView';
+import TaskListView from '../TaskListView';
 
-import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
+import { isMobileBrowser, isIos } from '../../../../../../lib/browser_utils';
 
-import * as orgActions from '../../../../actions/org';
+import * as orgActions from '../../../../../../actions/org';
 
 // INFO: SearchModal, AgendaModal and TaskListModal are very similar
 // in structure and partially in logic. When changing one, consider
 // changing all.
 function TaskListModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
+
+  // Populate filteredHeaders
+  useEffect(() => {
+    props.org.setSearchFilterInformation('', 0, 'task-list');
+  }, []);
 
   function handleHeaderClick(path, headerId) {
     props.onClose();
@@ -34,7 +40,7 @@ function TaskListModal(props) {
     );
   }
 
-  const { searchFilter, searchFilterValid, searchFilterSuggestions } = props;
+  const { searchFilter, searchFilterValid, searchFilterSuggestions, headersForFiles } = props;
 
   return (
     <>
@@ -71,6 +77,7 @@ function TaskListModal(props) {
       >
         <TaskListView
           onHeaderClick={handleHeaderClick}
+          headersForFiles={headersForFiles}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
         />
@@ -83,6 +90,7 @@ const mapStateToProps = (state) => ({
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
+  headersForFiles: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
 });
 
 const mapDispatchToProps = (dispatch) => ({

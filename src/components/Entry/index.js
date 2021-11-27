@@ -20,6 +20,7 @@ import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
+import QueriesEditor from '../QueriesEditor';
 import FileSettingsEditor from '../FileSettingsEditor';
 import SyncServiceSignIn from '../SyncServiceSignIn';
 
@@ -175,12 +176,14 @@ class Entry extends PureComponent {
               'keyboard_shortcuts_editor',
               'settings',
               'capture_templates_editor',
+              'queries_editor',
               'file_settings_editor',
               'sample',
             ].includes(activeModalPage) ? (
               <Fragment>
                 {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
                 {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+                {activeModalPage === 'queries_editor' && <QueriesEditor />}
                 {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
                 {activeModalPage === 'sample' && this.renderSampleFile()}
               </Fragment>
