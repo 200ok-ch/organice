@@ -13,16 +13,16 @@ import HeaderListView from '../HeaderListView';
 import TaskListView from '../TaskListView';
 
 function QueryView(props) {
-  const { onClose, query, queryResults } = props;
+  const { query, queryResults } = props;
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
   const [isCollapsed, setIsCollapsed] = useState({});
 
   useEffect(() => {
     return () => props.org.removeQueryResults();
-  }, []);
+  }, [props.org]);
   useEffect(() => {
     props.org.executeQuery(query);
-  }, []);
+  }, [props.org, query]);
   useEffect(() => {
     if (queryResults.size !== 0) {
       setIsCollapsed(queryResults.map((result) => result.get('collapse')).toJS());

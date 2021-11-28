@@ -33,7 +33,7 @@ function SearchModal(props) {
   // Populate filteredHeaders
   useEffect(() => {
     props.org.setSearchFilterInformation('', 0, context);
-  }, []);
+  }, [props.org, context]);
 
   function handleHeaderClick(path, headerId) {
     props.onClose(path, headerId);

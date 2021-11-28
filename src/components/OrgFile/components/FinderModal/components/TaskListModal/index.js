@@ -21,7 +21,7 @@ function TaskListModal(props) {
   // Populate filteredHeaders
   useEffect(() => {
     props.org.setSearchFilterInformation('', 0, 'task-list');
-  }, []);
+  }, [props.org]);
 
   function handleHeaderClick(path, headerId) {
     props.onClose();
