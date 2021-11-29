@@ -6,6 +6,7 @@ import { getOpenHeaderPaths } from '../lib/org_utils';
 import { restoreBaseSettings } from '../actions/base';
 import { restoreCaptureSettings } from '../actions/capture';
 import { restoreFileSettings } from '../actions/org';
+import { restoreQuerySettings } from '../actions/query';
 
 import generateId from '../lib/id_generator';
 import { loadFilesFromLocalStorage } from './file_persister';
@@ -185,6 +186,12 @@ export const persistableFields = [
     default: List(),
   },
   {
+    category: 'query',
+    name: 'querySettings',
+    type: 'json',
+    default: List(),
+  },
+  {
     category: 'org',
     name: 'fileSettings',
     type: 'json',
@@ -261,6 +268,13 @@ export const applyFileSettingsFromConfig = (state, config) => {
 
   return state.set('fileSettings', fileSettings);
 };
+export const applyQuerySettingsFromConfig = (state, config) => {
+  const querySettings = fromJS(JSON.parse(config.querySettings)).map((setting) =>
+    setting.set('id', generateId())
+  );
+
+  return state.set('querySettings', querySettings);
+};
 
 const getInitialStateWithDefaultValues = () => {
   let initialState = {
@@ -275,11 +289,13 @@ const getInitialStateWithDefaultValues = () => {
           searchFilter: '',
           searchFilterExpr: [],
         }),
+        query: Map(),
       }),
       future: [],
     },
     base: Map({ isLoading: Set(), finderTab: 'Search' }),
     capture: Map(),
+    query: Map(),
   };
 
   persistableFields.forEach((field) => {
@@ -405,6 +421,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
         dispatch(restoreBaseSettings(config));
         dispatch(restoreCaptureSettings(config));
         dispatch(restoreFileSettings(config));
+        dispatch(restoreQuerySettings(config));
       } catch (_error) {
         // Something went wrong parsing the config file, but we don't care, we'll just
         // overwrite it with a good local copy.

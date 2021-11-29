@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { List, Map } from 'immutable';
+import { List } from 'immutable';
 
 import * as orgActions from '../../../../../../actions/org';
 
@@ -30,11 +30,6 @@ function TaskListView(props) {
     headersForFiles,
     todoKeywordSetsForFiles,
   } = props;
-
-  // Populate filteredHeaders
-  useEffect(() => {
-    props.org.setSearchFilterInformation('', 0, 'task-list');
-  }, [props.org]);
 
   const planningItemsAndHeaders = getPlanningItemsAndHeaders({
     headersForFiles,
@@ -142,8 +137,6 @@ function TaskListView(props) {
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
   return {
-    // When no filtering has happened, yet (initial state), use all headers.
-    headersForFiles: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
     todoKeywordSetsForFiles: files.map((file) => file.get('todoKeywordSets')),
   };
 };

@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { capitalize } from 'lodash';
+import { Map } from 'immutable';
 
 import './stylesheet.css';
 
 import classNames from 'classnames';
-import HeaderListView from './components/HeaderListView';
+import HeaderListView from '../HeaderListView';
 
-import { isMobileBrowser, isIos } from '../../../../lib/browser_utils';
-import { millisDuration } from '../../../../lib/timestamps';
+import { isMobileBrowser, isIos } from '../../../../../../lib/browser_utils';
+import { millisDuration } from '../../../../../../lib/timestamps';
 
-import * as orgActions from '../../../../actions/org';
+import * as orgActions from '../../../../../../actions/org';
 
 // INFO: SearchModal, AgendaModal and TaskListModal are very similar
 // in structure and partially in logic. When changing one, consider
@@ -21,12 +22,18 @@ function SearchModal(props) {
   const {
     searchFilter,
     searchFilterValid,
+    headers,
     searchFilterSuggestions,
     context,
     showClockedTimes,
     clockedTime,
-    activeClocks,
+    query,
   } = props;
+
+  // Populate filteredHeaders
+  useEffect(() => {
+    props.org.setSearchFilterInformation('', 0, context);
+  }, [props.org, context]);
 
   function handleHeaderClick(path, headerId) {
     props.onClose(path, headerId);
@@ -56,7 +63,7 @@ function SearchModal(props) {
         </div>
       )}
 
-      {activeClocks ? null : (
+      {query ? null : (
         <>
           <datalist id="task-list__datalist-filter">
             {searchFilterSuggestions.map((string, idx) => (
@@ -104,7 +111,9 @@ function SearchModal(props) {
           onHeaderClick={handleHeaderClick}
           dateDisplayType={dateDisplayType}
           onToggleDateDisplayType={handleToggleDateDisplayType}
-          context={activeClocks ? 'Clock List' : context}
+          context={query ? query.get('description') : context}
+          headers={headers}
+          showClockedTimes={showClockedTimes}
         />
       </div>
     </>
@@ -116,6 +125,7 @@ const mapStateToProps = (state) => {
     path: state.org.present.get('path'),
     searchFilter: state.org.present.getIn(['search', 'searchFilter']),
     searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
+    headers: state.org.present.getIn(['search', 'filteredHeaders']) || Map(),
     searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
     showClockedTimes: state.org.present.getIn(['search', 'showClockedTimes']),
     clockedTime: state.org.present.getIn(['search', 'clockedTime']),

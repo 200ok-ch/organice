@@ -53,6 +53,8 @@ const Settings = ({
 
   const handleCaptureTemplatesClick = () => base.pushModalPage('capture_templates_editor');
 
+  const handleQueriesClick = () => base.pushModalPage('queries_editor');
+
   const handleFileSettingsClick = () => base.pushModalPage('file_settings_editor');
 
   const handleFontSizeChange = (newFontSize) => base.setFontSize(newFontSize);
@@ -313,6 +315,9 @@ const Settings = ({
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>
           Capture templates
+        </button>
+        <button className="btn settings-btn" onClick={handleQueriesClick}>
+          Custom Queries
         </button>
         <button className="btn settings-btn" onClick={handleKeyboardShortcutsClick}>
           Keyboard shortcuts

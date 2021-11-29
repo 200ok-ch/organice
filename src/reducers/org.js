@@ -1181,23 +1181,9 @@ const isActiveClockFilter = (clockFilter) =>
   clockFilter.field.timerange.point.type === 'special' &&
   clockFilter.field.timerange.point.value === 'now';
 
-export const setSearchFilterInformation = (state, action) => {
-  const { searchFilter, cursorPosition, context } = action;
-
+const calculateSearchResult = (state, context, searchFilterExpr) => {
   let files = state.get('files');
   state = state.asMutable();
-
-  let searchFilterValid = true;
-  let searchFilterExpr;
-  try {
-    searchFilterExpr = headline_filter_parser.parse(searchFilter);
-    state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
-  } catch (e) {
-    // No need to print this parser exceptions. They are expected, see
-    // *.grammar.pegjs. However, we don't need to update the filtered
-    // headers when given an invalid search filter.
-    searchFilterValid = false;
-  }
 
   const path = state.get('path');
   const fileSettings = state.get('fileSettings');
@@ -1212,87 +1198,150 @@ export const setSearchFilterInformation = (state, action) => {
     files = determineIncludedFiles(files, fileSettings, path, 'includeInRefile', false);
   } // there should not be another context, but if so use all files
 
-  state.setIn(['search', 'searchFilterValid'], searchFilterValid);
-  // Only run filter if a filter is given and parsing was successful
-  if (searchFilterValid) {
-    const headers = files.map((file) => file.get('headers'));
+  const headers = files.map((file) => file.get('headers'));
 
-    // show clocked times & sum if there is a clock search term
-    const clockedTimeAndActiveClockFilters = searchFilterExpr
-      .filter((f) => f.type === 'field')
-      .filter((f) => f.field.type === 'clock');
-    const clockFilters = clockedTimeAndActiveClockFilters.filter((f) => !isActiveClockFilter(f));
-    // check for special case "clock:now" which searches active clocks
-    const hasActiveClockFilter = clockedTimeAndActiveClockFilters.length !== clockFilters.length;
+  // show clocked times & sum if there is a clock search term
+  const clockedTimeAndActiveClockFilters = searchFilterExpr
+    .filter((f) => f.type === 'field')
+    .filter((f) => f.field.type === 'clock');
+  const clockFilters = clockedTimeAndActiveClockFilters.filter((f) => !isActiveClockFilter(f));
+  // check for special case "clock:now" which searches active clocks
+  const hasActiveClockFilter = clockedTimeAndActiveClockFilters.length !== clockFilters.length;
 
-    const filterFunctions = clockFilters.map(timeFilter);
-    const showClockedTimes = clockFilters.length !== 0;
-    state.setIn(['search', 'showClockedTimes'], showClockedTimes);
+  const filterFunctions = clockFilters.map(timeFilter);
+  const showClockedTimes = clockFilters.length !== 0;
 
-    // Only search subheaders if a header is narrowed
-    const narrowedHeaderId = state.getIn(['files', path, 'narrowedHeaderId']);
-    let headersToSearch;
-    if (!narrowedHeaderId || context === 'refile') {
-      headersToSearch = headers;
-    } else {
-      headersToSearch = Map().set(
-        path,
-        subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
-      );
-    }
-
-    if (hasActiveClockFilter) {
-      headersToSearch = headersToSearch.map((headersOfFile) =>
-        headersOfFile.filter(hasActiveClock)
-      );
-    }
-
-    // calculate relevant clocked times and total
-    if (showClockedTimes) {
-      headersToSearch = headersToSearch.map((headersOfFile) =>
-        headersOfFile.map((header) =>
-          header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
-        )
-      );
-      headersToSearch = headersToSearch.map((headersOfFile) =>
-        updateHeadersTotalFilteredTimeLoggedRecursive(filterFunctions, headersOfFile).filter(
-          (header) => header.get('totalFilteredTimeLoggedRecursive') !== 0
-        )
-      );
-    }
-
-    // perform the actual search
-    let filteredHeaders = searchHeaders({ searchFilterExpr, headersToSearch, path });
-
-    if (showClockedTimes) {
-      const clockedTime = filteredHeaders
-        .map((headersOfFile) =>
-          headersOfFile.reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0)
-        )
-        .toList()
-        .reduce((acc, val) => acc + val, 0);
-      state.setIn(['search', 'clockedTime'], clockedTime);
-    }
-
-    // Filter selectedHeader and its subheaders from `headers`,
-    // because you don't want to refile a header to itself or to one
-    // of its subheaders.
-    if (context === 'refile') {
-      const selectedHeaderId = state.getIn(['files', path, 'selectedHeaderId']);
-      const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
-      let filterIds = subheaders.map((s) => s.get('id')).toJS();
-      filterIds.push(selectedHeaderId);
-      filteredHeaders = filteredHeaders.update(path, (headersOfFile) =>
-        headersOfFile.filter((h) => {
-          return !filterIds.includes(h.get('id'));
-        })
-      );
-    }
-
-    state.setIn(['search', 'filteredHeaders'], filteredHeaders);
+  // Only search subheaders if a header is narrowed
+  const narrowedHeaderId = state.getIn(['files', path, 'narrowedHeaderId']);
+  let headersToSearch;
+  if (!narrowedHeaderId || context === 'refile') {
+    headersToSearch = headers;
+  } else {
+    headersToSearch = Map().set(
+      path,
+      subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
+    );
   }
 
+  if (hasActiveClockFilter) {
+    headersToSearch = headersToSearch.map((headersOfFile) => headersOfFile.filter(hasActiveClock));
+  }
+
+  // calculate relevant clocked times and total
+  if (showClockedTimes) {
+    headersToSearch = headersToSearch.map((headersOfFile) =>
+      headersOfFile.map((header) =>
+        header.set('totalFilteredTimeLogged', totalFilteredTimeLogged(filterFunctions, header))
+      )
+    );
+    headersToSearch = headersToSearch.map((headersOfFile) =>
+      updateHeadersTotalFilteredTimeLoggedRecursive(filterFunctions, headersOfFile).filter(
+        (header) => header.get('totalFilteredTimeLoggedRecursive') !== 0
+      )
+    );
+  }
+
+  // perform the actual search
+  let filteredHeaders = searchHeaders({ searchFilterExpr, headersToSearch, path });
+
+  let clockedTime;
+  if (showClockedTimes) {
+    clockedTime = filteredHeaders
+      .map((headersOfFile) =>
+        headersOfFile.reduce((acc, val) => acc + val.get('totalFilteredTimeLogged'), 0)
+      )
+      .toList()
+      .reduce((acc, val) => acc + val, 0);
+  }
+
+  // Filter selectedHeader and its subheaders from `headers`,
+  // because you don't want to refile a header to itself or to one
+  // of its subheaders.
+  if (context === 'refile') {
+    const selectedHeaderId = state.getIn(['files', path, 'selectedHeaderId']);
+    const subheaders = subheadersOfHeaderWithId(headers.get(path), selectedHeaderId);
+    let filterIds = subheaders.map((s) => s.get('id')).toJS();
+    filterIds.push(selectedHeaderId);
+    filteredHeaders = filteredHeaders.update(path, (headersOfFile) =>
+      headersOfFile.filter((h) => {
+        return !filterIds.includes(h.get('id'));
+      })
+    );
+  }
+
+  return {
+    filteredHeaders,
+    showClockedTimes,
+    clockedTime,
+  };
+};
+
+const executeQuery = (state, action) => {
+  state = state.asMutable();
+
+  const { query } = action;
+  const queries = query.get('queries');
+
+  const results = queries.map((queryConfig) => {
+    let searchFilterValid = true;
+    let searchFilterExpr;
+    try {
+      searchFilterExpr = headline_filter_parser.parse(queryConfig.get('query'));
+    } catch (e) {
+      searchFilterValid = false;
+    }
+    if (!searchFilterValid) {
+      return { searchFilterValid: false };
+    }
+    return {
+      ...calculateSearchResult(state, queryConfig.get('type'), searchFilterExpr),
+      searchFilterValid: true,
+      searchFilter: queryConfig.get('query'),
+      context: queryConfig.get('type'),
+      collapse: queryConfig.get('collapse'),
+    };
+  });
+
+  // get rid of old query results
+  state.set('query', Map());
+  results.forEach((result) => {
+    state.setIn(['query', result.searchFilter], Map(result));
+  });
+  return state.asImmutable();
+};
+
+const removeQueryResults = (state) => state.set('query', Map());
+
+const setSearchFilterInformation = (state, action) => {
+  state = state.asMutable();
+  const { searchFilter, cursorPosition, context } = action;
+
   state.setIn(['search', 'searchFilter'], searchFilter);
+
+  let searchFilterValid = true;
+  let searchFilterExpr;
+  try {
+    searchFilterExpr = headline_filter_parser.parse(searchFilter);
+    state = state.setIn(['search', 'searchFilterExpr'], searchFilterExpr);
+  } catch (e) {
+    // No need to print this parser exceptions. They are expected, see
+    // *.grammar.pegjs. However, we don't need to update the filtered
+    // headers when given an invalid search filter.
+    searchFilterValid = false;
+  }
+  state = state.setIn(['search', 'searchFilterValid'], searchFilterValid);
+  if (!searchFilterValid) {
+    return state;
+  }
+
+  const { filteredHeaders, showClockedTimes, clockedTime } = calculateSearchResult(
+    state,
+    context,
+    searchFilterExpr
+  );
+  state.setIn(['search', 'showClockedTimes'], showClockedTimes);
+  state.setIn(['search', 'clockedTime'], clockedTime);
+  state.setIn(['search', 'filteredHeaders'], filteredHeaders);
 
   // INFO: This is a POC draft of a future feature
   // This could come from the last session, hence from localStorage.
@@ -1310,6 +1359,8 @@ export const setSearchFilterInformation = (state, action) => {
   } else {
     // TODO: Currently only showing suggestions based on opened file.
     // Decide if they should be based on all files.
+    let files = state.get('files');
+    const path = state.get('path');
     const currentFile = files.get(path);
     const headersOfFile = currentFile.get('headers');
     const todoKeywords = getTodoKeywordSetsAsFlattenedArray(currentFile);
@@ -1526,6 +1577,10 @@ const reducer = (state, action) => {
       return addNewEmptyFileSetting(state, action);
     case 'RESTORE_FILE_SETTINGS':
       return restoreFileSettings(state, action);
+    case 'EXECUTE_QUERY':
+      return executeQuery(state, action);
+    case 'REMOVE_QUERY_RESULTS':
+      return removeQueryResults(state, action);
     default:
       return state;
   }
