@@ -990,6 +990,9 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         </div>
         <div />
       </div>
+      <div
+        style="height: 90px;"
+      />
     </div>
     <div
       class="action-drawer-container nice-scroll"
