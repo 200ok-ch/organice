@@ -371,7 +371,6 @@ export const computeCompletionsForDatalist = (todoKeywords, tagNames, allPropert
     filterString,
     curserPosition
   );
-  console.debug(completions)
   return completions.map(
     (x) => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
   );

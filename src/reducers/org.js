@@ -1312,6 +1312,16 @@ export const setSearchFilterInformation = (state, action) => {
 
   state.setIn(['search', 'searchFilterSuggestions'], searchFilterSuggestions);
 
+  // update bookmarks to order them by 'last used'
+  let bookmarks = state.getIn(['bookmarks', context]);
+  if (bookmarks.contains(searchFilter)) {
+    bookmarks = bookmarks
+      .filter((x) => x !== searchFilter)
+      .unshift(searchFilter)
+      .take(10);
+  }
+  state.setIn(['bookmarks', context], bookmarks);
+
   return state.asImmutable();
 };
 
@@ -1349,7 +1359,7 @@ const deleteFileSetting = (state, action) => {
 const saveBookmark = (state, { context, bookmark }) => {
   return state.updateIn(['bookmarks', context], (bookmarks) =>
     bookmarks
-      .filterNot((x) => x === bookmark)
+      .filter((x) => x !== bookmark)
       .unshift(bookmark)
       .take(10)
   );
