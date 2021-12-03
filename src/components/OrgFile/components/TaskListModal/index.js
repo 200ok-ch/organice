@@ -15,6 +15,9 @@ import * as orgActions from '../../../../actions/org';
 // in structure and partially in logic. When changing one, consider
 // changing all.
 function TaskListModal(props) {
+  const { searchFilter, searchFilterValid, searchFilterSuggestions, bookmarks } = props;
+  const canSaveBookmark = searchFilterValid && searchFilter.length !== 0;
+
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
 
   function handleHeaderClick(path, headerId) {
@@ -34,30 +37,48 @@ function TaskListModal(props) {
     );
   }
 
-  const { searchFilter, searchFilterValid, searchFilterSuggestions } = props;
+  function onBookmarkButtonClick() {
+    if (canSaveBookmark) {
+      props.org.saveBookmark('task-list', searchFilter);
+    }
+  }
 
   return (
     <>
-      <div className="task-list__modal-title" />
-      <datalist id="task-list__datalist-filter">
-        {searchFilterSuggestions.map((string, idx) => (
-          <option key={idx} value={string} />
-        ))}
-      </datalist>
+      <div className="task-list__modal-title_search" />
+      <div className="search-input-container">
+        <div className="search-input-line">
+          <datalist id="task-list__datalist-filter">
+            {(searchFilter.length === 0 ? bookmarks : searchFilterSuggestions).map(
+              (string, idx) => (
+                <option key={idx} value={string} />
+              )
+            )}
+          </datalist>
 
-      <div className="task-list__input-container">
-        <input
-          type="text"
-          value={searchFilter}
-          // Rationale: See SearchModal: index.js
-          autoFocus={!isIos()}
-          className={classNames('textfield', 'task-list__filter-input', {
-            'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
-          })}
-          placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
-          list="task-list__datalist-filter"
-          onChange={handleFilterChange}
-        />
+          <div className="search__input-container">
+            <input
+              type="text"
+              value={searchFilter}
+              // Rationale: See SearchModal: index.js
+              autoFocus={!isIos()}
+              className={classNames('textfield', 'task-list__filter-input', {
+                'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
+              })}
+              placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
+              list="task-list__datalist-filter"
+              onChange={handleFilterChange}
+            />
+          </div>
+
+          <i
+            className={
+              'fas fa-lg fa-star bookmark__icon ' +
+              (canSaveBookmark ? 'bookmark__icon__enabled' : '')
+            }
+            onClick={onBookmarkButtonClick}
+          />
+        </div>
       </div>
 
       <div
@@ -83,6 +104,7 @@ const mapStateToProps = (state) => ({
   searchFilter: state.org.present.getIn(['search', 'searchFilter']) || '',
   searchFilterValid: state.org.present.getIn(['search', 'searchFilterValid']),
   searchFilterSuggestions: state.org.present.getIn(['search', 'searchFilterSuggestions']) || [],
+  bookmarks: state.org.present.getIn(['bookmarks', 'task-list']),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -3,15 +3,37 @@
 /* Currently, the markup is the same as in the AgendaModal component.
  * Hence the CSS rules from there apply. */
 
+.search-input-container{
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.search-input-line {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bookmark__icon {
+  margin-left: 10px;
+
+  cursor: pointer;
+}
+
+.bookmark__icon__enabled {
+  color: var(--magenta);
+}
+
 .task-list__filter-input,
 .task-list__filter-input-invalid {
   box-sizing: border-box;
   width: 100%;
 }
 
-.task-list__input-container {
+.search__input-container {
   flex-shrink: 0;
-  margin-bottom: 2em;
+  flex-grow: 1;
   display: flex;
   align-items: center;
   flex-direction: column;

@@ -698,3 +698,9 @@ export const restoreFileSettings = (newSettings) => ({
   type: 'RESTORE_FILE_SETTINGS',
   newSettings,
 });
+
+export const saveBookmark = (context, bookmark) => ({
+  type: 'SAVE_BOOKMARK',
+  context,
+  bookmark,
+});

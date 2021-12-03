@@ -1294,20 +1294,8 @@ export const setSearchFilterInformation = (state, action) => {
 
   state.setIn(['search', 'searchFilter'], searchFilter);
 
-  // INFO: This is a POC draft of a future feature
-  // This could come from the last session, hence from localStorage.
-  // Just some more examples for now:
-  const lastUsedFilterStrings = [
-    'TODO organice',
-    '-organice :medium',
-    '-DONE doc|man :assignee:none',
-  ];
-
   let searchFilterSuggestions = [];
-  if (_.isEmpty(searchFilter)) {
-    // Only for an empty filter string,  provide last used filters as suggestions.
-    searchFilterSuggestions = lastUsedFilterStrings;
-  } else {
+  if (!_.isEmpty(searchFilter)) {
     // TODO: Currently only showing suggestions based on opened file.
     // Decide if they should be based on all files.
     const currentFile = files.get(path);
@@ -1356,6 +1344,15 @@ const deleteFileSetting = (state, action) => {
   const settingIndex = indexOfFileSettingWithId(state.get('fileSettings'), action.settingId);
 
   return state.update('fileSettings', (settings) => settings.delete(settingIndex));
+};
+
+const saveBookmark = (state, { context, bookmark }) => {
+  return state.updateIn(['bookmarks', context], (bookmarks) =>
+    bookmarks
+      .filterNot((x) => x === bookmark)
+      .unshift(bookmark)
+      .take(10)
+  );
 };
 
 const addNewEmptyFileSetting = (state) =>
@@ -1526,6 +1523,8 @@ const reducer = (state, action) => {
       return addNewEmptyFileSetting(state, action);
     case 'RESTORE_FILE_SETTINGS':
       return restoreFileSettings(state, action);
+    case 'SAVE_BOOKMARK':
+      return saveBookmark(state, action);
     default:
       return state;
   }

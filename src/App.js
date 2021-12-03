@@ -62,7 +62,7 @@ const handleGitLabAuthResponse = async (oauthClient) => {
   const syncClient = createGitLabSyncBackendClient(oauthClient);
   const isAccessible = await syncClient.isProjectAccessible();
   if (!isAccessible) {
-    alert('Failed to access GitLab project - is the URL is correct?');
+    alert('Failed to access GitLab project - is the URL correct?');
   } else {
     window.location.search = '';
   }
