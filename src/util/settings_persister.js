@@ -205,7 +205,11 @@ export const persistableFields = [
     category: 'org',
     name: 'bookmarks',
     type: 'json',
-    default: Map(),
+    default: Map({
+      search: List(),
+      'task-list': List(),
+      refile: List(),
+    }),
   },
 ];
 
@@ -282,8 +286,9 @@ const getInitialStateWithDefaultValues = () => {
           searchFilterExpr: [],
         }),
         bookmarks: Map({
-          search: [],
-          'task-list': [],
+          search: List(),
+          'task-list': List(),
+          refile: List(),
         }),
       }),
       future: [],
