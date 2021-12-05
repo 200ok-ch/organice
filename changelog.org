@@ -7,8 +7,16 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2021-12-05 Sun]
+** Added
+   - *EPIC* Bookmark functionality for search
+     - After entering a search string, you can bookmark it using the ⭐ button.
+     - Bookmarked search strings populate the suggestions if no search string is entered into the input field.
+     - Bookmarks are saved by context, so there are separate bookmarks for search, task-list, and refile.
+     - There are at most ten bookmarks for a context. Newly saved bookmarks are inserted at the top of the list. If the list gets too long, the last search strings are dropped. Duplicate bookmarks are dropped too. The list of bookmarks is ordered by last used.
+     - Bookmarks are unaware of file context. Therefore, you always have the same bookmarks.
+     - Relevant PR: https://github.com/200ok-ch/organice/pull/758
 * [2021-11-22 Mon]
-
 ** Changed
    - Title and Description fields are not edited as raw text by default.
      - Instead, a semantic editor comes up when editing them.
@@ -19,7 +27,6 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
      that looks like "Search" for =clock:now= without the search input
      field.
    - Notes can be multi-line and are properly indented.
-
 * [2021-11-09 Tue]
 ** Added
    - Setting to respect OS light/dark-mode preferences
