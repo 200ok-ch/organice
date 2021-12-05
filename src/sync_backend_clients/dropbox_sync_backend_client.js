@@ -124,7 +124,7 @@ export default (accessToken) => {
           // https://github.com/200ok-ch/organice/issues/108
           const objectContainsTagErrorP = (function () {
             try {
-              return JSON.parse(error.error).error.path['.tag'] === 'not_found';
+              return error.error.error.path['.tag'] === 'not_found';
             } catch (e) {
               return false;
             }

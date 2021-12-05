@@ -1371,6 +1371,11 @@ const deleteBookmark = (state, { context, bookmark }) => {
   );
 };
 
+const removeOrgFile = (state, { path }) =>
+  state
+    .update('files', (files) => files.delete(path))
+    .update('opennessState', (opennessState) => opennessState.delete(path));
+
 const addNewEmptyFileSetting = (state) =>
   state.update('fileSettings', (settings) =>
     settings.push(
@@ -1543,6 +1548,8 @@ const reducer = (state, action) => {
       return saveBookmark(state, action);
     case 'DELETE_BOOKMARK':
       return deleteBookmark(state, action);
+    case 'REMOVE_ORG_FILE':
+      return removeOrgFile(state, action);
     default:
       return state;
   }

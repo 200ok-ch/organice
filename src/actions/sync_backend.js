@@ -2,7 +2,7 @@
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
-import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
+import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage, removeOrgFile } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
 import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
@@ -127,7 +127,11 @@ export const downloadFile = (path) => {
       .catch(() => {
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+        // the file got deleted. clean it up
+        dispatch(removeOrgFile(path));
+        if (getState().org.present.get('path') === path) {
+          dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+        }
       });
   };
 };
