@@ -19,7 +19,6 @@
 
 .task-list__input-container {
   flex-shrink: 0;
-  margin-bottom: 2em;
   display: flex;
   align-items: center;
   flex-direction: column;

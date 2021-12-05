@@ -33,29 +33,30 @@ exports[`Render all views Org Functionality Renders everything starting from an 
   <div
     class="task-list__modal-title_search"
   />
-  <datalist
-    id="task-list__datalist-filter"
-  >
-    <option
-      value="TODO organice"
-    />
-    <option
-      value="-organice :medium"
-    />
-    <option
-      value="-DONE doc|man :assignee:none"
-    />
-  </datalist>
   <div
-    class="task-list__input-container"
+    class="search-input-container"
   >
-    <input
-      class="textfield task-list__filter-input"
-      list="task-list__datalist-filter"
-      placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
-      type="text"
-      value=""
-    />
+    <div
+      class="search-input-line"
+    >
+      <datalist
+        id="task-list__datalist-filter"
+      />
+      <div
+        class="search__input-container"
+      >
+        <input
+          class="textfield task-list__filter-input"
+          list="task-list__datalist-filter"
+          placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
+          type="text"
+          value=""
+        />
+      </div>
+      <i
+        class="fas fa-lg fa-star bookmark__icon "
+      />
+    </div>
   </div>
   <div
     class="task-list__headers-container"

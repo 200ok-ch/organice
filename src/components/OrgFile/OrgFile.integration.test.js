@@ -14,7 +14,7 @@ import rootReducer from '../../reducers/';
 import { setPath, parseFile } from '../../actions/org';
 import { setShouldLogIntoDrawer } from '../../actions/base';
 
-import { Map, Set, fromJS } from 'immutable';
+import { Map, Set, fromJS, List } from 'immutable';
 import { formatDistanceToNow } from 'date-fns';
 
 import { render, fireEvent, cleanup } from '@testing-library/react';
@@ -53,6 +53,11 @@ describe('Render all views', () => {
             search: Map({
               searchFilter: '',
               searchFilterExpr: [],
+            }),
+            bookmarks: Map({
+              search: List(),
+              'task-list': List(),
+              refile: List(),
             }),
           }),
           future: [],

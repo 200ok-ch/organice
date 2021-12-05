@@ -201,6 +201,16 @@ export const persistableFields = [
     name: 'preferEditRawValues',
     type: 'boolean',
   },
+  {
+    category: 'org',
+    name: 'bookmarks',
+    type: 'json',
+    default: Map({
+      search: List(),
+      'task-list': List(),
+      refile: List(),
+    }),
+  },
 ];
 
 export const readOpennessState = () => {
@@ -274,6 +284,11 @@ const getInitialStateWithDefaultValues = () => {
         search: Map({
           searchFilter: '',
           searchFilterExpr: [],
+        }),
+        bookmarks: Map({
+          search: List(),
+          'task-list': List(),
+          refile: List(),
         }),
       }),
       future: [],
