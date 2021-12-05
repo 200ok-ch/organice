@@ -16,6 +16,7 @@ import * as orgActions from '../../../../actions/org';
 // changing all.
 function TaskListModal(props) {
   const { searchFilter, searchFilterValid, searchFilterSuggestions, bookmarks } = props;
+  const bookmarkChosen = bookmarks.contains(searchFilter);
   const canSaveBookmark = searchFilterValid && searchFilter.length !== 0;
 
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
@@ -38,7 +39,9 @@ function TaskListModal(props) {
   }
 
   function onBookmarkButtonClick() {
-    if (canSaveBookmark) {
+    if (bookmarkChosen) {
+      props.org.deleteBookmark('task-list', searchFilter);
+    } else if (canSaveBookmark) {
       props.org.saveBookmark('task-list', searchFilter);
     }
   }
@@ -72,10 +75,11 @@ function TaskListModal(props) {
           </div>
 
           <i
-            className={
-              'fas fa-lg fa-star bookmark__icon ' +
-              (canSaveBookmark ? 'bookmark__icon__enabled' : '')
-            }
+            className={classNames('fas fa-lg bookmark__icon ', {
+              'fa-star': !bookmarkChosen,
+              'fa-trash': bookmarkChosen,
+              bookmark__icon__enabled: canSaveBookmark,
+            })}
             onClick={onBookmarkButtonClick}
           />
         </div>

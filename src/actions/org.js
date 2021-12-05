@@ -704,3 +704,9 @@ export const saveBookmark = (context, bookmark) => ({
   context,
   bookmark,
 });
+
+export const deleteBookmark = (context, bookmark) => ({
+  type: 'DELETE_BOOKMARK',
+  context,
+  bookmark,
+});
