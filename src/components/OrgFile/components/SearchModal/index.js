@@ -29,7 +29,7 @@ function SearchModal(props) {
     activeClocks,
   } = props;
   const bookmarks = allBookmarks.get(context);
-
+  const bookmarkChosen = bookmarks.contains(searchFilter);
   const canSaveBookmark = searchFilterValid && searchFilter.length !== 0;
 
   function handleHeaderClick(path, headerId) {
@@ -45,7 +45,9 @@ function SearchModal(props) {
   }
 
   function onBookmarkButtonClick() {
-    if (canSaveBookmark) {
+    if (bookmarkChosen) {
+      props.org.deleteBookmark(context, searchFilter);
+    } else if (canSaveBookmark) {
       props.org.saveBookmark(context, searchFilter);
     }
   }
@@ -103,10 +105,11 @@ function SearchModal(props) {
             </div>
 
             <i
-              className={
-                'fas fa-lg fa-star bookmark__icon ' +
-                (canSaveBookmark ? 'bookmark__icon__enabled' : '')
-              }
+              className={classNames('fas fa-lg bookmark__icon ', {
+                'fa-star': !bookmarkChosen,
+                'fa-trash': bookmarkChosen,
+                bookmark__icon__enabled: canSaveBookmark,
+              })}
               onClick={onBookmarkButtonClick}
             />
           </div>

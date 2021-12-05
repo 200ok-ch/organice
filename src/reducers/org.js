@@ -1365,6 +1365,12 @@ const saveBookmark = (state, { context, bookmark }) => {
   );
 };
 
+const deleteBookmark = (state, { context, bookmark }) => {
+  return state.updateIn(['bookmarks', context], (bookmarks) =>
+    bookmarks.filter((x) => x !== bookmark).take(10)
+  );
+};
+
 const addNewEmptyFileSetting = (state) =>
   state.update('fileSettings', (settings) =>
     settings.push(
@@ -1535,6 +1541,8 @@ const reducer = (state, action) => {
       return restoreFileSettings(state, action);
     case 'SAVE_BOOKMARK':
       return saveBookmark(state, action);
+    case 'DELETE_BOOKMARK':
+      return deleteBookmark(state, action);
     default:
       return state;
   }

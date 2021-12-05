@@ -54,7 +54,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         />
       </div>
       <i
-        class="fas fa-lg fa-star bookmark__icon "
+        class="fas fa-lg bookmark__icon  fa-star"
       />
     </div>
   </div>
