@@ -1374,6 +1374,9 @@ const deleteBookmark = (state, { context, bookmark }) => {
 const removeOrgFile = (state, { path }) =>
   state
     .update('files', (files) => files.delete(path))
+    .update('fileSettings', (fileSettings) =>
+      fileSettings.filter((fileSetting) => fileSetting.path !== path)
+    )
     .update('opennessState', (opennessState) => opennessState.delete(path));
 
 const addNewEmptyFileSetting = (state) =>
