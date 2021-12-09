@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+
+* [2021-12-09 Thu]
+** Fixed
+   - Title editor text loss.
+     - Since the introduction of the semantic Title editor on [2021-11-22 Mon], if you modified the text of a title and then click a todo, the todo keyword got saved which triggers a rerender before the text got saved. Therefore the text is reset to the state it was in when the title editor was opened.
+     - This is fixed, now.
 * [2021-12-05 Sun]
 ** Added
    - *EPIC* Bookmark functionality for search

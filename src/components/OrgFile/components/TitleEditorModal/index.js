@@ -51,9 +51,9 @@ export default class TitleEditorModal extends PureComponent {
     const { header, editRawValues } = this.props;
     if (prevProps.header !== header || prevProps.editRawValues !== editRawValues) {
       this.setState({
-        titleValue: this.props.editRawValues
+        titleValue: editRawValues
           ? this.calculateRawTitle(header)
-          : this.props.header.getIn(['titleLine', 'rawTitle']),
+          : header.getIn(['titleLine', 'rawTitle']),
       });
       this.textarea.focus();
     }
@@ -112,6 +112,7 @@ export default class TitleEditorModal extends PureComponent {
   }
 
   handleTodoChange(newTodoKeyword) {
+    this.props.saveTitle(this.state.titleValue);
     this.props.onTodoClicked(newTodoKeyword);
   }
 

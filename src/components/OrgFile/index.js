@@ -72,6 +72,7 @@ class OrgFile extends PureComponent {
       'handleSearchPopupClose',
       'handleRefilePopupClose',
       'handleTitlePopupClose',
+      'saveTitle',
       'handleTodoChange',
       'handleDescriptionPopupClose',
       'handleTablePopupClose',
@@ -256,7 +257,7 @@ class OrgFile extends PureComponent {
     }
   }
 
-  handleTitlePopupClose(titleValue) {
+  saveTitle(titleValue) {
     const { selectedHeader } = this.props;
     if (this.state.editRawValues) {
       if (generateTitleLine(selectedHeader.toJS(), false) !== titleValue) {
@@ -273,6 +274,10 @@ class OrgFile extends PureComponent {
         );
       }
     }
+  }
+
+  handleTitlePopupClose(titleValue) {
+    this.saveTitle(titleValue);
     this.props.base.closePopup();
   }
 
@@ -514,6 +519,7 @@ class OrgFile extends PureComponent {
             editRawValues={this.state.editRawValues}
             todoKeywordSets={todoKeywordSets}
             onClose={this.getPopupCloseAction('title-editor')}
+            saveTitle={this.saveTitle}
             onTodoClicked={this.handleTodoChange}
             header={selectedHeader}
             setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
