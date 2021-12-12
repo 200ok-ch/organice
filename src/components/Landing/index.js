@@ -16,7 +16,7 @@ export default () => {
         <h2 className="landing-tagline">organice organizes Org files nicely!</h2>
 
         <h2 className="landing-tagline">
-          Syncs with Dropbox,
+          Syncs with Dropbox, GitLab
           <br /> Google Drive and WebDAV.
         </h2>
 

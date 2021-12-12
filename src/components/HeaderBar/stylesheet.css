@@ -70,7 +70,7 @@
 .header-bar__actions__item {
   color: var(--base01);
 
-  margin-left: 0.5em;
+  margin-left: 1em;
 }
 
 .header-bar__actions__item--disabled {
