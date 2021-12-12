@@ -26,7 +26,7 @@ exports[`<Landing /> renders 1`] = `
       <h2
         class="landing-tagline"
       >
-        Syncs with Dropbox,
+        Syncs with Dropbox, GitLab
         <br />
          Google Drive and WebDAV.
       </h2>
