@@ -10,7 +10,9 @@ This header has some description text and a couple subheaders. Look through the 
 ** This is a subheader too!
 * Actions
 ** Editing headers
-When you select a header the "header action drawer" appears. The first two icons in this drawer edit the header and description respectively. Try editing this header.
+When you select a header, the "header action drawer" appears. The first two icons in this drawer edit the header and description respectively. Try editing this header.
+
+Title and Description fields are not edited as raw text by default. Instead, a semantic editor comes up when editing them. To edit raw values, click the 'edit' icon, again.
 
 If you want the "header action drawer" to disappear or to deselect the current header, tap into the title (or empty space) in the headerbar.
 
@@ -289,9 +291,9 @@ Once signed in, you can set up capture templates that specify header paths (and 
 ***** Work
 ****** Too!
 
-* Search / Task List
+* Search / Task List / Clock List
 
-Below, there is a button to open up a generic search and a task list.
+Below, there is a button to open up a generic search and a task list. The modal opens "Search" by default, but remembers what was opened last. If there are open clocks, a third tab "Clock List" is added
 
 Tap a header in the view to jump to it.
 
