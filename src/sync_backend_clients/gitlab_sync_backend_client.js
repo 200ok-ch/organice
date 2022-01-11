@@ -15,7 +15,7 @@ export const createGitlabOAuth = () => {
     authorizationUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
-    redirectUrl: window.location.origin,
+    redirectUrl: window.location.origin + process.env.PUBLIC_URL,
     scopes: ['api'],
     extraAuthorizationParams: {
       clientSecret: process.env.REACT_APP_GITLAB_SECRET,

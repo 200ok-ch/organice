@@ -35,7 +35,7 @@ function WebDAVForm() {
             persistField('webdavEndpoint', url);
             persistField('webdavUsername', username);
             persistField('webdavPassword', password);
-            window.location = window.location.origin + '/';
+            window.location = window.location.origin + process.env.PUBLIC_URL;
           }}
         >
           <p>
@@ -165,9 +165,11 @@ export default class SyncServiceSignIn extends PureComponent {
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
-      window.location = authURL;
-    });
+    dropbox.auth
+      .getAuthenticationUrl(window.location.origin + process.env.PUBLIC_URL)
+      .then((authURL) => {
+        window.location = authURL;
+      });
   }
 
   handleGoogleDriveClick() {
@@ -185,7 +187,7 @@ export default class SyncServiceSignIn extends PureComponent {
 
             gapi.auth2.getAuthInstance().signIn({
               ux_mode: 'redirect',
-              redirect_uri: window.location.origin,
+              redirect_uri: window.location.origin + process.env.PUBLIC_URL,
             });
           });
       });

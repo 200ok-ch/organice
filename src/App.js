@@ -216,7 +216,7 @@ export default class App extends PureComponent {
   render() {
     return (
       <DragDropContext onDragEnd={this.handleDragEnd}>
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <Provider store={this.store}>
             <div className="App">
               <Entry />
