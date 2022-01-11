@@ -35,7 +35,7 @@ function WebDAVForm() {
             persistField('webdavEndpoint', url);
             persistField('webdavUsername', username);
             persistField('webdavPassword', password);
-            window.location = window.location.origin + process.env.PUBLIC_URL;
+            window.location = window.location.origin + process.env.PUBLIC_URL + '/';
           }}
         >
           <p>
@@ -166,7 +166,7 @@ export default class SyncServiceSignIn extends PureComponent {
       fetch: fetch.bind(window),
     });
     dropbox.auth
-      .getAuthenticationUrl(window.location.origin + process.env.PUBLIC_URL)
+      .getAuthenticationUrl(window.location.origin + process.env.PUBLIC_URL + '/')
       .then((authURL) => {
         window.location = authURL;
       });
