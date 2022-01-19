@@ -235,6 +235,14 @@ ${text}`;
       });
     });
 
+    describe('File with no headings', () => {
+      test('Parses a file with no headings', () => {
+        const testOrgFile = readFixture('no_headings');
+        const exportedFile = parseAndExportOrgFile(testOrgFile);
+        expect(exportedFile).toEqual(testOrgFile);
+      });
+    });
+
     describe('E-mail address', () => {
       test('Parse a line containing an e-mail address', () => {
         const testOrgFile = readFixture('email');

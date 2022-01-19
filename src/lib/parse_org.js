@@ -879,6 +879,24 @@ export const parseOrg = (fileContents) => {
     }
   });
 
+  // WIP: pushing a dummy header to allow handling empty files.
+  //
+  // Note that I initially had this add an empty header, but that caused
+  // one of the unit tests to break (there's a test with an empty header,
+  // and if I arbitrarily remove the pre-existing empty header then I'm changing
+  // the org file ...).  So, adding a dummy token here instead, to allow for file handling.
+  //
+  // I'm also not sure what is the best way to handle files that
+  // already contain some plain text, as was described initially in
+  // https://github.com/200ok-ch/organice/issues/583 ... if we add a
+  // header, this might cause strange data regroupings.  That scenario
+  // might need its own test fixture.
+  //
+  // end WIP comments.
+  if (headers.size === 0) {
+    headers = headers.push(newHeaderWithTitle('ORGANICE_DUMMY', 1, todoKeywordSets));
+  }
+
   headers = headers.map((header) => {
     // Normally, rawDescription contains the "stripped" raw description text,
     // i.e. no log book, properties, or planning items.

@@ -709,3 +709,82 @@ describe('Render all views', () => {
     });
   });
 });
+
+
+describe('Render file with no headings', () => {
+  const testOrgFile = readFixture('no_headings');
+
+  let store;
+
+  beforeEach(() => {
+    let capture = Map();
+    capture = capture.set('captureTemplates', []);
+    store = createStore(
+      rootReducer,
+      {
+        org: {
+          past: [],
+          present: Map({
+            files: Map(),
+            fileSettings: [],
+            search: Map({
+              searchFilter: '',
+              searchFilterExpr: [],
+            }),
+          }),
+          future: [],
+        },
+        syncBackend: Map({
+          isAuthenticated: true,
+        }),
+        capture,
+        base: new fromJS({
+          customKeybindings: {},
+          shouldTapTodoToAdvance: true,
+          isLoading: Set(),
+          agendaTimeframe: 'Week',
+        }),
+      },
+      applyMiddleware(thunk)
+    );
+    store.dispatch(parseFile(STATIC_FILE_PREFIX + 'fixtureTestFile.org', testOrgFile));
+    store.dispatch(setPath(STATIC_FILE_PREFIX + 'fixtureTestFile.org'));
+  });
+
+  describe('Org Functionality', () => {
+    let container,
+      getByText,
+      getAllByText,
+      getByTitle,
+      getByTestId,
+      queryByText,
+      queryAllByText,
+      getByPlaceholderText;
+    beforeEach(() => {
+      let res = render(
+        <MemoryRouter keyLength={0} initialEntries={['/file/dir1/dir2/fixtureTestFile.org']}>
+          <Provider store={store}>
+            <HeaderBar />
+            <OrgFile path={STATIC_FILE_PREFIX + 'fixtureTestFile.org'} />
+          </Provider>
+        </MemoryRouter>
+      );
+
+      container = res.container;
+      getByText = res.getByText;
+      getAllByText = res.getAllByText;
+      getByTitle = res.getByTitle;
+      getByTestId = res.getByTestId;
+      queryByText = res.queryByText;
+      queryAllByText = res.queryAllByText;
+      getByPlaceholderText = res.getByPlaceholderText;
+    });
+
+    describe('Renders the empty Org file as a single heading', () => {
+      test('renders an Org file', () => {
+        expect(getAllByText(/\*/)).toHaveLength(1);
+      });
+    });
+
+  });
+});

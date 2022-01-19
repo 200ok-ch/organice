@@ -60,7 +60,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
   </div>
   <div
     class="task-list__headers-container"
-    style="overflow: auto;"
   >
     <div
       class="agenda-day__container"
