@@ -7,6 +7,10 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-02-23 Wed]
+** Fixed
+   - [[https://organice.200ok.ch/documentation.html#in_buffer_settings][In-buffer settings]] can be in lowercase or uppercase. Before, they
+     had to be in uppercase.
 
 * [2021-12-09 Thu]
 ** Fixed
