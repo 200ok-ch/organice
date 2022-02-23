@@ -793,7 +793,7 @@ export const newHeaderFromText = (rawText, todoKeywordSets) => {
 };
 
 export const lineIsTodoKeywordConfig = (line) => {
-  const lowerLine = line.toLowerCase()
+  const lowerLine = line.toLowerCase();
   return (
     lowerLine.startsWith('#+todo: ') ||
     lowerLine.startsWith('#+typ_todo: ') ||
