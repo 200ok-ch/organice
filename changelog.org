@@ -11,6 +11,13 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Fixed
    - [[https://organice.200ok.ch/documentation.html#in_buffer_settings][In-buffer settings]] can be in lowercase or uppercase. Before, they
      had to be in uppercase.
+     - PR: https://github.com/200ok-ch/organice/pull/776
+   - Manifest for PWAs
+     - Before, the 'install' button did not appear for Android devices
+       and both Chrome and Firefox showed warnings for the manifest.
+     - Issue: https://github.com/200ok-ch/organice/issues/779
+     - PR: https://github.com/200ok-ch/organice/pull/781
+     - Thank you [[https://github.com/tbruckmaier][tbruckmaier]] for the PR🙏
 
 * [2021-12-09 Thu]
 ** Fixed
