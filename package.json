@@ -54,7 +54,7 @@
     "eslint-plugin-react-redux": "^3.3.0",
     "prettier-eslint": "^11.0.0",
     "prettier": "^2.0.5",
-    "prettier-eslint-cli": "^5.0.0",
+    "prettier-eslint-cli": "^5.0.1",
     "raw.macro": "0.4.2",
     "react-test-renderer": "^17.0.1"
   },
