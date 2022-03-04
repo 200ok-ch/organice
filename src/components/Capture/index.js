@@ -50,7 +50,7 @@ const Capture = ({
           <p>selected template: { template.get('description') }</p>
 
           <Link
-            to={`/share?${getQueryString()}`}
+            to={`/capture?${getQueryString()}`}
           >select different template</Link>
         </div>
       );
@@ -64,7 +64,7 @@ const Capture = ({
             <li>
               <Link
                 key={template.get('id')}
-                to={`/share/${template.get('description')}?${getQueryString()}`}
+                to={`/capture/${template.get('description')}?${getQueryString()}`}
               >{template.get('description')}</Link>
             </li>
           ))}
