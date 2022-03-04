@@ -20,6 +20,7 @@ import OrgFile from '../OrgFile';
 import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
+import Capture from '../Capture';
 import FileSettingsEditor from '../FileSettingsEditor';
 import SyncServiceSignIn from '../SyncServiceSignIn';
 
@@ -194,6 +195,7 @@ class Entry extends PureComponent {
                 <Route path="/settings" exact={true}>
                   <Settings />
                 </Route>
+                <Route path="/capture/:template?" exact component={Capture} />
                 <Redirect to="/files" />
               </Switch>
             )

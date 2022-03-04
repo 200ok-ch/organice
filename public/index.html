@@ -75,8 +75,16 @@
          "start_url": absoluteUrl(pathname || "/index.html"),
          "display": "standalone",
          "theme_color": "#000000",
-         "background_color": "#ffffff"
-     }
+         "background_color": "#ffffff",
+          "share_target": {
+            "action": "/capture",
+            "params": {
+              "title": "captureVariable_v_title",
+              "text": "captureVariable_v_text",
+              "url": "captureVariable_v_url"
+            }
+          },
+     };
 
      const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
      const manifestURL = URL.createObjectURL(manifestBlob);
