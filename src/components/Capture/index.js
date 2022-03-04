@@ -61,9 +61,8 @@ const Capture = ({
         <p>select a template:</p>
         <ul>
           {captureTemplates.map((template, index) => (
-            <li>
+            <li key={template.get('id')}>
               <Link
-                key={template.get('id')}
                 to={`/capture/${template.get('description')}?${getQueryString()}`}
               >{template.get('description')}</Link>
             </li>
