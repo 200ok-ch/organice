@@ -616,6 +616,10 @@ deployed via FTP. The full build script is in
 
 organice is also available as a Docker image.
 
+#+BEGIN_SRC shell
+docker pull twohundredok/organice
+#+END_SRC
+
 *** With =docker-compose=
 
 If [[https://docs.docker.com/compose/][docker-compose]] is installed, the following command downloads and
