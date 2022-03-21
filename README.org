@@ -81,7 +81,7 @@ homescreen follow these platform specific instructions:
 
   The exact procedure may differ depending on your browser and Android
   version.  If you discover improvements to the following procedure,
-  please [[#contributing][let us know]]!
+  please [[https://organice.200ok.ch/documentation.html#contributing][let us know]]!
 
   First open the organice web page in your mobile browser.
 
@@ -419,7 +419,7 @@ cp .env.sample .env
 
 Then, fill in the blanks in ~.env~ with your Dropbox, Google Drive, or
 GitLab credentials. More information about that is in the section
-[[#synchronization_back_ends][Synchronization back-ends]].
+[[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization back-ends]].
 
 **** Running the application
 
@@ -579,7 +579,7 @@ Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox,
-WebDAV or Google Drive, please read the section on [[#synchronization_back_ends][Synchronization
+WebDAV or Google Drive, please read the section on [[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization
 back-ends]].
 
 ** FTP
@@ -688,7 +688,7 @@ like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https:/
 
 **** More information
 
-In the [[#faq_webdav][WebDAV FAQ]], you'll find lots more information regarding WebDAV:
+In the [[https://organice.200ok.ch/documentation.html#faq_webdav][WebDAV FAQ]], you'll find lots more information regarding WebDAV:
 
   - A screencast of how organice works when logging in to a WebDAV
     server
@@ -744,7 +744,7 @@ regarding OAuth applications, if interested.
     :END:
 
 If you do not trust your data with Dropbox or Google, you are free to
-use Gitlab ([[https://about.gitlab.com/solutions/open-source/][which is open-source]]) or host your own [[#webdav][WebDAV]] server and
+use Gitlab ([[https://about.gitlab.com/solutions/open-source/][which is open-source]]) or host your own [[https://organice.200ok.ch/documentation.html#webdav][WebDAV]] server and
 take any number of precautionary measures.
 
 For example, you can encrypt your data on disk. organice itself is
@@ -800,7 +800,7 @@ RewriteRule ^ /index.html [L]
 
 N.B.: If you're using WebDAV as a sync back-end, and the =RewriteRule= is
 allowed to apply to a WebDAV directory, it will break PUT requests to
-upload new files! [[#webdav_apache_rewrite_engine][Here's documentation]] on how to configure both
+upload new files! [[https://organice.200ok.ch/documentation.html#webdav_apache_rewrite_engine][Here's documentation]] on how to configure both
 features together correctly.
 
 * Contrib
