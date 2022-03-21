@@ -19,7 +19,7 @@ echo "#+SETUPFILE: doc/setupfile" > documentation.org
 
 # Replace absolute links with anchors with only the anchor part (#787).
 cat README.org | \
-    grep -v "^Documentation: https://organice.200ok.ch/documentation.html" \
+    grep -v "^Documentation: https://organice.200ok.ch/documentation.html" | \
     sed 's/https:\/\/organice.200ok.ch\/documentation.html#/#/g' \
     >> documentation.org
 
