@@ -86,6 +86,12 @@ export const persistableFields = [
   },
   {
     category: 'base',
+    name: 'shouldUseWideEditor',
+    type: 'boolean',
+    shouldStoreInConfig: true,
+  },
+  {
+    category: 'base',
     name: 'bulletStyle',
     type: 'nullable',
     default: 'Fancy',

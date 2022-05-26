@@ -1,7 +1,7 @@
 @import 'colors.css';
 
 /* Tablets and bigger are constrained to a max width and are centered */
-@media (min-width: 767px) {
+@media (min-width: 767px) and (max-width: 1800px) {
   html {
     background: var(--base2);
   }
@@ -10,6 +10,7 @@
     box-shadow: 0 2em 2em 1.5em var(--base1-soft);
   }
 
+  /*
   #root,
   .action-drawer-container,
   .drawer-inner-container,
@@ -18,6 +19,7 @@
     margin-left: auto;
     margin-right: auto;
   }
+  */
 
   .action-drawer-container {
     max-width: 33em;
