@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useParams, Link, useHistory } from "react-router-dom";
 // import './stylesheet.css';
@@ -60,7 +60,7 @@ const Capture = ({
       <div>
         <p>select a template:</p>
         <ul>
-          {captureTemplates.map((template, index) => (
+          {captureTemplates.map(template => (
             <li key={template.get('id')}>
               <Link
                 to={`/capture/${template.get('description')}?${getQueryString()}`}
@@ -69,8 +69,7 @@ const Capture = ({
           ))}
         </ul>
       </div>
-    );
-    ;
+    )
   }
 
   /**
