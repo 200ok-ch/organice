@@ -23,6 +23,7 @@ export default class HeaderActionDrawer extends PureComponent {
       onTitleClick,
       onDescriptionClick,
       onTagsClick,
+      onNotificationsClick,
       onPropertiesClick,
       isNarrowed,
       onNarrow,
@@ -57,6 +58,12 @@ export default class HeaderActionDrawer extends PureComponent {
             className: 'fas fa-tags fa-lg',
             onClick: onTagsClick,
             title: 'Modify tags',
+          })}
+
+          {this.iconWithFFClickCatcher({
+            className: 'fas fa-bell fa-lg',
+            onClick: onNotificationsClick,
+            title: 'Modify notifications',
           })}
 
           {this.iconWithFFClickCatcher({

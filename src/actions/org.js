@@ -618,6 +618,12 @@ export const removePlanningItem = (headerId, planningItemIndex) => ({
   dirtying: true,
 });
 
+export const addNewNotification = (headerId) => ({
+  type: 'ADD_NEW_NOTIFICATION',
+  headerId,
+  dirtying: true,
+});
+
 export const removeTimestamp = (headerId, timestampId) => ({
   type: 'REMOVE_TIMESTAMP',
   headerId,

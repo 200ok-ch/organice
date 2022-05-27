@@ -43,6 +43,7 @@ class Header extends PureComponent {
       'handleShowTitleModal',
       'handleShowDescriptionModal',
       'handleShowTagsModal',
+      'handleShowNotificationsModal',
       'handleShowPropertyListEditorModal',
       'handleNarrow',
       'handleWiden',
@@ -204,6 +205,10 @@ class Header extends PureComponent {
 
   handleShowTagsModal() {
     this.props.base.activatePopup('tags-editor');
+  }
+
+  handleShowNotificationsModal() {
+    this.props.base.activatePopup('notifications-editor');
   }
 
   handleShowPropertyListEditorModal() {
@@ -499,6 +504,7 @@ ${header.get('rawDescription')}`;
                   onDescriptionClick={this.handleShowDescriptionModal}
                   isNarrowed={isNarrowed}
                   onTagsClick={this.handleShowTagsModal}
+                  onNotificationsClick={this.handleShowNotificationsModal}
                   onPropertiesClick={this.handleShowPropertyListEditorModal}
                   onNarrow={this.handleNarrow}
                   onWiden={this.handleWiden}

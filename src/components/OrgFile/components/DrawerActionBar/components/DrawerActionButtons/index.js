@@ -24,6 +24,7 @@ export default class DrawerActionButtons extends PureComponent {
       onTitleClick,
       onDescriptionClick,
       onTagsClick,
+      onNotificationsClick,
       onPropertiesClick,
       onDeadlineClick,
       onScheduledClick,
@@ -77,6 +78,15 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onTagsClick,
             title: 'Modify tags',
             disabled: 'tags-editor' === activePopupType,
+          })}
+
+          {this.iconWithFFClickCatcher({
+            className:
+              'fas fa-bell fa-lg' +
+              ('notifications-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
+            onClick: onNotificationsClick,
+            title: 'Modify notifications',
+            disabled: 'notifications-editor' === activePopupType,
           })}
 
           {this.iconWithFFClickCatcher({

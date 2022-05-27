@@ -23,6 +23,7 @@ class DrawerActionBar extends PureComponent {
       'handleShowTitleEditModal',
       'handleShowDescriptionEditModal',
       'handleShowTagsModal',
+      'handleShowNotificationsModal',
       'handleShowPropertyListEditorModal',
       'handleShowDeadlineModal',
       'handleShowScheduledModal',
@@ -44,6 +45,11 @@ class DrawerActionBar extends PureComponent {
   handleShowTagsModal() {
     this.props.onSwitch();
     this.props.base.activatePopup('tags-editor');
+  }
+
+  handleShowNotificationsModal() {
+    this.props.onSwitch();
+    this.props.base.activatePopup('notifications-editor');
   }
 
   handleShowPropertyListEditorModal() {
@@ -93,6 +99,7 @@ class DrawerActionBar extends PureComponent {
           onTitleClick={this.handleShowTitleEditModal}
           onDescriptionClick={this.handleShowDescriptionEditModal}
           onTagsClick={this.handleShowTagsModal}
+          onNotificationsClick={this.handleShowNotificationsModal}
           onPropertiesClick={this.handleShowPropertyListEditorModal}
           onDeadlineClick={this.handleShowDeadlineModal}
           onScheduledClick={this.handleShowScheduledModal}

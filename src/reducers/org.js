@@ -1051,6 +1051,20 @@ const addNewPlanningItem = (state, action) => {
   );
 };
 
+const addNewNotification = (state, action) => {
+  console.log('Adding new notification to store');
+  const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
+
+  const newNotification = fromJS({
+    id: generateId(),
+    seconds: 5,
+  });
+
+  return state.updateIn(['headers', headerIndex, 'notifications'], (notifications) =>
+    !!notifications ? notifications.push(newNotification) : List([newNotification])
+  );
+};
+
 const removePlanningItem = (state, action) => {
   const headerIndex = indexOfHeaderWithId(state.get('headers'), action.headerId);
   const { planningItemIndex } = action;
@@ -1511,6 +1525,8 @@ const reducer = (state, action) => {
       return inFile(addNewPlanningItem);
     case 'REMOVE_PLANNING_ITEM':
       return inFile(removePlanningItem);
+    case 'ADD_NEW_NOTIFICATION':
+      return inFile(addNewNotification);
     case 'REMOVE_TIMESTAMP':
       return inFile(removeTimestamp);
     case 'UPDATE_PROPERTY_LIST_ITEMS':

@@ -13,6 +13,7 @@ import ActionDrawer from './components/ActionDrawer';
 import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
 import TagsEditorModal from './components/TagsEditorModal';
+import NotificationsEditorModal from './components/NotificationsEditorModal';
 import TimestampEditorModal from './components/TimestampEditorModal';
 import PropertyListEditorModal from './components/PropertyListEditorModal';
 import TitleEditorModal from './components/TitleEditorModal';
@@ -453,6 +454,16 @@ class OrgFile extends PureComponent {
             onChange={this.handleTagsChange}
           />
         );
+      case 'notifications-editor':
+        // XXX: This is just mock data
+        const allNotifications = ['20min'];
+        return (
+          <NotificationsEditorModal
+            header={selectedHeader}
+            allNotifications={allNotifications}
+            onChange={this.handleNotificationsChange}
+          />
+        );
       case 'timestamp-editor':
       case 'scheduled-editor':
       case 'deadline-editor':
@@ -695,6 +706,7 @@ class OrgFile extends PureComponent {
               {(activePopupType === 'title-editor' ||
                 activePopupType === 'description-editor' ||
                 activePopupType === 'tags-editor' ||
+                activePopupType === 'notifications-editor' ||
                 activePopupType === 'property-list-editor' ||
                 activePopupType === 'timestamp-editor' ||
                 activePopupType === 'scheduled-editor' ||

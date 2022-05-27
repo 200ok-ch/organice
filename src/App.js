@@ -41,8 +41,24 @@ import _ from 'lodash';
 import { Map } from 'immutable';
 
 import { configure } from 'react-hotkeys';
+
+import { LocalNotifications } from '@capacitor/local-notifications';
+
+// import { Geolocation } from '@capacitor/geolocation';
+
 // do handle hotkeys even if they come from within 'input', 'select' or 'textarea'
 configure({ ignoreTags: [] });
+
+// const handleGeolocation = async () => {
+//   // get the users current position
+//   const position = await Geolocation.getCurrentPosition();
+
+//   // grab latitude & longitude
+//   const latitude = position.coords.latitude;
+//   const longitude = position.coords.longitude;
+
+//   console.log(latitude, longitude);
+// };
 
 const handleGitLabAuthResponse = async (oauthClient) => {
   let success = false;
@@ -68,11 +84,37 @@ const handleGitLabAuthResponse = async (oauthClient) => {
   }
 };
 
+const handleLocalNotification = async () => {
+  // TODO: Do this on click
+  // await LocalNotifications.requestPermissions();
+
+  window.x = LocalNotifications.schedule({
+    notifications: [
+      {
+        title: 'On sale',
+        body: 'Widgets are 10% off. Act fast!',
+        id: 123334,
+        schedule: { at: new Date(Date.now() + 1000 * 5) },
+        sound: null,
+        attachments: null,
+        actionTypeId: '',
+        extra: null,
+      },
+    ],
+  });
+
+  console.log(window.x);
+};
+
 export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
     runAllMigrations();
+
+    // handleGeolocation();
+
+    handleLocalNotification();
 
     const initialState = readInitialState();
 
