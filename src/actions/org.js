@@ -222,7 +222,11 @@ const doSync = ({
     .catch(() => {
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      // the file got deleted. clean it up
+      dispatch(removeOrgFile(path));
+      if (getState().org.present.get('path') === path) {
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      }
     });
 };
 
@@ -709,4 +713,9 @@ export const deleteBookmark = (context, bookmark) => ({
   type: 'DELETE_BOOKMARK',
   context,
   bookmark,
+});
+
+export const removeOrgFile = (path) => ({
+  type: 'REMOVE_ORG_FILE',
+  path,
 });

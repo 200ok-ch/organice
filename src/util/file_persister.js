@@ -25,6 +25,28 @@ export const saveFileContentsToLocalStorage = (path, contents) => {
   }
 };
 
+export const removeFileFromLocalStorage = (path) => {
+  if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
+    let isDirty = JSON.parse(localStorage.getItem('isDirty')) || {};
+    delete isDirty[path];
+    localStorage.setItem('isDirty', JSON.stringify(isDirty));
+
+    let persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || {};
+    delete persistedFiles[path];
+    localStorage.setItem('persistedFiles', JSON.stringify(persistedFiles));
+
+    let headerOpenness = JSON.parse(localStorage.getItem('headerOpenness')) || {};
+    delete headerOpenness[path];
+    localStorage.setItem('headerOpenness', JSON.stringify(headerOpenness));
+
+    let fileSettings = JSON.parse(localStorage.getItem('fileSettings')) || [];
+    fileSettings = fileSettings.filter((fileSetting) => fileSetting.path !== path);
+    localStorage.setItem('fileSettings', JSON.stringify(fileSettings));
+
+    localStorage.removeItem('files__' + path);
+  }
+};
+
 const saveFunctionToDebounce = (state, path) => {
   if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
     const persistedFiles = JSON.parse(localStorage.getItem('persistedFiles')) || {};
