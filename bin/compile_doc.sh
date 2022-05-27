@@ -16,10 +16,13 @@ fi
 # repository, however, CircleCI at some point refused to download the
 # file for months. Therefore, now it's included in the repository.
 echo "#+SETUPFILE: doc/setupfile" > documentation.org
+
+# Replace absolute links with anchors with only the anchor part (#787).
 cat README.org | \
-    grep -v api.codeclimate | \
-    grep -v "^Documentation: https://organice.200ok.ch/documentation.html" \
+    grep -v "^Documentation: https://organice.200ok.ch/documentation.html" | \
+    sed 's/https:\/\/organice.200ok.ch\/documentation.html#/#/g' \
     >> documentation.org
+
 sed -i 's/# REPO_PLACEHOLDER/Code repository: https:\/\/github.com\/200ok-ch\/organice/' documentation.org
 cat WIKI.org >> documentation.org
 cat CONTRIBUTING.org >> documentation.org
