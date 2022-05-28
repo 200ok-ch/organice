@@ -1,3 +1,5 @@
+/* global process */
+
 import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import Store from './store';
@@ -216,7 +218,7 @@ export default class App extends PureComponent {
   render() {
     return (
       <DragDropContext onDragEnd={this.handleDragEnd}>
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <Provider store={this.store}>
             <div className="App">
               <Entry />
