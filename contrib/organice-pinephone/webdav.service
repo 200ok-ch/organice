@@ -1,0 +1,9 @@
+[Unit]
+Description=WebDAV server
+
+[Service]
+ExecStart=docker run --rm -v /home/mobian/org:/srv/dav --name apache-webdav-app -p 8080:80 apache-webdav
+ExecStop=docker exec apache-webdav-app apachectl -k graceful-stop
+
+[Install]
+WantedBy=default.target

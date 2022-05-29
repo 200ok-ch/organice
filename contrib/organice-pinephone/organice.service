@@ -1,0 +1,9 @@
+[Unit]
+Description=Organice
+After=webdav
+
+[Service]
+ExecStart=docker run --rm --name organice -p 3000:3000 organice:latest
+
+[Install]
+WantedBy=default.target
