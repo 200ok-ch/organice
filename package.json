@@ -24,7 +24,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
-    "redux": "^4.0.5",
+    "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
     "webdav": "^3.3.0"
@@ -54,7 +54,7 @@
     "eslint-plugin-react-redux": "^3.3.0",
     "prettier-eslint": "^11.0.0",
     "prettier": "^2.0.5",
-    "prettier-eslint-cli": "^5.0.0",
+    "prettier-eslint-cli": "^5.0.1",
     "raw.macro": "0.4.2",
     "react-test-renderer": "^17.0.1"
   },

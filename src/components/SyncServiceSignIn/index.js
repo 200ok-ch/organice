@@ -39,8 +39,9 @@ function WebDAVForm() {
           }}
         >
           <p>
-            <label>URL:</label>
+            <label htmlFor="input-webdav-url">URL:</label>
             <input
+              id="input-webdav-url"
               name="url"
               type="url"
               value={url}
@@ -51,8 +52,9 @@ function WebDAVForm() {
             />
           </p>
           <p>
-            <label>Username:</label>
+            <label htmlFor="input-webdav-user">Username:</label>
             <input
+              id="input-webdav-user"
               type="text"
               className="textfield"
               value={username}
@@ -62,8 +64,9 @@ function WebDAVForm() {
             />
           </p>
           <p>
-            <label>Password:</label>
+            <label htmlFor="input-webdav-password">Password:</label>
             <input
+              id="input-webdav-password"
               type="password"
               className="textfield"
               value={password}
@@ -135,7 +138,7 @@ function GitLab() {
       {isVisible && (
         <form onSubmit={handleSubmit}>
           <p>
-            <label>Project:</label>
+            <label htmlFor="input-gitlab-project">Project:</label>
             <input
               id="input-gitlab-project"
               type="url"
