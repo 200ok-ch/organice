@@ -11,6 +11,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
+import { isLandingPage } from '../../util/misc';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -153,7 +154,8 @@ class Entry extends PureComponent {
       theme,
     } = this.props;
 
-    loadTheme(theme, colorScheme);
+    // The LP is not styled with the user configured themes
+    if (!isLandingPage()) loadTheme(theme, colorScheme);
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;

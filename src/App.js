@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+
 import { Provider } from 'react-redux';
 import Store from './store';
 import {
@@ -11,6 +12,7 @@ import {
 
 import runAllMigrations from './migrations';
 import parseQueryString from './util/parse_query_string';
+import { isLandingPage } from './util/misc';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -214,11 +216,13 @@ export default class App extends PureComponent {
   }
 
   render() {
+    const classes = isLandingPage() ? 'App landing-page' : 'App';
+
     return (
       <DragDropContext onDragEnd={this.handleDragEnd}>
         <Router>
           <Provider store={this.store}>
-            <div className="App">
+            <div className={classes}>
               <Entry />
             </div>
           </Provider>
