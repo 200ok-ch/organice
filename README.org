@@ -822,7 +822,7 @@ suited to a wider range of users. For that, organice follows the
 =contrib= model which many bigger projects use (i.e. [[https://orgmode.org/worg/org-contrib/][Org mode]]) for
 such contributions.
 
-The please see the [[file:contrib][contrib folder]] for details.
+The please see the [[https://github.com/200ok-ch/organice/tree/master/contrib][contrib folder]] for details.
 
 * Capture templates
   :PROPERTIES:
