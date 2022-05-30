@@ -141,7 +141,7 @@ function GitLab() {
             <label htmlFor="input-gitlab-project">Project:</label>
             <input
               id="input-gitlab-project"
-              type="text"
+              type="url"
               className="textfield"
               placeholder="gitlab.com/your/project"
               value={project}
