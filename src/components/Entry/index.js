@@ -11,6 +11,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
+import { isLandingPage } from '../../util/misc';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -153,7 +154,8 @@ class Entry extends PureComponent {
       theme,
     } = this.props;
 
-    loadTheme(theme, colorScheme);
+    // The LP is not styled with the user configured themes
+    if (!isLandingPage()) loadTheme(theme, colorScheme);
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
@@ -165,7 +167,14 @@ class Entry extends PureComponent {
     return (
       <>
         <HeaderBar />
-        <div className={className}>
+        {/* The <Entry /> component is rendered within the <App />
+        component. The rules in its CSS file were initially written
+        with the expectation that all components of organice are the
+        actual app. That changed when we introduced a <Landing />
+        component that had no semblance with the remainder of the app.
+        Hence we omit setting a class which would inflict bleeding app
+        CSS into the LP. */}
+        <div className={isLandingPage() ? '' : className}>
           <LoadingIndicator message={loadingMessage} />
 
           {activeModalPage === 'changelog' ? (
