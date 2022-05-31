@@ -2,10 +2,6 @@
 
 exports[`<Landing /> renders 1`] = `
 <div>
-  <link
-    href="https://200ok.ch/landing_page/css/styles.css"
-    rel="stylesheet"
-  />
   <div
     id="layoutDefault"
   >
@@ -160,72 +156,68 @@ exports[`<Landing /> renders 1`] = `
                   >
                     organice is the best way to get stuff done
                   </h1>
-                  <div
-                    class="page-header-ui-text mb-5"
+                  <p>
+                    Whether you're planning multiple work projects, sharing a shopping list with your partner or you're planing a holiday, organice is here to help you complete all your personal and professional tasks.
+                  </p>
+                  <p>
+                    organice is Free and Open Source software that works on top of Org mode files.
+                  </p>
+                  <a
+                    class="btn btn-teal fw-500 me-2"
+                    href="/sample"
                   >
-                    <p>
-                      Whether you're planning multiple work projects, sharing a shopping list with your partner or you're planing a holiday, organice is here to help you complete all your personal and professional tasks.
-                    </p>
-                    <p>
-                      organice is Free and Open Source software that works on top of Org mode files.
-                    </p>
-                    <a
-                      class="btn btn-teal fw-500 me-2"
-                      href="/sample"
+                    Live demo
+                    <svg
+                      class="ms-2"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      Live demo
-                      <svg
-                        class="ms-2"
-                        fill="none"
-                        height="24"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <line
-                          x1="5"
-                          x2="19"
-                          y1="12"
-                          y2="12"
-                        />
-                        <polyline
-                          points="12 5 19 12 12 19"
-                        />
-                      </svg>
-                    </a>
-                    <a
-                      class="btn btn-white fw-500 me-2"
-                      href="/sign_in"
+                      <line
+                        x1="5"
+                        x2="19"
+                        y1="12"
+                        y2="12"
+                      />
+                      <polyline
+                        points="12 5 19 12 12 19"
+                      />
+                    </svg>
+                  </a>
+                  <a
+                    class="btn btn-white fw-500 me-2"
+                    href="/sign_in"
+                  >
+                    Sign in
+                    <svg
+                      class="ms-2"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      Sign in
-                      <svg
-                        class="ms-2"
-                        fill="none"
-                        height="24"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <line
-                          x1="5"
-                          x2="19"
-                          y1="12"
-                          y2="12"
-                        />
-                        <polyline
-                          points="12 5 19 12 12 19"
-                        />
-                      </svg>
-                    </a>
-                  </div>
+                      <line
+                        x1="5"
+                        x2="19"
+                        y1="12"
+                        y2="12"
+                      />
+                      <polyline
+                        points="12 5 19 12 12 19"
+                      />
+                    </svg>
+                  </a>
                 </div>
                 <div
                   class="col-lg-6 mt-5 mt-lg-0 d-lg-block text-center"

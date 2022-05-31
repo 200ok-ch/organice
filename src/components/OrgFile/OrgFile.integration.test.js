@@ -40,6 +40,9 @@ describe('Render all views', () => {
   let store;
 
   beforeEach(() => {
+    // Set global variable which can also be read from application code
+    window.testRunner = true;
+
     let capture = Map();
     capture = capture.set('captureTemplates', []);
     store = createStore(
