@@ -26,7 +26,11 @@ function WebDAVForm() {
 
   return (
     <div id="webdavLogin">
-      <h2><a href='#' onClick={toggleVisible} style={{textDecoration: 'none'}}>WebDAV</a></h2>
+      <h2>
+        <a href="#" onClick={toggleVisible} style={{ textDecoration: 'none' }}>
+          WebDAV
+        </a>
+      </h2>
       {isVisible && (
         <>
           <form
@@ -155,7 +159,7 @@ function GitLab() {
 
   return (
     <>
-      <a href='#' onClick={toggleVisible}>
+      <a href="#" onClick={toggleVisible}>
         <img src={GitLabLogo} alt="GitLab logo" />
       </a>
       {isVisible && (
@@ -233,7 +237,7 @@ export default class SyncServiceSignIn extends PureComponent {
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
         <div className="sync-service-container">
-          <a href='#' onClick={this.handleDropboxClick}>
+          <a href="#" onClick={this.handleDropboxClick}>
             <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
           </a>
         </div>
