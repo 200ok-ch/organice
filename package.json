@@ -6,7 +6,10 @@
     "node": "^12.13.1"
   },
   "dependencies": {
+    "@babel/helper-environment-visitor": "^7.18.2",
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
+    "@capacitor/android": "^3.5.1",
+    "@capacitor/core": "^3.5.1",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",
@@ -44,6 +47,7 @@
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
+    "@capacitor/cli": "^3.5.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
     "babel-eslint": "^10.1.0",
@@ -52,8 +56,8 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-redux": "^3.3.0",
-    "prettier-eslint": "^11.0.0",
     "prettier": "^2.0.5",
+    "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.1",
     "raw.macro": "0.4.2",
     "react-test-renderer": "^17.0.1"

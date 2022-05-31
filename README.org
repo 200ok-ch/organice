@@ -447,19 +447,19 @@ you can manually generate it with:
 ./bin/compile_search_parser.sh
 #+END_SRC
 
-** Testing
+** User Acceptance Testing
 
 When you're developing a new feature and you want to manually test it,
 it's best to check it out in a Desktop browser and on your smartphone.
 This is how you do that:
 
-*** Desktop
+*** PWA on Desktop
 
 Run the application with =yarn start= which will open organice in your
 configured default browser. Alternatively, visit
 =http://localhost:3000= in the browser of your choice.
 
-*** Smartphone
+*** PWA on Smartphone
 
 There are multiple options on how you can connect from your smartphone
 to your computer running organice.
@@ -542,6 +542,43 @@ the popular [[https://nvie.com/posts/a-successful-git-branching-model/][nvie git
 feature branches against =develop= until the epic is finished. On
 merging a pull request to =develop=, code and documentation are
 automatically deployed to stage.
+
+*** Native app on Android
+
+- Install [[https://developer.android.com/studio#downloads][Android Studio]]
+- Follow the [[https://capacitorjs.com/docs/getting-started/environment-setup#android-sdk][Capacitor Guide to setup an Android SDK]]
+
+#+begin_quote
+/:warning:/ Make sure to install the required subpackages. Activate
+"Show Package Details" to reveal hidden subpackages.
+
+At time of writing "Android API 32" does not automatically install the
+subpackages "Google APIs Intel x86 Atom_64 System Image" and "Google
+Play Intel x86 Atom_64 System Image", which are both required to run
+the Emulator on an Intel based machine.
+
+https://raw.githubusercontent.com/200ok-ch/organice/master/images/api_32.png
+#+end_quote
+
+- Create a device in Android Studio by running any app
+
+#+begin_quote
+/:monocle_face:/ Theoretically this should not be nescessary, as
+Capacitor should be able to create a device to deploy the app to on
+the fly. But this didn't work for me. After the device had be run once
+by Android Studio, Capacitor was able to start it on its own.
+#+end_quote
+
+- Shut down Android Studio and any running Emulator
+- Before run oragnice as a native app you need to =yarn build= it.
+- Run organice in the Emulater with =npx cap run android=
+
+*** TODO Native app on iOS
+
+#+begin_quote
+/:sparkles:/ This is brand new section that wants to be written.
+Please check out how to [[contrib][contribute]] to organice.
+#+end_quote
 
 ** Contributions
 
