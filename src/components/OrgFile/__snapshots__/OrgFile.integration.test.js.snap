@@ -559,52 +559,6 @@ exports[`Render all views Org Functionality Renders everything starting from an 
 exports[`Render all views Org Functionality Renders everything starting from an Org file renders an Org file 1`] = `
 <div>
   <div
-    class="header-bar"
-  >
-    <a
-      class="header-bar__back-button"
-      href="/files/dir1/dir2"
-    >
-      <i
-        class="fas fa-chevron-left"
-      />
-      <span
-        class="header-bar__back-button__directory-path"
-      >
-        File browser
-      </span>
-    </a>
-    <div
-      class="header-bar__title"
-    />
-    <div
-      class="header-bar__actions"
-    >
-      <i
-        class="fas fa-undo header-bar__actions__item header-bar__actions__item--disabled"
-        title="Undo"
-      />
-      <i
-        class="fas fa-redo header-bar__actions__item header-bar__actions__item--disabled"
-        title="Redo"
-      />
-      <i
-        class="fas fa-question-circle header-bar__actions__item"
-        title="Help"
-      />
-      <div>
-        <a
-          href="/settings"
-        >
-          <i
-            class="fas fa-cogs header-bar__actions__item"
-            title="Settings"
-          />
-        </a>
-      </div>
-    </div>
-  </div>
-  <div
     class="org-file-container"
     tabindex="-1"
   >

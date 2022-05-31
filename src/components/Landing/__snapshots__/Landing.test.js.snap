@@ -2,76 +2,841 @@
 
 exports[`<Landing /> renders 1`] = `
 <div>
-  <main
-    class="landing-container-wrapper"
+  <link
+    href="https://200ok.ch/landing_page/css/styles.css"
+    rel="stylesheet"
+  />
+  <div
+    id="layoutDefault"
   >
     <div
-      class="landing-container"
+      id="layoutDefault_content"
     >
-      <h1
-        class="landing-app-name"
-      >
-        organice
-      </h1>
-      <img
-        alt="Logo"
-        class="landing-logo"
-        src="organice.svg"
-      />
-      <h2
-        class="landing-tagline"
-      >
-        organice organizes Org files nicely!
-      </h2>
-      <h2
-        class="landing-tagline"
-      >
-        Syncs with Dropbox,
-        <br />
-         Google Drive and WebDAV.
-      </h2>
-      <p
-        class="landing-description"
-      >
-        organice allows you to view and edit Org files from cloud storage directly on your device! No Org file or other user-data will be stored on our servers; the entire app is browser-based.
-      </p>
-      <a
-        href="/sign_in"
-      >
-        <div
-          class="btn landing-button"
+      <main>
+        <nav
+          class="navbar navbar-marketing navbar-expand-lg bg-transparent navbar-dark fixed-top navbar-scrolled"
         >
-          Sign in
-        </div>
-      </a>
-      <a
-        href="/sample"
-      >
-        <div
-          class="btn landing-button doc-button"
+          <div
+            class="container px-5"
+          >
+            <img
+              alt=""
+              src="https://200ok.ch/landing_page/img/organice/organice-512x512.png"
+              style="height: 4rem;"
+            />
+            <button
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              class="navbar-toggler"
+              data-bs-target="#navbarSupportedContent"
+              data-bs-toggle="collapse"
+              type="button"
+            >
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line
+                  x1="3"
+                  x2="21"
+                  y1="12"
+                  y2="12"
+                />
+                <line
+                  x1="3"
+                  x2="21"
+                  y1="6"
+                  y2="6"
+                />
+                <line
+                  x1="3"
+                  x2="21"
+                  y1="18"
+                  y2="18"
+                />
+              </svg>
+            </button>
+            <div
+              class="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
+              <ul
+                class="navbar-nav ms-auto me-lg-5"
+              >
+                <li
+                  class="nav-item"
+                >
+                  <a
+                    class="nav-link navbar-brand"
+                    href="https:github.com/sponsors/200ok-ch"
+                    rel="noreferrer noopener"
+                    target="_blank"
+                  >
+                    Pricing
+                  </a>
+                </li>
+                <li
+                  class="nav-item"
+                >
+                  <a
+                    class="nav-link navbar-brand"
+                    href="https:github.com/200ok-ch/organice"
+                    rel="noreferrer noopener"
+                    target="_blank"
+                  >
+                    Code
+                  </a>
+                </li>
+                <li
+                  class="nav-item"
+                >
+                  <a
+                    class="nav-link navbar-brand"
+                    href="https:organice.200ok.ch/documentation.html"
+                    rel="noreferrer noopener"
+                    target="_blank"
+                  >
+                    Documentation
+                  </a>
+                </li>
+              </ul>
+              <a
+                class="btn fw-500 ms-lg-4 btn-teal"
+                href="/sign_in"
+              >
+                Sign in
+                <svg
+                  class="ms-2"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <line
+                    x1="5"
+                    x2="19"
+                    y1="12"
+                    y2="12"
+                  />
+                  <polyline
+                    points="12 5 19 12 12 19"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </nav>
+        <header
+          class="page-header-ui page-header-ui-dark bg-gradient-primary-to-secondary"
         >
-          View sample
-        </div>
-      </a>
-      <a
-        href="https://organice.200ok.ch/documentation.html"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+          <div
+            class="page-header-ui-content pt-10"
+          >
+            <div
+              class="container px-5"
+            >
+              <div
+                class="row gx-5 align-items-center"
+              >
+                <div
+                  class="col-lg-6"
+                  data-aos="fade-up"
+                >
+                  <h1
+                    class="page-header-ui-title"
+                  >
+                    organice is the best way to get stuff done
+                  </h1>
+                  <div
+                    class="page-header-ui-text mb-5"
+                  >
+                    <p>
+                      Whether you're planning multiple work projects, sharing a shopping list with your partner or you're planing a holiday, organice is here to help you complete all your personal and professional tasks.
+                    </p>
+                    <p>
+                      organice is Free and Open Source software that works on top of Org mode files.
+                    </p>
+                    <a
+                      class="btn btn-teal fw-500 me-2"
+                      href="/sample"
+                    >
+                      Live demo
+                      <svg
+                        class="ms-2"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <line
+                          x1="5"
+                          x2="19"
+                          y1="12"
+                          y2="12"
+                        />
+                        <polyline
+                          points="12 5 19 12 12 19"
+                        />
+                      </svg>
+                    </a>
+                    <a
+                      class="btn btn-white fw-500 me-2"
+                      href="/sign_in"
+                    >
+                      Sign in
+                      <svg
+                        class="ms-2"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <line
+                          x1="5"
+                          x2="19"
+                          y1="12"
+                          y2="12"
+                        />
+                        <polyline
+                          points="12 5 19 12 12 19"
+                        />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-6 mt-5 mt-lg-0 d-lg-block text-center"
+                  data-aos="fade-up"
+                  data-aos-delay="1000"
+                >
+                  <img
+                    alt=""
+                    class="img-fluid main-image"
+                    src="https://200ok.ch/landing_page/img/organice/screenshot-overview.png"
+                    style="filter: drop-shadow(0.5em 0.5em 0.5em #444);"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="svg-border-rounded text-white"
+            >
+              <svg
+                fill="currentColor"
+                preserveAspectRatio="none"
+                viewBox="0 0 144.54 17.34"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M144.54,17.34H0V0H144.54ZM0,0S32.36,17.34,72.27,17.34,144.54,0,144.54,0"
+                />
+              </svg>
+            </div>
+          </div>
+        </header>
         <div
-          class="btn landing-button doc-button"
+          class="row"
         >
-          Documentation
+          <section
+            class="bg-white py-10"
+          >
+            <div
+              class="container px-5"
+            >
+              <div
+                class="row gx-5 text-center"
+              >
+                <div
+                  class="col-lg-4 mb-5 mb-lg-0"
+                >
+                  <div
+                    class="icon-stack icon-stack-xl bg-gradient-primary-to-secondary text-white mb-4"
+                  >
+                    <svg
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <polyline
+                        points="9 11 12 14 22 4"
+                      />
+                      <path
+                        d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                      />
+                    </svg>
+                  </div>
+                  <h3>
+                    Plan for anything
+                  </h3>
+                  <p
+                    class="mb-0"
+                  >
+                    Organize and share your to-do, work, grocery, movies and household lists. No matter what you’re planning, how big or small the task may be, organice makes it super easy to get stuff done.
+                  </p>
+                </div>
+                <div
+                  class="col-lg-4 mb-5 mb-lg-0"
+                >
+                  <div
+                    class="icon-stack icon-stack-xl bg-gradient-primary-to-secondary text-white mb-4"
+                  >
+                    <svg
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        height="18"
+                        rx="2"
+                        ry="2"
+                        width="18"
+                        x="3"
+                        y="4"
+                      />
+                      <line
+                        x1="16"
+                        x2="16"
+                        y1="2"
+                        y2="6"
+                      />
+                      <line
+                        x1="8"
+                        x2="8"
+                        y1="2"
+                        y2="6"
+                      />
+                      <line
+                        x1="3"
+                        x2="21"
+                        y1="10"
+                        y2="10"
+                      />
+                    </svg>
+                  </div>
+                  <h3>
+                    See your agenda anytime
+                  </h3>
+                  <p
+                    class="mb-0"
+                  >
+                    Set schedules and deadlines on to-dos. No matter whether your tasks are work related or just for fun, you will never miss a deadline again with organice in charge.
+                  </p>
+                </div>
+                <div
+                  class="col-lg-4 mb-5 mb-lg-0"
+                >
+                  <div
+                    class="icon-stack icon-stack-xl bg-gradient-primary-to-secondary text-white mb-4"
+                  >
+                    <svg
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                      />
+                      <line
+                        x1="1"
+                        x2="23"
+                        y1="1"
+                        y2="23"
+                      />
+                    </svg>
+                  </div>
+                  <h3>
+                    Privacy and freedom first
+                  </h3>
+                  <p
+                    class="mb-0"
+                  >
+                    organice is Free and Open Source software protecting your freedom to run, copy, distribute, study, change and improve the software. Your most important data should never be in a closed silo.
+                    <br />
+                    <br />
+                    We also never see your data - only you and your personal storage provider does. organice saves your files in the free format Org mode, so you can always access it with any tool at any time!
+                  </p>
+                </div>
+              </div>
+              <div
+                class="row pt-10 d-flex flex-wrap align-items-center"
+                id="icons"
+              >
+                <h1
+                  class="text-center mb-5"
+                >
+                  Access from anywhere
+                </h1>
+                <strong
+                  class="text-center mb-5"
+                >
+                  Available on iPhone, Android, and the Web, organice works seamlessly across all major devices.
+                </strong>
+                <div
+                  class="col-md-4"
+                >
+                  <i
+                    class="fas fa-mobile-alt"
+                  />
+                </div>
+                <div
+                  class="col-md-4"
+                >
+                  <i
+                    class="fab fa-android"
+                  />
+                </div>
+                <div
+                  class="col-md-4"
+                >
+                  <i
+                    class="fab fa-firefox-browser"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="svg-border-rounded text-light"
+            >
+              <svg
+                fill="currentColor"
+                preserveAspectRatio="none"
+                viewBox="0 0 144.54 17.34"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M144.54,17.34H0V0H144.54ZM0,0S32.36,17.34,72.27,17.34,144.54,0,144.54,0"
+                />
+              </svg>
+            </div>
+          </section>
+          <section
+            class="bg-light py-10"
+          >
+            <div
+              class="container px-5"
+            >
+              <div
+                class="row gx-5 align-items-center justify-content-center"
+              >
+                <div
+                  class="col-md-9 col-lg-6 order-1 order-lg-0"
+                  data-aos="fade-right"
+                >
+                  <div
+                    class="content-skewed content-skewed-right"
+                  >
+                    <img
+                      alt="Sample organice document"
+                      class="content-skewed-item img-fluid shadow-lg rounded-3"
+                      src="https://200ok.ch/landing_page/img/organice/screenshot-wide.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="col-lg-6 order-0 order-lg-1 mb-5 mb-lg-0"
+                  data-aos="fade-left"
+                >
+                  <div
+                    class="mb-5"
+                  >
+                    <h2>
+                      Remember all the things
+                    </h2>
+                    <p
+                      class="lead"
+                    >
+                      Succeed with every project
+                    </p>
+                  </div>
+                  <div
+                    class="row gx-5"
+                  >
+                    <div
+                      class="col-md-6 mb-4"
+                    >
+                      <h6>
+                        Work anywhere
+                      </h6>
+                      <p
+                        class="mb-2 small mb-0"
+                      >
+                        organice works on all major platforms, so you can access your information wherever you are.
+                      </p>
+                    </div>
+                    <div
+                      class="col-md-6 mb-4"
+                    >
+                      <h6>
+                        Find your content quickly
+                      </h6>
+                      <p
+                        class="mb-2 small mb-0"
+                      >
+                        Thanks to a flexible query language and a bookmarking system, you can find your important content quickly and reliably.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <hr
+            class="m-0"
+          />
+          <section
+            class="bg-dark py-10"
+          >
+            <div
+              class="container px-5"
+            >
+              <div
+                class="row gx-5 my-10"
+              >
+                <div
+                  class="col-lg-6 mb-5"
+                >
+                  <div
+                    class="d-flex h-100"
+                  >
+                    <div
+                      class="icon-stack flex-shrink-0 bg-teal text-white"
+                    >
+                      <i
+                        class="fas fa-question"
+                      />
+                    </div>
+                    <div
+                      class="ms-4"
+                    >
+                      <h5
+                        class="text-white"
+                      >
+                        Intro video
+                      </h5>
+                      <p
+                        class="text-white-50"
+                      >
+                        If you are interested into the 'why did we get started with organice', we have got you covered. For
+                         
+                        <a
+                          href="https://emacsconf.org/2019/"
+                          rel="noreferrer noopener"
+                          target="_blank"
+                        >
+                           
+                          EmacsConf 2019
+                        </a>
+                        , we have created a 10 minute introductory video into the rationale and usability of organice.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-6 mb-5"
+                >
+                  <div
+                    class="d-flex h-100"
+                  >
+                    <div
+                      class="ms-4"
+                    >
+                      <p
+                        class="text-white-50"
+                      >
+                        <iframe
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowfullscreen=""
+                          frameborder="0"
+                          height="315"
+                          src="https://www.youtube.com/embed/aQKc0hcFXCk"
+                          title="YouTube video player"
+                          width="560"
+                        />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row gx-5 justify-content-center text-center"
+              >
+                <div
+                  class="col-lg-8"
+                >
+                  <div
+                    class="badge bg-transparent-light rounded-pill badge-marketing mb-4"
+                  />
+                  <h2
+                    class="text-white"
+                  >
+                    Get started
+                  </h2>
+                  <div
+                    class="lead text-white-50 mb-5"
+                  >
+                    <p>
+                      organice is
+                       
+                      <a
+                        href="https://www.gnu.org/philosophy/free-sw.en.html"
+                        rel="noreferrer noopener"
+                        target="_blank"
+                      >
+                        free software
+                      </a>
+                       
+                      and will stay this way. Leave the closed silos behind and let your knowledge roam free. Start with the live demo - you don't even need to sign up. Check it out first and sign up later.
+                    </p>
+                  </div>
+                  <a
+                    class="btn btn-teal fw-500"
+                    href="https://organice.200ok.ch/sample"
+                  >
+                    Live demo
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div
+              class="svg-border-rounded text-white"
+            >
+              <svg
+                fill="currentColor"
+                preserveAspectRatio="none"
+                viewBox="0 0 144.54 17.34"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M144.54,17.34H0V0H144.54ZM0,0S32.36,17.34,72.27,17.34,144.54,0,144.54,0"
+                />
+              </svg>
+            </div>
+          </section>
+          <section
+            class="bg-light py-10"
+          >
+            <div
+              class="container px-5 mt-5"
+            >
+              <div
+                class="row gx-5 align-items-center"
+              >
+                <div
+                  class="col-lg-6"
+                >
+                  <h4>
+                    Do you have further questions?
+                  </h4>
+                  <p
+                    class="lead mb-5 mb-lg-0 text-gray-500"
+                  >
+                    Join the inclusive and friendly community chat, and let's have a talk.
+                  </p>
+                </div>
+                <div
+                  class="col-lg-6 text-lg-end"
+                >
+                  <a
+                    class="btn btn-primary fw-500 me-3 my-2"
+                    href="https://matrix.to/#/#organice:matrix.org"
+                  >
+                    Matrix
+                  </a>
+                  <a
+                    class="btn btn-white fw-500 my-2 shadow"
+                    href="https://web.libera.chat/"
+                  >
+                    IRC (#organice)
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <hr
+            class="m-0"
+          />
         </div>
-      </a>
+      </main>
     </div>
-    <footer>
-      <a
-        href="/privacy-policy"
+    <div
+      id="layoutDefault_footer"
+    >
+      <footer
+        class="footer pt-10 pb-5 mt-auto bg-light footer-light"
       >
-        Privacy Policy
-      </a>
-    </footer>
-  </main>
+        <div
+          class="container px-5"
+        >
+          <div
+            class="row gx-5"
+          >
+            <div
+              class="col-lg-3"
+            >
+              <div
+                class="footer-brand"
+              >
+                200ok GmbH
+              </div>
+              <div
+                class="mb-3"
+              >
+                Glarus, Switzerland
+              </div>
+              <div>
+                <a
+                  href="tel:+41764050567"
+                >
+                  <i
+                    class="fas fa-phone-square"
+                  />
+                   +41 76 405 05 67
+                </a>
+              </div>
+              <div>
+                <a
+                  href="mailto:info@200ok.ch"
+                >
+                  <i
+                    class="fas fa-envelope-square"
+                  />
+                   info@200ok.ch
+                </a>
+              </div>
+            </div>
+            <div
+              class="col-lg-9"
+            >
+              <div
+                class="row gx-5"
+              >
+                <div
+                  class="col-lg-6"
+                >
+                  <div
+                    class="footer-brand"
+                  >
+                     
+                  </div>
+                  <div
+                    class="mb-3"
+                  >
+                    Follow us on Social Media
+                  </div>
+                  <div
+                    class="icon-list-social mb-5"
+                  >
+                    <a
+                      class="icon-list-social-link"
+                      href="https://200ok.ch/atom.xml"
+                      rel="noreferrer noopener"
+                      target="_blank"
+                    >
+                      <i
+                        class="fas fa-rss-square"
+                      />
+                    </a>
+                    <a
+                      class="icon-list-social-link"
+                      href="https://github.com/200ok-ch/"
+                      rel="noreferrer noopener"
+                      target="_blank"
+                    >
+                      <i
+                        class="fab fa-github"
+                      />
+                    </a>
+                    <a
+                      class="icon-list-social-link"
+                      href="https://www.linkedin.com/in/alafon/"
+                      rel="noreferrer noopener"
+                      target="_blank"
+                    >
+                      <i
+                        class="fab fa-linkedin"
+                      />
+                    </a>
+                    <a
+                      class="icon-list-social-link"
+                      href="https://twitter.com/munen_200ok"
+                      rel="noreferrer noopener"
+                      target="_blank"
+                    >
+                      <i
+                        class="fab fa-twitter"
+                      />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr
+            class="my-5"
+          />
+          <div
+            class="row gx-5 align-items-center"
+          >
+            <div
+              class="col-md-6 small"
+            >
+              Copyright © 200ok GmbH 2022
+            </div>
+            <div
+              class="col-md-6 text-md-end small"
+            >
+              <a
+                href="/privacy-policy"
+              >
+                Privacy Policy
+              </a>
+              ·
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
 </div>
 `;
