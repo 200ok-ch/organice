@@ -39,7 +39,6 @@
 
 .sync-service-container {
   border-bottom: 1px solid var(--base01);
-  cursor: pointer;
 
   padding: 20px 10px;
   text-align: center;
