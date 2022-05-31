@@ -524,7 +524,7 @@ by Android Studio, Capacitor was able to start it on its own.
 #+end_quote
 
 - Shut down Android Studio and any running Emulator
-- Before run oragnice as a native app you need to =yarn build= it.
+- Before run organice as a native app you need to =yarn build= it
 - Run organice in the Emulater with =npx cap run android=
 
 *** TODO Native app on iOS
