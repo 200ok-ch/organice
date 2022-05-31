@@ -7,6 +7,5 @@ export const formatTextWrap = (text, w) => {
 
 export const isLandingPage = () => {
   const history = createBrowserHistory();
-  console.log('Pathname: ' + history.location.pathname);
   return history.location.pathname === '/';
 };

@@ -1,40 +1,74 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// import './vendor_css/template.css';
 import './stylesheet.css';
-import logo from '../../images/organice.svg';
-import ExternalLink from '../UI/ExternalLink';
+
+// import AOS from 'aos';
+// import 'aos/dist/aos.css';
+
+// import logo from '../../images/organice.svg';
+// import ExternalLink from '../UI/ExternalLink';
+
+import { useEffect } from 'react';
+
+import { Menu, ArrowRight, CheckSquare, EyeOff, Calendar } from 'react-feather';
 
 export default () => {
+  // FIXME: AOS does not animate/show the screenshot section in the
+  // middle. It works for the hero. On https://200ok.ch/organice.html
+  // it works for all elements weirdly enough.
+
+  // useEffect(() => {
+  //   AOS.init({
+  //     disable: 'mobile',
+  //     duration: 1000,
+  //     once: true,
+  //   });
+  // }, []);
+
+  // Working around the fact that the original LP was designed with
+  // stateful libraries in mind.
+  useEffect(() => {
+    // const link = document.createElement('link');
+    // link.href = 'https://200ok.ch/landing_page/css/styles.css';
+    // link.rel = 'stylesheet';
+    // document.head.appendChild(link);
+
+    const files = [
+      'font_awesome_all.min.js',
+      // TODO: Reprogram false_bottom the React way
+      // 'false_bottom.js',
+      // XXX: Some parts of scripts.js are implemented the React way
+      // (Feather), others are worked around (navbar is always black),
+      // the remainder is not implemented atm.
+      // 'bootstrap.bundle.min.js',
+      // 'scripts.js',
+    ];
+
+    for (const file of files) {
+      const script = document.createElement('script');
+      // Do not download/eval asynchronously
+      script.async = false;
+      script.src = `https://200ok.ch/landing_page/js/${file}`;
+      document.head.appendChild(script);
+    }
+
+    // HACK: scripts.js waits for this event. Since we're already in a
+    // `useEffect` handler, this event has been fired long ago.
+    // setTimeout(function () {
+    //   window.dispatchEvent(new Event('DOMContentLoaded'));
+    // }, 500);
+  }, []);
+
   return (
     <>
       <link href="https://200ok.ch/landing_page/css/styles.css" rel="stylesheet" />
-      <link rel="stylesheet" href="landing_page/css/aos.css" />
-      <link
-        rel="icon"
-        type="image/x-icon"
-        href="https://200ok.ch/landing_page/img/organice/favicon.ico"
-      />
-      <script
-        data-search-pseudo-elements
-        defer
-        src="https://200ok.ch/landing_page/js/font_awesome_all.min.js"
-        crossOrigin="anonymous"
-      ></script>
-      <script src="https://200ok.ch//js/vendor/jquery.min.js"></script>
-      <script src="https://200ok.ch/landing_page/js/false_bottom.js"></script>
-      <script
-        src="https://200ok.ch/landing_page/js/feather_icons.min.js"
-        crossOrigin="anonymous"
-      ></script>
-
-      <div></div>
-
       <div id="layoutDefault">
         <div id="layoutDefault_content">
           <main>
             {/* Navbar */}
-            <nav className="navbar navbar-marketing navbar-expand-lg bg-transparent navbar-dark fixed-top">
+            <nav className="navbar navbar-marketing navbar-expand-lg bg-transparent navbar-dark fixed-top navbar-scrolled">
               <div className="container px-5">
                 <a className="navbar-brand text-white" href="#">
                   <img
@@ -51,16 +85,10 @@ export default () => {
                   aria-expanded="false"
                   aria-label="Toggle navigation"
                 >
-                  <i data-feather="menu"></i>
+                  <Menu />
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul className="navbar-nav ms-auto me-lg-5">
-                    <li className="nav-item">
-                      <a className="nav-link navbar-brand" href="/">
-                        Home
-                      </a>
-                    </li>
-
                     <li className="nav-item">
                       <a
                         target="_blank"
@@ -94,9 +122,10 @@ export default () => {
                       </a>
                     </li>
                   </ul>
-                  <a className="btn fw-500 ms-lg-4 btn-teal" href="https:organice.200ok.ch/sign_in">
+                  <a className="btn fw-500 ms-lg-4 btn-teal" href="/sign_in">
                     Sign in
-                    <i className="ms-2" data-feather="arrow-right"></i>
+                    {/* <i className="ms-2" data-feather="arrow-right"></i> */}
+                    <ArrowRight className="ms-2" />
                   </a>
                 </div>
               </div>
@@ -110,7 +139,7 @@ export default () => {
                       <h1 className="page-header-ui-title">
                         organice is the best way to get stuff done
                       </h1>
-                      <p className="page-header-ui-text mb-5">
+                      <div className="page-header-ui-text mb-5">
                         <p>
                           Whether you're planning multiple work projects, sharing a shopping list
                           with your partner or you're planing a holiday, organice is here to help
@@ -121,34 +150,30 @@ export default () => {
                           files.
                         </p>
 
-                        <a
-                          className="btn btn-teal fw-500 me-2"
-                          href="https://organice.200ok.ch/sample"
-                        >
+                        <a className="btn btn-teal fw-500 me-2" href="/sample">
                           Live demo
-                          <i className="ms-2" data-feather="arrow-right"></i>
+                          {/* <i className="ms-2" data-feather="arrow-right"></i> */}
+                          <ArrowRight className="ms-2" />
                         </a>
 
-                        <a
-                          className="btn btn-white fw-500 me-2"
-                          href="https://organice.200ok.ch/sign_in"
-                        >
+                        <a className="btn btn-white fw-500 me-2" href="/sign_in">
                           Sign In
-                          <i className="ms-2" data-feather="arrow-right"></i>
+                          {/* <i className="ms-2" data-feather="arrow-right"></i> */}
+                          <ArrowRight className="ms-2" />
                         </a>
-                      </p>
-                      <div
-                        className="col-lg-6 mt-5 mt-lg-0 d-lg-block text-center"
-                        data-aos="fade-up"
-                        data-aos-delay="100"
-                      >
-                        <img
-                          className="img-fluid main-image"
-                          alt=""
-                          src="landing_page/img/organice/screenshot-overview.png"
-                          style={{ filter: 'drop-shadow(0.5em 0.5em 0.5em #444)' }}
-                        />
                       </div>
+                    </div>
+                    <div
+                      className="col-lg-6 mt-5 mt-lg-0 d-lg-block text-center"
+                      data-aos="fade-up"
+                      data-aos-delay="1000"
+                    >
+                      <img
+                        className="img-fluid main-image"
+                        alt=""
+                        src="https://200ok.ch/landing_page/img/organice/screenshot-overview.png"
+                        style={{ filter: 'drop-shadow(0.5em 0.5em 0.5em #444)' }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -166,17 +191,19 @@ export default () => {
             </header>
 
             <div className="row">
-              <div id="false-bottom-preventor" className="fixed-bottom text-end">
-                <p>
-                  Learn more <i className="fas fa-arrow-circle-down"></i>
-                </p>
-              </div>
+              {/* TODO: Reprogram false_bottom the React way */}
+              {/* <div id="false-bottom-preventor" className="fixed-bottom text-end"> */}
+              {/*   <p> */}
+              {/*     Learn more <i className="fas fa-arrow-circle-down"></i> */}
+              {/*   </p> */}
+              {/* </div> */}
               <section className="bg-white py-10">
                 <div className="container px-5">
                   <div className="row gx-5 text-center">
                     <div className="col-lg-4 mb-5 mb-lg-0">
                       <div className="icon-stack icon-stack-xl bg-gradient-primary-to-secondary text-white mb-4">
-                        <i data-feather="check-square"></i>
+                        {/* <i data-feather="check-square"></i> */}
+                        <CheckSquare />
                       </div>
                       <h3>Plan for anything</h3>
                       <p className="mb-0">
@@ -188,7 +215,8 @@ export default () => {
 
                     <div className="col-lg-4 mb-5 mb-lg-0">
                       <div className="icon-stack icon-stack-xl bg-gradient-primary-to-secondary text-white mb-4">
-                        <i data-feather="calendar"></i>
+                        {/* <i data-feather="calendar"></i> */}
+                        <Calendar />
                       </div>
                       <h3>See your agenda anytime</h3>
                       <p className="mb-0">
@@ -200,7 +228,8 @@ export default () => {
 
                     <div className="col-lg-4 mb-5 mb-lg-0">
                       <div className="icon-stack icon-stack-xl bg-gradient-primary-to-secondary text-white mb-4">
-                        <i data-feather="eye-off"></i>
+                        {/* <i data-feather="eye-off"></i> */}
+                        <EyeOff />
                       </div>
                       <h3>Privacy and freedom first</h3>
                       <p className="mb-0">
@@ -256,7 +285,7 @@ export default () => {
                       <div className="content-skewed content-skewed-right">
                         <img
                           className="content-skewed-item img-fluid shadow-lg rounded-3"
-                          src="landing_page/img/organice/screenshot-wide.png"
+                          src="https://200ok.ch/landing_page/img/organice/screenshot-wide.png"
                           alt="Sample organice document"
                         />
                       </div>
@@ -340,7 +369,7 @@ export default () => {
                     <div className="col-lg-8">
                       <div className="badge bg-transparent-light rounded-pill badge-marketing mb-4"></div>
                       <h2 className="text-white">Get started</h2>
-                      <p className="lead text-white-50 mb-5">
+                      <div className="lead text-white-50 mb-5">
                         <p>
                           organice is{' '}
                           <a
@@ -354,7 +383,7 @@ export default () => {
                           knowledge roam free. Start with the live demo - you don't even need to
                           sign up. Check it out first and sign up later.
                         </p>
-                      </p>
+                      </div>
 
                       <a className="btn btn-teal fw-500" href="https://organice.200ok.ch/sample">
                         Live demo
@@ -433,28 +462,32 @@ export default () => {
                         <a
                           className="icon-list-social-link"
                           target="_blank"
-                          href="https://200ok.ch/atom.xml" rel="noreferrer"
+                          href="https://200ok.ch/atom.xml"
+                          rel="noreferrer"
                         >
                           <i className="fas fa-rss-square"></i>
                         </a>
                         <a
                           className="icon-list-social-link"
                           target="_blank"
-                          href="https://github.com/200ok-ch/" rel="noreferrer"
+                          href="https://github.com/200ok-ch/"
+                          rel="noreferrer"
                         >
                           <i className="fab fa-github"></i>
                         </a>
                         <a
                           className="icon-list-social-link"
                           target="_blank"
-                          href="https://www.linkedin.com/in/alafon/" rel="noreferrer"
+                          href="https://www.linkedin.com/in/alafon/"
+                          rel="noreferrer"
                         >
                           <i className="fab fa-linkedin"></i>
                         </a>
                         <a
                           className="icon-list-social-link"
                           target="_blank"
-                          href="https://twitter.com/munen_200ok" rel="noreferrer"
+                          href="https://twitter.com/munen_200ok"
+                          rel="noreferrer"
                         >
                           <i className="fab fa-twitter"></i>
                         </a>
@@ -467,9 +500,11 @@ export default () => {
               <div className="row gx-5 align-items-center">
                 <div className="col-md-6 small">Copyright &copy; 200ok GmbH 2022</div>
                 <div className="col-md-6 text-md-end small">
-                  <a href="/privacy-policy.html">Privacy Policy</a>
+                  {/* TODO: Privacy Policy could have the same design as LP */}
+                  <Link to="/privacy-policy">Privacy Policy</Link>
                   &middot;
-                  <a href="/terms-of-service.html">Terms &amp; Conditions</a>
+                  {/* TODO: Create a TOS */}
+                  {/* <a href="/terms-of-service.html">Terms &amp; Conditions</a> */}
                 </div>
               </div>
             </div>
