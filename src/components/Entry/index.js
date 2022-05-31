@@ -167,7 +167,7 @@ class Entry extends PureComponent {
     return (
       <>
         <HeaderBar />
-        <div className={className}>
+        <div className={isLandingPage() ? '' : className}>
           <LoadingIndicator message={loadingMessage} />
 
           {activeModalPage === 'changelog' ? (

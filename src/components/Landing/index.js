@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// import './vendor_css/template.css';
+import './vendor_css/template.css';
 import './stylesheet.css';
 
 // import AOS from 'aos';
@@ -30,11 +30,6 @@ export default () => {
   // Working around the fact that the original LP was designed with
   // stateful libraries in mind.
   useEffect(() => {
-    // const link = document.createElement('link');
-    // link.href = 'https://200ok.ch/landing_page/css/styles.css';
-    // link.rel = 'stylesheet';
-    // document.head.appendChild(link);
-
     const files = [
       'font_awesome_all.min.js',
       // TODO: Reprogram false_bottom the React way
@@ -63,7 +58,6 @@ export default () => {
 
   return (
     <>
-      <link href="https://200ok.ch/landing_page/css/styles.css" rel="stylesheet" />
       <div id="layoutDefault">
         <div id="layoutDefault_content">
           <main>
@@ -138,29 +132,27 @@ export default () => {
                       <h1 className="page-header-ui-title">
                         organice is the best way to get stuff done
                       </h1>
-                      <div className="page-header-ui-text mb-5">
-                        <p>
-                          Whether you're planning multiple work projects, sharing a shopping list
-                          with your partner or you're planing a holiday, organice is here to help
-                          you complete all your personal and professional tasks.
-                        </p>
-                        <p>
-                          organice is Free and Open Source software that works on top of Org mode
-                          files.
-                        </p>
+                      <p>
+                        Whether you're planning multiple work projects, sharing a shopping list with
+                        your partner or you're planing a holiday, organice is here to help you
+                        complete all your personal and professional tasks.
+                      </p>
+                      <p>
+                        organice is Free and Open Source software that works on top of Org mode
+                        files.
+                      </p>
 
-                        <a className="btn btn-teal fw-500 me-2" href="/sample">
-                          Live demo
-                          {/* <i className="ms-2" data-feather="arrow-right"></i> */}
-                          <ArrowRight className="ms-2" />
-                        </a>
+                      <a className="btn btn-teal fw-500 me-2" href="/sample">
+                        Live demo
+                        {/* <i className="ms-2" data-feather="arrow-right"></i> */}
+                        <ArrowRight className="ms-2" />
+                      </a>
 
-                        <a className="btn btn-white fw-500 me-2" href="/sign_in">
-                          Sign In
-                          {/* <i className="ms-2" data-feather="arrow-right"></i> */}
-                          <ArrowRight className="ms-2" />
-                        </a>
-                      </div>
+                      <a className="btn btn-white fw-500 me-2" href="/sign_in">
+                        Sign in
+                        {/* <i className="ms-2" data-feather="arrow-right"></i> */}
+                        <ArrowRight className="ms-2" />
+                      </a>
                     </div>
                     <div
                       className="col-lg-6 mt-5 mt-lg-0 d-lg-block text-center"
