@@ -497,6 +497,43 @@ ssh -L 3000:localhost:3000 user-dev-machine
 If you don't have a shell on your phone, you can use a dedicated SSH
 application (like [[https://www.termius.com/][Terminus]]).
 
+*** Native app on Android
+
+- Install [[https://developer.android.com/studio#downloads][Android Studio]]
+- Follow the [[https://capacitorjs.com/docs/getting-started/environment-setup#android-sdk][Capacitor Guide to setup an Android SDK]]
+
+#+begin_quote
+/:warning:/ Make sure to install the required subpackages. Activate
+"Show Package Details" to reveal hidden subpackages.
+
+At time of writing "Android API 32" does not automatically install the
+subpackages "Google APIs Intel x86 Atom_64 System Image" and "Google
+Play Intel x86 Atom_64 System Image", which are both required to run
+the Emulator on an Intel based machine.
+
+[[https://raw.githubusercontent.com/200ok-ch/organice/master/images/api_32.png]]
+#+end_quote
+
+- Create a device in Android Studio by running any app
+
+#+begin_quote
+/:monocle_face:/ Theoretically this should not be nescessary, as
+Capacitor should be able to create a device to deploy the app to on
+the fly. But this didn't work for me. After the device had be run once
+by Android Studio, Capacitor was able to start it on its own.
+#+end_quote
+
+- Shut down Android Studio and any running Emulator
+- Before run oragnice as a native app you need to =yarn build= it.
+- Run organice in the Emulater with =npx cap run android=
+
+*** TODO Native app on iOS
+
+#+begin_quote
+/:sparkles:/ This is brand new section that wants to be written.
+Please check out how to [[#contributions][contribute to organice]].
+#+end_quote
+
 ** Debugging Tests
 
 Apart from the popular choice of =console.log=-debugging, it's easy to
@@ -543,44 +580,10 @@ feature branches against =develop= until the epic is finished. On
 merging a pull request to =develop=, code and documentation are
 automatically deployed to stage.
 
-*** Native app on Android
-
-- Install [[https://developer.android.com/studio#downloads][Android Studio]]
-- Follow the [[https://capacitorjs.com/docs/getting-started/environment-setup#android-sdk][Capacitor Guide to setup an Android SDK]]
-
-#+begin_quote
-/:warning:/ Make sure to install the required subpackages. Activate
-"Show Package Details" to reveal hidden subpackages.
-
-At time of writing "Android API 32" does not automatically install the
-subpackages "Google APIs Intel x86 Atom_64 System Image" and "Google
-Play Intel x86 Atom_64 System Image", which are both required to run
-the Emulator on an Intel based machine.
-
-https://raw.githubusercontent.com/200ok-ch/organice/master/images/api_32.png
-#+end_quote
-
-- Create a device in Android Studio by running any app
-
-#+begin_quote
-/:monocle_face:/ Theoretically this should not be nescessary, as
-Capacitor should be able to create a device to deploy the app to on
-the fly. But this didn't work for me. After the device had be run once
-by Android Studio, Capacitor was able to start it on its own.
-#+end_quote
-
-- Shut down Android Studio and any running Emulator
-- Before run oragnice as a native app you need to =yarn build= it.
-- Run organice in the Emulater with =npx cap run android=
-
-*** TODO Native app on iOS
-
-#+begin_quote
-/:sparkles:/ This is brand new section that wants to be written.
-Please check out how to [[#contrib][contribute]] to organice.
-#+end_quote
-
 ** Contributions
+  :PROPERTIES:
+  :CUSTOM_ID: contributions
+  :END:
 
 Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
 
