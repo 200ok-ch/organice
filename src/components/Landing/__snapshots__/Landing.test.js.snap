@@ -16,8 +16,9 @@ exports[`<Landing /> renders 1`] = `
             class="container px-5"
           >
             <img
-              alt=""
-              src="https://200ok.ch/landing_page/img/organice/organice-512x512.png"
+              alt="Logo"
+              class="landing-logo"
+              src="organice.svg"
               style="height: 4rem;"
             />
             <button
