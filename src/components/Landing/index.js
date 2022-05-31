@@ -7,7 +7,7 @@ import './stylesheet.css';
 // import AOS from 'aos';
 // import 'aos/dist/aos.css';
 
-// import logo from '../../images/organice.svg';
+import logo from '../../images/organice.svg';
 // import ExternalLink from '../UI/ExternalLink';
 
 import { useEffect } from 'react';
@@ -17,7 +17,8 @@ import { Menu, ArrowRight, CheckSquare, EyeOff, Calendar } from 'react-feather';
 export default () => {
   // FIXME: AOS does not animate/show the screenshot section in the
   // middle. It works for the hero. On https://200ok.ch/organice.html
-  // it works for all elements weirdly enough.
+  // it works for all elements weirdly enough. Could be related to
+  // <Landing /> being implemented in React.
 
   // useEffect(() => {
   //   AOS.init({
@@ -64,11 +65,14 @@ export default () => {
             {/* Navbar */}
             <nav className="navbar navbar-marketing navbar-expand-lg bg-transparent navbar-dark fixed-top navbar-scrolled">
               <div className="container px-5">
-                <img
-                  alt=""
-                  src="https://200ok.ch/landing_page/img/organice/organice-512x512.png"
-                  style={{ height: '4rem' }}
-                />
+                {/* INFO: Alternative logo with glow effect */}
+                {/* <img */}
+                {/*   alt="" */}
+                {/*   src="https://200ok.ch/landing_page/img/organice/organice-512x512.png" */}
+                {/*   style={{ height: '4rem' }} */}
+                {/* /> */}
+
+                <img className="landing-logo" src={logo} alt="Logo" style={{ height: '4rem' }} />
                 <button
                   className="navbar-toggler"
                   type="button"

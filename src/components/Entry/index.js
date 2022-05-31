@@ -167,6 +167,13 @@ class Entry extends PureComponent {
     return (
       <>
         <HeaderBar />
+        {/* The <Entry /> component is rendered within the <App />
+        component. The rules in its CSS file were initially written
+        with the expectation that all components of organice are the
+        actual app. That changed when we introduced a <Landing />
+        component that had no semblance with the remainder of the app.
+        Hence we omit setting a class which would inflict bleeding app
+        CSS into the LP. */}
         <div className={isLandingPage() ? '' : className}>
           <LoadingIndicator message={loadingMessage} />
 

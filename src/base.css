@@ -1,5 +1,9 @@
 @import 'colors.css';
 
+/* INFO: This file is always loaded, so it should be written in a way
+   that it always makes sense (i.e. for the landing page and the
+   actual app). */
+
 /* Tablets and bigger are constrained to a max width and are centered */
 @media (min-width: 767px) {
   html {
