@@ -577,7 +577,7 @@ by Android Studio, Capacitor was able to start it on its own.
 
 #+begin_quote
 /:sparkles:/ This is brand new section that wants to be written.
-Please check out how to [[contrib][contribute]] to organice.
+Please check out how to [[#contrib][contribute]] to organice.
 #+end_quote
 
 ** Contributions
