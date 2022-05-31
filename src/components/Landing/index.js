@@ -70,12 +70,11 @@ export default () => {
             {/* Navbar */}
             <nav className="navbar navbar-marketing navbar-expand-lg bg-transparent navbar-dark fixed-top navbar-scrolled">
               <div className="container px-5">
-                <a className="navbar-brand text-white" href="#">
-                  <img
-                    src="https://200ok.ch/landing_page/img/organice/organice-512x512.png"
-                    style={{ height: '4rem' }}
-                  />
-                </a>
+                <img
+                  alt=""
+                  src="https://200ok.ch/landing_page/img/organice/organice-512x512.png"
+                  style={{ height: '4rem' }}
+                />
                 <button
                   className="navbar-toggler"
                   type="button"
@@ -94,7 +93,7 @@ export default () => {
                         target="_blank"
                         className="nav-link navbar-brand"
                         href="https:github.com/sponsors/200ok-ch"
-                        rel="noreferrer"
+                        rel="noreferrer noopener"
                       >
                         Pricing
                       </a>
@@ -105,7 +104,7 @@ export default () => {
                         target="_blank"
                         className="nav-link navbar-brand"
                         href="https:github.com/200ok-ch/organice"
-                        rel="noreferrer"
+                        rel="noreferrer noopener"
                       >
                         Code
                       </a>
@@ -116,7 +115,7 @@ export default () => {
                         target="_blank"
                         className="nav-link navbar-brand"
                         href="https:organice.200ok.ch/documentation.html"
-                        rel="noreferrer"
+                        rel="noreferrer noopener"
                       >
                         Documentation
                       </a>
@@ -334,7 +333,11 @@ export default () => {
                           <p className="text-white-50">
                             If you are interested into the 'why did we get started with organice',
                             we have got you covered. For{' '}
-                            <a target="_blank" href="https://emacsconf.org/2019/" rel="noreferrer">
+                            <a
+                              target="_blank"
+                              href="https://emacsconf.org/2019/"
+                              rel="noreferrer noopener"
+                            >
                               {' '}
                               EmacsConf 2019
                             </a>
@@ -348,7 +351,6 @@ export default () => {
                     <div className="col-lg-6 mb-5">
                       <div className="d-flex h-100">
                         <div className="ms-4">
-                          <h5 className="text-white"></h5>
                           <p className="text-white-50">
                             <iframe
                               width="560"
@@ -375,7 +377,7 @@ export default () => {
                           <a
                             target="_blank"
                             href="https://www.gnu.org/philosophy/free-sw.en.html"
-                            rel="noreferrer"
+                            rel="noreferrer noopener"
                           >
                             free software
                           </a>{' '}
@@ -463,7 +465,7 @@ export default () => {
                           className="icon-list-social-link"
                           target="_blank"
                           href="https://200ok.ch/atom.xml"
-                          rel="noreferrer"
+                          rel="noreferrer noopener"
                         >
                           <i className="fas fa-rss-square"></i>
                         </a>
@@ -471,7 +473,7 @@ export default () => {
                           className="icon-list-social-link"
                           target="_blank"
                           href="https://github.com/200ok-ch/"
-                          rel="noreferrer"
+                          rel="noreferrer noopener"
                         >
                           <i className="fab fa-github"></i>
                         </a>
@@ -479,7 +481,7 @@ export default () => {
                           className="icon-list-social-link"
                           target="_blank"
                           href="https://www.linkedin.com/in/alafon/"
-                          rel="noreferrer"
+                          rel="noreferrer noopener"
                         >
                           <i className="fab fa-linkedin"></i>
                         </a>
@@ -487,7 +489,7 @@ export default () => {
                           className="icon-list-social-link"
                           target="_blank"
                           href="https://twitter.com/munen_200ok"
-                          rel="noreferrer"
+                          rel="noreferrer noopener"
                         >
                           <i className="fab fa-twitter"></i>
                         </a>
