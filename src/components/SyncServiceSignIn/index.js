@@ -78,7 +78,25 @@ function WebDAVForm() {
             </p>
             <input type="submit" value="Sign-in" />
           </form>
-          <p>Please make sure your WebDAV backend meets the requirements as documented <a href='https://organice.200ok.ch/documentation.html#faq_webdav' target='_blank' rel="noopener noreferrer">here</a>, especially <a href='https://organice.200ok.ch/documentation.html#webdav_cors' target='_blank' rel="noopener noreferrer">CORS</a>.</p>
+          <p>
+            Please make sure your WebDAV backend meets the requirements as documented{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#faq_webdav"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>
+            , especially{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#webdav_cors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              CORS
+            </a>
+            .
+          </p>
         </>
       )}
     </div>
@@ -114,138 +132,138 @@ function GoogleDriveNote() {
         If you don't want to do that, you are welcome to use Dropbox or WebDAV as synchronisation
         back-ends.
       </p>
-      </div>
-      );
-      }
+    </div>
+  );
+}
 
-      function GitLab() {
-        const [isVisible, setIsVisible] = useState(false);
-        const toggleVisible = () => setIsVisible(!isVisible);
+function GitLab() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
 
-        const [project, setProject] = useState('');
-        const handleSubmit = (evt) => {
-          const projectId = gitLabProjectIdFromURL(project);
-          if (projectId) {
-            persistField('authenticatedSyncService', 'GitLab');
-            persistField('gitLabProject', projectId);
-            createGitlabOAuth().fetchAuthorizationCode();
-          } else {
-            evt.preventDefault();
-            alert('Project does not appear to be a valid gitlab.com URL');
-          }
-        };
+  const [project, setProject] = useState('');
+  const handleSubmit = (evt) => {
+    const projectId = gitLabProjectIdFromURL(project);
+    if (projectId) {
+      persistField('authenticatedSyncService', 'GitLab');
+      persistField('gitLabProject', projectId);
+      createGitlabOAuth().fetchAuthorizationCode();
+    } else {
+      evt.preventDefault();
+      alert('Project does not appear to be a valid gitlab.com URL');
+    }
+  };
 
-        return (
-          <>
-            <img src={GitLabLogo} alt="GitLab logo" onClick={toggleVisible} />
-            {isVisible && (
-              <form onSubmit={handleSubmit}>
-                <p>
-                  <label htmlFor="input-gitlab-project">Project:</label>
-                  <input
-                    id="input-gitlab-project"
-                    type="url"
-                    className="textfield"
-                    placeholder="gitlab.com/your/project"
-                    value={project}
-                    onChange={(e) => setProject(e.target.value)}
-                  />
-                </p>
-                <input type="submit" value="Sign-in" />
-              </form>
-            )}
-          </>
-        );
-      }
+  return (
+    <>
+      <img src={GitLabLogo} alt="GitLab logo" onClick={toggleVisible} />
+      {isVisible && (
+        <form onSubmit={handleSubmit}>
+          <p>
+            <label htmlFor="input-gitlab-project">Project:</label>
+            <input
+              id="input-gitlab-project"
+              type="url"
+              className="textfield"
+              placeholder="gitlab.com/your/project"
+              value={project}
+              onChange={(e) => setProject(e.target.value)}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
+    </>
+  );
+}
 
-      export default class SyncServiceSignIn extends PureComponent {
-        constructor(props) {
-          super(props);
+export default class SyncServiceSignIn extends PureComponent {
+  constructor(props) {
+    super(props);
 
-          _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick']);
-        }
+    _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick']);
+  }
 
-        handleDropboxClick() {
-          persistField('authenticatedSyncService', 'Dropbox');
+  handleDropboxClick() {
+    persistField('authenticatedSyncService', 'Dropbox');
 
-          const dropbox = new Dropbox({
-            clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
-            fetch: fetch.bind(window),
-          });
-          dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
-            window.location = authURL;
-          });
-        }
+    const dropbox = new Dropbox({
+      clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+      fetch: fetch.bind(window),
+    });
+    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
+      window.location = authURL;
+    });
+  }
 
-        handleGoogleDriveClick() {
-          try {
-            gapi.load('client:auth2', () => {
-              gapi.client
-                .init({
-                  apiKey: process.env.REACT_APP_GOOGLE_DRIVE_API_KEY,
-                  clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
-                  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-                  scope: 'https://www.googleapis.com/auth/drive',
-                })
-                .then(() => {
-                  persistField('authenticatedSyncService', 'Google Drive');
+  handleGoogleDriveClick() {
+    try {
+      gapi.load('client:auth2', () => {
+        gapi.client
+          .init({
+            apiKey: process.env.REACT_APP_GOOGLE_DRIVE_API_KEY,
+            clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            scope: 'https://www.googleapis.com/auth/drive',
+          })
+          .then(() => {
+            persistField('authenticatedSyncService', 'Google Drive');
 
-                  gapi.auth2.getAuthInstance().signIn({
-                    ux_mode: 'redirect',
-                    redirect_uri: window.location.origin,
-                  });
-                });
+            gapi.auth2.getAuthInstance().signIn({
+              ux_mode: 'redirect',
+              redirect_uri: window.location.origin,
             });
-          } catch (error) {
-            alert(
-              `The Google Drive API client isn't available - you might be blocking it with an ad blocker`
-            );
-            return;
-          }
-        }
+          });
+      });
+    } catch (error) {
+      alert(
+        `The Google Drive API client isn't available - you might be blocking it with an ad blocker`
+      );
+      return;
+    }
+  }
 
-        render() {
-          return (
-            <div className="sync-service-sign-in-container">
-              <p className="sync-service-sign-in__help-text">
-                organice syncs your files with Dropbox, GitLab, WebDAV and Google Drive.
-              </p>
-              <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
+  render() {
+    return (
+      <div className="sync-service-sign-in-container">
+        <p className="sync-service-sign-in__help-text">
+          organice syncs your files with Dropbox, GitLab, WebDAV and Google Drive.
+        </p>
+        <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
-              <div className="sync-service-container" onClick={this.handleDropboxClick}>
-                <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
-              </div>
+        <div className="sync-service-container" onClick={this.handleDropboxClick}>
+          <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+        </div>
 
-              <div className="sync-service-container">
-                <GitLab />
-              </div>
+        <div className="sync-service-container">
+          <GitLab />
+        </div>
 
-              <div className="sync-service-container">
-                <WebDAVForm />
-              </div>
+        <div className="sync-service-container">
+          <WebDAVForm />
+        </div>
 
-              <div className="sync-service-container">
-                <img
-                  src={GoogleDriveLogo}
-                  onClick={this.handleGoogleDriveClick}
-                  alt="Google Drive logo"
-                  className="google-drive-logo"
-                />
-                <GoogleDriveNote />
-              </div>
+        <div className="sync-service-container">
+          <img
+            src={GoogleDriveLogo}
+            onClick={this.handleGoogleDriveClick}
+            alt="Google Drive logo"
+            className="google-drive-logo"
+          />
+          <GoogleDriveNote />
+        </div>
 
-              <footer>
-                For questions regarding synchronization back-ends, please consult the{' '}
-                <a
-                  href="https://organice.200ok.ch/documentation.html#sync_backends"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  documentation
-                </a>
-                .
-              </footer>
-            </div>
-          );
-        }
-      }
+        <footer>
+          For questions regarding synchronization back-ends, please consult the{' '}
+          <a
+            href="https://organice.200ok.ch/documentation.html#sync_backends"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            documentation
+          </a>
+          .
+        </footer>
+      </div>
+    );
+  }
+}
