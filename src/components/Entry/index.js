@@ -155,6 +155,7 @@ class Entry extends PureComponent {
     } = this.props;
 
     // The LP is not styled with the user configured themes
+    // See adr-002 for details.
     if (!isLandingPage()) loadTheme(theme, colorScheme);
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
@@ -173,7 +174,7 @@ class Entry extends PureComponent {
         actual app. That changed when we introduced a <Landing />
         component that had no semblance with the remainder of the app.
         Hence we omit setting a class which would inflict bleeding app
-        CSS into the LP. */}
+        CSS into the LP. See adr-002 for details. */}
         <LoadingIndicator message={loadingMessage} />
 
         {activeModalPage === 'changelog' ? (
