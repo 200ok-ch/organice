@@ -617,7 +617,7 @@ exports[`<Landing /> renders 1`] = `
                   </div>
                   <a
                     class="btn btn-teal fw-500"
-                    href="https://organice.200ok.ch/sample"
+                    href="/sample"
                   >
                     Live demo
                   </a>
