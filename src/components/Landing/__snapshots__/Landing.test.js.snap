@@ -572,21 +572,14 @@ exports[`<Landing /> renders 1`] = `
                     class="d-flex h-100"
                   >
                     <div
-                      class="ms-4"
+                      class="tutorial container text-center my-5 ratio ratio-16x9"
                     >
-                      <p
-                        class="text-white-50"
-                      >
-                        <iframe
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowfullscreen=""
-                          frameborder="0"
-                          height="315"
-                          src="https://www.youtube.com/embed/aQKc0hcFXCk"
-                          title="YouTube video player"
-                          width="560"
-                        />
-                      </p>
+                      <iframe
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen=""
+                        src="https://www.youtube.com/embed/aQKc0hcFXCk"
+                        title="YouTube video player"
+                      />
                     </div>
                   </div>
                 </div>
