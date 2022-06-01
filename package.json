@@ -15,6 +15,7 @@
     "dropbox": "^9.8.0",
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
+    "node-sass": "4.13",
     "pegjs": "^0.10.0",
     "react": "^16.8.3",
     "react-beautiful-dnd": "^13.0.0",
@@ -29,7 +30,6 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
-    "sass": "^1.52.1",
     "webdav": "^3.3.0"
   },
   "scripts": {
