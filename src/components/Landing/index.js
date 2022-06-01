@@ -346,18 +346,13 @@ export default () => {
 
                     <div className="col-lg-6 mb-5">
                       <div className="d-flex h-100">
-                        <div className="ms-4">
-                          <p className="text-white-50">
-                            <iframe
-                              width="560"
-                              height="315"
-                              src="https://www.youtube.com/embed/aQKc0hcFXCk"
-                              title="YouTube video player"
-                              frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            ></iframe>
-                          </p>
+                        <div className="tutorial container text-center my-5 ratio ratio-16x9">
+                          <iframe
+                            src="https://www.youtube.com/embed/aQKc0hcFXCk"
+                            title="YouTube video player"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
                         </div>
                       </div>
                     </div>
