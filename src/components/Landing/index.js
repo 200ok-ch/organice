@@ -35,10 +35,10 @@ export default () => {
       'font_awesome_all.min.js',
       // TODO: Reprogram false_bottom the React way
       // 'false_bottom.js',
+      'bootstrap.bundle.min.js',
       // XXX: Some parts of scripts.js are implemented the React way
       // (Feather), others are worked around (navbar is always black),
       // the remainder is not implemented atm.
-      // 'bootstrap.bundle.min.js',
       // 'scripts.js',
     ];
 
