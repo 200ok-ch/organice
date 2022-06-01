@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './vendor_css/template.css';
+import './vendor_css/template.scss';
 import './stylesheet.css';
 
 // import AOS from 'aos';

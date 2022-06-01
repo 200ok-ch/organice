@@ -29,6 +29,7 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
+    "sass": "^1.52.1",
     "webdav": "^3.3.0"
   },
   "scripts": {
