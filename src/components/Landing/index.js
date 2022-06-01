@@ -378,7 +378,7 @@ export default () => {
                         </p>
                       </div>
 
-                      <a className="btn btn-teal fw-500" href="https://organice.200ok.ch/sample">
+                      <a className="btn btn-teal fw-500" href="/sample">
                         Live demo
                       </a>
                     </div>
