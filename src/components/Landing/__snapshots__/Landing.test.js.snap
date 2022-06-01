@@ -73,7 +73,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
-                    href="https:github.com/sponsors/200ok-ch"
+                    href="https://github.com/sponsors/200ok-ch"
                     rel="noreferrer noopener"
                     target="_blank"
                   >
@@ -85,7 +85,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
-                    href="https:github.com/200ok-ch/organice"
+                    href="https://github.com/200ok-ch/organice"
                     rel="noreferrer noopener"
                     target="_blank"
                   >
@@ -97,7 +97,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
-                    href="https:organice.200ok.ch/documentation.html"
+                    href="https://organice.200ok.ch/documentation.html"
                     rel="noreferrer noopener"
                     target="_blank"
                   >
