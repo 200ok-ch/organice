@@ -90,7 +90,7 @@ export default () => {
                       <a
                         target="_blank"
                         className="nav-link navbar-brand"
-                        href="https:github.com/sponsors/200ok-ch"
+                        href="https://github.com/sponsors/200ok-ch"
                         rel="noreferrer noopener"
                       >
                         Pricing
@@ -101,7 +101,7 @@ export default () => {
                       <a
                         target="_blank"
                         className="nav-link navbar-brand"
-                        href="https:github.com/200ok-ch/organice"
+                        href="https://github.com/200ok-ch/organice"
                         rel="noreferrer noopener"
                       >
                         Code
@@ -112,7 +112,7 @@ export default () => {
                       <a
                         target="_blank"
                         className="nav-link navbar-brand"
-                        href="https:organice.200ok.ch/documentation.html"
+                        href="https://organice.200ok.ch/documentation.html"
                         rel="noreferrer noopener"
                       >
                         Documentation
