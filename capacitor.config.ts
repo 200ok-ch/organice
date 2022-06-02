@@ -4,7 +4,11 @@ const config: CapacitorConfig = {
   appId: 'ch.twohundredok.organice',
   appName: 'organice',
   webDir: 'build',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  server: {
+    hostname: 'app',
+    androidScheme: 'organice'
+  }
 };
 
 export default config;
