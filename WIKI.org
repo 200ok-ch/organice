@@ -479,7 +479,7 @@ differentiate between the two use cases.
 - Some safeguards in the code like:
   - Setting a =landing-page= class dynamically in =<Entry>= if the
     application is showing the Landing Page.
-  - Making sure that static content pages to not =import= CSS code
+  - Making sure that static content pages do not =import= CSS code
     that pollutes the global namespace (reminder: CSS is not component
     local by default in React). Instead, we employ SCSS and scope all
     selectors under a unique identifier.
