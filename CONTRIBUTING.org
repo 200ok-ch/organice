@@ -78,7 +78,9 @@ We have good quality assurance and an established workflow. This is it:
    solution. Include the relevant issue number if applicable.
 4. New Branch in Git
 5. Naming: =(feature|fix|chore)/issue-id/short-description=
-6. Develop / Test locally until tests pass
+6. If your PR includes a substantial change to the overall
+   architecture, consider writing an [[https://organice.200ok.ch/documentation.html#adr-001][architecture decision record]].
+7. Develop / Test locally until tests pass
    - We use [[https://github.com/prettier/prettier-eslint][prettier-eslint]] to format code, which combines both
      ~prettier~ and ~eslint --fix~ for the best of both worlds. This
      repository includes ~.prettierrc.json~ and ~.eslintrc.yml~ with
@@ -93,9 +95,9 @@ We have good quality assurance and an established workflow. This is it:
      violations, and also ~yarn nibble~ to tackle them one category
      at a time.
    - ~yarn lint~ will run both sets of linters.
-7. Create Pull Request on Github to =master=
+8. Create Pull Request on Github to =master=
    - Check that the tests also pass on CI
-8. Core Team: Merge to =master=, deploy and accept the Issue on
+9. Core Team: Merge to =master=, deploy and accept the Issue on
    Github
 
 *** Definition of Done
@@ -124,9 +126,8 @@ An issue is done when:
   - Extract methods or functions to separate responsibilities
   - Do one thing
 
-Thanks! 🙏 🙇
+Thanks!🙏🙇
 
 organice Team
 
-[[https://200ok.ch][200ok llc]] and all
-[[https://github.com/200ok-ch/organice/graphs/contributors][contributors]]
+[[https://200ok.ch][200ok llc]] and all [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]]

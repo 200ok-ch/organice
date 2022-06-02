@@ -11,6 +11,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
+import { isLandingPage } from '../../util/misc';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
 import Landing from '../Landing';
@@ -153,61 +154,68 @@ class Entry extends PureComponent {
       theme,
     } = this.props;
 
-    loadTheme(theme, colorScheme);
+    // The LP is not styled with the user configured themes
+    // See adr-002 for details.
+    if (!isLandingPage()) loadTheme(theme, colorScheme);
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
 
-    const className = classNames('entry-container', {
+    const className = classNames('App entry-container', {
       'entry-container--large-font': fontSize === 'Large',
     });
 
     return (
-      <>
+      <div className={isLandingPage() ? 'App landing-page' : className}>
         <HeaderBar />
-        <div className={className}>
-          <LoadingIndicator message={loadingMessage} />
+        {/* The <Entry /> component is rendered within the <App />
+        component. The rules in its CSS file were initially written
+        with the expectation that all components of organice are the
+        actual app. That changed when we introduced a <Landing />
+        component that had no semblance with the remainder of the app.
+        Hence we omit setting a class which would inflict bleeding app
+        CSS into the LP. See adr-002 for details. */}
+        <LoadingIndicator message={loadingMessage} />
 
-          {activeModalPage === 'changelog' ? (
-            this.renderChangelogFile()
-          ) : isAuthenticated ? (
-            [
-              'keyboard_shortcuts_editor',
-              'settings',
-              'capture_templates_editor',
-              'file_settings_editor',
-              'sample',
-            ].includes(activeModalPage) ? (
-              <Fragment>
-                {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
-                {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
-                {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
-                {activeModalPage === 'sample' && this.renderSampleFile()}
-              </Fragment>
-            ) : (
-              <Switch>
-                {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
-                <Route path="/privacy-policy" exact component={PrivacyPolicy} />
-                <Route path="/file/:path+" render={this.renderFile} />
-                <Route path="/files/:path*" render={this.renderFileBrowser} />
-                <Route path="/sample" exact={true} render={this.renderSampleFile} />
-                <Route path="/settings" exact={true}>
-                  <Settings />
-                </Route>
-                <Redirect to="/files" />
-              </Switch>
-            )
+        {activeModalPage === 'changelog' ? (
+          this.renderChangelogFile()
+        ) : isAuthenticated ? (
+          [
+            'keyboard_shortcuts_editor',
+            'settings',
+            'capture_templates_editor',
+            'file_settings_editor',
+            'sample',
+          ].includes(activeModalPage) ? (
+            <Fragment>
+              {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
+              {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
+              {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
+              {activeModalPage === 'sample' && this.renderSampleFile()}
+            </Fragment>
           ) : (
             <Switch>
+              {shouldRedirectToCapturePath && <Redirect to={pendingCapturePath} />}
               <Route path="/privacy-policy" exact component={PrivacyPolicy} />
+              <Route path="/file/:path+" render={this.renderFile} />
+              <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Route path="/sample" exact={true} render={this.renderSampleFile} />
-              <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
-              <Route path="/" exact={true} component={Landing} />
-              <Redirect to="/" />
+              <Route path="/settings" exact={true}>
+                <Settings />
+              </Route>
+              <Redirect to="/files" />
             </Switch>
-          )}
-        </div>
-      </>
+          )
+        ) : (
+          <Switch>
+            <Route path="/privacy-policy" exact component={PrivacyPolicy} />
+            <Route path="/sample" exact={true} render={this.renderSampleFile} />
+            <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
+            <Route path="/" exact={true} component={Landing} />
+            <Redirect to="/" />
+          </Switch>
+        )}
+      </div>
     );
   }
 }

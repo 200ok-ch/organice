@@ -333,6 +333,158 @@
    compatible way, and the feature follows the [[#contributing][contribution guideline]],
    then: Yes, the feature can be added to organice.
 
+* Development
+** Architecture Decision Records
+:PROPERTIES:
+:CUSTOM_ID: architecture-decision-records
+:END:
+
+*** adr-000-template
+:PROPERTIES:
+:CUSTOM_ID: adr-template
+:END:
+
+#+BEGIN_SRC org
+  ,* TITLE <short present tense imperative phrase, less than 50 characters, like a git commit message.>
+
+  ,** Status
+
+  <proposed, accepted, rejected, deprecated, superseded, etc.>
+
+  ,** Context
+
+  # <what is the issue that we're seeing that is motivating this decision
+  # or change.>
+
+  ,** Decision
+
+  # <what is the change that we're actually proposing or doing.>
+
+  ,** Consequences
+
+  # <what becomes easier or more difficult to do because of this change.>
+#+END_SRC
+
+*** adr-001-use-adrs
+:PROPERTIES:
+:CUSTOM_ID: adr-001
+:END:
+**** Architecture Decision Record: Use ADRs
+
+***** Context
+
+   organice aims to be a helpful and accessible tool for many users
+   and developers over years to come. Hence, practicing discipline of
+   architecture is very important.
+
+   - We want to think deeply about all our architectural decisions,
+     exploring all alternatives and making a careful, considered,
+     well-researched choice.
+   - Even when the above statement does not hold true and we walk a
+     pragmatic path, we want to be as transparent as possible in our
+     decision-making process.
+   - We want to be able to revisit prior decisions to determine fairly if
+     they still make sense, and if the motivating circumstances or
+     conditions have changed.
+
+***** Decision
+
+   We will document every architecture-level decision for organice
+   with an [[http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions][Architecture Decision Record]]. These are a well structured,
+   relatively lightweight way to capture architectural proposals. They
+   can serve as an artifact for discussion, and remain as an enduring
+   record of the context and motivation of past decisions.
+
+   The workflow will be:
+
+   1. A developer creates an ADR document outlining an approach for a
+      particular question or problem. The ADR has an initial status of
+      "proposed."
+   2. The developers and maintainers discuss the ADR. During this
+      period, the ADR should be updated to reflect additional context,
+      concerns raised, and proposed changes.
+   3. Once a maintainer has made a decision, the ADR can be
+      transitioned to either an "accepted" or "rejected" state.
+   4. Since the team working on organice is very agile and good architecture
+      often emerges from actual code and spikes, it is very well possible
+      for code to already be committed to the repository before the ADR
+      is accepted or even addressed as an ADR.
+   5. If a decision is revisited and a different conclusion is reached, a
+      new ADR should be created documenting the context and rationale for
+      the change. The new ADR should reference the old one, and once the
+      new one is accepted, the old one should (in its "status" section)
+      be updated to point to the new one. The old ADR should not be
+      removed or otherwise modified except for the annotation pointing to
+      the new ADR.
+
+   We will use the popular ADR template by [[https://github.com/joelparkerhenderson/architecture-decision-record/blob/4fba870a4e8e6830d0b9aa150c145103aa34b634/templates/decision-record-template-by-michael-nygard/index.md][Michal Nygard]] using [[#adr-001][this
+   template]].
+
+***** Status
+
+   Accepted
+
+***** Consequences
+
+   1. Developers must write an ADR and submit it for review to make
+      any architectural decision transparent -- that is, any decision
+      that affects the way organice is put together at a high level.
+   2. We will have a concrete artifact around which to focus discussion,
+      before finalizing decisions.
+   3. If we follow the process, decisions will be made deliberately,
+      by the maintainers.
+   4. We will have a useful persistent record of why the system is the way it is.
+
+
+*** adr-002-static-content-pages
+:PROPERTIES:
+:CUSTOM_ID: adr-001
+:END:
+**** Architecture Decision Record: Static Content Pages
+
+***** Context
+
+organice runs different kinds of pages:
+
+1. Static content like the Landing Page
+2. The actual application
+
+These two do not share a whole lot in common. They have different
+needs in terms of CSS, Javascript, but also code quality. However,
+they run from the same =<App>= component which already has the
+assumption that it'll contain the actual application, not a content
+page like the Landing Page.
+
+This might seem convoluted and maybe there is a better solution. The
+seemingly only other solution is to =yarn eject= from =react-scripts=,
+so that we could have multiple starting HTML files for multiple SPAs.
+This has the following downsides, though:
+
+ 1. =react-scripts= is a great wrapper which we cannot use anymore.
+ 2. Related to 1: Ejecting will create dozens of files which will have
+    to be maintained manually.
+
+***** Decision
+
+The downsides of ejecting seem larger than sharing the same =<App>=
+component and creating safeguards in the code where necessary to
+differentiate between the two use cases.
+
+***** Status
+
+   Accepted
+
+***** Consequences
+
+- Some safeguards in the code like:
+  - Setting a =landing-page= class dynamically in =<Entry>= if the
+    application is showing the Landing Page.
+  - Making sure that static content pages do not =import= CSS code
+    that pollutes the global namespace (reminder: CSS is not component
+    local by default in React). Instead, we employ SCSS and scope all
+    selectors under a unique identifier.
+
+
 * Building this documentation
   :PROPERTIES:
   :CUSTOM_ID: building_docs
