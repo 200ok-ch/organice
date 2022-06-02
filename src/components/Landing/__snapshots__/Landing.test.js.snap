@@ -19,7 +19,7 @@ exports[`<Landing /> renders 1`] = `
               alt="Logo"
               class="landing-logo"
               src="organice.svg"
-              style="height: 4rem;"
+              style="height: 4rem; filter: drop-shadow(0px 0px 18px #fdf6e3);"
             />
             <button
               aria-controls="navbarSupportedContent"
