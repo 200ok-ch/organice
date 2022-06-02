@@ -119,7 +119,8 @@ function GitLab() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
 
-  const [project, setProject] = useState('');
+  const defaultProject = 'https://gitlab.com/your/project';
+  const [project, setProject] = useState(defaultProject);
   const handleSubmit = (evt) => {
     const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
@@ -143,7 +144,7 @@ function GitLab() {
               id="input-gitlab-project"
               type="url"
               className="textfield"
-              placeholder="gitlab.com/your/project"
+              placeholder={defaultProject}
               value={project}
               onChange={(e) => setProject(e.target.value)}
             />
