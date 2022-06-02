@@ -1,51 +1,55 @@
 @import 'colors.css';
 
+/* INFO: This file is always loaded, so it should be written in a way
+   that it always makes sense (i.e. for the landing page and the
+   actual app). */
+
 /* Tablets and bigger are constrained to a max width and are centered */
 @media (min-width: 767px) {
   html {
     background: var(--base2);
   }
 
-  #root {
+  .App:not(.landing-page) {
     box-shadow: 0 2em 2em 1.5em var(--base1-soft);
   }
 
-  #root,
-  .action-drawer-container,
-  .drawer-inner-container,
-  .loading-indicator {
+  .App:not(.landing-page),
+  .App:not(.landing-page) .action-drawer-container,
+  .App:not(.landing-page) .drawer-inner-container,
+  .App:not(.landing-page) .loading-indicator {
     max-width: 60em;
     margin-left: auto;
     margin-right: auto;
   }
 
-  .action-drawer-container {
+  .App:not(.landing-page) .action-drawer-container {
     max-width: 33em;
   }
 }
 
 body,
-.App {
+.App:not(.landing-page) {
   height: 100%;
 }
 
 html,
 body,
-#root {
+.App:not(.landing-page) {
   color: var(--base00);
   background: var(--base3);
   user-select: none;
 }
 
-a {
+.App:not(.landing-page) a {
   color: var(--base03);
 }
 
-h2 {
+.App:not(.landing-page) h2 {
   color: var(--base01) !important;
 }
 
-.btn {
+.App:not(.landing-page) .btn {
   cursor: pointer;
   background-color: var(--magenta);
   color: var(--base3) !important;
@@ -54,11 +58,11 @@ h2 {
   padding: 8px 16px;
 }
 
-.btn a {
+.App:not(.landing-page) .btn a {
   color: var(--base3) !important;
 }
 
-.btn--circle {
+.App:not(.landing-page) .btn--circle {
   border-radius: 50%;
   font-weight: bold;
   padding: 0;
@@ -66,15 +70,15 @@ h2 {
   height: 60px;
 }
 
-.btn--disabled {
+.App:not(.landing-page) .btn--disabled {
   background-color: var(--base01);
 }
 
-.nice-scroll {
+.App:not(.landing-page) .nice-scroll {
   -webkit-overflow-scrolling: touch;
 }
 
-.textarea {
+.App:not(.landing-page) .textarea {
   width: 95%;
   font-size: 16px;
   font-family: Courier;
@@ -83,7 +87,7 @@ h2 {
   border-radius: 0;
 }
 
-.textfield {
+.App:not(.landing-page) .textfield {
   border: 1px solid var(--base1);
   border-radius: 0;
   -webkit-appearance: none;
@@ -91,19 +95,19 @@ h2 {
   font-size: 16px;
 }
 
-.label-for-checkbox {
+.App:not(.landing-page) .label-for-checkbox {
   margin: 4px 0 0;
 }
 
-div[tabindex='-1']:focus {
+.App:not(.landing-page) div[tabindex='-1']:focus {
   outline: 0;
 }
 
-button {
+.App:not(.landing-page) button {
   touch-action: manipulation;
 }
 
-.checkbox {
+.App:not(.landing-page) .checkbox {
   height: 20px;
   width: 20px;
   vertical-align: middle;

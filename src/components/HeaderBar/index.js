@@ -2,6 +2,8 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { isLandingPage } from '../../util/misc';
+
 import { Link, withRouter } from 'react-router-dom';
 
 import logo from '../../images/organice.svg';
@@ -320,13 +322,17 @@ class HeaderBar extends PureComponent {
       'header-bar--with-logo': this.getPathRoot() === '',
     });
 
-    return (
-      <div className={className}>
-        {this.renderBackButton()}
-        {this.renderTitle()}
-        {this.renderActions()}
-      </div>
-    );
+    // The LP does not show the HeaderBar
+    if (!isLandingPage()) {
+      return (
+        <div className={className}>
+          {this.renderBackButton()}
+          {this.renderTitle()}
+          {this.renderActions()}
+        </div>
+      );
+    }
+    return null;
   }
 }
 

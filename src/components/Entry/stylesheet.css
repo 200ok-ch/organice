@@ -3,9 +3,9 @@
 
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 50px);
-  min-height: calc(100vh - 50px);
-  max-height: calc(100vh - 50px);
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
   overflow-x: hidden;
 }
 

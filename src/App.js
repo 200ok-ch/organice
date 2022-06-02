@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+
 import { Provider } from 'react-redux';
 import Store from './store';
 import {
@@ -218,9 +219,7 @@ export default class App extends PureComponent {
       <DragDropContext onDragEnd={this.handleDragEnd}>
         <Router>
           <Provider store={this.store}>
-            <div className="App">
-              <Entry />
-            </div>
+            <Entry />
           </Provider>
         </Router>
       </DragDropContext>

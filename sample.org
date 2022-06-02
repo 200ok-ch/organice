@@ -31,20 +31,28 @@ If you want the "header action drawer" to disappear or to deselect the current h
 11. File Export: [[https://orgmode.org/manual/Refile-and-copy.html][Refile this header to another header]]
 12. Add a note: Add a time-stamped note to the current header (=org-add-note=).
 
-** Todos [1/4] [25%]
+** Todos [3/7] [42%]
 This header has a few TODO items as subheaders.
+*** DONE Check out organice
+*** DONE Follow the organice tutorial
+This interactive tutorial helps you get to know organice really quickly.
 *** TODO Learn how to use TODOs in organice
 To advance the todo state of a header, swipe right on it until the background turns green.
 
 Try advancing the todo state of this header a few times!
 **** There's also a setting once you're signed in to enable tapping on the TODO label itself to advance the todo state. Its off by default because I thought the behavior would be confusing unless explained, but I recommend turning it on!
-*** DONE Check out organice
 *** START Investigate custom TODO states
 organice also supports [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][custom todo states]] (if declared at the top of the file). Swipe right on this header a few times.
 
 Note that when the cycle restarts, it defaults to the first set of todo states. Manually edit the header to get back to a different todo state cycle (more on editing headers below!)
 *** FINISHED See that custom TODO states are colored correctly
 Custom =org-todo-keywords= keyword sequences can have finish states. They are colored appropriately. You can see that TODO and START headlines are colored red whereas DONE and FINISHED headlines are colored green.
+
+*** TODO If I have questions: Check out the documentation
+organice has solid documentation, including frequently asked questions: https://organice.200ok.ch/documentation.html
+*** TODO If I have further questions: Join the community chat
+#organice on IRC [[https://libera.chat/][Libera.Chat]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix.
+
 ** Tags
 The next button in the header action drawer will bring up the tag editor.
 
