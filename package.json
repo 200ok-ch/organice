@@ -6,7 +6,10 @@
     "node": "^12.13.1"
   },
   "dependencies": {
+    "@babel/helper-environment-visitor": "^7.18.2",
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
+    "@capacitor/android": "^3.5.1",
+    "@capacitor/core": "^3.5.1",
     "aos": "^2.3.4",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
@@ -47,6 +50,7 @@
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
+    "@capacitor/cli": "^3.5.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
     "babel-eslint": "^10.1.0",
