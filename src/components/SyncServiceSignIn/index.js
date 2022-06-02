@@ -28,55 +28,76 @@ function WebDAVForm() {
     <div id="webdavLogin">
       <h2 onClick={toggleVisible}>WebDAV</h2>
       {isVisible && (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            persistField('authenticatedSyncService', 'WebDAV');
-            persistField('webdavEndpoint', url);
-            persistField('webdavUsername', username);
-            persistField('webdavPassword', password);
-            window.location = window.location.origin + '/';
-          }}
-        >
+        <>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              persistField('authenticatedSyncService', 'WebDAV');
+              persistField('webdavEndpoint', url);
+              persistField('webdavUsername', username);
+              persistField('webdavPassword', password);
+              window.location = window.location.origin + '/';
+            }}
+          >
+            <p>
+              <label htmlFor="input-webdav-url">URL:</label>
+              <input
+                id="input-webdav-url"
+                name="url"
+                type="url"
+                value={url}
+                className="textfield"
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                }}
+              />
+            </p>
+            <p>
+              <label htmlFor="input-webdav-user">Username:</label>
+              <input
+                id="input-webdav-user"
+                type="text"
+                className="textfield"
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+              />
+            </p>
+            <p>
+              <label htmlFor="input-webdav-password">Password:</label>
+              <input
+                id="input-webdav-password"
+                type="password"
+                className="textfield"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </p>
+            <input type="submit" value="Sign-in" />
+          </form>
           <p>
-            <label htmlFor="input-webdav-url">URL:</label>
-            <input
-              id="input-webdav-url"
-              name="url"
-              type="url"
-              value={url}
-              className="textfield"
-              onChange={(e) => {
-                setUrl(e.target.value);
-              }}
-            />
+            Please make sure your WebDAV backend meets the requirements as documented{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#faq_webdav"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>
+            , especially{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#webdav_cors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              CORS
+            </a>
+            .
           </p>
-          <p>
-            <label htmlFor="input-webdav-user">Username:</label>
-            <input
-              id="input-webdav-user"
-              type="text"
-              className="textfield"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-            />
-          </p>
-          <p>
-            <label htmlFor="input-webdav-password">Password:</label>
-            <input
-              id="input-webdav-password"
-              type="password"
-              className="textfield"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-          </p>
-          <input type="submit" value="Sign-in" />
-        </form>
+        </>
       )}
     </div>
   );
