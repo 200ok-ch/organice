@@ -27,7 +27,7 @@ Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[htt
 
 organice is an implementation of [[http://orgmode.org/][Org mode]] without the dependency of
 [[https://www.gnu.org/software/emacs/][Emacs]]. It is built for mobile and desktop browsers and syncs with
-[[https://www.dropbox.com/][Dropbox]], [[https://gitlab.com/][GitLab]], [[https://en.wikipedia.org/wiki/WebDAV][WebDAV]] and [[https://drive.google.com][Google Drive]].
+[[https://www.dropbox.com/][Dropbox]], [[https://gitlab.com/][GitLab]], and [[https://en.wikipedia.org/wiki/WebDAV][WebDAV]].
 
 At [[https://200ok.ch/][200ok]], we run an instance of organice at https://organice.200ok.ch,
 which is open for anyone to use! organice does not have a back-end
@@ -387,8 +387,8 @@ yarn install --production=false
 
 *** Setup any of the synchronization back-ends
 
-organice can sync your Org files using Dropbox, GitLab, WebDAV or
-Google Drive as back-ends.
+organice can sync your Org files using Dropbox, GitLab, and WebDAV as
+back-ends.
 
 If you want to develop a feature that needs synchronization, then you
 will have to set up any of those options. If you want to work on a
@@ -400,25 +400,25 @@ organice has support for WebDAV and ships with a Docker container with
 a WebDAV server based on Apache. You can make use of that and use this
 WebDAV back-end for local development.
 
-Having said that, if you're a Dropbox or Google Drive user, then it's
-convenient to have working setups for either of them if you want to
-test on files that are already in those back-ends. But it doesn't have
-to be a barrier, just to get started. And maybe you don't want to host
-your files with either of them anyway and use WebDAV all the way.
+Having said that, if you're a Dropbox, then it's convenient to have a
+working setup for it if you want to test on files that are already in
+those back-ends. But it doesn't have to be a barrier, just to get
+started. And maybe you don't want to host your files with either of
+them anyway and use WebDAV all the way.
 
 In any case, [[#faq_webdav][here's how to get running locally with a WebDAV setup]].
 
-**** Dropbox, Google Drive, or GitLab
+**** Dropbox or GitLab
 
-To test against your own Dropbox or Google Drive application, you'll
-need to create a ~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
+To test against your own Dropbox or GitLab application, you'll need to create a
+~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
 
 #+BEGIN_SRC shell
 cp .env.sample .env
 #+END_SRC
 
-Then, fill in the blanks in ~.env~ with your Dropbox, Google Drive, or
-GitLab credentials. More information about that is in the section
+Then, fill in the blanks in ~.env~ with your Dropbox or GitLab
+credentials. More information about that is in the section
 [[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization back-ends]].
 
 *** Running the application
@@ -476,12 +476,12 @@ If your new feature doesn't require a synchronization back-end, just
 open the =sample.org= file which doesn't require a login. You're good
 to go.
 
-*Synchronizing with Dropbox or Google Drive*
+*Synchronizing with Dropbox or GitLab*
 
-If your new feature does require the Dropbox or Google Drive
-synchronization back-end, there's an extra step you need to perform.
+If your new feature does require the Dropbox or GitLab synchronization
+back-end, there's an extra step you need to perform.
 
-Both Dropbox and Google Drive require a whitelist of domains that they
+Both Dropbox and GitLab require a whitelist of domains that they
 can be synchronized from. The whitelist for local domains is
 exclusively short: =http://localhost:3000=.
 
@@ -579,7 +579,7 @@ Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox,
-WebDAV or Google Drive, please read the section on [[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization
+GitLab or WebDAV, please read the section on [[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization
 back-ends]].
 
 ** FTP
@@ -698,19 +698,6 @@ In the [[https://organice.200ok.ch/documentation.html#faq_webdav][WebDAV FAQ]], 
     WebDAV
   - Documentation on Nextcloud sharing
 
-*** Google Drive
-    :PROPERTIES:
-    :CUSTOM_ID: google_drive
-    :END:
-
-To configure your own instance of organice for Google Drive, please go
-consult the [[https://developers.google.com/drive/api/v3/quickstart/js][Google Developer documentation]]. In the Google Cloud
-Platform console,you will create a Google Drive API key and an OAuth
-Client ID. Then, you will create a new ~.env~ file (analogous to
-~.env.sample~) and add those as values for the keys
-=REACT_APP_GOOGLE_DRIVE_API_KEY= and
-=REACT_APP_GOOGLE_DRIVE_CLIENT_ID=.
-
 *** GitLab
     :PROPERTIES:
     :CUSTOM_ID: gitlab
@@ -743,9 +730,9 @@ regarding OAuth applications, if interested.
     :CUSTOM_ID: encryption
     :END:
 
-If you do not trust your data with Dropbox or Google, you are free to
-use Gitlab ([[https://about.gitlab.com/solutions/open-source/][which is open-source]]) or host your own [[https://organice.200ok.ch/documentation.html#webdav][WebDAV]] server and
-take any number of precautionary measures.
+If you do not trust your data with third parties like Dropbox, you are
+free to use Gitlab ([[https://about.gitlab.com/solutions/open-source/][which is open-source]]) or host your own [[https://organice.200ok.ch/documentation.html#webdav][WebDAV]]
+server and take any number of precautionary measures.
 
 For example, you can encrypt your data on disk. organice itself is
 just a front-end application, requires no server and has no tracking
@@ -835,7 +822,7 @@ parameters are required and must be URL encoded:
 
 - ~captureTemplateName~: the name of the capture template to use. This
   capture template must already exist in Settings > Capture templates.
-- ~captureFile~: the =path= (for Dropbox) or =id= (for Google Drive)
+- ~captureFile~: the =path= for Dropbox
   of the file in which to execute the capture template.
 - ~captureContent~: the content you'd like to capture. This content
   will be placed at the cursor position if specified in the capture

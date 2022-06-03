@@ -140,9 +140,6 @@ export const setShouldStoreSettingsInSyncBackend = (newShouldStoreSettingsInSync
                   )
             );
           break;
-        case 'Google Drive':
-          client.deleteFileByNameAndParent('.organice-config.json', 'root');
-          break;
         default:
       }
 
