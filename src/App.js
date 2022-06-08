@@ -52,7 +52,7 @@ const handleGitLabAuthResponse = async (oauthClient) => {
   try {
     success = await oauthClient.isReturningFromAuthServer();
     await oauthClient.getAccessToken();
-  } catch(e) {
+  } catch (e) {
     error = e;
     success = false;
   }
@@ -72,7 +72,7 @@ const handleGitLabAuthResponse = async (oauthClient) => {
   }
 };
 
-export function handleAuthenticatedSyncService (initialState) {
+export function handleAuthenticatedSyncService(initialState) {
   window.initialHash = window.location.hash.substring(0);
   const hashContents = parseQueryString(window.location.hash);
   const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
@@ -80,58 +80,58 @@ export function handleAuthenticatedSyncService (initialState) {
 
   if (!!authenticatedSyncService) {
     switch (authenticatedSyncService) {
-    case 'Dropbox':
-      const dropboxAccessToken = hashContents.access_token;
-      if (dropboxAccessToken) {
-        client = createDropboxSyncBackendClient(dropboxAccessToken);
-        initialState.syncBackend = Map({
-          isAuthenticated: true,
-          client,
-        });
-        persistField('dropboxAccessToken', dropboxAccessToken);
-        window.location.hash = '';
-      } else {
-        const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
-        if (!!persistedDropboxAccessToken) {
-          client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
+      case 'Dropbox':
+        const dropboxAccessToken = hashContents.access_token;
+        if (dropboxAccessToken) {
+          client = createDropboxSyncBackendClient(dropboxAccessToken);
           initialState.syncBackend = Map({
             isAuthenticated: true,
             client,
           });
+          persistField('dropboxAccessToken', dropboxAccessToken);
+          window.location.hash = '';
+        } else {
+          const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
+          if (!!persistedDropboxAccessToken) {
+            client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
+            initialState.syncBackend = Map({
+              isAuthenticated: true,
+              client,
+            });
+          }
         }
-      }
-      break;
-    case 'Google Drive':
-      client = createGoogleDriveSyncBackendClient();
-      initialState.syncBackend = Map({
-        isAuthenticated: true,
-        client,
-      });
-      break;
-    case 'GitLab':
-      const gitlabOAuth = createGitlabOAuth();
-      if (gitlabOAuth.isAuthorized()) {
-        client = createGitLabSyncBackendClient(gitlabOAuth);
+        break;
+      case 'Google Drive':
+        client = createGoogleDriveSyncBackendClient();
         initialState.syncBackend = Map({
           isAuthenticated: true,
           client,
         });
-      } else {
-        handleGitLabAuthResponse(gitlabOAuth);
-      }
-      break;
-    case 'WebDAV':
-      client = createWebDAVSyncBackendClient(
-        getPersistedField('webdavEndpoint'),
-        getPersistedField('webdavUsername'),
-        getPersistedField('webdavPassword')
-      );
-      initialState.syncBackend = Map({
-        isAuthenticated: true,
-        client,
-      });
-      break;
-    default:
+        break;
+      case 'GitLab':
+        const gitlabOAuth = createGitlabOAuth();
+        if (gitlabOAuth.isAuthorized()) {
+          client = createGitLabSyncBackendClient(gitlabOAuth);
+          initialState.syncBackend = Map({
+            isAuthenticated: true,
+            client,
+          });
+        } else {
+          handleGitLabAuthResponse(gitlabOAuth);
+        }
+        break;
+      case 'WebDAV':
+        client = createWebDAVSyncBackendClient(
+          getPersistedField('webdavEndpoint'),
+          getPersistedField('webdavUsername'),
+          getPersistedField('webdavPassword')
+        );
+        initialState.syncBackend = Map({
+          isAuthenticated: true,
+          client,
+        });
+        break;
+      default:
     }
   }
   return client;

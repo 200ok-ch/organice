@@ -169,7 +169,9 @@ export default class SyncServiceSignIn extends PureComponent {
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
+    // const redirectUri = window.location.origin;
+    const redirectUri = 'https://organice.200ok.ch';
+    dropbox.auth.getAuthenticationUrl(redirectUri + '/').then((authURL) => {
       window.location = authURL;
     });
   }
