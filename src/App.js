@@ -76,7 +76,6 @@ export default class App extends PureComponent {
 
     const initialState = readInitialState();
 
-    window.initialHash = window.location.hash.substring(0);
     const hashContents = parseQueryString(window.location.hash);
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
     let client = null;
