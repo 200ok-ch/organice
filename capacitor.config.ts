@@ -9,10 +9,8 @@ const config: CapacitorConfig = {
     // hostname: 'localhost', // default: localhost
     // iosScheme: 'organice', // default: ionic
     // androidScheme: 'organice', // default: http
-    allowNavigation: ['https://gitlab.com']
+    // allowNavigation: ['https://gitlab.com']
   }
 };
-
-// https://gitlab.com/branch14/org
 
 export default config;

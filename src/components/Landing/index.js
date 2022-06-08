@@ -9,7 +9,7 @@ export default () => {
   return (
     <main className="landing-container-wrapper">
       <div className="landing-container">
-        <h1 className="landing-app-name">organ1ce</h1>
+        <h1 className="landing-app-name">organice</h1>
 
         <img className="landing-logo" src={logo} alt="Logo" />
 
