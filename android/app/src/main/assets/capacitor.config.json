@@ -3,9 +3,5 @@
 	"appName": "organice",
 	"webDir": "build",
 	"bundledWebRuntime": false,
-	"server": {
-		"allowNavigation": [
-			"https://gitlab.com"
-		]
-	}
+	"server": {}
 }
