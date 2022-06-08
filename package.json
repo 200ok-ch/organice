@@ -9,6 +9,7 @@
     "@babel/helper-environment-visitor": "^7.18.2",
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
     "@capacitor/android": "^3.5.1",
+    "@capacitor/app": "^1.1.1",
     "@capacitor/core": "^3.5.1",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",

@@ -15,7 +15,8 @@ export const createGitlabOAuth = () => {
     authorizationUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
-    redirectUrl: window.location.origin,
+    redirectUrl: 'https://organice.200ok.ch',
+    // redirectUrl: window.location.origin,
     scopes: ['api'],
     extraAuthorizationParams: {
       clientSecret: process.env.REACT_APP_GITLAB_SECRET,
@@ -162,7 +163,8 @@ export default (oauthClient) => {
     // Check project exists and user is a member who can *probably* commit.
     const [userResponse, membersResponse] = await Promise.all([
       // https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users
-      decoratedFetch(`${API_URL}/user`),
+      decoratedFetch(`${API_URL
+}/user`),
       // https://docs.gitlab.com/ee/api/members.html#list-all-members-of-a-group-or-project
       decoratedFetch(`${getProjectApi()}/members`),
     ]);

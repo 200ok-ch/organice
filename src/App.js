@@ -40,22 +40,26 @@ import {
 import _ from 'lodash';
 import { Map } from 'immutable';
 
+import AppUrlListener from './AppUrlListener';
+
 import { configure } from 'react-hotkeys';
 // do handle hotkeys even if they come from within 'input', 'select' or 'textarea'
 configure({ ignoreTags: [] });
 
 const handleGitLabAuthResponse = async (oauthClient) => {
   let success = false;
+  let error;
   try {
     success = await oauthClient.isReturningFromAuthServer();
     await oauthClient.getAccessToken();
-  } catch {
+  } catch(e) {
+    error = e;
     success = false;
   }
   if (!success) {
     // Edge case: somehow OAuth success redirect occurred but there isn't a code in
     // the current location's search params. This /shouldn't/ happen in practice.
-    alert('Unexpected sign in error, please try again');
+    alert('Unexpected sign in error, please try again: ' + error);
     return;
   }
 
@@ -68,6 +72,71 @@ const handleGitLabAuthResponse = async (oauthClient) => {
   }
 };
 
+export function handleAuthenticatedSyncService (initialState) {
+  window.initialHash = window.location.hash.substring(0);
+  const hashContents = parseQueryString(window.location.hash);
+  const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
+  let client = null;
+
+  if (!!authenticatedSyncService) {
+    switch (authenticatedSyncService) {
+    case 'Dropbox':
+      const dropboxAccessToken = hashContents.access_token;
+      if (dropboxAccessToken) {
+        client = createDropboxSyncBackendClient(dropboxAccessToken);
+        initialState.syncBackend = Map({
+          isAuthenticated: true,
+          client,
+        });
+        persistField('dropboxAccessToken', dropboxAccessToken);
+        window.location.hash = '';
+      } else {
+        const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
+        if (!!persistedDropboxAccessToken) {
+          client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
+          initialState.syncBackend = Map({
+            isAuthenticated: true,
+            client,
+          });
+        }
+      }
+      break;
+    case 'Google Drive':
+      client = createGoogleDriveSyncBackendClient();
+      initialState.syncBackend = Map({
+        isAuthenticated: true,
+        client,
+      });
+      break;
+    case 'GitLab':
+      const gitlabOAuth = createGitlabOAuth();
+      if (gitlabOAuth.isAuthorized()) {
+        client = createGitLabSyncBackendClient(gitlabOAuth);
+        initialState.syncBackend = Map({
+          isAuthenticated: true,
+          client,
+        });
+      } else {
+        handleGitLabAuthResponse(gitlabOAuth);
+      }
+      break;
+    case 'WebDAV':
+      client = createWebDAVSyncBackendClient(
+        getPersistedField('webdavEndpoint'),
+        getPersistedField('webdavUsername'),
+        getPersistedField('webdavPassword')
+      );
+      initialState.syncBackend = Map({
+        isAuthenticated: true,
+        client,
+      });
+      break;
+    default:
+    }
+  }
+  return client;
+}
+
 export default class App extends PureComponent {
   constructor(props) {
     super(props);
@@ -76,67 +145,7 @@ export default class App extends PureComponent {
 
     const initialState = readInitialState();
 
-    window.initialHash = window.location.hash.substring(0);
-    const hashContents = parseQueryString(window.location.hash);
-    const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
-    let client = null;
-
-    if (!!authenticatedSyncService) {
-      switch (authenticatedSyncService) {
-        case 'Dropbox':
-          const dropboxAccessToken = hashContents.access_token;
-          if (dropboxAccessToken) {
-            client = createDropboxSyncBackendClient(dropboxAccessToken);
-            initialState.syncBackend = Map({
-              isAuthenticated: true,
-              client,
-            });
-            persistField('dropboxAccessToken', dropboxAccessToken);
-            window.location.hash = '';
-          } else {
-            const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
-            if (!!persistedDropboxAccessToken) {
-              client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
-              initialState.syncBackend = Map({
-                isAuthenticated: true,
-                client,
-              });
-            }
-          }
-          break;
-        case 'Google Drive':
-          client = createGoogleDriveSyncBackendClient();
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client,
-          });
-          break;
-        case 'GitLab':
-          const gitlabOAuth = createGitlabOAuth();
-          if (gitlabOAuth.isAuthorized()) {
-            client = createGitLabSyncBackendClient(gitlabOAuth);
-            initialState.syncBackend = Map({
-              isAuthenticated: true,
-              client,
-            });
-          } else {
-            handleGitLabAuthResponse(gitlabOAuth);
-          }
-          break;
-        case 'WebDAV':
-          client = createWebDAVSyncBackendClient(
-            getPersistedField('webdavEndpoint'),
-            getPersistedField('webdavUsername'),
-            getPersistedField('webdavPassword')
-          );
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client,
-          });
-          break;
-        default:
-      }
-    }
+    const client = handleAuthenticatedSyncService(initialState);
 
     const queryStringContents = parseQueryString(window.location.search);
     const { captureFile, captureTemplateName, captureContent } = queryStringContents;
@@ -217,6 +226,7 @@ export default class App extends PureComponent {
     return (
       <DragDropContext onDragEnd={this.handleDragEnd}>
         <Router>
+          <AppUrlListener></AppUrlListener>
           <Provider store={this.store}>
             <div className="App">
               <Entry />

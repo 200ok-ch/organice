@@ -4,7 +4,8 @@
 	"webDir": "build",
 	"bundledWebRuntime": false,
 	"server": {
-		"hostname": "app",
-		"androidScheme": "organice"
+		"allowNavigation": [
+			"https://gitlab.com"
+		]
 	}
 }

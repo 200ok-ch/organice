@@ -119,7 +119,7 @@ function GitLab() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
 
-  const [project, setProject] = useState('');
+  const [project, setProject] = useState('https://gitlab.com/branch14/org');
   const handleSubmit = (evt) => {
     const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
