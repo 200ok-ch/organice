@@ -2,15 +2,9 @@
 import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
-import { Capacitor } from '@capacitor/core';
+import { redirectUrl } from '../util/redirect_url';
 
 import { fromJS, Map } from 'immutable';
-
-const redirectUrl = {
-  web: window.location.origin,
-  ios: 'https://organice.200ok.ch',
-  android: 'https://organice.200ok.ch'
-}
 
 export const createGitlabOAuth = () => {
   // Use promises as mutex to prevent concurrent token refresh attempts, which causes problems.
@@ -22,7 +16,7 @@ export const createGitlabOAuth = () => {
     authorizationUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
-    redirectUrl: redirectUrl[Capacitor.getPlatform()],
+    redirectUrl: redirectUrl(),
     scopes: ['api'],
     extraAuthorizationParams: {
       clientSecret: process.env.REACT_APP_GITLAB_SECRET,
