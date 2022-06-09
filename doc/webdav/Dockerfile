@@ -18,7 +18,7 @@ RUN mkdir /srv/dav
 RUN chmod 770 /srv/dav
 RUN chown www-data. /srv/dav
 
-COPY sample.org /srv/dav
+COPY sample.org /srv/dav/demo.org
 
 CMD apachectl -D FOREGROUND
 EXPOSE 80
