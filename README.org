@@ -406,7 +406,7 @@ those back-ends. But it doesn't have to be a barrier, just to get
 started. And maybe you don't want to host your files with either of
 them anyway and use WebDAV all the way.
 
-In any case, [[#faq_webdav][here's how to get running locally with a WebDAV setup]].
+In any case, [[https://organice.200ok.ch/documentation.html#faq_webdav][here's how to get running locally with a WebDAV setup]].
 
 **** Dropbox or GitLab
 
