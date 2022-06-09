@@ -17,6 +17,8 @@ import {
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
 
+import { redirectUrl } from '../../util/redirect_url';
+
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
@@ -169,7 +171,7 @@ export default class SyncServiceSignIn extends PureComponent {
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
+    dropbox.auth.getAuthenticationUrl(redirectUrl()).then((authURL) => {
       window.location = authURL;
     });
   }

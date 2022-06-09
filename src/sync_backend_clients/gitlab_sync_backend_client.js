@@ -2,6 +2,7 @@
 import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
+import { redirectUrl } from '../util/redirect_url';
 
 import { fromJS, Map } from 'immutable';
 
@@ -15,7 +16,7 @@ export const createGitlabOAuth = () => {
     authorizationUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
-    redirectUrl: window.location.origin,
+    redirectUrl: redirectUrl(),
     scopes: ['api'],
     extraAuthorizationParams: {
       clientSecret: process.env.REACT_APP_GITLAB_SECRET,

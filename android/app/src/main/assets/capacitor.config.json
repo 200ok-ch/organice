@@ -2,5 +2,6 @@
 	"appId": "ch.twohundredok.organice",
 	"appName": "organice",
 	"webDir": "build",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"server": {}
 }
