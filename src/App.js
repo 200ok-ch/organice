@@ -22,7 +22,6 @@ import { signOut } from './actions/sync_backend';
 import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base';
 
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
-import createGoogleDriveSyncBackendClient from './sync_backend_clients/google_drive_sync_backend_client';
 import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_backend_client';
 import createGitLabSyncBackendClient, {
   createGitlabOAuth,
@@ -77,7 +76,6 @@ export default class App extends PureComponent {
 
     const initialState = readInitialState();
 
-    window.initialHash = window.location.hash.substring(0);
     const hashContents = parseQueryString(window.location.hash);
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
     let client = null;
@@ -104,13 +102,6 @@ export default class App extends PureComponent {
               });
             }
           }
-          break;
-        case 'Google Drive':
-          client = createGoogleDriveSyncBackendClient();
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client,
-          });
           break;
         case 'GitLab':
           const gitlabOAuth = createGitlabOAuth();

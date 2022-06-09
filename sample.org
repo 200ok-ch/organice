@@ -110,7 +110,7 @@ Give them a try on these nested headers to get a feel for how they operate:
 ***** Clooney
 ** Syncing
 The "cloud" button in the lower left hand corner syncs changes to your
-chosen sync service (Dropbox, GitLab, WebDAV or Google Drive).
+chosen sync service (Dropbox, GitLab, or WebDAV).
 
 If there's a newer version on the server and no local changes, it'll pull.
 
@@ -438,10 +438,10 @@ SCHEDULED: <2018-09-17 Mon>
 ** This entry also only shows on exactly one day
    <2020-02-17 Mon>
 * Syncing
-organice pulls down your org files from Dropbox, GitLab, WebDAV or Google Drive. Click the "Sign in" button in the upper right hand corner to sign in with either of them and authenticate organice.
+organice pulls down your org files from Dropbox, GitLab, or WebDAV. Click the "Sign in" button in the upper right hand corner to sign in with either of them and authenticate organice.
 
 ** Backups
-The first time you push changes from organice back up to your chosen sync service, organice will make a backup of the original file first. It'll be named {your-file-name}.organice-bak. Dropbox and Google Drive also both keep a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up.
+The first time you push changes from organice back up to your chosen sync service, organice will make a backup of the original file first. It'll be named {your-file-name}.organice-bak. Dropbox keeps a full version history of your files for you, but this is an additional precaution in case something goes wrong pushing the file back up.
 
 Generally, when working with distributed Org files, we're recommending to put them under version control and to check for bugs and racing conditions between clients.
 
@@ -456,7 +456,7 @@ Default behaviour:
 You can adjust these defaults on a file per file basis by creating file settings in the [[/settings][settings menu]].
 
 * organice operates completely client side
-You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox, GitLab, WebDAV or Google Drive as back-ends for storage.
+You don't log in to organice directly because organice doesn't have a back end - it operates completely client side using Dropbox, GitLab, or WebDAV as back-ends for storage.
 * Capture URL params and Siri support
 organice supports a flexible mechanism for capturing using URL parameters. This mechanism integrates very nicely with the new [[https://support.apple.com/guide/shortcuts/welcome/ios][Siri Shortcuts]] feature in iOS 12, allowing you to use Siri to execute capture templates.
 

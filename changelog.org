@@ -7,6 +7,21 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-06-03 Fri]
+** Removed
+- Google Drive support. This backend had a few issues:
+  1. We waited [[https://github.com/200ok-ch/organice/issues/127][for years for Google to put the Google Drive API into
+     production mode]]. Without that, only very few people were actually
+     allowed by Google to use organice with Google Drive. A lot of
+     time and effort went into this from quite a few of people. Even
+     Google employees tried to expedite from within Google, but to no
+     avail. The maintainers of organice gave up on this issue since
+     [[https://github.com/200ok-ch/organice/issues/127#issuecomment-655339244][July 2020 and announced]] that the support for Google Drive will be
+     removed unless someone steps up and takes over this task. Nobody
+     did in the two years since, so we're removing it.
+  2. [[https://github.com/200ok-ch/organice/issues/109][Replace integration of Google Drive through <script> include in index.html with NPM module]]
+  3. [[https://github.com/200ok-ch/organice/issues/107][Sign in to Google Drive from new versions of Chrome dysfunctional]]
+
 * [2022-06-01 Wed]
 ** Added
    - Proper Landing Page

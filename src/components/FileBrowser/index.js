@@ -17,7 +17,9 @@ const FileBrowser = ({
   isLoadingMore,
   syncBackendType,
   syncBackend,
-  additionalSyncBackendState,
+  // INFO: This was required back when we had Google Drive support.
+  // Leaving it here in case another sync backend requires it.
+  // additionalSyncBackendState,
 }) => {
   useEffect(() => syncBackend.getDirectoryListing(path), [syncBackend, path]);
 
@@ -30,10 +32,6 @@ const FileBrowser = ({
       case 'WebDAV':
         const pathParts = path.split('/');
         return pathParts.slice(0, pathParts.length - 1).join('/');
-      case 'Google Drive':
-        return !!additionalSyncBackendState.get('parentId')
-          ? '/' + additionalSyncBackendState.get('parentId')
-          : null;
       default:
         return null;
     }

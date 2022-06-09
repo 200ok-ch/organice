@@ -147,18 +147,6 @@ export default ({
             <code>/org/todo.org</code>
           </Fragment>
         )}
-        {syncBackendType === 'Google Drive' && (
-          <Fragment>
-            {' '}
-            Specify the file id of each file. You can find the file id in the URL of the file in
-            organice (e.g.,{' '}
-            <code>
-              /file/
-              {'<file id>'}
-            </code>
-            ).
-          </Fragment>
-        )}
       </div>
 
       <Collapse
