@@ -3,5 +3,7 @@
 	"appName": "organice",
 	"webDir": "build",
 	"bundledWebRuntime": false,
-	"server": {}
+	"server": {
+		"cleartext": true
+	}
 }
