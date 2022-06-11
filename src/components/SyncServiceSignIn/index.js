@@ -19,7 +19,7 @@ import _ from 'lodash';
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(process.env.REACT_APP_WEBDAV_URL);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
