@@ -18,10 +18,11 @@ const ActionDrawer = ({ org, syncBackend, base, path }) => {
   const handleAddNewOrgFileClick = () => {
     // TODO: Do it like this?
     // base.activatePopup('addFile');
+    const content = '* First header\nExtend the file from here.';
     let fileName = prompt('New filename:');
     let newPath = `${path}/${fileName}`;
-    syncBackend.createFile(newPath);
-    org.addNewFile(newPath);
+    syncBackend.createFile(newPath, content);
+    org.addNewFile(newPath, content);
   };
 
   const mainButtonStyle = {

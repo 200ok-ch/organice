@@ -1371,8 +1371,8 @@ const deleteBookmark = (state, { context, bookmark }) => {
   );
 };
 
-const addNewFile = (state, { path }) => {
-  const parsedFile = parseOrg('* First header\nExtend the file from here.');
+const addNewFile = (state, { path, content }) => {
+  const parsedFile = parseOrg(content);
 
   return state
     .setIn(['files', path, 'headers'], parsedFile.get('headers'))

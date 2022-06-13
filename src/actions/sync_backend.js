@@ -132,21 +132,19 @@ function dirName(path) {
   return path.substring(0, path.lastIndexOf('/') + 1);
 }
 
-const newFileContent = '* First header from sync backend action';
-
-export const createFile = (path) => {
+export const createFile = (path, content) => {
   console.log(`In sync backend action: ${path}`);
   console.log('dirName: ' + dirName(path));
   return (dispatch, getState) => {
     dispatch(setLoadingMessage(`Creating file: ${path}`));
     getState()
       .syncBackend.get('client')
-      .createFile(path, newFileContent)
+      .createFile(path, content)
       .then(() => {
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(hideLoadingMessage());
         dispatch(getDirectoryListing(dirName(path)));
-        dispatch(parseFile(path, newFileContent));
+        dispatch(parseFile(path, content));
         dispatch(setDirty(false, path));
         dispatch(ActionCreators.clearHistory());
       })
