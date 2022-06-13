@@ -7,6 +7,13 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-06-13 Mon]
+** Added
+
+- Specify default webDAV URL in .env file
+  - PR: https://github.com/200ok-ch/organice/pull/829
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+
 * [2022-06-03 Fri]
 ** Removed
 - Google Drive support. This backend had a few issues:
