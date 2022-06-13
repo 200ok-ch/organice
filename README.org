@@ -23,7 +23,7 @@ Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[htt
 Creating and maintaining organice is made possible by all the
 volunteering [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]] and [[https://github.com/sponsors/200ok-ch][sponsors]]. If you enjoy using organice,
 and want to sponsor the development of Free and Open Source software,
-[[https://github.com/sponsors/200ok-ch][click here]].🙏
+you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and [[https://www.patreon.com/200ok][Patreon]].🙏
 
 ** Sponsors
 
