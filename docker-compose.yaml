@@ -8,7 +8,7 @@ services:
     logging:
       driver: json-file
     environment:
-      ORGANICE_WEBDAV_URL: hello.world
+      ORGANICE_WEBDAV_URL: hello.alain
   apache-webdav:
     build:
       context: ./
