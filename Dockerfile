@@ -16,6 +16,8 @@ RUN yarn install
 
 COPY . /opt/organice
 
+RUN ./bin/transient_env_vars.sh bate >> .env
+
 RUN yarn global add serve \
     && yarn build \
     && yarn cache clean \
@@ -29,4 +31,4 @@ USER organice
 
 ENV NODE_ENV=production
 EXPOSE 5000
-ENTRYPOINT ["serve", "-s", "build"]
+ENTRYPOINT ["./bin/entrypoint.sh"]
