@@ -38,12 +38,14 @@ export const signOut = () => (dispatch, getState) => {
 export const setCurrentFileBrowserDirectoryListing = (
   directoryListing,
   hasMore,
-  additionalSyncBackendState
+  additionalSyncBackendState,
+  path
 ) => ({
   type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
   directoryListing,
   hasMore,
   additionalSyncBackendState,
+  path,
 });
 
 export const setIsLoadingMoreDirectoryListing = (isLoadingMore) => ({
@@ -58,7 +60,9 @@ export const getDirectoryListing = (path) => (dispatch, getState) => {
   client
     .getDirectoryListing(path)
     .then(({ listing, hasMore, additionalSyncBackendState }) => {
-      dispatch(setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState));
+      dispatch(
+        setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState, path)
+      );
       dispatch(hideLoadingMessage());
     })
     .catch((error) => {
@@ -113,6 +117,30 @@ export const downloadFile = (path) => {
         dispatch(pushBackup(path, fileContents));
         dispatch(parseFile(path, fileContents));
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+        dispatch(setDirty(false, path));
+        dispatch(ActionCreators.clearHistory());
+      })
+      .catch(() => {
+        dispatch(hideLoadingMessage());
+        dispatch(setIsLoading(false, path));
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      });
+  };
+};
+
+export const createFile = (path) => {
+  console.log(`In sync backend action: ${path}`);
+  return (dispatch, getState) => {
+    dispatch(setLoadingMessage(`Creating file: ${path}`));
+    getState()
+      .syncBackend.get('client')
+      .createFile(path, '* New File sync backend')
+      .then((fileContents) => {
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5), `/${path}`));
+        dispatch(hideLoadingMessage());
+        // TODO: Get the base directory of `path`
+        dispatch(getDirectoryListing('/'));
+        dispatch(parseFile(path, fileContents));
         dispatch(setDirty(false, path));
         dispatch(ActionCreators.clearHistory());
       })

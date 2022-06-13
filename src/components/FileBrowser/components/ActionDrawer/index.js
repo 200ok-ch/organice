@@ -10,14 +10,17 @@ import './../../../OrgFile/components/ActionDrawer/stylesheet.css';
 import * as orgActions from '../../../../actions/org';
 import * as captureActions from '../../../../actions/capture';
 import * as baseActions from '../../../../actions/base';
+import * as syncActions from '../../../../actions/sync_backend';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
 
-const ActionDrawer = ({ base, path }) => {
+const ActionDrawer = ({ org, syncBackend, base, path }) => {
   const handleAddNewOrgFileClick = () => {
-    base.activatePopup('addFile');
+    // TODO: Do it like this?
+    // base.activatePopup('addFile');
     let fileName = prompt('New filename:');
-    console.log(fileName);
+    syncBackend.createFile(fileName);
+    org.addNewFile(fileName);
   };
 
   const mainButtonStyle = {
@@ -52,7 +55,7 @@ const ActionDrawer = ({ base, path }) => {
 };
 
 const mapStateToProps = (state) => {
-  const path = state.org.present.get('path');
+  const path = state.syncBackend.get('currentPath');
   // const files = state.org.present.get('files');
   return {
     path,
@@ -64,6 +67,7 @@ const mapDispatchToProps = (dispatch) => {
     org: bindActionCreators(orgActions, dispatch),
     capture: bindActionCreators(captureActions, dispatch),
     base: bindActionCreators(baseActions, dispatch),
+    syncBackend: bindActionCreators(syncActions, dispatch),
   };
 };
 
