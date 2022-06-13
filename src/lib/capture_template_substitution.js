@@ -12,6 +12,8 @@ export default (templateString, customVariables = Map()) => {
     '%T': `<${format(new Date(), 'yyyy-MM-dd eee HH:mm')}>`,
     '%u': `[${format(new Date(), 'yyyy-MM-dd eee')}]`,
     '%U': `[${format(new Date(), 'yyyy-MM-dd eee HH:mm')}]`,
+    '%r': `${format(new Date(), 'yyyy-MM-dd eee')}`,
+    '%R': `${format(new Date(), 'yyyy-MM-dd eee HH:mm')}`,
   };
 
   customVariables.entrySeq().forEach(([key, value]) => {
