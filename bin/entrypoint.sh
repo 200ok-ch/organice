@@ -2,4 +2,4 @@
 
 bin/transient_env_vars.sh switch build serve
 
-serve -s serve
+serve -p 5000 -s serve
