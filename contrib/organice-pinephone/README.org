@@ -1,5 +1,9 @@
 * Organice setup on a PinePhone
 
+Author:
+ - Github: https://github.com/neiljerram
+ - Email: neiljerram@gmail.com
+
 I use Mobian as the distro on my PinePhone, so some of the following
 details will be Mobian-specific, but should be adjustable for other
 distros.  (Or, I would guess, for other Linux phones than the
