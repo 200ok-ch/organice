@@ -3,7 +3,7 @@ services:
   organice:
     image: 'twohundredok/organice:latest'
     ports:
-      - '5000:5000'
+      - '5000:3000'
     logging:
       driver: json-file
     environment:

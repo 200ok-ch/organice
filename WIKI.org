@@ -320,6 +320,15 @@
     + Password :: if you've set a password for the shared folder, here's where you
                   input it
 
+**** WebDAV Config
+:PROPERTIES:
+:CUSTOM_ID: webdav-config
+:END:
+
+If you want to self-host organice and want to configure a default
+WebDAV server for your instance, you can by setting the variable
+=REACT_APP_WEBDAV_URL= in the =.env= file.
+
 ** Can we add feature X from plugin Y?
    :PROPERTIES:
    :CUSTOM_ID: can-we-add-feature-x-from-plugin-y
