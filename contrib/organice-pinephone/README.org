@@ -1,0 +1,127 @@
+* Organice setup on a PinePhone
+
+Author:
+ - Github: https://github.com/neiljerram
+ - Email: neiljerram@gmail.com
+
+I use Mobian as the distro on my PinePhone, so some of the following
+details will be Mobian-specific, but should be adjustable for other
+distros.  (Or, I would guess, for other Linux phones than the
+PinePhone.)
+
+** General approach
+
+I don't want to use a proprietary syncing tool, or host my own WebDAV
+server on the Internet, and I already use a Git-based syncing approach
+(on my laptop and an Android phone) with my private repo on GitHub as
+the central point.
+
+Hence the general approach here is:
+
+- Keep a set of your Org files on the phone.
+
+- Run a local WebDAV server on the phone, backed by that set of files.
+
+- Run a local Organice server on the phone.
+
+- Run a web browser on the phone to access that local Organice server.
+
+- Use any syncing solution between the set of Org files on the phone
+  and other sets elsewhere.
+
+** Keep a set of your Org files on the phone
+
+Mine are at =/home/mobian/org=; for example, one of my Org files is
+=/home/mobian/org/personal.org=.
+
+** Run a local WebDAV server on the phone, backed by that set of files
+
+I use the sample WebDAV server provided by the Organice repo, modified
+to preserve correct ownership of the Org files, built into a Docker
+image, and run as a systemd user service.
+
+1. For the sample WebDAV server, see =doc/webdav= in this repo.
+
+2. The =Dockerfile= is modified, following
+   https://jtreminio.com/blog/running-docker-containers-as-current-host-user/,
+   so as to map UID 1000 outside the container to the =www-data= user
+   inside.
+
+3. From the root of this repo, build the Docker image with =docker
+   build -f doc/webdav/Dockerfile -t apache-webdav .=
+
+4. Configure a systemd user service to run that image: see the
+   =webdav.service= example in this directory, and note:
+
+   - Mapping =/home/mobian/org= as =/srv/dav= inside the container.
+     =/srv/dav= is where the WebDAV server will read and write the
+     files that it presents and receives over HTTP.
+
+   - The WebDAV server will be on port 8080.
+
+   - The =ExecStop= is needed for =systemctl stop= to work quickly.
+     Without the =ExecStop= it seems to hang for a few minutes.
+
+** Run a local Organice server on the phone
+
+I build my own fork of Organice into a Docker image, and run that as a
+systemd user service.
+
+1. From the root of this repo, build the Docker image with =docker
+   build -t organice .=
+
+2. Configure a systemd user service to run that image: see the
+   =organice.service= example in this directory, and note:
+
+   - =After=webdav=, so that the WebDAV server starts first.
+
+   - The Organice server will be on port 3000.
+
+** Run a web browser on the phone to access that local Organice server
+
+I use Firefox, pointed at http://localhost:3000/files
+
+On first use, configure Organice to use the WebDAV server at http://localhost:8080
+
+** Use any syncing solution between the phone and elsewhere
+
+My syncing solution is Git-based, with each device having its own
+branch.  It's guaranteed that a device will always be able to update
+and push (fast forward) to its own branch.  In addition, the sync
+script merges between the device branch and master, whenever it can do
+that without any conflicts.
+
+In a bit more detail, each time it runs, the sync script performs the
+following steps.
+
+1. Commit any uncommitted changes into the device branch on the phone.
+
+2. Update remote tracking branches from GitHub.
+
+3. Determine if the device branch on GitHub has changes that the phone
+   doesn't have locally.
+
+4. If so, merge device branch changes from GitHub.  Abort in case of conflicts.
+
+5. Push local device branch to GitHub.
+
+6. Try to merge GitHub master.  If successful (i.e. no conflicts):
+
+   - Push local device branch to GitHub (again).
+
+   - Also merge the device branch into master, and push that back to GitHub.
+
+If there were any conflicts in steps (4) or (6), the script reports
+that the user will need to intervene manually to resolve.
+
+** What still needs work?
+
+*** Automatically running the sync script when needed
+
+Organice automatically syncs to/from the WebDAV server when needed,
+but for me that is only half of the path to the central point on
+GitHub.  In principle I also need to run my sync script when I know
+that I've made changes on the phone that I want to merge upstream, or
+when I know there are changes upstream that I want pulled into the
+phone.  I haven't yet worked out a nice way to trigger that easily on
+the phone.
