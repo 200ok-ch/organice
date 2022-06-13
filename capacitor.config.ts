@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ch.twohundredok.organice',
+  appId: 'com.twohundredok.organice',
   appName: 'organice',
   webDir: 'build',
   bundledWebRuntime: false,
