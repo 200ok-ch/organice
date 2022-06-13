@@ -1380,7 +1380,7 @@ const addNewFile = (state, { path, content }) => {
     .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
     .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'))
     .setIn(['files', path, 'activeClocks'], parsedFile.get('activeClocks'))
-    .setIn(['files', path, 'isDirty'], true);
+    .setIn(['files', path, 'isDirty'], false);
 };
 
 const addNewEmptyFileSetting = (state) =>

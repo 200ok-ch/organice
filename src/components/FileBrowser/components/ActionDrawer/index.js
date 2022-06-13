@@ -8,16 +8,12 @@ import { bindActionCreators } from 'redux';
 import './../../../OrgFile/components/ActionDrawer/stylesheet.css';
 
 import * as orgActions from '../../../../actions/org';
-import * as captureActions from '../../../../actions/capture';
-import * as baseActions from '../../../../actions/base';
 import * as syncActions from '../../../../actions/sync_backend';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
 
-const ActionDrawer = ({ org, syncBackend, base, path }) => {
+const ActionDrawer = ({ org, syncBackend, path }) => {
   const handleAddNewOrgFileClick = () => {
-    // TODO: Do it like this?
-    // base.activatePopup('addFile');
     const content = '* First header\nExtend the file from here.';
     let fileName = prompt('New filename:');
     let newPath = `${path}/${fileName}`;
@@ -58,7 +54,6 @@ const ActionDrawer = ({ org, syncBackend, base, path }) => {
 
 const mapStateToProps = (state) => {
   const path = state.syncBackend.get('currentPath');
-  // const files = state.org.present.get('files');
   return {
     path,
   };
@@ -67,8 +62,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     org: bindActionCreators(orgActions, dispatch),
-    capture: bindActionCreators(captureActions, dispatch),
-    base: bindActionCreators(baseActions, dispatch),
     syncBackend: bindActionCreators(syncActions, dispatch),
   };
 };

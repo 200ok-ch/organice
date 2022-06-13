@@ -128,13 +128,14 @@ export const downloadFile = (path) => {
   };
 };
 
+/**
+ * @param {String} path Returns the directory name of `path`.
+ */
 function dirName(path) {
   return path.substring(0, path.lastIndexOf('/') + 1);
 }
 
 export const createFile = (path, content) => {
-  console.log(`In sync backend action: ${path}`);
-  console.log('dirName: ' + dirName(path));
   return (dispatch, getState) => {
     dispatch(setLoadingMessage(`Creating file: ${path}`));
     getState()

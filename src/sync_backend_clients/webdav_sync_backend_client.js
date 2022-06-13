@@ -76,7 +76,7 @@ export default (url, login, password) => {
     new Promise((resolve, reject) =>
       webdavClient
         .putFileContents(path, contents, { overwrite: true })
-        .then(resolve(contents))
+        .then(resolve())
         .catch(reject)
     );
 
