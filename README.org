@@ -14,11 +14,25 @@
 
 # REPO_PLACEHOLDER
 
-#+html: <p>Tests: <a href="https://circleci.com/gh/200ok-ch/organice"><img src="https://circleci.com/gh/200ok-ch/organice.svg?style=svg"></a></p>
+#+BEGIN_HTML
+<p>
+  <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice">
+    <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" />
+  </a>
+  <a href='#'>
+    <img src="https://badgen.net/uptime-robot/month/m789449277-7986138caa6b43ed68a91563" />
+  </a>
+  <a href="https://matrix.to/#/#organice:matrix.org">
+    <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" />
+  </a>
+</p>
+#+END_HTML
 
-Documentation: https://organice.200ok.ch/documentation.html
+[[https://organice.200ok.ch/documentation.html][Documentation]]
 
-Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix
+Community chat:
+- #organice on IRC [[https://libera.chat/][Libera.Chat]]
+- [[https://matrix.to/#/#organice:matrix.org][#organice:matrix.org]] on Matrix
 
 ** What does this project do?
    :PROPERTIES:
