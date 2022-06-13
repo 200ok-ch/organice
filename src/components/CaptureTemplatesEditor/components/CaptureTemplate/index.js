@@ -292,10 +292,10 @@ export default ({
             <code>%U</code> - Inactive timestamp, with date and time.
           </li>
           <li>
-            <code>%r</code> - Timestamp, date only, no surrounding punctation - for dates with modifiers.
+            <code>%r</code> - Timestamp, date only, no surrounding punctation.
           </li>
           <li>
-            <code>%R</code> - Timestamp, with date and time, no surrounding punctuation - for dates with modifiers.
+            <code>%R</code> - Timestamp, with date and time, no surrounding punctuation.
           </li>
           <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
