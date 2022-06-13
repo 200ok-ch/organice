@@ -66,7 +66,7 @@ SendIntent.checkSendIntentReceived()
       //   .catch((err) => console.error(err));
     }
   })
-  .catch(err => console.error(err));
+  .catch((err) => console.error(err));
 
 const handleGitLabAuthResponse = async (oauthClient) => {
   let success = false;
