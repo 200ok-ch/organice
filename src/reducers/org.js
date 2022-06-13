@@ -1371,10 +1371,7 @@ const deleteBookmark = (state, { context, bookmark }) => {
   );
 };
 
-const addNewFile = (state, { fileName }) => {
-  console.log('In reducer. Filename: ' + fileName);
-
-  const path = `/${fileName}`;
+const addNewFile = (state, { path }) => {
   const parsedFile = parseOrg('* First header\nExtend the file from here.');
 
   return state

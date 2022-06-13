@@ -19,8 +19,9 @@ const ActionDrawer = ({ org, syncBackend, base, path }) => {
     // TODO: Do it like this?
     // base.activatePopup('addFile');
     let fileName = prompt('New filename:');
-    syncBackend.createFile(fileName);
-    org.addNewFile(fileName);
+    let newPath = `${path}/${fileName}`;
+    syncBackend.createFile(newPath);
+    org.addNewFile(newPath);
   };
 
   const mainButtonStyle = {

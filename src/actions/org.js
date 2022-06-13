@@ -711,7 +711,7 @@ export const deleteBookmark = (context, bookmark) => ({
   bookmark,
 });
 
-export const addNewFile = (fileName) => ({
+export const addNewFile = (path) => ({
   type: 'ADD_NEW_FILE',
-  fileName,
+  path,
 });
