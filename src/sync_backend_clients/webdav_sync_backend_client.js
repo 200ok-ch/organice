@@ -74,7 +74,10 @@ export default (url, login, password) => {
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
-      webdavClient.putFileContents(path, contents, { overwrite: true }).then(resolve).catch(reject)
+      webdavClient
+        .putFileContents(path, contents, { overwrite: true })
+        .then(resolve())
+        .catch(reject)
     );
 
   const updateFile = uploadFile;

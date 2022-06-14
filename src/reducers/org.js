@@ -1371,6 +1371,18 @@ const deleteBookmark = (state, { context, bookmark }) => {
   );
 };
 
+const addNewFile = (state, { path, content }) => {
+  const parsedFile = parseOrg(content);
+
+  return state
+    .setIn(['files', path, 'headers'], parsedFile.get('headers'))
+    .setIn(['files', path, 'todoKeywordSets'], parsedFile.get('todoKeywordSets'))
+    .setIn(['files', path, 'fileConfigLines'], parsedFile.get('fileConfigLines'))
+    .setIn(['files', path, 'linesBeforeHeadings'], parsedFile.get('linesBeforeHeadings'))
+    .setIn(['files', path, 'activeClocks'], parsedFile.get('activeClocks'))
+    .setIn(['files', path, 'isDirty'], false);
+};
+
 const addNewEmptyFileSetting = (state) =>
   state.update('fileSettings', (settings) =>
     settings.push(
@@ -1543,6 +1555,8 @@ const reducer = (state, action) => {
       return saveBookmark(state, action);
     case 'DELETE_BOOKMARK':
       return deleteBookmark(state, action);
+    case 'ADD_NEW_FILE':
+      return addNewFile(state, action);
     default:
       return state;
   }
