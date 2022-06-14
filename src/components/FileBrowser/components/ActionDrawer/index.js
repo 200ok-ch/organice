@@ -20,6 +20,9 @@ const ActionDrawer = ({ org, syncBackend, path }) => {
   const handleAddNewOrgFileClick = () => {
     const content = '* First header\nExtend the file from here.';
     let fileName = prompt('New filename:');
+
+    if (!fileName) return;
+
     fileName = ensureCompleteFilename(fileName);
     let newPath = `${path}/${fileName}`;
 
