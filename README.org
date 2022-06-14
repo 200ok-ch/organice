@@ -623,7 +623,7 @@ signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compo
 A full list of such environment variables can be found in [[https://github.com/200ok-ch/organice/blob/master/.env.sample][.env.sample]].
 
 The prefix =REACT_APP_= has to be replaced with =ORGANICE_=. The
-naming should be pretty self eplanatory.
+naming should be pretty self explanatory.
 
 *** With =docker-compose=
 
