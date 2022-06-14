@@ -22,6 +22,7 @@ const ActionDrawer = ({ org, syncBackend, path }) => {
     let fileName = prompt('New filename:');
     fileName = ensureCompleteFilename(fileName);
     let newPath = `${path}/${fileName}`;
+
     syncBackend.createFile(newPath, content);
     org.addNewFile(newPath, content);
   };

@@ -145,9 +145,6 @@ export const createFile = (path, content) => {
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(hideLoadingMessage());
         dispatch(getDirectoryListing(dirName(path)));
-        dispatch(parseFile(path, content));
-        dispatch(setDirty(false, path));
-        dispatch(ActionCreators.clearHistory());
       })
       .catch(() => {
         dispatch(hideLoadingMessage());
