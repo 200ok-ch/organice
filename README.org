@@ -616,6 +616,15 @@ deployed via FTP. The full build script is in
 
 organice is also available as a Docker image.
 
+The docker image recognizes a couple of environment variables. For
+example =ORGANICE_WEBDAV_URL= prefills the URL field in the WebDAV
+signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yaml][docker-compose.yaml]] for an example how to use it.
+
+A full list of such environment variables can be found in [[https://github.com/200ok-ch/organice/blob/master/.env.sample][.env.sample]].
+
+The prefix =REACT_APP_= has to be replaced with =ORGANICE_=. The
+naming should be pretty self explanatory.
+
 *** With =docker-compose=
 
 If [[https://docs.docker.com/compose/][docker-compose]] is installed, the following command downloads and

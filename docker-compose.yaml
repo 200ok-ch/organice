@@ -6,6 +6,8 @@ services:
       - '5000:3000'
     logging:
       driver: json-file
+    environment:
+      ORGANICE_WEBDAV_URL: http://webdav.example.com
   apache-webdav:
     build:
       context: ./
