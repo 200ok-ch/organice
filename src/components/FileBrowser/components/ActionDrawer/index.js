@@ -4,6 +4,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import _ from 'lodash';
 
 import './../../../OrgFile/components/ActionDrawer/stylesheet.css';
 
@@ -16,7 +17,7 @@ const ensureCompleteFilename = (fileName) => {
   return fileName.endsWith('.org') ? fileName : `${fileName}.org`;
 };
 
-const ActionDrawer = ({ org, syncBackend, path }) => {
+const ActionDrawer = ({ org, files, syncBackend, path }) => {
   const handleAddNewOrgFileClick = () => {
     const content = '* First header\nExtend the file from here.';
     let fileName = prompt('New filename:');
@@ -26,8 +27,12 @@ const ActionDrawer = ({ org, syncBackend, path }) => {
     fileName = ensureCompleteFilename(fileName);
     let newPath = `${path}/${fileName}`;
 
-    syncBackend.createFile(newPath, content);
-    org.addNewFile(newPath, content);
+    if (_.includes(files, newPath)) {
+      alert('File already exists. Aborting.');
+    } else {
+      syncBackend.createFile(newPath, content);
+      org.addNewFile(newPath, content);
+    }
   };
 
   const mainButtonStyle = {
@@ -63,8 +68,11 @@ const ActionDrawer = ({ org, syncBackend, path }) => {
 
 const mapStateToProps = (state) => {
   const path = state.syncBackend.get('currentPath');
+  let files = state.syncBackend.getIn(['currentFileBrowserDirectoryListing', 'listing']);
+  files = files ? files.map((e) => e.get('id')).toJS() : [];
   return {
     path,
+    files,
   };
 };
 
