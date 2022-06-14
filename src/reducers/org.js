@@ -640,7 +640,13 @@ const setOpennessState = (state, action) => {
   return state.setIn(['opennessState', path], fromJS(opennessState));
 };
 
-const setDirty = (state, action) => state.set('isDirty', action.isDirty);
+const setDirty = (state, action) => {
+  const id = _.get(state.get('isDirtyNew'), 'id');
+  const newId = _.isUndefined(id) ? 0 : id + 1;
+  state = state.set('isDirty', action.isDirty);
+  state = state.set('isDirtyNew', { id: newId, isDirty: action.isDirty });
+  return state;
+};
 
 const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
 
