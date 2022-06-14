@@ -12,10 +12,15 @@ import * as syncActions from '../../../../actions/sync_backend';
 
 import ActionButton from '../../../OrgFile/components/ActionDrawer/components/ActionButton';
 
+const ensureCompleteFilename = (fileName) => {
+  return fileName.endsWith('.org') ? fileName : `${fileName}.org`;
+};
+
 const ActionDrawer = ({ org, syncBackend, path }) => {
   const handleAddNewOrgFileClick = () => {
     const content = '* First header\nExtend the file from here.';
     let fileName = prompt('New filename:');
+    fileName = ensureCompleteFilename(fileName);
     let newPath = `${path}/${fileName}`;
     syncBackend.createFile(newPath, content);
     org.addNewFile(newPath, content);
