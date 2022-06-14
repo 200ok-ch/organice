@@ -7,6 +7,10 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-06-14 Tue]
+** Added
+- Create new file from file browser
+  - PR: https://github.com/200ok-ch/organice/pull/818
 * [2022-06-13 Mon]
 ** Added
 
