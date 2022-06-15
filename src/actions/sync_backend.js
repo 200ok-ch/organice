@@ -7,6 +7,8 @@ import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_c
 
 import { addSeconds } from 'date-fns';
 
+import pathParse from 'path-parse';
+
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
     case 'WebDAV':
@@ -132,7 +134,7 @@ export const downloadFile = (path) => {
  * @param {String} path Returns the directory name of `path`.
  */
 function dirName(path) {
-  return path.substring(0, path.lastIndexOf('/') + 1);
+  return pathParse(path).dir;
 }
 
 export const createFile = (path, content) => {
