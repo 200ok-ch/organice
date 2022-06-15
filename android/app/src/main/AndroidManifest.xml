@@ -39,10 +39,15 @@
           <intent-filter>
             <action android:name="android.intent.action.SEND" />
             <category android:name="android.intent.category.DEFAULT" />
-            <data android:mimeType="text/plain" />
-            <data android:mimeType="image/*" />
-            <data android:mimeType="application/*" />
-            <data android:mimeType="video/*" />
+            <!-- TODO: The POC for sharing on Android is done. However, not
+                 a lot happens with the shared data, yet. The next
+                 step is continue in App.js and build captures for the
+                 various mime types. -->
+
+            <!-- <data android:mimeType="text/plain" /> -->
+            <!-- <data android:mimeType="image/*" /> -->
+            <!-- <data android:mimeType="application/*" /> -->
+            <!-- <data android:mimeType="video/*" /> -->
           </intent-filter>
         </activity>
 
