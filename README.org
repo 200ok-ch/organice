@@ -34,6 +34,23 @@ Community chat:
 - #organice on IRC [[https://libera.chat/][Libera.Chat]]
 - [[https://matrix.to/#/#organice:matrix.org][#organice:matrix.org]] on Matrix
 
+Creating and maintaining organice is made possible by all the
+volunteering [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]] and [[https://github.com/sponsors/200ok-ch][sponsors]]. If you enjoy using organice,
+and want to sponsor the development of Free and Open Source software,
+you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and [[https://www.patreon.com/200ok][Patreon]].🙏
+
+** Sponsors
+
+#+BEGIN_HTML
+<p align="center">
+  <a href="https://github.com/mxparker">
+    <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/>
+  </a>
+</p>
+#+END_HTML
+
+And 1 anonymous sponsor.
+
 ** What does this project do?
    :PROPERTIES:
    :CUSTOM_ID: what-does-this-project-do
@@ -999,19 +1016,19 @@ fork. organice differs from org-web in that:
     Software (https://200ok.ch/floss.html) and has co-organized
     [[https://200ok.ch/tags/emacsconf.html][EmacsConf 2019]].
   - That's also why organice is Free Software (with the strong
-    [[https://github.com/200ok-ch/organice/blob/master/LICENSE][AGPL-3.0]]
-    license) whereas org-web is Open Source (with
-    [[https://github.com/DanielDe/org-web/blob/master/LICENSE][The Unlicense]]).
+    [[https://github.com/200ok-ch/organice/blob/master/LICENSE][AGPL-3.0]] license) whereas org-web is Open Source (with [[https://github.com/DanielDe/org-web/blob/master/LICENSE][The
+    Unlicense]]).
   - The continuous effort yields a certain power over time. At the
-    time of writing this, organice has ~3 times as many commits (~1700
-    vs 600) and contributors (29 vs. 8). Of course, quantity doesn't
+    time of writing this, organice has many times more commits (~2400
+    vs ~600) and contributors (36 vs. 9). Of course, quantity doesn't
     trump quality. However, many of the new contributors brought
     significant features and improvements, not just tiny patches.
 
 - organice initially focused on becoming bug free - for example on
   parsing and exporting org files correctly.
 - organice continues to evolve independently with its own feature
-  set. For example, it has [[https://organice.200ok.ch/documentation.html#faq_webdav][WebDAV support]].
+  set. For example, it has [[https://organice.200ok.ch/documentation.html#faq_webdav][WebDAV support]]. For a list of all user
+  visible changes, please see [[https://github.com/200ok-ch/organice/blob/master/changelog.org][the changelog]].
 - organice is a project with equal focus on mobile as desktop
   browsers.
 - org-web [[https://github.com/DanielDe/org-web/issues/75][tracks users]] with Google Analytics. organice [[https://github.com/200ok-ch/organice/issues/41][does not]].
