@@ -34,6 +34,7 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
+    "send-intent": "^3.0.11",
     "webdav": "^3.3.0"
   },
   "scripts": {
