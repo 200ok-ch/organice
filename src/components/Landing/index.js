@@ -314,6 +314,84 @@ export default () => {
                 </div>
               </section>
 
+              <section className="bg-white pt-10">
+                <div className="container px-5">
+                  <div className="row gx-5 mb-10">
+                    <h1 className="text-center mb-5">What our users say</h1>
+                    <div
+                      className="col-lg-6 mb-5 mb-lg-0 divider-right aos-init aos-animate"
+                      data-aos="fade"
+                    >
+                      <div className="testimonial p-lg-5">
+                        <p className="testimonial-quote text-primary">
+                          "This is a SPECTACULAR project and I am glad that I found it. organice
+                          takes the extreme power of org mode and makes it simple to use. When
+                          combined with the option to self-host your own data rganice has created an
+                          extremely flexible and secure option to help fulfill everyone's
+                          organizational needs."
+                        </p>
+                        <div className="row">
+                          <div className="col-3">
+                            <img
+                              className="card-img"
+                              src="https://github.com/dmorlitz.png"
+                              alt="@dmorlitz"
+                            />
+                          </div>
+                          <div className="col-9">
+                            <div className="testimonial-name">
+                              <a
+                                target="_blank"
+                                href="https://github.com/dmorlitz"
+                                style={{ color: '#363d47' }}
+                                rel="noopener noreferrer"
+                              >
+                                @dmorlitz
+                              </a>
+                            </div>
+                            <div className="testimonial-position">Contributor</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="col-lg-6 aos-init aos-animate"
+                      data-aos="fade"
+                      data-aos-delay="100"
+                    >
+                      <div className="testimonial p-lg-5">
+                        <p className="testimonial-quote text-primary">
+                          "Been using organice for years. To me, it’s by far the most usable
+                          solution to interacting with org files on a mobile device."
+                        </p>
+                        <div className="row">
+                          <div className="col-3">
+                            <img
+                              className="card-img"
+                              src="https://github.com/jcpst.png"
+                              alt="@jcpst"
+                            />
+                          </div>
+                          <div className="col-9">
+                            <div className="testimonial-name">
+                              <a
+                                target="_blank"
+                                href="https://github.com/jcpst"
+                                style={{ color: '#363d47' }}
+                                rel="noopener noreferrer"
+                              >
+                                @jcpst
+                              </a>
+                            </div>
+                            <div className="testimonial-position">User</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
               <hr className="m-0" />
 
               <section className="bg-dark py-10">
