@@ -27,7 +27,15 @@ you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and
 
 ** Sponsors
 
-#+html: <p align="center"><a href="https://github.com/mxparker"><img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/></a></p>
+#+BEGIN_HTML
+<p align="center">
+  <a href="https://github.com/mxparker">
+    <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/>
+  </a>
+</p>
+#+END_HTML
+
+And 1 anonymous sponsor.
 
 ** What does this project do?
    :PROPERTIES:
