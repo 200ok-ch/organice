@@ -22,7 +22,6 @@ import { signOut } from './actions/sync_backend';
 import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base';
 
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
-import createGoogleDriveSyncBackendClient from './sync_backend_clients/google_drive_sync_backend_client';
 import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_backend_client';
 import createGitLabSyncBackendClient, {
   createGitlabOAuth,
@@ -80,58 +79,51 @@ export function handleAuthenticatedSyncService(initialState) {
 
   if (!!authenticatedSyncService) {
     switch (authenticatedSyncService) {
-      case 'Dropbox':
-        const dropboxAccessToken = hashContents.access_token;
-        if (dropboxAccessToken) {
-          client = createDropboxSyncBackendClient(dropboxAccessToken);
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client,
-          });
-          persistField('dropboxAccessToken', dropboxAccessToken);
-          window.location.hash = '';
-        } else {
-          const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
-          if (!!persistedDropboxAccessToken) {
-            client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
-            initialState.syncBackend = Map({
-              isAuthenticated: true,
-              client,
-            });
-          }
-        }
-        break;
-      case 'Google Drive':
-        client = createGoogleDriveSyncBackendClient();
+    case 'Dropbox':
+      const dropboxAccessToken = hashContents.access_token;
+      if (dropboxAccessToken) {
+        client = createDropboxSyncBackendClient(dropboxAccessToken);
         initialState.syncBackend = Map({
           isAuthenticated: true,
           client,
         });
-        break;
-      case 'GitLab':
-        const gitlabOAuth = createGitlabOAuth();
-        if (gitlabOAuth.isAuthorized()) {
-          client = createGitLabSyncBackendClient(gitlabOAuth);
+        persistField('dropboxAccessToken', dropboxAccessToken);
+        window.location.hash = '';
+      } else {
+        const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
+        if (!!persistedDropboxAccessToken) {
+          client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
           initialState.syncBackend = Map({
             isAuthenticated: true,
             client,
           });
-        } else {
-          handleGitLabAuthResponse(gitlabOAuth);
         }
-        break;
-      case 'WebDAV':
-        client = createWebDAVSyncBackendClient(
-          getPersistedField('webdavEndpoint'),
-          getPersistedField('webdavUsername'),
-          getPersistedField('webdavPassword')
-        );
+      }
+      break;
+    case 'GitLab':
+      const gitlabOAuth = createGitlabOAuth();
+      if (gitlabOAuth.isAuthorized()) {
+        client = createGitLabSyncBackendClient(gitlabOAuth);
         initialState.syncBackend = Map({
           isAuthenticated: true,
           client,
         });
-        break;
-      default:
+      } else {
+        handleGitLabAuthResponse(gitlabOAuth);
+      }
+      break;
+    case 'WebDAV':
+      client = createWebDAVSyncBackendClient(
+        getPersistedField('webdavEndpoint'),
+        getPersistedField('webdavUsername'),
+        getPersistedField('webdavPassword')
+      );
+      initialState.syncBackend = Map({
+        isAuthenticated: true,
+        client,
+      });
+      break;
+    default:
     }
   }
   return client;

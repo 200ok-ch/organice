@@ -64,13 +64,6 @@ const debouncedPushConfigToSyncBackend = _.debounce(
           alert(`There was an error trying to push settings to your sync backend: ${error}`)
         );
         break;
-      case 'Google Drive':
-        syncBackendClient
-          .createFile('.organice-config.json', 'root', contents)
-          .catch((error) =>
-            alert(`There was an error trying to push settings to your sync backend: ${error}`)
-          );
-        break;
       default:
     }
   },
@@ -388,12 +381,6 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
     case 'GitLab':
     case 'WebDAV':
       fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
-      break;
-    case 'Google Drive':
-      fileContentsPromise = syncBackendClient.getFileContentsByNameAndParent(
-        '.organice-config.json',
-        'root'
-      );
       break;
     default:
   }

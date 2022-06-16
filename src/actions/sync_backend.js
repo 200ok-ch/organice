@@ -1,4 +1,3 @@
-/* global gapi */
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
@@ -17,9 +16,6 @@ export const signOut = () => (dispatch, getState) => {
       break;
     case 'Dropbox':
       persistField('dropboxAccessToken', null);
-      break;
-    case 'Google Drive':
-      gapi.auth2.getAuthInstance().signOut();
       break;
     case 'GitLab':
       persistField('gitLabProject', null);
@@ -97,10 +93,6 @@ export const pushBackup = (pathOrFileId, contents) => {
       case 'Dropbox':
       case 'WebDAV':
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
-        break;
-      case 'Google Drive':
-        pathOrFileId = pathOrFileId.startsWith('/') ? pathOrFileId.substr(1) : pathOrFileId;
-        client.duplicateFile(pathOrFileId, (fileName) => `${fileName}.organice-bak`);
         break;
       case 'GitLab':
         // No-op for GitLab, because the beauty of version control makes backup files redundant.

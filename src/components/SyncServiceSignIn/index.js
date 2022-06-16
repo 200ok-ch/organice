@@ -1,11 +1,10 @@
-/* global process, gapi */
+/* global process */
 
 import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
 
 import DropboxLogo from './dropbox.svg';
-import GoogleDriveLogo from './google_drive.png';
 import GitLabLogo from './gitlab.svg';
 
 import { persistField } from '../../util/settings_persister';
@@ -22,97 +21,89 @@ import { redirectUrl } from '../../util/redirect_url';
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(process.env.REACT_APP_WEBDAV_URL);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   return (
     <div id="webdavLogin">
-      <h2 onClick={toggleVisible}>WebDAV</h2>
+      <h2>
+        <a href="#webdav" onClick={toggleVisible} style={{ textDecoration: 'none' }}>
+          WebDAV
+        </a>
+      </h2>
       {isVisible && (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            persistField('authenticatedSyncService', 'WebDAV');
-            persistField('webdavEndpoint', url);
-            persistField('webdavUsername', username);
-            persistField('webdavPassword', password);
-            window.location = window.location.origin + '/';
-          }}
-        >
+        <>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              persistField('authenticatedSyncService', 'WebDAV');
+              persistField('webdavEndpoint', url);
+              persistField('webdavUsername', username);
+              persistField('webdavPassword', password);
+              window.location = window.location.origin + '/';
+            }}
+          >
+            <p>
+              <label htmlFor="input-webdav-url">URL:</label>
+              <input
+                id="input-webdav-url"
+                name="url"
+                type="url"
+                value={url}
+                className="textfield"
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                }}
+              />
+            </p>
+            <p>
+              <label htmlFor="input-webdav-user">Username:</label>
+              <input
+                id="input-webdav-user"
+                type="text"
+                className="textfield"
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+              />
+            </p>
+            <p>
+              <label htmlFor="input-webdav-password">Password:</label>
+              <input
+                id="input-webdav-password"
+                type="password"
+                className="textfield"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </p>
+            <input type="submit" value="Sign-in" />
+          </form>
           <p>
-            <label htmlFor="input-webdav-url">URL:</label>
-            <input
-              id="input-webdav-url"
-              name="url"
-              type="url"
-              value={url}
-              className="textfield"
-              onChange={(e) => {
-                setUrl(e.target.value);
-              }}
-            />
+            Please make sure your WebDAV backend meets the requirements as documented{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#faq_webdav"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>
+            , especially{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#webdav_cors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              CORS
+            </a>
+            .
           </p>
-          <p>
-            <label htmlFor="input-webdav-user">Username:</label>
-            <input
-              id="input-webdav-user"
-              type="text"
-              className="textfield"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-            />
-          </p>
-          <p>
-            <label htmlFor="input-webdav-password">Password:</label>
-            <input
-              id="input-webdav-password"
-              type="password"
-              className="textfield"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-          </p>
-          <input type="submit" value="Sign-in" />
-        </form>
+        </>
       )}
-    </div>
-  );
-}
-
-function GoogleDriveNote() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  return !isVisible ? (
-    <div
-      id="googleDriveNote"
-      onClick={() => {
-        setIsVisible(true);
-      }}
-    >
-      <h4>Click to read news regarding use of Google drive</h4>
-    </div>
-  ) : (
-    <div id="googleDriveNote">
-      <h2>News regarding use of Google drive</h2>
-      We are waiting for Google to put{' '}
-      <a href="https://github.com/200ok-ch/organice/issues/127">
-        Google Drive for this instance into production mode
-      </a>
-      . Until that has happend, only 100 users can use this instance of organice. If you cannot log
-      in here, but want to use Google Drive,{' '}
-      <a href="https://organice.200ok.ch/documentation.html#google_drive">
-        here are the instructions
-      </a>{' '}
-      on running your own instance of organice with Google Drive enabled.
-      <p>
-        If you don't want to do that, you are welcome to use Dropbox or WebDAV as synchronisation
-        back-ends.
-      </p>
     </div>
   );
 }
@@ -121,7 +112,8 @@ function GitLab() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
 
-  const [project, setProject] = useState('');
+  const defaultProject = 'https://gitlab.com/your/project';
+  const [project, setProject] = useState(defaultProject);
   const handleSubmit = (evt) => {
     const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
@@ -136,7 +128,9 @@ function GitLab() {
 
   return (
     <>
-      <img src={GitLabLogo} alt="GitLab logo" onClick={toggleVisible} />
+      <a href="#gitlab" onClick={toggleVisible}>
+        <img src={GitLabLogo} alt="GitLab logo" />
+      </a>
       {isVisible && (
         <form onSubmit={handleSubmit}>
           <p>
@@ -145,7 +139,7 @@ function GitLab() {
               id="input-gitlab-project"
               type="url"
               className="textfield"
-              placeholder="gitlab.com/your/project"
+              placeholder={defaultProject}
               value={project}
               onChange={(e) => setProject(e.target.value)}
             />
@@ -161,7 +155,7 @@ export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['handleDropboxClick', 'handleGoogleDriveClick']);
+    _.bindAll(this, ['handleDropboxClick']);
   }
 
   handleDropboxClick() {
@@ -176,43 +170,18 @@ export default class SyncServiceSignIn extends PureComponent {
     });
   }
 
-  handleGoogleDriveClick() {
-    try {
-      gapi.load('client:auth2', () => {
-        gapi.client
-          .init({
-            apiKey: process.env.REACT_APP_GOOGLE_DRIVE_API_KEY,
-            clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID,
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-            scope: 'https://www.googleapis.com/auth/drive',
-          })
-          .then(() => {
-            persistField('authenticatedSyncService', 'Google Drive');
-
-            gapi.auth2.getAuthInstance().signIn({
-              ux_mode: 'redirect',
-              redirect_uri: window.location.origin,
-            });
-          });
-      });
-    } catch (error) {
-      alert(
-        `The Google Drive API client isn't available - you might be blocking it with an ad blocker`
-      );
-      return;
-    }
-  }
-
   render() {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox, GitLab, WebDAV and Google Drive.
+          organice syncs your files with Dropbox, GitLab, and WebDAV.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
-        <div className="sync-service-container" onClick={this.handleDropboxClick}>
-          <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+        <div className="sync-service-container">
+          <a href="#dropbox" onClick={this.handleDropboxClick}>
+            <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+          </a>
         </div>
 
         <div className="sync-service-container">
@@ -221,16 +190,6 @@ export default class SyncServiceSignIn extends PureComponent {
 
         <div className="sync-service-container">
           <WebDAVForm />
-        </div>
-
-        <div className="sync-service-container">
-          <img
-            src={GoogleDriveLogo}
-            onClick={this.handleGoogleDriveClick}
-            alt="Google Drive logo"
-            className="google-drive-logo"
-          />
-          <GoogleDriveNote />
         </div>
 
         <footer>
