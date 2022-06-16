@@ -74,7 +74,6 @@ const handleGitLabAuthResponse = async (oauthClient) => {
 };
 
 export function handleAuthenticatedSyncService(initialState) {
-  window.initialHash = window.location.hash.substring(0);
   const hashContents = parseQueryString(window.location.hash);
   const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
   let client = null;
