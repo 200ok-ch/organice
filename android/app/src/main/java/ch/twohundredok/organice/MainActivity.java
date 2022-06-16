@@ -1,4 +1,4 @@
-package ch.twohundredok.organice;
+package com.twohundredok.organice;
 
 import com.getcapacitor.BridgeActivity;
 

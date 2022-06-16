@@ -1,5 +1,5 @@
 {
-	"appId": "ch.twohundredok.organice",
+	"appId": "com.twohundredok.organice",
 	"appName": "organice",
 	"webDir": "build",
 	"bundledWebRuntime": false,

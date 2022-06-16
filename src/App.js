@@ -43,8 +43,29 @@ import { Map } from 'immutable';
 import AppUrlListener from './AppUrlListener';
 
 import { configure } from 'react-hotkeys';
+
+import { SendIntent } from 'send-intent';
+
 // do handle hotkeys even if they come from within 'input', 'select' or 'textarea'
 configure({ ignoreTags: [] });
+
+SendIntent.checkSendIntentReceived()
+  .then((result) => {
+    if (result) {
+      console.log('SendIntent received');
+      console.log(JSON.stringify(result));
+    }
+    if (result.url) {
+      let resultUrl = decodeURIComponent(result.url);
+      console.log(resultUrl);
+      // Filesystem.readFile({path: resultUrl})
+      //   .then((content) => {
+      //     console.log(content.data);
+      //   })
+      //   .catch((err) => console.error(err));
+    }
+  })
+  .catch((err) => console.error(err));
 
 const handleGitLabAuthResponse = async (oauthClient) => {
   let success = false;
