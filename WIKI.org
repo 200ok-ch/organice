@@ -447,7 +447,7 @@ WebDAV server for your instance, you can by setting the variable
 
 *** adr-002-static-content-pages
 :PROPERTIES:
-:CUSTOM_ID: adr-001
+:CUSTOM_ID: adr-002
 :END:
 **** Architecture Decision Record: Static Content Pages
 
