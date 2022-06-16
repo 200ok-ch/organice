@@ -292,10 +292,16 @@ export default ({
             <code>%U</code> - Inactive timestamp, with date and time.
           </li>
           <li>
-            <code>%r</code> - Timestamp, date only, no surrounding punctation.
+            <code>%r</code> - Raw timestamp, date only, no surrounding punctation.
+            <ul>
+              <li>
+                Build custom expressions like{' '}
+                <code>TODO Monthly - %?\n DEADLINE: &lt;%r .+1m&gt;</code>
+              </li>
+            </ul>
           </li>
           <li>
-            <code>%R</code> - Timestamp, with date and time, no surrounding punctuation.
+            <code>%R</code> - Raw timestamp, with date and time, no surrounding punctuation.
           </li>
           <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
