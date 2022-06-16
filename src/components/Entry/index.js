@@ -43,9 +43,11 @@ class Entry extends PureComponent {
   }
 
   componentDidMount() {
-    this.setChangelogUnseenChanges();
-    this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
-    this.props.filesToSync.forEach((path) => this.props.org.sync({ path }));
+    if (!isLandingPage()) {
+      this.setChangelogUnseenChanges();
+      this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
+      this.props.filesToSync.forEach((path) => this.props.org.sync({ path }));
+    }
   }
 
   // TODO: Should this maybe done on init of the application and not in the component?

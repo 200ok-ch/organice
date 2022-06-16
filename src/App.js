@@ -29,7 +29,7 @@ import createGitLabSyncBackendClient, {
 
 import './base.css';
 
-import Entry from './components/Entry';
+import SwitchComponent from './components/SwitchComponent';
 
 import {
   listenToBrowserButtons,
@@ -210,7 +210,7 @@ export default class App extends PureComponent {
       <DragDropContext onDragEnd={this.handleDragEnd}>
         <Router>
           <Provider store={this.store}>
-            <Entry />
+            <SwitchComponent />
           </Provider>
         </Router>
       </DragDropContext>
