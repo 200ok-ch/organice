@@ -59,15 +59,18 @@ export const gitLabProjectIdFromURL = (projectURL) => {
   try {
     const url = new URL(projectURL);
     const path = url.pathname.replace(/(^\/)|(\/$)/g, '');
-    // Rough heuristic to check that url at least *potentially* refers to a project.
-    // Reminder: a project path is not necessarily /user/project because it may be under one or more
-    // groups such as /user/group/subgroup/project.
+    // Rough heuristic to check that url at least *potentially* refers
+    // to a project. Reminder: a project path is not necessarily
+    // /user/project because it may be under one or more groups such
+    // as /user/group/subgroup/project.
     if (url.hostname === 'gitlab.com' && path.split('/').length > 1) {
       return encodeURIComponent(path);
     } else {
       return undefined;
     }
-  } catch {
+  } catch (e) {
+    console.error('Error trying to get gitLab project_id from URL:');
+    console.error(e);
     return undefined;
   }
 };
@@ -106,7 +109,8 @@ export const treeToDirectoryListing = (tree) => {
       .map((it) => ({
         id: it.id,
         name: it.name,
-        // Organice requires a leading "/", whereas GitLab API doesn't use one.
+        // Organice requires a leading "/", whereas GitLab API doesn't
+        // use one.
         path: `/${it.path}`,
         isDirectory: isDirectory(it),
       }))
@@ -117,7 +121,8 @@ export const treeToDirectoryListing = (tree) => {
         } else if (!a.isDirectory && b.isDirectory) {
           return 1;
         } else {
-          // Can't have same name, so don't need to check if equal/return 0.
+          // Can't have same name, so don't need to check if
+          // equal/return 0.
           return a.name > b.name ? 1 : -1;
         }
       })
@@ -141,26 +146,31 @@ export default (oauthClient) => {
     if (!oauthClient.isAuthorized()) {
       return false;
     }
-    // Verify that we have an OAuth token (and refresh if needed). Don't care about return value,
-    // because the library handles persisting for us.
+    // Verify that we have an OAuth token (and refresh if needed).
+    // Don't care about return value, because the library handles
+    // persisting for us.
     try {
       await oauthClient.getAccessToken();
       return true;
-    } catch {
+    } catch (e) {
+      console.error('Error trying to get OAuth access token.');
+      console.error(e);
       return false;
     }
   };
 
   /**
-   * Check that project exists and user is *probably* able to commit to it. This doesn't take branch
-   * protection into consideration, so it's not perfect... but who uses protected branches for the
-   * org files?
+   * Check that project exists and user is *probably* able to commit
+   * to it. This doesn't take branch protection into consideration, so
+   * it's not perfect... but who uses protected branches for the org
+   * files?
    *
-   * This is separate from `isSignedIn` to avoid the overhead of multiple API calls every time the
-   * page is loaded.
+   * This is separate from `isSignedIn` to avoid the overhead of
+   * multiple API calls every time the page is loaded.
    */
   const isProjectAccessible = async () => {
-    // Check project exists and user is a member who can *probably* commit.
+    // Check project exists and user is a member who can *probably*
+    // commit.
     const [userResponse, membersResponse] = await Promise.all([
       // https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users
       decoratedFetch(`${API_URL}/user`),
@@ -172,10 +182,13 @@ export default (oauthClient) => {
     }
     const [user, members] = await Promise.all([userResponse.json(), membersResponse.json()]);
     const matched = members.find((m) => m.id === user.id);
-    // Access levels: https://docs.gitlab.com/ee/api/members.html#valid-access-levels
-    // Permissions: https://docs.gitlab.com/ee/user/permissions.html#project-members-permissions
-    // 30 is developer, which is the minimum to commit to a non-protected branch. If branch is
-    // protected then they still might be be able to commit, but this is good enough.
+    // Access levels:
+    // https://docs.gitlab.com/ee/api/members.html#valid-access-levels
+    // Permissions:
+    // https://docs.gitlab.com/ee/user/permissions.html#project-members-permissions
+    // 30 is developer, which is the minimum to commit to a
+    // non-protected branch. If branch is protected then they still
+    // might be be able to commit, but this is good enough.
     return matched && matched.access_level >= 30;
   };
 
@@ -213,7 +226,8 @@ export default (oauthClient) => {
     const params = new URLSearchParams({
       pagination: 'keyset',
       ref: await getDefaultBranch(),
-      // Organice requires a leading "/", whereas GitLab API requires there *not* be one.
+      // Organice requires a leading "/", whereas GitLab API requires
+      // there *not* be one.
       path: path.replace(/^\//, ''),
       per_page: 100,
     });
@@ -251,10 +265,10 @@ export default (oauthClient) => {
       throw new Error(`Unexpected response from commit API. Status code: ${response.status}`);
     }
     const body = await response.json();
-    // Dates are ISO-8601.
-    // Note: while commit date *should* generally be the same as or later than the author date,
-    // that isn't guaranteed since history can be rewritten at will. So we pick the newer of the
-    // two.
+    // Dates are ISO-8601. Note: while commit date *should* generally
+    // be the same as or later than the author date, that isn't
+    // guaranteed since history can be rewritten at will. So we pick
+    // the newer of the two.
     const committed = new Date(body.committed_date);
     const authored = new Date(body.authored_date);
     // Use Date objects for comparison, but need to return as strings.
@@ -269,20 +283,24 @@ export default (oauthClient) => {
     };
   };
 
-  // Parentheses are necessarily to await the actual promise. Yay, foot-guns.
+  // Parentheses are necessarily to await the actual promise. Yay,
+  // foot-guns.
   const getFileContents = async (path) => (await getRawFile(path)).contents;
 
   const doCommit = async (action) => {
     const capitalizedAction = action.action.charAt(0).toUpperCase() + action.action.slice(1);
-    // Two newlines because Git commits should have an empty line between title and body.
+    // Two newlines because Git commits should have an empty line
+    // between title and body.
     const message =
       `[organice] ${capitalizedAction} ${action.file_path}\n\n` +
       'Automatic commit from organice app.';
-    // It's also possible to modify files using the files API instead of commits API. For this use
-    // case they're about equal, but I picked commits because it doesn't require non-standard
-    // encoding for file paths, whereas the files API requires URI encoding plus converting period
-    // characters to %2E. Also, the commits API is more flexible in case of future changes, since it
-    // allows modifying multiple files at a time.
+    // It's also possible to modify files using the files API instead
+    // of commits API. For this use case they're about equal, but I
+    // picked commits because it doesn't require non-standard encoding
+    // for file paths, whereas the files API requires URI encoding
+    // plus converting period characters to %2E. Also, the commits API
+    // is more flexible in case of future changes, since it allows
+    // modifying multiple files at a time.
     //
     // https://docs.gitlab.com/ee/api/commits.html#create-a-commit-with-multiple-files-and-actions
     // https://docs.gitlab.com/ee/api/repository_files.html

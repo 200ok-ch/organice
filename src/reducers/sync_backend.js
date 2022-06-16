@@ -3,14 +3,16 @@ import { Map } from 'immutable';
 const signOut = (state) => state.set('isAuthenticated', false).set('client', null);
 
 const setCurrentFileBrowserDirectoryListing = (state, action) =>
-  state.set(
-    'currentFileBrowserDirectoryListing',
-    Map({
-      listing: action.directoryListing,
-      hasMore: action.hasMore,
-      additionalSyncBackendState: action.additionalSyncBackendState,
-    })
-  );
+  state
+    .set(
+      'currentFileBrowserDirectoryListing',
+      Map({
+        listing: action.directoryListing,
+        hasMore: action.hasMore,
+        additionalSyncBackendState: action.additionalSyncBackendState,
+      })
+    )
+    .set('currentPath', action.path);
 
 const setIsLoadingMoreDirectoryListing = (state, action) =>
   state

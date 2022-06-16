@@ -7,12 +7,25 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-06-16 Thu]
+** Added
+- Capture template variables =%r= and =%R= expanding to raw timestamps
+  - PR: https://github.com/200ok-ch/organice/pull/838
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+
+* [2022-06-14 Tue]
+** Added
+- Create new file from file browser
+  - PR: https://github.com/200ok-ch/organice/pull/818
 * [2022-06-13 Mon]
 ** Added
 
 - Specify default webDAV URL in .env file
   - PR: https://github.com/200ok-ch/organice/pull/829
   - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+- Docker image recognizes env vars
+  - PR: https://github.com/200ok-ch/organice/pull/835
+  - see [[https://organice.200ok.ch/documentation.html#docker][doc]] for more information
 
 * [2022-06-03 Fri]
 ** Removed

@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import { Link } from 'react-router-dom';
 
+import ActionDrawer from './components/ActionDrawer';
+
 import './stylesheet.css';
 
 import classNames from 'classnames';
@@ -44,6 +46,8 @@ const FileBrowser = ({
       {syncBackendType === 'Dropbox' && (
         <h3 className="file-browser__header">Directory: {isTopLevelDirectory ? '/' : path}</h3>
       )}
+
+      <ActionDrawer />
 
       <ul className="file-browser__file-list">
         {!isTopLevelDirectory && (

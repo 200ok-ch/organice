@@ -7,6 +7,8 @@ import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_c
 
 import { addSeconds } from 'date-fns';
 
+import pathParse from 'path-parse';
+
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
     case 'WebDAV':
@@ -38,12 +40,14 @@ export const signOut = () => (dispatch, getState) => {
 export const setCurrentFileBrowserDirectoryListing = (
   directoryListing,
   hasMore,
-  additionalSyncBackendState
+  additionalSyncBackendState,
+  path
 ) => ({
   type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
   directoryListing,
   hasMore,
   additionalSyncBackendState,
+  path,
 });
 
 export const setIsLoadingMoreDirectoryListing = (isLoadingMore) => ({
@@ -58,7 +62,9 @@ export const getDirectoryListing = (path) => (dispatch, getState) => {
   client
     .getDirectoryListing(path)
     .then(({ listing, hasMore, additionalSyncBackendState }) => {
-      dispatch(setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState));
+      dispatch(
+        setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState, path)
+      );
       dispatch(hideLoadingMessage());
     })
     .catch((error) => {
@@ -115,6 +121,32 @@ export const downloadFile = (path) => {
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(setDirty(false, path));
         dispatch(ActionCreators.clearHistory());
+      })
+      .catch(() => {
+        dispatch(hideLoadingMessage());
+        dispatch(setIsLoading(false, path));
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      });
+  };
+};
+
+/**
+ * @param {String} path Returns the directory name of `path`.
+ */
+function dirName(path) {
+  return pathParse(path).dir;
+}
+
+export const createFile = (path, content) => {
+  return (dispatch, getState) => {
+    dispatch(setLoadingMessage(`Creating file: ${path}`));
+    getState()
+      .syncBackend.get('client')
+      .createFile(path, content)
+      .then(() => {
+        dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+        dispatch(hideLoadingMessage());
+        dispatch(getDirectoryListing(dirName(path)));
       })
       .catch(() => {
         dispatch(hideLoadingMessage());
