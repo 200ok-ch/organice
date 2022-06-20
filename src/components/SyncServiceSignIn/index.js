@@ -192,16 +192,19 @@ export default class SyncServiceSignIn extends PureComponent {
           <WebDAVForm />
         </div>
 
-        <footer>
-          For questions regarding synchronization back-ends, please consult the{' '}
-          <a
-            href="https://organice.200ok.ch/documentation.html#sync_backends"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            documentation
-          </a>
-          .
+        <footer class="sync-service-sign-in__help-text">
+          <p>
+            For questions regarding synchronization back-ends, please consult the{' '}
+            <a
+              href="https://organice.200ok.ch/documentation.html#sync_backends"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              documentation
+            </a>
+            .
+          </p>
+          <p style={{'text-align': 'center', 'font-size': '66%', 'margin-top': '3em'}}>Build ORGANICE_REVISION</p>
         </footer>
       </div>
     );
