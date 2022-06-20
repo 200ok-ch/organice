@@ -18,7 +18,6 @@ import OrgFile from '../OrgFile';
 import HeaderBar from '../HeaderBar';
 
 const SwitchComponent = ({ isAuthenticated }) => {
-  console.log(isAuthenticated);
   if (isAuthenticated) return <Entry />;
 
   if (!isAuthenticated)
@@ -26,13 +25,13 @@ const SwitchComponent = ({ isAuthenticated }) => {
       <div>
         <Switch>
           <Route path="/privacy-policy" exact>
-            <div className="App">
+            <div className="App entry-container">
               <HeaderBar />
               <PrivacyPolicy />
             </div>
           </Route>
           <Route path="/sample" exact={true}>
-            <div className="App">
+            <div className="App entry-container">
               <HeaderBar />
               <OrgFile
                 staticFile="sample"
@@ -46,7 +45,7 @@ const SwitchComponent = ({ isAuthenticated }) => {
             </div>
           </Route>
           <Route path="/sign_in" exact={true}>
-            <div className="App">
+            <div className="App entry-container">
               <HeaderBar />
               <SyncServiceSignIn />
             </div>
@@ -56,7 +55,6 @@ const SwitchComponent = ({ isAuthenticated }) => {
               <Landing />
             </div>
           </Route>
-          <Route component={Entry} />
           <Redirect to="/" />
         </Switch>
       </div>
