@@ -192,7 +192,7 @@ export default class SyncServiceSignIn extends PureComponent {
           <WebDAVForm />
         </div>
 
-        <footer class="sync-service-sign-in__help-text">
+        <footer className="sync-service-sign-in__help-text">
           <p>
             For questions regarding synchronization back-ends, please consult the{' '}
             <a
