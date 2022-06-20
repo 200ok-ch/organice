@@ -7,6 +7,8 @@ import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_c
 
 import { addSeconds } from 'date-fns';
 
+import _ from 'lodash';
+
 import pathParse from 'path-parse';
 
 export const signOut = () => (dispatch, getState) => {
@@ -68,9 +70,16 @@ export const getDirectoryListing = (path) => (dispatch, getState) => {
       dispatch(hideLoadingMessage());
     })
     .catch((error) => {
-      alert('There was an error retrieving files!');
-      console.error(error);
       dispatch(hideLoadingMessage());
+      if (
+        error.status === 401 ||
+        _.get(error, 'error.error_summary').includes('expired_access_token')
+      ) {
+        dispatch(signOut());
+      } else {
+        alert('There was an error retrieving files!');
+        console.error(error);
+      }
     });
 };
 
