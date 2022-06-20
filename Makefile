@@ -49,7 +49,7 @@ build: ## Build a production build
 .PHONY: set-revision
 set-revision: $(BUILD_FILES)
 set-revision: ## Set the build revision
-	for FILE in $?; do sed -i "s/ORGANICE_REVISION/$(REVISION)/" $$FILE; done
+	for FILE in $?; do sed -i "s/ORGANICE_ROLLING_RELEASE/$(REVISION)/" $$FILE; done
 
 ANDROID_TARGET?=Pixel_3_API_32
 
