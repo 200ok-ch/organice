@@ -1,4 +1,6 @@
-import { Dropbox } from 'dropbox';
+/* global process */
+
+import { Dropbox, DropboxAuth } from 'dropbox';
 import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
 
@@ -29,8 +31,43 @@ export const filterAndSortDirectoryListing = (listing) => {
   });
 };
 
+function renderItems(items) {
+  items.forEach(function (item) {
+    console.log(item);
+  });
+}
+
 export default (accessToken) => {
-  const dropboxClient = new Dropbox({ accessToken, fetch: fetch.bind(window) });
+  const dbxAuth = new DropboxAuth({
+    clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+    fetch: fetch.bind(window),
+    // accessToken,
+  });
+
+  let dbx;
+
+  dbxAuth.setCodeVerifier(window.sessionStorage.getItem('codeVerifier'));
+
+  dbxAuth
+    .getAccessTokenFromCode('http://localhost:3000/', accessToken)
+    .then((response) => {
+      alert('access token: ' + response.result.access_token);
+      dbxAuth.setAccessToken(response.result.access_token);
+      dbx = new Dropbox.Dropbox({
+        auth: dbxAuth,
+      });
+      return dbx.filesListFolder({
+        path: '',
+      });
+    })
+    .then((response) => {
+      renderItems(response.result.entries);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  // const dbxAuth = new Dropbox({ accessToken, fetch: fetch.bind(window) });
 
   const isSignedIn = () => new Promise((resolve) => resolve(true));
 
@@ -48,7 +85,7 @@ export default (accessToken) => {
 
   const getDirectoryListing = (path) =>
     new Promise((resolve, reject) => {
-      dropboxClient
+      dbx
         .filesListFolder({ path })
         .then((response) => {
           resolve({
@@ -65,7 +102,7 @@ export default (accessToken) => {
   const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const cursor = additionalSyncBackendState.get('cursor');
     return new Promise((resolve, reject) =>
-      dropboxClient.filesListFolderContinue({ cursor }).then((response) =>
+      dbx.filesListFolderContinue({ cursor }).then((response) =>
         resolve({
           listing: transformDirectoryListing(response.result.entries),
           hasMore: response.result.has_more,
@@ -79,7 +116,7 @@ export default (accessToken) => {
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
-      dropboxClient
+      dbx
         .filesUpload({
           path,
           contents,
@@ -97,7 +134,7 @@ export default (accessToken) => {
 
   const getFileContentsAndMetadata = (path) =>
     new Promise((resolve, reject) =>
-      dropboxClient
+      dbx
         .filesDownload({ path })
         .then((response) => {
           const reader = new FileReader();
@@ -149,7 +186,7 @@ export default (accessToken) => {
 
   const deleteFile = (path) =>
     new Promise((resolve, reject) =>
-      dropboxClient
+      dbx
         .filesDelete({ path })
         .then(resolve)
         .catch((error) => reject(error.error.error['.tag'] === 'path_lookup', error))

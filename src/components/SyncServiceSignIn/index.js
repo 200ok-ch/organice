@@ -13,7 +13,7 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
-import { Dropbox } from 'dropbox';
+import { DropboxAuth } from 'dropbox';
 import _ from 'lodash';
 
 function WebDAVForm() {
@@ -159,13 +159,41 @@ export default class SyncServiceSignIn extends PureComponent {
   handleDropboxClick() {
     persistField('authenticatedSyncService', 'Dropbox');
 
-    const dropbox = new Dropbox({
+    const dbxAuth = new DropboxAuth({
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
-      window.location = authURL;
-    });
+
+    alert('here');
+    console.log(dbxAuth);
+    alert(dbxAuth.getCodeVerifier());
+    alert(dbxAuth.codeVerifier);
+
+    window.dbxAuth = dbxAuth;
+
+    dbxAuth.auth
+      .getAuthenticationUrl(
+        window.location.origin + '/',
+        undefined,
+        'code',
+        undefined,
+        undefined,
+        undefined,
+        true
+      )
+      .then((authURL) => {
+        // vorher: https://dropbox.com/oauth2/authorize?response_type=token&client_id=9mgtyjrvc0b1b2z&redirect_uri=http://localhost:3000/
+        // nachher: https://dropbox.com/oauth2/authorize?response_type=code&client_id=9mgtyjrvc0b1b2z&redirect_uri=http://localhost:3000/&token_access_type=offline&code_challenge_method=S256&code_challenge=uMvEitm-_Wai-apKauigPtzuJ8XwlaNOAMB4yVIaNbc
+        // alert(authURL);
+
+        alert('Code verifier: ' + dbxAuth.codeVerifier);
+        window.sessionStorage.setItem('codeVerifier', dbxAuth.codeVerifier);
+        window.location = authURL;
+      })
+      .catch((error) => {
+        alert('Error logging into Dropbox.');
+        console.error(error);
+      });
   }
 
   render() {

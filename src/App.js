@@ -1,3 +1,5 @@
+/* global process */
+
 import React, { PureComponent } from 'react';
 
 import { Provider } from 'react-redux';
@@ -83,7 +85,7 @@ export default class App extends PureComponent {
     if (!!authenticatedSyncService) {
       switch (authenticatedSyncService) {
         case 'Dropbox':
-          const dropboxAccessToken = hashContents.access_token;
+          const dropboxAccessToken = parseQueryString(window.location.search).code;
           if (dropboxAccessToken) {
             client = createDropboxSyncBackendClient(dropboxAccessToken);
             initialState.syncBackend = Map({

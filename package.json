@@ -12,7 +12,7 @@
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
-    "dropbox": "^9.8.0",
+    "dropbox": "10.31.0",
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
     "node-sass": "4.13",
