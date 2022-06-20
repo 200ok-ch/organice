@@ -11,10 +11,8 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
-import { isLandingPage } from '../../util/misc';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
-import Landing from '../Landing';
 import FileBrowser from '../FileBrowser';
 import LoadingIndicator from '../LoadingIndicator';
 import OrgFile from '../OrgFile';
@@ -22,7 +20,6 @@ import Settings from '../Settings';
 import KeyboardShortcutsEditor from '../KeyboardShortcutsEditor';
 import CaptureTemplatesEditor from '../CaptureTemplatesEditor';
 import FileSettingsEditor from '../FileSettingsEditor';
-import SyncServiceSignIn from '../SyncServiceSignIn';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as orgActions from '../../actions/org';
@@ -43,11 +40,9 @@ class Entry extends PureComponent {
   }
 
   componentDidMount() {
-    if (!isLandingPage()) {
-      this.setChangelogUnseenChanges();
-      this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
-      this.props.filesToSync.forEach((path) => this.props.org.sync({ path }));
-    }
+    this.setChangelogUnseenChanges();
+    this.props.filesToLoad.forEach((path) => this.props.syncBackend.downloadFile(path));
+    this.props.filesToSync.forEach((path) => this.props.org.sync({ path }));
   }
 
   // TODO: Should this maybe done on init of the application and not in the component?
@@ -156,9 +151,7 @@ class Entry extends PureComponent {
       theme,
     } = this.props;
 
-    // The LP is not styled with the user configured themes
-    // See adr-002 for details.
-    if (!isLandingPage()) loadTheme(theme, colorScheme);
+    loadTheme(theme, colorScheme);
 
     const pendingCapturePath = !!pendingCapture && `/file${pendingCapture.get('capturePath')}`;
     const shouldRedirectToCapturePath = pendingCapturePath && pendingCapturePath !== pathname;
@@ -168,21 +161,14 @@ class Entry extends PureComponent {
     });
 
     return (
-      <div className={isLandingPage() ? 'App landing-page' : className}>
+      <div className={className}>
         <HeaderBar />
-        {/* The <Entry /> component is rendered within the <App />
-        component. The rules in its CSS file were initially written
-        with the expectation that all components of organice are the
-        actual app. That changed when we introduced a <Landing />
-        component that had no semblance with the remainder of the app.
-        Hence we omit setting a class which would inflict bleeding app
-        CSS into the LP. See adr-002 for details. */}
         <LoadingIndicator message={loadingMessage} />
 
-        {activeModalPage === 'changelog' ? (
-          this.renderChangelogFile()
-        ) : isAuthenticated ? (
-          [
+        {activeModalPage === 'changelog' && this.renderChangelogFile()}
+
+        {isAuthenticated &&
+          ([
             'keyboard_shortcuts_editor',
             'settings',
             'capture_templates_editor',
@@ -207,16 +193,7 @@ class Entry extends PureComponent {
               </Route>
               <Redirect to="/files" />
             </Switch>
-          )
-        ) : (
-          <Switch>
-            <Route path="/privacy-policy" exact component={PrivacyPolicy} />
-            <Route path="/sample" exact={true} render={this.renderSampleFile} />
-            <Route path="/sign_in" exact={true} component={SyncServiceSignIn} />
-            <Route path="/" exact={true} component={Landing} />
-            <Redirect to="/" />
-          </Switch>
-        )}
+          ))}
       </div>
     );
   }

@@ -12,7 +12,7 @@ import {
 
 import runAllMigrations from './migrations';
 import parseQueryString from './util/parse_query_string';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import { DragDropContext } from 'react-beautiful-dnd';
 
@@ -208,11 +208,11 @@ export default class App extends PureComponent {
   render() {
     return (
       <DragDropContext onDragEnd={this.handleDragEnd}>
-        <Router>
+        <BrowserRouter>
           <Provider store={this.store}>
             <SwitchComponent />
           </Provider>
-        </Router>
+        </BrowserRouter>
       </DragDropContext>
     );
   }

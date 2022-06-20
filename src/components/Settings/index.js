@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link, useHistory } from 'react-router-dom';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 import * as baseActions from '../../actions/base';
@@ -37,6 +37,8 @@ const Settings = ({
   base,
   org,
 }) => {
+  const history = useHistory();
+
   // This looks like hardcoding where it would be possible to dispatch
   // on the `location.origin`, but here we assure that every instance
   // of organice has a valid link to documentation. Self-building does
@@ -46,8 +48,14 @@ const Settings = ({
     ? 'https://staging.organice.200ok.ch'
     : 'https://organice.200ok.ch';
 
-  const handleSignOutClick = () =>
-    window.confirm('Are you sure you want to sign out?') ? syncBackend.signOut() : void 0;
+  const handleSignOutClick = () => {
+    if (window.confirm('Are you sure you want to sign out?')) {
+      syncBackend.signOut();
+      history.push('/');
+    } else {
+      return void 0;
+    }
+  };
 
   const handleKeyboardShortcutsClick = () => base.pushModalPage('keyboard_shortcuts_editor');
 
