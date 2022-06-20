@@ -204,7 +204,9 @@ export default class SyncServiceSignIn extends PureComponent {
             </a>
             .
           </p>
-          <p style={{'text-align': 'center', 'font-size': '66%', 'margin-top': '3em'}}>Build ORGANICE_REVISION</p>
+          <p style={{ 'text-align': 'center', 'font-size': '66%', 'margin-top': '3em' }}>
+            Build ORGANICE_REVISION
+          </p>
         </footer>
       </div>
     );
