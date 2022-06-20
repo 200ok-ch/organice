@@ -67,8 +67,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SwitchComponent));
+export default withRouter(connect(mapStateToProps)(SwitchComponent));
