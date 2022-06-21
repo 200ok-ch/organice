@@ -2149,4 +2149,20 @@ describe('org reducer', () => {
       expect(header.get('totalTimeLogged')).toEqual(25200000);
     });
   });
+
+  describe('handle empty files', () => {
+    it('creates a new first header in an empty file', () => {
+      let path = 'testfile';
+      const emptyOrgFile = readFixture('empty_file');
+      const state = setUpStateForFile(path, emptyOrgFile);
+
+      // Empty file has no headers
+      expect(state.org.present.getIn(['files', path, 'headers']).toJS()).toEqual([]);
+
+      const newState = reducer(state.org.present, types.createFirstHeader());
+      expect(
+        newState.getIn(['files', path, 'headers']).get(0).getIn(['titleLine', 'rawTitle'])
+      ).toEqual('First header');
+    });
+  });
 });
