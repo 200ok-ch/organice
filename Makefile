@@ -5,7 +5,7 @@ ANDROID_TARGET?=Pixel_3_API_32
 
 SHELL=/bin/bash
 
-.DEFAULT_GOAL=run
+.DEFAULT_GOAL=start
 
 check_defined = \
   $(strip $(foreach 1,$1, \
@@ -26,15 +26,15 @@ help: ## Show this help
 setup: ## Setup the project
 	yarn install --production=false
 
-.PHONY: run
-run: setup src/lib/headline_filter_parser.js
-run: ## Run a server that serves organice as PWA (default)
-	yarn start
+.PHONY: start
+start: setup src/lib/headline_filter_parser.js src
+start: ## Run a server that serves organice as PWA (default)
+	npx react-scripts start
 
 .PHONY: test
-test: setup
+test: setup src/lib/headline_filter_parser.js
 test: ## Run the tests
-	yarn test
+	npx react-scripts test --env=jsdom
 
 .PHONY: docs
 docs: ## Compile the documentation
@@ -47,22 +47,24 @@ deploy-docs: ## Deploy the documentation
 
 REVISION=$(shell git describe --tags)
 
-BUILD_FILES=$(shell find build0/ -type f -name '*.js')
+RELEASE_FILES=$(shell find release/ -type f -name '*.js')
 
-.PHONY: build
+build: src/lib/headline_filter_parser.js src
 build: ## Build a production build
 	bin/transient_env_vars.sh bait
-	yarn build
-	bin/transient_env_vars.sh switch build build0
+	npx react-scripts build
+
+release: build
+	bin/transient_env_vars.sh switch build release
 	make set-revision
 
 .PHONY: set-revision
-set-revision: $(BUILD_FILES)
+set-revision: $(RELEASE_FILES)
 set-revision: ## Set the build revision
 	for FILE in $?; do sed -i "s/ORGANICE_ROLLING_RELEASE/$(REVISION)/" $$FILE; done
 
 .PHONY: android
-android: build
+android: release
 android: ## Build the android app and run it on $ANDROID_TARGET
 	npx cap run android --target $(ANDROID_TARGET)
 
@@ -73,12 +75,26 @@ check-ftp-credentials: ## Check for FTP credentials
 	$(call check_defined, FTP_PASSWD, deployment password)
 
 .PHONY: deploy
-deploy: check-ftp-credentials setup build
+deploy: check-ftp-credentials setup release
 deploy: ## Deploy PWA
-	cd build0 && \
+	cd release && \
 	  lftp -u${FTP_USER},${FTP_PASSWD} -e "mirror -R ./" ${FTP_HOST}
 
-# TODO: this could replace the sh script bin/compile_search_parser.sh
+# TODO: this should replace the sh script bin/compile_search_parser.sh
 src/lib/headline_filter_parser.js: src/lib/headline_filter_parser.grammar.pegjs
 	echo '/* eslint-disable */' > $@
 	npx pegjs -o - $< >> $@
+#
+#    "start": "make start",
+#     "build": "make build",
+#     "test:dbg": "./bin/compile_search_parser.sh && react-scripts --inspect-brk test --runInBand --no-cache",
+#     "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
+#     "coverage": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom --coverage --watchAll=false",
+#     "eslint": "./node_modules/.bin/eslint --cache .",
+#     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
+#     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
+#     "prettier-eslint": "./node_modules/.bin/prettier-eslint \"`pwd`/**/*.js\"",
+#     "lint": "yarn eslint && yarn prettier-eslint --list-different",
+#     "eject": "react-scripts eject",
+#     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
+#
