@@ -1,9 +1,10 @@
 // organice renders different kinds of components:
 //  - Static pages like the landing page
 //  - The actual application
-// These components do not have many things in common. See adr-002 for
-// details Neither CSS, nor structure. <SwitchComponent /> ensures
-// rendering either a static page or a dynamic application component.
+// These components do not have many things in common, neither CSS,
+// nor structure. See adr-002 for details <Turnout />
+// ensures rendering either a static page or a dynamic application
+// component.
 
 import React from 'react';
 import { connect } from 'react-redux';
@@ -17,7 +18,7 @@ import SyncServiceSignIn from '../SyncServiceSignIn';
 import OrgFile from '../OrgFile';
 import HeaderBar from '../HeaderBar';
 
-const SwitchComponent = ({ isAuthenticated }) => {
+const Turnout = ({ isAuthenticated }) => {
   if (isAuthenticated) return <Entry />;
 
   if (!isAuthenticated)
@@ -67,4 +68,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps)(SwitchComponent));
+export default withRouter(connect(mapStateToProps)(Turnout));
