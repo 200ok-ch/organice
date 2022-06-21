@@ -660,9 +660,13 @@ class OrgFile extends PureComponent {
                 <Fragment>{parsingErrorMessage}</Fragment>
               ) : (
                 <Fragment>
-                  The interaction with your file happens on headlines.{' '}
-                  <button onClick={this.handleCreateFirstHeader}>Click here</button> to create your
-                  first headline in this file.
+                  <p>The interaction with your file happens on headlines.</p>
+                  <p>
+                    <button className="btn" onClick={this.handleCreateFirstHeader}>
+                      Click here
+                    </button>{' '}
+                    to create your first headline in this file.
+                  </p>
                 </Fragment>
               )}
             </div>
