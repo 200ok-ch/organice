@@ -18,7 +18,7 @@ jobs:
           command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc gvfs emacs
       - run:
           name: Deploy to https://staging.organice.200ok.ch
-          command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} ./bin/compile_and_upload.sh'
+          command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} make deploy'
       - run:
           name: Deploy documentation to https://staging.organice.200ok.ch/documentation.html
           command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} ./bin/compile_doc_and_upload.sh'

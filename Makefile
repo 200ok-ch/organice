@@ -1,8 +1,18 @@
 -include .ok/credentials.mk
+-include local.mk
+
+ANDROID_TARGET?=Pixel_3_API_32
 
 SHELL=/bin/bash
 
 .DEFAULT_GOAL=run
+
+check_defined = \
+  $(strip $(foreach 1,$1, \
+    $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+  $(if $(value $1),, \
+    $(error Undefined $1$(if $2, ($2))))
 
 # ------------------------------------------------------------
 # dev
@@ -17,7 +27,7 @@ setup: ## Setup the project
 	yarn install --production=false
 
 .PHONY: run
-run: setup
+run: setup src/lib/headline_filter_parser.js
 run: ## Run a server that serves organice as PWA (default)
 	yarn start
 
@@ -37,7 +47,7 @@ deploy-docs: ## Deploy the documentation
 
 REVISION=$(shell git describe --tags)
 
-BUILD_FILES=$(shell find build/ -type f -name '*.js')
+BUILD_FILES=$(shell find build0/ -type f -name '*.js')
 
 .PHONY: build
 build: ## Build a production build
@@ -51,8 +61,6 @@ set-revision: $(BUILD_FILES)
 set-revision: ## Set the build revision
 	for FILE in $?; do sed -i "s/ORGANICE_ROLLING_RELEASE/$(REVISION)/" $$FILE; done
 
-ANDROID_TARGET?=Pixel_3_API_32
-
 .PHONY: android
 android: build
 android: ## Build the android app and run it on $ANDROID_TARGET
@@ -60,12 +68,17 @@ android: ## Build the android app and run it on $ANDROID_TARGET
 
 .PHONY: check-ftp-credentials
 check-ftp-credentials: ## Check for FTP credentials
-	[ -z ${FTP_HOST+x} ] && (echo "$FTP_HOST needs to be set for uploading to FTP."; exit 1)
-	[ -z ${FTP_USER+x} ] && (echo "$FTP_USER needs to be set for uploading to FTP."; exit 1)
-	[ -z ${FTP_PASSWD+x} ] && (echo "$FTP_PASSWD needs to be set for uploading to FTP."; exit 1)
+	$(call check_defined, FTP_HOST, deployment target)
+	$(call check_defined, FTP_USER, deployment user)
+	$(call check_defined, FTP_PASSWD, deployment password)
 
 .PHONY: deploy
 deploy: check-ftp-credentials setup build
 deploy: ## Deploy PWA
 	cd build0 && \
 	  lftp -u${FTP_USER},${FTP_PASSWD} -e "mirror -R ./" ${FTP_HOST}
+
+# TODO: this could replace the sh script bin/compile_search_parser.sh
+src/lib/headline_filter_parser.js: src/lib/headline_filter_parser.grammar.pegjs
+	echo '/* eslint-disable */' > $@
+	npx pegjs -o - $< >> $@
