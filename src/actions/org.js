@@ -315,6 +315,11 @@ export const addHeader = (headerId) => ({
   dirtying: false,
 });
 
+export const createFirstHeader = () => ({
+  type: 'CREATE_FIRST_HEADER',
+  dirtying: true,
+});
+
 export const selectNextSiblingHeader = (headerId) => ({
   type: 'SELECT_NEXT_SIBLING_HEADER',
   headerId,

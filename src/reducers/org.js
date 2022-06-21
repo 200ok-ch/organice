@@ -317,6 +317,13 @@ const addHeader = (state, action) => {
   );
 };
 
+const createFirstHeader = (state) => {
+  let newHeader = newHeaderWithTitle('First header', 1, state.get('todoKeywordSets'));
+  newHeader = _updateHeaderFromDescription(newHeader, 'Extend the file from here');
+
+  return state.update('headers', (headers) => headers.insert(0, newHeader));
+};
+
 const selectNextSiblingHeader = (state, action) => {
   const headers = state.get('headers');
   const { header, headerIndex } = indexAndHeaderWithId(headers, action.headerId);
@@ -1441,6 +1448,8 @@ const reducer = (state, action) => {
       return inFile(updateHeaderDescription);
     case 'ADD_HEADER':
       return inFile(addHeader);
+    case 'CREATE_FIRST_HEADER':
+      return inFile(createFirstHeader);
     case 'SELECT_NEXT_SIBLING_HEADER':
       return inFile(selectNextSiblingHeader);
     case 'SELECT_NEXT_VISIBLE_HEADER':

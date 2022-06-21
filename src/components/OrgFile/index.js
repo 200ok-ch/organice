@@ -60,6 +60,7 @@ class OrgFile extends PureComponent {
       'handleEditDescriptionHotKey',
       'handleExitEditModeHotKey',
       'handleAddHeaderHotKey',
+      'handleCreateFirstHeader',
       'handleRemoveHeaderHotKey',
       'handleMoveHeaderUpHotKey',
       'handleMoveHeaderDownHotKey',
@@ -196,6 +197,10 @@ class OrgFile extends PureComponent {
 
   handleAddHeaderHotKey() {
     this.props.org.addHeaderAndEdit(this.props.selectedHeaderId);
+  }
+
+  handleCreateFirstHeader() {
+    this.props.org.createFirstHeader();
   }
 
   handleRemoveHeaderHotKey() {
@@ -649,17 +654,15 @@ class OrgFile extends PureComponent {
         <div className="org-file-container" tabIndex="-1" ref={this.handleContainerRef}>
           {headers.size === 0 ? (
             <div className="org-file__parsing-error-message">
-              <h3>Couldn't parse file</h3>
+              <h3>This file has no headlines</h3>
 
               {!!parsingErrorMessage ? (
                 <Fragment>{parsingErrorMessage}</Fragment>
               ) : (
                 <Fragment>
-                  If you think this is a bug, please{' '}
-                  <ExternalLink href="https://github.com/200ok-ch/organice/issues/new">
-                    create an issue
-                  </ExternalLink>{' '}
-                  and include the org file if possible!
+                  The interaction with your file happens on headlines.{' '}
+                  <button onClick={this.handleCreateFirstHeader}>Click here</button> to create your
+                  first headline in this file.
                 </Fragment>
               )}
             </div>
