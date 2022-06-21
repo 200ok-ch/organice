@@ -1,11 +1,22 @@
+# ------------------------------------------------------------
+# includes
+
 -include .ok/credentials.mk
 -include local.mk
 
+# ------------------------------------------------------------
+# variables
+
 ANDROID_TARGET?=Pixel_3_API_32
 
-SHELL=/bin/bash
+SHELL:=/bin/bash
 
-.DEFAULT_GOAL=start
+REVISION=$(shell git describe --tags)
+
+RELEASE_FILES=$(shell find release/ -type f -name '*.js')
+
+# ------------------------------------------------------------
+# functions
 
 check_defined = \
   $(strip $(foreach 1,$1, \
@@ -18,21 +29,22 @@ __check_defined = \
 # dev
 
 .PHONY: help
-help: ## Show this help
+help: ## Show this help (default)
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | \
 	  awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m  %-30s\033[0m %s\n", $$1, $$2}'
 
+# This is likely the only case in which make should call yarn.
 .PHONY: setup
 setup: ## Setup the project
 	yarn install --production=false
 
 .PHONY: start
-start: setup src/lib/headline_filter_parser.js src
-start: ## Run a server that serves organice as PWA (default)
+start: setup src
+start: ## Run a server that serves organice as PWA
 	npx react-scripts start
 
 .PHONY: test
-test: setup src/lib/headline_filter_parser.js
+test: setup src
 test: ## Run the tests
 	npx react-scripts test --env=jsdom
 
@@ -45,16 +57,13 @@ deploy-docs: docs
 deploy-docs: ## Deploy the documentation
 	./bin/compile_doc_and_upload.sh
 
-REVISION=$(shell git describe --tags)
-
-RELEASE_FILES=$(shell find release/ -type f -name '*.js')
-
 build: src/lib/headline_filter_parser.js src
-build: ## Build a production build
+build: ## Build a production (pre-)build
 	bin/transient_env_vars.sh bait
 	npx react-scripts build
 
 release: build
+release: ## Build a release (with proper credentials and build number)
 	bin/transient_env_vars.sh switch build release
 	make set-revision
 
@@ -76,25 +85,13 @@ check-ftp-credentials: ## Check for FTP credentials
 
 .PHONY: deploy
 deploy: check-ftp-credentials setup release
-deploy: ## Deploy PWA
+deploy: ## Deploy organice as PWA via FTP
 	cd release && \
 	  lftp -u${FTP_USER},${FTP_PASSWD} -e "mirror -R ./" ${FTP_HOST}
 
-# TODO: this should replace the sh script bin/compile_search_parser.sh
+# ------------------------------------------------------------
+# internals
+
 src/lib/headline_filter_parser.js: src/lib/headline_filter_parser.grammar.pegjs
 	echo '/* eslint-disable */' > $@
 	npx pegjs -o - $< >> $@
-#
-#    "start": "make start",
-#     "build": "make build",
-#     "test:dbg": "./bin/compile_search_parser.sh && react-scripts --inspect-brk test --runInBand --no-cache",
-#     "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
-#     "coverage": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom --coverage --watchAll=false",
-#     "eslint": "./node_modules/.bin/eslint --cache .",
-#     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
-#     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
-#     "prettier-eslint": "./node_modules/.bin/prettier-eslint \"`pwd`/**/*.js\"",
-#     "lint": "yarn eslint && yarn prettier-eslint --list-different",
-#     "eject": "react-scripts eject",
-#     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
-#
