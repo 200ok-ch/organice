@@ -2164,5 +2164,31 @@ describe('org reducer', () => {
         newState.getIn(['files', path, 'headers']).get(0).getIn(['titleLine', 'rawTitle'])
       ).toEqual('First header');
     });
+
+    it('embedds linesBeforeHeadings into the first headline', () => {
+      let path = 'testfile';
+      const emptyOrgFile = readFixture('content_but_no_headline');
+      const state = setUpStateForFile(path, emptyOrgFile);
+
+      expect(state.org.present.getIn(['files', path, 'linesBeforeHeadings']).toJS()).toEqual([
+        'This is a legit Org mode file, yet it has not a single headline.',
+      ]);
+
+      const newState = reducer(state.org.present, types.createFirstHeader());
+      // Create new header
+      expect(
+        newState.getIn(['files', path, 'headers']).get(0).getIn(['titleLine', 'rawTitle'])
+      ).toEqual('First header');
+
+      // Move all linesBeforeHeadings under said header
+      expect(newState.getIn(['files', path, 'headers']).get(0).getIn(['rawDescription'])).toEqual(
+        'This is a legit Org mode file, yet it has not a single headline.'
+      );
+
+      // Old linesBeforeHeadings are gone
+      expect(state.org.present.getIn(['files', path, 'linesBeforeHeadings']).toJS()).toEqual([
+        'This is a legit Org mode file, yet it has not a single headline.',
+      ]);
+    });
   });
 });

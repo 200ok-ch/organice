@@ -319,7 +319,15 @@ const addHeader = (state, action) => {
 
 const createFirstHeader = (state) => {
   let newHeader = newHeaderWithTitle('First header', 1, state.get('todoKeywordSets'));
-  newHeader = _updateHeaderFromDescription(newHeader, 'Extend the file from here');
+
+  let description = 'Extend the file from here';
+  if (state.get('linesBeforeHeadings').size > 0) {
+    description = state.get('linesBeforeHeadings').toJS().join('\n');
+
+    state = state.set('linesBeforeHeadings', List());
+  }
+
+  newHeader = _updateHeaderFromDescription(newHeader, description);
 
   return state.update('headers', (headers) => headers.insert(0, newHeader));
 };
