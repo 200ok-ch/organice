@@ -2,7 +2,7 @@
 
 if [ ! -f /etc/nginx/nginx.conf ]; then
 
-    echo "Configure WebDAV"
+    echo "Configuring WebDAV"
 
     export DAV_METHODS=${DAV_METHODS:=PUT DELETE MKCOL COPY MOVE}
     PUID=${PUID}
@@ -40,6 +40,6 @@ if [ ! -f /etc/nginx/nginx.conf ]; then
 
 fi
 
-echo "Start !"
+echo "Starting!"
 
 exec nginx -g "daemon off;"

@@ -1,0 +1,69 @@
+version: "3.7"
+
+services:
+  traefik:
+    container_name: traefik
+    image: "traefik:latest"
+    command:
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --certificatesresolvers.le.acme.email=${EMAIL}
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --api
+      - --log.filePath=/var/log/error.log
+      - --log.level=INFO
+      - --accesslog.filepath=/var/log/access.log
+      - --accesslog=true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/acme.json:/acme.json"
+      - "./traefik/log:/var/log"
+    labels:
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+    restart: unless-stopped
+
+  organice:
+    image: "twohundredok/organice:latest"
+    container_name: organice
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.organice.rule=Host(`${DOMAIN}`)"
+      # Remove either of the following lines to disable IP whitelisting or basic auth
+      - "traefik.http.middlewares.auth.basicauth.users=${HTTP_AUTH}"
+      - "traefik.http.middlewares.ipwl.ipwhitelist.sourcerange=127.0.0.1/32, 192.168.2.0/24"
+      # Remove either 'auth' or 'ipwl' below accordingly. Eg:
+      # - "traefik.http.routers.organice.middlewares=auth"
+      - "traefik.http.routers.organice.middlewares=auth, ipwl"
+      - "traefik.http.routers.organice.tls.certresolver=le"
+      - "traefik.http.routers.organice.entrypoints=websecure"
+      - "traefik.http.services.organice.loadbalancer.server.port=5000"
+
+  webdav:
+    build:
+      context: ./webdav/
+    container_name: webdav
+    environment:
+      - "PUID=${PUID}"
+      - "PGID=${PGID}"
+      - "WEBDAV_PREFIX=${WEBDAV_PREFIX}"
+    volumes:
+      - "${ORG_DIR}:/data"
+      - "./webdav/log:/var/log/nginx"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webdav.rule=Host(`${DOMAIN}`) && PathPrefix(`/${WEBDAV_PREFIX}`)"
+      - "traefik.http.routers.webdav.tls.certresolver=le"
+      - "traefik.http.routers.webdav.entrypoints=websecure"
+      - "traefik.http.services.webdav.loadbalancer.server.port=80"
+      - "traefik.http.routers.webdav.middlewares=auth"
