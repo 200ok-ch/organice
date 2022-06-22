@@ -97,7 +97,7 @@
  configuration, so any user account works (including omitted user
  accounts). It goes without saying that if you wanted to use this for
  production, please enable authentication. Within the test image,
- you'll find the [[file:sample.org][sample.org]] file, so you can get started developing and
+ you'll find the [[https://github.com/200ok-ch/organice/blob/master/sample.org][sample.org]] file, so you can get started developing and
  testing right away.
 
  For testing WebDAV outside of organice, and you're an Emacs user, you
