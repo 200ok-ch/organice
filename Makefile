@@ -37,6 +37,7 @@ help: ## Show this help (default)
 .PHONY: setup
 setup: ## Setup the project
 	yarn install --production=false
+	make src/lib/headline_filter_parser.js
 
 .PHONY: start
 start: setup src
@@ -57,7 +58,7 @@ deploy-docs: docs
 deploy-docs: ## Deploy the documentation
 	./bin/compile_doc_and_upload.sh
 
-build: src/lib/headline_filter_parser.js src
+build: setup src
 build: ## Build a production (pre-)build
 	bin/transient_env_vars.sh bait
 	npx react-scripts build
