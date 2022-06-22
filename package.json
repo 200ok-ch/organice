@@ -38,10 +38,10 @@
     "webdav": "^3.3.0"
   },
   "scripts": {
-    "start": "./bin/compile_search_parser.sh && react-scripts start",
-    "build": "./bin/compile_search_parser.sh && react-scripts build",
+    "start": "make start",
+    "build": "make build",
     "test:dbg": "./bin/compile_search_parser.sh && react-scripts --inspect-brk test --runInBand --no-cache",
-    "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
+    "test": "make test",
     "coverage": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom --coverage --watchAll=false",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",

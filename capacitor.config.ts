@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.twohundredok.organice',
   appName: 'organice',
-  webDir: 'build',
+  webDir: 'release',
   bundledWebRuntime: false,
   server: {
     // hostname: 'localhost', // default: localhost

@@ -1,7 +1,7 @@
 {
 	"appId": "com.twohundredok.organice",
 	"appName": "organice",
-	"webDir": "build",
+	"webDir": "release",
 	"bundledWebRuntime": false,
 	"server": {
 		"cleartext": true

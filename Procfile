@@ -1,1 +1,1 @@
-web: serve build
+web: serve release

@@ -1,30 +1,53 @@
+# ------------------------------------------------------------
+# includes
+
 -include .ok/credentials.mk
+-include local.mk
 
-SHELL=/bin/bash
+# ------------------------------------------------------------
+# variables
 
-.DEFAULT_GOAL=run
+ANDROID_TARGET?=Pixel_3_API_32
+
+SHELL:=/bin/bash
+
+REVISION=$(shell git describe --tags)
+
+RELEASE_FILES=$(shell find release/ -type f -name '*.js')
+
+# ------------------------------------------------------------
+# functions
+
+check_defined = \
+  $(strip $(foreach 1,$1, \
+    $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+  $(if $(value $1),, \
+    $(error Undefined $1$(if $2, ($2))))
 
 # ------------------------------------------------------------
 # dev
 
 .PHONY: help
-help: ## Show this help
+help: ## Show this help (default)
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | \
 	  awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m  %-30s\033[0m %s\n", $$1, $$2}'
 
+# This is likely the only case in which make should call yarn.
 .PHONY: setup
 setup: ## Setup the project
 	yarn install --production=false
+	make src/lib/headline_filter_parser.js
 
-.PHONY: run
-run: setup
-run: ## Run a server that serves organice as PWA (default)
-	yarn start
+.PHONY: start
+start: setup src
+start: ## Run a server that serves organice as PWA
+	npx react-scripts start
 
 .PHONY: test
-test: setup
+test: setup src
 test: ## Run the tests
-	yarn test
+	npx react-scripts test --env=jsdom
 
 .PHONY: docs
 docs: ## Compile the documentation
@@ -35,37 +58,41 @@ deploy-docs: docs
 deploy-docs: ## Deploy the documentation
 	./bin/compile_doc_and_upload.sh
 
-REVISION=$(shell git describe --tags)
-
-BUILD_FILES=$(shell find build/ -type f -name '*.js')
-
-.PHONY: build
-build: ## Build a production build
+build: setup src
+build: ## Build a production (pre-)build
 	bin/transient_env_vars.sh bait
-	yarn build
-	bin/transient_env_vars.sh switch build build0
+	npx react-scripts build
+
+release: build
+release: ## Build a release (with proper credentials and build number)
+	bin/transient_env_vars.sh switch build release
 	make set-revision
 
 .PHONY: set-revision
-set-revision: $(BUILD_FILES)
+set-revision: $(RELEASE_FILES)
 set-revision: ## Set the build revision
 	for FILE in $?; do sed -i "s/ORGANICE_ROLLING_RELEASE/$(REVISION)/" $$FILE; done
 
-ANDROID_TARGET?=Pixel_3_API_32
-
 .PHONY: android
-android: build
+android: release
 android: ## Build the android app and run it on $ANDROID_TARGET
 	npx cap run android --target $(ANDROID_TARGET)
 
 .PHONY: check-ftp-credentials
 check-ftp-credentials: ## Check for FTP credentials
-	[ -z ${FTP_HOST+x} ] && (echo "$FTP_HOST needs to be set for uploading to FTP."; exit 1)
-	[ -z ${FTP_USER+x} ] && (echo "$FTP_USER needs to be set for uploading to FTP."; exit 1)
-	[ -z ${FTP_PASSWD+x} ] && (echo "$FTP_PASSWD needs to be set for uploading to FTP."; exit 1)
+	$(call check_defined, FTP_HOST, deployment target)
+	$(call check_defined, FTP_USER, deployment user)
+	$(call check_defined, FTP_PASSWD, deployment password)
 
 .PHONY: deploy
-deploy: check-ftp-credentials setup build
-deploy: ## Deploy PWA
-	cd build0 && \
+deploy: check-ftp-credentials setup release
+deploy: ## Deploy organice as PWA via FTP
+	cd release && \
 	  lftp -u${FTP_USER},${FTP_PASSWD} -e "mirror -R ./" ${FTP_HOST}
+
+# ------------------------------------------------------------
+# internals
+
+src/lib/headline_filter_parser.js: src/lib/headline_filter_parser.grammar.pegjs
+	echo '/* eslint-disable */' > $@
+	npx pegjs -o - $< >> $@
