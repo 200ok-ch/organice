@@ -113,6 +113,18 @@ describe('Render all views', () => {
       getByPlaceholderText = res.getByPlaceholderText;
     });
 
+    describe('Works with Org files without headlines', () => {
+      test('Works with a completely empty files', () => {
+        store.dispatch(
+          parseFile(STATIC_FILE_PREFIX + 'fixtureTestFile.org', readFixture('empty_file'))
+        );
+        expect(queryByText('This file has no headlines')).toBeTruthy();
+        expect(queryAllByText('Yes, your file has content.').length).toEqual(0);
+        // Sanity check, ensure that not the regular test file is loaded.
+        expect(queryByText('Top level header')).toBeFalsy();
+      });
+    });
+
     describe('Actions within an Org file', () => {
       test('Can select a header in an org file', () => {
         expect(container.querySelector("[data-testid='org-clock-in']")).toBeFalsy();
