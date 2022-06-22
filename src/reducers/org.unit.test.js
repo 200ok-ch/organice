@@ -2149,4 +2149,44 @@ describe('org reducer', () => {
       expect(header.get('totalTimeLogged')).toEqual(25200000);
     });
   });
+
+  describe('handle empty files', () => {
+    it('creates a new first header in an empty file', () => {
+      let path = 'testfile';
+      const emptyOrgFile = readFixture('empty_file');
+      const state = setUpStateForFile(path, emptyOrgFile);
+
+      // Empty file has no headers
+      expect(state.org.present.getIn(['files', path, 'headers']).toJS()).toEqual([]);
+
+      const newState = reducer(state.org.present, types.createFirstHeader());
+      expect(
+        newState.getIn(['files', path, 'headers']).get(0).getIn(['titleLine', 'rawTitle'])
+      ).toEqual('First header');
+    });
+
+    it('embedds linesBeforeHeadings into the first headline', () => {
+      let path = 'testfile';
+      const emptyOrgFile = readFixture('content_but_no_headline');
+      const state = setUpStateForFile(path, emptyOrgFile);
+
+      expect(state.org.present.getIn(['files', path, 'linesBeforeHeadings']).toJS()).toEqual([
+        'This is a legit Org mode file, yet it has not a single headline.',
+      ]);
+
+      const newState = reducer(state.org.present, types.createFirstHeader());
+      // Create new header
+      expect(
+        newState.getIn(['files', path, 'headers']).get(0).getIn(['titleLine', 'rawTitle'])
+      ).toEqual('First header');
+
+      // Move all linesBeforeHeadings under said header
+      expect(newState.getIn(['files', path, 'headers']).get(0).getIn(['rawDescription'])).toEqual(
+        'This is a legit Org mode file, yet it has not a single headline.'
+      );
+
+      // Old linesBeforeHeadings are gone
+      expect(newState.getIn(['files', path, 'linesBeforeHeadings']).toJS()).toEqual([]);
+    });
+  });
 });

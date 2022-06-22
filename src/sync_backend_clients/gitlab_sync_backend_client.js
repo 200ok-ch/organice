@@ -52,6 +52,8 @@ export const createGitlabOAuth = () => {
  * parsing succeeded, otherwise undefined.
  */
 export const gitLabProjectIdFromURL = (projectURL) => {
+  if (!projectURL) return;
+
   if (!projectURL.includes('://')) {
     // URL() class requires protocol.
     projectURL = `https://${projectURL}`;

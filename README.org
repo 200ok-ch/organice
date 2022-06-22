@@ -442,7 +442,7 @@ In any case, [[https://organice.200ok.ch/documentation.html#faq_webdav][here's h
 **** Dropbox or GitLab
 
 To test against your own Dropbox or GitLab application, you'll need to create a
-~.env~ file by copying [[file:.env.sample][.env.sample]] to just ~.env~.
+~.env~ file by copying [[https://github.com/200ok-ch/organice/blob/master/.env.sample][.env.sample]] to just ~.env~.
 
 #+BEGIN_SRC shell
 cp .env.sample .env
@@ -616,7 +616,7 @@ automatically deployed to stage.
   :CUSTOM_ID: contributions
   :END:
 
-Please see our [[file:CONTRIBUTING.org][contributor guidelines]] and our [[file:CODE_OF_CONDUCT.md][code of conduct]].
+Please see our [[https://github.com/200ok-ch/organice/blob/master/CONTRIBUTING.org][contributor guidelines]] and our [[https://github.com/200ok-ch/organice/blob/master/CODE_OF_CONDUCT.md][code of conduct]].
 
 ** Mockups
    :PROPERTIES:
@@ -1045,8 +1045,8 @@ organice has a shared history with [[https://github.com/DanielDe/org-web][org-we
 fork. organice differs from org-web in that:
 
 - organice is a community driven project. See our
-  - [[file:CODE_OF_CONDUCT.md][Code of conduct]]
-  - [[file:CONTRIBUTING.org][Contributing guidelines]]
+  - [[https://github.com/200ok-ch/organice/blob/master/CODE_OF_CONDUCT.md][Code of conduct]]
+  - [[https://github.com/200ok-ch/organice/blob/master/CONTRIBUTING.org][Contributing guidelines]]
   - Community chat: #organice on IRC [[https://libera.chat/][Libera.Chat]], or [[https://matrix.to/#/!DfVpGxoYxpbfAhuimY:matrix.org?via=matrix.org&via=ungleich.ch][#organice:matrix.org]] on Matrix
     on Matrix
 
@@ -1078,7 +1078,7 @@ fork. organice differs from org-web in that:
 
 *** What's new?
 
-To see how organice differs from org-web, please consult the [[file:changelog.org][changelog]]
+To see how organice differs from org-web, please consult the [[https://github.com/200ok-ch/organice/blob/master/changelog.org][changelog]]
 which contains the user visible changes since forking.
 
 *** Acknowledgment

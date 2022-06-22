@@ -11,5 +11,9 @@ export const formatTextWrap = (text, w) => {
 
 export const isLandingPage = () => {
   const history = createBrowserHistory();
-  return !window.testRunner && history.location.pathname === '/';
+  return (
+    !window.testRunner &&
+    history.location.pathname === '/' &&
+    !localStorage.authenticatedSyncService
+  );
 };

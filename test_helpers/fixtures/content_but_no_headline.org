@@ -1,0 +1,1 @@
+This is a legit Org mode file, yet it has not a single headline.

@@ -60,6 +60,7 @@ class OrgFile extends PureComponent {
       'handleEditDescriptionHotKey',
       'handleExitEditModeHotKey',
       'handleAddHeaderHotKey',
+      'handleCreateFirstHeader',
       'handleRemoveHeaderHotKey',
       'handleMoveHeaderUpHotKey',
       'handleMoveHeaderDownHotKey',
@@ -196,6 +197,10 @@ class OrgFile extends PureComponent {
 
   handleAddHeaderHotKey() {
     this.props.org.addHeaderAndEdit(this.props.selectedHeaderId);
+  }
+
+  handleCreateFirstHeader() {
+    this.props.org.createFirstHeader();
   }
 
   handleRemoveHeaderHotKey() {
@@ -568,6 +573,7 @@ class OrgFile extends PureComponent {
   render() {
     const {
       headers,
+      linesBeforeHeadings,
       shouldDisableDirtyIndicator,
       shouldDisableSyncButtons,
       shouldDisableActions,
@@ -644,22 +650,41 @@ class OrgFile extends PureComponent {
       this.setState({ popupCloseActionValuesAccessor: v });
     };
 
+    // Check if this a legit Org file with content, just no headers
+    const noHeadlineButContent = () => {
+      return headers.size === 0 && linesBeforeHeadings.size > 0;
+    };
+
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
         <div className="org-file-container" tabIndex="-1" ref={this.handleContainerRef}>
           {headers.size === 0 ? (
             <div className="org-file__parsing-error-message">
-              <h3>Couldn't parse file</h3>
+              <h3>This file has no headlines</h3>
 
               {!!parsingErrorMessage ? (
                 <Fragment>{parsingErrorMessage}</Fragment>
               ) : (
                 <Fragment>
-                  If you think this is a bug, please{' '}
-                  <ExternalLink href="https://github.com/200ok-ch/organice/issues/new">
-                    create an issue
-                  </ExternalLink>{' '}
-                  and include the org file if possible!
+                  {noHeadlineButContent() ? (
+                    <>
+                      <p>Yes, your file has content. Do not worry, it is still there! </p>
+                      <p>
+                        However, interacting with Org files in organice happens on a per headline
+                        basis. To use organice with this file, please create a new headline with the
+                        button below. The existing content is then put into the description of this
+                        new header.
+                      </p>
+                    </>
+                  ) : (
+                    <p></p>
+                  )}
+                  <p>Interact with your file by creating the first headline.</p>
+                  <p>
+                    <button className="btn" onClick={this.handleCreateFirstHeader}>
+                      Create headline
+                    </button>
+                  </p>
                 </Fragment>
               )}
             </div>
@@ -730,6 +755,7 @@ const mapStateToProps = (state) => {
   const fileIsLoaded = (path) => loadedFiles.includes(path);
   const file = state.org.present.getIn(['files', path], Map());
   const headers = file.get('headers');
+  const linesBeforeHeadings = file.get('linesBeforeHeadings');
   const selectedHeaderId = file.get('selectedHeaderId', null);
   const activePopup = state.base.get('activePopup', Map());
 
@@ -737,6 +763,7 @@ const mapStateToProps = (state) => {
     loadedPath: path,
     files,
     headers,
+    linesBeforeHeadings,
     selectedHeaderId,
     isDirty: file.get('isDirty'),
     fileIsLoaded,

@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-06-22 Wed]
+** Added
+- Ability to handle empty files
+  - This takes care of a big UX problem for users who solely rely on organice. So far, we've shown a parser error if the file is empty *or* if the file did not contain a headline.
+  - Now, if the user opens a file that is empty, or has no headlines, she will see the call to action to create a new headline.
+  - PR: https://github.com/200ok-ch/organice/pull/853
 * [2022-06-16 Thu]
 ** Added
 - Capture template variables =%r= and =%R= expanding to raw timestamps

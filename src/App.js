@@ -12,7 +12,7 @@ import {
 
 import runAllMigrations from './migrations';
 import parseQueryString from './util/parse_query_string';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import { DragDropContext } from 'react-beautiful-dnd';
 
@@ -29,7 +29,7 @@ import createGitLabSyncBackendClient, {
 
 import './base.css';
 
-import Entry from './components/Entry';
+import Turnout from './components/Turnout';
 
 import {
   listenToBrowserButtons,
@@ -238,12 +238,12 @@ export default class App extends PureComponent {
   render() {
     return (
       <DragDropContext onDragEnd={this.handleDragEnd}>
-        <Router>
+        <BrowserRouter>
           <AppUrlListener></AppUrlListener>
           <Provider store={this.store}>
-            <Entry />
+            <Turnout />
           </Provider>
-        </Router>
+        </BrowserRouter>
       </DragDropContext>
     );
   }
