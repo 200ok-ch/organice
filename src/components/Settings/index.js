@@ -52,8 +52,6 @@ const Settings = ({
     if (window.confirm('Are you sure you want to sign out?')) {
       syncBackend.signOut();
       history.push('/');
-    } else {
-      return void 0;
     }
   };
 
