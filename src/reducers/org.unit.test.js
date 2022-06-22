@@ -2186,9 +2186,7 @@ describe('org reducer', () => {
       );
 
       // Old linesBeforeHeadings are gone
-      expect(state.org.present.getIn(['files', path, 'linesBeforeHeadings']).toJS()).toEqual([
-        'This is a legit Org mode file, yet it has not a single headline.',
-      ]);
+      expect(newState.getIn(['files', path, 'linesBeforeHeadings']).toJS()).toEqual([]);
     });
   });
 });
