@@ -1,11 +1,12 @@
 * Receive an HTTP post with a message to post to an Org file in organice
 
-These scripts *directly* update Org files on your WebDAV server
+These scripts *directly* update Org files on your WebDAV server.  You can use this script directly from your web browser or through automation tools (such as Mailgun or IFTTT) to post tasks directly to Org files.
 
 *NOTES*:
   - This set of scripts was designed to be modular and used
   - There is limited content checking - so please be careful with what you post
   - Watch out for race conditions if you edit your Org files in multiple places simultaneously
+  - The =organice_inbox.sh= script assumes a deadline of today for convenience
 
 ** Configuring the scripts
 
@@ -19,7 +20,7 @@ You should put the file =organice-inbox.sh= in a directoory *outside* of the dir
 
 ** Using the script
 
-Once you have these scripts properly configured and added to your web-server, you can use them directly in a browser or POST data to be immediately added.  For this example, let's assume the URL of https://www.myorganice.org/home.php
+Once you have these scripts properly configured and added to your web-server, you can use them directly in a browser or POST data to be immediately added.  For this example, let's assume the URL of https://my.organice.org/home.php
 
 Loading this URL in a browser will present an HTML form where you can add a task with a title and description.
 
