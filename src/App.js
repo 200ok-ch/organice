@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react';
 
 import { Provider } from 'react-redux';
 import Store from './store';
+import { Dropbox } from 'dropbox';
 import {
   readInitialState,
   loadSettingsFromConfigFile,
@@ -70,6 +71,27 @@ const handleGitLabAuthResponse = async (oauthClient) => {
   }
 };
 
+/* BEGIN: Dropbox helper functions */
+
+function getCodeFromUrl() {
+  return parseQueryString(window.location.search).code;
+}
+
+function createDropboxClient(dbxAuth, client, initialState) {
+  var tmpClient = new Dropbox({
+    auth: dbxAuth,
+  });
+
+  client = createDropboxSyncBackendClient(tmpClient);
+  initialState.syncBackend = Map({
+    isAuthenticated: true,
+    client,
+  });
+  return client;
+}
+
+/* END: Dropbox helper functions */
+
 export default class App extends PureComponent {
   constructor(props) {
     super(props);
@@ -78,31 +100,42 @@ export default class App extends PureComponent {
 
     const initialState = readInitialState();
 
-    const hashContents = parseQueryString(window.location.hash);
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
     let client = null;
 
     if (!!authenticatedSyncService) {
       switch (authenticatedSyncService) {
         case 'Dropbox':
-          const dropboxAccessToken = parseQueryString(window.location.search).code;
-          if (dropboxAccessToken) {
-            client = createDropboxSyncBackendClient(dropboxAccessToken);
-            initialState.syncBackend = Map({
-              isAuthenticated: true,
-              client,
-            });
-            persistField('dropboxAccessToken', dropboxAccessToken);
-            window.location.hash = '';
-          } else {
-            const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
-            if (!!persistedDropboxAccessToken) {
-              client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
-              initialState.syncBackend = Map({
-                isAuthenticated: true,
-                client,
+          const REDIRECT_URI = window.location.origin + '/';
+
+          const dbx = new Dropbox({
+            clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+            fetch: fetch.bind(window),
+          });
+          const dbxAuth = dbx.auth;
+
+          if (getCodeFromUrl()) {
+            dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+            dbxAuth
+              .getAccessTokenFromCode(REDIRECT_URI, getCodeFromUrl())
+              .then((response) => {
+                const dropboxAccessToken = response.result.access_token;
+
+                dbxAuth.setAccessToken(dropboxAccessToken);
+                persistField('dropboxAccessToken', dropboxAccessToken);
+
+                client = createDropboxClient(dbxAuth, client, initialState);
+
+                window.location.href = '/files';
+              })
+              .catch((error) => {
+                console.error(error);
               });
-            }
+          } else {
+            const dropboxAccessToken = getPersistedField('dropboxAccessToken');
+            dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+            dbxAuth.setAccessToken(dropboxAccessToken);
+            client = createDropboxClient(dbxAuth, client, initialState);
           }
           break;
         case 'GitLab':

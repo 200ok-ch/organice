@@ -1,6 +1,4 @@
-/* global process */
-
-import { Dropbox, DropboxAuth } from 'dropbox';
+// import { Dropbox, DropboxAuth } from 'dropbox';
 import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
 
@@ -31,44 +29,7 @@ export const filterAndSortDirectoryListing = (listing) => {
   });
 };
 
-function renderItems(items) {
-  items.forEach(function (item) {
-    console.log(item);
-  });
-}
-
-export default (accessToken) => {
-  const dbxAuth = new DropboxAuth({
-    clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
-    fetch: fetch.bind(window),
-    // accessToken,
-  });
-
-  let dbx;
-
-  dbxAuth.setCodeVerifier(window.sessionStorage.getItem('codeVerifier'));
-
-  dbxAuth
-    .getAccessTokenFromCode('http://localhost:3000/', accessToken)
-    .then((response) => {
-      alert('access token: ' + response.result.access_token);
-      dbxAuth.setAccessToken(response.result.access_token);
-      dbx = new Dropbox.Dropbox({
-        auth: dbxAuth,
-      });
-      return dbx.filesListFolder({
-        path: '',
-      });
-    })
-    .then((response) => {
-      renderItems(response.result.entries);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
-  // const dbxAuth = new Dropbox({ accessToken, fetch: fetch.bind(window) });
-
+export default (dbx) => {
   const isSignedIn = () => new Promise((resolve) => resolve(true));
 
   const transformDirectoryListing = (listing) => {

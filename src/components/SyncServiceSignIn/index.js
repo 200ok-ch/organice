@@ -158,42 +158,20 @@ export default class SyncServiceSignIn extends PureComponent {
 
   handleDropboxClick() {
     persistField('authenticatedSyncService', 'Dropbox');
+    const REDIRECT_URI = window.location.origin + '/';
 
     const dbxAuth = new DropboxAuth({
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
 
-    alert('here');
-    console.log(dbxAuth);
-    alert(dbxAuth.getCodeVerifier());
-    alert(dbxAuth.codeVerifier);
-
-    window.dbxAuth = dbxAuth;
-
-    dbxAuth.auth
-      .getAuthenticationUrl(
-        window.location.origin + '/',
-        undefined,
-        'code',
-        undefined,
-        undefined,
-        undefined,
-        true
-      )
-      .then((authURL) => {
-        // vorher: https://dropbox.com/oauth2/authorize?response_type=token&client_id=9mgtyjrvc0b1b2z&redirect_uri=http://localhost:3000/
-        // nachher: https://dropbox.com/oauth2/authorize?response_type=code&client_id=9mgtyjrvc0b1b2z&redirect_uri=http://localhost:3000/&token_access_type=offline&code_challenge_method=S256&code_challenge=uMvEitm-_Wai-apKauigPtzuJ8XwlaNOAMB4yVIaNbc
-        // alert(authURL);
-
-        alert('Code verifier: ' + dbxAuth.codeVerifier);
-        window.sessionStorage.setItem('codeVerifier', dbxAuth.codeVerifier);
-        window.location = authURL;
+    dbxAuth
+      .getAuthenticationUrl(REDIRECT_URI, undefined, 'code', 'offline', undefined, undefined, true)
+      .then((authUrl) => {
+        persistField('codeVerifier', dbxAuth.codeVerifier);
+        window.location.href = authUrl;
       })
-      .catch((error) => {
-        alert('Error logging into Dropbox.');
-        console.error(error);
-      });
+      .catch((error) => console.error(error));
   }
 
   render() {
