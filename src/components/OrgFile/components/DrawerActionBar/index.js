@@ -27,6 +27,7 @@ class DrawerActionBar extends PureComponent {
       'handleShowDeadlineModal',
       'handleShowScheduledModal',
       'handleShowNoteModal',
+      'handleRemoveHeader',
     ]);
   }
 
@@ -84,6 +85,12 @@ class DrawerActionBar extends PureComponent {
     this.props.base.activatePopup('note-editor');
   }
 
+  handleRemoveHeader() {
+    this.props.base.closePopup();
+    this.props.org.selectHeader(null);
+    this.props.org.removeHeader(this.props.header.get('id'));
+  }
+
   render() {
     return (
       <div className="static-action-bar">
@@ -97,6 +104,7 @@ class DrawerActionBar extends PureComponent {
           onDeadlineClick={this.handleShowDeadlineModal}
           onScheduledClick={this.handleShowScheduledModal}
           onAddNote={this.handleShowNoteModal}
+          onRemoveHeader={this.handleRemoveHeader}
           editRawValues={this.props.editRawValues}
           setEditRawValues={this.props.setEditRawValues}
           restorePreferEditRawValues={this.props.restorePreferEditRawValues}

@@ -173,11 +173,6 @@ export default class TitleEditorModal extends PureComponent {
                 onSelect={this.handleTodoChange}
               />
             </div>
-            {/* <i */}
-            {/*   className="fas fa-trash fa-lg todo-editor__icon" */}
-            {/*   style={{ marginLeft: '10px' }} */}
-            {/*   onClick={() => this.handleTodoChange('')} */}
-            {/* /> */}
           </div>
         )}
 
