@@ -112,8 +112,13 @@ export default class TitleEditorModal extends PureComponent {
   }
 
   handleTodoChange(newTodoKeyword) {
+    const currentTodoKeyword = this.props.header.getIn(['titleLine', 'todoKeyword']);
+    // Unselecting a keyword happens by writing an empty string as
+    // keyword. Checking if the newly clicked todo keyword is the same
+    // as the currently set todo keyword.
+    const keyword = currentTodoKeyword === newTodoKeyword ? '' : newTodoKeyword;
     this.props.saveTitle(this.state.titleValue);
-    this.props.onTodoClicked(newTodoKeyword);
+    this.props.onTodoClicked(keyword);
   }
 
   handleNextTodoKeywordSet() {
@@ -165,11 +170,11 @@ export default class TitleEditorModal extends PureComponent {
                 onSelect={this.handleTodoChange}
               />
             </div>
-            <i
-              className="fas fa-trash fa-lg todo-editor__icon"
-              style={{ marginLeft: '10px' }}
-              onClick={() => this.handleTodoChange('')}
-            />
+            {/* <i */}
+            {/*   className="fas fa-trash fa-lg todo-editor__icon" */}
+            {/*   style={{ marginLeft: '10px' }} */}
+            {/*   onClick={() => this.handleTodoChange('')} */}
+            {/* /> */}
           </div>
         )}
 
