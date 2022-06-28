@@ -144,11 +144,14 @@ export default class TitleEditorModal extends PureComponent {
 
         {this.props.editRawValues ? null : (
           <div className="todo-editor">
-            <i
-              className="fas fa-ellipsis-h fa-lg todo-editor__icon"
-              style={{ marginRight: '10px' }}
+            <button
+              className="btn"
+              style={{ marginLeft: '-5px' }}
               onClick={this.handleNextTodoKeywordSet}
-            />
+              title="Next keyword set"
+            >
+              Next set
+            </button>
             <div className="todo-container">
               <TabButtons
                 buttons={this.state.todoKeywordSet
