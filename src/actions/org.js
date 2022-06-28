@@ -161,17 +161,15 @@ const doSync = ({
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
-          const contents =
-            localStorage.getItem('files__' + path) ||
-            exportOrg({
-              headers: getState().org.present.getIn(['files', path, 'headers']),
-              linesBeforeHeadings: getState().org.present.getIn([
-                'files',
-                path,
-                'linesBeforeHeadings',
-              ]),
-              dontIndent: getState().base.get('shouldNotIndentOnExport'),
-            });
+          const contents = exportOrg({
+            headers: getState().org.present.getIn(['files', path, 'headers']),
+            linesBeforeHeadings: getState().org.present.getIn([
+              'files',
+              path,
+              'linesBeforeHeadings',
+            ]),
+            dontIndent: getState().base.get('shouldNotIndentOnExport'),
+          });
           client
             .updateFile(path, contents)
             .then(() => {
