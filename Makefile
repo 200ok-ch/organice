@@ -88,7 +88,7 @@ check-ftp-credentials: ## Check for FTP credentials
 deploy: check-ftp-credentials setup release
 deploy: ## Deploy organice as PWA via FTP
 	cd release && \
-	  lftp -u${FTP_USER},${FTP_PASSWD} -e "mirror -R ./" ${FTP_HOST}
+	  lftp -u${FTP_USER},${FTP_PASSWD} -e "mirror -R ./; bye" ${FTP_HOST}
 
 # ------------------------------------------------------------
 # internals
