@@ -11,7 +11,7 @@ import {
 } from './util/settings_persister';
 
 import runAllMigrations from './migrations';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import { DragDropContext } from 'react-beautiful-dnd';
 

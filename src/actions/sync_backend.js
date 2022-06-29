@@ -19,7 +19,10 @@ export const signOut = () => (dispatch, getState) => {
       });
       break;
     case 'Dropbox':
-      // persistField('dropboxAccessToken', null);
+      // `dropboxAccessToken` is a legacy token that was relevant
+      // prior to switching to OAuth 2 and PKCE. Still deleting it
+      // here for a consistent state in users localStorage.
+      persistField('dropboxAccessToken', null);
       persistField('dropboxRefreshToken', null);
       persistField('codeVerifier', null);
       break;

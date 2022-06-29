@@ -188,10 +188,7 @@ export default () => {
     dbxAuth
       .getAccessTokenFromCode(REDIRECT_URI, getCodeFromUrl())
       .then((response) => {
-        // const dropboxAccessToken = response.result.access_token;
         dbxAuth.setRefreshToken(response.result.refresh_token);
-        // dbxAuth.setAccessToken(dropboxAccessToken);
-        // persistField('dropboxAccessToken', dropboxAccessToken);
         persistField('dropboxRefreshToken', response.result.refresh_token);
 
         dbx = new Dropbox({
@@ -206,7 +203,6 @@ export default () => {
   } else {
     dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
     dbxAuth.setRefreshToken(getPersistedField('dropboxRefreshToken'));
-    // dbxAuth.setAccessToken(getPersistedField('dropboxAccessToken'));
     dbx = new Dropbox({
       auth: dbxAuth,
     });
