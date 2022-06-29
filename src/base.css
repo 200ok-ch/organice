@@ -58,6 +58,15 @@ body,
   padding: 8px 16px;
 }
 
+.App:not(.landing-page) .btn-passive {
+  cursor: pointer;
+  background-color: var(--base0-soft);
+  color: var(--base3) !important;
+
+  border: 0;
+  padding: 8px 16px;
+}
+
 .App:not(.landing-page) .btn a {
   color: var(--base3) !important;
 }
