@@ -28,6 +28,7 @@ export default class DrawerActionButtons extends PureComponent {
       onDeadlineClick,
       onScheduledClick,
       onAddNote,
+      onRemoveHeader,
       activePopupType,
       editRawValues,
       setEditRawValues,
@@ -111,6 +112,15 @@ export default class DrawerActionButtons extends PureComponent {
               ('note-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onAddNote,
             title: 'Add a note',
+            disabled: 'note-editor' === activePopupType,
+          })}
+
+          {this.iconWithFFClickCatcher({
+            className:
+              'fas fa-trash fa-lg' +
+              ('note-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
+            onClick: onRemoveHeader,
+            title: 'Delete this header',
             disabled: 'note-editor' === activePopupType,
           })}
         </div>

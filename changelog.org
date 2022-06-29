@@ -7,6 +7,18 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2022-06-29 Wed]
+** Changed
+- Simplify UX in task modal
+  - "Change todo keyword set" is now an explicit button. Also, it's
+    only shown when there is more than one todo keyword set configured
+    for the current Org file.
+  - Todo keywords can be selected and unselected on the same button.
+    No trash can necessary to unselect a todo keyword..
+  - PR: https://github.com/200ok-ch/organice/pull/862
+** Added
+- Ability to delete header from task modal.
+  - PR: https://github.com/200ok-ch/organice/pull/862
 * [2022-06-22 Wed]
 ** Added
 - Ability to handle empty files

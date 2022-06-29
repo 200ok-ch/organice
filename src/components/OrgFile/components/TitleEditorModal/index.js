@@ -112,8 +112,13 @@ export default class TitleEditorModal extends PureComponent {
   }
 
   handleTodoChange(newTodoKeyword) {
+    const currentTodoKeyword = this.props.header.getIn(['titleLine', 'todoKeyword']);
+    // Unselecting a keyword happens by writing an empty string as
+    // keyword. Checking if the newly clicked todo keyword is the same
+    // as the currently set todo keyword.
+    const keyword = currentTodoKeyword === newTodoKeyword ? '' : newTodoKeyword;
     this.props.saveTitle(this.state.titleValue);
-    this.props.onTodoClicked(newTodoKeyword);
+    this.props.onTodoClicked(keyword);
   }
 
   handleNextTodoKeywordSet() {
@@ -138,38 +143,36 @@ export default class TitleEditorModal extends PureComponent {
         </h2>
 
         {this.props.editRawValues ? null : (
-          <div className="todo-editor">
-            <i
-              className="fas fa-ellipsis-h fa-lg todo-editor__icon"
-              style={{ marginRight: '10px' }}
-              onClick={this.handleNextTodoKeywordSet}
+          <div className="todo-container">
+            <TabButtons
+              buttons={this.state.todoKeywordSet
+                .get('keywords')
+                .filter(
+                  (todo) =>
+                    this.state.todoKeywordSet
+                      .get('completedKeywords')
+                      .filter((completed) => todo === completed).size === 0
+                )}
+              selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
+              onSelect={this.handleTodoChange}
             />
-            <div className="todo-container">
-              <TabButtons
-                buttons={this.state.todoKeywordSet
-                  .get('keywords')
-                  .filter(
-                    (todo) =>
-                      this.state.todoKeywordSet
-                        .get('completedKeywords')
-                        .filter((completed) => todo === completed).size === 0
-                  )}
-                selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
-                onSelect={this.handleTodoChange}
-              />
-              <TabButtons
-                buttons={this.state.todoKeywordSet
-                  .get('completedKeywords')
-                  .filter((todo) => todo !== '')}
-                selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
-                onSelect={this.handleTodoChange}
-              />
-            </div>
-            <i
-              className="fas fa-trash fa-lg todo-editor__icon"
-              style={{ marginLeft: '10px' }}
-              onClick={() => this.handleTodoChange('')}
+            <TabButtons
+              buttons={this.state.todoKeywordSet
+                .get('completedKeywords')
+                .filter((todo) => todo !== '')}
+              selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
+              onSelect={this.handleTodoChange}
             />
+
+            {this.props.todoKeywordSets.size > 1 ? (
+              <button
+                className="btn-passive"
+                onClick={this.handleNextTodoKeywordSet}
+                title="Next keyword set"
+              >
+                Next set
+              </button>
+            ) : null}
           </div>
         )}
 
