@@ -1,6 +1,13 @@
-// import { Dropbox, DropboxAuth } from 'dropbox';
+/* global process */
+
 import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
+
+import { persistField, getPersistedField } from '../util/settings_persister';
+
+import { Dropbox } from 'dropbox';
+
+import parseQueryString from '../util/parse_query_string';
 
 import { fromJS, Map } from 'immutable';
 
@@ -29,7 +36,13 @@ export const filterAndSortDirectoryListing = (listing) => {
   });
 };
 
-export default (dbx) => {
+function getCodeFromUrl() {
+  return parseQueryString(window.location.search).code;
+}
+
+export default () => {
+  let dbx;
+
   const isSignedIn = () => new Promise((resolve) => resolve(true));
 
   const transformDirectoryListing = (listing) => {
@@ -152,6 +165,50 @@ export default (dbx) => {
         .then(resolve)
         .catch((error) => reject(error.error.error['.tag'] === 'path_lookup', error))
     );
+
+  /* Dropbox documentation on OAuth2 and PKCE:
+
+  -  SDK Repo: https://github.com/dropbox/dropbox-sdk-js
+  -  OAuth Guide: https://developers.dropbox.com/oauth-guide
+  -  PKCE: What and Why?: https://dropbox.tech/developers/pkce--what-and-why-
+  -  Single HTML file example: https://github.com/dropbox/dropbox-sdk-js/blob/main/examples/javascript/pkce-browser/index.html
+  -  SDK Docs: https://dropbox.github.io/dropbox-sdk-js/index.html
+  -  Migrating App Permissions and Access Tokens: https://dropbox.tech/developers/migrating-app-permissions-and-access-tokens */
+
+  const REDIRECT_URI = window.location.origin + '/';
+
+  dbx = new Dropbox({
+    clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+    fetch: fetch.bind(window),
+  });
+  const dbxAuth = dbx.auth;
+
+  if (getCodeFromUrl()) {
+    dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+    dbxAuth
+      .getAccessTokenFromCode(REDIRECT_URI, getCodeFromUrl())
+      .then((response) => {
+        const dropboxAccessToken = response.result.access_token;
+
+        dbxAuth.setAccessToken(dropboxAccessToken);
+        persistField('dropboxAccessToken', dropboxAccessToken);
+
+        dbx = new Dropbox({
+          auth: dbxAuth,
+        });
+
+        window.location.href = '/files';
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } else {
+    dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+    dbxAuth.setAccessToken(getPersistedField('dropboxAccessToken'));
+    dbx = new Dropbox({
+      auth: dbxAuth,
+    });
+  }
 
   return {
     type: 'Dropbox',

@@ -20,6 +20,7 @@ export const signOut = () => (dispatch, getState) => {
       break;
     case 'Dropbox':
       persistField('dropboxAccessToken', null);
+      persistField('codeVerifier', null);
       break;
     case 'GitLab':
       persistField('gitLabProject', null);
