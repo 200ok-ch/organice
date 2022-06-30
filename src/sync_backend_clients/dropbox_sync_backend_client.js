@@ -1,6 +1,13 @@
-import { Dropbox } from 'dropbox';
+/* global process */
+
 import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
+
+import { persistField, getPersistedField } from '../util/settings_persister';
+
+import { Dropbox } from 'dropbox';
+
+import parseQueryString from '../util/parse_query_string';
 
 import { fromJS, Map } from 'immutable';
 
@@ -29,8 +36,12 @@ export const filterAndSortDirectoryListing = (listing) => {
   });
 };
 
-export default (accessToken) => {
-  const dropboxClient = new Dropbox({ accessToken, fetch: fetch.bind(window) });
+function getCodeFromUrl() {
+  return parseQueryString(window.location.search).code;
+}
+
+export default () => {
+  let dbx;
 
   const isSignedIn = () => new Promise((resolve) => resolve(true));
 
@@ -48,7 +59,7 @@ export default (accessToken) => {
 
   const getDirectoryListing = (path) =>
     new Promise((resolve, reject) => {
-      dropboxClient
+      dbx
         .filesListFolder({ path })
         .then((response) => {
           resolve({
@@ -65,7 +76,7 @@ export default (accessToken) => {
   const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const cursor = additionalSyncBackendState.get('cursor');
     return new Promise((resolve, reject) =>
-      dropboxClient.filesListFolderContinue({ cursor }).then((response) =>
+      dbx.filesListFolderContinue({ cursor }).then((response) =>
         resolve({
           listing: transformDirectoryListing(response.result.entries),
           hasMore: response.result.has_more,
@@ -79,7 +90,7 @@ export default (accessToken) => {
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
-      dropboxClient
+      dbx
         .filesUpload({
           path,
           contents,
@@ -97,7 +108,7 @@ export default (accessToken) => {
 
   const getFileContentsAndMetadata = (path) =>
     new Promise((resolve, reject) =>
-      dropboxClient
+      dbx
         .filesDownload({ path })
         .then((response) => {
           const reader = new FileReader();
@@ -149,11 +160,53 @@ export default (accessToken) => {
 
   const deleteFile = (path) =>
     new Promise((resolve, reject) =>
-      dropboxClient
+      dbx
         .filesDelete({ path })
         .then(resolve)
         .catch((error) => reject(error.error.error['.tag'] === 'path_lookup', error))
     );
+
+  /* Dropbox documentation on OAuth2 and PKCE:
+
+  -  SDK Repo: https://github.com/dropbox/dropbox-sdk-js
+  -  OAuth Guide: https://developers.dropbox.com/oauth-guide
+  -  PKCE: What and Why?: https://dropbox.tech/developers/pkce--what-and-why-
+  -  Single HTML file example: https://github.com/dropbox/dropbox-sdk-js/blob/main/examples/javascript/pkce-browser/index.html
+  -  SDK Docs: https://dropbox.github.io/dropbox-sdk-js/index.html
+  -  Migrating App Permissions and Access Tokens: https://dropbox.tech/developers/migrating-app-permissions-and-access-tokens */
+
+  const REDIRECT_URI = window.location.origin + '/';
+
+  dbx = new Dropbox({
+    clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+    fetch: fetch.bind(window),
+  });
+  const dbxAuth = dbx.auth;
+
+  if (getCodeFromUrl()) {
+    dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+    dbxAuth
+      .getAccessTokenFromCode(REDIRECT_URI, getCodeFromUrl())
+      .then((response) => {
+        dbxAuth.setRefreshToken(response.result.refresh_token);
+        persistField('dropboxRefreshToken', response.result.refresh_token);
+
+        dbx = new Dropbox({
+          auth: dbxAuth,
+        });
+
+        window.location.href = '/files';
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } else {
+    dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+    dbxAuth.setRefreshToken(getPersistedField('dropboxRefreshToken'));
+    dbx = new Dropbox({
+      auth: dbxAuth,
+    });
+  }
 
   return {
     type: 'Dropbox',

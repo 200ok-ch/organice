@@ -13,7 +13,7 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
-import { Dropbox } from 'dropbox';
+import { DropboxAuth } from 'dropbox';
 import _ from 'lodash';
 
 function WebDAVForm() {
@@ -158,14 +158,20 @@ export default class SyncServiceSignIn extends PureComponent {
 
   handleDropboxClick() {
     persistField('authenticatedSyncService', 'Dropbox');
+    const REDIRECT_URI = window.location.origin + '/';
 
-    const dropbox = new Dropbox({
+    const dbxAuth = new DropboxAuth({
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    dropbox.auth.getAuthenticationUrl(window.location.origin + '/').then((authURL) => {
-      window.location = authURL;
-    });
+
+    dbxAuth
+      .getAuthenticationUrl(REDIRECT_URI, undefined, 'code', 'offline', undefined, undefined, true)
+      .then((authUrl) => {
+        persistField('codeVerifier', dbxAuth.codeVerifier);
+        window.location.href = authUrl;
+      })
+      .catch((error) => console.error(error));
   }
 
   render() {

@@ -2,16 +2,15 @@ import React, { PureComponent } from 'react';
 
 import { Provider } from 'react-redux';
 import Store from './store';
+import parseQueryString from './util/parse_query_string';
 import {
   readInitialState,
   loadSettingsFromConfigFile,
   subscribeToChanges,
-  persistField,
   getPersistedField,
 } from './util/settings_persister';
 
 import runAllMigrations from './migrations';
-import parseQueryString from './util/parse_query_string';
 import { BrowserRouter } from 'react-router-dom';
 
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -76,32 +75,17 @@ export default class App extends PureComponent {
 
     const initialState = readInitialState();
 
-    const hashContents = parseQueryString(window.location.hash);
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
     let client = null;
 
     if (!!authenticatedSyncService) {
       switch (authenticatedSyncService) {
         case 'Dropbox':
-          const dropboxAccessToken = hashContents.access_token;
-          if (dropboxAccessToken) {
-            client = createDropboxSyncBackendClient(dropboxAccessToken);
-            initialState.syncBackend = Map({
-              isAuthenticated: true,
-              client,
-            });
-            persistField('dropboxAccessToken', dropboxAccessToken);
-            window.location.hash = '';
-          } else {
-            const persistedDropboxAccessToken = getPersistedField('dropboxAccessToken', true);
-            if (!!persistedDropboxAccessToken) {
-              client = createDropboxSyncBackendClient(persistedDropboxAccessToken);
-              initialState.syncBackend = Map({
-                isAuthenticated: true,
-                client,
-              });
-            }
-          }
+          client = createDropboxSyncBackendClient();
+          initialState.syncBackend = Map({
+            isAuthenticated: true,
+            client: client,
+          });
           break;
         case 'GitLab':
           const gitlabOAuth = createGitlabOAuth();
