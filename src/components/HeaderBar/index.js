@@ -302,10 +302,12 @@ class HeaderBar extends PureComponent {
           {isAuthenticated && (
             <div>
               {hasUnseenChangelog && (
-                <i
-                  className="changelog-icon--has-unseen-changelog header-bar__actions__item fas fa-gift"
-                  onClick={this.handleChangelogClick}
-                />
+                <Link to="/changelog">
+                  <i
+                    className="changelog-icon--has-unseen-changelog header-bar__actions__item fas fa-gift"
+                    title="Changelog"
+                  />
+                </Link>
               )}
               <Link to="/settings" onClick={this.handleSettingsClick}>
                 <i className={settingsIconClassName} title="Settings" />

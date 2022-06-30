@@ -165,8 +165,6 @@ class Entry extends PureComponent {
         <HeaderBar />
         <LoadingIndicator message={loadingMessage} />
 
-        {activeModalPage === 'changelog' && this.renderChangelogFile()}
-
         {isAuthenticated &&
           ([
             'keyboard_shortcuts_editor',
@@ -179,7 +177,6 @@ class Entry extends PureComponent {
               {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
               {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
               {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
-              {activeModalPage === 'sample' && this.renderSampleFile()}
             </Fragment>
           ) : (
             <Switch>
@@ -188,6 +185,7 @@ class Entry extends PureComponent {
               <Route path="/file/:path+" render={this.renderFile} />
               <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Route path="/sample" exact={true} render={this.renderSampleFile} />
+              <Route path="/changelog" exact={true} render={this.renderChangelogFile} />
               <Route path="/settings" exact={true}>
                 <Settings />
               </Route>
