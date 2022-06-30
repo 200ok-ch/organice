@@ -21,6 +21,13 @@ const setIsLoadingMoreDirectoryListing = (state, action) =>
     )
     .setIn(['currentFileBrowserDirectoryListing', 'isLoadingMore'], action.isLoadingMore);
 
+const setSyncBackEnd = (state, action) => {
+  return state.set(
+    'syncBackend',
+    Map({ isAuthenticated: action.isAuthenticated, client: action.client })
+  );
+};
+
 export default (state = Map(), action) => {
   switch (action.type) {
     case 'SIGN_OUT':
@@ -29,6 +36,8 @@ export default (state = Map(), action) => {
       return setCurrentFileBrowserDirectoryListing(state, action);
     case 'SET_IS_LOADING_MORE_DIRECTORY_LISTING':
       return setIsLoadingMoreDirectoryListing(state, action);
+    case 'SET_SYNC_BACK_END':
+      return setSyncBackEnd(state, action);
     default:
       return state;
   }

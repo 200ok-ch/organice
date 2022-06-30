@@ -17,7 +17,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 
 import { reorderCaptureTemplate } from './actions/capture';
 import { reorderTags, reorderPropertyList, reorderFileSetting } from './actions/org';
-import { signOut } from './actions/sync_backend';
+import { setSyncBackEnd, signOut } from './actions/sync_backend';
 import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base';
 
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
@@ -75,45 +75,6 @@ export default class App extends PureComponent {
 
     const initialState = readInitialState();
 
-    const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
-    let client = null;
-
-    if (!!authenticatedSyncService) {
-      switch (authenticatedSyncService) {
-        case 'Dropbox':
-          client = createDropboxSyncBackendClient();
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client: client,
-          });
-          break;
-        case 'GitLab':
-          const gitlabOAuth = createGitlabOAuth();
-          if (gitlabOAuth.isAuthorized()) {
-            client = createGitLabSyncBackendClient(gitlabOAuth);
-            initialState.syncBackend = Map({
-              isAuthenticated: true,
-              client,
-            });
-          } else {
-            handleGitLabAuthResponse(gitlabOAuth);
-          }
-          break;
-        case 'WebDAV':
-          client = createWebDAVSyncBackendClient(
-            getPersistedField('webdavEndpoint'),
-            getPersistedField('webdavUsername'),
-            getPersistedField('webdavPassword')
-          );
-          initialState.syncBackend = Map({
-            isAuthenticated: true,
-            client,
-          });
-          break;
-        default:
-      }
-    }
-
     const queryStringContents = parseQueryString(window.location.search);
     const { captureFile, captureTemplateName, captureContent } = queryStringContents;
     if (!!captureFile && !!captureTemplateName) {
@@ -141,8 +102,62 @@ export default class App extends PureComponent {
       );
     }
 
-    this.store = Store(initialState);
+    this.store = Store(this.initialState);
     this.store.subscribe(subscribeToChanges(this.store));
+
+    // Initially load the sample file.
+    this.store.dispatch(restoreStaticFile('sample'));
+
+    listenToBrowserButtons(this.store);
+    syncOnBecomingVisible(this.store);
+    listenToNetworkConnectionEvents(this.store);
+
+    _.bindAll(this, ['handleDragEnd']);
+  }
+
+  async componentDidMount() {
+    const x = await new Promise((resolve) => resolve('foo'));
+    console.log('Component did mount: ', x);
+
+    const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
+    let client = null;
+
+    if (!!authenticatedSyncService) {
+      switch (authenticatedSyncService) {
+        case 'Dropbox':
+          client = createDropboxSyncBackendClient();
+          this.store.dispatch(setSyncBackEnd(true, client));
+          // initialState.syncBackend = Map({
+          //   isAuthenticated: true,
+          //   client: client,
+          // });
+          break;
+        case 'GitLab':
+          const gitlabOAuth = createGitlabOAuth();
+          if (gitlabOAuth.isAuthorized()) {
+            client = createGitLabSyncBackendClient(gitlabOAuth);
+            // initialState.syncBackend = Map({
+            //   isAuthenticated: true,
+            //   client,
+            // });
+          } else {
+            handleGitLabAuthResponse(gitlabOAuth);
+          }
+          break;
+        case 'WebDAV':
+          client = createWebDAVSyncBackendClient(
+            getPersistedField('webdavEndpoint'),
+            getPersistedField('webdavUsername'),
+            getPersistedField('webdavPassword')
+          );
+          // initialState.syncBackend = Map({
+          //   isAuthenticated: true,
+          //   client,
+          // });
+          break;
+        default:
+      }
+    }
 
     if (!!client) {
       client.isSignedIn().then((isSignedIn) => {
@@ -162,15 +177,6 @@ export default class App extends PureComponent {
         );
       }
     }
-
-    // Initially load the sample file.
-    this.store.dispatch(restoreStaticFile('sample'));
-
-    listenToBrowserButtons(this.store);
-    syncOnBecomingVisible(this.store);
-    listenToNetworkConnectionEvents(this.store);
-
-    _.bindAll(this, ['handleDragEnd']);
   }
 
   handleDragEnd(result) {

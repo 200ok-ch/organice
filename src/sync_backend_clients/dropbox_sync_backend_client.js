@@ -191,11 +191,9 @@ export default () => {
         dbxAuth.setRefreshToken(response.result.refresh_token);
         persistField('dropboxRefreshToken', response.result.refresh_token);
 
-        dbx = new Dropbox({
-          auth: dbxAuth,
-        });
-
-        window.location.href = '/files';
+        // dbx = new Dropbox({
+        //   auth: dbxAuth,
+        // });
       })
       .catch((error) => {
         console.error(error);
@@ -203,9 +201,9 @@ export default () => {
   } else {
     dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
     dbxAuth.setRefreshToken(getPersistedField('dropboxRefreshToken'));
-    dbx = new Dropbox({
-      auth: dbxAuth,
-    });
+    // dbx = new Dropbox({
+    //   auth: dbxAuth,
+    // });
   }
 
   return {
