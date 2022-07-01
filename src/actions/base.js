@@ -82,6 +82,11 @@ export const setAgendaDefaultDeadlineDelayValue = (newAgendaDefaultDeadlineDelay
   newAgendaDefaultDeadlineDelayValue,
 });
 
+export const setEditorDescriptionHeightValue = (newEditorDescriptionHeightValue) => ({
+  type: 'SET_EDITOR_DESCRIPTION_HEIGHT_VALUE',
+  newEditorDescriptionHeightValue,
+});
+
 export const setAgendaStartOnWeekday = (newAgendaStartOnWeekday) => ({
   type: 'SET_AGENDA_START_ON_WEEKDAY',
   newAgendaStartOnWeekday,
