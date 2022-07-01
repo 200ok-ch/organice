@@ -101,6 +101,11 @@ export const persistableFields = [
   },
   {
     category: 'base',
+    name: 'editorDescriptionHeightValue',
+    type: 'nullable',
+  },
+  {
+    category: 'base',
     name: 'agendaStartOnWeekday',
     type: 'nullable',
     default: 1,

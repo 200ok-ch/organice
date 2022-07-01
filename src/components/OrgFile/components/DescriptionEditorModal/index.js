@@ -17,6 +17,9 @@ export default class DescriptionEditorModal extends PureComponent {
       descriptionValue: props.editRawValues
         ? this.calculateRawDescription(props.header)
         : props.header.get('rawDescription'),
+      editorDescriptionHeightValue: props.editorDescriptionHeightValue
+        ? props.editorDescriptionHeightValue
+        : "8",
     };
   }
 
@@ -63,6 +66,10 @@ export default class DescriptionEditorModal extends PureComponent {
   }
 
   render() {
+    const {
+      editorDescriptionHeightValue,
+    } = this.props;
+
     return (
       <>
         <h2 className="drawer-modal__title">
@@ -73,7 +80,7 @@ export default class DescriptionEditorModal extends PureComponent {
           <textarea
             autoFocus
             className="textarea drag-handle"
-            rows="8"
+            rows={this.state.editorDescriptionHeightValue}
             ref={this.handleTextareaRef}
             value={this.state.descriptionValue}
             onChange={this.handleDescriptionChange}
