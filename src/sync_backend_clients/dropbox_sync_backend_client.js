@@ -41,7 +41,7 @@ function getCodeFromUrl() {
 }
 
 export default () => {
-  let dbx;
+  let dbxPromise;
 
   const isSignedIn = () => new Promise((resolve) => resolve(true));
 
@@ -59,15 +59,16 @@ export default () => {
 
   const getDirectoryListing = (path) =>
     new Promise((resolve, reject) => {
-      dbx
-        .filesListFolder({ path })
-        .then((response) => {
-          resolve({
-            listing: transformDirectoryListing(response.result.entries),
-            hasMore: response.result.has_more,
-            additionalSyncBackendState: Map({
-              cursor: response.result.cursor,
-            }),
+      dbxPromise
+        .then((dbx) => {
+          dbx.filesListFolder({ path }).then((response) => {
+            resolve({
+              listing: transformDirectoryListing(response.result.entries),
+              hasMore: response.result.has_more,
+              additionalSyncBackendState: Map({
+                cursor: response.result.cursor,
+              }),
+            });
           });
         })
         .catch(reject);
@@ -76,31 +77,35 @@ export default () => {
   const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const cursor = additionalSyncBackendState.get('cursor');
     return new Promise((resolve, reject) =>
-      dbx.filesListFolderContinue({ cursor }).then((response) =>
-        resolve({
-          listing: transformDirectoryListing(response.result.entries),
-          hasMore: response.result.has_more,
-          additionalSyncBackendState: Map({
-            cursor: response.result.cursor,
-          }),
-        })
-      )
+      dbxPromise.then((dbx) => {
+        dbx.filesListFolderContinue({ cursor }).then((response) =>
+          resolve({
+            listing: transformDirectoryListing(response.result.entries),
+            hasMore: response.result.has_more,
+            additionalSyncBackendState: Map({
+              cursor: response.result.cursor,
+            }),
+          })
+        );
+      })
     );
   };
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) =>
-      dbx
-        .filesUpload({
-          path,
-          contents,
-          mode: {
-            '.tag': 'overwrite',
-          },
-          autorename: true,
-        })
-        .then(resolve)
-        .catch(reject)
+      dbxPromise.then((dbx) => {
+        dbx
+          .filesUpload({
+            path,
+            contents,
+            mode: {
+              '.tag': 'overwrite',
+            },
+            autorename: true,
+          })
+          .then(resolve)
+          .catch(reject);
+      })
     );
 
   const updateFile = uploadFile;
@@ -108,45 +113,47 @@ export default () => {
 
   const getFileContentsAndMetadata = (path) =>
     new Promise((resolve, reject) =>
-      dbx
-        .filesDownload({ path })
-        .then((response) => {
-          const reader = new FileReader();
-          reader.addEventListener('loadend', () =>
-            resolve({
-              contents: reader.result,
-              lastModifiedAt: response.result.server_modified,
-            })
-          );
-          reader.readAsText(response.result.fileBlob);
-        })
-        .catch((error) => {
-          // INFO: It's possible organice is using the Dropbox API
-          // wrongly. In any case, for some files and only sometimes,
-          // when a file is requested, there's either:
-          //   - a 400 with a plain text error or
-          //   - a 409 with an embedded JSON error
-          //   - a 409 with a plain text error under `.error`
-          // coming back. Sometimes, there's even two API calls to
-          // `/download` happening at the same time (of types `json`
-          // and `octet-stream`) where one might fail and the other
-          // might prevail.
-          // More debug information in this issue:
-          // https://github.com/200ok-ch/organice/issues/108
-          const objectContainsTagErrorP = (function () {
-            try {
-              return JSON.parse(error.error).error.path['.tag'] === 'not_found';
-            } catch (e) {
-              return false;
+      dbxPromise.then((dbx) => {
+        dbx
+          .filesDownload({ path })
+          .then((response) => {
+            const reader = new FileReader();
+            reader.addEventListener('loadend', () =>
+              resolve({
+                contents: reader.result,
+                lastModifiedAt: response.result.server_modified,
+              })
+            );
+            reader.readAsText(response.result.fileBlob);
+          })
+          .catch((error) => {
+            // INFO: It's possible organice is using the Dropbox API
+            // wrongly. In any case, for some files and only sometimes,
+            // when a file is requested, there's either:
+            //   - a 400 with a plain text error or
+            //   - a 409 with an embedded JSON error
+            //   - a 409 with a plain text error under `.error`
+            // coming back. Sometimes, there's even two API calls to
+            // `/download` happening at the same time (of types `json`
+            // and `octet-stream`) where one might fail and the other
+            // might prevail.
+            // More debug information in this issue:
+            // https://github.com/200ok-ch/organice/issues/108
+            const objectContainsTagErrorP = (function () {
+              try {
+                return JSON.parse(error.error).error.path['.tag'] === 'not_found';
+              } catch (e) {
+                return false;
+              }
+            })();
+            if (
+              (typeof error === 'string' && error.match(/missing required field 'path'/)) ||
+              objectContainsTagErrorP
+            ) {
+              reject();
             }
-          })();
-          if (
-            (typeof error === 'string' && error.match(/missing required field 'path'/)) ||
-            objectContainsTagErrorP
-          ) {
-            reject();
-          }
-        })
+          });
+      })
     );
 
   const getFileContents = (path) => {
@@ -160,10 +167,12 @@ export default () => {
 
   const deleteFile = (path) =>
     new Promise((resolve, reject) =>
-      dbx
-        .filesDelete({ path })
-        .then(resolve)
-        .catch((error) => reject(error.error.error['.tag'] === 'path_lookup', error))
+      dbxPromise.then((dbx) => {
+        dbx
+          .filesDelete({ path })
+          .then(resolve)
+          .catch((error) => reject(error.error.error['.tag'] === 'path_lookup', error));
+      })
     );
 
   /* Dropbox documentation on OAuth2 and PKCE:
@@ -177,36 +186,32 @@ export default () => {
 
   const REDIRECT_URI = window.location.origin + '/';
 
-  dbx = new Dropbox({
-    clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
-    fetch: fetch.bind(window),
-  });
-  const dbxAuth = dbx.auth;
-
-  if (getCodeFromUrl()) {
-    dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
-    dbxAuth
-      .getAccessTokenFromCode(REDIRECT_URI, getCodeFromUrl())
-      .then((response) => {
-        dbxAuth.setRefreshToken(response.result.refresh_token);
-        persistField('dropboxRefreshToken', response.result.refresh_token);
-
-        dbx = new Dropbox({
-          auth: dbxAuth,
-        });
-
-        window.location.href = '/files';
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  } else {
-    dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
-    dbxAuth.setRefreshToken(getPersistedField('dropboxRefreshToken'));
-    dbx = new Dropbox({
-      auth: dbxAuth,
+  dbxPromise = new Promise((resolve, reject) => {
+    const dbx = new Dropbox({
+      clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+      fetch: fetch.bind(window),
     });
-  }
+    const dbxAuth = dbx.auth;
+
+    if (getCodeFromUrl()) {
+      dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+      dbxAuth
+        .getAccessTokenFromCode(REDIRECT_URI, getCodeFromUrl())
+        .then((response) => {
+          dbxAuth.setRefreshToken(response.result.refresh_token);
+          persistField('dropboxRefreshToken', response.result.refresh_token);
+
+          resolve(dbx);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      dbxAuth.setCodeVerifier(getPersistedField('codeVerifier'));
+      dbxAuth.setRefreshToken(getPersistedField('dropboxRefreshToken'));
+      resolve(dbx);
+    }
+  });
 
   return {
     type: 'Dropbox',
