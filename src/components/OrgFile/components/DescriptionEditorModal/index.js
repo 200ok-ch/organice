@@ -6,6 +6,7 @@ import './stylesheet.css';
 
 import _ from 'lodash';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
 import { createRawDescriptionText } from '../../../../lib/export_org';
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
@@ -80,7 +81,7 @@ class DescriptionEditorModal extends PureComponent {
           <textarea
             autoFocus
             className="textarea drag-handle"
-            rows={this.state.editorDescriptionHeightValue}
+            rows={isMobileBrowser ? '8' : this.state.editorDescriptionHeightValue }
             ref={this.handleTextareaRef}
             value={this.state.descriptionValue}
             onChange={this.handleDescriptionChange}
