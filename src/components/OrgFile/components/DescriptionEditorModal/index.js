@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 
+import { connect } from 'react-redux';
+
 import './stylesheet.css';
 
 import _ from 'lodash';
@@ -7,7 +9,7 @@ import _ from 'lodash';
 import { createRawDescriptionText } from '../../../../lib/export_org';
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
-export default class DescriptionEditorModal extends PureComponent {
+class DescriptionEditorModal extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -19,7 +21,7 @@ export default class DescriptionEditorModal extends PureComponent {
         : props.header.get('rawDescription'),
       editorDescriptionHeightValue: props.editorDescriptionHeightValue
         ? props.editorDescriptionHeightValue
-        : "8",
+        : '8',
     };
   }
 
@@ -66,9 +68,7 @@ export default class DescriptionEditorModal extends PureComponent {
   }
 
   render() {
-    const {
-      editorDescriptionHeightValue,
-    } = this.props;
+    const { editorDescriptionHeightValue } = this.props;
 
     return (
       <>
@@ -97,3 +97,12 @@ export default class DescriptionEditorModal extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const editorDescriptionHeightValue = state.base.get('editorDescriptionHeightValue');
+  return {
+    editorDescriptionHeightValue,
+  };
+};
+
+export default connect(mapStateToProps)(DescriptionEditorModal);
