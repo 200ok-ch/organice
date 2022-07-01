@@ -28,6 +28,7 @@ export const signOut = () => (dispatch, getState) => {
       break;
     case 'GitLab':
       persistField('gitLabProject', null);
+      persistField('gitLabHost', null);
       createGitlabOAuth().reset();
       break;
     default:

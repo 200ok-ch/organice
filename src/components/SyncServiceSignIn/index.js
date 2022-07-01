@@ -113,9 +113,10 @@ function GitLab() {
   const defaultProject = 'https://gitlab.com/your/project';
   const [project, setProject] = useState(defaultProject);
   const handleSubmit = (evt) => {
-    const projectId = gitLabProjectIdFromURL(project);
+    const [hostname, projectId] = gitLabProjectIdFromURL(project);
     if (projectId) {
       persistField('authenticatedSyncService', 'GitLab');
+      persistField('gitLabHost', hostname);
       persistField('gitLabProject', projectId);
       createGitlabOAuth().fetchAuthorizationCode();
     } else {
