@@ -278,6 +278,11 @@ const Settings = ({
 
       <div className="setting-container setting-container--vertical">
         <div className="setting-label">Description editor height</div>
+          <div className="setting-label__description">
+            This setting controls the height of the description editor on computers only.
+            The height will be limited to ensure that all buttons are always visible.
+            On mobile devices this setting is ignored and the editor will always be 8 rows high.
+          </div>
 
         <div className="default-deadline-warning-container">
           <input
