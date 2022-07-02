@@ -69,8 +69,6 @@ class DescriptionEditorModal extends PureComponent {
   }
 
   render() {
-    const { editorDescriptionHeightValue } = this.props;
-
     return (
       <>
         <h2 className="drawer-modal__title">
