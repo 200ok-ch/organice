@@ -79,7 +79,7 @@ class DescriptionEditorModal extends PureComponent {
           <textarea
             autoFocus
             className="textarea drag-handle"
-            rows={isMobileBrowser ? '8' : this.state.editorDescriptionHeightValue }
+            rows={isMobileBrowser ? '8' : this.state.editorDescriptionHeightValue}
             ref={this.handleTextareaRef}
             value={this.state.descriptionValue}
             onChange={this.handleDescriptionChange}
