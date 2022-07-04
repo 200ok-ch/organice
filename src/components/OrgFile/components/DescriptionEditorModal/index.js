@@ -1,13 +1,16 @@
 import React, { PureComponent } from 'react';
 
+import { connect } from 'react-redux';
+
 import './stylesheet.css';
 
 import _ from 'lodash';
 
+import { isMobileBrowser } from '../../../../lib/browser_utils';
 import { createRawDescriptionText } from '../../../../lib/export_org';
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 
-export default class DescriptionEditorModal extends PureComponent {
+class DescriptionEditorModal extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -17,6 +20,9 @@ export default class DescriptionEditorModal extends PureComponent {
       descriptionValue: props.editRawValues
         ? this.calculateRawDescription(props.header)
         : props.header.get('rawDescription'),
+      editorDescriptionHeightValue: props.editorDescriptionHeightValue
+        ? props.editorDescriptionHeightValue
+        : '8',
     };
   }
 
@@ -73,7 +79,7 @@ export default class DescriptionEditorModal extends PureComponent {
           <textarea
             autoFocus
             className="textarea drag-handle"
-            rows="8"
+            rows={isMobileBrowser ? '8' : this.state.editorDescriptionHeightValue}
             ref={this.handleTextareaRef}
             value={this.state.descriptionValue}
             onChange={this.handleDescriptionChange}
@@ -90,3 +96,12 @@ export default class DescriptionEditorModal extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const editorDescriptionHeightValue = state.base.get('editorDescriptionHeightValue');
+  return {
+    editorDescriptionHeightValue,
+  };
+};
+
+export default connect(mapStateToProps)(DescriptionEditorModal);

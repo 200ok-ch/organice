@@ -25,6 +25,7 @@ const Settings = ({
   shouldLogIntoDrawer,
   closeSubheadersRecursively,
   shouldNotIndentOnExport,
+  editorDescriptionHeightValue,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   agendaStartOnWeekday,
@@ -71,6 +72,9 @@ const Settings = ({
 
   const handleShouldTapTodoToAdvanceChange = () =>
     base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
+
+  const handleEditorDescriptionHeightValueChange = (event) =>
+    base.setEditorDescriptionHeightValue(event.target.value);
 
   const handleAgendaDefaultDeadlineDelayValueChange = (event) =>
     base.setAgendaDefaultDeadlineDelayValue(event.target.value);
@@ -272,6 +276,25 @@ const Settings = ({
         </div>
       </div>
 
+      <div className="setting-container setting-container--vertical">
+        <div className="setting-label">Description editor height</div>
+        <div className="setting-label__description">
+          This setting controls the height of the description editor on computers only. The height
+          will be limited to ensure that all buttons are always visible. On mobile devices this
+          setting is ignored and the editor will always be 8 rows high.
+        </div>
+
+        <div className="default-deadline-warning-container">
+          <input
+            type="number"
+            min="2"
+            className="textfield default-deadline-value-textfield"
+            value={editorDescriptionHeightValue}
+            onChange={handleEditorDescriptionHeightValueChange}
+          />
+        </div>
+      </div>
+
       <div className="setting-container">
         <div className="setting-label">
           Start of week for weekly agenda
@@ -376,6 +399,7 @@ const mapStateToProps = (state) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    editorDescriptionHeightValue: state.base.get('editorDescriptionHeightValue') || 8,
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
