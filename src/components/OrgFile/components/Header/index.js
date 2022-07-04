@@ -328,13 +328,8 @@ ${header.get('rawDescription')}`;
       ? header.get('nestingLevel') - narrowedHeader.get('nestingLevel') + 1
       : header.get('nestingLevel');
 
-    const {
-      dragStartX,
-      currentDragX,
-      isDraggingFreely,
-      isPlayingRemoveAnimation,
-      containerWidth,
-    } = this.state;
+    const { dragStartX, currentDragX, isDraggingFreely, isPlayingRemoveAnimation, containerWidth } =
+      this.state;
     const marginLeft =
       !!dragStartX && !!currentDragX && isDraggingFreely
         ? currentDragX - dragStartX

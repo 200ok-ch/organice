@@ -323,16 +323,8 @@ class TimestampEditor extends PureComponent {
         </>
       );
     }
-    const {
-      isActive,
-      year,
-      month,
-      day,
-      startHour,
-      startMinute,
-      endHour,
-      endMinute,
-    } = timestamp.toJS();
+    const { isActive, year, month, day, startHour, startMinute, endHour, endMinute } =
+      timestamp.toJS();
     return (
       <div>
         <div className="timestamp-editor__render">{renderAsText(timestamp)}</div>
