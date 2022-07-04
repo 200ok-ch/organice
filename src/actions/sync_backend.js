@@ -78,7 +78,7 @@ export const getDirectoryListing = (path) => (dispatch, getState) => {
       dispatch(hideLoadingMessage());
       const error_summary = _.get(error, 'error.error_summary') || '';
       if ([400, 401].includes(error.status) || error_summary.includes('expired_access_token')) {
-        // dispatch(signOut());
+        dispatch(signOut());
       } else {
         alert('There was an error retrieving files!');
         console.error(error);
