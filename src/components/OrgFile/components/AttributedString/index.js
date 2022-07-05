@@ -16,7 +16,7 @@ import * as orgActions from '../../../../actions/org';
 
 import classNames from 'classnames';
 
-const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
+const AttributedString = ({ org, parts, subPartDataAndHandlers, getExternalFileUrl }) => {
   let className;
 
   let location = useLocation();
@@ -38,14 +38,24 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
         if (!target.includes('/../')) {
           // Normalisation succeeded, so we can safely return a <Link>
           if (!uri.match(orgFileExtensions)) {
-            // Optimistically assume that the link is pointing to a
-            // directory.
-            target = target.replace(/^\/file\//, '/files/');
-            return (
-              <Link key={id} to={target}>
-                {title}
-              </Link>
-            );
+            if(uri.match('\\.') && typeof getExternalFileUrl === 'function') {
+              // assume that this is a file that we can link to from the backend
+              target = target.replace(/^\/file\//, '/');
+              return (
+                <ExternalLink key={id} href={getExternalFileUrl(target)}>
+                  {title}
+                </ExternalLink>
+              );
+            } else {
+              // Optimistically assume that the link is pointing to a
+              // directory.
+              target = target.replace(/^\/file\//, '/files/');
+              return (
+                <Link key={id} to={target}>
+                  {title}
+                </Link>
+              );
+            }
           }
         }
       }
@@ -184,10 +194,18 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  const getExternalFileUrl = state.syncBackend.get('client').getExternalFileUrl;
+
+  return {
+    getExternalFileUrl
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     org: bindActionCreators(orgActions, dispatch),
   };
 };
 
-export default connect(null, mapDispatchToProps)(AttributedString);
+export default connect(mapStateToProps, mapDispatchToProps)(AttributedString);

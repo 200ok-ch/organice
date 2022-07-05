@@ -116,6 +116,7 @@ function GitLab() {
     const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
       persistField('authenticatedSyncService', 'GitLab');
+      persistField('gitLabProjectUrl', project)
       persistField('gitLabProject', projectId);
       createGitlabOAuth().fetchAuthorizationCode();
     } else {

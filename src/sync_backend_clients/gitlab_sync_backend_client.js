@@ -343,6 +343,13 @@ export default (oauthClient) => {
     });
   };
 
+  const getExternalFileUrl = (path) => {
+    const baseUrl = getPersistedField('gitLabProjectUrl');
+    const defaultBranch = cachedDefaultBranch;
+
+    return `${baseUrl}/-/blob/${defaultBranch}/${path}`;
+  }
+
   return {
     type: 'GitLab',
     isSignedIn,
@@ -354,5 +361,6 @@ export default (oauthClient) => {
     getFileContentsAndMetadata,
     getFileContents,
     deleteFile,
+    getExternalFileUrl,
   };
 };
