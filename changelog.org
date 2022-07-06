@@ -10,6 +10,8 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Fixed
 - Change log renders above previously opened view component
   - PR: https://github.com/200ok-ch/organice/pull/869
+- Make HeaderBar sticky
+  - PR: https://github.com/200ok-ch/organice/pull/870
 * [2022-07-04 Mon]
 ** Added
 - Setting to change textbox height in the description editor
