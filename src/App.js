@@ -163,8 +163,9 @@ export default class App extends PureComponent {
       }
     }
 
-    // Initially load the sample file.
+    // Load static files.
     this.store.dispatch(restoreStaticFile('sample'));
+    this.store.dispatch(restoreStaticFile('changelog'));
 
     listenToBrowserButtons(this.store);
     syncOnBecomingVisible(this.store);

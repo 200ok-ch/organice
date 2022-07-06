@@ -6,6 +6,10 @@
 All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
+* [2022-07-06 Wed]
+** Fixed
+- Change log renders above previously opened view component
+  - PR: https://github.com/200ok-ch/organice/pull/869
 * [2022-07-04 Mon]
 ** Added
 - Setting to change textbox height in the description editor
