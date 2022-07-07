@@ -106,7 +106,7 @@ class OrgFile extends PureComponent {
         });
       }
 
-      setTimeout(() => (document.querySelector('html').scrollTop = 0), 0);
+      setTimeout(() => (document.querySelector('.App').scrollTop = 0), 0);
     } else if (!_.isEmpty(path)) {
       if (this.props.fileIsLoaded(path)) {
         this.props.org.sync({ path, shouldSuppressMessages: true });
