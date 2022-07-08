@@ -10,6 +10,8 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 ** Fixed
 - When opening an Org file, show it from the top
   - PR: https://github.com/200ok-ch/organice/pull/878
+- Changelog has a =Back= button in the HeaderBar
+  - PR: https://github.com/200ok-ch/organice/pull/882
 * [2022-07-06 Wed]
 ** Fixed
 - Change log renders above previously opened view component

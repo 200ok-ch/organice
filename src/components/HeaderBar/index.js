@@ -170,6 +170,8 @@ class HeaderBar extends PureComponent {
         return this.renderSignInBackButton();
       case 'settings':
         return this.renderFileBrowserBackButton();
+      case 'changelog':
+        return this.renderFileBrowserBackButton();
       default:
         return <div />;
     }
