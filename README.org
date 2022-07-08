@@ -14,19 +14,14 @@
 
 # REPO_PLACEHOLDER
 
-#+BEGIN_HTML
-<p>
-  <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice">
-    <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" />
-  </a>
-  <a href='#'>
-    <img src="https://badgen.net/uptime-robot/month/m789449277-7986138caa6b43ed68a91563" />
-  </a>
-  <a href="https://matrix.to/#/#organice:matrix.org">
-    <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" />
-  </a>
-</p>
-#+END_HTML
+# INFO: We're using inline =#+HTML= notation in favor of the much more
+# readable =#+BEGIN_EXPORT html= notation, because GitHub uses legacy
+# Org parsers and wouldn't render the latter. GitHub would render
+# the legacy notation =#+BEGIN_HTML= which will not be properly
+# exported from Emacs, because it's legacy. Hence the glorious
+# solution: Write all HTML in one line.
+
+#+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://badgen.net/uptime-robot/month/m789449277-7986138caa6b43ed68a91563" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" /> </a> </p>
 
 [[https://organice.200ok.ch/documentation.html][Documentation]]
 
@@ -41,13 +36,7 @@ you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and
 
 ** Sponsors
 
-#+BEGIN_HTML
-<p align="center">
-  <a href="https://github.com/mxparker">
-    <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/>
-  </a>
-</p>
-#+END_HTML
+#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> </p>
 
 And 1 anonymous sponsor.
 
