@@ -548,7 +548,7 @@ const mapStateToProps = (state, ownProps) => {
     narrowedHeader,
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
-    showDeadlineDisplay: state.org.present.get('showDeadlineDisplay'),
+    showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
   };
 };
 

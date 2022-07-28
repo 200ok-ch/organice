@@ -30,6 +30,8 @@ const setShouldStoreSettingsInSyncBackend = (state, action) =>
 
 const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.shouldLiveSync);
 
+const setShowDeadlineDisplay = (state, action) => state.set('showDeadlineDisplay', action.showDeadlineDisplay);
+
 const setShouldSyncOnBecomingVisibile = (state, action) =>
   state.set('shouldSyncOnBecomingVisibile', action.shouldSyncOnBecomingVisibile);
 
@@ -169,6 +171,8 @@ export default (state = Map(), action) => {
       return setTheme(state, action);
     case 'SET_SHOULD_LIVE_SYNC':
       return setShouldLiveSync(state, action);
+    case 'SET_SHOW_DEADLINE_DISPLAY':
+      return setShowDeadlineDisplay(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
       return setShouldSyncOnBecomingVisibile(state, action);
     case 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE':

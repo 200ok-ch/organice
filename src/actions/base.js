@@ -97,6 +97,11 @@ export const setShouldLiveSync = (shouldLiveSync) => ({
   shouldLiveSync,
 });
 
+export const setShowDeadlineDisplay = (showDeadlineDisplay) => ({
+  type: 'SET_SHOW_DEADLINE_DISPLAY',
+  showDeadlineDisplay,
+});
+
 export const setShouldSyncOnBecomingVisibile = (shouldSyncOnBecomingVisibile) => ({
   type: 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE',
   shouldSyncOnBecomingVisibile,
