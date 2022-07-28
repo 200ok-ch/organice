@@ -20,6 +20,7 @@ const Settings = ({
   shouldTapTodoToAdvance,
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
+  showDeadlineDisplay,
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
@@ -33,7 +34,6 @@ const Settings = ({
   syncBackend,
   preferEditRawValues,
   showClockDisplay,
-  showDeadlineDisplay,
   colorScheme,
   theme,
   base,
@@ -87,6 +87,8 @@ const Settings = ({
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
 
+  const handleShowDeadlineDisplayChange = () => base.setShowDeadlineDisplay(!showDeadlineDisplay);
+
   const handleShouldSyncOnBecomingVisibleChange = () =>
     base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
 
@@ -105,8 +107,6 @@ const Settings = ({
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
-
-  const handleShowDeadlineDisplayClick = () => org.setShowDeadlineDisplay(!showDeadlineDisplay);
 
   const handlePreferEditRawValues = () => base.setPreferEditRawValues(!preferEditRawValues);
 
@@ -320,12 +320,12 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
-          Display deadline on tasks
+          Show Deadline Display
           <div className="setting-label__description">
-            This puts overlays at the end of each headline, showing the due date of the headline
+            If enabled, the deadline will displayed on each header line.
           </div>
         </div>
-        <Switch isEnabled={showDeadlineDisplay} onToggle={handleShowDeadlineDisplayClick} />
+        <Switch isEnabled={showDeadlineDisplay} onToggle={handleShowDeadlineDisplayChange} />
       </div>
 
       <div className="setting-container">
@@ -408,6 +408,7 @@ const mapStateToProps = (state) => {
     agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
+    showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
@@ -415,7 +416,6 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
-    showDeadlineDisplay: state.org.present.get('showDeadlineDisplay'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),

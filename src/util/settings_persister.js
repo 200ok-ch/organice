@@ -136,6 +136,12 @@ export const persistableFields = [
   },
   {
     category: 'base',
+    name: 'showDeadlineDisplay',
+    type: 'boolean',
+    default: false,
+  },
+  {
+    category: 'base',
     name: 'shouldSyncOnBecomingVisibile',
     type: 'boolean',
     default: true,
@@ -163,11 +169,6 @@ export const persistableFields = [
   {
     category: 'org',
     name: 'showClockDisplay',
-    type: 'boolean',
-  },
-  {
-    category: 'org',
-    name: 'showDeadlineDisplay',
     type: 'boolean',
   },
   {

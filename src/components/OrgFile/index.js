@@ -772,6 +772,7 @@ const mapStateToProps = (state) => {
     dontIndent: state.base.get('shouldNotIndentOnExport'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
+    showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
     activePopupType: !!activePopup ? activePopup.get('type') : null,
     activePopupData: !!activePopup ? activePopup.get('data') : null,
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
