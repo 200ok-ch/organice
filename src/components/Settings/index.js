@@ -33,6 +33,7 @@ const Settings = ({
   syncBackend,
   preferEditRawValues,
   showClockDisplay,
+  showDeadlineDisplay,
   colorScheme,
   theme,
   base,
@@ -104,6 +105,8 @@ const Settings = ({
     base.setShouldStoreSettingsInSyncBackend(!shouldStoreSettingsInSyncBackend);
 
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
+
+  const handleShowDeadlineDisplayClick = () => org.setShowDeadlineDisplay(!showDeadlineDisplay);
 
   const handlePreferEditRawValues = () => base.setPreferEditRawValues(!preferEditRawValues);
 
@@ -317,6 +320,16 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
+          Display deadline on tasks
+          <div className="setting-label__description">
+            This puts overlays at the end of each headline, showing the due date of the headline
+          </div>
+        </div>
+        <Switch isEnabled={showDeadlineDisplay} onToggle={handleShowDeadlineDisplayClick} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
           Prefer raw values
           <div className="setting-label__description">
             When editing title or description of a header, you can switch between editing the text
@@ -402,6 +415,7 @@ const mapStateToProps = (state) => {
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    showDeadlineDisplay: state.org.present.get('showDeadlineDisplay'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),

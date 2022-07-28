@@ -323,10 +323,21 @@ ${header.get('rawDescription')}`;
       isNarrowed,
       shouldDisableActions,
       showClockDisplay,
+      showDeadlineDisplay,
     } = this.props;
     const indentLevel = !!narrowedHeader
       ? header.get('nestingLevel') - narrowedHeader.get('nestingLevel') + 1
       : header.get('nestingLevel');
+
+    const headerDeadlineMap = header.get('planningItems')
+      .filter((p) => p.get('type') === 'DEADLINE')
+      .map((p) => p.get('timestamp'))
+      .get(0);
+
+    const headerDeadline = (headerDeadlineMap !== undefined ? headerDeadlineMap.get('month') + "-" +
+                                                              headerDeadlineMap.get('day') + "-" +
+                                                              headerDeadlineMap.get('year')
+                                                            : "")
 
     const {
       dragStartX,
@@ -483,9 +494,10 @@ ${header.get('rawDescription')}`;
                 shouldDisableExplicitWidth={swipedDistance === 0}
                 shouldDisableActions={shouldDisableActions}
                 addition={
-                  showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
+                  (showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
                     ? millisDuration(header.get('totalTimeLoggedRecursive'))
-                    : ''
+                    : '') +
+                  (showDeadlineDisplay && (headerDeadline !== undefined) ? headerDeadline : "")
                 }
               />
 
@@ -536,6 +548,7 @@ const mapStateToProps = (state, ownProps) => {
     narrowedHeader,
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    showDeadlineDisplay: state.org.present.get('showDeadlineDisplay'),
   };
 };
 
