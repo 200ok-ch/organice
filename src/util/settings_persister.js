@@ -166,6 +166,11 @@ export const persistableFields = [
     type: 'boolean',
   },
   {
+    category: 'org',
+    name: 'showDeadlineDisplay',
+    type: 'boolean',
+  },
+  {
     category: 'base',
     name: 'colorScheme',
     type: 'string',

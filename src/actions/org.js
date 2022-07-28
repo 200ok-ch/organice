@@ -676,6 +676,11 @@ export const setShowClockDisplay = (showClockDisplay) => ({
   showClockDisplay,
 });
 
+export const setShowDeadlineDisplay = (showDeadlineDisplay) => ({
+  type: 'TOGGLE_DEADLINE_DISPLAY',
+  showDeadlineDisplay,
+});
+
 export const updateFileSettingFieldPathValue = (settingId, fieldPath, newValue) => ({
   type: 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE',
   settingId,

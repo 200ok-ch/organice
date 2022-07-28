@@ -1351,6 +1351,10 @@ const setShowClockDisplay = (state, action) => {
   return state.set('showClockDisplay', action.showClockDisplay);
 };
 
+const setShowDeadlineDisplay = (state, action) => {
+  return state.set('showDeadlineDisplay', action.showDeadlineDisplay);
+};
+
 const indexOfFileSettingWithId = (settings, settingId) =>
   settings.findIndex((setting) => setting.get('id') === settingId);
 
@@ -1558,6 +1562,8 @@ const reducer = (state, action) => {
       return setPath(state, action);
     case 'TOGGLE_CLOCK_DISPLAY':
       return setShowClockDisplay(state, action);
+    case 'TOGGLE_DEADLINE_DISPLAY':
+      return setShowDeadlineDisplay(state, action);
     case 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE':
       return updateFileSettingFieldPathValue(state, action);
     case 'REORDER_FILE_SETTING':
