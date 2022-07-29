@@ -329,15 +329,20 @@ ${header.get('rawDescription')}`;
       ? header.get('nestingLevel') - narrowedHeader.get('nestingLevel') + 1
       : header.get('nestingLevel');
 
-    const headerDeadlineMap = header.get('planningItems')
+    const headerDeadlineMap = header
+      .get('planningItems')
       .filter((p) => p.get('type') === 'DEADLINE')
       .map((p) => p.get('timestamp'))
       .get(0);
 
-    const headerDeadline = (headerDeadlineMap !== undefined ? headerDeadlineMap.get('month') + "-" +
-                                                              headerDeadlineMap.get('day') + "-" +
-                                                              headerDeadlineMap.get('year')
-                                                            : "")
+    const headerDeadline =
+      headerDeadlineMap !== undefined
+        ? headerDeadlineMap.get('month') +
+          '-' +
+          headerDeadlineMap.get('day') +
+          '-' +
+          headerDeadlineMap.get('year')
+        : '';
 
     const {
       dragStartX,
@@ -497,7 +502,7 @@ ${header.get('rawDescription')}`;
                   (showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
                     ? millisDuration(header.get('totalTimeLoggedRecursive'))
                     : '') +
-                  (showDeadlineDisplay && (headerDeadline !== undefined) ? headerDeadline : "")
+                  (showDeadlineDisplay && headerDeadline !== undefined ? headerDeadline : '')
                 }
               />
 
