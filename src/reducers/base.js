@@ -30,7 +30,8 @@ const setShouldStoreSettingsInSyncBackend = (state, action) =>
 
 const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.shouldLiveSync);
 
-const setShowDeadlineDisplay = (state, action) => state.set('showDeadlineDisplay', action.showDeadlineDisplay);
+const setShowDeadlineDisplay = (state, action) =>
+  state.set('showDeadlineDisplay', action.showDeadlineDisplay);
 
 const setShouldSyncOnBecomingVisibile = (state, action) =>
   state.set('shouldSyncOnBecomingVisibile', action.shouldSyncOnBecomingVisibile);
