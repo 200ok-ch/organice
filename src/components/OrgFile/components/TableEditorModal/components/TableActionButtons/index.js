@@ -33,7 +33,7 @@ export default ({
               onClick={() => (selectedTableCellId ? onAddNewTableRow() : undefined)}
             >
               <i className="fas fa-plus fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated180" />
+              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated" />
             </div>
 
             <div
@@ -41,7 +41,7 @@ export default ({
               onClick={() => (selectedTableCellId ? onRemoveTableRow() : undefined)}
             >
               <i className="fas fa-times fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated180" />
+              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated" />
             </div>
 
             <div
@@ -49,7 +49,7 @@ export default ({
               onClick={() => (selectedTableCellId ? onAddNewTableColumn() : undefined)}
             >
               <i className="fas fa-plus fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated90" />
+              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon" />
             </div>
 
             <div
@@ -57,7 +57,7 @@ export default ({
               onClick={() => (selectedTableCellId ? onRemoveTableColumn() : undefined)}
             >
               <i className="fas fa-times fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated90" />
+              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon" />
             </div>
           </div>
 
