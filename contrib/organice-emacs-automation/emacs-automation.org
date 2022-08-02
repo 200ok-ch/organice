@@ -1,0 +1,34 @@
+#+TITLE: Automating Emacs operations for Organice
+
+* Purpose
+
+You may have a need to have some automation to help you manage your Org files.  One example, which this document will explain,
+is to automatically sort your org file based on DEADLINE's.  While these tasks might be easy to do directly inside Emacs, if you
+are not an Emacs user and rely solely on Organice, you may want to enable some automation
+
+Fortunately, Emacs has a way to execute instructions in batch mode.  When you load the proper org.el file you can take advantage
+of all of the Org mode commands and know that you will not damage your documents.
+
+To automatically execute Org mode commands via Emacs in batch mode, you will need to know:
+- The path to the _emacs_ binary
+- The path to the Emacs provided org.el file
+- The path and filename to the Organice managed Org file you want to run the script against
+
+The basic command for Linux would be:
+
+#+BEGIN_SRC
+<emacs> <Organice managed Org file> -batch -l <full path and filename of org.el> --eval '(<the command to execute>)' -f save-buffer 2> /dev/null
+#+END_SRC
+
+*NOTE:* You can have multiple --eval statements and they will be executed in a single session in the order specified.
+
+On my system, the following command will sort my _recurring.org_ file by due date.
+#+BEGIN_SRC
+emacs recurring.org -batch -l /usr/share/emacs/site-lisp/elpa/org-9.3.1/org.el --eval '(org-sort-entries nil ?d)' -f save-buffer 2> /dev/null
+#+END_SRC
+
+Once you have your automation tested and working, you can put multiple emacs call in a shell script and use a task scheduler (like cron) to have
+the automations execute on a regular basis.
+
+*NOTE:* Make sure that you check for race conditions between your automation and your Organice clients - to avoid duplicate updates at the same time -
+that might cause data corruption.
