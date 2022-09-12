@@ -394,10 +394,6 @@ ${header.get('rawDescription')}`;
               style={headerStyle}
               ref={this.handleRef}
               onClick={this.handleHeaderClick}
-              onMouseDown={this.handleMouseDown}
-              onMouseMove={this.handleMouseMove}
-              onMouseUp={this.handleMouseUp}
-              onMouseOut={this.handleMouseOut}
               onTouchStart={this.handleTouchStart}
               onTouchMove={this.handleTouchMove}
               onTouchEnd={this.handleTouchEnd}
