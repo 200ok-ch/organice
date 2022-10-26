@@ -100,10 +100,11 @@ TermProp "property filter term"
         };
 
 TermField "search outside of header"
-  = "date:"                   a:TimeRange { return { type: 'field', field: { type: 'date',      timerange: a } }; }
-  / "clock:"                  a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
-  / ("sched:" / "scheduled:") a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
-  / ("dead:" / "deadline:")   a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
+  = "date:"                    a:TimeRange { return { type: 'field', field: { type: 'date',        timerange: a } }; }
+  / "clock:"                   a:TimeRange { return { type: 'field', field: { type: 'clock',       timerange: a } }; }
+  / ("sched:" / "scheduled:")  a:TimeRange { return { type: 'field', field: { type: 'scheduled',   timerange: a } }; }
+  / ("dead:" / "deadline:")    a:TimeRange { return { type: 'field', field: { type: 'deadline',    timerange: a } }; }
+  / ("desc:" / "description:") a:TermText  { return { type: 'field', field: { type: 'description', text: a } }; }
 
 TimeRange "moments and timeranges"
   = a:Moment ".." b:Moment { return { type: 'range', from: a, to: b }; }
