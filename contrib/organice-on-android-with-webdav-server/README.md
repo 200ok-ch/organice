@@ -12,14 +12,14 @@ Termux does not adhere to the FHS, so there are 2 main directories to be aware o
 
 * `/data/data/com.termux/files/usr/` - This replaces directories such as `/bin/`, `/etc/`, `/usr/` or `/var/`. This is where packages are installed and is assigned to the environment variable `$PREFIX`.
 * `/data/data/com.termux/files/home/` - This is your home directory, also assigned to `$HOME` variable and accessible through simply executing `cd`.
-\t* `/data/data/com.termux/files/home/storage/` (a.k.a. `~/storage/`) - Contains symlinks to your storage framework. Only accessible if you correctly run `termux-setup-storage`. [More info here.](https://wiki.termux.com/wiki/Internal_and_external_storage)
+	* `/data/data/com.termux/files/home/storage/` (a.k.a. `~/storage/`) - Contains symlinks to your storage framework. Only accessible if you correctly run `termux-setup-storage`. [More info here.](https://wiki.termux.com/wiki/Internal_and_external_storage)
 
 
 ### Installation of packages
 First we have to install all the necessary packages:
 
 * `pkg install git nodejs-lts yarn`
-\t* Note that as of 2020-08-28, the required version of Node.js for compiling organice is `v12.13.1`, however, the `nodejs-lts` package is on `v12.18.3`. This may lead to some undefined behavior. To install a specific Node.js version in Termux means that you have to build it yourself: https://wiki.termux.com/wiki/Building_packages
+	* Note that as of 2020-08-28, the required version of Node.js for compiling organice is `v12.13.1`, however, the `nodejs-lts` package is on `v12.18.3`. This may lead to some undefined behavior. To install a specific Node.js version in Termux means that you have to build it yourself: https://wiki.termux.com/wiki/Building_packages
 * `git clone --depth=1 https://github.com/200ok-ch/organice`
 
 ### Now we build!
