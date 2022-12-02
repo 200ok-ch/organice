@@ -38,6 +38,8 @@ you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and
 
 #+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/kristiangronberg"> <img src="https://github.com/kristiangronberg.png" width="50px" alt="@kristiangronberg"/> </a> </p>
 
+And one anonymous sponsor.
+
 ** What does this project do?
    :PROPERTIES:
    :CUSTOM_ID: what-does-this-project-do
