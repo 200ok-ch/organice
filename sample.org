@@ -408,6 +408,14 @@ Some examples on how to use time ranges:
 
 Note that negating time ranges is not implemented.
 
+To search for the description of your headlines, use =desc= or =description=:
+
+- =desc:"search term"=
+
+If you want to search for multiple terms, you can combine them like so:
+
+- =desc:term_1 desc:term_2=
+
 
 ** Auto-completion for filters
 
