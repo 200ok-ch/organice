@@ -6,6 +6,13 @@
 All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
+* [2022-12-03 Sat]
+** Fixed
+
+- Improve parser to read lines with multiple inline markup statements
+  - PR: https://github.com/200ok-ch/organice/pull/910
+  - Thank you [[https://github.com/lechten][lechten]] for the PR🙏
+
 * [2022-12-02 Fri]
 ** Added
 - Filtering by description
