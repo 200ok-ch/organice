@@ -7,7 +7,11 @@ import _ from 'lodash';
 // TODO: Extract all match groups of `beginningRegexp` (for example
 // like `emailRegexp`), so that they can be documented and are less
 // unwieldly.
-const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))/;
+
+// Match groups:
+// 1. Links
+// 2. Progress indicators (percent and x/y)
+const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)((?:^|\s+)[*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))/;
 
 // Regexp taken from https://stackoverflow.com/a/3809435/999007
 const httpUrlRegexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
