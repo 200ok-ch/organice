@@ -95,6 +95,10 @@ function SearchModal(props) {
                 // be a better way: If the drawer wouldn't move, iOS likely
                 // would set the heights correctly automatically.
                 autoFocus={!isIos()}
+                // Disable auto-capitalization for convenience (autoComplete must also be off to
+                // achieve this on Android).
+                autoCapitalize="none"
+                autoComplete="off"
                 className={classNames('textfield', 'task-list__filter-input', {
                   'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
                 })}

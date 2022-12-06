@@ -65,6 +65,10 @@ function TaskListModal(props) {
               value={searchFilter}
               // Rationale: See SearchModal: index.js
               autoFocus={!isIos()}
+              // Disable auto-capitalization for convenience (autoComplete must also be off to
+              // achieve this on Android).
+              autoCapitalize="none"
+              autoComplete="off"
               className={classNames('textfield', 'task-list__filter-input', {
                 'task-list__filter-input--invalid': !!searchFilter && !searchFilterValid,
               })}
