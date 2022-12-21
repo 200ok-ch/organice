@@ -38,7 +38,7 @@ you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and
 
 #+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/kristiangronberg"> <img src="https://github.com/kristiangronberg.png" width="50px" alt="@kristiangronberg"/> </a> </p>
 
-And 1 anonymous sponsor.
+And one anonymous sponsor.
 
 ** What does this project do?
    :PROPERTIES:
@@ -163,7 +163,7 @@ to put them under version control and to check for bugs and racing
 conditions between clients.
 
 Please [[https://github.com/200ok-ch/organice/issues/new][file an issue]] if you find additional restrictions, expectations
-or bugs that you you wouldn’t have expected.
+or bugs that you wouldn’t have expected.
 
 *** Background information
     :PROPERTIES:
@@ -182,7 +182,7 @@ hard. Therefore, we are in the process of implementing a proper EBNF
 based parser and a set of tests behind that. If you're interested,
 please check it out: [[https://github.com/200ok-ch/org-parser]]
 
-The strategy we're using with regards to the parser is this:
+The strategy we're using with regard to the parser is this:
 
 - Keep improving the existing custom parser for new features and make
   bug fixes as long as the new one isn't ready.
@@ -215,11 +215,11 @@ organice will recognize that you are offline and queue up the
 synchronization until you are online again.
 
 organice also understands when it's local Org file is outdated
-compared to the upstream file and will ask you want you want to do -
+compared to the upstream file and will ask you what you want to do -
 pull the one from the synchronization back-end, push the one from
 organice or cancel. This happens when you made changes to your file on
 at least two machines at the same time without synchronizing them in
-the meantime. For this, we recommend to put your Org file under
+the meantime. For this, we recommend putting your Org file under
 version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
 
@@ -515,7 +515,7 @@ ssh -L 3000:localhost:3000 user-dev-machine
 #+END_SRC
 
 If you don't have a shell on your phone, you can use a dedicated SSH
-application (like [[https://www.termius.com/][Terminus]]).
+application (like [[https://www.termius.com/][Termius]]).
 
 ** Debugging Tests
 
@@ -575,7 +575,7 @@ Please see our [[https://github.com/200ok-ch/organice/blob/master/CONTRIBUTING.o
 When discussing new UX, it is often helpful to add a mockup to the
 discussion to ensure that everyone is on the same page. When a new
 contributor suggests a UX change and it's not trivial, we will ask to
-included a mockup to the issue.
+include a mockup to the issue.
 
 Of course, you're completely free to create such a mockup with
 whatever tool you feel comfortable with. A scan of a pen and paper
@@ -767,7 +767,7 @@ For example, you can encrypt your data on disk. organice itself is
 just a front-end application, requires no server and has no tracking
 system. Therefore, the data within any organice instance (self hosted
 or not) is already only accessible to you, your browser and the
-network between your browser and your chosen back-end. Therefore, if
+network between your browser and your chosen back-end. Therefore, if you
 have a strong SSL certificate configured on your WebDAV server and
 organice instance, then organice will communicate securely via HTTPS
 to your server where your data is as secure as you make it. Then, your
@@ -838,7 +838,7 @@ suited to a wider range of users. For that, organice follows the
 =contrib= model which many bigger projects use (i.e. [[https://orgmode.org/worg/org-contrib/][Org mode]]) for
 such contributions.
 
-The please see the [[https://github.com/200ok-ch/organice/tree/master/contrib][contrib folder]] for details.
+Please see the [[https://github.com/200ok-ch/organice/tree/master/contrib][contrib folder]] for details.
 
 * Capture templates
   :PROPERTIES:
@@ -855,7 +855,7 @@ parameters are required and must be URL encoded:
   of the file in which to execute the capture template.
 - ~captureContent~: the content you'd like to capture. This content
   will be placed at the cursor position if specified in the capture
-  template (with ~%?~), or at the end of the template if its not
+  template (with ~%?~), or at the end of the template if it's not
   specified.
 
 You can also specify additional custom variables for use in your
