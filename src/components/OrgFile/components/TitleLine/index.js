@@ -120,6 +120,7 @@ class TitleLine extends PureComponent {
       minWidth: '5em',
       textAlign: 'right',
       marginRight: '5px',
+      whiteSpace: 'nowrap',
     };
 
     return (
