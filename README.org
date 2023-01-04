@@ -87,10 +87,8 @@ from there, it will run in full-screen as a Progressive Web
 Application (PWA) which will add offline capabilities (see chapters
 [[#progressive_web_app][progressive web app]] and [[#offline_support][offline support]]).
 
-First, go to the page that you want to use as your start screen when
-using organice as an app from your homescreen. This could be the
-"files" overview or your main Org file. Then to install to the
-homescreen follow these platform specific instructions:
+To install organice to the homescreen follow these platform specific
+instructions:
 
 - *iOS:*
 
@@ -116,24 +114,9 @@ homescreen follow these platform specific instructions:
   At this point, most browsers will present a popup banner with the
   option to "Add to homescreen" or "Install".
 
-  If you want the organice app icon on your home screen to jump to a
-  specific =.org= file, and/or if you want multiple app icons on the
-  home screen to jump to different files, things can get a bit more
-  tricky.  For instance, Chrome only offers "Add to homescreen" the
-  first time; once it has been added, the option changes to "Open
-  organice".  Firefox allows creation of multiple home screen icons,
-  but when opening any of these, organice does not jump directly to
-  the specific file which was open when the icon was created.
-
-  Therefore if you want multiple organice bookmark icons on your
-  homescreen which jump straight to particular files, you may have
-  better luck using another technique.  For example, you can use a
-  third-party program called "[[https://play.google.com/store/apps/details?id=com.tasomaniac.openwith][Open Link With...]]".  Once that's
-  installed, from Chrome, visit the page in organice you want to make
-  a homescreen icon for, then tap the "menu" button again, select
-  "Share...", and then "Add To Home", then "organice".  Once it's
-  added, your home launcher may allow you to change the visible icon
-  to the organice icon, or whatever other icon you choose.
+By default, when you start organice, it will display your root file
+directory. If you prefer to display a specific Org file instead, you
+can select it in the [[https://organice.200ok.ch/settings][file settings]].
 
 * Usage
   :PROPERTIES:

@@ -149,6 +149,7 @@ class Entry extends PureComponent {
       location: { pathname },
       colorScheme,
       theme,
+      defaultFilePath,
     } = this.props;
 
     loadTheme(theme, colorScheme);
@@ -189,7 +190,7 @@ class Entry extends PureComponent {
               <Route path="/settings" exact={true}>
                 <Settings />
               </Route>
-              <Redirect to="/files" />
+              {defaultFilePath ? <Redirect to={defaultFilePath} /> : <Redirect to="/files" />}
             </Switch>
           ))}
       </div>
@@ -200,6 +201,11 @@ class Entry extends PureComponent {
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
   const path = state.org.present.get('path');
+  const defaultFilePath = state.org.present
+    .get('fileSettings')
+    .filter((setting) => setting.get('defaultOnStartup'))
+    .map((setting) => `file${setting.get('path')}`)
+    .first();
   const filesToLoadOnStartup = state.org.present
     .get('fileSettings')
     .filter((setting) => setting.get('loadOnStartup'))
@@ -213,6 +219,7 @@ const mapStateToProps = (state) => {
     path,
     filesToLoad,
     filesToSync,
+    defaultFilePath,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
