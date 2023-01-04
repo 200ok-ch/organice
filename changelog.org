@@ -6,6 +6,20 @@
 All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
+
+* [2023-01-04 Wed]
+
+** Changed
+
+- Disable auto-capitalization for search
+  - Before:
+    - When using the search or task list text inputs the Android/iOS keyboards automatically apply the shift key, meaning that the first character is capitalized.
+    - 99% of the time this is not what we want because:
+      - Having mixed case triggers a case sensitive search. This is quite confusing when I did not intentionally use capitalization, but it was added anyway. For example, I type "and", and it actually inputs and searches for "And", which yields no results.
+      - Many of the keywords in the search grammar are lower case, e.g., =deadline:=, =desc:=.
+  - Now: Auto-capitalization is turned off
+  - PR: https://github.com/200ok-ch/organice/pull/914
+  - Thank you [[https://github.com/neildavidforrest][neildavidforrest]] for the PR🙏
 * [2022-12-03 Sat]
 ** Fixed
 
