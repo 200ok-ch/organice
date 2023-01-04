@@ -1,4 +1,3 @@
-/* global process */
 import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
