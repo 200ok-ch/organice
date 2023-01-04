@@ -11,6 +11,11 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 ** Added
 
+- Configuration option for a default Org file on startup.
+  - By default, when you start organice, it will display your root
+    file directory. If you prefer to display a specific Org file
+    instead, you can select it in the [[https://organice.200ok.ch/settings][file settings]].
+
 - Option to display DEADLINE values (near the clocking value) on each headline
   - The default for this option is false - so there is no change to the default behavior - until you enable this option via Settings.
   - PR: https://github.com/200ok-ch/organice/pull/891

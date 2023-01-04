@@ -16,6 +16,9 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
   const updateField = (fieldName) => (event) =>
     onFieldPathUpdate(setting.get('id'), [fieldName], event.target.value);
 
+  const toggleDefaultOnStartup = () =>
+    onFieldPathUpdate(setting.get('id'), ['defaultOnStartup'], !setting.get('defaultOnStartup'));
+
   const toggleLoadOnStartup = () =>
     onFieldPathUpdate(setting.get('id'), ['loadOnStartup'], !setting.get('loadOnStartup'));
 
@@ -61,6 +64,19 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
 
   const renderOptionFields = (setting) => (
     <>
+      <div className="file-setting__field-container">
+        <div className="file-setting__field">
+          <div>Is default file to load on startup?</div>
+          <Switch isEnabled={setting.get('defaultOnStartup')} onToggle={toggleDefaultOnStartup} />
+        </div>
+
+        <div className="file-setting__help-text">
+          By default, when you start organice, it will display your root file directory. If you
+          prefer to display a specific Org file instead, enable this option. <br /> Note: There can
+          only be one default file, of course. If you enable this option for multiple files,
+          organice will pick the first one.
+        </div>
+      </div>
       <div className="file-setting__field-container">
         <div className="file-setting__field">
           <div>Sync on startup?</div>
@@ -152,6 +168,11 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
           <div className="file-setting-container__header" onClick={handleHeaderBarClick}>
             <i className={caretClassName} />
             <div className="file-setting-icons">
+              <div
+                className={classNames('default-on-startup-icon', {
+                  'fas fa-sync-alt fa-lg file-setting-icon': setting.get('defaultOnStartup'),
+                })}
+              />
               <div
                 className={classNames('load-on-startup-icon', {
                   'fas fa-sync-alt fa-lg file-setting-icon': setting.get('loadOnStartup'),
