@@ -286,6 +286,8 @@ You can specify a different lead time for warnings for a specific deadlines usin
 
 In case the task contains a repeater, the delay is considered to affect all occurrences; if you want the delay to only affect the first scheduled occurrence of the task, use '--5d' instead.
 
+
+In the settings, there is an option to display deadline values on each headline.
 * Capture
 organice supports something like [[https://orgmode.org/manual/Capture.html][Org capture]] in the form of customizable, quickly accessible buttons for creating new headers.
 
