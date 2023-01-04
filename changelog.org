@@ -9,6 +9,12 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 * [2023-01-04 Wed]
 
+** Fixed
+
+- Rotation of table editor icons to reflect their action.
+  - PR: https://github.com/200ok-ch/organice/pull/890
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+
 ** Changed
 
 - Disable auto-capitalization for search

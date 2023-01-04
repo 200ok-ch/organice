@@ -44,6 +44,18 @@
   transform: rotate(270deg);
 }
 
+.table-action-drawer__sub-icon--rotated270 {
+  transform: rotate(270deg);
+}
+
+.table-action-drawer__sub-icon--rotated180 {
+  transform: rotate(180deg);
+}
+
+.table-action-drawer__sub-icon--rotated90 {
+  transform: rotate(90deg);
+}
+
 .table-action-movement-container {
   color: var(--base01);
 
