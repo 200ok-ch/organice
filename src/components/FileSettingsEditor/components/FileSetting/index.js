@@ -170,7 +170,7 @@ export default ({ setting, index, onFieldPathUpdate, onDeleteSetting, loadedFile
             <div className="file-setting-icons">
               <div
                 className={classNames('default-on-startup-icon', {
-                  'fas fa-sync-alt fa-lg file-setting-icon': setting.get('defaultOnStartup'),
+                  'fas fa-bookmark fa-lg file-setting-icon': setting.get('defaultOnStartup'),
                 })}
               />
               <div
