@@ -52,8 +52,22 @@ class DescriptionEditorModal extends PureComponent {
     this.textarea = textarea;
   }
 
+  descriptionModifier(event) {
+    // converting leading '*' to '-' to avoid converting them to headers
+    const {
+      target: { value },
+    } = event;
+    const eachValList = value.split('\n');
+    eachValList.forEach((item, index) => {
+      if (item[0] === '*') {
+        eachValList[index] = '-' + item.slice(1);
+      }
+    });
+    return eachValList.join('\n');
+  }
+
   handleDescriptionChange(event) {
-    this.setState({ descriptionValue: event.target.value });
+    this.setState({ descriptionValue: this.descriptionModifier(event) });
   }
 
   handleInsertTimestamp() {
