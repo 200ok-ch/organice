@@ -502,6 +502,9 @@ ${header.get('rawDescription')}`;
                   (showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
                     ? millisDuration(header.get('totalTimeLoggedRecursive'))
                     : '') +
+                  // Spacing between 'clock display' and 'deadline
+                  // display' overlays
+                  (showClockDisplay && showDeadlineDisplay ? ' ' : '') +
                   (showDeadlineDisplay && headerDeadline !== undefined ? headerDeadline : '')
                 }
               />
