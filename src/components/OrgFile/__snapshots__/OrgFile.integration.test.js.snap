@@ -46,6 +46,8 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         class="search__input-container"
       >
         <input
+          autocapitalize="none"
+          autocomplete="off"
           class="textfield task-list__filter-input"
           list="task-list__datalist-filter"
           placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
