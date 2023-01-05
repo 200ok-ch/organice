@@ -11,6 +11,9 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
+import { Filesystem } from '@capacitor/filesystem';
+import { FilePicker } from '@capawesome/capacitor-file-picker';
+
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
 
@@ -149,6 +152,63 @@ function GitLab() {
   );
 }
 
+const pickFiles = async () => {
+  // 1. Request permissions
+  await Filesystem.requestPermissions();
+  // 2. Pick files
+  const result = await FilePicker.pickFiles();
+  const file = result.files[0];
+
+  alert('Selected file is' +
+      JSON.stringify(file) +
+      ' ' + JSON.stringify(result));
+  return result
+};
+
+function LocalStorage() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
+
+  const defaultOrgDirectory = '/org';
+  const [orgDirectory, setOrgDirectory] = useState(defaultOrgDirectory);
+
+  pickFiles();
+
+  return (
+    <div id="localStorageSelect">
+      <h2>
+        <a href="#localstorage" onClick={toggleVisible} style={{ textDecoration: 'none' }}>
+          Local Storage
+        </a>
+      </h2>
+      {isVisible && (
+        <>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              persistField('authenticatedSyncService', 'LocalStorage');
+              persistField('orgDirectory', orgDirectory);
+            }}
+          >
+            <p>
+              <label htmlFor="input-org-dir">Org directory:</label>
+              <input
+                id="input-org-dir"
+                name="orgDir"
+                type="text"
+                value={orgDirectory}
+                className="textfield"
+                onChange={(e) => setOrgDirectory(e.target.value)}
+              />
+            </p>
+            <input type="submit" value="Use directory" />
+          </form>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -188,6 +248,10 @@ export default class SyncServiceSignIn extends PureComponent {
 
         <div className="sync-service-container">
           <WebDAVForm />
+        </div>
+
+        <div className="sync-service-container">
+          <LocalStorage />
         </div>
 
         <footer className="sync-service-sign-in__help-text">
