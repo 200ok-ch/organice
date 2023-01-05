@@ -26,7 +26,7 @@ import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 afterEach(cleanup);
 
 describe('Render all views', () => {
-  jest.mock('react-hotkeys', () => {
+  jest.doMock('react-hotkeys', () => {
     const React = require('react');
     const Fragment = React.Fragment;
 

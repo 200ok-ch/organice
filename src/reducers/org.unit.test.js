@@ -1,4 +1,3 @@
-/* global process */
 /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "check_is_undoable", "check_just_dirtying", "check_is_undoable_on_table"] }] */
 
 import { Map, fromJS } from 'immutable';
