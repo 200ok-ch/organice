@@ -413,7 +413,8 @@ nvm use
 To install the necessary packages, run:
 
 #+BEGIN_SRC shell
-yarn install --production=false
+  npm install -g yarn
+  yarn install --production=false
 #+END_SRC
 
 *** Setup any of the synchronization back-ends
