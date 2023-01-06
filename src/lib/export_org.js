@@ -184,13 +184,14 @@ const inlineMarkUpToRawText = (part) => {
     underline: '_',
     verbatim: '=',
   };
-  if (part.get('type') !== 'inline-markup' || !markupTypeToRaw[part.get('markupType')]) return part.get('content');
+  if (part.get('type') !== 'inline-markup' || !markupTypeToRaw[part.get('markupType')])
+    return part.get('content');
   return (
     markupTypeToRaw[part.get('markupType')] +
     part.get('content') +
     markupTypeToRaw[part.get('markupType')]
   );
-}
+};
 
 export const attributedStringToRawText = (parts) => {
   if (!parts) {
