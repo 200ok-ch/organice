@@ -7,6 +7,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2023-01-09 Mon]
+
+** Fixed
+
+- Checking or unchecking a checkbox discards text with markup
+  - PR: https://github.com/200ok-ch/organice/pull/928
+  - Thank you [[https://github.com/saikiransathpadi][saikiransathpadi]] for the PR🙏
+
 * [2023-01-05 Thu]
 
 ** Fixed
@@ -39,6 +47,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
   - If the user starts any line with a =*=, wanting to start a new list, it is immediately converted to a =-=.
   - PR: https://github.com/200ok-ch/organice/pull/920
   - Thank you [[https://github.com/saikiransathpadi][saikiransathpadi]] for the PR🙏
+   
 
 ** Changed
 
