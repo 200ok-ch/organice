@@ -175,6 +175,24 @@ const timestampPartToRawText = (part) => {
   return text;
 };
 
+const inlineMarkUpToRawText = (part) => {
+  const markupTypeToRaw = {
+    'inline-code': '~',
+    bold: '*',
+    italic: '/',
+    strikethrough: '+',
+    underline: '_',
+    verbatim: '=',
+  };
+  if (part.get('type') !== 'inline-markup' || !markupTypeToRaw[part.get('markupType')])
+    return part.get('content');
+  return (
+    markupTypeToRaw[part.get('markupType')] +
+    part.get('content') +
+    markupTypeToRaw[part.get('markupType')]
+  );
+};
+
 export const attributedStringToRawText = (parts) => {
   if (!parts) {
     return '';
@@ -189,6 +207,9 @@ export const attributedStringToRawText = (parts) => {
       switch (part.get('type')) {
         case 'text':
           text = part.get('contents');
+          break;
+        case 'inline-markup':
+          text = inlineMarkUpToRawText(part);
           break;
         case 'link':
           text = linkPartToRawText(part);
