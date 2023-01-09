@@ -33,9 +33,7 @@ export const filterAndSortDirectoryListing = (listing) => {
     });
 };
 
-export default (uri) => {
-  // TODO: request/check permissions for file during signIn?!
-  let uri = uri;
+export default () => {
   const isSignedIn = () =>
     new Promise((resolve) => resolve(true));
 

@@ -172,27 +172,34 @@ function AndroidStorage() {
           <form
             onSubmit={(event) => {
               event.preventDefault();
-              pickDirectory().then(result => {
-                const {uri} = result
-                persistField('authenticatedSyncService', 'AndroidStorage');
-                persistField('orgDirectory', uri);
-              })
-              window.location = window.location.origin + '?android';
+              persistField('authenticatedSyncService', 'AndroidStorage');
+              persistField('orgDirectory', orgDirectory);
+              window.location = window.location + '?path=org';
             }}
           >
+            <div>
             <p>
               <label htmlFor="input-org-dir">Org directory:</label>
               <input
                 id="input-org-dir"
-                name="orgDir"
-                type="text"
+                name="url"
+                type="url"
                 value={orgDirectory}
                 className="textfield"
-                readOnly
-                onChange={(e) => setOrgDirectory(e.target.value)}
               />
             </p>
-            <input type="submit" value="Use directory" />
+            <button
+                id="org-pick-directory"
+                name="orgDir"
+                onClick={(event) => {
+                  event.preventDefault();
+                  pickDirectory().then(result => {
+                    const {uri} = result
+                    setOrgDirectory(uri)
+                  })
+                }}>Choose org dir</button>
+            </div>
+            <input type="submit" value="Use selected directory" />
           </form>
         </>
       )}
