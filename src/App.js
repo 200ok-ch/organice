@@ -23,6 +23,7 @@ import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base
 
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
 import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_backend_client';
+import createAndroidSyncBackendClient from './sync_backend_clients/android_sync_backend_client';
 import createGitLabSyncBackendClient, {
   createGitlabOAuth,
 } from './sync_backend_clients/gitlab_sync_backend_client';
@@ -138,6 +139,15 @@ export function handleAuthenticatedSyncService(initialState) {
           getPersistedField('webdavEndpoint'),
           getPersistedField('webdavUsername'),
           getPersistedField('webdavPassword')
+        );
+        initialState.syncBackend = Map({
+          isAuthenticated: true,
+          client,
+        });
+        break;
+      case 'AndroidStorage':
+        client = createAndroidSyncBackendClient(
+          getPersistedField("orgDirectory")
         );
         initialState.syncBackend = Map({
           isAuthenticated: true,

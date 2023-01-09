@@ -3,6 +3,7 @@ package com.twohundredok.organice;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 
 import androidx.activity.result.ActivityResult;
 import androidx.documentfile.provider.DocumentFile;
@@ -14,7 +15,15 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +56,9 @@ public class OrganiceSync extends Plugin {
     /**
      * Companion callback to {@link OrganiceSync::pickDirectory} .
      * Handles the result of "pick a directory" action.
-     *
+     * <p>
      * Will save permissions to the directory.
+     *
      * @param call
      * @param result
      */
@@ -100,7 +110,9 @@ public class OrganiceSync extends Plugin {
         }
         DocumentFile parentFile = d.getParentFile();
         JSObject o = new JSObject();
+        o.put("id", d.getUri());
         o.put("uri", d.getUri());
+        o.put("path", d.getUri());
         o.put("lastModified", d.lastModified());
         o.put("length", d.length());
         o.put("name", d.getName());
@@ -114,6 +126,7 @@ public class OrganiceSync extends Plugin {
 
     /**
      * List files in a directory.
+     *
      * @param call Expect a "uri" string parameter.
      */
     @PluginMethod
@@ -135,12 +148,125 @@ public class OrganiceSync extends Plugin {
                 JSObject ret = new JSObject();
                 ret.put("error", true);
                 ret.put("uri", uri);
-                ret.put("cause", "Usi is not a directory ");
+                ret.put("errorMessage", "Usi is not a directory ");
                 call.reject("Usi is not a directory " + uri);
             }
+        } else {
+            call.reject("Uri is null");
         }
-        call.reject("Uri is null");
-        return;
+    }
+
+    /**
+     * Update / write to a file.
+     * Perform a full file write.
+     *
+     * @param call Expect a "uri" string parameter.
+     */
+    @PluginMethod
+    public void putFileContents(PluginCall call) {
+        String uriStr = call.getString("uri");
+        String data = call.getString("contents");
+        if (uriStr != null) {
+            Uri uri = Uri.parse(Uri.decode(uriStr));
+            try {
+                ParcelFileDescriptor pfd = getActivity().getContentResolver().
+                        openFileDescriptor(uri, "w");
+                FileOutputStream fileOutputStream =
+                        new FileOutputStream(pfd.getFileDescriptor());
+                fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
+                // Let the document provider know you're done by closing the stream.
+                fileOutputStream.close();
+                pfd.close();
+            } catch (FileNotFoundException e) {
+                JSObject o = new JSObject();
+                o.put("error", true);
+                o.put("uri", uri);
+                o.put("errorMessage", e.getLocalizedMessage());
+                call.reject("File not found" + uri, o);
+            } catch (IOException e) {
+                JSObject o = new JSObject();
+                o.put("error", true);
+                o.put("uri", uri);
+                o.put("errorMessage", e.getLocalizedMessage());
+                call.reject("Exception writing uri" + uri, o);
+            }
+        } else {
+            call.reject("Uri is null");
+        }
+    }
+
+    /**
+     * Read a document to a string.
+     * https://developer.android.com/training/data-storage/shared/documents-files#input_stream
+     *
+     * @param uri
+     * @return
+     * @throws IOException
+     */
+    private String readTextFromUri(Uri uri) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (InputStream inputStream =
+                     getActivity().getContentResolver().openInputStream(uri);
+             BufferedReader reader = new BufferedReader(
+                     new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * @param call
+     */
+    @PluginMethod
+    public void getFileContentsAndMetadata(PluginCall call) {
+        String uriStr = call.getString("uri");
+        if (uriStr != null) {
+            Uri uri = Uri.parse(Uri.decode(uriStr));
+            try {
+                var d = DocumentFile.fromSingleUri(getContext(), uri);
+                var contents = readTextFromUri(uri);
+                JSObject r = asFileMetaData(d);
+                r.put("contents", contents);
+                call.resolve(r);
+            } catch (FileNotFoundException e) {
+                JSObject o = new JSObject();
+                o.put("error", true);
+                o.put("uri", uri);
+                o.put("errorMessage", e.getLocalizedMessage());
+                call.reject("File not found" + uri, o);
+            } catch (IOException e) {
+                JSObject o = new JSObject();
+                o.put("error", true);
+                o.put("uri", uri);
+                o.put("errorMessage", e.getLocalizedMessage());
+                call.reject("Exception writing uri" + uri, o);
+            }
+        } else {
+            call.reject("Uri is null");
+        }
+    }
+
+    /**
+     * @param call
+     */
+    @PluginMethod
+    public void deleteFile(PluginCall call) {
+        String uriStr = call.getString("uri");
+        if (uriStr != null) {
+            Uri uri = Uri.parse(Uri.decode(uriStr));
+            var f = DocumentFile.fromSingleUri(getContext(), uri);
+            var deleted = f.delete();
+            if (deleted) {
+                call.resolve();
+            } else {
+                call.reject("File was not deleted");
+            }
+        } else {
+            call.reject("Uri is null");
+        }
     }
 
 }

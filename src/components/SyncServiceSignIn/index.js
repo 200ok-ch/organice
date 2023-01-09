@@ -5,13 +5,15 @@ import './stylesheet.css';
 import DropboxLogo from './dropbox.svg';
 import GitLabLogo from './gitlab.svg';
 
-import { persistField } from '../../util/settings_persister';
+import { getPersistedField, persistField } from '../../util/settings_persister';
 import {
   createGitlabOAuth,
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
-import OrganiceSync from '../../organice_android_sync';
+import {
+  pickDirectory,
+} from '../../sync_backend_clients/android_sync_backend_client';
 
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
@@ -151,22 +153,11 @@ function GitLab() {
   );
 }
 
-const pickDirectory = async () => {
-  // 2. Pick files
-  const result = await OrganiceSync.pickDirectory();
-  return result
-};
-
-const listDirectory = async (uri) => {
-  const result = await OrganiceSync.listFiles({uri: uri})
-  return result;
-}
-
-function LocalStorage() {
+function AndroidStorage() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
 
-  const defaultOrgDirectory = '/org';
+  const defaultOrgDirectory = getPersistedField('orgDirectory');
   const [orgDirectory, setOrgDirectory] = useState(defaultOrgDirectory);
 
   return (
@@ -183,10 +174,10 @@ function LocalStorage() {
               event.preventDefault();
               pickDirectory().then(result => {
                 const {uri} = result
-                persistField('authenticatedSyncService', 'LocalStorage');
+                persistField('authenticatedSyncService', 'AndroidStorage');
                 persistField('orgDirectory', uri);
-                listDirectory(uri).then( result => alert("Files are" + JSON.stringify(result)))
               })
+              window.location = window.location.origin + '?android';
             }}
           >
             <p>
@@ -197,6 +188,7 @@ function LocalStorage() {
                 type="text"
                 value={orgDirectory}
                 className="textfield"
+                readOnly
                 onChange={(e) => setOrgDirectory(e.target.value)}
               />
             </p>
@@ -250,7 +242,7 @@ export default class SyncServiceSignIn extends PureComponent {
         </div>
 
         <div className="sync-service-container">
-          <LocalStorage />
+          <AndroidStorage />
         </div>
 
         <footer className="sync-service-sign-in__help-text">
