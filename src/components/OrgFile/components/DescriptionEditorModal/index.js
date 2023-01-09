@@ -53,14 +53,14 @@ class DescriptionEditorModal extends PureComponent {
   }
 
   descriptionModifier(event) {
-    // converting leading '*' to '-' to avoid converting them to headers
+    // converting leading '* ' to '- ' to avoid converting them to headers
     const {
       target: { value },
     } = event;
     const eachValList = value.split('\n');
     eachValList.forEach((item, index) => {
-      if (item[0] === '*') {
-        eachValList[index] = '-' + item.slice(1);
+      if (item.startsWith('* ')) {
+        eachValList[index] = '- ' + item.slice(2);
       }
     });
     return eachValList.join('\n');

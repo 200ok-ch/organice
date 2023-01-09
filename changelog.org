@@ -15,6 +15,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
   - PR: https://github.com/200ok-ch/organice/pull/928
   - Thank you [[https://github.com/saikiransathpadi][saikiransathpadi]] for the PR🙏
 
+- Don’t replace all leading =*= in the description
+  - Only when followed by a space, it would become a headline. Otherwise it’s markup for bold text.
+  - PR: https://github.com/200ok-ch/organice/pull/931
+
 * [2023-01-05 Thu]
 
 ** Fixed
