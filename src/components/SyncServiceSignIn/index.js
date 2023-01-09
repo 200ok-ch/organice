@@ -11,8 +11,7 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
-import { Filesystem } from '@capacitor/filesystem';
-import { FilePicker } from '@capawesome/capacitor-file-picker';
+import OrganiceSync from '../../organice_android_sync';
 
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
@@ -152,18 +151,16 @@ function GitLab() {
   );
 }
 
-const pickFiles = async () => {
-  // 1. Request permissions
-  await Filesystem.requestPermissions();
+const pickDirectory = async () => {
   // 2. Pick files
-  const result = await FilePicker.pickFiles();
-  const file = result.files[0];
-
-  alert('Selected file is' +
-      JSON.stringify(file) +
-      ' ' + JSON.stringify(result));
+  const result = await OrganiceSync.pickDirectory();
   return result
 };
+
+const listDirectory = async (uri) => {
+  const result = await OrganiceSync.listFiles({uri: uri})
+  return result;
+}
 
 function LocalStorage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -171,8 +168,6 @@ function LocalStorage() {
 
   const defaultOrgDirectory = '/org';
   const [orgDirectory, setOrgDirectory] = useState(defaultOrgDirectory);
-
-  pickFiles();
 
   return (
     <div id="localStorageSelect">
@@ -186,8 +181,12 @@ function LocalStorage() {
           <form
             onSubmit={(event) => {
               event.preventDefault();
-              persistField('authenticatedSyncService', 'LocalStorage');
-              persistField('orgDirectory', orgDirectory);
+              pickDirectory().then(result => {
+                const {uri} = result
+                persistField('authenticatedSyncService', 'LocalStorage');
+                persistField('orgDirectory', uri);
+                listDirectory(uri).then( result => alert("Files are" + JSON.stringify(result)))
+              })
             }}
           >
             <p>

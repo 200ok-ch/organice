@@ -11,8 +11,6 @@
     "@capacitor/android": "^4.6.1",
     "@capacitor/app": "^4.1.1",
     "@capacitor/core": "^4.6.1",
-    "@capacitor/filesystem": "^4.1.4",
-    "@capawesome/capacitor-file-picker": "^0.5.2",
     "aos": "^2.3.4",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
@@ -36,7 +34,6 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
-    "send-intent": "^3.0.11",
     "webdav": "^3.3.0"
   },
   "scripts": {

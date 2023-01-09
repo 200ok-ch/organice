@@ -2,17 +2,5 @@
 	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
-	},
-	{
-		"pkg": "@capacitor/filesystem",
-		"classpath": "com.capacitorjs.plugins.filesystem.FilesystemPlugin"
-	},
-	{
-		"pkg": "@capawesome/capacitor-file-picker",
-		"classpath": "io.capawesome.capacitorjs.plugins.filepicker.FilePickerPlugin"
-	},
-	{
-		"pkg": "send-intent",
-		"classpath": "de.mindlib.sendIntent.SendIntent"
 	}
 ]
