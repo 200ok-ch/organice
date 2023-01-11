@@ -158,7 +158,9 @@ function AndroidStorage() {
   const toggleVisible = () => setIsVisible(!isVisible);
 
   const defaultOrgDirectory = getPersistedField('orgDirectory');
+  const defaultOrgDirectoryPath = getPersistedField('orgDirectoryPath');
   const [orgDirectory, setOrgDirectory] = useState(defaultOrgDirectory);
+  const [orgDirectoryPath, setOrgDirectoryPath] = useState(defaultOrgDirectoryPath);
 
   return (
     <div id="localStorageSelect">
@@ -169,22 +171,15 @@ function AndroidStorage() {
       </h2>
       {isVisible && (
         <>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              persistField('authenticatedSyncService', 'AndroidStorage');
-              persistField('orgDirectory', orgDirectory);
-              window.location = window.location + '?path=org';
-            }}
-          >
-            <div>
+        <div>
             <p>
               <label htmlFor="input-org-dir">Org directory:</label>
               <input
                 id="input-org-dir"
                 name="url"
                 type="url"
-                value={orgDirectory}
+                value={orgDirectoryPath}
+                readOnly
                 className="textfield"
               />
             </p>
@@ -194,11 +189,22 @@ function AndroidStorage() {
                 onClick={(event) => {
                   event.preventDefault();
                   pickDirectory().then(result => {
-                    const {uri} = result
+                    const {uri, path} = result
                     setOrgDirectory(uri)
+                    setOrgDirectoryPath(path)
                   })
                 }}>Choose org dir</button>
             </div>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              persistField('authenticatedSyncService', 'AndroidStorage');
+              persistField('orgDirectory', orgDirectory);
+              persistField('orgDirectoryPath', orgDirectoryPath);
+              alert("Location:" + orgDirectoryPath);
+              window.location = window.location.origin + "/";
+            }}
+          >
             <input type="submit" value="Use selected directory" />
           </form>
         </>

@@ -147,7 +147,8 @@ export function handleAuthenticatedSyncService(initialState) {
         break;
       case 'AndroidStorage':
         client = createAndroidSyncBackendClient(
-          getPersistedField("orgDirectory")
+          getPersistedField("orgDirectory"),
+          getPersistedField("orgDirectoryPath")
         );
         initialState.syncBackend = Map({
           isAuthenticated: true,

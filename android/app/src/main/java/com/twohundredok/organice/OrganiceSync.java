@@ -1,13 +1,16 @@
 package com.twohundredok.organice;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 
 import androidx.activity.result.ActivityResult;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -16,14 +19,16 @@ import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +37,15 @@ import java.util.stream.Collectors;
  */
 @CapacitorPlugin(name = "OrganiceSync")
 public class OrganiceSync extends Plugin {
+
+    public static Uri pathToUri(Uri base, String path) {
+        if (path.isEmpty()) {
+            return base;
+        } else {
+            var p = path.startsWith("/") ? path.substring(1) : path;
+            return base.buildUpon().encodedPath(p).build();
+        }
+    }
 
     /**
      * API available in JS to open the org root directory.
@@ -83,7 +97,10 @@ public class OrganiceSync extends Plugin {
             // Check for the freshest data.
             getActivity().getContentResolver().takePersistableUriPermission(uri, takeFlags);
 
+            var d = DocumentFile.fromTreeUri(getContext(),uri);
+
             ret.put("uri", uri);
+            ret.put("path", d.getUri().getEncodedPath());
             call.resolve(ret);
         } else {
             JSObject ret = new JSObject();
@@ -94,13 +111,6 @@ public class OrganiceSync extends Plugin {
         }
     }
 
-    /**
-     * Convert a DocumentFile to JSObject file structure to send to JS code.
-     * Organice cna use this format to display file information.
-     *
-     * @param d
-     * @return
-     */
     public static JSObject asFileMetaData(DocumentFile d) {
         if (d == null) {
             throw new IllegalArgumentException("DocumentFile is null");
@@ -108,19 +118,15 @@ public class OrganiceSync extends Plugin {
         if (!d.exists()) {
             throw new IllegalStateException("DocumentFile does not exist:" + d);
         }
-        DocumentFile parentFile = d.getParentFile();
-        JSObject o = new JSObject();
-        o.put("id", d.getUri());
-        o.put("uri", d.getUri());
-        o.put("path", d.getUri());
+        var o = new JSObject();
+        o.put("id", d.getUri().toString());
+        o.put("path", d.getUri().getEncodedPath());
         o.put("lastModified", d.lastModified());
         o.put("length", d.length());
         o.put("name", d.getName());
         o.put("type", d.getType());
         o.put("isDirectory", d.isDirectory());
         o.put("isFile", d.isFile());
-        o.put("parentFileUri", parentFile.getUri());
-        o.put("parentFileName", parentFile.getName());
         return o;
     }
 
@@ -132,27 +138,46 @@ public class OrganiceSync extends Plugin {
     @PluginMethod
     public void listFiles(PluginCall call) {
         String uriStr = call.getString("uri");
-        if (uriStr != null) {
-            Uri uri = Uri.parse(Uri.decode(uriStr));
-            var d = DocumentFile.fromTreeUri(getContext(), uri);
-            if (d.exists() && d.isDirectory()) {
-                JSObject ret = new JSObject();
-                var files = d.listFiles();
-                // convert DocumentFile to a json object structure for use in organice
-                var listing = Arrays.stream(files)
-                        .map(OrganiceSync::asFileMetaData)
-                        .collect(Collectors.toList());
-                ret.put("files", listing);
-                call.resolve(ret);
-            } else {
-                JSObject ret = new JSObject();
-                ret.put("error", true);
-                ret.put("uri", uri);
-                ret.put("errorMessage", "Usi is not a directory ");
-                call.reject("Usi is not a directory " + uri);
+        String path = call.getString("path");
+        if (uriStr != null && path != null) {
+            try {
+                final Uri base = Uri.parse(uriStr);
+                final Uri uri = pathToUri(base, path);
+                var d = DocumentFile.fromTreeUri(getContext(), uri);
+                if (d.exists() && d.isDirectory()) {
+                    JSObject ret = new JSObject();
+                    var files = d.listFiles();
+                    // convert DocumentFile to a json object structure for use in organice
+                    var listing = Arrays.stream(files)
+                            .map(OrganiceSync::asFileMetaData)
+                            .collect(Collectors.toList());
+                    ret.put("files", new JSArray(listing));
+                    call.resolve(ret);
+                } else {
+                    JSObject ret = new JSObject();
+                    ret.put("error", true);
+                    ret.put("uri", base);
+                    ret.put("errorMessage", "Usi is not a directory ");
+                    call.reject("Usi is not a directory " + uri);
+                }
+            } catch (Exception e) {
+                JSObject o = new JSObject();
+                o.put("error", true);
+                o.put("uriStr", uriStr);
+//                o.put("uri", uri.toString());
+                o.put("path", path);
+                o.put("errorMessage", e.getLocalizedMessage());
+                call.reject("Exception writing uri" + uriStr, o);
             }
         } else {
-            call.reject("Uri is null");
+            call.reject("Uri or path is null");
+        }
+    }
+
+    public void writeFile(ContentResolver resolver, Uri uri, String data) throws Exception {
+        try (ParcelFileDescriptor pfd = resolver.openFileDescriptor(uri, "w");
+             FileOutputStream fileOutputStream = new FileOutputStream(pfd.getFileDescriptor())) {
+            fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
         }
     }
 
@@ -166,24 +191,14 @@ public class OrganiceSync extends Plugin {
     public void putFileContents(PluginCall call) {
         String uriStr = call.getString("uri");
         String data = call.getString("contents");
-        if (uriStr != null) {
-            Uri uri = Uri.parse(Uri.decode(uriStr));
+        String path = call.getString("path");
+        if (uriStr != null && path != null) {
+            Uri base = Uri.parse(uriStr);
+            Uri uri = pathToUri(base, path);
             try {
-                ParcelFileDescriptor pfd = getActivity().getContentResolver().
-                        openFileDescriptor(uri, "w");
-                FileOutputStream fileOutputStream =
-                        new FileOutputStream(pfd.getFileDescriptor());
-                fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
-                // Let the document provider know you're done by closing the stream.
-                fileOutputStream.close();
-                pfd.close();
-            } catch (FileNotFoundException e) {
-                JSObject o = new JSObject();
-                o.put("error", true);
-                o.put("uri", uri);
-                o.put("errorMessage", e.getLocalizedMessage());
-                call.reject("File not found" + uri, o);
-            } catch (IOException e) {
+                ContentResolver resolver = getActivity().getContentResolver();
+                writeFile(resolver, uri, data);
+            } catch (Exception e) {
                 JSObject o = new JSObject();
                 o.put("error", true);
                 o.put("uri", uri);
@@ -203,12 +218,10 @@ public class OrganiceSync extends Plugin {
      * @return
      * @throws IOException
      */
-    private String readTextFromUri(Uri uri) throws IOException {
+    public static String readTextFromUri(ContentResolver resolver, Uri uri) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        try (InputStream inputStream =
-                     getActivity().getContentResolver().openInputStream(uri);
-             BufferedReader reader = new BufferedReader(
-                     new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+        try (InputStream fis = resolver.openInputStream(uri);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(fis, StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
@@ -223,30 +236,84 @@ public class OrganiceSync extends Plugin {
     @PluginMethod
     public void getFileContentsAndMetadata(PluginCall call) {
         String uriStr = call.getString("uri");
-        if (uriStr != null) {
-            Uri uri = Uri.parse(Uri.decode(uriStr));
+        String path = call.getString("path");
+        if (uriStr != null && path != null) {
+            var uri = Uri.parse(uriStr).buildUpon().encodedPath(path).build();
             try {
+                ContentResolver resolver = getContext().getContentResolver();
+                var contents = readTextFromUri(resolver, uri);
                 var d = DocumentFile.fromSingleUri(getContext(), uri);
-                var contents = readTextFromUri(uri);
+                Instant i = Instant.ofEpochMilli(d.lastModified());
+                LocalDateTime date = i.atZone(ZoneId.systemDefault()).toLocalDateTime();
                 JSObject r = asFileMetaData(d);
                 r.put("contents", contents);
+                r.put("lastModifiedAt", date.format(DateTimeFormatter.ISO_DATE_TIME));
                 call.resolve(r);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 JSObject o = new JSObject();
                 o.put("error", true);
-                o.put("uri", uri);
+                o.put("uriStr", uriStr);
+                o.put("uri", uri.toString());
+                o.put("path", path);
                 o.put("errorMessage", e.getLocalizedMessage());
-                call.reject("File not found" + uri, o);
-            } catch (IOException e) {
-                JSObject o = new JSObject();
-                o.put("error", true);
-                o.put("uri", uri);
-                o.put("errorMessage", e.getLocalizedMessage());
-                call.reject("Exception writing uri" + uri, o);
+                call.reject("Exception writing uri" + uriStr, o);
             }
         } else {
-            call.reject("Uri is null");
+            JSObject o = new JSObject();
+            o.put("error", true);
+            o.put("message", "Uri or path is null");
+            call.reject("Uri or path is null", o);
         }
+    }
+
+    /**
+     * https://developer.android.com/training/data-storage/shared/documents-files#create-file
+     *
+     * @param call
+     */
+    @PluginMethod
+    public void createFile(PluginCall call) {
+        String uriStr = call.getString("uri");
+        String path = call.getString("path");
+        String content = call.getString("content");
+        if (uriStr == null || path == null) {
+            JSObject o = new JSObject();
+            o.put("error", true);
+            o.put("message", "Uri or path is null");
+            call.reject("Uri or path is null", o);
+        }
+
+        var base = Uri.parse(uriStr);
+        var uri = pathToUri(base, path);
+        var fileParent = removeLastPathSegment(uri);
+        try {
+            // https://www.reddit.com/r/androiddev/comments/mz2j9s/comment/gw1uddt/?utm_source=share&utm_medium=web2x&context=3
+            var dir = DocumentFile.fromTreeUri(getContext(), fileParent);
+            ContentResolver resolver = getContext().getContentResolver();
+            Uri document = DocumentsContract.createDocument(resolver, uri , "application/octet-stream",
+                    uri.getLastPathSegment());
+            var file = DocumentFile.fromSingleUri(getContext(),document);
+            writeFile(resolver, file.getUri(), content);
+            JSObject r = asFileMetaData(dir);
+            call.resolve(r);
+        } catch (Exception e) {
+            JSObject o = new JSObject();
+            o.put("error", true);
+            o.put("uriStr", uriStr);
+            o.put("uri", uri.toString());
+            o.put("path", path);
+            o.put("parentFile", fileParent);
+            o.put("errorMessage", e.getLocalizedMessage());
+            call.reject("Exception writing uri" + uriStr, o);
+        }
+    }
+
+    private Uri removeLastPathSegment(Uri uri) {
+        var segments = uri.getPathSegments();
+        segments = segments.subList(0,segments.size()-1);
+        var u = uri.buildUpon();
+        segments.forEach(s -> u.appendPath(s));
+        return u.build();
     }
 
     /**
@@ -255,8 +322,10 @@ public class OrganiceSync extends Plugin {
     @PluginMethod
     public void deleteFile(PluginCall call) {
         String uriStr = call.getString("uri");
-        if (uriStr != null) {
-            Uri uri = Uri.parse(Uri.decode(uriStr));
+        String path = call.getString("path");
+        if (uriStr != null && path != null) {
+            Uri base = Uri.parse(uriStr);
+            Uri uri = pathToUri(base, path);
             var f = DocumentFile.fromSingleUri(getContext(), uri);
             var deleted = f.delete();
             if (deleted) {
