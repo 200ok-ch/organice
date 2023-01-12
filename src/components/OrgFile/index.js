@@ -237,8 +237,8 @@ class OrgFile extends PureComponent {
     }
   }
 
-  handleCapture(templateId, content, shouldPrepend) {
-    this.props.org.insertCapture(templateId, content, shouldPrepend);
+  handleCapture(templateId, content, shouldPrepend, shouldCaptureAsNewHeader) {
+    this.props.org.insertCapture(templateId, content, shouldPrepend, shouldCaptureAsNewHeader);
   }
 
   handlePopupClose() {

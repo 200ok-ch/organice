@@ -23,6 +23,7 @@ const addNewEmptyCaptureTemplate = (state) => {
         orgFilesWhereAvailable: [''],
         headerPaths: [''],
         shouldPrepend: false,
+        shouldCaptureAsNewHeader: true,
         template: '',
       })
     )

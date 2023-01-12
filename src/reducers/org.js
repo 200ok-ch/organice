@@ -841,7 +841,7 @@ const updateTableCellValue = (state, action) => {
 
 const insertCapture = (state, action) => {
   const headers = state.get('headers');
-  const { template, content, shouldPrepend } = action;
+  const { template, content, shouldPrepend, shouldCaptureAsNewHeader } = action;
 
   const { newIndex, nestingLevel, parentHeader } = insertCapturePosition(
     template,
@@ -853,20 +853,36 @@ const insertCapture = (state, action) => {
     return state;
   }
 
-  const newHeader = newHeaderFromText(content, state.get('todoKeywordSets')).set(
-    'nestingLevel',
-    nestingLevel
-  );
+  if (!shouldCaptureAsNewHeader) {
+    const header = getTargetHeader(template, headers);
+    const headerId = header.get('id')
+    const rawDescription = header.get('rawDescription');
+    const newRawDescription = rawDescription ?
+          (shouldPrepend ? content + rawDescription : rawDescription +  content)
+          : content;
+    return updateHeaderDescription (state, {headerId, newRawDescription});
+  } else {
+    const newHeader = newHeaderFromText(content, state.get('todoKeywordSets')).set(
+      'nestingLevel',
+      nestingLevel
+    );
 
-  state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
-  if (parentHeader !== undefined) {
-    // We inserted the new header under a parent rather than at the top or
-    // bottom of the file.
-    state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+    state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
+    if (parentHeader !== undefined) {
+      // We inserted the new header under a parent rather than at the top or
+      // bottom of the file.
+      state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+    }
   }
 
   return state;
 };
+
+const getTargetHeader = (template, headers) => {
+  const headerPaths = template.get('headerPaths');
+  const header = headerWithPath(headers, headerPaths);
+  return header !== null ? header : newHeaderFromText("", {nestingLevel: 1});
+}
 
 const insertCapturePosition = (template, headers, shouldPrepend) => {
   const headerPaths = template.get('headerPaths');

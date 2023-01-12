@@ -483,14 +483,14 @@ export const updateTableCellValue = (cellId, newValue) => ({
   dirtying: true,
 });
 
-export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, getState) => {
+export const insertCapture = (templateId, content, shouldPrepend, shouldCaptureAsNewHeader) => (dispatch, getState) => {
   dispatch(closePopup());
 
   const template = getState()
     .capture.get('captureTemplates')
     .concat(sampleCaptureTemplates)
     .find((template) => template.get('id') === templateId);
-  dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
+  dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, shouldCaptureAsNewHeader, dirtying: true });
 };
 
 export const clearPendingCapture = () => ({
@@ -551,7 +551,7 @@ export const insertPendingCapture = () => (dispatch, getState) => {
       )}${captureContent}${substitutedTemplate.substring(initialCursorIndex)}`
     : `${substitutedTemplate}${captureContent}`;
 
-  dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend')));
+  dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend'), template.get('shouldCaptureAsNewHeader')));
   dispatch(sync({ successMessage: 'Item captured' }));
 };
 
