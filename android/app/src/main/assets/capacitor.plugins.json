@@ -2,9 +2,5 @@
 	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
-	},
-	{
-		"pkg": "send-intent",
-		"classpath": "de.mindlib.sendIntent.SendIntent"
 	}
 ]

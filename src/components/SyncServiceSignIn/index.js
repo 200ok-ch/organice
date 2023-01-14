@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
@@ -5,11 +6,13 @@ import './stylesheet.css';
 import DropboxLogo from './dropbox.svg';
 import GitLabLogo from './gitlab.svg';
 
-import { persistField } from '../../util/settings_persister';
+import { getPersistedField, persistField } from '../../util/settings_persister';
 import {
   createGitlabOAuth,
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
+
+import { pickDirectory } from '../../sync_backend_clients/android_sync_backend_client';
 
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
@@ -149,6 +152,70 @@ function GitLab() {
   );
 }
 
+const isNative = Capacitor.isNativePlatform();
+
+function AndroidStorage() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
+
+  const defaultOrgDirectory = getPersistedField('orgDirectory');
+  const defaultOrgDirectoryPath = getPersistedField('orgDirectoryPath');
+  const [orgDirectory, setOrgDirectory] = useState(defaultOrgDirectory);
+  const [orgDirectoryPath, setOrgDirectoryPath] = useState(defaultOrgDirectoryPath);
+
+  return (
+    <div id="localStorageSelect">
+      <h2>
+        <a href="#localstorage" onClick={toggleVisible} style={{ textDecoration: 'none' }}>
+          Local Storage
+        </a>
+      </h2>
+      {isVisible && (
+        <>
+          <div>
+            <p>
+              <label htmlFor="input-org-dir">Org directory:</label>
+              <input
+                id="input-org-dir"
+                name="url"
+                type="url"
+                value={orgDirectoryPath}
+                readOnly
+                className="textfield"
+              />
+            </p>
+            <button
+              id="org-pick-directory"
+              name="orgDir"
+              onClick={(event) => {
+                event.preventDefault();
+                pickDirectory().then((result) => {
+                  const { uri, path } = result;
+                  setOrgDirectory(uri);
+                  setOrgDirectoryPath(path);
+                });
+              }}
+            >
+              Choose org dir
+            </button>
+          </div>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              persistField('authenticatedSyncService', 'AndroidStorage');
+              persistField('orgDirectory', orgDirectory);
+              persistField('orgDirectoryPath', orgDirectoryPath);
+              window.location = window.location.origin + '/';
+            }}
+          >
+            <input type="submit" value="Use selected directory" />
+          </form>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -175,20 +242,28 @@ export default class SyncServiceSignIn extends PureComponent {
           organice syncs your files with Dropbox, GitLab, and WebDAV.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
+        {!isNative && (
+          <>
+            <div className="sync-service-container">
+              <a href="#dropbox" onClick={this.handleDropboxClick}>
+                <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+              </a>
+            </div>
 
-        <div className="sync-service-container">
-          <a href="#dropbox" onClick={this.handleDropboxClick}>
-            <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
-          </a>
-        </div>
+            <div className="sync-service-container">
+              <GitLab />
+            </div>
 
-        <div className="sync-service-container">
-          <GitLab />
-        </div>
-
-        <div className="sync-service-container">
-          <WebDAVForm />
-        </div>
+            <div className="sync-service-container">
+              <WebDAVForm />
+            </div>
+          </>
+        )}
+        {isNative && (
+          <div className="sync-service-container">
+            <AndroidStorage />
+          </div>
+        )}
 
         <footer className="sync-service-sign-in__help-text">
           <p>

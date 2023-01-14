@@ -23,6 +23,7 @@ import { setDisappearingLoadingMessage, restoreStaticFile } from './actions/base
 
 import createDropboxSyncBackendClient from './sync_backend_clients/dropbox_sync_backend_client';
 import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_backend_client';
+import createAndroidSyncBackendClient from './sync_backend_clients/android_sync_backend_client';
 import createGitLabSyncBackendClient, {
   createGitlabOAuth,
 } from './sync_backend_clients/gitlab_sync_backend_client';
@@ -44,28 +45,28 @@ import AppUrlListener from './AppUrlListener';
 
 import { configure } from 'react-hotkeys';
 
-import { SendIntent } from 'send-intent';
+// import { SendIntent } from 'send-intent';
 
 // do handle hotkeys even if they come from within 'input', 'select' or 'textarea'
 configure({ ignoreTags: [] });
 
-SendIntent.checkSendIntentReceived()
-  .then((result) => {
-    if (result) {
-      console.log('SendIntent received');
-      console.log(JSON.stringify(result));
-    }
-    if (result.url) {
-      let resultUrl = decodeURIComponent(result.url);
-      console.log(resultUrl);
-      // Filesystem.readFile({path: resultUrl})
-      //   .then((content) => {
-      //     console.log(content.data);
-      //   })
-      //   .catch((err) => console.error(err));
-    }
-  })
-  .catch((err) => console.error(err));
+// SendIntent.checkSendIntentReceived()
+//   .then((result) => {
+//     if (result) {
+//       console.log('SendIntent received');
+//       console.log(JSON.stringify(result));
+//     }
+//     if (result.url) {
+//       let resultUrl = decodeURIComponent(result.url);
+//       console.log(resultUrl);
+//       // Filesystem.readFile({path: resultUrl})
+//       //   .then((content) => {
+//       //     console.log(content.data);
+//       //   })
+//       //   .catch((err) => console.error(err));
+//     }
+//   })
+//   .catch((err) => console.error(err));
 
 const handleGitLabAuthResponse = async (oauthClient) => {
   let success = false;
@@ -138,6 +139,16 @@ export function handleAuthenticatedSyncService(initialState) {
           getPersistedField('webdavEndpoint'),
           getPersistedField('webdavUsername'),
           getPersistedField('webdavPassword')
+        );
+        initialState.syncBackend = Map({
+          isAuthenticated: true,
+          client,
+        });
+        break;
+      case 'AndroidStorage':
+        client = createAndroidSyncBackendClient(
+          getPersistedField('orgDirectory'),
+          getPersistedField('orgDirectoryPath')
         );
         initialState.syncBackend = Map({
           isAuthenticated: true,
