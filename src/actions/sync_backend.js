@@ -26,8 +26,8 @@ export const signOut = () => (dispatch, getState) => {
       createGitlabOAuth().reset();
       break;
     case 'AndroidStorage':
-        persistField('orgDirectory', null);
-        break;
+      persistField('orgDirectory', null);
+      break;
     default:
   }
 

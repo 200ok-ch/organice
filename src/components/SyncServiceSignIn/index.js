@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
@@ -11,9 +12,7 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
-import {
-  pickDirectory,
-} from '../../sync_backend_clients/android_sync_backend_client';
+import { pickDirectory } from '../../sync_backend_clients/android_sync_backend_client';
 
 import { Dropbox } from 'dropbox';
 import _ from 'lodash';
@@ -153,6 +152,8 @@ function GitLab() {
   );
 }
 
+const isNative = Capacitor.isNativePlatform();
+
 function AndroidStorage() {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisible = () => setIsVisible(!isVisible);
@@ -171,7 +172,7 @@ function AndroidStorage() {
       </h2>
       {isVisible && (
         <>
-        <div>
+          <div>
             <p>
               <label htmlFor="input-org-dir">Org directory:</label>
               <input
@@ -184,25 +185,27 @@ function AndroidStorage() {
               />
             </p>
             <button
-                id="org-pick-directory"
-                name="orgDir"
-                onClick={(event) => {
-                  event.preventDefault();
-                  pickDirectory().then(result => {
-                    const {uri, path} = result
-                    setOrgDirectory(uri)
-                    setOrgDirectoryPath(path)
-                  })
-                }}>Choose org dir</button>
-            </div>
+              id="org-pick-directory"
+              name="orgDir"
+              onClick={(event) => {
+                event.preventDefault();
+                pickDirectory().then((result) => {
+                  const { uri, path } = result;
+                  setOrgDirectory(uri);
+                  setOrgDirectoryPath(path);
+                });
+              }}
+            >
+              Choose org dir
+            </button>
+          </div>
           <form
             onSubmit={(event) => {
               event.preventDefault();
               persistField('authenticatedSyncService', 'AndroidStorage');
               persistField('orgDirectory', orgDirectory);
               persistField('orgDirectoryPath', orgDirectoryPath);
-              alert("Location:" + orgDirectoryPath);
-              window.location = window.location.origin + "/";
+              window.location = window.location.origin + '/';
             }}
           >
             <input type="submit" value="Use selected directory" />
@@ -239,24 +242,28 @@ export default class SyncServiceSignIn extends PureComponent {
           organice syncs your files with Dropbox, GitLab, and WebDAV.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
+        {!isNative && (
+          <>
+            <div className="sync-service-container">
+              <a href="#dropbox" onClick={this.handleDropboxClick}>
+                <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
+              </a>
+            </div>
 
-        <div className="sync-service-container">
-          <a href="#dropbox" onClick={this.handleDropboxClick}>
-            <img src={DropboxLogo} alt="Dropbox logo" className="dropbox-logo" />
-          </a>
-        </div>
+            <div className="sync-service-container">
+              <GitLab />
+            </div>
 
-        <div className="sync-service-container">
-          <GitLab />
-        </div>
-
-        <div className="sync-service-container">
-          <WebDAVForm />
-        </div>
-
-        <div className="sync-service-container">
-          <AndroidStorage />
-        </div>
+            <div className="sync-service-container">
+              <WebDAVForm />
+            </div>
+          </>
+        )}
+        {isNative && (
+          <div className="sync-service-container">
+            <AndroidStorage />
+          </div>
+        )}
 
         <footer className="sync-service-sign-in__help-text">
           <p>

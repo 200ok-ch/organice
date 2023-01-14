@@ -47,6 +47,48 @@ public class OrganiceSync extends Plugin {
         }
     }
 
+    public static JSObject asFileMetaData(DocumentFile d) {
+        if (d == null) {
+            throw new IllegalArgumentException("DocumentFile is null");
+        }
+        if (!d.exists()) {
+            throw new IllegalStateException("DocumentFile does not exist:" + d);
+        }
+        LocalDateTime date = toLocalDateTime(d.lastModified());
+        var o = new JSObject();
+        o.put("id", d.getUri().toString());
+        o.put("path", d.getUri().getEncodedPath());
+        o.put("lastModified", date.format(DateTimeFormatter.ISO_DATE_TIME));
+        o.put("length", d.length());
+        o.put("name", d.getName());
+        o.put("type", d.getType());
+        o.put("isDirectory", d.isDirectory());
+        o.put("isFile", d.isFile());
+        return o;
+    }
+
+    /**
+     * Read a document to a string.
+     * https://developer.android.com/training/data-storage/shared/documents-files#input_stream
+     *
+     * @param uri
+     * @return
+     * @throws IOException
+     */
+    public static String readTextFromUri(ContentResolver resolver, Uri uri) throws IOException {
+        try (InputStream fis = resolver.openInputStream(uri);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(fis, StandardCharsets.UTF_8))) {
+            return reader.lines()
+                    .collect(Collectors.joining("\n"));
+        }
+    }
+
+    static LocalDateTime toLocalDateTime(long lastModified) {
+        Instant i = Instant.ofEpochMilli(lastModified);
+        LocalDateTime date = i.atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return date;
+    }
+
     /**
      * API available in JS to open the org root directory.
      *
@@ -97,7 +139,7 @@ public class OrganiceSync extends Plugin {
             // Check for the freshest data.
             getActivity().getContentResolver().takePersistableUriPermission(uri, takeFlags);
 
-            var d = DocumentFile.fromTreeUri(getContext(),uri);
+            var d = DocumentFile.fromTreeUri(getContext(), uri);
 
             ret.put("uri", uri);
             ret.put("path", d.getUri().getEncodedPath());
@@ -109,25 +151,6 @@ public class OrganiceSync extends Plugin {
             ret.put("uri", null);
             call.reject("Failed with intent code " + result.getResultCode(), ret);
         }
-    }
-
-    public static JSObject asFileMetaData(DocumentFile d) {
-        if (d == null) {
-            throw new IllegalArgumentException("DocumentFile is null");
-        }
-        if (!d.exists()) {
-            throw new IllegalStateException("DocumentFile does not exist:" + d);
-        }
-        var o = new JSObject();
-        o.put("id", d.getUri().toString());
-        o.put("path", d.getUri().getEncodedPath());
-        o.put("lastModified", d.lastModified());
-        o.put("length", d.length());
-        o.put("name", d.getName());
-        o.put("type", d.getType());
-        o.put("isDirectory", d.isDirectory());
-        o.put("isFile", d.isFile());
-        return o;
     }
 
     /**
@@ -211,26 +234,6 @@ public class OrganiceSync extends Plugin {
     }
 
     /**
-     * Read a document to a string.
-     * https://developer.android.com/training/data-storage/shared/documents-files#input_stream
-     *
-     * @param uri
-     * @return
-     * @throws IOException
-     */
-    public static String readTextFromUri(ContentResolver resolver, Uri uri) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        try (InputStream fis = resolver.openInputStream(uri);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(fis, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-        }
-        return stringBuilder.toString();
-    }
-
-    /**
      * @param call
      */
     @PluginMethod
@@ -243,8 +246,7 @@ public class OrganiceSync extends Plugin {
                 ContentResolver resolver = getContext().getContentResolver();
                 var contents = readTextFromUri(resolver, uri);
                 var d = DocumentFile.fromSingleUri(getContext(), uri);
-                Instant i = Instant.ofEpochMilli(d.lastModified());
-                LocalDateTime date = i.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime date = toLocalDateTime(d.lastModified());
                 JSObject r = asFileMetaData(d);
                 r.put("contents", contents);
                 r.put("lastModifiedAt", date.format(DateTimeFormatter.ISO_DATE_TIME));
@@ -290,9 +292,9 @@ public class OrganiceSync extends Plugin {
             // https://www.reddit.com/r/androiddev/comments/mz2j9s/comment/gw1uddt/?utm_source=share&utm_medium=web2x&context=3
             var dir = DocumentFile.fromTreeUri(getContext(), fileParent);
             ContentResolver resolver = getContext().getContentResolver();
-            Uri document = DocumentsContract.createDocument(resolver, uri , "application/octet-stream",
+            Uri document = DocumentsContract.createDocument(resolver, uri, "application/octet-stream",
                     uri.getLastPathSegment());
-            var file = DocumentFile.fromSingleUri(getContext(),document);
+            var file = DocumentFile.fromSingleUri(getContext(), document);
             writeFile(resolver, file.getUri(), content);
             JSObject r = asFileMetaData(dir);
             call.resolve(r);
@@ -310,7 +312,7 @@ public class OrganiceSync extends Plugin {
 
     private Uri removeLastPathSegment(Uri uri) {
         var segments = uri.getPathSegments();
-        segments = segments.subList(0,segments.size()-1);
+        segments = segments.subList(0, segments.size() - 1);
         var u = uri.buildUpon();
         segments.forEach(s -> u.appendPath(s));
         return u.build();

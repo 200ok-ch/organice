@@ -2,12 +2,11 @@ import { fromJS } from 'immutable';
 import OrganiceSync from '../organice_android_sync';
 import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
-import { legacy_createStore } from 'redux';
 
 export const pickDirectory = async () => {
   // 2. Pick files
   const result = await OrganiceSync.pickDirectory();
-  return result
+  return result;
 };
 
 /**
@@ -41,8 +40,7 @@ export const filterAndSortDirectoryListing = (listing) => {
 // content://com.android.externalstorage.documents/tree/1413-3A04%3Aorg
 export default (uri, rootPath) => {
   // alert("We have uri " + uri)
-  const isSignedIn = () =>
-    new Promise((resolve) => resolve(true));
+  const isSignedIn = () => new Promise((resolve) => resolve(true));
 
   const transformDirectoryListing = (listing) => {
     const sortedListing = filterAndSortDirectoryListing(listing);
@@ -52,18 +50,14 @@ export default (uri, rootPath) => {
   const getDirectoryListing = (path) =>
     new Promise((resolve, reject) => {
       // alert("List directory " + uri + " -> " + path)
-      OrganiceSync
-        .listFiles({uri, path})
+      OrganiceSync.listFiles({ uri, path })
         .then((response) => {
-          const {files} = response;
-          // alert("Listing :: " + files);
+          const { files } = response;
           const listing = transformDirectoryListing(files);
-          // alert("Listing " + listing);
-          return resolve({listing})
+          return resolve({ listing });
         })
-        .catch( (error) => {
-          alert("Error getDirectoryListing" + JSON.stringify(error))
-          console.error(uri, ': getDirectoryListing ' + path, error);
+        .catch((error) => {
+          alert('Error getDirectoryListing ' + JSON.stringify(error));
           reject();
         });
     });
@@ -75,50 +69,41 @@ export default (uri, rootPath) => {
 
   const uploadFile = (path, contents) =>
     new Promise((resolve, reject) => {
-      alert("upload file " + uri + " -> " + path)
-      return OrganiceSync
-      .putFileContents({ uri, path, contents })
-      .then(resolve())
-      .catch((error) => {
-        alert("Error uploadFile" + JSON.stringify(error))
-        console.error(uri, ': uploadFile ' + path, error);
-        reject();
-      });
+      return OrganiceSync.putFileContents({ uri, path, contents })
+        .then(resolve())
+        .catch((error) => {
+          alert('Error uploadFile ' + JSON.stringify(error));
+          reject();
+        });
     });
 
   const updateFile = uploadFile;
 
   const createFile = (path, content) => {
     new Promise((resolve, reject) => {
-      alert("createFile" + path + " :root: " + rootPath + " "  + content);
       if (!path.startsWith(rootPath)) {
         // Fix paths for files in root directory
-        path = rootPath + path
-        alert("New path" + path)
+        path = rootPath + path;
       }
-      return OrganiceSync.createFile({uri, path, content, rootPath})
-      .then(resolve())
-      .catch((error) => {
-        alert("Error createFile" + JSON.stringify(error))
-        console.error(uri, ': createFile ' + path, error);
-        reject();
-      });
-    }
-  )}
+      return OrganiceSync.createFile({ uri, path, content, rootPath })
+        .then(resolve())
+        .catch((error) => {
+          alert('Error createFile ' + JSON.stringify(error));
+          reject();
+        });
+    });
+  };
 
   const getFileContentsAndMetadata = (path) =>
     new Promise((resolve, reject) => {
-      alert("getFileContentsAndMetadata " + uri + " -> " + path)
-      return OrganiceSync.getFileContentsAndMetadata({uri, path})
+      return OrganiceSync.getFileContentsAndMetadata({ uri, path })
         .then((result) => {
-          alert("getFileContentsAndMetadata" + JSON.stringify(result))
           resolve(result);
         })
         .catch((error) => {
-          alert("Error getFileContentsAndMetadata" + JSON.stringify(error))
-          console.error(uri, ': getFileContentsAndMetadata ' + path, error);
+          alert('Error getFileContentsAndMetadata ' + JSON.stringify(error));
           reject();
-        })
+        });
     });
 
   const getFileContents = (path) => {
@@ -132,12 +117,10 @@ export default (uri, rootPath) => {
 
   const deleteFile = (path) =>
     new Promise((resolve, reject) =>
-      OrganiceSync
-        .deleteFile({uri, path})
+      OrganiceSync.deleteFile({ uri, path })
         .then(resolve)
         .catch((error) => {
-          alert(': delete failed ' + path + JSON.stringify(error));
-          console.error(uri, ': delete failed ' + path, error);
+          alert('deleteFile failed ' + path + JSON.stringify(error));
           reject();
         })
     );
