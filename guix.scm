@@ -7,7 +7,7 @@
          (name 'guix)
          (url "https://git.savannah.gnu.org/git/guix.git")
          (commit
-          "d4ec49d1dab952478501349b9eace0f7f7dfaecd"))))
+          "8e54584d4448d37ddf8ae995bb545a181ba2493c"))))
 
 (define inferior
   (inferior-for-channels channels))

@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "^12.13.1"
+    "node": "^14.19.3"
   },
   "dependencies": {
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
@@ -15,7 +15,7 @@
     "dropbox": "10.31.0",
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
-    "node-sass": "4.13",
+    "node-sass": "4.14.1",
     "pegjs": "^0.10.0",
     "react": "^16.8.3",
     "react-beautiful-dnd": "^13.0.0",
