@@ -225,7 +225,12 @@ describe('org reducer', () => {
       expect(headers.size).toEqual(4);
       expectOrigFirstHeader(headers);
       expectOrigLastHeader(headers);
-      const action = types.insertCapture(template.id, content, shouldPrepend);
+      const action = types.insertCapture(
+        template.id,
+        content,
+        shouldPrepend,
+        shouldCaptureAsNewHeader
+      );
       store.dispatch(action);
       const newHeaders = store.getState().org.present.getIn(['files', path, 'headers']);
       expect(newHeaders.size).toEqual(5);
