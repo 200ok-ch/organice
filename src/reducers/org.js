@@ -854,12 +854,11 @@ const insertCapture = (state, action) => {
   }
 
   if (!shouldCaptureAsNewHeader) {
-    const header = getTargetHeader(template, headers);
+    const headerPaths = template.get('headerPaths');
+    const header = findHeaderMatchingPaths(headers, headerPaths);
     const headerId = header.get('id')
     const rawDescription = header.get('rawDescription');
-    const newRawDescription = rawDescription ?
-          (shouldPrepend ? content + rawDescription : rawDescription +  content)
-          : content;
+    const newRawDescription = shouldPrepend ? prependContent(rawDescription, content) : appendContent(rawDescription, content);
     return updateHeaderDescription (state, {headerId, newRawDescription});
   } else {
     const newHeader = newHeaderFromText(content, state.get('todoKeywordSets')).set(
@@ -878,8 +877,23 @@ const insertCapture = (state, action) => {
   return state;
 };
 
-const getTargetHeader = (template, headers) => {
-  const headerPaths = template.get('headerPaths');
+const prependContent = (existing, content) => {
+ if (!existing || existing === '') {
+    return content;
+  }
+  existing = existing.replace(/^[\s\n]*/, "");
+  return content + '\n' + existing;
+}
+
+const appendContent = (existing, content) => {
+ if (!existing || existing === '') {
+    return content;
+  }
+  existing = existing.replace(/[\s\n]*$/, "");
+  return existing + '\n' + content;
+}
+
+const findHeaderMatchingPaths = (headers, headerPaths) => {
   const header = headerWithPath(headers, headerPaths);
   return header !== null ? header : newHeaderFromText("", {nestingLevel: 1});
 }
