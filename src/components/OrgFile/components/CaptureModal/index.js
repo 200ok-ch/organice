@@ -31,7 +31,9 @@ export default ({ template, onCapture, headers }) => {
 
   const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
   const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
-  const [shouldCaptureAsNewHeader, setShouldCaptureAsNewHeader] = useState(template.get('shouldCaptureAsNewHeader'));
+  const [shouldCaptureAsNewHeader, setShouldCaptureAsNewHeader] = useState(
+    template.get('shouldCaptureAsNewHeader')
+  );
 
   /** INFO: Some versions of Mobile Safari do _not_ like it when the
   focus is set without an explicit user interaction. This is the case
@@ -92,13 +94,15 @@ export default ({ template, onCapture, headers }) => {
     }
   }, [textarea, initialCursorIndex]);
 
-  const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend, shouldCaptureAsNewHeader);
+  const handleCaptureClick = () =>
+    onCapture(template.get('id'), textareaValue, shouldPrepend, shouldCaptureAsNewHeader);
 
   const handleTextareaChange = (event) => setTextareaValue(event.target.value);
 
   const handlePrependSwitchToggle = () => setShouldPrepend(!shouldPrepend);
 
-  const handleCaptureAsNewHeaderSwitchToggle = () => setShouldCaptureAsNewHeader(!shouldCaptureAsNewHeader);
+  const handleCaptureAsNewHeaderSwitchToggle = () =>
+    setShouldCaptureAsNewHeader(!shouldCaptureAsNewHeader);
 
   return (
     <>
@@ -138,7 +142,10 @@ export default ({ template, onCapture, headers }) => {
             </div>
             <div className="capture-modal-prepend-container">
               <span className="capture-modal-prepend-label">Capture as new header:</span>
-              <Switch isEnabled={shouldCaptureAsNewHeader} onToggle={handleCaptureAsNewHeaderSwitchToggle} />
+              <Switch
+                isEnabled={shouldCaptureAsNewHeader}
+                onToggle={handleCaptureAsNewHeaderSwitchToggle}
+              />
             </div>
             <button className="btn capture-modal-button" onClick={handleCaptureClick}>
               Capture

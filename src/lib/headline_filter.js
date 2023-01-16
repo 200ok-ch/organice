@@ -292,105 +292,102 @@ export const isMatch = (filterExpr) => {
 // offsets information, computeLogicalPosition could simplify the algorithm as
 // long as the filter string is parsed successfully.
 
-export const computeCompletions = (todoKeywords, tagNames, allProperties) => (
-  filterExpr,
-  filterString,
-  curserPosition
-) => {
-  const tagAndPropNames = [].concat(
-    tagNames,
-    computeAllPropertyNames(fromJS(allProperties))
-      .toJS()
-      .map((x) => x + ':')
-  );
+export const computeCompletions =
+  (todoKeywords, tagNames, allProperties) => (filterExpr, filterString, curserPosition) => {
+    const tagAndPropNames = [].concat(
+      tagNames,
+      computeAllPropertyNames(fromJS(allProperties))
+        .toJS()
+        .map((x) => x + ':')
+    );
 
-  const logicalCursorPosition = filterExpr
-    ? computeLogicalPosition(filterExpr, filterString, curserPosition)
-    : null;
+    const logicalCursorPosition = filterExpr
+      ? computeLogicalPosition(filterExpr, filterString, curserPosition)
+      : null;
 
-  const charBeforeCursor = filterString.charAt(curserPosition - 1);
-  const charTwoBeforeCursor = curserPosition > 1 ? filterString.charAt(curserPosition - 2) : '';
+    const charBeforeCursor = filterString.charAt(curserPosition - 1);
+    const charTwoBeforeCursor = curserPosition > 1 ? filterString.charAt(curserPosition - 2) : '';
 
-  if (logicalCursorPosition === null) {
-  } else if (logicalCursorPosition === SPACE_SURROUNDED) {
-    return todoKeywords;
-  } else if (logicalCursorPosition.type === 'case-sensitive') {
-    if (charBeforeCursor.match(/[A-Z]/)) {
-      const textBeforeCursor = charBeforeCursor;
-      const filteredTodoKeywords = todoKeywords
-        .filter((x) => x.startsWith(textBeforeCursor))
-        .map((x) => x.substring(textBeforeCursor.length));
-      if ([' ', '', '|', '-'].includes(charTwoBeforeCursor)) {
-        return filteredTodoKeywords;
+    if (logicalCursorPosition === null) {
+    } else if (logicalCursorPosition === SPACE_SURROUNDED) {
+      return todoKeywords;
+    } else if (logicalCursorPosition.type === 'case-sensitive') {
+      if (charBeforeCursor.match(/[A-Z]/)) {
+        const textBeforeCursor = charBeforeCursor;
+        const filteredTodoKeywords = todoKeywords
+          .filter((x) => x.startsWith(textBeforeCursor))
+          .map((x) => x.substring(textBeforeCursor.length));
+        if ([' ', '', '|', '-'].includes(charTwoBeforeCursor)) {
+          return filteredTodoKeywords;
+        }
       }
-    }
-  } else if (logicalCursorPosition.type === 'ignore-case') {
-    // A text filter starting with '-' turns into an exclude filter as soon as text is appended
-    if (charBeforeCursor === '-' && [' ', ''].includes(charTwoBeforeCursor)) return todoKeywords;
-    return [];
-  } else if (logicalCursorPosition.type === 'tag') {
-    // This case will likely not occur because ':' alone cannot be parsed
-    if (charBeforeCursor === ':') return tagAndPropNames;
-  } else if (logicalCursorPosition.type === 'property') {
-    if (charBeforeCursor === ':') {
-      if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') return tagAndPropNames;
-      else {
-        // Either property name or text filter
-        const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
-        const maybePropertyName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-        const quoteStringIfPossible = (x) => {
-          if (x.match(/ /)) {
-            if (!x.match(/"/)) return [`"${x}"`];
-            if (!x.match(/'/)) return [`'${x}'`];
-            const match = x.match(/^[^ ]*/);
-            return [match[0]];
+    } else if (logicalCursorPosition.type === 'ignore-case') {
+      // A text filter starting with '-' turns into an exclude filter as soon as text is appended
+      if (charBeforeCursor === '-' && [' ', ''].includes(charTwoBeforeCursor)) return todoKeywords;
+      return [];
+    } else if (logicalCursorPosition.type === 'tag') {
+      // This case will likely not occur because ':' alone cannot be parsed
+      if (charBeforeCursor === ':') return tagAndPropNames;
+    } else if (logicalCursorPosition.type === 'property') {
+      if (charBeforeCursor === ':') {
+        if (charTwoBeforeCursor === ' ' || charTwoBeforeCursor === '') return tagAndPropNames;
+        else {
+          // Either property name or text filter
+          const indexOfOtherColon = filterString.substring(0, curserPosition - 1).lastIndexOf(':');
+          const maybePropertyName = filterString.substring(
+            indexOfOtherColon + 1,
+            curserPosition - 1
+          );
+          const quoteStringIfPossible = (x) => {
+            if (x.match(/ /)) {
+              if (!x.match(/"/)) return [`"${x}"`];
+              if (!x.match(/'/)) return [`'${x}'`];
+              const match = x.match(/^[^ ]*/);
+              return [match[0]];
+            }
+            return [x];
+          };
+          if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
+            // No space in property name -> is property -> return values for that property
+            return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName)
+              .flatMap(quoteStringIfPossible)
+              .toJS();
           }
-          return [x];
-        };
-        if (indexOfOtherColon >= 0 && maybePropertyName.match(/^[^ ]+$/)) {
-          // No space in property name -> is property -> return values for that property
-          return computeAllPropertyValuesFor(fromJS(allProperties), maybePropertyName)
-            .flatMap(quoteStringIfPossible)
-            .toJS();
         }
       }
     }
-  }
 
-  // If ':' or '|' is before cursor, the filter string is likely not
-  // successfully parsed and therefore cannot be handled above.
-  if (charBeforeCursor === ':') {
-    if ([' ', '', '-'].includes(charTwoBeforeCursor)) {
-      return tagAndPropNames;
+    // If ':' or '|' is before cursor, the filter string is likely not
+    // successfully parsed and therefore cannot be handled above.
+    if (charBeforeCursor === ':') {
+      if ([' ', '', '-'].includes(charTwoBeforeCursor)) {
+        return tagAndPropNames;
+      }
+    } else if (charBeforeCursor === '|') {
+      const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
+      const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
+      if (indexOfOtherColon > -1 && !maybeTagName.match(/ /)) {
+        // No space characters between ':' and '|'  ->  '|' is in a tag filter
+        return tagNames;
+      } else {
+        return todoKeywords;
+      }
     }
-  } else if (charBeforeCursor === '|') {
-    const indexOfOtherColon = filterString.substring(0, curserPosition).lastIndexOf(':');
-    const maybeTagName = filterString.substring(indexOfOtherColon + 1, curserPosition - 1);
-    if (indexOfOtherColon > -1 && !maybeTagName.match(/ /)) {
-      // No space characters between ':' and '|'  ->  '|' is in a tag filter
-      return tagNames;
-    } else {
-      return todoKeywords;
-    }
-  }
 
-  return [];
-};
+    return [];
+  };
 
-export const computeCompletionsForDatalist = (todoKeywords, tagNames, allProperties) => (
-  filterExpr,
-  filterString,
-  curserPosition
-) => {
-  const completions = computeCompletions(todoKeywords, tagNames, allProperties)(
-    filterExpr,
-    filterString,
-    curserPosition
-  );
-  return completions.map(
-    (x) => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
-  );
-};
+export const computeCompletionsForDatalist =
+  (todoKeywords, tagNames, allProperties) => (filterExpr, filterString, curserPosition) => {
+    const completions = computeCompletions(todoKeywords, tagNames, allProperties)(
+      filterExpr,
+      filterString,
+      curserPosition
+    );
+    return completions.map(
+      (x) => filterString.substring(0, curserPosition) + x + filterString.substring(curserPosition)
+    );
+  };
 
 const SPACE_SURROUNDED = ' ';
 
