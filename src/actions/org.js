@@ -551,7 +551,8 @@ export const insertPendingCapture = () => (dispatch, getState) => {
       )}${captureContent}${substitutedTemplate.substring(initialCursorIndex)}`
     : `${substitutedTemplate}${captureContent}`;
 
-  dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend'), template.get('shouldCaptureAsNewHeader')));
+  dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend'),
+                         !template.has('shouldCaptureAsNewHeader') || template.get('shouldCaptureAsNewHeader')));
   dispatch(sync({ successMessage: 'Item captured' }));
 };
 
