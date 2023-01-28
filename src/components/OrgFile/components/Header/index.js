@@ -32,12 +32,7 @@ class Header extends PureComponent {
     _.bindAll(this, [
       'handleRef',
       'handleMouseDown',
-      'handleMouseMove',
-      'handleMouseUp',
-      'handleMouseOut',
-      'handleTouchMove',
       'handleTouchStart',
-      'handleTouchEnd',
       'handleTouchCancel',
       'handleHeaderClick',
       'handleShowTitleModal',
@@ -59,13 +54,35 @@ class Header extends PureComponent {
     this.state = {
       isDraggingFreely: false,
       dragStartX: null,
-      dragStartY: null,
       currentDragX: null,
       containerWidth: null,
       isPlayingRemoveAnimation: false,
       heightBeforeRemove: null,
       disabledBackgroundColor: readRgbaVariable('--base3'),
     };
+
+    // Store member callbacks handling global mouse/touch events to be able to handle dragging
+    // interactions outside of the current component.
+    this.globalMouseMoveHandler = this.handleMouseMove.bind(this);
+    this.globalMouseUpHandler = this.handleMouseUp.bind(this);
+    this.globalTouchMoveHandler = this.handleTouchMove.bind(this);
+    this.globalTouchEndHandler = this.handleTouchEnd.bind(this);
+  }
+
+  addGlobalDragHandlers() {
+    // Begin listening for global mouse/touch events after dragging begins
+    window.addEventListener('mousemove', this.globalMouseMoveHandler);
+    window.addEventListener('mouseup', this.globalMouseUpHandler);
+    window.addEventListener('touchmove', this.globalTouchMoveHandler);
+    window.addEventListener('touchend', this.globalTouchEndHandler);
+  }
+
+  removeGlobalDragHandlers() {
+    // Stop listening for global mouse/touch events after dragging ends
+    window.removeEventListener('mousemove', this.globalMouseMoveHandler);
+    window.removeEventListener('mouseup', this.globalMouseUpHandler);
+    window.removeEventListener('touchmove', this.globalTouchMoveHandler);
+    window.removeEventListener('touchend', this.globalTouchEndHandler);
   }
 
   componentDidMount() {
@@ -74,12 +91,16 @@ class Header extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.removeGlobalDragHandlers();
+  }
+
   handleRef(containerDiv) {
     this.containerDiv = containerDiv;
     this.props.onRef(containerDiv);
   }
 
-  handleDragStart(event, dragX, dragY) {
+  handleDragStart(event, dragX) {
     if (this.props.shouldDisableActions) {
       return;
     }
@@ -90,27 +111,25 @@ class Header extends PureComponent {
 
     this.setState({
       dragStartX: dragX,
-      dragStartY: dragY,
     });
+
+    // Begin listening to global mouse/touch events to allow dragging outside of the current
+    // component.
+    this.addGlobalDragHandlers();
   }
 
-  handleDragMove(dragX, dragY) {
-    const { dragStartX, dragStartY } = this.state;
-    if (dragStartX === null) {
+  handleDragMove(dragX) {
+    if (this.state.dragStartX === null) {
       return;
     }
 
     if (!this.state.isDraggingFreely) {
-      if (Math.abs(dragX - dragStartX) >= this.FREE_DRAG_ACTIVATION_DISTANCE) {
+      if (Math.abs(dragX - this.state.dragStartX) >= this.FREE_DRAG_ACTIVATION_DISTANCE) {
         this.setState({ isDraggingFreely: true });
       }
     }
 
-    if (Math.abs(dragY - dragStartY) >= this.SWIPE_ACTION_ACTIVATION_DISTANCE / 2) {
-      this.setState({ dragStartX: null });
-    } else {
-      this.setState({ currentDragX: dragX });
-    }
+    this.setState({ currentDragX: dragX });
   }
 
   handleDragEnd() {
@@ -139,6 +158,8 @@ class Header extends PureComponent {
       currentDragX: null,
       isDraggingFreely: false,
     });
+
+    this.removeGlobalDragHandlers();
   }
 
   handleDragCancel() {
@@ -150,7 +171,7 @@ class Header extends PureComponent {
   }
 
   handleMouseDown(event) {
-    this.handleDragStart(event, event.clientX, event.clientY);
+    this.handleDragStart(event, event.clientX);
   }
 
   handleMouseMove(event) {
@@ -161,12 +182,8 @@ class Header extends PureComponent {
     this.handleDragEnd();
   }
 
-  handleMouseOut() {
-    this.handleDragCancel();
-  }
-
   handleTouchStart(event) {
-    this.handleDragStart(event, event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    this.handleDragStart(event, event.changedTouches[0].clientX);
   }
 
   handleTouchMove(event) {
@@ -411,12 +428,7 @@ ${header.get('rawDescription')}`;
               ref={this.handleRef}
               onClick={this.handleHeaderClick}
               onMouseDown={this.handleMouseDown}
-              onMouseMove={this.handleMouseMove}
-              onMouseUp={this.handleMouseUp}
-              onMouseOut={this.handleMouseOut}
               onTouchStart={this.handleTouchStart}
-              onTouchMove={this.handleTouchMove}
-              onTouchEnd={this.handleTouchEnd}
               onTouchCancel={this.handleTouchCancel}
             >
               <Motion style={leftSwipeActionContainerStyle}>
