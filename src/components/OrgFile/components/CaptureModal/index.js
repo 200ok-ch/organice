@@ -32,6 +32,7 @@ export default ({ template, onCapture, headers }) => {
   const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
   const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
   const [shouldCaptureAsNewHeader, setShouldCaptureAsNewHeader] = useState(
+    !template.has('shouldCaptureAsNewHeader') ||
     template.get('shouldCaptureAsNewHeader')
   );
 
