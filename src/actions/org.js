@@ -240,6 +240,7 @@ export const selectHeader = (headerId) => (dispatch) => {
 
   if (!!headerId) {
     dispatch(setSelectedTableCellId(null));
+    dispatch(setSelectedListItemId(null));
   }
 };
 
@@ -434,6 +435,10 @@ export const setSelectedTableId = (tableId) => (dispatch) => {
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+
+  if (!!cellId) {
+    dispatch(setSelectedListItemId(null));
+  }
 };
 
 export const addNewTableRow = () => ({
@@ -560,6 +565,15 @@ export const advanceCheckboxState = (listItemId) => ({
   listItemId,
   dirtying: true,
 });
+
+export const setSelectedListItemId = (listItemId) => (dispatch) => {
+  dispatch({ type: 'SET_SELECTED_LIST_ITEM_ID', listItemId });
+
+  if (!!listItemId) {
+    dispatch(selectHeader(null));
+    dispatch(setSelectedTableCellId(null));
+  }
+};
 
 export const setHeaderTags = (headerId, tags) => ({
   type: 'SET_HEADER_TAGS',

@@ -25,6 +25,7 @@ class HeaderContent extends PureComponent {
     _.bindAll(this, [
       'handleTableSelect',
       'handleCheckboxClick',
+      'handleListItemSelect',
       'handleTimestampClick',
       'handleLogEntryTimestampClick',
       'handleInsertTimestamp',
@@ -76,6 +77,10 @@ class HeaderContent extends PureComponent {
 
   handleCheckboxClick(listItemId) {
     this.props.org.advanceCheckboxState(listItemId);
+  }
+
+  handleListItemSelect(listItemId) {
+    this.props.org.setSelectedListItemId(listItemId);
   }
 
   handleTimestampClick(timestampId) {
@@ -165,6 +170,7 @@ class HeaderContent extends PureComponent {
               subPartDataAndHandlers={{
                 onTableSelect: shouldDisableActions ? undefined : this.handleTableSelect,
                 onCheckboxClick: this.handleCheckboxClick,
+                onListItemSelect: this.handleListItemSelect,
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,
               }}

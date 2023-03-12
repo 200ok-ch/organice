@@ -8,7 +8,9 @@ import Checkbox from '../../../../../UI/Checkbox/';
 import classNames from 'classnames';
 
 export default ({ part, subPartDataAndHandlers }) => {
-  const handleCheckboxClick = (itemId) => () => subPartDataAndHandlers.onCheckboxClick(itemId);
+  // TODO K.Matsuda handleCheckboxClick を復旧させる
+  // const handleCheckboxClick = itemId => () => subPartDataAndHandlers.onCheckboxClick(itemId);
+  const handleListItemSelect = (itemId) => () => subPartDataAndHandlers.onListItemSelect(itemId);
 
   const renderContent = () => {
     return part.get('items').map((item) => {
@@ -20,7 +22,9 @@ export default ({ part, subPartDataAndHandlers }) => {
         <li key={item.get('id')} value={item.get('forceNumber')}>
           <span
             className={lineContainerClass}
-            onClick={item.get('isCheckbox') ? handleCheckboxClick(item.get('id')) : null}
+            // TODO K.Matsuda handleCheckboxClick を復旧させる
+            //onClick={item.get('isCheckbox') ? handleCheckboxClick(item.get('id')) : null}
+            onClick={item.get('isCheckbox') ? handleListItemSelect(item.get('id')) : null}
           >
             {item.get('isCheckbox') && <Checkbox state={item.get('checkboxState')} />}
             <AttributedString
