@@ -42,20 +42,38 @@ const ActionDrawer = ({
   );
 
   const handleUpClick = () =>
-    !!selectedHeaderId ? org.moveHeaderUp(selectedHeaderId) : org.moveTableRowUp();
+    !!selectedHeaderId
+      ? org.moveHeaderUp(selectedHeaderId)
+      : !!selectedTableCellId
+      ? org.moveTableRowUp()
+      : org.moveListItemUp();
 
   const handleDownClick = () =>
-    !!selectedHeaderId ? org.moveHeaderDown(selectedHeaderId) : org.moveTableRowDown();
+    !!selectedHeaderId
+      ? org.moveHeaderDown(selectedHeaderId)
+      : !!selectedTableCellId
+      ? org.moveTableRowDown()
+      : org.moveListItemDown();
 
   const handleLeftClick = () =>
-    !!selectedHeaderId ? org.moveHeaderLeft(selectedHeaderId) : org.moveTableColumnLeft();
+    !!selectedHeaderId
+      ? org.moveHeaderLeft(selectedHeaderId)
+      : !!selectedTableCellId
+      ? org.moveTableColumnLeft()
+      : org.moveListItemLeft();
 
   const handleRightClick = () =>
-    !!selectedHeaderId ? org.moveHeaderRight(selectedHeaderId) : org.moveTableColumnRight();
+    !!selectedHeaderId
+      ? org.moveHeaderRight(selectedHeaderId)
+      : !!selectedTableCellId
+      ? org.moveTableColumnRight()
+      : org.moveListItemRight();
 
-  const handleMoveSubtreeLeftClick = () => org.moveSubtreeLeft(selectedHeaderId);
+  const handleMoveSubtreeLeftClick = () =>
+    !!selectedHeaderId ? org.moveSubtreeLeft(selectedHeaderId) : org.moveListSubtreeLeft();
 
-  const handleMoveSubtreeRightClick = () => org.moveSubtreeRight(selectedHeaderId);
+  const handleMoveSubtreeRightClick = () =>
+    !!selectedHeaderId ? org.moveSubtreeRight(selectedHeaderId) : org.moveListSubtreeRight();
 
   const handleCaptureButtonClick = (templateId) => () => {
     setIsDisplayingCaptureButtons(false);

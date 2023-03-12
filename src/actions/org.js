@@ -575,6 +575,36 @@ export const setSelectedListItemId = (listItemId) => (dispatch) => {
   }
 };
 
+export const moveListItemUp = () => ({
+  type: 'MOVE_LIST_ITEM_UP',
+  dirtying: true,
+});
+
+export const moveListItemDown = () => ({
+  type: 'MOVE_LIST_ITEM_DOWN',
+  dirtying: true,
+});
+
+export const moveListItemLeft = () => ({
+  type: 'MOVE_LIST_ITEM_LEFT',
+  dirtying: true,
+});
+
+export const moveListItemRight = () => ({
+  type: 'MOVE_LIST_ITEM_RIGHT',
+  dirtying: true,
+});
+
+export const moveListSubtreeLeft = () => ({
+  type: 'MOVE_LIST_SUBTREE_LEFT',
+  dirtying: true,
+});
+
+export const moveListSubtreeRight = () => ({
+  type: 'MOVE_LIST_SUBTREE_RIGHT',
+  dirtying: true,
+});
+
 export const setHeaderTags = (headerId, tags) => ({
   type: 'SET_HEADER_TAGS',
   headerId,

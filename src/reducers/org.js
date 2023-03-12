@@ -979,6 +979,36 @@ const advanceCheckboxState = (state, action) => {
 
 const setSelectedListItemId = (state, action) => state.set('selectedListItemId', action.listItemId);
 
+const moveListItemUp = (state) => {
+  // TODO K.Matsuda moveListItemUp
+  return state;
+};
+
+const moveListItemDown = (state) => {
+  // TODO K.Matsuda moveListItemDown
+  return state;
+};
+
+const moveListItemLeft = (state) => {
+  // TODO K.Matsuda moveListItemLeft
+  return state;
+};
+
+const moveListItemRight = (state) => {
+  // TODO K.Matsuda moveListItemRight
+  return state;
+};
+
+const moveListSubtreeLeft = (state) => {
+  // TODO K.Matsuda moveListSubtreeLeft
+  return state;
+};
+
+const moveListSubtreeRight = (state) => {
+  // TODO K.Matsuda moveListSubtreeRight
+  return state;
+};
+
 const setLastSyncAt = (state, action) => state.set('lastSyncAt', action.lastSyncAt);
 
 const setHeaderTags = (state, action) => {
@@ -1526,6 +1556,18 @@ const reducer = (state, action) => {
       return inFile(advanceCheckboxState);
     case 'SET_SELECTED_LIST_ITEM_ID':
       return setSelectedListItemId(state, action);
+    case 'MOVE_LIST_ITEM_UP':
+      return moveListItemUp(state, action);
+    case 'MOVE_LIST_ITEM_DOWN':
+      return moveListItemDown(state, action);
+    case 'MOVE_LIST_ITEM_LEFT':
+      return moveListItemLeft(state, action);
+    case 'MOVE_LIST_ITEM_RIGHT':
+      return moveListItemRight(state, action);
+    case 'MOVE_LIST_SUBTREE_LEFT':
+      return moveListSubtreeLeft(state, action);
+    case 'MOVE_LIST_SUBTREE_RIGHT':
+      return moveListSubtreeRight(state, action);
     case 'SET_LAST_SYNC_AT':
       return action.path
         ? reduceInFile(state, action, action.path)(setLastSyncAt)

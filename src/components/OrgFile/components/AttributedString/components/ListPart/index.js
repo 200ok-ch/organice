@@ -24,7 +24,7 @@ export default ({ part, subPartDataAndHandlers }) => {
             className={lineContainerClass}
             // TODO K.Matsuda handleCheckboxClick を復旧させる
             //onClick={item.get('isCheckbox') ? handleCheckboxClick(item.get('id')) : null}
-            onClick={item.get('isCheckbox') ? handleListItemSelect(item.get('id')) : null}
+            onClick={handleListItemSelect(item.get('id'))}
           >
             {item.get('isCheckbox') && <Checkbox state={item.get('checkboxState')} />}
             <AttributedString
