@@ -1,0 +1,19 @@
+.list-action-drawer-container {
+  color: lightgray;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.list-action-drawer__edit-icon-container {
+  grid-row-start: span 2;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.list-action-drawer__main-icon {
+  padding-right: 3px;
+  padding-bottom: 3px;
+}

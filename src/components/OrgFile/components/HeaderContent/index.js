@@ -172,6 +172,7 @@ class HeaderContent extends PureComponent {
                 onCheckboxClick: this.handleCheckboxClick,
                 onListItemSelect: this.handleListItemSelect,
                 onTimestampClick: this.handleTimestampClick,
+                // TODO K.Matsuda ここに selectedListItemId の追加必要か？
                 shouldDisableActions,
               }}
             />
@@ -188,6 +189,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),
     dontIndent: state.base.get('shouldNotIndentOnExport'),
+    // TODO K.Matsuda ここに selectedListItemId の追加必要か？
   };
 };
 

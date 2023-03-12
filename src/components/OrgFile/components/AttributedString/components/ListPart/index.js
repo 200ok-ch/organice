@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import { UnmountClosed as Collapse } from 'react-collapse';
 
 import './stylesheet.css';
 
@@ -11,6 +12,12 @@ export default ({ part, subPartDataAndHandlers }) => {
   // TODO K.Matsuda handleCheckboxClick を復旧させる
   // const handleCheckboxClick = itemId => () => subPartDataAndHandlers.onCheckboxClick(itemId);
   const handleListItemSelect = (itemId) => () => subPartDataAndHandlers.onListItemSelect(itemId);
+
+  const shouldDisableActions = subPartDataAndHandlers.shouldDisableActions;
+  const selectedListItemId = subPartDataAndHandlers.selectedListItemId;
+  const isListItemSelected = part
+    .get('items')
+    .some((item) => item.get('id') === selectedListItemId);
 
   const renderContent = () => {
     return part.get('items').map((item) => {
@@ -42,11 +49,18 @@ export default ({ part, subPartDataAndHandlers }) => {
     });
   };
 
-  return part.get('isOrdered') ? (
-    <ol className="attributed-string__list-part attributed-string__list-part--ordered">
-      {renderContent()}
-    </ol>
-  ) : (
-    <ul className="attributed-string__list-part">{renderContent()}</ul>
+  return (
+    <Fragment>
+      {part.get('isOrdered') ? (
+        <ol className="attributed-string__list-part attributed-string__list-part--ordered">
+          {renderContent()}
+        </ol>
+      ) : (
+        <ul className="attributed-string__list-part">{renderContent()}</ul>
+      )}
+      <Collapse isOpened={isListItemSelected && !shouldDisableActions}>
+        <ListActionDrawer subPartDataAndHandlers={subPartDataAndHandlers} />
+      </Collapse>
+    </Fragment>
   );
 };
