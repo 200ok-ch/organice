@@ -684,7 +684,7 @@ export const updateListContainingListItemId = (headers, listItemId, updaterCallb
   return headers.updateIn(path.concat(['items']), updaterCallbackGenerator(itemIndexContainingId));
 };
 
-export const updateListItemContentsWithListItem = (parts, listItem) => {
+export const updateContentsWithListItemAddition = (parts, listItem) => {
   if (parts.size === 0) {
     // TODO K.Matsuda parts = parts.insert(0, newListPart()) ってしてるが、設計思想と合っていないのでは？
     parts = parts.insert(0, newListPart());

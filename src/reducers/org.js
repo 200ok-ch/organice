@@ -55,7 +55,7 @@ import {
   newListItem,
   updateListContainingListItemId,
   headerThatContainsListItemId,
-  updateListItemContentsWithListItem,
+  updateContentsWithListItemAddition,
 } from '../lib/org_utils';
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -1074,6 +1074,11 @@ const moveListItemLeft = (state) => {
 };
 
 const moveListItemRight = (state) => {
+  // TODO K.Matsuda moveListItemRight
+  return state;
+};
+
+const moveListSubtreeLeft = (state) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
     return state;
@@ -1083,13 +1088,61 @@ const moveListItemRight = (state) => {
     state.get('headers'),
     selectedListItemId
   );
-  const { path, listItemPart } = pathAndPart;
+  let { path, listItemPart: selectedListItem } = pathAndPart;
+  const selectedListItemIndex = path[path.length - 1];
+  if (path.filter((partOfPath) => partOfPath === 'items').length < 2) {
+    return state;
+  }
+
+  // TODO K.Matsuda parentListItem の取得はメソッド化する
+  const parentListItem = state.getIn(['headers'].concat(path.slice(0, path.length - 4)));
+
+  parentListItem
+    .get('contents')
+    .filter((part) => part.get('type') === 'list')
+    .map((listPart) =>
+      listPart.get('items').forEach((item, itemIndex) => {
+        if (itemIndex > selectedListItemIndex) {
+          selectedListItem = selectedListItem.update('contents', (contents) =>
+            updateContentsWithListItemAddition(contents, item)
+          );
+        }
+      })
+    );
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      items.filter((_item, index) => index < selectedListItemIndex)
+    )
+  );
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, parentListItem.get('id'), (itemIndex) => (items) =>
+      items.insert(itemIndex + 1, selectedListItem)
+    )
+  );
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
+};
+
+const moveListSubtreeRight = (state) => {
+  const selectedListItemId = state.get('selectedListItemId');
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(
+    state.get('headers'),
+    selectedListItemId
+  );
+  const { path, listItemPart: selectedListItem } = pathAndPart;
 
   const prevSiblingItemIndex = path[path.length - 1] - 1;
   if (prevSiblingItemIndex < 0) {
     return state;
   }
 
+  // TODO K.Matsuda itemIndex === 0 ? items : items.delete(itemIndex)　でいいのか検討
   state = state.update('headers', (headers) =>
     updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
       itemIndex === 0 ? items : items.delete(itemIndex)
@@ -1102,22 +1155,10 @@ const moveListItemRight = (state) => {
       .concat(path.slice(0, path.length - 1))
       .concat(prevSiblingItemIndex)
       .concat('contents'),
-    (contents) =>
-      // TODO K.Matsuda この名前はよくないので再検討
-      updateListItemContentsWithListItem(contents, listItemPart)
+    (contents) => updateContentsWithListItemAddition(contents, selectedListItem)
   );
 
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
-};
-
-const moveListSubtreeLeft = (state) => {
-  // TODO K.Matsuda moveListSubtreeLeft
-  return state;
-};
-
-const moveListSubtreeRight = (state) => {
-  // TODO K.Matsuda moveListSubtreeRight
-  return state;
 };
 
 const setLastSyncAt = (state, action) => state.set('lastSyncAt', action.lastSyncAt);
