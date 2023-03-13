@@ -1051,8 +1051,20 @@ const moveListItemUp = (state) => {
 };
 
 const moveListItemDown = (state) => {
-  // TODO K.Matsuda moveListItemDown
-  return state;
+  const selectedListItemId = state.get('selectedListItemId');
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      itemIndex + 1 === items.size
+        ? items
+        : items.insert(itemIndex, items.get(itemIndex + 1)).delete(itemIndex + 2)
+    )
+  );
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
 const moveListItemLeft = (state) => {
