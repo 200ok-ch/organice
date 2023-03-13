@@ -54,6 +54,7 @@ import {
   inheritedValueOfProperty,
   newListItem,
   updateListContainingListItemId,
+  headerThatContainsListItemId,
 } from '../lib/org_utils';
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -1020,9 +1021,17 @@ const removeListItem = (state, action) => {
     return state;
   }
 
-  // TODO K.Matsuda removeListItem
+  const containingHeader = headerThatContainsListItemId(state.get('headers'), selectedListItemId);
 
-  return state;
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      items.delete(itemIndex)
+    )
+  );
+
+  state = state.set('selectedListItemId', null);
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId, containingHeader);
 };
 
 const moveListItemUp = (state) => {

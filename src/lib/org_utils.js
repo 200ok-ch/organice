@@ -392,6 +392,12 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
 const listPartContainsItemId = (listPart, itemId) =>
   listPart.get('items').some((item) => item.get('id') === itemId);
 
+export const headerThatContainsListItemId = (headers, listItemId) => {
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(headers, listItemId);
+  const headerIndex = pathAndPart.path[0];
+  return headers.get(headerIndex);
+};
+
 export const pathAndPartOfListItemWithIdInAttributedString = (parts, listItemId) =>
   parts
     .map((part, partIndex) => {
