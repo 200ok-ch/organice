@@ -22,8 +22,10 @@ export default ({ part, subPartDataAndHandlers }) => {
 
   const renderContent = () => {
     return part.get('items').map((item) => {
+      const isItemSelected = item.get('id') === selectedListItemId;
       const lineContainerClass = classNames({
         'list-part__checkbox-container': item.get('isCheckbox'),
+        'list-part__item--selected': isItemSelected,
       });
 
       return (

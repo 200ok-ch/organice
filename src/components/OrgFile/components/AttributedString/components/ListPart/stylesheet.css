@@ -13,3 +13,7 @@
 .list-part__checkbox-container {
   line-height: 22px;
 }
+
+.list-part__item--selected {
+  background-color: rgba(239, 255, 0, 0.28);
+}
