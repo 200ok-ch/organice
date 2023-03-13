@@ -2,7 +2,6 @@ import React from 'react';
 
 import './stylesheet.css';
 
-// TODO K.Matsuda export default の部分をListActionDrawer用にメンテナンスする
 export default ({
   subPartDataAndHandlers: { onEnterListEditMode, onAddNewListItem, onRemoveListItem },
 }) => {

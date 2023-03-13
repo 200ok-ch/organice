@@ -575,6 +575,16 @@ export const setSelectedListItemId = (listItemId) => (dispatch) => {
   }
 };
 
+export const addNewListItem = () => ({
+  type: 'ADD_NEW_LIST_ITEM',
+  dirtying: true,
+});
+
+export const removeListItem = () => ({
+  type: 'REMOVE_LIST_ITEM',
+  dirtying: true,
+});
+
 export const moveListItemUp = () => ({
   type: 'MOVE_LIST_ITEM_UP',
   dirtying: true,

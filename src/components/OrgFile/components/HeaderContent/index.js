@@ -26,6 +26,9 @@ class HeaderContent extends PureComponent {
       'handleTableSelect',
       'handleCheckboxClick',
       'handleListItemSelect',
+      'handleEnterListEditMode',
+      'handleAddNewListItem',
+      'handleRemoveListItem',
       'handleTimestampClick',
       'handleLogEntryTimestampClick',
       'handleInsertTimestamp',
@@ -81,6 +84,18 @@ class HeaderContent extends PureComponent {
 
   handleListItemSelect(listItemId) {
     this.props.org.setSelectedListItemId(listItemId);
+  }
+
+  handleEnterListEditMode() {
+    this.props.org.enterEditMode('list');
+  }
+
+  handleAddNewListItem() {
+    this.props.org.addNewListItem();
+  }
+
+  handleRemoveListItem() {
+    this.props.org.removeListItem();
   }
 
   handleTimestampClick(timestampId) {
@@ -172,6 +187,9 @@ class HeaderContent extends PureComponent {
                 onCheckboxClick: this.handleCheckboxClick,
                 onListItemSelect: this.handleListItemSelect,
                 onTimestampClick: this.handleTimestampClick,
+                onEnterListEditMode: this.handleEnterListEditMode,
+                onAddNewListItem: this.handleAddNewListItem,
+                onRemoveListItem: this.handleRemoveListItem,
                 // TODO K.Matsuda ここに selectedListItemId の追加必要か？
                 shouldDisableActions,
               }}
