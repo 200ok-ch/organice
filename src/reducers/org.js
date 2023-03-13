@@ -1069,8 +1069,24 @@ const moveListItemDown = (state) => {
 };
 
 const moveListItemLeft = (state) => {
-  // TODO K.Matsuda moveListItemLeft
-  return state;
+  const selectedListItemId = state.get('selectedListItemId');
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(
+    state.get('headers'),
+    selectedListItemId
+  );
+
+  const hasChildrenItem = pathAndPart.listItemPart
+    .get('contents')
+    .filter((part) => part.get('type') === 'list')
+    .some((listPart) => listPart.get('items').size > 0);
+  if (hasChildrenItem) {
+    return state;
+  }
+  return moveListSubtreeLeft(state);
 };
 
 const moveListItemRight = (state) => {
