@@ -55,6 +55,7 @@ import {
   newListItem,
   updateListContainingListItemId,
   headerThatContainsListItemId,
+  updateListItemContentsWithListItem,
 } from '../lib/org_utils';
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -1073,8 +1074,40 @@ const moveListItemLeft = (state) => {
 };
 
 const moveListItemRight = (state) => {
-  // TODO K.Matsuda moveListItemRight
-  return state;
+  const selectedListItemId = state.get('selectedListItemId');
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(
+    state.get('headers'),
+    selectedListItemId
+  );
+  const { path, listItemPart } = pathAndPart;
+
+  const prevSiblingItemIndex = path[path.length - 1] - 1;
+  if (prevSiblingItemIndex < 0) {
+    return state;
+  }
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      itemIndex === 0 ? items : items.delete(itemIndex)
+    )
+  );
+
+  // TODO K.Matsuda ここのpathの指定の仕方、汚い
+  state = state.updateIn(
+    ['headers']
+      .concat(path.slice(0, path.length - 1))
+      .concat(prevSiblingItemIndex)
+      .concat('contents'),
+    (contents) =>
+      // TODO K.Matsuda この名前はよくないので再検討
+      updateListItemContentsWithListItem(contents, listItemPart)
+  );
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
 const moveListSubtreeLeft = (state) => {
