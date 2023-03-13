@@ -655,6 +655,16 @@ export const newEmptyTableCell = () =>
     rawContents: '',
   });
 
+export const newListPart = () =>
+  fromJS({
+    type: 'list',
+    id: generateId(),
+    items: [],
+    bulletCharacter: '-',
+    numberTerminatorCharacter: null,
+    isOrdered: false,
+  });
+
 export const newListItem = () =>
   fromJS({
     id: generateId(),
@@ -672,6 +682,21 @@ export const updateListContainingListItemId = (headers, listItemId, updaterCallb
     .findIndex((item) => item.get('id') === listItemId);
 
   return headers.updateIn(path.concat(['items']), updaterCallbackGenerator(itemIndexContainingId));
+};
+
+export const updateListItemContentsWithListItem = (parts, listItem) => {
+  if (parts.size === 0) {
+    // TODO K.Matsuda parts = parts.insert(0, newListPart()) ってしてるが、設計思想と合っていないのでは？
+    parts = parts.insert(0, newListPart());
+  }
+  return parts.map((part) => {
+    switch (part.get('type')) {
+      case 'list':
+        return part.update('items', (items) => items.push(listItem));
+      default:
+        return part;
+    }
+  });
 };
 
 export const timestampWithIdInAttributedString = (parts, timestampId) => {
