@@ -1090,8 +1090,55 @@ const moveListItemLeft = (state) => {
 };
 
 const moveListItemRight = (state) => {
-  // TODO K.Matsuda moveListItemRight
-  return state;
+  const selectedListItemId = state.get('selectedListItemId');
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(
+    state.get('headers'),
+    selectedListItemId
+  );
+  let { path, listItemPart: selectedListItem } = pathAndPart;
+  const prevSiblingItemIndex = path[path.length - 1] - 1;
+
+  if (prevSiblingItemIndex < 0) {
+    return state;
+  }
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      items.delete(itemIndex)
+    )
+  );
+
+  // TODO K.Matsuda ここのpathの指定の仕方、汚い
+  const prevSiblingItemContentsPath = ['headers']
+    .concat(path.slice(0, path.length - 1))
+    .concat(prevSiblingItemIndex)
+    .concat('contents');
+
+  const childrenListParts = selectedListItem
+    .get('contents')
+    .filter((part) => part.get('type') === 'list');
+
+  selectedListItem = selectedListItem.update('contents', (contents) =>
+    contents.filter((part) => part.get('type') !== 'list')
+  );
+
+  state = state.updateIn(prevSiblingItemContentsPath, (contents) =>
+    updateContentsWithListItemAddition(contents, selectedListItem)
+  );
+
+  childrenListParts.map((listPart) =>
+    listPart.get('items').forEach((item, itemIndex) => {
+      state = state.updateIn(prevSiblingItemContentsPath, (contents) =>
+        updateContentsWithListItemAddition(contents, item)
+      );
+    })
+  );
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
 const moveListSubtreeLeft = (state) => {
