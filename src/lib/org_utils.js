@@ -498,7 +498,25 @@ export const pathAndPartOfListContainingItemIdInAttributedString = (parts, itemI
         if (listPartContainsItemId(part, itemId)) {
           return { path: [partIndex], listPart: part };
         } else {
-          return null;
+          return part
+            .get('items')
+            .map((item, itemIndex) => {
+              const pathAndPart = pathAndPartOfListContainingItemIdInAttributedString(
+                item.get('contents'),
+                itemId
+              );
+              if (!!pathAndPart) {
+                const { path, listPart } = pathAndPart;
+                return {
+                  path: [partIndex, 'items', itemIndex, 'contents'].concat(path),
+                  listPart,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((result) => !!result)
+            .first();
         }
       } else {
         return null;
