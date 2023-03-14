@@ -10,8 +10,7 @@ import ListActionDrawer from './ListActionDrawer';
 import classNames from 'classnames';
 
 export default ({ part, subPartDataAndHandlers }) => {
-  // TODO K.Matsuda handleCheckboxClick を復旧させる
-  // const handleCheckboxClick = itemId => () => subPartDataAndHandlers.onCheckboxClick(itemId);
+  const handleCheckboxClick = (itemId) => () => subPartDataAndHandlers.onCheckboxClick(itemId);
   const handleListItemSelect = (itemId) => () => subPartDataAndHandlers.onListItemSelect(itemId);
 
   const shouldDisableActions = subPartDataAndHandlers.shouldDisableActions;
@@ -30,13 +29,13 @@ export default ({ part, subPartDataAndHandlers }) => {
 
       return (
         <li key={item.get('id')} value={item.get('forceNumber')}>
-          <span
-            className={lineContainerClass}
-            // TODO K.Matsuda handleCheckboxClick を復旧させる
-            //onClick={item.get('isCheckbox') ? handleCheckboxClick(item.get('id')) : null}
-            onClick={handleListItemSelect(item.get('id'))}
-          >
-            {item.get('isCheckbox') && <Checkbox state={item.get('checkboxState')} />}
+          <span className={lineContainerClass} onClick={handleListItemSelect(item.get('id'))}>
+            {item.get('isCheckbox') && (
+              <Checkbox
+                onClick={handleCheckboxClick(item.get('id'))}
+                state={item.get('checkboxState')}
+              />
+            )}
             <AttributedString
               parts={item.get('titleLine')}
               subPartDataAndHandlers={subPartDataAndHandlers}
