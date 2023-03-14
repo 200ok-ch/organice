@@ -1100,6 +1100,7 @@ const moveListItemRight = (state) => {
     selectedListItemId
   );
   let { path, listItemPart: selectedListItem } = pathAndPart;
+  const listPart = state.getIn(['headers'].concat(path.slice(0, path.length - 2)));
   const prevSiblingItemIndex = path[path.length - 1] - 1;
 
   if (prevSiblingItemIndex < 0) {
@@ -1127,13 +1128,13 @@ const moveListItemRight = (state) => {
   );
 
   state = state.updateIn(prevSiblingItemContentsPath, (contents) =>
-    updateContentsWithListItemAddition(contents, selectedListItem)
+    updateContentsWithListItemAddition(contents, selectedListItem, listPart)
   );
 
   childrenListParts.map((listPart) =>
     listPart.get('items').forEach((item, itemIndex) => {
       state = state.updateIn(prevSiblingItemContentsPath, (contents) =>
-        updateContentsWithListItemAddition(contents, item)
+        updateContentsWithListItemAddition(contents, item, listPart)
       );
     })
   );
@@ -1167,7 +1168,7 @@ const moveListSubtreeLeft = (state) => {
       listPart.get('items').forEach((item, itemIndex) => {
         if (itemIndex > selectedListItemIndex) {
           selectedListItem = selectedListItem.update('contents', (contents) =>
-            updateContentsWithListItemAddition(contents, item)
+            updateContentsWithListItemAddition(contents, item, listPart)
           );
         }
       })
@@ -1199,7 +1200,7 @@ const moveListSubtreeRight = (state) => {
     selectedListItemId
   );
   const { path, listItemPart: selectedListItem } = pathAndPart;
-
+  const listPart = state.getIn(['headers'].concat(path.slice(0, path.length - 2)));
   const prevSiblingItemIndex = path[path.length - 1] - 1;
   if (prevSiblingItemIndex < 0) {
     return state;
@@ -1218,7 +1219,7 @@ const moveListSubtreeRight = (state) => {
       .concat(path.slice(0, path.length - 1))
       .concat(prevSiblingItemIndex)
       .concat('contents'),
-    (contents) => updateContentsWithListItemAddition(contents, selectedListItem)
+    (contents) => updateContentsWithListItemAddition(contents, selectedListItem, listPart)
   );
 
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);

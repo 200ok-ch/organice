@@ -665,6 +665,8 @@ export const newListPart = () =>
     isOrdered: false,
   });
 
+export const newListPartLikePart = (part) => part.set('id', generateId()).set('items', new List());
+
 export const newListItem = () =>
   fromJS({
     id: generateId(),
@@ -684,10 +686,13 @@ export const updateListContainingListItemId = (headers, listItemId, updaterCallb
   return headers.updateIn(path.concat(['items']), updaterCallbackGenerator(itemIndexContainingId));
 };
 
-export const updateContentsWithListItemAddition = (parts, listItem) => {
+export const updateContentsWithListItemAddition = (parts, listItem, listPart = null) => {
   if (parts.size === 0) {
-    // TODO K.Matsuda parts = parts.insert(0, newListPart()) ってしてるが、設計思想と合っていないのでは？
-    parts = parts.insert(0, newListPart());
+    if (!!listPart) {
+      parts = parts.insert(0, newListPartLikePart(listPart));
+    } else {
+      parts = parts.insert(0, newListPart());
+    }
   }
   return parts.map((part) => {
     switch (part.get('type')) {
