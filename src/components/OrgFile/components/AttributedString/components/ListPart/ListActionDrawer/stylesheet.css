@@ -1,19 +1,29 @@
 .list-action-drawer-container {
   color: lightgray;
 
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  padding-bottom: 10px;
+
+  padding-right: 20px;
+}
+
+.list-action-drawer__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  padding-top: 10px;
 }
 
 .list-action-drawer__edit-icon-container {
-  grid-row-start: span 2;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
 }
 
-.list-action-drawer__main-icon {
-  padding-right: 3px;
-  padding-bottom: 3px;
+.list-action-drawer__separator {
+  background-color: lightgray;
+
+  height: 15px;
+  width: 1px;
+
+  margin-left: 10px;
+  margin-right: 10px;
 }
