@@ -11,7 +11,8 @@
 }
 
 .list-part__not_checkbox-container {
-  height: 18.5px;
+  display: flex;
+  line-height: 18.5px;
 }
 
 .list-part__not_checkbox-container span {
@@ -20,6 +21,7 @@
 }
 
 .list-part__checkbox-container {
+  display: flex;
   line-height: 22px;
 }
 

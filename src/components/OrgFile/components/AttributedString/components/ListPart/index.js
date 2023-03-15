@@ -6,6 +6,7 @@ import './stylesheet.css';
 import AttributedString from '../../../AttributedString/';
 import Checkbox from '../../../../../UI/Checkbox/';
 import ListActionDrawer from './ListActionDrawer';
+import { attributedStringToRawText } from '../../../../../../lib/export_org';
 
 import { getCurrentTimestampAsText } from '../../../../../../lib/timestamps';
 
@@ -93,7 +94,7 @@ export default class ListPart extends PureComponent {
                   className="textarea"
                   rows="3"
                   ref={this.handleTextareaRef}
-                  value={item.getIn('titleLine')}
+                  value={attributedStringToRawText(item.get('titleLine'))}
                   onBlur={this.handleTextareaBlur}
                   onChange={this.handleListTitleChange}
                 />
