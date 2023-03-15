@@ -219,11 +219,13 @@ export default class ListPart extends PureComponent {
                   Insert timestamp
                 </div>
               </div>
-            ) : (
+            ) : listTitleValues.get(item.get('id')) ? (
               <AttributedString
                 parts={item.get('titleLine')}
                 subPartDataAndHandlers={this.props.subPartDataAndHandlers}
               />
+            ) : (
+              <span>&nbsp;</span>
             )}
           </div>
           <Collapse isOpened={isItemSelected && !shouldDisableActions}>
