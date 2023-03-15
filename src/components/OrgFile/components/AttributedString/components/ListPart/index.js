@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { UnmountClosed as Collapse } from 'react-collapse';
 
 import './stylesheet.css';
@@ -7,17 +7,68 @@ import AttributedString from '../../../AttributedString/';
 import Checkbox from '../../../../../UI/Checkbox/';
 import ListActionDrawer from './ListActionDrawer';
 
+import { getCurrentTimestampAsText } from '../../../../../../lib/timestamps';
+
+import _ from 'lodash';
 import classNames from 'classnames';
 
-export default ({ part, subPartDataAndHandlers }) => {
-  const handleCheckboxClick = (itemId) => () => subPartDataAndHandlers.onCheckboxClick(itemId);
-  const handleListItemSelect = (itemId) => () => subPartDataAndHandlers.onListItemSelect(itemId);
+export default class ListPart extends PureComponent {
+  constructor(props) {
+    super(props);
 
-  const shouldDisableActions = subPartDataAndHandlers.shouldDisableActions;
-  const selectedListItemId = subPartDataAndHandlers.selectedListItemId;
-  const inListTitleEditMode = subPartDataAndHandlers.inListTitleEditMode;
+    _.bindAll(this, [
+      'handleListItemSelect',
+      'handleCheckboxClick',
+      'handleTextareaBlur',
+      'handleListTitleChange',
+      'handleInsertTimestamp',
+      'handleTextareaRef',
+    ]);
 
-  const renderContent = () => {
+    this.state = {
+      shouldIgnoreBlur: false,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    // TODO K.Matsuda componentDidUpdate
+  }
+
+  handleListItemSelect(itemId) {
+    return () => this.props.subPartDataAndHandlers.onListItemSelect(itemId);
+  }
+
+  handleCheckboxClick(itemId) {
+    return () => this.props.subPartDataAndHandlers.onCheckboxClick(itemId);
+  }
+
+  handleTextareaBlur() {
+    setTimeout(() => {
+      if (!this.state.shouldIgnoreBlur) {
+        this.props.subPartDataAndHandlers.onExitListTitleEditMode();
+      } else {
+        this.setState({ shouldIgnoreBlur: false });
+      }
+    }, 0);
+  }
+
+  handleListTitleChange(event) {
+    // TODO K.Matsuda handleListTitleChange
+  }
+
+  handleInsertTimestamp() {
+    // TODO K.Matsuda handleInsertTimestamp
+  }
+
+  handleTextareaRef(textarea) {
+    this.textarea = textarea;
+  }
+
+  renderContent() {
+    const {
+      part,
+      subPartDataAndHandlers: { selectedListItemId, inListTitleEditMode, shouldDisableActions },
+    } = this.props;
     return part.get('items').map((item) => {
       const isItemSelected = item.get('id') === selectedListItemId;
       const lineContainerClass = classNames({
@@ -28,22 +79,21 @@ export default ({ part, subPartDataAndHandlers }) => {
 
       return (
         <li key={item.get('id')} value={item.get('forceNumber')}>
-          <div className={lineContainerClass} onClick={handleListItemSelect(item.get('id'))}>
+          <div className={lineContainerClass} onClick={this.handleListItemSelect(item.get('id'))}>
             {item.get('isCheckbox') && (
               <Checkbox
-                onClick={handleCheckboxClick(item.get('id'))}
+                onClick={this.handleCheckboxClick(item.get('id'))}
                 state={item.get('checkboxState')}
               />
             )}
             {isItemSelected && inListTitleEditMode ? (
-              // TODO K.Matsuda クラスコンポーネントに置き換え。現状ではハンドラでエラーが出る
               <div className="list-title-line__edit-container">
                 <textarea
                   autoFocus
                   className="textarea"
                   rows="3"
                   ref={this.handleTextareaRef}
-                  value={item.get('titleLine')}
+                  value={item.getIn('titleLine')}
                   onBlur={this.handleTextareaBlur}
                   onChange={this.handleListTitleChange}
                 />
@@ -58,31 +108,33 @@ export default ({ part, subPartDataAndHandlers }) => {
             ) : (
               <AttributedString
                 parts={item.get('titleLine')}
-                subPartDataAndHandlers={subPartDataAndHandlers}
+                subPartDataAndHandlers={this.props.subPartDataAndHandlers}
               />
             )}
           </div>
           <Collapse isOpened={isItemSelected && !shouldDisableActions}>
-            <ListActionDrawer subPartDataAndHandlers={subPartDataAndHandlers} />
+            <ListActionDrawer subPartDataAndHandlers={this.props.subPartDataAndHandlers} />
           </Collapse>
           <AttributedString
             parts={item.get('contents')}
-            subPartDataAndHandlers={subPartDataAndHandlers}
+            subPartDataAndHandlers={this.props.subPartDataAndHandlers}
           />
         </li>
       );
     });
-  };
+  }
 
-  return (
-    <Fragment>
-      {part.get('isOrdered') ? (
-        <ol className="attributed-string__list-part attributed-string__list-part--ordered">
-          {renderContent()}
-        </ol>
-      ) : (
-        <ul className="attributed-string__list-part">{renderContent()}</ul>
-      )}
-    </Fragment>
-  );
-};
+  render() {
+    return (
+      <Fragment>
+        {this.props.part.get('isOrdered') ? (
+          <ol className="attributed-string__list-part attributed-string__list-part--ordered">
+            {this.renderContent()}
+          </ol>
+        ) : (
+          <ul className="attributed-string__list-part">{this.renderContent()}</ul>
+        )}
+      </Fragment>
+    );
+  }
+}
