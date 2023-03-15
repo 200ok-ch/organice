@@ -676,6 +676,12 @@ export const newListItem = () =>
     isCheckbox: false,
   });
 
+export const parentListItemWithIdInHeaders = (headers, listItemId) => {
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(headers, listItemId);
+  let { path } = pathAndPart;
+  return headers.getIn(path.slice(0, path.length - 4));
+};
+
 export const updateListContainingListItemId = (headers, listItemId, updaterCallbackGenerator) => {
   const { path, listPart } = pathAndPartOfListContainingItemIdInHeaders(headers, listItemId);
 

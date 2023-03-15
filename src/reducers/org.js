@@ -53,6 +53,7 @@ import {
   todoKeywordSetForKeyword,
   inheritedValueOfProperty,
   newListItem,
+  parentListItemWithIdInHeaders,
   updateListContainingListItemId,
   headerThatContainsListItemId,
   updateContentsWithListItemAddition,
@@ -1192,8 +1193,10 @@ const moveListSubtreeLeft = (state) => {
     return state;
   }
 
-  // TODO K.Matsuda parentListItem の取得はメソッド化する
-  const parentListItem = state.getIn(['headers'].concat(path.slice(0, path.length - 4)));
+  const parentListItem = parentListItemWithIdInHeaders(
+    state.getIn(['headers']),
+    selectedListItemId
+  );
 
   parentListItem
     .get('contents')
