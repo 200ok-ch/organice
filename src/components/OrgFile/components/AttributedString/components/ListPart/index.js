@@ -15,6 +15,7 @@ export default ({ part, subPartDataAndHandlers }) => {
 
   const shouldDisableActions = subPartDataAndHandlers.shouldDisableActions;
   const selectedListItemId = subPartDataAndHandlers.selectedListItemId;
+  const inListTitleEditMode = subPartDataAndHandlers.inListTitleEditMode;
 
   const renderContent = () => {
     return part.get('items').map((item) => {
@@ -34,10 +35,32 @@ export default ({ part, subPartDataAndHandlers }) => {
                 state={item.get('checkboxState')}
               />
             )}
-            <AttributedString
-              parts={item.get('titleLine')}
-              subPartDataAndHandlers={subPartDataAndHandlers}
-            />
+            {isItemSelected && inListTitleEditMode ? (
+              // TODO K.Matsuda クラスコンポーネントに置き換え。現状ではハンドラでエラーが出る
+              <div className="list-title-line__edit-container">
+                <textarea
+                  autoFocus
+                  className="textarea"
+                  rows="3"
+                  ref={this.handleTextareaRef}
+                  value={item.get('titleLine')}
+                  onBlur={this.handleTextareaBlur}
+                  onChange={this.handleListTitleChange}
+                />
+                <div
+                  className="list-title-line__insert-timestamp-button"
+                  onClick={this.handleInsertTimestamp}
+                >
+                  <i className="fas fa-plus insert-timestamp-icon" />
+                  Insert timestamp
+                </div>
+              </div>
+            ) : (
+              <AttributedString
+                parts={item.get('titleLine')}
+                subPartDataAndHandlers={subPartDataAndHandlers}
+              />
+            )}
           </div>
           <Collapse isOpened={isItemSelected && !shouldDisableActions}>
             <ListActionDrawer subPartDataAndHandlers={subPartDataAndHandlers} />

@@ -26,3 +26,7 @@
 .list-part__item--selected {
   background-color: rgba(239, 255, 0, 0.28);
 }
+
+.list-title-line__edit-container {
+  width: 100%;
+}

@@ -26,7 +26,8 @@ class HeaderContent extends PureComponent {
       'handleTableSelect',
       'handleCheckboxClick',
       'handleListItemSelect',
-      'handleEnterListEditMode',
+      'handleEnterListTitleEditMode',
+      'handleExitListTitleEditMode',
       'handleAddNewListItem',
       'handleRemoveListItem',
       'handleTimestampClick',
@@ -86,8 +87,12 @@ class HeaderContent extends PureComponent {
     this.props.org.setSelectedListItemId(listItemId);
   }
 
-  handleEnterListEditMode() {
-    this.props.org.enterEditMode('list');
+  handleEnterListTitleEditMode() {
+    this.props.org.enterEditMode('list-title');
+  }
+
+  handleExitListTitleEditMode() {
+    this.props.org.exitEditMode();
   }
 
   handleAddNewListItem() {
@@ -147,7 +152,7 @@ class HeaderContent extends PureComponent {
   }
 
   render() {
-    const { header, shouldDisableActions } = this.props;
+    const { header, shouldDisableActions, selectedListItemId, inListTitleEditMode } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
@@ -186,11 +191,13 @@ class HeaderContent extends PureComponent {
                 onTableSelect: shouldDisableActions ? undefined : this.handleTableSelect,
                 onCheckboxClick: this.handleCheckboxClick,
                 onListItemSelect: this.handleListItemSelect,
-                onTimestampClick: this.handleTimestampClick,
-                onEnterListEditMode: this.handleEnterListEditMode,
+                onEnterListTitleEditMode: this.handleEnterListTitleEditMode,
+                onExitListTitleEditMode: this.handleExitListTitleEditMode,
                 onAddNewListItem: this.handleAddNewListItem,
                 onRemoveListItem: this.handleRemoveListItem,
-                // TODO K.Matsuda ここに selectedListItemId の追加必要か？
+                selectedListItemId: selectedListItemId,
+                inListTitleEditMode: inListTitleEditMode,
+                onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,
               }}
             />
@@ -207,7 +214,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),
     dontIndent: state.base.get('shouldNotIndentOnExport'),
-    // TODO K.Matsuda ここに selectedListItemId の追加必要か？
+    selectedListItemId: state.org.present.get('selectedListItemId'),
+    inListTitleEditMode: state.org.present.get('editMode') === 'list-title',
   };
 };
 
