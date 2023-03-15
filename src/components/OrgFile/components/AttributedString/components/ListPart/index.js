@@ -24,7 +24,8 @@ export default class ListPart extends PureComponent {
       'handleTextareaBlur',
       'handleListTitleChange',
       'handleListContentsChange',
-      'handleInsertTimestamp',
+      'handleInsertTimestampListTitle',
+      'handleInsertTimestampListContents',
       'handleTextareaRef',
     ]);
 
@@ -121,10 +122,51 @@ export default class ListPart extends PureComponent {
     });
   }
 
-  handleInsertTimestamp() {
-    // TODO K.Matsuda handleInsertTimestamp
+  handleInsertTimestampListTitle() {
+    // Clicking this button will unfocus the textarea, but we don't want to exit edit mode,
+    // so instruct the blur handler to ignore the event.
+    this.setState({ shouldIgnoreBlur: true });
+
+    const { listTitleValues } = this.state;
+    const {
+      subPartDataAndHandlers: { selectedListItemId },
+    } = this.props;
+    const listTitleValue = listTitleValues.get(selectedListItemId);
+
+    const insertionIndex = this.textarea.selectionStart;
+    this.setState({
+      listTitleValues: listTitleValues.set(
+        selectedListItemId,
+        listTitleValue.substring(0, insertionIndex) +
+          getCurrentTimestampAsText() +
+          listTitleValue.substring(this.textarea.selectionEnd || insertionIndex)
+      ),
+    });
+
+    this.textarea.focus();
   }
 
+  handleInsertTimestampListContents() {
+    this.setState({ shouldIgnoreBlur: true });
+
+    const { listContentsValues } = this.state;
+    const {
+      subPartDataAndHandlers: { selectedListItemId },
+    } = this.props;
+    const listContentsValue = listContentsValues.get(selectedListItemId);
+
+    const insertionIndex = this.textarea.selectionStart;
+    this.setState({
+      listContentsValues: listContentsValues.set(
+        selectedListItemId,
+        listContentsValue.substring(0, insertionIndex) +
+          getCurrentTimestampAsText() +
+          listContentsValue.substring(this.textarea.selectionEnd || insertionIndex)
+      ),
+    });
+
+    this.textarea.focus();
+  }
   handleTextareaRef(textarea) {
     this.textarea = textarea;
   }
@@ -171,7 +213,7 @@ export default class ListPart extends PureComponent {
                 />
                 <div
                   className="list-title-line__insert-timestamp-button"
-                  onClick={this.handleInsertTimestamp}
+                  onClick={this.handleInsertTimestampListTitle}
                 >
                   <i className="fas fa-plus insert-timestamp-icon" />
                   Insert timestamp
@@ -200,7 +242,7 @@ export default class ListPart extends PureComponent {
               />
               <div
                 className="list-contents__insert-timestamp-button"
-                onClick={this.handleInsertTimestamp}
+                onClick={this.handleInsertTimestampListContents}
               >
                 <i className="fas fa-plus insert-timestamp-icon" />
                 Insert timestamp
