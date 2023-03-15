@@ -575,6 +575,13 @@ export const setSelectedListItemId = (listItemId) => (dispatch) => {
   }
 };
 
+export const updateListTitleValue = (listItemId, newValue) => ({
+  type: 'UPDATE_LIST_TITLE_VALUE',
+  listItemId,
+  newValue,
+  dirtying: true,
+});
+
 export const addNewListItem = () => ({
   type: 'ADD_NEW_LIST_ITEM',
   dirtying: true,

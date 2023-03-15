@@ -28,6 +28,7 @@ class HeaderContent extends PureComponent {
       'handleListItemSelect',
       'handleEnterListTitleEditMode',
       'handleExitListTitleEditMode',
+      'handleListTitleValueUpdate',
       'handleAddNewListItem',
       'handleRemoveListItem',
       'handleTimestampClick',
@@ -93,6 +94,10 @@ class HeaderContent extends PureComponent {
 
   handleExitListTitleEditMode() {
     this.props.org.exitEditMode();
+  }
+
+  handleListTitleValueUpdate(listItemId, newValue) {
+    this.props.org.updateListTitleValue(listItemId, newValue);
   }
 
   handleAddNewListItem() {
@@ -193,6 +198,7 @@ class HeaderContent extends PureComponent {
                 onListItemSelect: this.handleListItemSelect,
                 onEnterListTitleEditMode: this.handleEnterListTitleEditMode,
                 onExitListTitleEditMode: this.handleExitListTitleEditMode,
+                onListTitleValueUpdate: this.handleListTitleValueUpdate,
                 onAddNewListItem: this.handleAddNewListItem,
                 onRemoveListItem: this.handleRemoveListItem,
                 selectedListItemId: selectedListItemId,

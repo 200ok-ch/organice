@@ -12,6 +12,7 @@ import { getCurrentTimestampAsText } from '../../../../../../lib/timestamps';
 
 import _ from 'lodash';
 import classNames from 'classnames';
+import { Map } from 'immutable';
 
 export default class ListPart extends PureComponent {
   constructor(props) {
@@ -27,12 +28,34 @@ export default class ListPart extends PureComponent {
     ]);
 
     this.state = {
+      listTitleValues: this.generateListTitleValueMap(props.part),
       shouldIgnoreBlur: false,
     };
   }
 
   componentDidUpdate(prevProps) {
-    // TODO K.Matsuda componentDidUpdate
+    const {
+      subPartDataAndHandlers: { onListTitleValueUpdate, selectedListItemId, inListTitleEditMode },
+    } = this.props;
+    const { listTitleValues } = this.state;
+
+    if (prevProps.subPartDataAndHandlers.inListTitleEditMode && !inListTitleEditMode) {
+      if (listTitleValues.has(selectedListItemId)) {
+        onListTitleValueUpdate(selectedListItemId, listTitleValues.get(selectedListItemId));
+      }
+    }
+
+    if (this.props.part !== prevProps.part) {
+      this.setState({ listTitleValues: this.generateListTitleValueMap(this.props.part) });
+    }
+  }
+
+  generateListTitleValueMap(part) {
+    return Map(
+      part
+        .get('items')
+        .map((item) => [item.get('id'), attributedStringToRawText(item.get('titleLine'))])
+    );
   }
 
   handleListItemSelect(itemId) {
@@ -54,7 +77,14 @@ export default class ListPart extends PureComponent {
   }
 
   handleListTitleChange(event) {
-    // TODO K.Matsuda handleListTitleChange
+    const { listTitleValues } = this.state;
+    const {
+      subPartDataAndHandlers: { selectedListItemId },
+    } = this.props;
+
+    this.setState({
+      listTitleValues: listTitleValues.set(selectedListItemId, event.target.value),
+    });
   }
 
   handleInsertTimestamp() {
@@ -70,6 +100,8 @@ export default class ListPart extends PureComponent {
       part,
       subPartDataAndHandlers: { selectedListItemId, inListTitleEditMode, shouldDisableActions },
     } = this.props;
+    const { listTitleValues } = this.state;
+
     return part.get('items').map((item) => {
       const isItemSelected = item.get('id') === selectedListItemId;
       const lineContainerClass = classNames({
@@ -94,7 +126,7 @@ export default class ListPart extends PureComponent {
                   className="textarea"
                   rows="3"
                   ref={this.handleTextareaRef}
-                  value={attributedStringToRawText(item.get('titleLine'))}
+                  value={listTitleValues.get(item.get('id'))}
                   onBlur={this.handleTextareaBlur}
                   onChange={this.handleListTitleChange}
                 />

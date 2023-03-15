@@ -1002,6 +1002,23 @@ const updateDescriptionOfHeaderContainingListItem = (state, listItemId, header =
   }
 };
 
+const updateListTitleValue = (state, action) => {
+  const selectedListItemId = action.listItemId;
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      items.updateIn([itemIndex], (item) =>
+        item.set('titleLine', fromJS(parseMarkupAndCookies(action.newValue)))
+      )
+    )
+  );
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
+};
+
 const addNewListItem = (state, action) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
@@ -1772,6 +1789,8 @@ const reducer = (state, action) => {
       return inFile(advanceCheckboxState);
     case 'SET_SELECTED_LIST_ITEM_ID':
       return setSelectedListItemId(state, action);
+    case 'UPDATE_LIST_TITLE_VALUE':
+      return updateListTitleValue(state, action);
     case 'ADD_NEW_LIST_ITEM':
       return addNewListItem(state, action);
     case 'REMOVE_LIST_ITEM':
