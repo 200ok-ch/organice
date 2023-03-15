@@ -32,3 +32,14 @@
 .list-title-line__edit-container {
   width: 100%;
 }
+
+.list-contents__edit-container {
+  width: 100%;
+}
+
+.list-contents__insert-timestamp-button {
+  color: gray;
+
+  display: flex;
+  align-items: center;
+}

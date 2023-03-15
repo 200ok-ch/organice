@@ -1019,6 +1019,23 @@ const updateListTitleValue = (state, action) => {
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
+const updateListContentsValue = (state, action) => {
+  const selectedListItemId = action.listItemId;
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  state = state.update('headers', (headers) =>
+    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+      items.updateIn([itemIndex], (item) =>
+        item.set('contents', fromJS(parseMarkupAndCookies(action.newValue)))
+      )
+    )
+  );
+
+  return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
+};
+
 const addNewListItem = (state, action) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
@@ -1791,6 +1808,8 @@ const reducer = (state, action) => {
       return setSelectedListItemId(state, action);
     case 'UPDATE_LIST_TITLE_VALUE':
       return updateListTitleValue(state, action);
+    case 'UPDATE_LIST_CONTENTS_VALUE':
+      return updateListContentsValue(state, action);
     case 'ADD_NEW_LIST_ITEM':
       return addNewListItem(state, action);
     case 'REMOVE_LIST_ITEM':

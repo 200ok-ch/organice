@@ -29,6 +29,9 @@ class HeaderContent extends PureComponent {
       'handleEnterListTitleEditMode',
       'handleExitListTitleEditMode',
       'handleListTitleValueUpdate',
+      'handleEnterListContentsEditMode',
+      'handleExitListContentsEditMode',
+      'handleListContentsValueUpdate',
       'handleAddNewListItem',
       'handleRemoveListItem',
       'handleTimestampClick',
@@ -100,6 +103,18 @@ class HeaderContent extends PureComponent {
     this.props.org.updateListTitleValue(listItemId, newValue);
   }
 
+  handleEnterListContentsEditMode() {
+    this.props.org.enterEditMode('list-contents');
+  }
+
+  handleExitListContentsEditMode() {
+    this.props.org.exitEditMode();
+  }
+
+  handleListContentsValueUpdate(listItemId, newValue) {
+    this.props.org.updateListContentsValue(listItemId, newValue);
+  }
+
   handleAddNewListItem() {
     this.props.org.addNewListItem();
   }
@@ -157,7 +172,13 @@ class HeaderContent extends PureComponent {
   }
 
   render() {
-    const { header, shouldDisableActions, selectedListItemId, inListTitleEditMode } = this.props;
+    const {
+      header,
+      shouldDisableActions,
+      selectedListItemId,
+      inListTitleEditMode,
+      inListContentsEditMode,
+    } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
@@ -199,10 +220,14 @@ class HeaderContent extends PureComponent {
                 onEnterListTitleEditMode: this.handleEnterListTitleEditMode,
                 onExitListTitleEditMode: this.handleExitListTitleEditMode,
                 onListTitleValueUpdate: this.handleListTitleValueUpdate,
+                onEnterListContentsEditMode: this.handleEnterListContentsEditMode,
+                onExitListContentsEditMode: this.handleExitListContentsEditMode,
+                onListContentsValueUpdate: this.handleListContentsValueUpdate,
                 onAddNewListItem: this.handleAddNewListItem,
                 onRemoveListItem: this.handleRemoveListItem,
                 selectedListItemId: selectedListItemId,
                 inListTitleEditMode: inListTitleEditMode,
+                inListContentsEditMode: inListContentsEditMode,
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,
               }}
@@ -222,6 +247,7 @@ const mapStateToProps = (state, ownProps) => {
     dontIndent: state.base.get('shouldNotIndentOnExport'),
     selectedListItemId: state.org.present.get('selectedListItemId'),
     inListTitleEditMode: state.org.present.get('editMode') === 'list-title',
+    inListContentsEditMode: state.org.present.get('editMode') === 'list-contents',
   };
 };
 

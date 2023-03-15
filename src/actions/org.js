@@ -582,6 +582,13 @@ export const updateListTitleValue = (listItemId, newValue) => ({
   dirtying: true,
 });
 
+export const updateListContentsValue = (listItemId, newValue) => ({
+  type: 'UPDATE_LIST_CONTENTS_VALUE',
+  listItemId,
+  newValue,
+  dirtying: true,
+});
+
 export const addNewListItem = () => ({
   type: 'ADD_NEW_LIST_ITEM',
   dirtying: true,

@@ -23,21 +23,29 @@ export default class ListPart extends PureComponent {
       'handleCheckboxClick',
       'handleTextareaBlur',
       'handleListTitleChange',
+      'handleListContentsChange',
       'handleInsertTimestamp',
       'handleTextareaRef',
     ]);
 
     this.state = {
       listTitleValues: this.generateListTitleValueMap(props.part),
+      listContentsValues: this.generateListContentsValueMap(props.part),
       shouldIgnoreBlur: false,
     };
   }
 
   componentDidUpdate(prevProps) {
     const {
-      subPartDataAndHandlers: { onListTitleValueUpdate, selectedListItemId, inListTitleEditMode },
+      subPartDataAndHandlers: {
+        onListTitleValueUpdate,
+        onListContentsValueUpdate,
+        inListTitleEditMode,
+        inListContentsEditMode,
+        selectedListItemId,
+      },
     } = this.props;
-    const { listTitleValues } = this.state;
+    const { listTitleValues, listContentsValues } = this.state;
 
     if (prevProps.subPartDataAndHandlers.inListTitleEditMode && !inListTitleEditMode) {
       if (listTitleValues.has(selectedListItemId)) {
@@ -45,8 +53,15 @@ export default class ListPart extends PureComponent {
       }
     }
 
+    if (prevProps.subPartDataAndHandlers.inListContentsEditMode && !inListContentsEditMode) {
+      if (listContentsValues.has(selectedListItemId)) {
+        onListContentsValueUpdate(selectedListItemId, listContentsValues.get(selectedListItemId));
+      }
+    }
+
     if (this.props.part !== prevProps.part) {
       this.setState({ listTitleValues: this.generateListTitleValueMap(this.props.part) });
+      this.setState({ listContentsValues: this.generateListContentsValueMap(this.props.part) });
     }
   }
 
@@ -55,6 +70,14 @@ export default class ListPart extends PureComponent {
       part
         .get('items')
         .map((item) => [item.get('id'), attributedStringToRawText(item.get('titleLine'))])
+    );
+  }
+
+  generateListContentsValueMap(part) {
+    return Map(
+      part
+        .get('items')
+        .map((item) => [item.get('id'), attributedStringToRawText(item.get('contents'))])
     );
   }
 
@@ -87,6 +110,17 @@ export default class ListPart extends PureComponent {
     });
   }
 
+  handleListContentsChange(event) {
+    const { listContentsValues } = this.state;
+    const {
+      subPartDataAndHandlers: { selectedListItemId },
+    } = this.props;
+
+    this.setState({
+      listContentsValues: listContentsValues.set(selectedListItemId, event.target.value),
+    });
+  }
+
   handleInsertTimestamp() {
     // TODO K.Matsuda handleInsertTimestamp
   }
@@ -98,9 +132,14 @@ export default class ListPart extends PureComponent {
   renderContent() {
     const {
       part,
-      subPartDataAndHandlers: { selectedListItemId, inListTitleEditMode, shouldDisableActions },
+      subPartDataAndHandlers: {
+        selectedListItemId,
+        inListTitleEditMode,
+        inListContentsEditMode,
+        shouldDisableActions,
+      },
     } = this.props;
-    const { listTitleValues } = this.state;
+    const { listTitleValues, listContentsValues } = this.state;
 
     return part.get('items').map((item) => {
       const isItemSelected = item.get('id') === selectedListItemId;
@@ -148,10 +187,31 @@ export default class ListPart extends PureComponent {
           <Collapse isOpened={isItemSelected && !shouldDisableActions}>
             <ListActionDrawer subPartDataAndHandlers={this.props.subPartDataAndHandlers} />
           </Collapse>
-          <AttributedString
-            parts={item.get('contents')}
-            subPartDataAndHandlers={this.props.subPartDataAndHandlers}
-          />
+          {isItemSelected && inListContentsEditMode ? (
+            <div className="list-contents__edit-container">
+              <textarea
+                autoFocus
+                className="textarea"
+                rows="8"
+                ref={this.handleTextareaRef}
+                value={listContentsValues.get(item.get('id'))}
+                onBlur={this.handleTextareaBlur}
+                onChange={this.handleListContentsChange}
+              />
+              <div
+                className="list-contents__insert-timestamp-button"
+                onClick={this.handleInsertTimestamp}
+              >
+                <i className="fas fa-plus insert-timestamp-icon" />
+                Insert timestamp
+              </div>
+            </div>
+          ) : (
+            <AttributedString
+              parts={item.get('contents')}
+              subPartDataAndHandlers={this.props.subPartDataAndHandlers}
+            />
+          )}
         </li>
       );
     });
