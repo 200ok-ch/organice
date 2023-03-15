@@ -1043,9 +1043,19 @@ const addNewListItem = (state, action) => {
     return state;
   }
 
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(
+    state.get('headers'),
+    selectedListItemId
+  );
+
+  let newItem = newListItem();
+  if (pathAndPart.listItemPart.get('isCheckbox')) {
+    newItem = newItem.set('isCheckbox', true).set('checkboxState', 'unchecked');
+  }
+
   state = state.update('headers', (headers) =>
     updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
-      items.insert(itemIndex + 1, newListItem())
+      items.insert(itemIndex + 1, newItem)
     )
   );
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
