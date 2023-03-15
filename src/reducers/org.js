@@ -1148,7 +1148,6 @@ const moveListItemRight = (state) => {
     )
   );
 
-  // TODO K.Matsuda ここのpathの指定の仕方、汚い
   const prevSiblingItemContentsPath = ['headers']
     .concat(path.slice(0, path.length - 1))
     .concat(prevSiblingItemIndex)
@@ -1243,14 +1242,12 @@ const moveListSubtreeRight = (state) => {
     return state;
   }
 
-  // TODO K.Matsuda itemIndex === 0 ? items : items.delete(itemIndex)　でいいのか検討
   state = state.update('headers', (headers) =>
     updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
       itemIndex === 0 ? items : items.delete(itemIndex)
     )
   );
 
-  // TODO K.Matsuda ここのpathの指定の仕方、汚い
   state = state.updateIn(
     ['headers']
       .concat(path.slice(0, path.length - 1))
