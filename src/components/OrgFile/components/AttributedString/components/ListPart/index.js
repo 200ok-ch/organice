@@ -23,13 +23,14 @@ export default ({ part, subPartDataAndHandlers }) => {
     return part.get('items').map((item) => {
       const isItemSelected = item.get('id') === selectedListItemId;
       const lineContainerClass = classNames({
+        'list-part__not_checkbox-container': !item.get('isCheckbox'),
         'list-part__checkbox-container': item.get('isCheckbox'),
         'list-part__item--selected': isItemSelected,
       });
 
       return (
         <li key={item.get('id')} value={item.get('forceNumber')}>
-          <span className={lineContainerClass} onClick={handleListItemSelect(item.get('id'))}>
+          <div className={lineContainerClass} onClick={handleListItemSelect(item.get('id'))}>
             {item.get('isCheckbox') && (
               <Checkbox
                 onClick={handleCheckboxClick(item.get('id'))}
@@ -40,8 +41,7 @@ export default ({ part, subPartDataAndHandlers }) => {
               parts={item.get('titleLine')}
               subPartDataAndHandlers={subPartDataAndHandlers}
             />
-          </span>
-          <br />
+          </div>
           <AttributedString
             parts={item.get('contents')}
             subPartDataAndHandlers={subPartDataAndHandlers}

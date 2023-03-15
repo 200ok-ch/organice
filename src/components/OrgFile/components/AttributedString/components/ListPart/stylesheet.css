@@ -10,6 +10,10 @@
   padding-left: 40px;
 }
 
+.list-part__not_checkbox-container {
+  height: 18.5px;
+}
+
 .list-part__checkbox-container {
   line-height: 22px;
 }
