@@ -594,6 +594,16 @@ export const addNewListItem = () => ({
   dirtying: true,
 });
 
+export const selectNextSiblingListItem = () => ({
+  type: 'SELECT_NEXT_SIBLING_LIST_ITEM',
+});
+
+export const addNewListItemAndEdit = () => (dispatch) => {
+  dispatch(addNewListItem());
+  dispatch(selectNextSiblingListItem());
+  dispatch(enterEditMode('list-title'));
+};
+
 export const removeListItem = () => ({
   type: 'REMOVE_LIST_ITEM',
   dirtying: true,

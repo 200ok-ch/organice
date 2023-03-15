@@ -116,7 +116,7 @@ class HeaderContent extends PureComponent {
   }
 
   handleAddNewListItem() {
-    this.props.org.addNewListItem();
+    this.props.org.addNewListItemAndEdit();
   }
 
   handleRemoveListItem() {
