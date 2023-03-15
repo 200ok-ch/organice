@@ -15,9 +15,6 @@ export default ({ part, subPartDataAndHandlers }) => {
 
   const shouldDisableActions = subPartDataAndHandlers.shouldDisableActions;
   const selectedListItemId = subPartDataAndHandlers.selectedListItemId;
-  const isListItemSelected = part
-    .get('items')
-    .some((item) => item.get('id') === selectedListItemId);
 
   const renderContent = () => {
     return part.get('items').map((item) => {
@@ -42,6 +39,9 @@ export default ({ part, subPartDataAndHandlers }) => {
               subPartDataAndHandlers={subPartDataAndHandlers}
             />
           </div>
+          <Collapse isOpened={isItemSelected && !shouldDisableActions}>
+            <ListActionDrawer subPartDataAndHandlers={subPartDataAndHandlers} />
+          </Collapse>
           <AttributedString
             parts={item.get('contents')}
             subPartDataAndHandlers={subPartDataAndHandlers}
@@ -60,9 +60,6 @@ export default ({ part, subPartDataAndHandlers }) => {
       ) : (
         <ul className="attributed-string__list-part">{renderContent()}</ul>
       )}
-      <Collapse isOpened={isListItemSelected && !shouldDisableActions}>
-        <ListActionDrawer subPartDataAndHandlers={subPartDataAndHandlers} />
-      </Collapse>
     </Fragment>
   );
 };

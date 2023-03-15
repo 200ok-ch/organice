@@ -14,6 +14,11 @@
   height: 18.5px;
 }
 
+.list-part__not_checkbox-container span {
+  display: inline-block;
+  height: 18px;
+}
+
 .list-part__checkbox-container {
   line-height: 22px;
 }
