@@ -17,7 +17,7 @@
 
 .list-part__not_checkbox-container span {
   display: inline-block;
-  height: 18px;
+  height: auto;
 }
 
 .list-part__checkbox-container {
