@@ -53,6 +53,16 @@ export default class ListPart extends PureComponent {
         onListTitleValueUpdate(selectedListItemId, listTitleValues.get(selectedListItemId));
       }
     }
+    const prevSelectedListItemId = prevProps.subPartDataAndHandlers.selectedListItemId;
+    if (
+      prevSelectedListItemId !== selectedListItemId &&
+      inListTitleEditMode &&
+      prevProps.subPartDataAndHandlers.inListTitleEditMode
+    ) {
+      if (listTitleValues.has(prevSelectedListItemId)) {
+        onListTitleValueUpdate(prevSelectedListItemId, listTitleValues.get(prevSelectedListItemId));
+      }
+    }
 
     if (prevProps.subPartDataAndHandlers.inListContentsEditMode && !inListContentsEditMode) {
       if (listContentsValues.has(selectedListItemId)) {
