@@ -53,6 +53,7 @@ export default class ListPart extends PureComponent {
         onListTitleValueUpdate(selectedListItemId, listTitleValues.get(selectedListItemId));
       }
     }
+
     const prevSelectedListItemId = prevProps.subPartDataAndHandlers.selectedListItemId;
     if (
       prevSelectedListItemId !== selectedListItemId &&
@@ -67,6 +68,19 @@ export default class ListPart extends PureComponent {
     if (prevProps.subPartDataAndHandlers.inListContentsEditMode && !inListContentsEditMode) {
       if (listContentsValues.has(selectedListItemId)) {
         onListContentsValueUpdate(selectedListItemId, listContentsValues.get(selectedListItemId));
+      }
+    }
+
+    if (
+      prevSelectedListItemId !== selectedListItemId &&
+      inListContentsEditMode &&
+      prevProps.subPartDataAndHandlers.inListContentsEditMode
+    ) {
+      if (listContentsValues.has(prevSelectedListItemId)) {
+        onListContentsValueUpdate(
+          prevSelectedListItemId,
+          listContentsValues.get(prevSelectedListItemId)
+        );
       }
     }
 
