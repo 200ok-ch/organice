@@ -1061,6 +1061,24 @@ const addNewListItem = (state, action) => {
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
+const selectNextSiblingListItem = (state, action) => {
+  const selectedListItemId = state.get('selectedListItemId');
+  if (!selectedListItemId) {
+    return state;
+  }
+
+  const pathAndPart = pathAndPartOfListItemWithIdInHeaders(
+    state.get('headers'),
+    selectedListItemId
+  );
+  let { path } = pathAndPart;
+  path[path.length - 1] = path[path.length - 1] + 1;
+
+  state = state.set('selectedListItemId', state.getIn(['headers'].concat(path).concat('id')));
+
+  return state;
+};
+
 const removeListItem = (state, action) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
