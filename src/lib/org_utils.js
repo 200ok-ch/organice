@@ -693,13 +693,15 @@ export const updateListContainingListItemId = (headers, listItemId, updaterCallb
 };
 
 export const updateContentsWithListItemAddition = (parts, listItem, listPart = null) => {
-  if (parts.size === 0) {
+  if (parts.size === 0 || parts.last().get('type') !== 'list') {
+    const insertIdx = parts.size;
     if (!!listPart) {
-      parts = parts.insert(0, newListPartLikePart(listPart));
+      parts = parts.insert(insertIdx, newListPartLikePart(listPart));
     } else {
-      parts = parts.insert(0, newListPart());
+      parts = parts.insert(insertIdx, newListPart());
     }
   }
+
   return parts.map((part) => {
     switch (part.get('type')) {
       case 'list':
