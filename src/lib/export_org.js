@@ -198,18 +198,15 @@ export const attributedStringToRawText = (parts) => {
     return '';
   }
 
-  const prevPartTypes = parts.map((part) => part.get('type')).unshift(null);
+  const prevParts = parts.unshift(null);
 
   return parts
-    .zip(prevPartTypes)
-    .map(([part, prevPartType]) => {
+    .zip(prevParts)
+    .map(([part, prevPart]) => {
       let text = '';
       switch (part.get('type')) {
         case 'text':
           text = part.get('contents');
-          break;
-        case 'inline-markup':
-          text = inlineMarkUpToRawText(part);
           break;
         case 'link':
           text = linkPartToRawText(part);
@@ -229,19 +226,24 @@ export const attributedStringToRawText = (parts) => {
         case 'timestamp':
           text = timestampPartToRawText(part);
           break;
-        case 'url':
-        case 'www-url':
-        case 'e-mail':
-        case 'phone-number':
-          text = part.get('content');
-          break;
         default:
           console.error(
             `Unknown attributed string part type in attributedStringToRawText: ${part.get('type')}`
           );
       }
 
-      const optionalNewlinePrefix = ['list', 'table'].includes(prevPartType) ? '\n' : '';
+      let optionalNewlinePrefix = '';
+      if (!!prevPart) {
+        if (['list', 'table'].includes(prevPart.get('type'))) {
+          optionalNewlinePrefix = '\n';
+        } else if (
+          part.get('type') === 'list' &&
+          prevPart.get('type') === 'text' &&
+          !prevPart.get('contents').endsWith('\n')
+        ) {
+          optionalNewlinePrefix = '\n';
+        }
+      }
       return optionalNewlinePrefix + text;
     })
     .join('');
