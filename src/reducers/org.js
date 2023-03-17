@@ -1037,7 +1037,7 @@ const updateListContentsValue = (state, action) => {
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
-const addNewListItem = (state, action) => {
+const addNewListItem = (state) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
     return state;
@@ -1061,7 +1061,7 @@ const addNewListItem = (state, action) => {
   return updateDescriptionOfHeaderContainingListItem(state, selectedListItemId);
 };
 
-const selectNextSiblingListItem = (state, action) => {
+const selectNextSiblingListItem = (state) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
     return state;
@@ -1079,7 +1079,7 @@ const selectNextSiblingListItem = (state, action) => {
   return state;
 };
 
-const removeListItem = (state, action) => {
+const removeListItem = (state) => {
   const selectedListItemId = state.get('selectedListItemId');
   if (!selectedListItemId) {
     return state;
@@ -1194,7 +1194,7 @@ const moveListItemRight = (state) => {
   );
 
   childrenListParts.map((listPart) =>
-    listPart.get('items').forEach((item, itemIndex) => {
+    listPart.get('items').forEach((item) => {
       state = state.updateIn(prevSiblingItemContentsPath, (contents) =>
         updateContentsWithListItemAddition(contents, item, listPart)
       );
@@ -1239,7 +1239,7 @@ const moveListSubtreeLeft = (state) => {
     );
 
   state = state.update('headers', (headers) =>
-    updateListContainingListItemId(headers, selectedListItemId, (itemIndex) => (items) =>
+    updateListContainingListItemId(headers, selectedListItemId, () => (items) =>
       items.filter((_item, index) => index < selectedListItemIndex)
     )
   );
