@@ -208,6 +208,9 @@ export const attributedStringToRawText = (parts) => {
         case 'text':
           text = part.get('contents');
           break;
+        case 'inline-markup':
+          text = inlineMarkUpToRawText(part);
+          break;
         case 'link':
           text = linkPartToRawText(part);
           break;
@@ -225,6 +228,12 @@ export const attributedStringToRawText = (parts) => {
           break;
         case 'timestamp':
           text = timestampPartToRawText(part);
+          break;
+        case 'url':
+        case 'www-url':
+        case 'e-mail':
+        case 'phone-number':
+          text = part.get('content');
           break;
         default:
           console.error(
