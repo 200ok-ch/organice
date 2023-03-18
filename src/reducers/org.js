@@ -1833,7 +1833,7 @@ const reducer = (state, action) => {
     case 'ADVANCE_CHECKBOX_STATE':
       return inFile(advanceCheckboxState);
     case 'SET_SELECTED_LIST_ITEM_ID':
-      return setSelectedListItemId(state, action);
+      return inFile(setSelectedListItemId);
     case 'UPDATE_LIST_TITLE_VALUE':
       return updateListTitleValue(state, action);
     case 'UPDATE_LIST_CONTENTS_VALUE':
