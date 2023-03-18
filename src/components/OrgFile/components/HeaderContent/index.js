@@ -245,9 +245,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),
     dontIndent: state.base.get('shouldNotIndentOnExport'),
-    selectedListItemId: state.org.present.get('selectedListItemId'),
-    inListTitleEditMode: state.org.present.get('editMode') === 'list-title',
-    inListContentsEditMode: state.org.present.get('editMode') === 'list-contents',
+    selectedListItemId: file.get('selectedListItemId'),
+    inListTitleEditMode: file.get('editMode') === 'list-title',
+    inListContentsEditMode: file.get('editMode') === 'list-contents',
   };
 };
 
