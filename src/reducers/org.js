@@ -1835,27 +1835,27 @@ const reducer = (state, action) => {
     case 'SET_SELECTED_LIST_ITEM_ID':
       return inFile(setSelectedListItemId);
     case 'UPDATE_LIST_TITLE_VALUE':
-      return updateListTitleValue(state, action);
+      return inFile(updateListTitleValue);
     case 'UPDATE_LIST_CONTENTS_VALUE':
-      return updateListContentsValue(state, action);
+      return inFile(updateListContentsValue);
     case 'ADD_NEW_LIST_ITEM':
-      return addNewListItem(state, action);
+      return inFile(addNewListItem);
     case 'SELECT_NEXT_SIBLING_LIST_ITEM':
-      return selectNextSiblingListItem(state, action);
+      return inFile(selectNextSiblingListItem);
     case 'REMOVE_LIST_ITEM':
-      return removeListItem(state, action);
+      return inFile(removeListItem);
     case 'MOVE_LIST_ITEM_UP':
-      return moveListItemUp(state, action);
+      return inFile(moveListItemUp);
     case 'MOVE_LIST_ITEM_DOWN':
-      return moveListItemDown(state, action);
+      return inFile(moveListItemDown);
     case 'MOVE_LIST_ITEM_LEFT':
-      return moveListItemLeft(state, action);
+      return inFile(moveListItemLeft);
     case 'MOVE_LIST_ITEM_RIGHT':
-      return moveListItemRight(state, action);
+      return inFile(moveListItemRight);
     case 'MOVE_LIST_SUBTREE_LEFT':
-      return moveListSubtreeLeft(state, action);
+      return inFile(moveListSubtreeLeft);
     case 'MOVE_LIST_SUBTREE_RIGHT':
-      return moveListSubtreeRight(state, action);
+      return inFile(moveListSubtreeRight);
     case 'SET_LAST_SYNC_AT':
       return action.path
         ? reduceInFile(state, action, action.path)(setLastSyncAt)
