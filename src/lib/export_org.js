@@ -198,11 +198,11 @@ export const attributedStringToRawText = (parts) => {
     return '';
   }
 
-  const prevPartTypes = parts.map((part) => part.get('type')).unshift(null);
+  const prevParts = parts.unshift(null);
 
   return parts
-    .zip(prevPartTypes)
-    .map(([part, prevPartType]) => {
+    .zip(prevParts)
+    .map(([part, prevPart]) => {
       let text = '';
       switch (part.get('type')) {
         case 'text':
@@ -241,7 +241,18 @@ export const attributedStringToRawText = (parts) => {
           );
       }
 
-      const optionalNewlinePrefix = ['list', 'table'].includes(prevPartType) ? '\n' : '';
+      let optionalNewlinePrefix = '';
+      if (!!prevPart) {
+        if (['list', 'table'].includes(prevPart.get('type'))) {
+          optionalNewlinePrefix = '\n';
+        } else if (
+          part.get('type') === 'list' &&
+          prevPart.get('type') === 'text' &&
+          !prevPart.get('contents').endsWith('\n')
+        ) {
+          optionalNewlinePrefix = '\n';
+        }
+      }
       return optionalNewlinePrefix + text;
     })
     .join('');
