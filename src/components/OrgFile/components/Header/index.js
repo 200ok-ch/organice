@@ -23,8 +23,8 @@ import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps'
 import { Map } from 'immutable';
 
 class Header extends PureComponent {
-  SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
-  FREE_DRAG_ACTIVATION_DISTANCE = 10;
+  SWIPE_ACTION_ACTIVATION_DISTANCE = 240;
+  FREE_DRAG_ACTIVATION_DISTANCE = 30;
 
   constructor(props) {
     super(props);
@@ -54,6 +54,8 @@ class Header extends PureComponent {
       'handleShareHeaderClick',
       'handleRefileHeaderRequest',
       'handleAddNoteClick',
+      'handleAdvanceToDoState',
+      'handleRemoveHeader',
     ]);
 
     this.state = {
@@ -80,6 +82,9 @@ class Header extends PureComponent {
   }
 
   handleDragStart(event, dragX, dragY) {
+    if (this.props.shouldDisableSwipe) {
+      return;
+    }
     if (this.props.shouldDisableActions) {
       return;
     }
@@ -222,6 +227,17 @@ class Header extends PureComponent {
     this.props.org.addHeaderAndEdit(this.props.header.get('id'));
   }
 
+  handleRemoveHeader() {
+    this.props.org.removeHeader(this.props.header.get('id'));
+  }
+
+  handleAdvanceToDoState() {
+    this.props.org.advanceTodoState(
+      this.props.header.get('id'),
+      this.props.shouldLogIntoDrawer
+    );
+  }
+
   handleRest() {
     if (this.state.isPlayingRemoveAnimation) {
       this.props.org.removeHeader(this.props.header.get('id'));
@@ -322,6 +338,7 @@ ${header.get('rawDescription')}`;
       narrowedHeader,
       isNarrowed,
       shouldDisableActions,
+      shouldDisableSwipe,
       showClockDisplay,
     } = this.props;
     const indentLevel = !!narrowedHeader
@@ -510,6 +527,9 @@ ${header.get('rawDescription')}`;
                   onShareHeader={this.handleShareHeaderClick}
                   onRefileHeader={this.handleRefileHeaderRequest}
                   onAddNote={this.handleAddNoteClick}
+                  onAdvanceToDoState={this.handleAdvanceToDoState}
+                  onDeleteHeader={this.handleRemoveHeader}
+                  swipeDisabled={shouldDisableSwipe}
                 />
               </Collapse>
 

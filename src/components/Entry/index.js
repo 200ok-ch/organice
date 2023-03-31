@@ -10,6 +10,7 @@ import { List, Set } from 'immutable';
 import _ from 'lodash';
 import classNames from 'classnames';
 
+import { isMobileBrowser } from '../../lib/browser_utils'
 import { changelogHash, STATIC_FILE_PREFIX } from '../../lib/org_utils';
 import PrivacyPolicy from '../PrivacyPolicy';
 import HeaderBar from '../HeaderBar';
@@ -89,6 +90,7 @@ class Entry extends PureComponent {
         shouldDisableDirtyIndicator={true}
         shouldDisableActionDrawer={false}
         shouldDisableSyncButtons={true}
+        shouldDisableSwipe={!isMobileBrowser}
         parsingErrorMessage={
           "The contents of sample.org couldn't be loaded. You probably forgot to set the environment variable - see the Development section of README.org for details!"
         }
@@ -130,6 +132,7 @@ class Entry extends PureComponent {
           shouldDisableDirtyIndicator={false}
           shouldDisableActionDrawer={false}
           shouldDisableSyncButtons={false}
+          shouldDisableSwipe={!isMobileBrowser}
         />
       );
     }
