@@ -158,21 +158,21 @@ On the right side, the four-way arrow buttons allow you to manipulate tables by 
 
 Press up and down to move rows, and left and right to move columns.
 * Lists and checkboxes
-organice has native support for displaying plain lists and checkboxes
+organice has native support for displaying plain lists and checkboxes.
 
 Plain:
 
-- plain list item 1
-- plain list item 2
-  - sub item 1
-- plain list item 3
+- Plain list item 1
+- Plain list item 2
+  - Sub item 1
+- Plain list item 3
 
 Ordered:
 
-1. Item 1
-2. Item 2
-20. [@20] Item 20
-21. Item 21
+1. Ordered Item 1
+2. Ordered Item 2
+   1. Sub item
+3. Ordered Item 2
 
 Checkboxes:
 
@@ -182,7 +182,28 @@ Checkboxes:
   - [X] 1. 2
 - [X] 2
 
-Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/200ok-ch/organice/issues/26][the issue]] on Github
+** Editing workflow
+
+First, create the first list item by editing the description of a header. When you close the "edit description" modal, you can manipulate the list item with native list manipulation functions. The UX is analogous to manipulating a header. Here's what you can do:
+
+- Add new list item
+- Remove list item
+- Move list item up
+- Move list item down
+- Move list item left
+- Move list item right
+- Move list subtree left
+- Move list subtree right
+- Edit list item title
+- Edit list item contents
+
+** All icons in the list action bar
+
+1. Pen: Edit list item title
+2. Pen in square: Edit list item contents
+3. Plus: Create new list item below
+4. Cross: Delete list item
+
 * Timestamps
 organice has native support for displaying and editing [[https://orgmode.org/manual/Timestamps.html#Timestamps][timestamps]].
 
