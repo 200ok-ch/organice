@@ -36,7 +36,7 @@ you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and
 
 ** Sponsors
 
-#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/kristiangronberg"> <img src="https://github.com/kristiangronberg.png" width="50px" alt="@kristiangronberg"/> </a> </p>
+#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/kristiangronberg"> <img src="https://github.com/kristiangronberg.png" width="50px" alt="@kristiangronberg"/></a> <a href="https://github.com/stefanv"> <img src="https://github.com/stefanv.png" width="50px" alt="@stefanv"/></a> </p>
 
 And one anonymous sponsor.
 
