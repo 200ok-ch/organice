@@ -527,6 +527,40 @@ exports[`Render all views Org Functionality Renders everything starting from an 
             <div
               class="title-line"
             >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A header with plain list items
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
               <span
                 class="todo-keyword todo-keyword--done-state"
               >
@@ -930,6 +964,57 @@ exports[`Render all views Org Functionality Renders everything starting from an 
               >
                 <span>
                   A header with a URL, mail address and phone number as content
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+        </div>
+        <div />
+      </div>
+      <div
+        class="header"
+        style="padding-left: 20px; margin-left: 0px;"
+      >
+        <div
+          class="left-swipe-action-container"
+          style="width: 0px; background-color: rgba(0, 0, 0, 0);"
+        >
+          <i
+            class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+            style="display: none; color: rgb(0, 0, 0);"
+          />
+        </div>
+        <div
+          class="right-swipe-action-container"
+          style="width: 0px; background-color: rgba(0, 0, 0, 0);"
+        >
+          <i
+            class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+            style="display: none; color: rgb(0, 0, 0);"
+          />
+        </div>
+        <div
+          class="header__bullet"
+          style="margin-left: -16px;"
+        >
+          *
+        </div>
+        <div
+          class="title-line"
+        >
+          
+          <div
+            style="width: 100%;"
+          >
+            <div
+              class="title-line-text"
+            >
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with plain list items
                 </span>
                 ...
               </span>

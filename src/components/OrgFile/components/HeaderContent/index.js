@@ -25,6 +25,15 @@ class HeaderContent extends PureComponent {
     _.bindAll(this, [
       'handleTableSelect',
       'handleCheckboxClick',
+      'handleListItemSelect',
+      'handleEnterListTitleEditMode',
+      'handleExitListTitleEditMode',
+      'handleListTitleValueUpdate',
+      'handleEnterListContentsEditMode',
+      'handleExitListContentsEditMode',
+      'handleListContentsValueUpdate',
+      'handleAddNewListItem',
+      'handleRemoveListItem',
       'handleTimestampClick',
       'handleLogEntryTimestampClick',
       'handleInsertTimestamp',
@@ -78,6 +87,42 @@ class HeaderContent extends PureComponent {
     this.props.org.advanceCheckboxState(listItemId);
   }
 
+  handleListItemSelect(listItemId) {
+    this.props.org.setSelectedListItemId(listItemId);
+  }
+
+  handleEnterListTitleEditMode() {
+    this.props.org.enterEditMode('list-title');
+  }
+
+  handleExitListTitleEditMode() {
+    this.props.org.exitEditMode();
+  }
+
+  handleListTitleValueUpdate(listItemId, newValue) {
+    this.props.org.updateListTitleValue(listItemId, newValue);
+  }
+
+  handleEnterListContentsEditMode() {
+    this.props.org.enterEditMode('list-contents');
+  }
+
+  handleExitListContentsEditMode() {
+    this.props.org.exitEditMode();
+  }
+
+  handleListContentsValueUpdate(listItemId, newValue) {
+    this.props.org.updateListContentsValue(listItemId, newValue);
+  }
+
+  handleAddNewListItem() {
+    this.props.org.addNewListItemAndEdit();
+  }
+
+  handleRemoveListItem() {
+    this.props.org.removeListItem();
+  }
+
   handleTimestampClick(timestampId) {
     this.props.base.activatePopup('timestamp-editor', {
       timestampId,
@@ -127,7 +172,13 @@ class HeaderContent extends PureComponent {
   }
 
   render() {
-    const { header, shouldDisableActions } = this.props;
+    const {
+      header,
+      shouldDisableActions,
+      selectedListItemId,
+      inListTitleEditMode,
+      inListContentsEditMode,
+    } = this.props;
     const { containerWidth } = this.state;
 
     if (!header.get('opened')) {
@@ -165,6 +216,18 @@ class HeaderContent extends PureComponent {
               subPartDataAndHandlers={{
                 onTableSelect: shouldDisableActions ? undefined : this.handleTableSelect,
                 onCheckboxClick: this.handleCheckboxClick,
+                onListItemSelect: this.handleListItemSelect,
+                onEnterListTitleEditMode: this.handleEnterListTitleEditMode,
+                onExitListTitleEditMode: this.handleExitListTitleEditMode,
+                onListTitleValueUpdate: this.handleListTitleValueUpdate,
+                onEnterListContentsEditMode: this.handleEnterListContentsEditMode,
+                onExitListContentsEditMode: this.handleExitListContentsEditMode,
+                onListContentsValueUpdate: this.handleListContentsValueUpdate,
+                onAddNewListItem: this.handleAddNewListItem,
+                onRemoveListItem: this.handleRemoveListItem,
+                selectedListItemId: selectedListItemId,
+                inListTitleEditMode: inListTitleEditMode,
+                inListContentsEditMode: inListContentsEditMode,
                 onTimestampClick: this.handleTimestampClick,
                 shouldDisableActions,
               }}
@@ -182,6 +245,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),
     dontIndent: state.base.get('shouldNotIndentOnExport'),
+    selectedListItemId: file.get('selectedListItemId'),
+    inListTitleEditMode: file.get('editMode') === 'list-title',
+    inListContentsEditMode: file.get('editMode') === 'list-contents',
   };
 };
 

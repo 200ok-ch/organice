@@ -219,6 +219,34 @@ describe('Render all views', () => {
       });
     });
 
+    describe('List item manipulation', () => {
+      test('Can create a new list item of same type in the middle of an existing list', () => {
+        const header = queryByText('A header with plain list items');
+        fireEvent.click(header);
+        fireEvent.click(queryByText('Plain list item 1'));
+        fireEvent.click(container.querySelectorAll("[data-testid='list-item-action-plus']")[0]);
+
+        const input = getByTestId('list-item-edit');
+        fireEvent.change(input, { target: { value: 'Plain list item 2a' } });
+
+        // Close the modal by clicking on the outside
+        fireEvent.click(getByText('Top level header'));
+
+        // New list item has the same UX
+        fireEvent.click(queryByText('Plain list item 2a'));
+        expect(container.querySelectorAll("[data-testid='list-item-action-plus']")[0]).toBeTruthy();
+
+        // The new item is inserted in the middle of 'item 1' and 'item 2'
+        expect(
+          store
+            .getState()
+            .org.present.getIn(['files', STATIC_FILE_PREFIX + 'fixtureTestFile.org', 'headers'])
+            .get(12)
+            .get('rawDescription')
+        ).toContain('- Plain list item 1\n- Plain list item 2a\n- Plain list item 2');
+      });
+    });
+
     describe('Tracking TODO state changes', () => {
       describe('Default settings', () => {
         test('Does not track TODO state change for repeating todos', () => {
@@ -270,7 +298,7 @@ describe('Render all views', () => {
         // side-effect as in a browser. Hence, some colors in this
         // snapshot are off, but that's ok. We do colorScheme testing
         // by eye and not with automated tests.
-        expect(getAllByText(/\*/)).toHaveLength(7);
+        expect(getAllByText(/\*/)).toHaveLength(8);
         expect(container).toMatchSnapshot();
       });
 

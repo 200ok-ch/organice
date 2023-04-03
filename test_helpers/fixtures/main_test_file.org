@@ -58,4 +58,9 @@ Some description content
    SCHEDULED: <2001-01-03 Wed>
 *** DONE A headline that's done a day earlier even
    SCHEDULED: <2001-01-02 Tue>
+* A header with plain list items
+
+- Plain list item 1
+- Plain list item 2
+  
 * FINISHED A header with a custom todo sequence in DONE state

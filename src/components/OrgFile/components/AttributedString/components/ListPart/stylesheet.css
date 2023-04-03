@@ -10,6 +10,36 @@
   padding-left: 40px;
 }
 
+.list-part__not_checkbox-container {
+  display: flex;
+  line-height: 18.5px;
+}
+
+.list-part__not_checkbox-container span {
+  display: inline-block;
+  height: auto;
+}
+
 .list-part__checkbox-container {
+  display: flex;
   line-height: 22px;
+}
+
+.list-part__item--selected {
+  background-color: rgba(239, 255, 0, 0.28);
+}
+
+.list-title-line__edit-container {
+  width: 100%;
+}
+
+.list-contents__edit-container {
+  width: 100%;
+}
+
+.list-contents__insert-timestamp-button {
+  color: gray;
+
+  display: flex;
+  align-items: center;
 }
