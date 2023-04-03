@@ -229,6 +229,7 @@ export default class ListPart extends PureComponent {
                 <textarea
                   autoFocus
                   className="textarea"
+                  data-testid="list-item-edit"
                   rows="3"
                   ref={this.handleTextareaRef}
                   value={listTitleValues.get(item.get('id'))}

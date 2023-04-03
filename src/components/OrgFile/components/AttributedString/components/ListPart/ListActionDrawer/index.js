@@ -30,7 +30,11 @@ export default ({
         <span className="list-action-drawer__separator" />
 
         <div className="list-action-drawer__edit-icon-container" onClick={onAddNewListItem}>
-          <i className="fas fa-plus fa-lg" title="Create list item below" />
+          <i
+            className="fas fa-plus fa-lg"
+            data-testid="list-item-action-plus"
+            title="Create list item below"
+          />
         </div>
 
         <span className="list-action-drawer__separator" />
