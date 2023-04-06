@@ -106,7 +106,9 @@ instructions:
   - On Chrome, tap the "menu" button (three vertically stacked dots)
     and select "Add to homescreen".
 
-  - On Firefox, tap the home icon with the plus sign inside it which
+  - On Firefox, "menu" button (three vertically stacked dots)
+    and select "Install". If you don't have that option, you may have
+    one to tap the home icon with the plus sign inside it which
     is immediately to the right of the URL in the address bar.
 
   - Other browsers may have a similar procedure to one of these.
