@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2023-04-10 Mon]
+
+** Fixed
+- Color of unchecked checkbox in a list
+  - PR: https://github.com/200ok-ch/organice/pull/949
+
 * [2023-04-03 Mon]
 
 ** Added
