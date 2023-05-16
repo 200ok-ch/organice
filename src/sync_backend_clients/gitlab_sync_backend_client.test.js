@@ -17,6 +17,21 @@ test('Parses GitLab project from URL', () => {
   });
 });
 
+test('Parses GitLab project from URL of a self-managed GitLab instance', () => {
+  [
+    ['https://mygitlab.com/user/foo', 'user%2Ffoo'],
+    ['https://mygitlab.com/group/subgroup/project', 'group%2Fsubgroup%2Fproject'],
+    ['mygitlab.com/foo/bar', 'foo%2Fbar'],
+    ['mygitlab.com/user-but-no-project', undefined],
+    ['https://www.mygitlab.com/user/foo', 'user%2Ffoo'],
+    ['https://www.mygitlab.com/group/subgroup/project', 'group%2Fsubgroup%2Fproject'],
+    ['www.mygitlab.com/foo/bar', 'foo%2Fbar'],
+    ['www.mygitlab.com/user-but-no-project', undefined],
+  ].forEach(([input, expected]) => {
+    expect(gitLabProjectIdFromURL(input)).toEqual(expected);
+  });
+});
+
 test('Parses Link pagination header', () => {
   [
     [null, {}],
