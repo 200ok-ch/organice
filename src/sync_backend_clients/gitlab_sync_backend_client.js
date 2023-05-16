@@ -143,7 +143,7 @@ export default (oauthClient) => {
   const decoratedFetch = oauthClient.decorateFetchHTTPClient(fetch);
 
   const getApi = () => {
-    url = new URL(getPersistedField('gitLabURL'))
+    let url = new URL(getPersistedField('gitLabURL'))
     return url.origin + API_PATH
   }
 
