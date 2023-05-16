@@ -88,7 +88,8 @@ export default class App extends PureComponent {
           });
           break;
         case 'GitLab':
-          const gitlabOAuth = createGitlabOAuth();
+          # should be createGitlabOAuth(url), where url is the GitLab instance
+          const gitlabOAuth = createGitlabOAuth();  # FIXME
           if (gitlabOAuth.isAuthorized()) {
             client = createGitLabSyncBackendClient(gitlabOAuth);
             initialState.syncBackend = Map({

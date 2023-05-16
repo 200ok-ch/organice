@@ -117,10 +117,10 @@ function GitLab() {
     if (projectId) {
       persistField('authenticatedSyncService', 'GitLab');
       persistField('gitLabProject', projectId);
-      createGitlabOAuth().fetchAuthorizationCode();
+      createGitlabOAuth(project).fetchAuthorizationCode();
     } else {
       evt.preventDefault();
-      alert('Project does not appear to be a valid gitlab.com URL');
+      alert('Project does not appear to be a valid GitLab URL');
     }
   };
 

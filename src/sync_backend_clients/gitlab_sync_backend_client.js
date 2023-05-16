@@ -5,15 +5,16 @@ import { getPersistedField } from '../util/settings_persister';
 
 import { fromJS, Map } from 'immutable';
 
-export const createGitlabOAuth = () => {
+export const createGitlabOAuth = (url = 'https://gitlab.com') => {
   // Use promises as mutex to prevent concurrent token refresh attempts, which causes problems.
   // More info: https://github.com/BitySA/oauth2-auth-code-pkce/issues/29
   // TODO: remove this workaround if/when oauth2-auth-code-pkce fixes the issue.
   let expiryPromise;
   let invalidGrantPromise;
+  url = new URL(url)
   return new OAuth2AuthCodePKCE({
-    authorizationUrl: 'https://gitlab.com/oauth/authorize',
-    tokenUrl: 'https://gitlab.com/oauth/token',
+    authorizationUrl: url.origin + '/oauth/authorize',
+    tokenUrl: url.origin + '/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
     redirectUrl: window.location.origin,
     scopes: ['api'],
@@ -64,7 +65,7 @@ export const gitLabProjectIdFromURL = (projectURL) => {
     // to a project. Reminder: a project path is not necessarily
     // /user/project because it may be under one or more groups such
     // as /user/group/subgroup/project.
-    if (url.hostname === 'gitlab.com' && path.split('/').length > 1) {
+    if (path.split('/').length > 1) {
       return encodeURIComponent(path);
     } else {
       return undefined;
@@ -130,7 +131,8 @@ export const treeToDirectoryListing = (tree) => {
   );
 };
 
-const API_URL = 'https://gitlab.com/api/v4';
+# should use API URL of GitLab instance
+const API_URL = 'https://gitlab.com/api/v4';  # FIXME
 
 /**
  * GitLab sync backend, implemented using their REST API.
