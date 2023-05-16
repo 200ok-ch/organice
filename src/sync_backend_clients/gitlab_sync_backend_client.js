@@ -147,7 +147,9 @@ export default (oauthClient) => {
     return url.origin + API_PATH
   }
 
-  const getProjectApi = () => `${getApi()}projects/${getPersistedField('gitLabProject')}`;
+  const getProject = () => gitLabProjectIdFromURL(getPersistedField('gitLabURL'))
+
+  const getProjectApi = () => getApi() + 'projects/' + getProject()
 
   const isSignedIn = async () => {
     if (!oauthClient.isAuthorized()) {

@@ -10,7 +10,6 @@ import GitLabLogo from './gitlab.svg';
 import { persistField } from '../../util/settings_persister';
 import {
   createGitlabOAuth,
-  gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
 import { DropboxAuth } from 'dropbox';
@@ -113,11 +112,9 @@ function GitLab() {
   const defaultProject = 'https://gitlab.com/your/project';
   const [project, setProject] = useState(defaultProject);
   const handleSubmit = (evt) => {
-    const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
       persistField('authenticatedSyncService', 'GitLab');
       persistField('gitLabURL', project);
-      persistField('gitLabProject', projectId);  # TODO: remove redundant field
       createGitlabOAuth(project).fetchAuthorizationCode();
     } else {
       evt.preventDefault();
