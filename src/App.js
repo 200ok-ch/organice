@@ -88,8 +88,8 @@ export default class App extends PureComponent {
           });
           break;
         case 'GitLab':
-          # should be createGitlabOAuth(url), where url is the GitLab instance
-          const gitlabOAuth = createGitlabOAuth();  # FIXME
+          project = getPersistedField('gitLabURL'),
+          const gitlabOAuth = createGitlabOAuth(project);
           if (gitlabOAuth.isAuthorized()) {
             client = createGitLabSyncBackendClient(gitlabOAuth);
             initialState.syncBackend = Map({

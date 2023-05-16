@@ -116,7 +116,8 @@ function GitLab() {
     const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
       persistField('authenticatedSyncService', 'GitLab');
-      persistField('gitLabProject', projectId);
+      persistField('gitLabURL', project);
+      persistField('gitLabProject', projectId);  # TODO: remove redundant field
       createGitlabOAuth(project).fetchAuthorizationCode();
     } else {
       evt.preventDefault();
