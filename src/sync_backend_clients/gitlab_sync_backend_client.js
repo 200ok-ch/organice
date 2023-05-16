@@ -131,8 +131,7 @@ export const treeToDirectoryListing = (tree) => {
   );
 };
 
-# should use API URL of GitLab instance
-const API_URL = 'https://gitlab.com/api/v4';  # FIXME
+const API_PATH = '/api/v4/'
 
 /**
  * GitLab sync backend, implemented using their REST API.
@@ -143,7 +142,12 @@ const API_URL = 'https://gitlab.com/api/v4';  # FIXME
 export default (oauthClient) => {
   const decoratedFetch = oauthClient.decorateFetchHTTPClient(fetch);
 
-  const getProjectApi = () => `${API_URL}/projects/${getPersistedField('gitLabProject')}`;
+  const getApi = () => {
+    url = new URL(getPersistedField('gitLabURL'))
+    return url.origin + API_PATH
+  }
+
+  const getProjectApi = () => `${getApi()}projects/${getPersistedField('gitLabProject')}`;
 
   const isSignedIn = async () => {
     if (!oauthClient.isAuthorized()) {
@@ -176,7 +180,7 @@ export default (oauthClient) => {
     // commit.
     const [userResponse, membersResponse] = await Promise.all([
       // https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users
-      decoratedFetch(`${API_URL}/user`),
+      decoratedFetch(getApi() + 'user'),
       // https://docs.gitlab.com/ee/api/members.html#list-all-members-of-a-group-or-project
       decoratedFetch(`${getProjectApi()}/members`),
     ]);
