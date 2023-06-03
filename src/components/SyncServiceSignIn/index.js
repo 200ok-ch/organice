@@ -112,14 +112,10 @@ function GitLab() {
   const defaultProject = 'https://gitlab.com/your/project';
   const [project, setProject] = useState(defaultProject);
   const handleSubmit = (evt) => {
-    if (projectId) {
-      persistField('authenticatedSyncService', 'GitLab');
-      persistField('gitLabURL', project);
-      createGitlabOAuth(project).fetchAuthorizationCode();
-    } else {
-      evt.preventDefault();
-      alert('Project does not appear to be a valid GitLab URL');
-    }
+    persistField('authenticatedSyncService', 'GitLab');
+    persistField('gitLabURL', project);
+    // TODO handle incorrect URLs, possibly with try ... catch ...
+    createGitlabOAuth(project).fetchAuthorizationCode();
   };
 
   return (
