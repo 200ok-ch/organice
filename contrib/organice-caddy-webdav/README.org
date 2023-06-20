@@ -1,0 +1,135 @@
+#+title: Setting up a self-hosted Webdav server for Organice with Caddy
+#+options: toc:t
+
+This guide explains how to set up Organice with [[https://caddyserver.com][Caddy's]] [[https://github.com/mholt/caddy-webdav][Webdav plugin]] and
+run both of them on the same domain. That way, no fiddling with
+CORS is involved. The downside is that your Webdav share won't be usable with
+Organice's official instance, but this shouldn't be a problem, since both your local
+instance of Organice and its dedicated Webdav share should be up at the same
+time anyway.
+
+** Customising Caddy's Dockerfile
+
+For this, we'll be using lucaslorentz' [[https://github.com/lucaslorentz/caddy-docker-proxy][excellent Dockerfile]] for Caddy.
+What makes it particularly elegant is that it maps the labels used in your ~docker-compose~
+YAML file to ~Caddyfile~ directives. That way, everything can be neatly defined in your
+~docker-compose.yml~ file. No fiddling with external files involved.
+
+However, we cannot use the upstream Dockerfile direcly, because it does not compile Caddy
+with Webdav support. We need to modify it and build it locally instead.
+
+#+begin_src shell
+cd my-docker-compose-dir
+mkdir -p caddy/src/
+git clone https://github.com/lucaslorentz/caddy-docker-proxy caddy/src
+#+end_src
+
+Now, open ~caddy/src/Dockerfile~ with your favourite text editor (we know which one it is)
+and edit it so that it looks like this (please note that both this file and the ~docker-compose.yml~
+file described further down are included in this directory):
+
+#+begin_src dockerfile :tangle Dockerfile
+ARG CADDY_VERSION=2.6.4
+FROM caddy:${CADDY_VERSION}-builder AS builder
+
+RUN xcaddy build \
+    --with github.com/lucaslorentz/caddy-docker-proxy/v2@v2.8.4 \
+    --with github.com/mholt/caddy-webdav
+    # --with <additional-plugins>
+
+FROM caddy:${CADDY_VERSION}-alpine
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+
+CMD ["caddy", "docker-proxy"]
+#+end_src
+
+** docker-compose.yml
+
+Now, go back to ~my-docker-compose-dir~ and add something like this to ~docker-compose.yml~:\\
+#+begin_note
+Please read the comments carefully before using it.
+#+end_note
+#+begin_src yaml :tangle docker-compose.yml
+version: "3.8"
+services:
+  caddy:
+    # image: lucaslorentz/caddy-docker-proxy
+    build: ./caddy/src/
+    container_name: caddy
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - CADDY_INGRESS_NETWORKS=caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./caddy/caddy-data:/data/
+      - ./caddy/caddy-config:/config/
+      # Replace '/path/to/org-dir' with the path to the
+      # directory in which your Org files are stored.
+      - /path/to/org-dir:/srv/dav/Org/
+    restart: unless-stopped
+    networks:
+      - caddy
+
+  organice:
+    image: 'twohundredok/organice:latest'
+    container_name: organice
+    # ports:
+    #   - '5000:3000'
+    logging:
+      driver: json-file
+    environment:
+      # Replace 'organice.example.org' with your domain.
+      - ORGANICE_WEBDAV_URL=https://organice.example.org/dav
+    # /srv/dav/ volume is bound in caddy container
+    labels:
+      # Replace 'organice.example.org' with your domain.
+      caddy: organice.example.org
+      # Secure your server, either with IP whitelisting,
+      # by uncommenting the next three lines (obviously,
+      # change the value of the IP subnet):
+      # caddy.@blocked.not: "remote_ip 192.168.2.0/24"
+      # caddy.@blocked.path: "*"
+      # caddy.route.respond: "@blocked Forbidden. 403"
+      # Or with HTTP basic auth, by uncommenting the next two
+      # lines, replacing 'myser' with the desired username and
+      # 'mypassword' with a hashed password, which you can
+      # generate with 'docker run -it caddy caddy hash-password'.
+      # Don't forget to escape the dollar signs ('$') in the hash
+      # by doubling them (i.e '$foo$bar' should become '$$foo$$bar').
+      # caddy.route.basicauth: "*"
+      # caddy.route.basicauth.myuser: mypassword
+      # If you want to restrict the access to the Webdav server
+      # only and keep your Organice instance public, replace the
+      # '*' in the examples above with '/dav/*'.
+      caddy.@proxy.not: "path /dav/*"
+      caddy.route.reverse_proxy: "@proxy {{upstreams 5000}}"
+      caddy.route.rewrite: /dav /dav/
+      caddy.route.webdav: "/dav/*"
+      caddy.route.webdav.prefix: /dav
+      caddy.route.webdav.root: "/srv/dav/Org"
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    name: caddy
+#+end_src
+
+We're almost ready now! We're just a few commands away from ataraxia.
+
+#+begin_src shell
+docker compose build caddy
+docker compose up -d
+#+end_src
+
+You can now access your Organice instance at https://organice.example.org. Log in with
+the Webdav backend, and set its URL to https://organice.example.org/dav. If you
+have set up basic HTTP auth for the Webdav server, enter your credentials, otherwise
+leave the fields empty.
+
+* Related links and acknowledgements
+- I'd like to thank Marko Kocic (who also seems to be a fan of Emacs), from whom the initial inspiration for this article came: see https://marko.euptera.com/posts/caddy-webdav.html
+- Original version of this file: https://e-v.srht.site/organice-caddy-webdav.html
