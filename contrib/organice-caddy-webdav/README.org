@@ -18,10 +18,10 @@ YAML file to ~Caddyfile~ directives. That way, everything can be neatly defined 
 However, we cannot use the upstream Dockerfile direcly, because it does not compile Caddy
 with Webdav support. We need to modify it and build it locally instead.
 
-#+begin_src shell
-cd my-docker-compose-dir
-mkdir -p caddy/src/
-git clone https://github.com/lucaslorentz/caddy-docker-proxy caddy/src
+#+begin_src shell-session
+$ cd my-docker-compose-dir
+$ mkdir -p caddy/src/
+$ git clone https://github.com/lucaslorentz/caddy-docker-proxy caddy/src
 #+end_src
 
 Now, open ~caddy/src/Dockerfile~ with your favourite text editor (we know which one it is)
@@ -120,9 +120,9 @@ networks:
 
 We're almost ready now! We're just a few commands away from ataraxia.
 
-#+begin_src shell
-docker compose build caddy
-docker compose up -d
+#+begin_src shell-session
+$ docker compose build caddy
+$ docker compose up -d
 #+end_src
 
 You can now access your Organice instance at https://organice.example.org. Log in with
