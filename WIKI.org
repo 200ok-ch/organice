@@ -494,6 +494,56 @@ differentiate between the two use cases.
     selectors under a unique identifier.
 
 
+*** adr-003-synchronization-back-ends
+:PROPERTIES:
+:CUSTOM_ID: adr-003
+:END:
+**** Synchronization back-ends
+
+***** Context
+
+Different users like to synchronize their files using different
+back-ends. Some prefer open standards and to host the required services
+themselves - others prefer to pay for a closed source service so that
+they don't have to worry about storage of their data themselves. The
+spread of strategies employed by these back-ends couldn't be further
+apart - some work in hunks and commits, some on files, etc.
+
+To accommodate every personal synchronization strategy, organice
+should be easily extensible.
+
+***** Decision
+
+organice employs the [[https://en.wikipedia.org/wiki/Strategy_pattern][Strategy Pattern]] which is a [[https://en.wikipedia.org/wiki/Software_design_pattern][design pattern]] made
+to do the 'same thing' (like storing and retrieving files) with
+'different strategies' (like employing different APIs for Dropbox,
+GitLab, and WebDAV). 
+
+***** Status
+
+   Accepted
+
+***** Consequences
+
+Implementing a client for a new synchronization back-end is quite
+easy:
+
+1. Take any of the [[https://github.com/200ok-ch/organice/tree/master/src/sync_backend_clients][existing back-ends]] as a template. If you already
+   happen to know how the API of your new synchronization back-end
+   works, you can pick the closest one. Ultimately, it doesn't make a
+   big difference from where you start off.
+2. Implement the [[https://github.com/200ok-ch/organice/blob/d00e1e31b3c675b3be71c0e0150f8ad7292766b0/src/sync_backend_clients/webdav_sync_backend_client.js#L133-L143][8 functions defined by the strategy pattern]]:
+   1. =isSignedIn=
+   2. =getDirectoryListing=
+   3. =getMoreDirectoryListing=
+   4. =updateFile=
+   5. =createFile=
+   6. =getFileContentsAndMetadata=
+   7. =getFileContents=
+   8. =deleteFile=
+3. That's it😂
+
+
 * Building this documentation
   :PROPERTIES:
   :CUSTOM_ID: building_docs
