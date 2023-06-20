@@ -25,7 +25,7 @@ version: "3.7"
 services:
   traefik:
     container_name: traefik
-    image: "traefik:latest"
+    image: "traefik:v2.10"
     command:
       - --entrypoints.websecure.address=:443
       - --entrypoints.web.address=:80
@@ -57,6 +57,8 @@ services:
     image: "twohundredok/organice:latest"
     container_name: organice
     restart: unless-stopped
+    evironment:
+      - ORGANICE_WEBDAV_URL=https://${DOMAIN}/${WEBDAV_PREFIX}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.organice.rule=Host(`${DOMAIN}`)"
@@ -99,7 +101,8 @@ Configure the following variables in the ~.env~ file as described below.
 # User/password pair for Basic Auth.
 # Generate a hash of the password with:
 # echo $(htpasswd -nb user password)
-HTTP_AUTH=foobar:$apr1$Sb95q920$ALXNRKanXaXrH1pLS.4Bp.
+# Don't forget to escape '$' with an extra '$'
+HTTP_AUTH="foobar:$$apr1$$Sb95q920$$ALXNRKanXaXrH1pLS.4Bp."
 # Domain name used to access Organice
 DOMAIN=organice.example.com
 # UID of the user your Org files belong to
@@ -126,8 +129,6 @@ touch traefik/acme.json
 chmod 600 traefik/acme.json
 docker compose build
 #+end_src
-
-#+RESULTS:
 
 After running ~docker compose up~, open organice by accessing the domain you have set in the
 ~.env~ file, then log in using the Webdav backend, whose URL is ~$DOMAIN/$WEBDAV_PREFIX~

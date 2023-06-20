@@ -3,7 +3,7 @@ version: "3.7"
 services:
   traefik:
     container_name: traefik
-    image: "traefik:latest"
+    image: "traefik:v2.10"
     command:
       - --entrypoints.websecure.address=:443
       - --entrypoints.web.address=:80
@@ -35,10 +35,12 @@ services:
     image: "twohundredok/organice:latest"
     container_name: organice
     restart: unless-stopped
+    evironment:
+      - ORGANICE_WEBDAV_URL=https://${DOMAIN}/${WEBDAV_PREFIX}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.organice.rule=Host(`${DOMAIN}`)"
-      # Remove either of the following lines to disable IP whitelisting or basic auth
+      # Remove either of the following lines to disable IP whitelisting or basic auth.
       - "traefik.http.middlewares.auth.basicauth.users=${HTTP_AUTH}"
       - "traefik.http.middlewares.ipwl.ipwhitelist.sourcerange=127.0.0.1/32, 192.168.2.0/24"
       # Remove either 'auth' or 'ipwl' below accordingly. Eg:
@@ -66,4 +68,5 @@ services:
       - "traefik.http.routers.webdav.tls.certresolver=le"
       - "traefik.http.routers.webdav.entrypoints=websecure"
       - "traefik.http.services.webdav.loadbalancer.server.port=80"
+      # See above comments to configure IP whitelisting.
       - "traefik.http.routers.webdav.middlewares=auth"
