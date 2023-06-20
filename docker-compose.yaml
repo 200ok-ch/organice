@@ -7,7 +7,7 @@ services:
     logging:
       driver: json-file
     environment:
-      ORGANICE_WEBDAV_URL: http://webdav.example.com
+      REACT_APP_WEBDAV_URL: http://webdav.example.com
   apache-webdav:
     build:
       context: ./
