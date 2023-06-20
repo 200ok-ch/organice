@@ -362,7 +362,7 @@ export default () => {
                       <div className="testimonial p-lg-5">
                         <p className="testimonial-quote text-primary">
                           "Been using organice for years. To me, it’s by far the most usable
-                          solution to interacting with org files on a mobile device."
+                          solution for interacting with org files on a mobile device."
                         </p>
                         <div className="row">
                           <div className="col-3">
