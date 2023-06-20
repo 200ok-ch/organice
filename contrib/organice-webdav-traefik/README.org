@@ -130,8 +130,6 @@ chmod 600 traefik/acme.json
 docker compose build
 #+end_src
 
-#+RESULTS:
-
 After running ~docker compose up~, open organice by accessing the domain you have set in the
 ~.env~ file, then log in using the Webdav backend, whose URL is ~$DOMAIN/$WEBDAV_PREFIX~
 and the username and password you have chosen.
