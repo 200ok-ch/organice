@@ -587,7 +587,7 @@ exports[`<Landing /> renders 1`] = `
                     <p
                       class="testimonial-quote text-primary"
                     >
-                      "Been using organice for years. To me, it’s by far the most usable solution to interacting with org files on a mobile device."
+                      "Been using organice for years. To me, it’s by far the most usable solution for interacting with org files on a mobile device."
                     </p>
                     <div
                       class="row"
