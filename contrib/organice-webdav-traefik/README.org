@@ -101,7 +101,8 @@ Configure the following variables in the ~.env~ file as described below.
 # User/password pair for Basic Auth.
 # Generate a hash of the password with:
 # echo $(htpasswd -nb user password)
-HTTP_AUTH=foobar:$apr1$Sb95q920$ALXNRKanXaXrH1pLS.4Bp.
+# Don't forget to escape '$' with an extra '$'
+HTTP_AUTH="foobar:$$apr1$$Sb95q920$$ALXNRKanXaXrH1pLS.4Bp."
 # Domain name used to access Organice
 DOMAIN=organice.example.com
 # UID of the user your Org files belong to
