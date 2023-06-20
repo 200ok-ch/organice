@@ -57,6 +57,8 @@ services:
     image: "twohundredok/organice:latest"
     container_name: organice
     restart: unless-stopped
+    evironment:
+      - ORGANICE_WEBDAV_URL=https://${DOMAIN}/${WEBDAV_PREFIX}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.organice.rule=Host(`${DOMAIN}`)"
