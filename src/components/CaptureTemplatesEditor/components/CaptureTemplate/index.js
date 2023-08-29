@@ -191,7 +191,7 @@ export default ({
               ? loadedFilePaths
               : [template.get('file'), ...loadedFilePaths]
             ).map((path) => (
-              <option key={path} value={path}>
+              <option key={path} value={path} selected={path === template.get('file')}>
                 {path}
               </option>
             ))}
