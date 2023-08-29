@@ -14,6 +14,11 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 - Capture template variable =%y= expanding to the raw year
   - PR: https://github.com/200ok-ch/organice/pull/964
 
+** Fixed
+
+- Using a capture template that is available from all Org files, but should always capture to just one file (not necessarily the currently open one).
+  - PR: https://github.com/200ok-ch/organice/pull/965
+
 * [2023-04-11 Tue]
 
 ** Changed
