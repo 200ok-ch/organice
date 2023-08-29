@@ -7,6 +7,13 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2023-08-29 Tue]
+
+** Added
+
+- Capture template variable =%y= expanding to the raw year
+  - PR: https://github.com/200ok-ch/organice/pull/964
+
 * [2023-04-11 Tue]
 
 ** Changed
