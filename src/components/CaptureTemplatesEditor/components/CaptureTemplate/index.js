@@ -304,6 +304,9 @@ export default ({
             <code>%R</code> - Raw timestamp, with date and time, no surrounding punctuation.
           </li>
           <li>
+            <code>%y</code> - Raw year
+          </li>
+          <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}
             <ExternalLink href="https://organice.200ok.ch/documentation.html#capture_templates">
               the README file
