@@ -130,3 +130,12 @@ body,
 
   color: var(--base00);
 }
+
+@media print {
+  html,
+  body,
+  .App:not(.landing-page) {
+    height: 100% !important;
+    overflow: visible;
+  }
+}
