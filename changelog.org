@@ -7,6 +7,13 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2023-11-15 Wed]
+
+** Added
+
+- Ability to print all content (including below the fold)
+  - PR: https://github.com/200ok-ch/organice/pull/969
+
 * [2023-08-29 Tue]
 
 ** Added
