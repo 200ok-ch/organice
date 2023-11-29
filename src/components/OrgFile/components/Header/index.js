@@ -362,18 +362,19 @@ ${header.get('rawDescription')}`;
         : '';
 
     const today = new Date();
-    const headerDate = 
+    const headerDate =
       headerDeadlineMap !== undefined
         ? new Date(
             headerDeadlineMap.get('month') +
-            '-' +
-            headerDeadlineMap.get('day') +
-            '-' +
-            headerDeadlineMap.get('year')
+              '-' +
+              headerDeadlineMap.get('day') +
+              '-' +
+              headerDeadlineMap.get('year')
           )
         : today;
 
-    const headerSecondsToDue = new Date(headerDate).setHours(0, 0, 0, 0) - new Date(today).setHours(0, 0, 0, 0);
+    const headerSecondsToDue =
+      new Date(headerDate).setHours(0, 0, 0, 0) - new Date(today).setHours(0, 0, 0, 0);
 
     const {
       dragStartX,
@@ -531,7 +532,11 @@ ${header.get('rawDescription')}`;
                   // Spacing between 'clock display' and 'deadline
                   // display' overlays
                   (showClockDisplay && showDeadlineDisplay ? ' ' : '') +
-                  (showDeadlineDisplay && headerDeadline !== undefined ? (headerSecondsToDue < 0 ? '**' : '') + headerDeadline + (headerSecondsToDue < 0 ? '**' : '') : '')
+                  (showDeadlineDisplay && headerDeadline !== undefined
+                    ? (headerSecondsToDue < 0 ? '**' : '') +
+                      headerDeadline +
+                      (headerSecondsToDue < 0 ? '**' : '')
+                    : '')
                 }
               />
 
