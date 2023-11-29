@@ -365,11 +365,9 @@ ${header.get('rawDescription')}`;
     const headerDate =
       headerDeadlineMap !== undefined
         ? new Date(
-            headerDeadlineMap.get('month') +
-              '-' +
-              headerDeadlineMap.get('day') +
-              '-' +
-              headerDeadlineMap.get('year')
+            headerDeadlineMap.get('year'),
+            headerDeadlineMap.get('month'),
+            headerDeadlineMap.get('day')
           )
         : today;
 
