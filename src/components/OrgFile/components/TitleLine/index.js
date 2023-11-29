@@ -104,7 +104,6 @@ class TitleLine extends PureComponent {
       shouldDisableExplicitWidth,
       todoKeywordSets,
       addition,
-      headerSecondsToDue,
     } = this.props;
     const { containerWidth } = this.state;
 
