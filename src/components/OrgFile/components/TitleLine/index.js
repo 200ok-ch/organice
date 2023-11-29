@@ -104,7 +104,7 @@ class TitleLine extends PureComponent {
       shouldDisableExplicitWidth,
       todoKeywordSets,
       addition,
-      headerOverdueValue,
+      headerSecondsToDue,
     } = this.props;
     const { containerWidth } = this.state;
 
@@ -123,16 +123,6 @@ class TitleLine extends PureComponent {
       marginRight: '2em',
       whiteSpace: 'nowrap',
     };
-
-    const additionOverdueStyle = {
-      color: 'red',
-      minWidth: '5em',
-      textAlign: 'right',
-      marginRight: '2em',
-      whiteSpace: 'nowrap',
-    };
-
-    const additionStyleDisplay = (headerOverdueValue < 0) ? additionOverdueStyle : additionStyle;
 
     return (
       <div
@@ -173,7 +163,7 @@ class TitleLine extends PureComponent {
                 />
                 {!header.get('opened') && hasContent ? '...' : ''}
               </span>
-              {addition ? <span style={additionStyleDisplay}>{addition} {(headerOverdueValue < 0) ? 'OVERDUE' : 'FUTURE'} {headerOverdueValue}</span> : null}
+              {addition ? <span style={additionStyle}>{addition}</span> : null}
             </div>
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>
