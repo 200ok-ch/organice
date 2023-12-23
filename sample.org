@@ -14,7 +14,7 @@ When you select a header, the "header action drawer" appears. The first two icon
 
 Title and Description fields are not edited as raw text by default. Instead, a semantic editor comes up when editing them. To edit raw values, click the 'edit' icon, again.
 
-If you want the "header action drawer" to disappear or to deselect the current header, tap into the title (or empty space) in the headerbar.
+If you want the "header action drawer" to disappear or to deselect the current header, tap onto the title (or empty space) in the application's headerbar.
 
 ** All icons in the header action bar
 
