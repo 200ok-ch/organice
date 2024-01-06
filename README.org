@@ -924,9 +924,7 @@ little bit of JavaScript:
 #+BEGIN_SRC javascript
   javascript:(function() {
     const {title} = document;
-    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${
-    window.location.href
-  }`;
+    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${window.location.href}`;
     window.open(url, "_blank");
   })()
 #+END_SRC
