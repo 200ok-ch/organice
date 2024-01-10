@@ -39,6 +39,13 @@ export default ({
   const togglePrepend = () =>
     onFieldPathUpdate(template.get('id'), ['shouldPrepend'], !template.get('shouldPrepend'));
 
+  const toggleCaptureAsNewHeader = () =>
+    onFieldPathUpdate(
+      template.get('id'),
+      ['shouldCaptureAsNewHeader'],
+      !template.get('shouldCaptureAsNewHeader')
+    );
+
   const handleAddNewOrgFileAvailability = () => {
     onAddNewTemplateOrgFileAvailability(template.get('id'));
   };
@@ -259,6 +266,23 @@ export default ({
     </div>
   );
 
+  const renderCaptureAsNewHeader = (template) => (
+    <div className="capture-template__field-container">
+      <div className="capture-template__field">
+        <div>Capture as new header?</div>
+        <Switch
+          isEnabled={template.get('shouldCaptureAsNewHeader')}
+          onToggle={toggleCaptureAsNewHeader}
+        />
+      </div>
+
+      <div className="capture-template__help-text">
+        By default, new captured content is added as a new header. Disable this setting to append
+        content to an existing one (the last one in the path).
+      </div>
+    </div>
+  );
+
   const renderTemplateField = (template) => (
     <div className="capture-template__field-container">
       <div className="capture-template__field" style={{ marginTop: 7 }}>
@@ -372,6 +396,7 @@ export default ({
               {renderFilePath(template)}
               {renderHeaderPaths(template)}
               {renderPrependField(template)}
+              {renderCaptureAsNewHeader(template)}
               {renderTemplateField(template)}
               {renderDeleteButton()}
             </div>

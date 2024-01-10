@@ -110,119 +110,123 @@ export const sync = (options) => (dispatch, getState) => {
 // wrapping function `syncDebounced`. This will actually debounce
 // `doSync`, because the inner function `sync` will be created only
 // once.
-const doSync = ({
-  forceAction = null,
-  successMessage = 'Changes pushed',
-  shouldSuppressMessages = false,
-  path,
-} = {}) => (dispatch, getState) => {
-  const client = getState().syncBackend.get('client');
-  const currentPath = getState().org.present.get('path');
-  path = path || currentPath;
-  if (!path || path.startsWith(STATIC_FILE_PREFIX)) {
-    return;
-  }
+const doSync =
+  ({
+    forceAction = null,
+    successMessage = 'Changes pushed',
+    shouldSuppressMessages = false,
+    path,
+  } = {}) =>
+  (dispatch, getState) => {
+    const client = getState().syncBackend.get('client');
+    const currentPath = getState().org.present.get('path');
+    path = path || currentPath;
+    if (!path || path.startsWith(STATIC_FILE_PREFIX)) {
+      return;
+    }
 
-  // Calls do `doSync` are already debounced using a timer, but on big
-  // Org files or slow connections, it's still possible to have
-  // concurrent requests to `doSync` which has no merit. When
-  // `isLoading`, don't trigger another sync in parallel. Instead,
-  // call `syncDebounced` and return immediately. This will
-  // recursively enqueue the request to do a sync until the current
-  // sync is finished. Since it's a debounced call, enqueueing it
-  // recursively is efficient.
-  // That is, unless the user manually hits the 'sync' button
-  // (indicated by `forceAction === 'manual'`). Then, do what the user
-  // requests.
-  if (getState().base.get('isLoading').includes(path) && forceAction !== 'manual') {
-    // Since there is a quick succession of debounced requests to
-    // synchronize, the user likely is in a undo/redo workflow with
-    // potential new changes to the Org file in between. In such a
-    // situation, it is easy for the remote file to have a newer
-    // `lastModifiedAt` date than the `lastSyncAt` date. Hence,
-    // pushing is the right action - no need for the modal to ask the
-    // user for her request to pull/push or cancel.
-    dispatch(sync({ forceAction: 'push' }));
-    return;
-  }
+    // Calls do `doSync` are already debounced using a timer, but on big
+    // Org files or slow connections, it's still possible to have
+    // concurrent requests to `doSync` which has no merit. When
+    // `isLoading`, don't trigger another sync in parallel. Instead,
+    // call `syncDebounced` and return immediately. This will
+    // recursively enqueue the request to do a sync until the current
+    // sync is finished. Since it's a debounced call, enqueueing it
+    // recursively is efficient.
+    // That is, unless the user manually hits the 'sync' button
+    // (indicated by `forceAction === 'manual'`). Then, do what the user
+    // requests.
+    if (getState().base.get('isLoading').includes(path) && forceAction !== 'manual') {
+      // Since there is a quick succession of debounced requests to
+      // synchronize, the user likely is in a undo/redo workflow with
+      // potential new changes to the Org file in between. In such a
+      // situation, it is easy for the remote file to have a newer
+      // `lastModifiedAt` date than the `lastSyncAt` date. Hence,
+      // pushing is the right action - no need for the modal to ask the
+      // user for her request to pull/push or cancel.
+      dispatch(sync({ forceAction: 'push' }));
+      return;
+    }
 
-  if (!shouldSuppressMessages) {
-    dispatch(setLoadingMessage(`Syncing ...`));
-  }
-  dispatch(setIsLoading(true, path));
-  dispatch(setOrgFileErrorMessage(null));
+    if (!shouldSuppressMessages) {
+      dispatch(setLoadingMessage(`Syncing ...`));
+    }
+    dispatch(setIsLoading(true, path));
+    dispatch(setOrgFileErrorMessage(null));
 
-  client
-    .getFileContentsAndMetadata(path)
-    .then(({ contents, lastModifiedAt }) => {
-      const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
-      const lastServerModifiedAt = parseISO(lastModifiedAt);
-      const lastSyncAt = getState().org.present.getIn(['files', path, 'lastSyncAt']);
+    client
+      .getFileContentsAndMetadata(path)
+      .then(({ contents, lastModifiedAt }) => {
+        const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
+        const lastServerModifiedAt = parseISO(lastModifiedAt);
+        const lastSyncAt = getState().org.present.getIn(['files', path, 'lastSyncAt']);
 
-      if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
-        if (isDirty) {
-          const contents = exportOrg({
-            headers: getState().org.present.getIn(['files', path, 'headers']),
-            linesBeforeHeadings: getState().org.present.getIn([
-              'files',
-              path,
-              'linesBeforeHeadings',
-            ]),
-            dontIndent: getState().base.get('shouldNotIndentOnExport'),
-          });
-          client
-            .updateFile(path, contents)
-            .then(() => {
-              if (!shouldSuppressMessages) {
-                dispatch(setDisappearingLoadingMessage(successMessage, 2000));
-              } else {
-                setTimeout(() => dispatch(hideLoadingMessage()), 2000);
-              }
-              dispatch(setIsLoading(false, path));
-              dispatch(setDirty(false, path));
-              dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
-            })
-            .catch((error) => {
-              const err = `There was an error pushing the file ${path}: ${error.toString()}`;
-              console.error(err);
-              dispatch(setDisappearingLoadingMessage(err, 5000));
-              dispatch(hideLoadingMessage());
-              dispatch(setIsLoading(false, path));
-              // Re-enqueue the file to be synchronized again
-              dispatch(sync({ path }));
+        if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
+          if (isDirty) {
+            const contents = exportOrg({
+              headers: getState().org.present.getIn(['files', path, 'headers']),
+              linesBeforeHeadings: getState().org.present.getIn([
+                'files',
+                path,
+                'linesBeforeHeadings',
+              ]),
+              dontIndent: getState().base.get('shouldNotIndentOnExport'),
             });
-        } else {
-          if (!shouldSuppressMessages) {
-            dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+            client
+              .updateFile(path, contents)
+              .then(() => {
+                if (!shouldSuppressMessages) {
+                  dispatch(setDisappearingLoadingMessage(successMessage, 2000));
+                } else {
+                  setTimeout(() => dispatch(hideLoadingMessage()), 2000);
+                }
+                dispatch(setIsLoading(false, path));
+                dispatch(setDirty(false, path));
+                dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+              })
+              .catch((error) => {
+                const err = `There was an error pushing the file ${path}: ${error.toString()}`;
+                console.error(err);
+                dispatch(setDisappearingLoadingMessage(err, 5000));
+                dispatch(hideLoadingMessage());
+                dispatch(setIsLoading(false, path));
+                // Re-enqueue the file to be synchronized again
+                dispatch(sync({ path }));
+              });
           } else {
-            setTimeout(() => dispatch(hideLoadingMessage()), 2000);
+            if (!shouldSuppressMessages) {
+              dispatch(setDisappearingLoadingMessage('Nothing to sync', 2000));
+            } else {
+              setTimeout(() => dispatch(hideLoadingMessage()), 2000);
+            }
+            dispatch(setIsLoading(false, path));
           }
-          dispatch(setIsLoading(false, path));
-        }
-      } else {
-        if (isDirty && forceAction !== 'pull') {
-          dispatch(hideLoadingMessage());
-          dispatch(setIsLoading(false, path));
-          dispatch(activatePopup('sync-confirmation', { lastServerModifiedAt, lastSyncAt, path }));
         } else {
-          dispatch(parseFile(path, contents));
-          dispatch(setDirty(false, path));
-          dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
-          if (!shouldSuppressMessages) {
-            dispatch(setDisappearingLoadingMessage(`Latest version pulled: ${path}`, 2000));
+          if (isDirty && forceAction !== 'pull') {
+            dispatch(hideLoadingMessage());
+            dispatch(setIsLoading(false, path));
+            dispatch(
+              activatePopup('sync-confirmation', { lastServerModifiedAt, lastSyncAt, path })
+            );
           } else {
-            setTimeout(() => dispatch(hideLoadingMessage()), 2000);
+            dispatch(parseFile(path, contents));
+            dispatch(setDirty(false, path));
+            dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+            if (!shouldSuppressMessages) {
+              dispatch(setDisappearingLoadingMessage(`Latest version pulled: ${path}`, 2000));
+            } else {
+              setTimeout(() => dispatch(hideLoadingMessage()), 2000);
+            }
+            dispatch(setIsLoading(false, path));
           }
-          dispatch(setIsLoading(false, path));
         }
-      }
-    })
-    .catch(() => {
-      dispatch(hideLoadingMessage());
-      dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
-    });
-};
+      })
+      .catch(() => {
+        dispatch(hideLoadingMessage());
+        dispatch(setIsLoading(false, path));
+        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      });
+  };
 
 export const openHeader = (headerId) => ({
   type: 'OPEN_HEADER',
@@ -488,15 +492,23 @@ export const updateTableCellValue = (cellId, newValue) => ({
   dirtying: true,
 });
 
-export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, getState) => {
-  dispatch(closePopup());
+export const insertCapture =
+  (templateId, content, shouldPrepend, shouldCaptureAsNewHeader) => (dispatch, getState) => {
+    dispatch(closePopup());
 
-  const template = getState()
-    .capture.get('captureTemplates')
-    .concat(sampleCaptureTemplates)
-    .find((template) => template.get('id') === templateId);
-  dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
-};
+    const template = getState()
+      .capture.get('captureTemplates')
+      .concat(sampleCaptureTemplates)
+      .find((template) => template.get('id') === templateId);
+    dispatch({
+      type: 'INSERT_CAPTURE',
+      template,
+      content,
+      shouldPrepend,
+      shouldCaptureAsNewHeader,
+      dirtying: true,
+    });
+  };
 
 export const clearPendingCapture = () => ({
   type: 'CLEAR_PENDING_CAPTURE',
@@ -556,7 +568,14 @@ export const insertPendingCapture = () => (dispatch, getState) => {
       )}${captureContent}${substitutedTemplate.substring(initialCursorIndex)}`
     : `${substitutedTemplate}${captureContent}`;
 
-  dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend')));
+  dispatch(
+    insertCapture(
+      template.get('id'),
+      content,
+      template.get('shouldPrepend'),
+      !template.has('shouldCaptureAsNewHeader') || template.get('shouldCaptureAsNewHeader')
+    )
+  );
   dispatch(sync({ successMessage: 'Item captured' }));
 };
 

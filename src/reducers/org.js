@@ -685,8 +685,10 @@ const addNewTableRow = (state) => {
   }
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
-      rows.insert(rowIndex + 1, newEmptyTableRowLikeRows(rows))
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (rowIndex) => (rows) => rows.insert(rowIndex + 1, newEmptyTableRowLikeRows(rows))
     )
   );
 
@@ -702,8 +704,10 @@ const removeTableRow = (state) => {
   const containingHeader = headerThatContainsTableCellId(state.get('headers'), selectedTableCellId);
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
-      rows.delete(rowIndex)
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (rowIndex) => (rows) => rows.delete(rowIndex)
     )
   );
 
@@ -719,10 +723,13 @@ const addNewTableColumn = (state) => {
   }
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => (rows) =>
-      rows.map((row) =>
-        row.update('contents', (contents) => contents.insert(colIndex + 1, newEmptyTableCell()))
-      )
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (_rowIndex, colIndex) => (rows) =>
+        rows.map((row) =>
+          row.update('contents', (contents) => contents.insert(colIndex + 1, newEmptyTableCell()))
+        )
     )
   );
 
@@ -738,8 +745,11 @@ const removeTableColumn = (state) => {
   const containingHeader = headerThatContainsTableCellId(state.get('headers'), selectedTableCellId);
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, colIndex) => (rows) =>
-      rows.map((row) => row.update('contents', (contents) => contents.delete(colIndex)))
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (_rowIndex, colIndex) => (rows) =>
+        rows.map((row) => row.update('contents', (contents) => contents.delete(colIndex)))
     )
   );
 
@@ -755,10 +765,13 @@ const moveTableRowDown = (state) => {
   }
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
-      rowIndex + 1 === rows.size
-        ? rows
-        : rows.insert(rowIndex, rows.get(rowIndex + 1)).delete(rowIndex + 2)
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (rowIndex) => (rows) =>
+        rowIndex + 1 === rows.size
+          ? rows
+          : rows.insert(rowIndex, rows.get(rowIndex + 1)).delete(rowIndex + 2)
     )
   );
 
@@ -772,8 +785,11 @@ const moveTableRowUp = (state) => {
   }
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (rowIndex) => (rows) =>
-      rowIndex === 0 ? rows : rows.insert(rowIndex - 1, rows.get(rowIndex)).delete(rowIndex + 1)
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (rowIndex) => (rows) =>
+        rowIndex === 0 ? rows : rows.insert(rowIndex - 1, rows.get(rowIndex)).delete(rowIndex + 1)
     )
   );
 
@@ -787,18 +803,21 @@ const moveTableColumnLeft = (state) => {
   }
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => (rows) =>
-      columnIndex === 0
-        ? rows
-        : rows.map((row) =>
-            row.update('contents', (contents) =>
-              contents.size === 0
-                ? contents
-                : contents
-                    .insert(columnIndex - 1, contents.get(columnIndex))
-                    .delete(columnIndex + 1)
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (_rowIndex, columnIndex) => (rows) =>
+        columnIndex === 0
+          ? rows
+          : rows.map((row) =>
+              row.update('contents', (contents) =>
+                contents.size === 0
+                  ? contents
+                  : contents
+                      .insert(columnIndex - 1, contents.get(columnIndex))
+                      .delete(columnIndex + 1)
+              )
             )
-          )
     )
   );
 
@@ -812,18 +831,21 @@ const moveTableColumnRight = (state) => {
   }
 
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, selectedTableCellId, (_rowIndex, columnIndex) => (rows) =>
-      columnIndex + 1 >= rows.getIn([0, 'contents']).size
-        ? rows
-        : rows.map((row) =>
-            row.update('contents', (contents) =>
-              contents.size === 0
-                ? contents
-                : contents
-                    .insert(columnIndex, contents.get(columnIndex + 1))
-                    .delete(columnIndex + 2)
+    updateTableContainingCellId(
+      headers,
+      selectedTableCellId,
+      (_rowIndex, columnIndex) => (rows) =>
+        columnIndex + 1 >= rows.getIn([0, 'contents']).size
+          ? rows
+          : rows.map((row) =>
+              row.update('contents', (contents) =>
+                contents.size === 0
+                  ? contents
+                  : contents
+                      .insert(columnIndex, contents.get(columnIndex + 1))
+                      .delete(columnIndex + 2)
+              )
             )
-          )
     )
   );
 
@@ -832,12 +854,18 @@ const moveTableColumnRight = (state) => {
 
 const updateTableCellValue = (state, action) => {
   state = state.update('headers', (headers) =>
-    updateTableContainingCellId(headers, action.cellId, (rowIndex, colIndex) => (rows) =>
-      rows.updateIn([rowIndex, 'contents', colIndex], (cell) =>
-        cell
-          .set('rawContents', action.newValue)
-          .set('contents', fromJS(parseMarkupAndCookies(action.newValue, { excludeCookies: true })))
-      )
+    updateTableContainingCellId(
+      headers,
+      action.cellId,
+      (rowIndex, colIndex) => (rows) =>
+        rows.updateIn([rowIndex, 'contents', colIndex], (cell) =>
+          cell
+            .set('rawContents', action.newValue)
+            .set(
+              'contents',
+              fromJS(parseMarkupAndCookies(action.newValue, { excludeCookies: true }))
+            )
+        )
     )
   );
 
@@ -846,7 +874,7 @@ const updateTableCellValue = (state, action) => {
 
 const insertCapture = (state, action) => {
   const headers = state.get('headers');
-  const { template, content, shouldPrepend } = action;
+  const { template, content, shouldPrepend, shouldCaptureAsNewHeader } = action;
 
   const { newIndex, nestingLevel, parentHeader } = insertCapturePosition(
     template,
@@ -858,19 +886,51 @@ const insertCapture = (state, action) => {
     return state;
   }
 
-  const newHeader = newHeaderFromText(content, state.get('todoKeywordSets')).set(
-    'nestingLevel',
-    nestingLevel
-  );
+  if (!shouldCaptureAsNewHeader) {
+    const headerPaths = template.get('headerPaths');
+    const header = findHeaderMatchingPaths(headers, headerPaths);
+    const headerId = header.get('id');
+    const rawDescription = header.get('rawDescription');
+    const newRawDescription = shouldPrepend
+      ? prependContent(rawDescription, content)
+      : appendContent(rawDescription, content);
+    return updateHeaderDescription(state, { headerId, newRawDescription });
+  } else {
+    const newHeader = newHeaderFromText(content, state.get('todoKeywordSets')).set(
+      'nestingLevel',
+      nestingLevel
+    );
 
-  state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
-  if (parentHeader !== undefined) {
-    // We inserted the new header under a parent rather than at the top or
-    // bottom of the file.
-    state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+    state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
+    if (parentHeader !== undefined) {
+      // We inserted the new header under a parent rather than at the top or
+      // bottom of the file.
+      state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+    }
   }
 
   return state;
+};
+
+const prependContent = (existing, content) => {
+  if (!existing || existing === '') {
+    return content;
+  }
+  existing = existing.replace(/^[\s\n]*/, '');
+  return content + '\n' + existing;
+};
+
+const appendContent = (existing, content) => {
+  if (!existing || existing === '') {
+    return content;
+  }
+  existing = existing.replace(/[\s\n]*$/, '');
+  return existing + '\n' + content;
+};
+
+const findHeaderMatchingPaths = (headers, headerPaths) => {
+  const header = headerWithPath(headers, headerPaths);
+  return header !== null ? header : newHeaderFromText('', { nestingLevel: 1 });
 };
 
 const insertCapturePosition = (template, headers, shouldPrepend) => {
@@ -1731,9 +1791,11 @@ const restoreFileSettings = (state, action) => {
   return applyFileSettingsFromConfig(state, action.newSettings);
 };
 
-const reduceInFile = (state, action, path) => (func, ...args) => {
-  return state.updateIn(['files', path], (file) => func(file ? file : Map(), action, ...args));
-};
+const reduceInFile =
+  (state, action, path) =>
+  (func, ...args) => {
+    return state.updateIn(['files', path], (file) => func(file ? file : Map(), action, ...args));
+  };
 
 const reducer = (state, action) => {
   const path = state.get('path');
