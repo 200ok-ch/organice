@@ -135,16 +135,4 @@ workflows:
           filters:
             branches:
               only: develop
-      # FIXME: This used to work and broke due to erosion
-      # Related issue: https://github.com/200ok-ch/organice/issues/909
-      # - push-image:
-      #     requires:
-      #       # Staging deployments are free of linting and test checks,
-      #       # so that we can quickly build, deploy and iterate.
-      #       # There's still visual feedback on Github on whether or
-      #       # not the tasks failed.
-      #       # - build # because of tests
-      #       # - build-docs
-      #     filters:
-      #       branches:
-      #         only: master
+      - push-image
