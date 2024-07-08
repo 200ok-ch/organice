@@ -2152,6 +2152,31 @@ export function noLogRepeatEnabledP({ state, headerIndex }) {
 }
 
 /**
+ * Is the `logdone` enabled for this buffer?
+ * More info:
+ * https://www.gnu.org/software/emacs/manual/html_node/org/Closing-items.html
+ */
+
+export function logDoneEnabledP({ state, headerIndex }) {
+
+    const logDoneRegex = new RegExp(/.*\blogdone\b.*/);
+    const fileConfigLines = state.get('fileConfigLines');
+    const startupOptLogDone = fileConfigLines.some((element) => {
+	return element.startsWith("#+STARTUP:") && element.match(logDoneRegex);
+    });
+    if (startupOptLogDone){
+	return true;
+    }
+    const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
+    if (loggingProp) {
+	return loggingProp.some(
+		 (v) => v.get('type') === 'text' && v.get('contents').match(logDoneRegex)
+	)
+    }
+    return false;
+}
+
+/**
  * Function wrapper around `updateCookiesOfHeaderWithId` and
  * `updateCookiesOfParentOfHeaderWithId`.
  */
