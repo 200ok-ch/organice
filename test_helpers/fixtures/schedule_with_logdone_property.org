@@ -1,0 +1,18 @@
+* Header
+  :PROPERTIES:
+  :LOGGING:  logdone
+  :END:
+** Intermediate
+*** TODO Leaf
+- Posterity
+* Header Two
+** Middle
+   :PROPERTIES:
+   :LOGGING:  nologdone
+   :END:
+*** Beep
+** Middle 2
+   :PROPERTIES:
+   :LOGGING:  logdone
+   :END:
+*** Boop
