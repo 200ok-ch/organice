@@ -12,10 +12,12 @@ import readFixture from '../../../test_helpers/index';
 import rootReducer from '../../reducers/';
 
 import { setPath, parseFile } from '../../actions/org';
-import { setShouldLogIntoDrawer } from '../../actions/base';
+import { setShouldLogIntoDrawer, setShouldLogDone } from '../../actions/base';
+import { getCurrentTimestampAsText } from '../../lib/timestamps.js';
 
 import { Map, Set, fromJS, List } from 'immutable';
 import { formatDistanceToNow } from 'date-fns';
+
 
 import { render, fireEvent, cleanup } from '@testing-library/react';
 // Debugging help:
@@ -262,6 +264,25 @@ describe('Render all views', () => {
           expect(queryByText(':LOGBOOK:...')).toBeFalsy();
         });
       });
+	test('Does not create log when TODO marked DONE', () => {
+
+	    expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+	    expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeFalsy();
+	    expect(store.getState().base.toJS().shouldLogDone).toBeFalsy();
+	    const headerBeforeStateChange = store.getState().org.present.getIn(['files', STATIC_FILE_PREFIX + 'fixtureTestFile.org', 'headers']).get(3).get('rawDescription');
+	      
+	    fireEvent.click(queryByText('Top level header'));
+            expect(queryByText('TODO')).toBeTruthy();
+            expect(queryByText('DONE')).toBeFalsy();
+            fireEvent.click(queryByText('TODO'));
+	      
+	    expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+	    const headerAfterStateChange = store.getState().org.present.getIn(['files', STATIC_FILE_PREFIX + 'fixtureTestFile.org', 'headers']).get(3).get('rawDescription');
+	    expect(headerBeforeStateChange).toEqual(headerAfterStateChange);	      
+	      
+
+});
+
       describe('Feature enabled', () => {
         test('Does track TODO state change for repeating todos', () => {
           expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeFalsy();
@@ -286,7 +307,56 @@ describe('Render all views', () => {
           expect(queryByText(':LOGBOOK:...')).toBeTruthy();
         });
       });
+
+      test('Adds an entry to the logbook when a TODO marked is DONE and logIntoDrawer is selected', () => {
+
+	      expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+            expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeFalsy();
+	    expect(store.getState().base.toJS().shouldLogDone).toBeFalsy();
+	    
+	    store.dispatch(setShouldLogIntoDrawer(true));
+	      store.dispatch(setShouldLogDone(true));
+	      
+	      expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeTruthy();
+	      expect(store.getState().base.toJS().shouldLogDone).toBeTruthy();
+	      
+	    fireEvent.click(queryByText('Top level header'))
+	      expect(queryByText('TODO')).toBeTruthy();
+              expect(queryByText('DONE')).toBeFalsy();
+            fireEvent.click(queryByText('TODO'));
+	    const inactiveTimestamp = getCurrentTimestampAsText({ isActive: false, withStartTime: true });
+	    const newStateChangeLogText = `CLOSED: ${inactiveTimestamp}`;
+	      expect(queryByText('DONE')).toBeTruthy();
+	  const logbookAfterStateChange = store.getState().org.present.getIn(['files', STATIC_FILE_PREFIX + 'fixtureTestFile.org', 'headers']).get(3).get('logBookEntries');
+	  console.log(logbookAfterStateChange)
+	      expect(logbookAfterStateChange).toContain(newStateChangeLogText);
+	    
+      });
+
+       test('Adds a note to the header when a TODO is marked DONE and logIntoDrawer not selected', () => {
+	      expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+              expect(store.getState().base.toJS().shouldLogIntoDrawer).toBeFalsy();
+	      expect(store.getState().base.toJS().shouldLogDone).toBeFalsy();
+
+	      store.dispatch(setShouldLogDone(true));
+	      expect(store.getState().base.toJS().shouldLogDone).toBeTruthy();
+	      
+	      fireEvent.click(queryByText('Top level header'));
+              expect(queryByText('TODO')).toBeTruthy();
+              expect(queryByText('DONE')).toBeFalsy();
+
+              fireEvent.click(queryByText('TODO'));
+	      const inactiveTimestamp = getCurrentTimestampAsText({ isActive: false, withStartTime: true });
+	      const newStateChangeLogText = `CLOSED: ${inactiveTimestamp}`;
+	      expect(queryByText('DONE')).toBeTruthy();
+	      expect(queryByText(':LOGBOOK:...')).toBeFalsy();
+	   const headerAfterStateChange = store.getState().org.present.getIn(['files', STATIC_FILE_PREFIX + 'fixtureTestFile.org', 'headers']).get(3).get('logNotes');
+	   console.log(headerAfterStateChange)
+	   expect(headerAfterStateChange.first()).toContain(newStateChangeLogText);
+	      
+       });
     });
+
 
     describe('Renders everything starting from an Org file', () => {
       test('renders an Org file', () => {

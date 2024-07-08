@@ -117,9 +117,9 @@ export const setShouldLogIntoDrawer = (shouldLogIntoDrawer) => ({
   shouldLogIntoDrawer,
 });
 
-export const shouldLogDone = (shouldLogDone) => ({
+export const setShouldLogDone = (shouldLogDone) => ({
   type: 'SET_SHOULD_LOG_DONE',
-  shouldLogIntoDrawer,
+  shouldLogDone,
 });
 
 export const setCloseSubheadersRecursively = (closeSubheadersRecursively) => ({
