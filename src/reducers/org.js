@@ -277,7 +277,7 @@ const advanceTodoState = (state, action) => {
   state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
 
   const lastStateIndex = currentTodoSet.get('keywords').count() - 1;
-  if (newStateIndex == lastStateIndex) {
+  if (newStateIndex === lastStateIndex) {
     return addLogDone(state, { headerIndex, logIntoDrawer, logDone, timestamp });
   }
 
