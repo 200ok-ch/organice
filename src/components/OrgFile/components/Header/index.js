@@ -141,7 +141,8 @@ class Header extends PureComponent {
       if (swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
         this.props.org.advanceTodoState(
           this.props.header.get('id'),
-          this.props.shouldLogIntoDrawer
+          this.props.shouldLogIntoDrawer,
+          this.props.shouldLogDone
         );
       }
 
@@ -564,6 +565,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     bulletStyle: state.base.get('bulletStyle'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    shouldLogDone: state.base.get('shouldLogDone'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     narrowedHeader,
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),

@@ -70,7 +70,13 @@ class TitleLine extends PureComponent {
   }
 
   handleTodoClick(event) {
-    const { header, shouldTapTodoToAdvance, setShouldLogIntoDrawer, onClick } = this.props;
+    const {
+      header,
+      shouldTapTodoToAdvance,
+      setShouldLogIntoDrawer,
+      setShouldLogDone,
+      onClick,
+    } = this.props;
 
     if (!!onClick) {
       onClick();
@@ -79,7 +85,7 @@ class TitleLine extends PureComponent {
       this.props.org.selectHeader(header.get('id'));
 
       if (shouldTapTodoToAdvance) {
-        this.props.org.advanceTodoState(null, setShouldLogIntoDrawer);
+        this.props.org.advanceTodoState(null, setShouldLogIntoDrawer, setShouldLogDone);
       }
     }
   }
@@ -190,6 +196,7 @@ const mapStateToProps = (state, ownProps) => {
   const file = state.org.present.getIn(['files', path]);
   return {
     setShouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    setShouldLogDone: state.base.get('shouldLogDone'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     isSelected: file.get('selectedHeaderId') === ownProps.header.get('id'),

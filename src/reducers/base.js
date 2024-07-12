@@ -42,8 +42,9 @@ const setShouldShowTitleInOrgFile = (state, action) =>
 const setShouldLogIntoDrawer = (state, action) =>
   state.set('shouldLogIntoDrawer', action.shouldLogIntoDrawer);
 
-const setShouldLogDone = (state, action) =>
-  state.set('shouldLogDone', action.shouldLogDone);
+const setShouldLogDone = (state, action) => {
+  return state.set('shouldLogDone', action.shouldLogDone);
+};
 
 const setCloseSubheadersRecursively = (state, action) =>
   state.set('closeSubheadersRecursively', action.closeSubheadersRecursively);

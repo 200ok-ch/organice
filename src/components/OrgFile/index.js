@@ -173,7 +173,7 @@ class OrgFile extends PureComponent {
   }
 
   handleAdvanceTodoHotKey() {
-    this.props.org.advanceTodoState(null, this.props.shouldLogIntoDrawer);
+    this.props.org.advanceTodoState(null, this.props.shouldLogIntoDrawer, this.props.shouldLogDone);
   }
 
   handleEditTitleHotKey() {
