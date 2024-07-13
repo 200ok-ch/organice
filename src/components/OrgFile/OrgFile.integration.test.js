@@ -344,7 +344,7 @@ describe('Render all views', () => {
             .getIn([2, 'logNotes', 0, 'contents'])
         ).toEqual('CLOSED: ');
 
-        const { day, dayName, month, startHour, startMinute, year } = store
+        const { day, month, startHour, startMinute, year } = store
           .getState()
           .org.present.getIn(['files', STATIC_FILE_PREFIX + 'fixtureTestFile.org', 'headers'])
           .getIn([2, 'logNotes', 1, 'firstTimestamp'])

@@ -1043,7 +1043,7 @@ describe('org reducer', () => {
         ])
       ).toEqual('CLOSED: ');
 
-      const { day, dayName, month, startHour, startMinute, year } = headerWithId(
+      const { day, month, startHour, startMinute, year } = headerWithId(
         newState.getIn(['files', path, 'headers']),
         todoHeaderId
       )
