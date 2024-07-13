@@ -192,7 +192,7 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
-          Log into LOGBOOK drawer when item repeats
+          Log into LOGBOOK drawer
           <div className="setting-label__description">
             Log TODO state changes into the LOGBOOK drawer instead of into the body of the heading
             (default). See the Orgmode documentation on{' '}
