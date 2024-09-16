@@ -37,7 +37,18 @@
         nodePackages.serve
       ];
       shellHook = ''
-        # required for 'yarn start' to work:
+        echo
+        read -rp "Apply changes in package.json to work on NixOS? [Y/n] " ans
+        if [[ $ans =~ ^([Yy]|)$ ]]; then
+          sed -i \
+              -e 's/"node": ".*"/"node": ""/' \
+              -e '/"node-sass":/d' \
+              package.json
+          echo
+          echo "Note: Be careful to not commit this change accidentally!"
+        fi
+
+        # Required for 'yarn start' to work:
         export NODE_OPTIONS=--openssl-legacy-provider
       '';
     };
