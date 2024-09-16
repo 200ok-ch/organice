@@ -5,10 +5,10 @@
   # and dependencies available.
 
   # Problems that still need to be fixed:
-  # 1. Change the engines > node version to "^20" to allow the newer
-  #    version of node.
+  # 1. In package.json, change the engines > node version to "^20" to
+  #    allow the newer version of node.
   # 2. Remove the dependency node-sass in package.json because it
-  #    cannot easily be installed on NixOS.
+  #    cannot easily be installed on NixOS with yarn.
   # 3. Using the exact same node version as in .nvmrc would be good.
 
   inputs = {
