@@ -7,6 +7,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2024-09-19 Thu]
+
+** Added
+
+- Add a =flake.nix= file to provide a development shell for
+  [[https://nixos.org/][Nix]] users.
+  - PR: https://github.com/200ok-ch/organice/pull/987
+
 * [2023-11-15 Wed]
 
 ** Added

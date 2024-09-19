@@ -380,6 +380,10 @@ nvm install
 nvm use
 #+END_SRC
 
+If you have the [[https://nixos.org/][Nix package manager]] installed, just type:
+
+: nix develop
+
 ** Setup
 
 *** Installation of packages
