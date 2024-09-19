@@ -697,7 +697,7 @@ Your dropbox app needs permission to read and write files.
 
 With WebDAV support, organice can potentially be used with a multitude
 of synchronization back-ends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
-[[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
+[[https://docs.nextcloud.com/server/latest/user_manual/en/files/access_webdav.html][Nextcloud]] and [[https://manual.seafile.com/extension/webdav/][Seafile]], but also self hosted dedicated WebDAV servers
 like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
 
 **** More information
