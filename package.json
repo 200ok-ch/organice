@@ -57,7 +57,7 @@
     "prettier": "^3.3.3",
     "prettier-eslint": "^16.3.0",
     "prettier-eslint-cli": "^8.0.1",
-    "raw.macro": "0.4.2",
+    "raw.macro": "0.7.0",
     "react-test-renderer": "^17.0.1"
   },
   "jest": {
