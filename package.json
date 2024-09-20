@@ -13,7 +13,7 @@
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "dropbox": "10.34.0",
-    "immutable": "^3.8.2",
+    "immutable": "^4.3.7",
     "lodash": "^4.17.21",
     "pegjs": "^0.10.0",
     "react": "^16.8.3",
