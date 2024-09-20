@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 import _ from 'lodash';
 
 export default (templateString, customVariables = Map()) => {
