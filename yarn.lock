@@ -11617,10 +11617,10 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-raw.macro@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.7.0.tgz#3cb47025bb4b1b6a9ec42f0d328a22efab6231eb"
-  integrity sha512-SVAShKzXzPHXg6x9bRMjcHWHj3xKqSyBG9x/alSeXOPmpAWb/wl/nZAHxpa5UDDptyA8z0ZJt1nArbZnmeFvpA==
+raw.macro@0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.6.2.tgz#e3795383a34f3563e31c0d6e9d9d5e1c57e80c60"
+  integrity sha512-YWhyR420Xug/s6/7k+H8WTA0r84WULMPn0/o8Y5u5905tGjkvB72Fd/TvRXJcOiv7cSARUGzy+wCZPX9pr9YQA==
 
 rc@^1.2.7:
   version "1.2.8"
