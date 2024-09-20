@@ -1,5 +1,5 @@
 import React from 'react';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
