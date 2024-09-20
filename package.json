@@ -16,9 +16,8 @@
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
     "pegjs": "^0.10.0",
-    "sass": "^1.79.2",
     "react": "^16.8.3",
-    "react-beautiful-dnd": "^13.0.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-collapse": "^4.0.3",
     "react-dom": "^16.7.0-alpha.0",
     "react-feather": "^2.0.10",
@@ -29,7 +28,8 @@
     "react-scripts": "3.4.3",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
-    "redux-undo": "1.0.1",
+    "redux-undo": "1.1.0",
+    "sass": "^1.79.2",
     "webdav": "^3.3.0"
   },
   "scripts": {
