@@ -361,13 +361,8 @@ ${header.get('rawDescription')}`;
           headerDeadlineMap.get('year')
         : '';
 
-    const {
-      dragStartX,
-      currentDragX,
-      isDraggingFreely,
-      isPlayingRemoveAnimation,
-      containerWidth,
-    } = this.state;
+    const { dragStartX, currentDragX, isDraggingFreely, isPlayingRemoveAnimation, containerWidth } =
+      this.state;
     const marginLeft =
       !!dragStartX && !!currentDragX && isDraggingFreely
         ? currentDragX - dragStartX
