@@ -28,7 +28,6 @@
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "redux-undo": "1.1.0",
-    "sass": "^1.79.2",
     "webdav": "^3.3.0"
   },
   "scripts": {
@@ -49,7 +48,6 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "16.0.1",
-    "babel-eslint": "^10.1.0",
     "eslint": "^9.11.0",
     "eslint-nibble": "^8.1.0",
     "eslint-plugin-jest": "^28.8.3",
