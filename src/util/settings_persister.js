@@ -10,6 +10,8 @@ import { restoreFileSettings } from '../actions/org';
 import generateId from '../lib/id_generator';
 import { loadFilesFromLocalStorage } from './file_persister';
 
+const configFileName = '/.organice-config.json'
+
 export const localStorageAvailable = (() => {
   try {
     localStorage.setItem('test', 'test');
@@ -26,10 +28,9 @@ export const localStorageAvailable = (() => {
  * need to figure out which to do.
  */
 const updateConfigForGitLab = async (client, contents) => {
-  const filename = '/.organice-config.json';
   let exists = false;
   try {
-    const existingContents = await client.getFileContents(filename);
+    const existingContents = await client.getFileContents(configFileName);
     exists = true;
     // INFO: Not calling syncBackendClient.createFile is a
     // workaround for
@@ -42,9 +43,9 @@ const updateConfigForGitLab = async (client, contents) => {
     // could have failed due to e.g. a network issue.
   }
   if (exists) {
-    await client.updateFile(filename, contents);
+    await client.updateFile(configFileName, contents);
   } else {
-    await client.createFile(filename, contents);
+    await client.createFile(configFileName, contents);
   }
 };
 
@@ -54,7 +55,7 @@ const debouncedPushConfigToSyncBackend = _.debounce(
       case 'Dropbox':
       case 'WebDAV':
         syncBackendClient
-          .createFile('/.organice-config.json', contents)
+          .createFile(configFileName, contents)
           .catch((error) =>
             alert(`There was an error trying to push settings to your sync backend: ${error}`)
           );
@@ -392,7 +393,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
     case 'Dropbox':
     case 'GitLab':
     case 'WebDAV':
-      fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
+      fileContentsPromise = syncBackendClient.getFileContents(configFileName);
       break;
     default:
   }
@@ -407,7 +408,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
           sometimes already an object. Therefore, when JSON.parse is
           run, it throws an error which is silently swallowed by the
           catch below. This appears to be the cause of
-          https:github.com/200ok-ch/organice/issues/472. Settings will
+          https://github.com/200ok-ch/organice/issues/472. Settings will
           never load from file and default config always loads.
           */
         if (typeof configFileContents === 'string') {
@@ -419,9 +420,10 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
         dispatch(restoreBaseSettings(config));
         dispatch(restoreCaptureSettings(config));
         dispatch(restoreFileSettings(config));
+        // TODO At least one of these function calls silently fails to load config if there are missing keys.
       } catch (_error) {
-        // Something went wrong parsing the config file, but we don't care, we'll just
-        // overwrite it with a good local copy.
+        console.error(`The config file ${configFileName} has JSON syntax errors. Falling back to defaults.`)
+        // The bad file will be overwritten the next time settings are persisted.
       }
     })
     .catch(() => {});
