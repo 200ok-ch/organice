@@ -11,7 +11,7 @@ setup:
 
 .PHONY: run
 run: setup
-	yarn start
+	NODE_OPTIONS=--openssl-legacy-provider yarn start
 
 .PHONY: test
 test: setup

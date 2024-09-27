@@ -2624,7 +2624,7 @@
     -moz-appearance: none;
     appearance: none;
     -webkit-print-color-adjust: exact;
-    color-adjust: exact;
+    print-color-adjust: exact;
   }
   .form-check-input[type='checkbox'] {
     border-radius: 0.25em;

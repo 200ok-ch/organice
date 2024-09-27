@@ -5,7 +5,7 @@ import './stylesheet.css';
 import TimestampEditor from './components/TimestampEditor';
 
 import _ from 'lodash';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 import { Map } from 'immutable';
 
 export default class TimestampEditorModal extends PureComponent {

@@ -3,7 +3,7 @@ import React from 'react';
 import './stylesheet.css';
 
 import { customFormatDistanceToNow } from '../../../../lib/org_utils';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 export default ({ lastServerModifiedAt, lastSyncAt, path, onPull, onPush, onCancel }) => {
   return (

@@ -14,7 +14,7 @@ import { readInitialState } from '../util/settings_persister';
 
 import { createStore, applyMiddleware } from 'redux';
 import undoable, { ActionTypes } from 'redux-undo';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 import readFixture from '../../test_helpers/index';
 
