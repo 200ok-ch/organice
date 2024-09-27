@@ -28,6 +28,11 @@
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "redux-undo": "1.1.0",
+    "crypto": "npm:crypto-browserify",
+    "stream": "npm:stream-browserify",
+    "vm": "npm:vm-browserify",
+    "path": "npm:path-browserify",
+    "util": "npm:util",
     "webdav": "^3.3.0"
   },
   "scripts": {
