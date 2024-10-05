@@ -17,7 +17,7 @@ import TitleLine from '../TitleLine';
 import HeaderContent from '../HeaderContent';
 import HeaderActionDrawer from './components/HeaderActionDrawer';
 
-import { headerWithId } from '../../../../lib/org_utils';
+import { headerWithId, subheadersOfHeaderWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString, readRgbaVariable } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
 import { Map } from 'immutable';
@@ -290,15 +290,34 @@ class Header extends PureComponent {
 
   handleShareHeaderClick() {
     const { header } = this.props;
+    const currentHeaderWithSubheaders = [
+      header,
+      subheadersOfHeaderWithId(this.props.headers, header.get('id')),
+    ];
 
-    const titleLine = header.get('titleLine');
-    const todoKeyword = titleLine.get('todoKeyword');
-    const tags = titleLine.get('tags');
-    const title = titleLine.get('rawTitle').trim();
-    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
-    const body = `
+    debugger;
+
+    // Aggregate mail body from current header with subheaders
+    const body = currentHeaderWithSubheaders.reduce((body, header) => {
+      const titleLine = header.get('titleLine');
+      const todoKeyword = titleLine.get('todoKeyword');
+      const tags = titleLine.get('tags');
+      const title = titleLine.get('rawTitle').trim();
+      body += `
 ${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
 ${header.get('rawDescription')}`;
+    }, '');
+
+    console.log(body);
+
+    // Prepare mail subject line from current header
+    const titleLine = header.get('titleLine');
+    const todoKeyword = titleLine.get('todoKeyword');
+    const title = titleLine.get('rawTitle').trim();
+    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
+
+    console.log(subject);
+
     //const titleParts = titleLine.get('title'); // List of parsed tokens in title
     //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
     //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
@@ -308,7 +327,7 @@ ${header.get('rawDescription')}`;
     // TODO: If available, use webshare
     // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
 
-    window.open(mailtoURI);
+    // window.open(mailtoURI);
     // INFO: Alternative implementation that works without having a
     // popup window. We didn't go this route, because it's non-trivial
     // to mock the window object, so it's harder to test. Having
@@ -566,6 +585,7 @@ const mapStateToProps = (state, ownProps) => {
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     narrowedHeader,
+    headers: file.get('headers'),
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
     showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
