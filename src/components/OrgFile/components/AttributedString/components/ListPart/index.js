@@ -6,6 +6,8 @@ import './stylesheet.css';
 import AttributedString from '../../../AttributedString/';
 import Checkbox from '../../../../../UI/Checkbox/';
 import ListActionDrawer from './ListActionDrawer';
+import { listPartContainsItemId } from '../../../../../../lib/org_utils';
+
 import { attributedStringToRawText } from '../../../../../../lib/export_org';
 
 import { getCurrentTimestampAsText } from '../../../../../../lib/timestamps';
@@ -60,7 +62,7 @@ export default class ListPart extends PureComponent {
       inListTitleEditMode &&
       prevProps.subPartDataAndHandlers.inListTitleEditMode
     ) {
-      if (listTitleValues.has(prevSelectedListItemId)) {
+      if (listTitleValues.has(prevSelectedListItemId) && listPartContainsItemId(this.props.part, prevSelectedListItemId)) {
         onListTitleValueUpdate(prevSelectedListItemId, listTitleValues.get(prevSelectedListItemId));
       }
     }
@@ -76,7 +78,7 @@ export default class ListPart extends PureComponent {
       inListContentsEditMode &&
       prevProps.subPartDataAndHandlers.inListContentsEditMode
     ) {
-      if (listContentsValues.has(prevSelectedListItemId)) {
+      if (listContentsValues.has(prevSelectedListItemId) && listPartContainsItemId(this.props.part, prevSelectedListItemId)) {
         onListContentsValueUpdate(
           prevSelectedListItemId,
           listContentsValues.get(prevSelectedListItemId)

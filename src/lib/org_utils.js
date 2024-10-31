@@ -389,7 +389,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
     .filter((result) => result)
     .first();
 
-const listPartContainsItemId = (listPart, itemId) =>
+export const listPartContainsItemId = (listPart, itemId) =>
   listPart.get('items').some((item) => item.get('id') === itemId);
 
 export const headerThatContainsListItemId = (headers, listItemId) => {
