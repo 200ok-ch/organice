@@ -62,7 +62,10 @@ export default class ListPart extends PureComponent {
       inListTitleEditMode &&
       prevProps.subPartDataAndHandlers.inListTitleEditMode
     ) {
-      if (listTitleValues.has(prevSelectedListItemId) && listPartContainsItemId(this.props.part, prevSelectedListItemId)) {
+      if (
+        listTitleValues.has(prevSelectedListItemId) &&
+        listPartContainsItemId(this.props.part, prevSelectedListItemId)
+      ) {
         onListTitleValueUpdate(prevSelectedListItemId, listTitleValues.get(prevSelectedListItemId));
       }
     }
@@ -78,7 +81,10 @@ export default class ListPart extends PureComponent {
       inListContentsEditMode &&
       prevProps.subPartDataAndHandlers.inListContentsEditMode
     ) {
-      if (listContentsValues.has(prevSelectedListItemId) && listPartContainsItemId(this.props.part, prevSelectedListItemId)) {
+      if (
+        listContentsValues.has(prevSelectedListItemId) &&
+        listPartContainsItemId(this.props.part, prevSelectedListItemId)
+      ) {
         onListContentsValueUpdate(
           prevSelectedListItemId,
           listContentsValues.get(prevSelectedListItemId)
