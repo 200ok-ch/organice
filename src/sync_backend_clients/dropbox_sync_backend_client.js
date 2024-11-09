@@ -1,5 +1,3 @@
-/* global process */
-
 import { isEmpty } from 'lodash';
 import { orgFileExtensions } from '../lib/org_utils';
 

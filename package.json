@@ -5,6 +5,9 @@
   "engines": {
     "node": "^16.13.1"
   },
+  "resolutions": {
+    "@babel/core": "^7.16.0"
+  },
   "dependencies": {
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
     "aos": "^2.3.4",
@@ -16,7 +19,7 @@
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
     "pegjs": "^0.10.0",
-    "react": "^16.8.3",
+    "react": "16.10.0",
     "react-beautiful-dnd": "^13.0.0",
     "react-collapse": "^4.0.3",
     "react-dom": "^16.7.0-alpha.0",
@@ -25,7 +28,7 @@
     "react-motion": "^0.5.2",
     "react-redux": "^7.2.1",
     "react-router-dom": "5.2.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "4.0.3",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.0.1",
@@ -47,10 +50,11 @@
     "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.6.0",
+    "eslint": "7.12.0",
     "eslint-nibble": "^6.1.0",
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-react": "^7.23.2",
