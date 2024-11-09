@@ -13,7 +13,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 - Prevent app crash when deleting a list item immediately after exiting edit mode
   - PR: https://github.com/200ok-ch/organice/pull/996
   - Thank you [[https://github.com/kjmatsuda][kjmatsuda]] for the PR🙏
+** Changed
 
+- doc: Clarify where to find docs (interactive tutorial vs. manual)
+  - PR: https://github.com/200ok-ch/organice/pull/991
 * [2024-09-19 Thu]
 
 ** Added
