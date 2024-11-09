@@ -7,6 +7,13 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2024-11-09 Sat]
+** Fixed
+
+- Prevent app crash when deleting a list item immediately after exiting edit mode
+  - PR: https://github.com/200ok-ch/organice/pull/996
+  - Thank you [[https://github.com/kjmatsuda][kjmatsuda]] for the PR🙏
+
 * [2024-09-19 Thu]
 
 ** Added
@@ -21,7 +28,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 - Ability to print all content (including below the fold)
   - PR: https://github.com/200ok-ch/organice/pull/969
-
+    
 * [2023-08-29 Tue]
 
 ** Added
