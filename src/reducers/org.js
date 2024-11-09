@@ -1,3 +1,5 @@
+/* global process */
+
 import { Map, List, fromJS } from 'immutable';
 import _ from 'lodash';
 

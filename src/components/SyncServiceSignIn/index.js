@@ -1,3 +1,5 @@
+/* global process */
+
 import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
