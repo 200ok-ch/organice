@@ -192,8 +192,56 @@ const updateCookiesOfParentOfHeaderWithId = (file, headerId) => {
   return updateCookiesOfHeaderWithId(file, parentHeaderId);
 };
 
+const addLogNote = (state, action) => {
+  const { headerIndex, logText } = action;
+  return state.updateIn(['headers', headerIndex], (header) => {
+    const updatedHeader = header.update('logNotes', (logNotes) =>
+      parseRawText(logText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
+    );
+    return updatedHeader.set('planningItems', updatePlanningItemsFromHeader(updatedHeader));
+  });
+};
+
+const addLogBookEntry = (state, action) => {
+  const { headerIndex, logBookEntry } = action;
+  // Prepend this single item to the :LOGBOOK: drawer, same as org-log-into-drawer setting
+  // https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
+  const newEntry = fromJS({
+    id: generateId(),
+    raw: logBookEntry,
+  });
+
+  return state.updateIn(['headers', headerIndex, 'logBookEntries'], (entries) =>
+    entries.unshift(newEntry)
+  );
+};
+
+/**
+ * Add CLOSED: [timestamp] to the heading body or LOGBOOK drawer.
+ * @param {*} state
+ * @param {*} headerIndex Index of header where the state change log item should be added.
+ * @param {boolean} logIntoDrawer By default false, so add log messages as bullets into the body. If true, add into LOGBOOK drawer.
+ @param {boolean} logDone By default false, so this will not run if logDone is not set in buffer or settings. If true, will be added to either the headline or logbook of a note, depending on logIntoDrawer settings.
+ @param {string} timeestamp time for the entry.
+ */
+const addLogDone = (state, action) => {
+  const { headerIndex, logIntoDrawer, logDone, timestamp } = action;
+  if (!logDone && !logDoneEnabledP({ state, headerIndex })) {
+    return state;
+  }
+
+  const logTimestamp = getTimestampAsText(timestamp, { isActive: false, withStartTime: true });
+  const logBookEntry = `CLOSED: ${logTimestamp}`;
+  if (!logIntoDrawer) {
+    const logText = logBookEntry;
+    return addLogNote(state, { headerIndex, logText });
+  }
+
+  return addLogBookEntry(state, { headerIndex, logBookEntry });
+};
+
 const advanceTodoState = (state, action) => {
-  const { headerId, logIntoDrawer, timestamp } = action;
+  const { headerId, logIntoDrawer, logDone, timestamp } = action;
   const existingHeaderId = headerId || state.get('selectedHeaderId');
   if (!existingHeaderId) {
     return state;
@@ -222,10 +270,16 @@ const advanceTodoState = (state, action) => {
     headerIndex,
     currentTodoState,
     logIntoDrawer,
+    logDone,
     timestamp,
   });
 
   state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
+
+  const lastStateIndex = currentTodoSet.get('keywords').count() - 1;
+  if (newStateIndex === lastStateIndex) {
+    return addLogDone(state, { headerIndex, logIntoDrawer, logDone, timestamp });
+  }
 
   return state;
 };
@@ -603,10 +657,10 @@ const refileSubtree = (state, action) => {
 // `org-log-note-headings`.
 const addNoteGeneric = (state, action) => {
   const { noteText } = action;
-
   const headerId = state.get('selectedHeaderId');
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, headerId);
+
   return state.updateIn(['headers', headerIndex], (header) => {
     const updatedHeader = header.update('logNotes', (logNotes) =>
       parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
@@ -1966,6 +2020,7 @@ function updateHeadlines({
   headerIndex,
   currentTodoState,
   logIntoDrawer,
+  logDone,
   timestamp,
 }) {
   if (
@@ -1980,6 +2035,7 @@ function updateHeadlines({
       newTodoState,
       currentTodoState,
       logIntoDrawer,
+      logDone,
       timestamp,
     });
   // Update simple headline (without repeaters)
@@ -2001,6 +2057,7 @@ function addTodoStateChangeLogItem(
   newTodoState,
   currentTodoState,
   logIntoDrawer,
+  logDone,
   timestamp
 ) {
   // This is how the TODO state change will be logged
@@ -2031,6 +2088,7 @@ function updatePlanningItemsWithRepeaters({
   newTodoState,
   currentTodoState,
   logIntoDrawer,
+  logDone,
   timestamp,
 }) {
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
@@ -2126,6 +2184,7 @@ function updatePlanningItemsWithRepeaters({
       newTodoState,
       currentTodoState,
       logIntoDrawer,
+      logDone,
       timestamp
     );
   }
@@ -2149,6 +2208,30 @@ export function noLogRepeatEnabledP({ state, headerIndex }) {
         (v) => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
       ))
   );
+}
+
+/**
+ * Is the `logdone` enabled for this buffer?
+ * More info:
+ * https://www.gnu.org/software/emacs/manual/html_node/org/Closing-items.html
+ */
+
+export function logDoneEnabledP({ state, headerIndex }) {
+  const logDoneRegex = new RegExp(/.*\blogdone\b.*/);
+  const fileConfigLines = state.get('fileConfigLines');
+  const startupOptLogDone = fileConfigLines.some((element) => {
+    return element.startsWith('#+STARTUP:') && element.match(logDoneRegex);
+  });
+  if (startupOptLogDone) {
+    return true;
+  }
+  const loggingProp = inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING');
+  if (loggingProp) {
+    return loggingProp.some(
+      (v) => v.get('type') === 'text' && v.get('contents').match(logDoneRegex)
+    );
+  }
+  return false;
 }
 
 /**
