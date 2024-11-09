@@ -4,7 +4,7 @@
 #+TODO: START INPROGRESS STALLED | FINISHED
 
 * This is an actual org file - feel free to play around with it! (Don't worry about messing it up - your changes won't be saved, so just refresh the page to reset it)
-* For starters, tap on the next header to open it
+* Tap on any header to open it
 This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about organice.
 ** This is a subheader
 ** This is a subheader too!
@@ -494,3 +494,7 @@ organice supports a flexible mechanism for capturing using URL parameters. This 
 You can use [[https://www.icloud.com/shortcuts/14f91f8cf8f547a183a0734396240984][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
 Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/200ok-ch/organice/#capture-params-and-siri-support][the README file]].
+
+* Further questions?
+
+If you've finished this interactive tutorial, but have further questions, we have you covered! There is additional [[https://organice.200ok.ch/documentation.html][documentation]] which contains more comprehensive and formal documentation, including installation instructions, deployment guides, contribution guidelines, and technical details about the project's architecture and development process. This file is aimed at both users seeking in-depth information and developers interested in contributing to the project.
