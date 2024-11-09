@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
     "babel-eslint": "^10.1.0",
