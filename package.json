@@ -15,7 +15,7 @@
     "bowser": "^2.11.0",
     "classnames": "^2.5.1",
     "crypto": "npm:crypto-browserify",
-    "date-fns": "^4.1.0",
+    "date-fns": "^2.16.1",
     "dropbox": "10.34.0",
     "immutable": "^4.3.7",
     "lodash": "^4.17.21",

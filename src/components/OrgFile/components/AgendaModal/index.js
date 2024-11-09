@@ -24,8 +24,8 @@ import {
   startOfWeek,
   startOfMonth,
   getDaysInMonth,
-  format,
 } from 'date-fns';
+import format from 'date-fns/format';
 
 // INFO: SearchModal, AgendaModal and TaskListModal are very similar
 // in structure and partially in logic. When changing one, consider

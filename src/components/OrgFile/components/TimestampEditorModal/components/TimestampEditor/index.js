@@ -15,7 +15,8 @@ import { renderAsText } from '../../../../../../lib/timestamps';
 import { getSelectedHeader } from '../../../../../../lib/org_utils';
 
 import _ from 'lodash';
-import { parseISO, format } from 'date-fns';
+import { parseISO } from 'date-fns';
+import format from 'date-fns/format';
 
 class TimestampEditor extends PureComponent {
   constructor(props) {
@@ -322,8 +323,16 @@ class TimestampEditor extends PureComponent {
         </>
       );
     }
-    const { isActive, year, month, day, startHour, startMinute, endHour, endMinute } =
-      timestamp.toJS();
+    const {
+      isActive,
+      year,
+      month,
+      day,
+      startHour,
+      startMinute,
+      endHour,
+      endMinute,
+    } = timestamp.toJS();
     return (
       <div>
         <div className="timestamp-editor__render">{renderAsText(timestamp)}</div>

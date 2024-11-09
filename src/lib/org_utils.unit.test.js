@@ -1,7 +1,7 @@
 import readFixture from '../../test_helpers/index';
 import { parseOrg } from './parse_org.js';
 import { fromJS } from 'immutable';
-import format from 'date-fns';
+import format from 'date-fns/format';
 
 import {
   extractAllOrgProperties,
