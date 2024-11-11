@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "^16.13.1"
+    "node": "^20.17.0"
   },
   "resolutions": {
     "@babel/core": "^7.16.0"
@@ -31,16 +31,17 @@
     "react-scripts": "4.0.3",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
-    "redux-undo": "1.0.1",
-    "sass": "1.44.0",
+    "redux-undo": "1.1.0",
+    "sass": "1.45.0",
     "webdav": "^3.3.0"
   },
   "scripts": {
-    "start": "./bin/compile_search_parser.sh && react-scripts start",
-    "build": "./bin/compile_search_parser.sh && react-scripts build",
-    "test:dbg": "./bin/compile_search_parser.sh && react-scripts --inspect-brk test --runInBand --no-cache",
-    "test": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom",
-    "coverage": "./bin/compile_search_parser.sh && react-scripts test --env=jsdom --coverage --watchAll=false",
+    "start": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts --openssl-legacy-provider start",
+    "compile-sass": "./bin/compile_sass.sh",
+    "build": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts --openssl-legacy-provider build",
+    "test:dbg": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts --inspect-brk test --runInBand --no-cache",
+    "test": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts test --env=jsdom",
+    "coverage": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts test --env=jsdom --coverage --watchAll=false",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
@@ -59,7 +60,7 @@
     "eslint-nibble": "^6.1.0",
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-redux": "^3.3.0",
+    "eslint-plugin-react-redux": "4.0.0",
     "prettier": "^2.0.5",
     "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.1",

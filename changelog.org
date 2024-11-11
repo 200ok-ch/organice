@@ -7,6 +7,26 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2024-11-11 Mon]
+
+** Changed
+
+- No UI/UX changes, but lots of tooling upgrades
+- Major version technical upgrades
+  - nodejs (from 12 to 20)
+  - Create React App (from 3 to 4)
+  - eslint (from 6 to 7)
+  - node-sass to sass
+- Minor version technical upgrades
+  - redux-undo
+  - React
+
+PRs:
+
+- https://github.com/200ok-ch/organice/pull/1000
+- https://github.com/200ok-ch/organice/pull/999
+- https://github.com/200ok-ch/organice/pull/998
+
 * [2024-11-09 Sat]
 ** Fixed
 

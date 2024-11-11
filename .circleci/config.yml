@@ -6,7 +6,7 @@ version: 2
 jobs:
   deploy-stage:
     docker:
-      - image: circleci/node:16.13.1-bullseye
+      - image: cimg/node:20.17.0
     steps:
       - checkout
       - restore_cache:
@@ -24,7 +24,7 @@ jobs:
           command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} ./bin/compile_doc_and_upload.sh'
   deploy-prod:
     docker:
-      - image: circleci/node:16.13.1-bullseye
+      - image: cimg/node:20.17.0
     steps:
       - checkout
       - restore_cache:
@@ -43,7 +43,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/node:16.13.1-bullseye
+      - image: cimg/node:20.17.0
 
     working_directory: ~/repo
 
@@ -88,7 +88,7 @@ jobs:
 
   build-docs:
     docker:
-      - image: circleci/node:16.13.1-bullseye
+      - image: cimg/node:20.17.0
 
     working_directory: ~/repo
 

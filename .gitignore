@@ -31,3 +31,5 @@ yarn-error.log*
 /documentation.org
 
 .eslintcache
+/src/components/Landing/vendor_css/template.css
+/src/components/Landing/vendor_css/template.css.map
