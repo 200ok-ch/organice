@@ -342,6 +342,37 @@ WebDAV server for your instance, you can by setting the variable
    compatible way, and the feature follows the [[#contributing][contribution guideline]],
    then: Yes, the feature can be added to organice.
 
+** Can I access local files?
+:PROPERTIES:
+:CUSTOM_ID: access_local_files
+:END:
+
+Q: Can I open and edit .org files directly from my device's storage in
+organice?
+
+Currently, organice cannot directly access .org files stored on your
+device's local filesystem. This isn't a limitation of organice itself,
+but rather a fundamental security restriction of web browsers and
+Progressive Web Apps (PWAs).
+
+Web browsers intentionally restrict direct access to a device's
+filesystem to protect users' security and privacy. This means that web
+applications like organice can only access files through supported
+cloud storage services (like Dropbox, Google Drive, or WebDAV).
+
+While some newer APIs like the File System Access API exist, they have
+limited support (mainly on desktop Chrome) and don't solve the use
+case for most mobile users.
+
+This is why organice is designed to work with cloud storage services,
+ensuring your .org files remain accessible and editable across all
+your devices while respecting browser security boundaries.
+
+*Android Users:* There is a way to access local files by setting up a
+local WebDAV server using Termux. This allows you to run organice with
+access to files on your Android device. You can find the detailed
+setup instructions here: [[https://github.com/200ok-ch/organice/tree/master/contrib/organice-on-android-with-webdav-server][organice-on-android-with-webdav-server]]
+
 * Development
 ** Architecture Decision Records
 :PROPERTIES:
