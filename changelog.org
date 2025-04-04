@@ -7,6 +7,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-04-04 Fri]
+
+** Fixed
+
+- Prevent accidental horizontal swipes during vertical scrolling on iOS
+  - Improved touch handling to detect vertical scrolling intent and prevent unwanted horizontal swipe actions
+  - PR: https://github.com/200ok-ch/organice/pull/1012
+
 * [2024-11-11 Mon]
 
 ** Changed
