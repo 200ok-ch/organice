@@ -68,7 +68,8 @@
   align-items: center;
 }
 
-.timestamp-editor__date-input, .timestamp-editor__time-input {
+.timestamp-editor__date-input,
+.timestamp-editor__time-input {
   background-color: var(--magenta);
   color: var(--base3);
 
