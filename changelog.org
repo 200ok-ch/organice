@@ -7,6 +7,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-04-05 Sat]
+
+** Fixed
+
+- Create a static =/manifest.json=
+  - This improves the PWA experience for people self hosting organice
+  - PR: https://github.com/200ok-ch/organice/pull/1013
+
 * [2025-04-04 Fri]
 
 ** Fixed
