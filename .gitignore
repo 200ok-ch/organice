@@ -33,3 +33,6 @@ yarn-error.log*
 .eslintcache
 /src/components/Landing/vendor_css/template.css
 /src/components/Landing/vendor_css/template.css.map
+
+.parcel-cache
+dist

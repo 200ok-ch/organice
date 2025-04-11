@@ -40,7 +40,7 @@ export default ({ logBookEntries, onTimestampClick, shouldDisableActions }) => {
                       {renderAsText(entry.get('end'))}
                     </span>
                     <span className="logbook-entries__item-duration">
-                      => {timestampDuration(entry.get('start'), entry.get('end'))}
+                      {'=>'} {timestampDuration(entry.get('start'), entry.get('end'))}
                     </span>
                   </Fragment>
                 )}
