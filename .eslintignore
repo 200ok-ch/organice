@@ -1,2 +1,3 @@
 build/
+config/jest/
 node_modules/
