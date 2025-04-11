@@ -2113,6 +2113,11 @@
   resolved "https://registry.yarnpkg.com/@parcel/rust/-/rust-2.14.4.tgz#94385b5bbe05bffb7e1e9ff9942afb4c58b7dd84"
   integrity sha512-Ti+ZVr8mMTgrSA7UHcFXxG98anD0C8dGzYfP1+DTgxkcU16nywTv5F/VsPqpV2qiDWrHbm06CEWQbOrowjzvVw==
 
+"@parcel/service-worker@^2.14.4":
+  version "2.14.4"
+  resolved "https://registry.yarnpkg.com/@parcel/service-worker/-/service-worker-2.14.4.tgz#edf49f3aa59693cbbe6e5879b8ccf8be0b1a2996"
+  integrity sha512-DQnjGl7/EOM128NRIRrESIs7RR9T3m70kWzAy7gSll2a/2HUPQGBUg2k6gXqCiqgcZuhd6Dn/sgYtU9+v2gTxQ==
+
 "@parcel/source-map@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@parcel/source-map/-/source-map-2.1.1.tgz#fb193b82dba6dd62cc7a76b326f57bb35000a782"

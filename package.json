@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
+    "@parcel/service-worker": "^2.14.4",
     "aos": "^2.3.4",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
