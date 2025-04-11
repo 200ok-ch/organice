@@ -17,6 +17,7 @@
     "dotenv": "^8.2.0",
     "dropbox": "10.31.0",
     "immutable": "^3.8.2",
+    "jest-circus": "26.6",
     "lodash": "^4.17.21",
     "parcel": "^2.14.4",
     "pegjs": "^0.10.0",
