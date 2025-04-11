@@ -24,3 +24,8 @@ docs:
 .PHONY: deploy-docs
 deploy-docs: docs
 	./bin/compile_doc_and_upload.sh
+
+.PHONY: deploy
+deploy:
+	./bin/compile_and_upload.sh
+	./bin/compile_doc_and_upload.sh
