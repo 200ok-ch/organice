@@ -8,10 +8,8 @@
   # But it's hard to implement in Nix and takes a long time to compile.
 
   # Other problems that the development shell fixes automatically (see shellHook):
-  # 1. In package.json, engines > node version is changed to "" to
+  # 1. In package.json, change engines node version to "" in order to
   #    allow newer versions of node.
-  # 2. The dependency node-sass is removed from package.json because it
-  #    cannot easily be installed on NixOS with yarn.
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
@@ -46,15 +44,11 @@
             if [[ $ans =~ ^([Yy]|)$ ]]; then
               sed -i \
                   -e 's/"node": ".*"/"node": ""/' \
-                  -e '/"node-sass":/d' \
                   package.json
               echo
               echo "Note: Be careful to not accidentally commit this change!"
               echo
             fi
-
-            # Required for 'yarn start' to work:
-            export NODE_OPTIONS=--openssl-legacy-provider
           '';
         };
       });
