@@ -1,16 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// NOTE: Importing of the scss file works for `yarn start` just fine
-//       as it should according to the docs:
-//       https://create-react-app.dev/docs/adding-a-sass-stylesheet/
-//       However, after leaving node 12 behind, `yarn build` will
-//       throw an error. Since we don't really update the scss a whole
-//       lot, we import the compiled css file and a task `yarn
-//       compile-sass`.
+import * as classes from './vendor_css/template.scss';
 
-// import './vendor_css/template.scss';
-import './vendor_css/template.css';
+document.body.className = classes.body;
 
 import './stylesheet.css';
 

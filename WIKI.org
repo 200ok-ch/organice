@@ -625,6 +625,15 @@ manual configuration files now:
 All of these changes to get the ejected version running can be seen in
 commit b171dcca.
 
+***** Sass
+
+We have already migrated from node-sass to sass in the past.
+
+With parcel, we have sass functionality integrated, once again. In
+case we ever need it, again, here's the commit removing all manual
+sass logic: 
+
+
 * Building this documentation
   :PROPERTIES:
   :CUSTOM_ID: building_docs

@@ -67,11 +67,11 @@
   --bs-info-soft: #daf2f8;
   --bs-warning-soft: #f2eee3;
   --bs-danger-soft: #f1e0e3;
-  --bs-font-sans-serif: 'Metropolis', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-    monospace;
+  --bs-font-sans-serif:
+    'Metropolis', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --bs-font-monospace:
+    SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
 }
 
@@ -80,6 +80,8 @@
   *::before,
   *::after {
     box-sizing: border-box;
+    color: yellow !important;
+    background-color: red !important;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -89,15 +91,9 @@
   }
 
   .App {
-    margin: 0;
-    font-family: 'Metropolis', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-      'Noto Color Emoji';
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
-    color: #69707a;
-    background-color: #f2f6fc;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
@@ -2367,7 +2363,9 @@
     -moz-appearance: none;
     appearance: none;
     border-radius: 0.35rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .form-control {
@@ -2420,8 +2418,11 @@
     border-width: 0;
     border-inline-end-width: 1px;
     border-radius: 0;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .form-control::file-selector-button {
@@ -2444,10 +2445,16 @@
     border-width: 0;
     border-inline-end-width: 1px;
     border-radius: 0;
-    -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    -webkit-transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .form-control::-webkit-file-upload-button {
@@ -2557,7 +2564,9 @@
     background-size: 16px 12px;
     border: 1px solid #c5ccd6;
     border-radius: 0.35rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -2719,10 +2728,14 @@
     outline: 0;
   }
   .form-range:focus::-webkit-slider-thumb {
-    box-shadow: 0 0 0 1px #f2f6fc, 0 0 0 0.25rem rgba(0, 97, 242, 0.25);
+    box-shadow:
+      0 0 0 1px #f2f6fc,
+      0 0 0 0.25rem rgba(0, 97, 242, 0.25);
   }
   .form-range:focus::-moz-range-thumb {
-    box-shadow: 0 0 0 1px #f2f6fc, 0 0 0 0.25rem rgba(0, 97, 242, 0.25);
+    box-shadow:
+      0 0 0 1px #f2f6fc,
+      0 0 0 0.25rem rgba(0, 97, 242, 0.25);
   }
   .form-range::-moz-focus-outer {
     border: 0;
@@ -2734,9 +2747,13 @@
     background-color: #0061f2;
     border: 0;
     border-radius: 1rem;
-    -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    -webkit-transition:
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
       box-shadow 0.15s ease-in-out;
-    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    transition:
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
       box-shadow 0.15s ease-in-out;
     -webkit-appearance: none;
     appearance: none;
@@ -2765,9 +2782,13 @@
     background-color: #0061f2;
     border: 0;
     border-radius: 1rem;
-    -moz-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    -moz-transition:
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
       box-shadow 0.15s ease-in-out;
-    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    transition:
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
       box-shadow 0.15s ease-in-out;
     -moz-appearance: none;
     appearance: none;
@@ -2817,7 +2838,9 @@
     pointer-events: none;
     border: 1px solid transparent;
     transform-origin: 0 0;
-    transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+    transition:
+      opacity 0.1s ease-in-out,
+      transform 0.1s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .form-floating > label {
@@ -2943,7 +2966,9 @@
     border-bottom-right-radius: 0;
   }
   .input-group
-    > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(
+      .invalid-tooltip
+    ):not(.invalid-feedback) {
     margin-left: -1px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -3008,10 +3033,15 @@
   .form-select.is-valid:not([multiple]):not([size]),
   .form-select.is-valid:not([multiple])[size='1'] {
     padding-right: 6.1875rem;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23363d47' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"),
+    background-image:
+      url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23363d47' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"),
       url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300ac69' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-    background-position: right 1.125rem center, center right 3.375rem;
-    background-size: 16px 12px, calc(0.5em + 0.875rem) calc(0.5em + 0.875rem);
+    background-position:
+      right 1.125rem center,
+      center right 3.375rem;
+    background-size:
+      16px 12px,
+      calc(0.5em + 0.875rem) calc(0.5em + 0.875rem);
   }
   .was-validated .form-select:valid:focus,
   .form-select.is-valid:focus {
@@ -3112,10 +3142,15 @@
   .form-select.is-invalid:not([multiple]):not([size]),
   .form-select.is-invalid:not([multiple])[size='1'] {
     padding-right: 6.1875rem;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23363d47' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"),
+    background-image:
+      url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23363d47' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"),
       url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23e81500'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e81500' stroke='none'/%3e%3c/svg%3e");
-    background-position: right 1.125rem center, center right 3.375rem;
-    background-size: 16px 12px, calc(0.5em + 0.875rem) calc(0.5em + 0.875rem);
+    background-position:
+      right 1.125rem center,
+      center right 3.375rem;
+    background-size:
+      16px 12px,
+      calc(0.5em + 0.875rem) calc(0.5em + 0.875rem);
   }
   .was-validated .form-select:invalid:focus,
   .form-select.is-invalid:focus {
@@ -3173,8 +3208,11 @@
     padding: 0.875rem 1.125rem;
     font-size: 0.875rem;
     border-radius: 0.35rem;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .btn {
@@ -6379,7 +6417,9 @@
     display: block;
     padding: 0.5rem 1rem;
     color: #0061f2;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
       border-color 0.15s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -6969,8 +7009,12 @@
     border: 0;
     border-radius: 0;
     overflow-anchor: none;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out,
+      border-radius 0.15s ease;
   }
   @media (prefers-reduced-motion: reduce) {
     .accordion-button {
@@ -7099,8 +7143,11 @@
     color: #0061f2;
     background-color: #fff;
     border: 1px solid #d4dae3;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .page-link {
@@ -8748,8 +8795,18 @@
     z-index: 1080;
     display: block;
     margin: 0;
-    font-family: 'Metropolis', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    font-family:
+      'Metropolis',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
       'Noto Color Emoji';
     font-style: normal;
     font-weight: 400;
@@ -8864,8 +8921,18 @@
     z-index: 1070;
     display: block;
     max-width: 276px;
-    font-family: 'Metropolis', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    font-family:
+      'Metropolis',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
       'Noto Color Emoji';
     font-style: normal;
     font-weight: 400;
@@ -16870,9 +16937,11 @@
     animation-name: fadeInUp;
     -webkit-animation-duration: 300ms;
     animation-duration: 300ms;
-    -webkit-animation-timing-function: margin cubic-bezier(0.18, 1.25, 0.4, 1),
+    -webkit-animation-timing-function:
+      margin cubic-bezier(0.18, 1.25, 0.4, 1),
       opacity cubic-bezier(0, 1, 0.4, 1);
-    animation-timing-function: margin cubic-bezier(0.18, 1.25, 0.4, 1),
+    animation-timing-function:
+      margin cubic-bezier(0.18, 1.25, 0.4, 1),
       opacity cubic-bezier(0, 1, 0.4, 1);
   }
   .animated--fade-in-up.dropdown-menu {
@@ -17963,7 +18032,9 @@
 
   .lift {
     box-shadow: 0 0.15rem 1.75rem 0 rgba(33, 40, 50, 0.15);
-    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      transform 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   .lift:hover {
     transform: translateY(-0.3333333333rem);
@@ -19976,7 +20047,9 @@
     border-width: 1px;
     border-style: solid;
     border-radius: 0.4375rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
   .input-group-joined:focus-within {
     border-color: transparent;

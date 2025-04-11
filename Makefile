@@ -11,7 +11,7 @@ setup:
 
 .PHONY: run
 run: setup
-	yarn start --port 3000
+	yarn start
 
 .PHONY: test
 test: setup
