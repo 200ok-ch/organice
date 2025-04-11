@@ -61,6 +61,10 @@ jobs:
           command: yarn install --frozen-lockfile
 
       - run:
+          name: Verify jest-circus installation
+          command: ls -l node_modules/jest-circus/runner.js || echo "jest-circus runner NOT FOUND"
+
+      - run:
           name: Show Dependencies
           command: yarn list
 
