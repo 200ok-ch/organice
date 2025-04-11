@@ -37,12 +37,11 @@
     "webdav": "^3.3.0"
   },
   "scripts": {
-    "start": "parcel",
+    "start": "./bin/compile_search_parser.sh && yarn run compile-sass && parcel",
     "compile-sass": "./bin/compile_sass.sh",
-    "build": "parcel build",
-    "test:dbg": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts --inspect-brk test --runInBand --no-cache",
-    "test": "jest",
-    "coverage": "./bin/compile_search_parser.sh && yarn run compile-sass && react-scripts test --env=jsdom --coverage --watchAll=false",
+    "build": "./bin/compile_search_parser.sh && yarn run compile-sass && parcel build",
+    "test": "./bin/compile_search_parser.sh && yarn run compile-sass && jest --env=jsdom",
+    "coverage": "./bin/compile_search_parser.sh && yarn run compile-sass && jest --env=jsdom --coverage --watchAll=false",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
