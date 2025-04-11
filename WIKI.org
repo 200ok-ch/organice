@@ -631,7 +631,7 @@ We have already migrated from node-sass to sass in the past.
 
 With parcel, we have sass functionality integrated, once again. In
 case we ever need it, again, here's the commit removing all manual
-sass logic: 
+sass logic: 26fc36d0
 
 
 * Building this documentation
