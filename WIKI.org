@@ -575,6 +575,56 @@ easy:
 3. That's it😂
 
 
+*** adr-004-using-parcel
+:PROPERTIES:
+:CUSTOM_ID: adr-004-using-parcel
+:END:
+
+**** Context
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+There are many options given in the EOL announcement on how to
+continue.
+
+
+**** Decision
+
+We're going with one of the ways that seems both easiest and at the
+same time less tightly coupled than others. We're going with parcel
+which has the claim "The zero configuration build tool for the web.
+📦🚀"
+
+Here's the upstream migration guide that I followed:
+https://parceljs.org/migration/cra/
+
+
+**** Status
+
+   Accepted
+
+**** Consequences
+
+***** Testing
+
+We use Jest for testing. Parcel doesn't include support for that
+directly, but there's a migration path: https://parceljs.org/migration/cra/#6.-migrate-tests
+
+Since we don't have CRA anymore, we have to 'eject' and have lots of
+manual configuration files now:
+
+- babel.config.json, because jest uses babel and parcel does not
+- config directory for jest
+- jest.config.json for jest
+- various manually installed packages
+
+All of these changes to get the ejected version running can be seen in
+commit b171dcca.
+
 * Building this documentation
   :PROPERTIES:
   :CUSTOM_ID: building_docs
