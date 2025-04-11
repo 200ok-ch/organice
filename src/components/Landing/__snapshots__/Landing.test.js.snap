@@ -18,7 +18,7 @@ exports[`<Landing /> renders 1`] = `
             <img
               alt="Logo"
               class="landing-logo"
-              src="organice.svg"
+              src="test-file-stub"
               style="height: 4rem; filter: drop-shadow(0px 0px 18px #fdf6e3);"
             />
             <button
