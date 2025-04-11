@@ -10,7 +10,7 @@ import './stylesheet.css';
 // import AOS from 'aos';
 // import 'aos/dist/aos.css';
 
-import logo from '../../images/organice.svg';
+import logo from 'url:../../images/organice.svg';
 // import ExternalLink from '../UI/ExternalLink';
 
 import { useEffect } from 'react';

@@ -4,8 +4,8 @@ import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
 
-import DropboxLogo from './dropbox.svg';
-import GitLabLogo from './gitlab.svg';
+import DropboxLogo from 'url:./dropbox.svg';
+import GitLabLogo from 'url:./gitlab.svg';
 
 import { persistField } from '../../util/settings_persister';
 import {

@@ -51,6 +51,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@parcel/transformer-inline-string": "2.14.4",
     "@parcel/transformer-sass": "^2.14.4",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
