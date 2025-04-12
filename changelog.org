@@ -7,6 +7,34 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-04-11 Fri]
+
+** Changed
+
+*** Switch from CRA to parcel
+
+PR: https://github.com/200ok-ch/organice/pull/1014
+
+This is a big one.
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+** Fixed
+
+- Upgrades: When upgrading from CRA v3 to v4, the upgrade process
+  broke. Clients that once started an old version of organice would
+  forever cache that one.
+  - Changing to Parcel (see above) also got rid of quite a bit of
+    complexity:
+    - Parcel has upstream capability to build scss which means we
+      could delete a good bit of code.
+    - Changelog Files are loaded not only at build time, but can be
+      changed while running the dev server.
+
 * [2025-04-05 Sat]
 
 ** Fixed
