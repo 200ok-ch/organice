@@ -183,6 +183,7 @@ describe('org reducer', () => {
         file: '',
         orgFilesWhereAvailable: [],
         shouldPrepend: false,
+        shouldCaptureAsNewHeader: true,
         template: '* TODO %?',
         isSample: true,
       };
@@ -220,13 +221,18 @@ describe('org reducer', () => {
       expect(extractTitleAndNesting(headers.last())).toEqual(['A second nested header', 2]);
     }
 
-    function insertCapture(path, template, shouldPrepend) {
+    function insertCapture(path, template, shouldPrepend, shouldCaptureAsNewHeader) {
       // Check initially parsed file looks as expected
       let headers = store.getState().org.present.getIn(['files', path, 'headers']);
       expect(headers.size).toEqual(4);
       expectOrigFirstHeader(headers);
       expectOrigLastHeader(headers);
-      const action = types.insertCapture(template.id, content, shouldPrepend);
+      const action = types.insertCapture(
+        template.id,
+        content,
+        shouldPrepend,
+        shouldCaptureAsNewHeader
+      );
       store.dispatch(action);
       const newHeaders = store.getState().org.present.getIn(['files', path, 'headers']);
       expect(newHeaders.size).toEqual(5);
