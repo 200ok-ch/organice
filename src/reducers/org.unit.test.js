@@ -9,7 +9,7 @@ import rootReducer from './index';
 import * as types from '../actions/org';
 import { parseOrg } from '../lib/parse_org';
 import { headerWithId, headerWithPath, indexOfHeaderWithId } from '../lib/org_utils';
-import { dateForTimestamp, timestampForDate } from '../lib/timestamps';
+import { dateForTimestamp, timestampForDate, getTimestampAsText } from '../lib/timestamps';
 import { readInitialState } from '../util/settings_persister';
 
 import { createStore, applyMiddleware } from 'redux';
@@ -827,6 +827,9 @@ describe('org reducer', () => {
     let state;
     const testOrgFile = readFixture('various_todos');
     const path = 'testfile';
+    const date = new Date();
+    const inactiveTimestamp = getTimestampAsText(date, { isActive: false, withStartTime: true });
+    const newStateChangeLogText = `CLOSED: ${inactiveTimestamp}`;
 
     beforeEach(() => {
       state = setUpStateForFile(path, testOrgFile);
@@ -995,6 +998,96 @@ describe('org reducer', () => {
     it('is undoable', () => {
       check_is_undoable(state, types.advanceTodoState(todoHeaderId, true));
       check_is_undoable(state, types.advanceTodoState(doneHeaderId, false));
+    });
+
+    it('should advance TODO state and a closing note to the logbook', () => {
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+
+      const newState = reducer(state.org.present, types.advanceTodoState(todoHeaderId, true, true));
+      const newHeaders = newState.getIn(['files', path, 'headers']);
+
+      check_header_kept(oldHeaders, newHeaders, regularHeaderId);
+      check_todo_keyword_changed(oldHeaders, newHeaders, todoHeaderId);
+      check_header_kept(oldHeaders, newHeaders, doneHeaderId);
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+
+      expect(
+        headerWithId(newState.getIn(['files', path, 'headers']), todoHeaderId).getIn([
+          'logBookEntries',
+          0,
+          'raw',
+        ])
+      ).toEqual(newStateChangeLogText);
+    });
+
+    it('should advance TODO state and add a closing note to the description', () => {
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+
+      const newState = reducer(
+        state.org.present,
+        types.advanceTodoState(todoHeaderId, false, true)
+      );
+      const newHeaders = newState.getIn(['files', path, 'headers']);
+      check_header_kept(oldHeaders, newHeaders, regularHeaderId);
+      check_todo_keyword_changed(oldHeaders, newHeaders, todoHeaderId);
+      check_header_kept(oldHeaders, newHeaders, doneHeaderId);
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+
+      expect(
+        headerWithId(newState.getIn(['files', path, 'headers']), todoHeaderId).getIn([
+          'logNotes',
+          0,
+          'contents',
+        ])
+      ).toEqual('CLOSED: ');
+
+      const { day, month, startHour, startMinute, year } = headerWithId(
+        newState.getIn(['files', path, 'headers']),
+        todoHeaderId
+      )
+        .getIn(['logNotes', 1, 'firstTimestamp'])
+        .toJS();
+
+      expect(timestampForDate(new Date(year, month - 1, day, startHour, startMinute))).toEqual(
+        timestampForDate(date)
+      );
+    });
+
+    it('no note should be added to the logbook when note is advanced from DONE state', () => {
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+
+      const newState = reducer(state.org.present, types.advanceTodoState(todoHeaderId, true, true));
+      const newHeaders = newState.getIn(['files', path, 'headers']);
+      check_header_kept(oldHeaders, newHeaders, regularHeaderId);
+      check_todo_keyword_changed(oldHeaders, newHeaders, todoHeaderId);
+      check_header_kept(oldHeaders, newHeaders, doneHeaderId);
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('logBookEntries').size).toEqual(
+        headerWithId(oldHeaders, repeatingHeaderId).get('logBookEntries').size
+      );
+    });
+
+    it('no note should be added to the description when note is advanced from DONE state', () => {
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+
+      const newState = reducer(
+        state.org.present,
+        types.advanceTodoState(todoHeaderId, false, true)
+      );
+      const newHeaders = newState.getIn(['files', path, 'headers']);
+      check_header_kept(oldHeaders, newHeaders, regularHeaderId);
+      check_todo_keyword_changed(oldHeaders, newHeaders, todoHeaderId);
+      check_header_kept(oldHeaders, newHeaders, doneHeaderId);
+      // The nesting levels remain intact.
+      expect(extractTitlesAndNestings(oldHeaders)).toEqual(extractTitlesAndNestings(newHeaders));
+
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toEqual(
+        headerWithId(oldHeaders, repeatingHeaderId).get('logNotes').size
+      );
     });
   });
 

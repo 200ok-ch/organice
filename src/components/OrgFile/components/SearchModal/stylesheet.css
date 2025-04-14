@@ -3,7 +3,7 @@
 /* Currently, the markup is the same as in the AgendaModal component.
  * Hence the CSS rules from there apply. */
 
-.search-input-container{
+.search-input-container {
   display: flex;
   margin-bottom: 1em;
 }
