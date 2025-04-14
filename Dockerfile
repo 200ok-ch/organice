@@ -18,7 +18,7 @@ COPY . /opt/organice
 
 RUN bin/transient_env_vars.sh bait >> .env
 
-RUN yarn global add serve \
+RUN yarn global add serve --ignore-engines \
     && yarn build \
     && yarn cache clean \
     && rm -rf node_modules
