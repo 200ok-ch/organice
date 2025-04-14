@@ -88,6 +88,7 @@ describe('org reducer', () => {
     state.org.present = state.org.present
       .setIn(['files', path], parseOrg(contents))
       .set('path', path);
+
     return state;
   }
 
@@ -824,6 +825,8 @@ describe('org reducer', () => {
     let doneHeaderId;
     let repeatingHeaderId;
     let activeTimestampWithRepeaterHeaderId;
+    let repeatingHeaderWithDayRepeaterId;
+    let repeatingHeaderWithHourRepeaterId;
     let state;
     const testOrgFile = readFixture('various_todos');
     const path = 'testfile';
@@ -843,6 +846,14 @@ describe('org reducer', () => {
         .get(3)
         .get('id');
       repeatingHeaderId = state.org.present.getIn(['files', path, 'headers']).get(4).get('id');
+      repeatingHeaderWithDayRepeaterId = state.org.present
+        .getIn(['files', path, 'headers'])
+        .get(5)
+        .get('id');
+      repeatingHeaderWithHourRepeaterId = state.org.present
+        .getIn(['files', path, 'headers'])
+        .get(6)
+        .get('id');
     });
 
     function check_todo_keyword_kept(oldHeaders, newHeaders, headerId) {
@@ -908,6 +919,10 @@ describe('org reducer', () => {
       const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
       const newHeaders = reducer(
         state.org.present,
+        // XXX: Why did this even work? `advanceTodoState` should have
+        // a second argument `logIntoDrawer` that should need to be
+        // set to `true` here. However, even setting it to `true` now
+        // does not help.
         types.advanceTodoState(repeatingHeaderId)
       ).getIn(['files', path, 'headers']);
       check_todo_keyword_kept(oldHeaders, newHeaders, repeatingHeaderId);
@@ -986,6 +1001,45 @@ describe('org reducer', () => {
           'rawTitle',
         ])
       ).toMatch(/<2020-11-16 Mon \+1d>/);
+    });
+
+    it('should not update the timestamp for a repeating task with +1d repeater', () => {
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+      const { startHour, startMinute } = headerWithId(oldHeaders, repeatingHeaderWithDayRepeaterId)
+        .getIn(['planningItems', 0, 'timestamp'])
+        .toJS();
+
+      const newHeaders = reducer(
+        state.org.present,
+        types.advanceTodoState(repeatingHeaderWithDayRepeaterId)
+      ).getIn(['files', path, 'headers']);
+      const newTimestamp = headerWithId(newHeaders, repeatingHeaderWithDayRepeaterId)
+        .getIn(['planningItems', 0, 'timestamp'])
+        .toJS();
+      expect(newTimestamp.startHour).toEqual(startHour);
+      expect(newTimestamp.startMinute).toEqual(startMinute);
+    });
+
+    it('should update the timestamp for a repeating task with +1h repeater', () => {
+      const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+      const { startHour, startMinute } = headerWithId(oldHeaders, repeatingHeaderWithHourRepeaterId)
+        .getIn(['planningItems', 0, 'timestamp'])
+        .toJS();
+
+      const newHeaders = reducer(
+        state.org.present,
+        types.advanceTodoState(repeatingHeaderWithHourRepeaterId)
+      ).getIn(['files', path, 'headers']);
+      const newTimestamp = headerWithId(newHeaders, repeatingHeaderWithHourRepeaterId)
+        .getIn(['planningItems', 0, 'timestamp'])
+        .toJS();
+      let now = new Date();
+      if (now.getHours() != startHour) {
+        expect(newTimestamp.startHour).not.toEqual(startHour);
+      }
+      if (now.getMinutes() != startMinute) {
+        expect(newTimestamp.startMinute).not.toEqual(startMinute);
+      }
     });
 
     it('should just dirty when applied to no header', () => {
