@@ -393,13 +393,25 @@ ${header.get('rawDescription')}`;
       .map((p) => p.get('timestamp'))
       .get(0);
 
-    const headerDeadline =
-      headerDeadlineMap !== undefined
-        ? headerDeadlineMap.get('month') +
-          '-' +
-          headerDeadlineMap.get('day') +
-          '-' +
-          headerDeadlineMap.get('year')
+    let isOverdue = false;
+    let deadlineString = '';
+    if (showDeadlineDisplay && headerDeadlineMap) {
+      const year = headerDeadlineMap.get('year');
+      const month = headerDeadlineMap.get('month');
+      const day = headerDeadlineMap.get('day');
+      // Ensure parts are parsed as integers for Date constructor
+      const deadlineDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Normalize today to midnight for date-only comparison
+
+      isOverdue = deadlineDate < today;
+      deadlineString = `${year}-${month}-${day}`;
+    }
+
+    const clockDisplayString =
+      showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
+        ? millisDuration(header.get('totalTimeLoggedRecursive'))
         : '';
 
     const {
@@ -551,15 +563,11 @@ ${header.get('rawDescription')}`;
                 isSelected={isSelected}
                 shouldDisableExplicitWidth={swipedDistance === 0}
                 shouldDisableActions={shouldDisableActions}
-                addition={
-                  (showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
-                    ? millisDuration(header.get('totalTimeLoggedRecursive'))
-                    : '') +
-                  // Spacing between 'clock display' and 'deadline
-                  // display' overlays
-                  (showClockDisplay && showDeadlineDisplay ? ' ' : '') +
-                  (showDeadlineDisplay && headerDeadline !== undefined ? headerDeadline : '')
-                }
+                addition={clockDisplayString}
+                showDeadlineDisplay={showDeadlineDisplay}
+                headerDeadlineMap={headerDeadlineMap}
+                deadlineString={deadlineString}
+                isOverdue={isOverdue}
               />
 
               <Collapse
