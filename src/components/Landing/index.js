@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './vendor_css/template.scss';
+import * as classes from './vendor_css/template.scss';
+
+document.body.className = classes.body;
+
 import './stylesheet.css';
 
 // import AOS from 'aos';
 // import 'aos/dist/aos.css';
 
-import logo from '../../images/organice.svg';
+import logo from 'url:../../images/organice.svg';
 // import ExternalLink from '../UI/ExternalLink';
 
 import { useEffect } from 'react';

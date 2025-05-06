@@ -7,13 +7,109 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-05-06 Tue]
+
+** Fixed
+
+*** CI Tasks: docker build/push and deploy-prod
+
+- Building the docker image has been broken for some time.
+- Deploying to prod via CI had an issue since switching to parcel.
+
+Both seem to be working as of commit
+e72d01081863e69f7410be87f09aeb2ac68e3c1d. There's no PR, because I
+made these changes directly to the =master= branch, because these CI
+tasks should only run for production ready code.
+
+* [2025-04-11 Fri]
+
+** Changed
+
+*** Switch from CRA to parcel
+
+PR: https://github.com/200ok-ch/organice/pull/1014
+
+This is a big one.
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+** Fixed
+
+- Upgrades: When upgrading from CRA v3 to v4, the upgrade process
+  broke. Clients that once started an old version of organice would
+  forever cache that one.
+  - Changing to Parcel (see above) also got rid of quite a bit of
+    complexity:
+    - Parcel has upstream capability to build scss which means we
+      could delete a good bit of code.
+    - Changelog Files are loaded not only at build time, but can be
+      changed while running the dev server.
+
+* [2025-04-05 Sat]
+
+** Fixed
+
+- Create a static =/manifest.json=
+  - This improves the PWA experience for people self hosting organice
+  - PR: https://github.com/200ok-ch/organice/pull/1013
+
+* [2025-04-04 Fri]
+
+** Fixed
+
+- Prevent accidental horizontal swipes during vertical scrolling on iOS
+  - Improved touch handling to detect vertical scrolling intent and prevent unwanted horizontal swipe actions
+  - PR: https://github.com/200ok-ch/organice/pull/1012
+
+* [2024-11-11 Mon]
+
+** Changed
+
+- No UI/UX changes, but lots of tooling upgrades
+- Major version technical upgrades
+  - nodejs (from 12 to 20)
+  - Create React App (from 3 to 4)
+  - eslint (from 6 to 7)
+  - node-sass to sass
+- Minor version technical upgrades
+  - redux-undo
+  - React
+
+PRs:
+
+- https://github.com/200ok-ch/organice/pull/1000
+- https://github.com/200ok-ch/organice/pull/999
+- https://github.com/200ok-ch/organice/pull/998
+
+* [2024-11-09 Sat]
+** Fixed
+
+- Prevent app crash when deleting a list item immediately after exiting edit mode
+  - PR: https://github.com/200ok-ch/organice/pull/996
+  - Thank you [[https://github.com/kjmatsuda][kjmatsuda]] for the PR🙏
+** Changed
+
+- doc: Clarify where to find docs (interactive tutorial vs. manual)
+  - PR: https://github.com/200ok-ch/organice/pull/991
+* [2024-09-19 Thu]
+
+** Added
+
+- Add a =flake.nix= file to provide a development shell for
+  [[https://nixos.org/][Nix]] users.
+  - PR: https://github.com/200ok-ch/organice/pull/987
+
 * [2023-11-15 Wed]
 
 ** Added
 
 - Ability to print all content (including below the fold)
   - PR: https://github.com/200ok-ch/organice/pull/969
-
+    
 * [2023-08-29 Tue]
 
 ** Added

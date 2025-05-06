@@ -342,6 +342,37 @@ WebDAV server for your instance, you can by setting the variable
    compatible way, and the feature follows the [[#contributing][contribution guideline]],
    then: Yes, the feature can be added to organice.
 
+** Can I access local files?
+:PROPERTIES:
+:CUSTOM_ID: access_local_files
+:END:
+
+Q: Can I open and edit .org files directly from my device's storage in
+organice?
+
+Currently, organice cannot directly access .org files stored on your
+device's local filesystem. This isn't a limitation of organice itself,
+but rather a fundamental security restriction of web browsers and
+Progressive Web Apps (PWAs).
+
+Web browsers intentionally restrict direct access to a device's
+filesystem to protect users' security and privacy. This means that web
+applications like organice can only access files through supported
+cloud storage services (like Dropbox, Google Drive, or WebDAV).
+
+While some newer APIs like the File System Access API exist, they have
+limited support (mainly on desktop Chrome) and don't solve the use
+case for most mobile users.
+
+This is why organice is designed to work with cloud storage services,
+ensuring your .org files remain accessible and editable across all
+your devices while respecting browser security boundaries.
+
+*Android Users:* There is a way to access local files by setting up a
+local WebDAV server using Termux. This allows you to run organice with
+access to files on your Android device. You can find the detailed
+setup instructions here: [[https://github.com/200ok-ch/organice/tree/master/contrib/organice-on-android-with-webdav-server][organice-on-android-with-webdav-server]]
+
 * Development
 ** Architecture Decision Records
 :PROPERTIES:
@@ -542,6 +573,65 @@ easy:
    7. =getFileContents=
    8. =deleteFile=
 3. That's it😂
+
+
+*** adr-004-using-parcel
+:PROPERTIES:
+:CUSTOM_ID: adr-004-using-parcel
+:END:
+
+**** Context
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+There are many options given in the EOL announcement on how to
+continue.
+
+
+**** Decision
+
+We're going with one of the ways that seems both easiest and at the
+same time less tightly coupled than others. We're going with parcel
+which has the claim "The zero configuration build tool for the web.
+📦🚀"
+
+Here's the upstream migration guide that I followed:
+https://parceljs.org/migration/cra/
+
+
+**** Status
+
+   Accepted
+
+**** Consequences
+
+***** Testing
+
+We use Jest for testing. Parcel doesn't include support for that
+directly, but there's a migration path: https://parceljs.org/migration/cra/#6.-migrate-tests
+
+Since we don't have CRA anymore, we have to 'eject' and have lots of
+manual configuration files now:
+
+- babel.config.json, because jest uses babel and parcel does not
+- config directory for jest
+- jest.config.json for jest
+- various manually installed packages
+
+All of these changes to get the ejected version running can be seen in
+commit b171dcca.
+
+***** Sass
+
+We have already migrated from node-sass to sass in the past.
+
+With parcel, we have sass functionality integrated, once again. In
+case we ever need it, again, here's the commit removing all manual
+sass logic: 26fc36d0
 
 
 * Building this documentation

@@ -6,7 +6,7 @@ import { isLandingPage } from '../../util/misc';
 
 import { Link, withRouter } from 'react-router-dom';
 
-import logo from '../../images/organice.svg';
+import logo from 'url:../../images/organice.svg';
 
 import './stylesheet.css';
 

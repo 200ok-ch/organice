@@ -32,6 +32,9 @@ rules:
   react/prop-types: off
   react-redux/prefer-separate-component-file: off
   jest/no-disabled-tests: off
+  no-redeclare:
+    - 'error'
+    - builtinGlobals: false
 settings:
   react:
     version: detect

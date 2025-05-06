@@ -6,7 +6,7 @@ version: 2
 jobs:
   deploy-stage:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
     steps:
       - checkout
       - restore_cache:
@@ -24,7 +24,7 @@ jobs:
           command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} ./bin/compile_doc_and_upload.sh'
   deploy-prod:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
     steps:
       - checkout
       - restore_cache:
@@ -43,7 +43,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
 
     working_directory: ~/repo
 
@@ -88,7 +88,7 @@ jobs:
 
   build-docs:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
 
     working_directory: ~/repo
 
@@ -137,14 +137,14 @@ workflows:
               only: develop
       # FIXME: This used to work and broke due to erosion
       # Related issue: https://github.com/200ok-ch/organice/issues/909
-      # - push-image:
-      #     requires:
-      #       # Staging deployments are free of linting and test checks,
-      #       # so that we can quickly build, deploy and iterate.
-      #       # There's still visual feedback on Github on whether or
-      #       # not the tasks failed.
-      #       # - build # because of tests
-      #       # - build-docs
-      #     filters:
-      #       branches:
-      #         only: master
+      - push-image:
+          requires:
+            # Staging deployments are free of linting and test checks,
+            # so that we can quickly build, deploy and iterate.
+            # There's still visual feedback on Github on whether or
+            # not the tasks failed.
+            # - build # because of tests
+            # - build-docs
+          filters:
+            branches:
+              only: master

@@ -12,6 +12,8 @@
   :CUSTOM_ID: general
   :END:
 
+** Code
+
 # REPO_PLACEHOLDER
 
 # INFO: We're using inline =#+HTML= notation in favor of the much more
@@ -23,18 +25,41 @@
 
 #+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://badgen.net/uptime-robot/month/m789449277-7986138caa6b43ed68a91563" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" /> </a> </p>
 
-[[https://organice.200ok.ch/documentation.html][Documentation]]
+** Getting started
+:PROPERTIES:
+:CUSTOM_ID: getting_started
+:END:
+
+To get you started, we have two kinds of documentation:
+
+1. [[https://organice.200ok.ch/sample][Interactive Tutorial]]
+2. [[https://organice.200ok.ch/documentation.html][Documentation (User manual and developer guide)]]
+
+The [[https://organice.200ok.ch/sample][interactive tutorial]] allows users to explore and experiment with
+various org-mode functionalities directly within the application. It
+provides hands-on examples of tasks, tables, timestamps, and (most)
+other features.
+
+On the other hand, the [[https://organice.200ok.ch/documentation.html][documentation]] contains more comprehensive and
+formal documentation, including installation instructions, deployment
+guides, contribution guidelines, and technical details about the
+project's architecture and development process. This file is aimed at
+both users seeking in-depth information and developers interested in
+contributing to the project.
+
+** Community chat
 
 Community chat:
 - #organice on IRC [[https://libera.chat/][Libera.Chat]]
 - [[https://matrix.to/#/#organice:matrix.org][#organice:matrix.org]] on Matrix
 
+
+** Sponsors
+
 Creating and maintaining organice is made possible by all the
 volunteering [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]] and [[https://github.com/sponsors/200ok-ch][sponsors]]. If you enjoy using organice,
 and want to sponsor the development of Free and Open Source software,
 you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and [[https://www.patreon.com/200ok][Patreon]].🙏
-
-** Sponsors
 
 #+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/kristiangronberg"> <img src="https://github.com/kristiangronberg.png" width="50px" alt="@kristiangronberg"/></a> <a href="https://github.com/stefanv"> <img src="https://github.com/stefanv.png" width="50px" alt="@stefanv"/></a> </p>
 
@@ -380,6 +405,10 @@ nvm install
 nvm use
 #+END_SRC
 
+If you have the [[https://nixos.org/][Nix package manager]] installed, just type:
+
+: nix develop
+
 ** Setup
 
 *** Installation of packages
@@ -697,7 +726,7 @@ Your dropbox app needs permission to read and write files.
 
 With WebDAV support, organice can potentially be used with a multitude
 of synchronization back-ends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
-[[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
+[[https://docs.nextcloud.com/server/latest/user_manual/en/files/access_webdav.html][Nextcloud]] and [[https://manual.seafile.com/extension/webdav/][Seafile]], but also self hosted dedicated WebDAV servers
 like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
 
 **** More information
@@ -924,9 +953,7 @@ little bit of JavaScript:
 #+BEGIN_SRC javascript
   javascript:(function() {
     const {title} = document;
-    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${
-    window.location.href
-  }`;
+    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${window.location.href}`;
     window.open(url, "_blank");
   })()
 #+END_SRC
