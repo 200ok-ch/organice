@@ -7,6 +7,20 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-05-06 Tue]
+
+** Fixed
+
+*** CI Tasks: docker build/push and deploy-prod
+
+- Building the docker image has been broken for some time.
+- Deploying to prod via CI had an issue since switching to parcel.
+
+Both seem to be working as of commit
+e72d01081863e69f7410be87f09aeb2ac68e3c1d. There's no PR, because I
+made these changes directly to the =master= branch, because these CI
+tasks should only run for production ready code.
+
 * [2025-04-11 Fri]
 
 ** Changed
