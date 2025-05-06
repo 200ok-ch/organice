@@ -9,6 +9,21 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 * [2025-05-06 Tue]
 
+** Added
+
+*** Add visual cue for overdue headers when displaying headers
+
+- Before this change: When enabling the setting "Show Deadline
+  Display", the respective deadline will be displayed on each header
+  line.
+- After this change, in the deadline will show in grey if not overdue
+  and in red if overdue.
+
+This change was originally proposed and implemented by @dmorlitz:
+https://github.com/200ok-ch/organice/pull/970
+
+The merged PR is: https://github.com/200ok-ch/organice/pull/1019
+
 ** Fixed
 
 *** Resolved issue where search input field could scroll off-screen on iOS devices
