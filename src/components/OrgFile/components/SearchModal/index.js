@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { capitalize } from 'lodash';
@@ -18,6 +18,7 @@ import * as orgActions from '../../../../actions/org';
 // changing all.
 function SearchModal(props) {
   const [dateDisplayType, setdateDisplayType] = useState('absolute');
+  const searchInputRef = useRef(null);
   const {
     searchFilter,
     searchFilterValid,
@@ -52,6 +53,28 @@ function SearchModal(props) {
     }
   }
 
+  // On iOS, directly using the `autoFocus` prop on an input can cause the
+  // input field to scroll off-screen when a drawer/modal appears and the
+  // virtual keyboard slides up. The browser's attempt to scroll the focused
+  // input into view can miscalculate due to the simultaneous UI changes.
+  //
+  // To mitigate this:
+  // 1. On non-iOS devices: We programmatically focus the input with a slight
+  //    delay (150ms). This allows the UI and keyboard animations to settle.
+  // 2. On iOS devices: We now avoid auto-focusing altogether. The user
+  //    will need to tap the input field to activate it. This provides a
+  //    more stable experience on iOS.
+  useEffect(() => {
+    if (!isIos() && searchInputRef.current && context !== 'Clock List' && !activeClocks) {
+      const timerId = setTimeout(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      }, 150);
+      return () => clearTimeout(timerId);
+    }
+  }, [context, activeClocks]); // Re-run if context or activeClocks changes
+
   return (
     <>
       {context === 'search' ? (
@@ -83,20 +106,9 @@ function SearchModal(props) {
               <input
                 type="text"
                 value={searchFilter}
-                // On iOS, setting autoFocus here will move the contents of
-                // the drawer off the screen, because the keyboard pops up
-                // late when the height is already set to '92%'. Some other
-                // complications: There's no API to check if the keyboard is
-                // open or not. When setting the height of the container to
-                // something like 48% for iOS, this works on iPhone (tested
-                // on Xs and 6S), but when the keyboard is closed, the
-                // container is still small when the user wants to read the
-                // longer list without the keyboard in the way. There might
-                // be a better way: If the drawer wouldn't move, iOS likely
-                // would set the heights correctly automatically.
-                autoFocus={!isIos()}
                 // Disable auto-capitalization for convenience (autoComplete must also be off to
                 // achieve this on Android).
+                ref={searchInputRef}
                 autoCapitalize="none"
                 autoComplete="off"
                 className={classNames('textfield', 'task-list__filter-input', {

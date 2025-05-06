@@ -11,6 +11,15 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 ** Fixed
 
+*** Resolved issue where search input field could scroll off-screen on iOS devices
+  - The search input in popups (like Search, Task List) will no longer
+    attempt to automatically focus on iOS. This prevents the field
+    from being pushed out of view by the virtual keyboard. iOS users
+    will now need to tap the input to activate it.
+  - On non-iOS platforms, the search input will now auto-focus with a
+    slight delay to improve usability.
+  - PR: https://github.com/200ok-ch/organice/pull/1018
+
 *** CI Tasks: docker build/push and deploy-prod
 
 - Building the docker image has been broken for some time.
