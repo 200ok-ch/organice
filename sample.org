@@ -267,8 +267,8 @@ organice has native support for adding and editing DEADLINE and SCHEDULED items.
 
 Scheduling an item should not be understood in the same way that we understand scheduling a meeting. Setting a date for a meeting is just a simple appointment, you can mark this entry with a simple plain timestamp, to get this item shown on the date where it applies.
 
-** An item with a deadline
-   DEADLINE: <2018-10-03 Wed>
+** An item with a deadline in the far future
+   DEADLINE: <2088-05-06 Thu>
 
 Deadlines and scheduled items produce entries in the agenda when they are over-due, so it is important to be able to mark such an entry as done once you have done so. When you mark a ‘DEADLINE’ or a ‘SCHEDULED’ with the TODO keyword ‘DONE’, it no longer produces entries in the agenda.
 ** An item that is scheduled
