@@ -1,4 +1,4 @@
-FROM node:12.13-alpine3.9
+FROM node:20.17.0-alpine3.20
 
 # Switch to Apline Linux Mirror of Clarkson University:
 # https://mirror.clarkson.edu/distributions.html#alpine
