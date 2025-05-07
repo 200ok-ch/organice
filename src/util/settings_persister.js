@@ -158,6 +158,11 @@ export const persistableFields = [
   },
   {
     category: 'base',
+    name: 'shouldLogDone',
+    type: 'boolean',
+  },
+  {
+    category: 'base',
     name: 'closeSubheadersRecursively',
     type: 'boolean',
   },

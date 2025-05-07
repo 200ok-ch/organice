@@ -1,0 +1,4 @@
+#+STARTUP: showeverything logdone
+
+* TODO Header 
+  SCHEDULED: <2024-11-27 Wed +1d>

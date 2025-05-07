@@ -24,6 +24,7 @@ const Settings = ({
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
+  shouldLogDone,
   closeSubheadersRecursively,
   shouldNotIndentOnExport,
   editorDescriptionHeightValue,
@@ -96,6 +97,7 @@ const Settings = ({
     base.setShouldShowTitleInOrgFile(!shouldShowTitleInOrgFile);
 
   const handleShouldLogIntoDrawer = () => base.setShouldLogIntoDrawer(!shouldLogIntoDrawer);
+  const handleShouldLogDone = () => base.setShouldLogDone(!shouldLogDone);
 
   const handleCloseSubheadersRecursively = () =>
     base.setCloseSubheadersRecursively(!closeSubheadersRecursively);
@@ -190,10 +192,10 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
-          Log into LOGBOOK drawer when item repeats
+          Log into LOGBOOK drawer
           <div className="setting-label__description">
-            Log TODO state changes (currently only for repeating items) into the LOGBOOK drawer
-            instead of into the body of the heading (default). See the Orgmode documentation on{' '}
+            Log TODO state changes into the LOGBOOK drawer instead of into the body of the heading
+            (default). See the Orgmode documentation on{' '}
             <ExternalLink href="https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html">
               <code>org-log-into-drawer</code>
             </ExternalLink>{' '}
@@ -201,6 +203,22 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={shouldLogIntoDrawer} onToggle={handleShouldLogIntoDrawer} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Create a closing entry when a TODO is marked DONE
+          <div className="setting-label__description">
+            Create a clsoing entry when a TODO is makred DONE that will be added to the the logbook
+            if logIntoDrawer has also been selected or the the body of the heading (default). See
+            the Orgmode documentation on{' '}
+            <ExternalLink href="https://orgmode.org/manual/Closing-items.html">
+              <code>org-log-done</code>
+            </ExternalLink>{' '}
+            for more information.
+          </div>
+        </div>
+        <Switch isEnabled={shouldLogDone} onToggle={handleShouldLogDone} />
       </div>
 
       <div className="setting-container">
@@ -412,6 +430,7 @@ const mapStateToProps = (state) => {
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
+    shouldLogDone: state.base.get('shouldLogDone'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
     shouldNotIndentOnExport: state.base.get('shouldNotIndentOnExport'),
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),

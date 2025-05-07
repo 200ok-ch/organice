@@ -303,16 +303,23 @@ organice implements this customization strategy:
 *** =#+STARTUP:= options
 
 - =nologrepeat=: Do not record when reinstating repeating item
-
+- =logdone=: Create a closing entry when a TODO is marked DONE
 *** Drawer properties
     :PROPERTIES:
     :END:
 
 - =logrepeat= and =nologrepeat=: Whether to record when reinstating repeating item
-
+- =logdone=: Create a closing entry when a TODO is marked DONE
+  
 #+BEGIN_EXAMPLE
    :PROPERTIES:
    :LOGGING:  logrepeat
+   :END:
+#+END_EXAMPLE
+
+#+BEGIN_EXAMPLE
+   :PROPERTIES:
+   :LOGGING:  logdone
    :END:
 #+END_EXAMPLE
 

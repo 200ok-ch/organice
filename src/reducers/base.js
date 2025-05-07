@@ -42,6 +42,10 @@ const setShouldShowTitleInOrgFile = (state, action) =>
 const setShouldLogIntoDrawer = (state, action) =>
   state.set('shouldLogIntoDrawer', action.shouldLogIntoDrawer);
 
+const setShouldLogDone = (state, action) => {
+  return state.set('shouldLogDone', action.shouldLogDone);
+};
+
 const setCloseSubheadersRecursively = (state, action) =>
   state.set('closeSubheadersRecursively', action.closeSubheadersRecursively);
 
@@ -180,6 +184,8 @@ export default (state = Map(), action) => {
       return setShouldShowTitleInOrgFile(state, action);
     case 'SET_SHOULD_LOG_INTO_DRAWER':
       return setShouldLogIntoDrawer(state, action);
+    case 'SET_SHOULD_LOG_DONE':
+      return setShouldLogDone(state, action);
     case 'SET_CLOSE_SUBHEADERS_RECURSIVELY':
       return setCloseSubheadersRecursively(state, action);
     case 'SET_SHOULD_NOT_INDENT_ON_EXPORT':
