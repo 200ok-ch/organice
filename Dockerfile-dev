@@ -1,4 +1,4 @@
-FROM node:20.17.0-alpine3.20 AS build
+FROM node:20.17.0-alpine3.20
 
 # Switch to Apline Linux Mirror of Clarkson University:
 # https://mirror.clarkson.edu/distributions.html#alpine
@@ -18,35 +18,19 @@ COPY . /opt/organice
 
 RUN bin/transient_env_vars.sh bait >> .env
 
-RUN yarn build
-
-FROM node:20.17.0-alpine3.20
-
-RUN apk add --no-cache bash yarn && yarn global add serve
-
-WORKDIR /opt/organice
-
-COPY --from=build /opt/organice/dist ./build/
-COPY --from=build /opt/organice/bin ./bin/
-COPY --from=build /opt/organice/package.json .
-COPY --from=build /opt/organice/.env .
+RUN yarn global add serve \
+    && yarn build \
+    && yarn cache clean \
+    && rm -rf node_modules
 
 # No root privileges are required. Create and switch to non-root user.
 # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 RUN addgroup -S organice \
         && adduser -S organice -G organice \
-        && chown -R organice: /opt/organice
+        && chown -R organice: .
 
 USER organice
 
 ENV NODE_ENV=production
 EXPOSE 5000
 ENTRYPOINT ["./bin/entrypoint.sh"]
-
-
-#FROM nginx
-#
-#COPY --from=build /opt/organice/nginx.conf /etc/nginx/conf.d/default.conf
-#COPY --from=build /opt/organice/serve/ /usr/share/nginx/html/
-#COPY --from=build /opt/organice/.env .env
-#RUN export $(cat .env | xargs)
