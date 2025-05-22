@@ -7,6 +7,23 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-05-22 Thu]
+
+** Changed
+
+*** Refactor and unify Docker setup for improved development and production builds
+
+  - Introduce a multi-stage =Dockerfile=. This file defines distinct
+    stages for =base=, =development=, =build=, and =production=,
+    ensuring optimized layers and dependencies.
+  - The production Docker image is lean, containing only necessary built assets and runtime dependencies.
+
+This significantly simplifies Docker configuration management,
+enhances the developer experience when using Docker, and builds upon
+earlier work by @rogueai to create lean production images.
+
+The PR is: https://github.com/200ok-ch/organice/pull/1023
+
 * [2025-05-06 Tue]
 
 ** Added
