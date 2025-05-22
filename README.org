@@ -652,35 +652,60 @@ organice is also available as a Docker image.
 
 The docker image recognizes a couple of environment variables. For
 example =REACT_APP_WEBDAV_URL= prefills the URL field in the WebDAV
-signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yaml][docker-compose.yaml]] for an example how to use it.
+signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yml][docker-compose.yml]] for an example how to use it.
 
 A full list of such environment variables can be found in [[https://github.com/200ok-ch/organice/blob/master/.env.sample][.env.sample]].
-
 The prefix =REACT_APP_= has to be replaced with =ORGANICE_=. The
 naming should be pretty self explanatory.
 
 *** With =docker-compose=
 
-If [[https://docs.docker.com/compose/][docker-compose]] is installed, the following command downloads and
-runs the latest image automatically.
+Organice provides a unified =docker-compose.yml= file that supports both production and development environments using profiles.
+
+**** Production
+
+To download and run the latest production-ready image (or build it locally if not available). This uses the =organice= service defined in the =docker-compose.yml= file:
 
 #+BEGIN_SRC shell
-docker-compose up -d
+docker compose --profile prod up -d organice
 #+END_SRC
 
-The webserver is listening on port 5000 and can be reached here:
-http://localhost:5000
+The webserver will be listening on port 5000 by default: http://localhost:5000
 
-If you want to build the image yourself, use the
-=docker-compose-dev.yaml= file:
+To build the production image yourself and run it:
+#+BEGIN_SRC shell
+docker compose --profile prod build organice
+docker compose --profile prod up -d organice
+#+END_SRC
+
+The production image is optimized for size and contains only the necessary files to run organice.
+
+**** Development
+
+To set up a development environment with the source code mounted for hot-reloading. This uses the =organice-dev= service:
 
 #+BEGIN_SRC shell
-docker-compose -f docker-compose-dev.yaml up
+docker compose --profile dev up -d organice-dev
 #+END_SRC
 
-*** Without docker-compose
+This starts a container running a bash shell (via =tail -f /dev/null= to keep it alive). You can then execute commands inside it:
 
-If =docker-compose= is not installed the command looks like this:
+#+BEGIN_SRC shell
+# Start the development server (Parcel)
+docker compose --profile dev exec organice-dev yarn start
+
+# Run tests
+docker compose --profile dev exec organice-dev yarn test
+
+# Open an interactive shell in the container
+docker compose --profile dev exec organice-dev bash
+#+END_SRC
+
+The development server is typically available on port 3000: http://localhost:3000. Note that the =organice-dev= service in =docker-compose.yml= maps port 3000 on your host to port 3000 in the container.
+
+*** Without docker-compose (Running Production Image)
+
+If you prefer to run the production image directly without docker-compose (after pulling it from Docker Hub or building it locally using =docker build --target production -t twohundredok/organice:latest .=):
 
 #+BEGIN_SRC shell
 docker run -p 5000:5000 --name organice twohundredok/organice:latest
@@ -688,7 +713,6 @@ docker run -p 5000:5000 --name organice twohundredok/organice:latest
 
 Again the webserver is listening on port 5000 and can be reached here:
 http://localhost:5000
-
 ** Heroku
 Assuming, you have an account and have installed the [[https://devcenter.heroku.com/articles/heroku-cli][command line
 tools]], deployment is as easy as:

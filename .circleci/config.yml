@@ -107,8 +107,8 @@ jobs:
     machine: true
     steps:
       - checkout
-      # Build docker image and push it to DockerHub
-      - run: docker build --rm=false -t ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} .
+      # Build production docker image and push it to DockerHub
+      - run: docker build --rm=false --target production -t ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} .
       - run: docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PWD}
       - run: docker push ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM}
       # Re-assign latest tag to current build
