@@ -210,8 +210,8 @@ organice can run as a PWA (Progressive Web App) - see the
 support. From your home screen, organice will start up in full screen
 and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]] to cache the application. On a
 desktop browser, the Service Worker will be used automatically. This
-is implemented using the Create React App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]]
-functionality which enables the following features:
+is generally managed through the build process with Parcel and service
+worker configurations, enabling the following features:
 
 - All static assets are cached so that organice loads fast on
   subsequent visits, regardless of network connectivity.
@@ -388,7 +388,7 @@ header on the right).
   :END:
 
 organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.org/][Redux]]. It was bootstrapped with
-[[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
+[[https://parceljs.org/][Parcel]] as its build tool. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
 The internal data structures are written as immutable persistent
 data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
 
@@ -553,15 +553,16 @@ about:inspect
 
 After opening that link, the Chrome Developer Tools will be displayed.
 Select inspect on your process and a breakpoint will be set at the
-first line of the react script (this is done to give you time to open
-the developer tools and to prevent Jest from executing before you have
-time to do so). Click the button that looks like a "play" button in
-the upper right hand side of the screen to continue execution. When
+first line of the test script (this is done to give you time to open the
+developer tools and to prevent Jest from executing before you have time
+to do so). Click the button that looks like a "play" button in the
+upper right hand side of the screen to continue execution. When
 Jest executes the test that contains the debugger statement, execution
 will pause and you can examine the current scope and call stack.
 
-The "Create React App" upstream docs for this feature are here:
-https://create-react-app.dev/docs/debugging-tests/
+For more details on test configuration after migrating from Create React App,
+see the Parcel migration guide:
+https://parceljs.org/migration/cra/#6.-migrate-tests
 
 ** Automatic deployments of reference instance
 

@@ -462,7 +462,9 @@ setup instructions here: [[https://github.com/200ok-ch/organice/tree/master/cont
 
 ***** Status
 
-   Accepted
+  Accepted
+
+  (Note: This ADR was written when Create React App (CRA) and its =react-scripts= were the project's build system. The project has since migrated to Parcel (see ADR-004). The considerations around "ejecting" were specific to CRA. While the core decision of this ADR may still apply, the alternatives and their downsides would be evaluated differently with the current Parcel-based build system.)
 
 ***** Consequences
 
