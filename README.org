@@ -23,7 +23,7 @@
 # exported from Emacs, because it's legacy. Hence the glorious
 # solution: Write all HTML in one line.
 
-#+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://uptimekuma.twohundredok.com/api/badge/15/uptime/720?label=30d" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" /> </a> </p>
+#+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://uptimekuma.twohundredok.com/api/badge/15/uptime/720?label=30d" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://img.shields.io/matrix/organice:matrix.org?label=%23organice%3Amatrix.org" /> </a> </p>
 
 ** Getting started
 :PROPERTIES:
