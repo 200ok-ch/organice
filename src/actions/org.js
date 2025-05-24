@@ -314,6 +314,12 @@ export const addHeader = (headerId) => ({
   dirtying: false,
 });
 
+export const duplicateHeader = (headerId) => ({
+  type: 'DUPLICATE_HEADER',
+  headerId,
+  dirtying: true,
+});
+
 export const createFirstHeader = () => ({
   type: 'CREATE_FIRST_HEADER',
   dirtying: true,
