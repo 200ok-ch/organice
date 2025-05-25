@@ -12,47 +12,55 @@ export default class HeaderActionDrawer extends PureComponent {
   // A nasty hack required to get click handling to work properly in Firefox. No idea why its
   // broken in the first place or why this fixes it.
   iconWithFFClickCatcher({ className, onClick, onLongPress, title, testId = '' }) {
-    const handleMouseDown = onLongPress ? (e) => {
-      this.isLongPressing = false;
-      // Store reference to the target element to avoid React event pooling issues
-      const targetElement = e.currentTarget;
-      // Add visual feedback class immediately for better UX
-      targetElement.classList.add('header-action-drawer__long-press-feedback');
-      this.longPressTimer = setTimeout(() => {
-        this.isLongPressing = true;
-        onLongPress(e);
-        // Add success feedback class
-        targetElement.classList.add('header-action-drawer__long-press-success');
-      }, 600);
-    } : undefined;
+    const handleMouseDown = onLongPress
+      ? (e) => {
+          this.isLongPressing = false;
+          // Store reference to the target element to avoid React event pooling issues
+          const targetElement = e.currentTarget;
+          // Add visual feedback class immediately for better UX
+          targetElement.classList.add('header-action-drawer__long-press-feedback');
+          this.longPressTimer = setTimeout(() => {
+            this.isLongPressing = true;
+            onLongPress(e);
+            // Add success feedback class
+            targetElement.classList.add('header-action-drawer__long-press-success');
+          }, 600);
+        }
+      : undefined;
 
-    const handleMouseUp = onLongPress ? (e) => {
-      if (this.longPressTimer) {
-        clearTimeout(this.longPressTimer);
-        this.longPressTimer = null;
-      }
-      // Remove visual feedback classes
-      e.currentTarget.classList.remove('header-action-drawer__long-press-feedback');
-      e.currentTarget.classList.remove('header-action-drawer__long-press-success');
-    } : undefined;
+    const handleMouseUp = onLongPress
+      ? (e) => {
+          if (this.longPressTimer) {
+            clearTimeout(this.longPressTimer);
+            this.longPressTimer = null;
+          }
+          // Remove visual feedback classes
+          e.currentTarget.classList.remove('header-action-drawer__long-press-feedback');
+          e.currentTarget.classList.remove('header-action-drawer__long-press-success');
+        }
+      : undefined;
 
-    const handleMouseLeave = onLongPress ? (e) => {
-      if (this.longPressTimer) {
-        clearTimeout(this.longPressTimer);
-        this.longPressTimer = null;
-      }
-      // Remove visual feedback classes
-      e.currentTarget.classList.remove('header-action-drawer__long-press-feedback');
-      e.currentTarget.classList.remove('header-action-drawer__long-press-success');
-    } : undefined;
+    const handleMouseLeave = onLongPress
+      ? (e) => {
+          if (this.longPressTimer) {
+            clearTimeout(this.longPressTimer);
+            this.longPressTimer = null;
+          }
+          // Remove visual feedback classes
+          e.currentTarget.classList.remove('header-action-drawer__long-press-feedback');
+          e.currentTarget.classList.remove('header-action-drawer__long-press-success');
+        }
+      : undefined;
 
-    const handleClick = onClick ? (e) => {
-      // Only trigger regular click if it wasn't a long press
-      if (!this.isLongPressing) {
-        onClick(e);
-      }
-      this.isLongPressing = false;
-    } : undefined;
+    const handleClick = onClick
+      ? (e) => {
+          // Only trigger regular click if it wasn't a long press
+          if (!this.isLongPressing) {
+            onClick(e);
+          }
+          this.isLongPressing = false;
+        }
+      : undefined;
 
     return (
       <div
@@ -93,12 +101,14 @@ export default class HeaderActionDrawer extends PureComponent {
     } = this.props;
 
     // Create a fallback function for onDuplicateHeader if not provided
-    const handleDuplicateHeader = onDuplicateHeader || ((e) => {
-      // As a fallback, just call the regular add new header function
-      if (onAddNewHeader) {
-        onAddNewHeader(e);
-      }
-    });
+    const handleDuplicateHeader =
+      onDuplicateHeader ||
+      ((e) => {
+        // As a fallback, just call the regular add new header function
+        if (onAddNewHeader) {
+          onAddNewHeader(e);
+        }
+      });
 
     return (
       <div className="header-action-drawer-container">
