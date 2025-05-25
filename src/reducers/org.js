@@ -338,7 +338,7 @@ const duplicateHeader = (state, action) => {
 
   const clonedHeaders = headersToClone.map((header) => {
     // Deep clone and generate new ID
-    return fromJS(header.toJS()).set('id', generateId());
+    return fromJS(header).set('id', generateId());
   });
 
   return state.update('headers', (headers) =>
