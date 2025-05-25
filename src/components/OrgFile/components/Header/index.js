@@ -49,6 +49,7 @@ class Header extends PureComponent {
       'handleShareHeaderClick',
       'handleRefileHeaderRequest',
       'handleAddNoteClick',
+      'handleDuplicateHeader',
     ]);
 
     this.state = {
@@ -278,6 +279,10 @@ class Header extends PureComponent {
 
   handleAddNewHeader() {
     this.props.org.addHeaderAndEdit(this.props.header.get('id'));
+  }
+
+  handleDuplicateHeader() {
+    this.props.org.duplicateHeader(this.props.header.get('id'));
   }
 
   handleRest() {
@@ -591,6 +596,7 @@ ${header.get('rawDescription')}`;
                   onShareHeader={this.handleShareHeaderClick}
                   onRefileHeader={this.handleRefileHeaderRequest}
                   onAddNote={this.handleAddNoteClick}
+                  onDuplicateHeader={this.handleDuplicateHeader}
                 />
               </Collapse>
 

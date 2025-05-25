@@ -8,6 +8,19 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 * [2025-05-24 Sat]
+
+** Added
+*** Duplicate header via long-press on '+' icon
+
+- Long-pressing the '+' icon in the header action drawer now
+  duplicates the current header and its entire subtree.
+- Visual feedback for the long-press interaction has been
+  significantly enhanced with larger surrounding shadows for better
+  visibility, especially on touch devices.
+- Short-press on the '+' icon continues to add a new, empty header.
+
+PR: https://github.com/200ok-ch/organice/pull/1025
+
 ** Fixed
 *** Table add/remove button inverted
 

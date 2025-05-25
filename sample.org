@@ -23,7 +23,7 @@ If you want the "header action drawer" to disappear or to deselect the current h
 3. Tags: [[https://orgmode.org/manual/Tags.html][Modify tags]]
 4. Properties: [[https://orgmode.org/manual/Properties-and-columns.html][Modify properties]]
 5. Expand: [[https://orgmode.org/manual/Structure-editing.html][Narrow to subtree]] (/Narrowing/ means focusing on this header, making the rest temporarily inaccessible.)
-6. Plus: Create new header below
+6. Plus: Create new header below. Long-pressing this icon duplicates the current header and its entire subtree, providing enhanced visual feedback with larger surrounding shadows. 
 7. Mail: Share this header via email
 8. Calendar 1: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set deadline datetime]]
 9. Calendar 2: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set scheduled datetime]]
