@@ -12,6 +12,8 @@
   :CUSTOM_ID: general
   :END:
 
+** Code
+
 # REPO_PLACEHOLDER
 
 # INFO: We're using inline =#+HTML= notation in favor of the much more
@@ -21,24 +23,47 @@
 # exported from Emacs, because it's legacy. Hence the glorious
 # solution: Write all HTML in one line.
 
-#+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://badgen.net/uptime-robot/month/m789449277-7986138caa6b43ed68a91563" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" /> </a> </p>
+#+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://uptimekuma.twohundredok.com/api/badge/15/uptime/720?label=30d" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://img.shields.io/matrix/organice:matrix.org?label=%23organice%3Amatrix.org" /> </a> </p>
 
-[[https://organice.200ok.ch/documentation.html][Documentation]]
+** Getting started
+:PROPERTIES:
+:CUSTOM_ID: getting_started
+:END:
+
+To get you started, we have two kinds of documentation:
+
+1. [[https://organice.200ok.ch/sample][Interactive Tutorial]]
+2. [[https://organice.200ok.ch/documentation.html][Documentation (User manual and developer guide)]]
+
+The [[https://organice.200ok.ch/sample][interactive tutorial]] allows users to explore and experiment with
+various org-mode functionalities directly within the application. It
+provides hands-on examples of tasks, tables, timestamps, and (most)
+other features.
+
+On the other hand, the [[https://organice.200ok.ch/documentation.html][documentation]] contains more comprehensive and
+formal documentation, including installation instructions, deployment
+guides, contribution guidelines, and technical details about the
+project's architecture and development process. This file is aimed at
+both users seeking in-depth information and developers interested in
+contributing to the project.
+
+** Community chat
 
 Community chat:
 - #organice on IRC [[https://libera.chat/][Libera.Chat]]
 - [[https://matrix.to/#/#organice:matrix.org][#organice:matrix.org]] on Matrix
+
+
+** Sponsors
 
 Creating and maintaining organice is made possible by all the
 volunteering [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]] and [[https://github.com/sponsors/200ok-ch][sponsors]]. If you enjoy using organice,
 and want to sponsor the development of Free and Open Source software,
 you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and [[https://www.patreon.com/200ok][Patreon]].🙏
 
-** Sponsors
+#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/nuts4nuts4nuts"> <img src="https://github.com/nuts4nuts4nuts.png" width="50px" alt="@nuts4nuts4nuts"/></a> </p>
 
-#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/kristiangronberg"> <img src="https://github.com/kristiangronberg.png" width="50px" alt="@kristiangronberg"/></a> <a href="https://github.com/stefanv"> <img src="https://github.com/stefanv.png" width="50px" alt="@stefanv"/></a> </p>
-
-And one anonymous sponsor.
+And one *huge* anonymous sponsor.
 
 ** What does this project do?
    :PROPERTIES:
@@ -185,8 +210,8 @@ organice can run as a PWA (Progressive Web App) - see the
 support. From your home screen, organice will start up in full screen
 and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]] to cache the application. On a
 desktop browser, the Service Worker will be used automatically. This
-is implemented using the Create React App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]]
-functionality which enables the following features:
+is generally managed through the build process with Parcel and service
+worker configurations, enabling the following features:
 
 - All static assets are cached so that organice loads fast on
   subsequent visits, regardless of network connectivity.
@@ -370,7 +395,7 @@ header on the right).
   :END:
 
 organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.org/][Redux]]. It was bootstrapped with
-[[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
+[[https://parceljs.org/][Parcel]] as its build tool. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
 The internal data structures are written as immutable persistent
 data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
 
@@ -386,6 +411,10 @@ installed, the following commands should be sufficient:
 nvm install
 nvm use
 #+END_SRC
+
+If you have the [[https://nixos.org/][Nix package manager]] installed, just type:
+
+: nix develop
 
 ** Setup
 
@@ -531,15 +560,16 @@ about:inspect
 
 After opening that link, the Chrome Developer Tools will be displayed.
 Select inspect on your process and a breakpoint will be set at the
-first line of the react script (this is done to give you time to open
-the developer tools and to prevent Jest from executing before you have
-time to do so). Click the button that looks like a "play" button in
-the upper right hand side of the screen to continue execution. When
+first line of the test script (this is done to give you time to open the
+developer tools and to prevent Jest from executing before you have time
+to do so). Click the button that looks like a "play" button in the
+upper right hand side of the screen to continue execution. When
 Jest executes the test that contains the debugger statement, execution
 will pause and you can examine the current scope and call stack.
 
-The "Create React App" upstream docs for this feature are here:
-https://create-react-app.dev/docs/debugging-tests/
+For more details on test configuration after migrating from Create React App,
+see the Parcel migration guide:
+https://parceljs.org/migration/cra/#6.-migrate-tests
 
 ** Automatic deployments of reference instance
 
@@ -630,35 +660,60 @@ organice is also available as a Docker image.
 
 The docker image recognizes a couple of environment variables. For
 example =REACT_APP_WEBDAV_URL= prefills the URL field in the WebDAV
-signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yaml][docker-compose.yaml]] for an example how to use it.
+signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yml][docker-compose.yml]] for an example how to use it.
 
 A full list of such environment variables can be found in [[https://github.com/200ok-ch/organice/blob/master/.env.sample][.env.sample]].
-
 The prefix =REACT_APP_= has to be replaced with =ORGANICE_=. The
 naming should be pretty self explanatory.
 
 *** With =docker-compose=
 
-If [[https://docs.docker.com/compose/][docker-compose]] is installed, the following command downloads and
-runs the latest image automatically.
+Organice provides a unified =docker-compose.yml= file that supports both production and development environments using profiles.
+
+**** Production
+
+To download and run the latest production-ready image (or build it locally if not available). This uses the =organice= service defined in the =docker-compose.yml= file:
 
 #+BEGIN_SRC shell
-docker-compose up -d
+docker compose --profile prod up -d organice
 #+END_SRC
 
-The webserver is listening on port 5000 and can be reached here:
-http://localhost:5000
+The webserver will be listening on port 5000 by default: http://localhost:5000
 
-If you want to build the image yourself, use the
-=docker-compose-dev.yaml= file:
+To build the production image yourself and run it:
+#+BEGIN_SRC shell
+docker compose --profile prod build organice
+docker compose --profile prod up -d organice
+#+END_SRC
+
+The production image is optimized for size and contains only the necessary files to run organice.
+
+**** Development
+
+To set up a development environment with the source code mounted for hot-reloading. This uses the =organice-dev= service:
 
 #+BEGIN_SRC shell
-docker-compose -f docker-compose-dev.yaml up
+docker compose --profile dev up -d organice-dev
 #+END_SRC
 
-*** Without docker-compose
+This starts a container running a bash shell (via =tail -f /dev/null= to keep it alive). You can then execute commands inside it:
 
-If =docker-compose= is not installed the command looks like this:
+#+BEGIN_SRC shell
+# Start the development server (Parcel)
+docker compose --profile dev exec organice-dev yarn start
+
+# Run tests
+docker compose --profile dev exec organice-dev yarn test
+
+# Open an interactive shell in the container
+docker compose --profile dev exec organice-dev bash
+#+END_SRC
+
+The development server is typically available on port 3000: http://localhost:3000. Note that the =organice-dev= service in =docker-compose.yml= maps port 3000 on your host to port 3000 in the container.
+
+*** Without docker-compose (Running Production Image)
+
+If you prefer to run the production image directly without docker-compose (after pulling it from Docker Hub or building it locally using =docker build --target production -t twohundredok/organice:latest .=):
 
 #+BEGIN_SRC shell
 docker run -p 5000:5000 --name organice twohundredok/organice:latest
@@ -666,7 +721,6 @@ docker run -p 5000:5000 --name organice twohundredok/organice:latest
 
 Again the webserver is listening on port 5000 and can be reached here:
 http://localhost:5000
-
 ** Heroku
 Assuming, you have an account and have installed the [[https://devcenter.heroku.com/articles/heroku-cli][command line
 tools]], deployment is as easy as:
@@ -704,7 +758,7 @@ Your dropbox app needs permission to read and write files.
 
 With WebDAV support, organice can potentially be used with a multitude
 of synchronization back-ends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
-[[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
+[[https://docs.nextcloud.com/server/latest/user_manual/en/files/access_webdav.html][Nextcloud]] and [[https://manual.seafile.com/extension/webdav/][Seafile]], but also self hosted dedicated WebDAV servers
 like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
 
 **** More information

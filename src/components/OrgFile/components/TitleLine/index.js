@@ -110,6 +110,10 @@ class TitleLine extends PureComponent {
       shouldDisableExplicitWidth,
       todoKeywordSets,
       addition,
+      showDeadlineDisplay,
+      headerDeadlineMap,
+      deadlineString,
+      isOverdue,
     } = this.props;
     const { containerWidth } = this.state;
 
@@ -169,6 +173,16 @@ class TitleLine extends PureComponent {
                 {!header.get('opened') && hasContent ? '...' : ''}
               </span>
               {addition ? <span style={additionStyle}>{addition}</span> : null}
+              {showDeadlineDisplay && headerDeadlineMap && (
+                <span
+                  className={classNames('header-deadline', {
+                    'header-deadline--overdue': isOverdue,
+                  })}
+                >
+                  {addition ? ' ' : ''}
+                  {deadlineString}
+                </span>
+              )}
             </div>
             {header.getIn(['titleLine', 'tags']).size > 0 && (
               <div>

@@ -7,13 +7,169 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-05-24 Sat]
+
+** Added
+*** Duplicate header via long-press on '+' icon
+
+- Long-pressing the '+' icon in the header action drawer now
+  duplicates the current header and its entire subtree.
+- Visual feedback for the long-press interaction has been
+  significantly enhanced with larger surrounding shadows for better
+  visibility, especially on touch devices.
+- Short-press on the '+' icon continues to add a new, empty header.
+
+PR: https://github.com/200ok-ch/organice/pull/1025
+
+** Fixed
+*** Table add/remove button inverted
+
+PR: https://github.com/200ok-ch/organice/pull/1024
+
+* [2025-05-22 Thu]
+
+** Changed
+
+*** Refactor and unify Docker setup for improved development and production builds
+
+  - Introduce a multi-stage =Dockerfile=. This file defines distinct
+    stages for =base=, =development=, =build=, and =production=,
+    ensuring optimized layers and dependencies.
+  - The production Docker image is lean, containing only necessary built assets and runtime dependencies.
+
+This significantly simplifies Docker configuration management,
+enhances the developer experience when using Docker, and builds upon
+earlier work by @rogueai to create lean production images.
+
+The PR is: https://github.com/200ok-ch/organice/pull/1023
+
+* [2025-05-06 Tue]
+
+** Added
+
+*** Add visual cue for overdue headers when displaying headers
+
+- Before this change: When enabling the setting "Show Deadline
+  Display", the respective deadline will be displayed on each header
+  line.
+- After this change, in the deadline will show in grey if not overdue
+  and in red if overdue.
+
+This change was originally proposed and implemented by @dmorlitz:
+https://github.com/200ok-ch/organice/pull/970
+
+The merged PR is: https://github.com/200ok-ch/organice/pull/1019
+
+** Fixed
+
+*** Resolved issue where search input field could scroll off-screen on iOS devices
+  - The search input in popups (like Search, Task List) will no longer
+    attempt to automatically focus on iOS. This prevents the field
+    from being pushed out of view by the virtual keyboard. iOS users
+    will now need to tap the input to activate it.
+  - On non-iOS platforms, the search input will now auto-focus with a
+    slight delay to improve usability.
+  - PR: https://github.com/200ok-ch/organice/pull/1018
+
+*** CI Tasks: docker build/push and deploy-prod
+
+- Building the docker image has been broken for some time.
+- Deploying to prod via CI had an issue since switching to parcel.
+
+Both seem to be working as of commit
+e72d01081863e69f7410be87f09aeb2ac68e3c1d. There's no PR, because I
+made these changes directly to the =master= branch, because these CI
+tasks should only run for production ready code.
+
+* [2025-04-11 Fri]
+
+** Changed
+
+*** Switch from CRA to parcel
+
+PR: https://github.com/200ok-ch/organice/pull/1014
+
+This is a big one.
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+** Fixed
+
+- Upgrades: When upgrading from CRA v3 to v4, the upgrade process
+  broke. Clients that once started an old version of organice would
+  forever cache that one.
+  - Changing to Parcel (see above) also got rid of quite a bit of
+    complexity:
+    - Parcel has upstream capability to build scss which means we
+      could delete a good bit of code.
+    - Changelog Files are loaded not only at build time, but can be
+      changed while running the dev server.
+
+* [2025-04-05 Sat]
+
+** Fixed
+
+- Create a static =/manifest.json=
+  - This improves the PWA experience for people self hosting organice
+  - PR: https://github.com/200ok-ch/organice/pull/1013
+
+* [2025-04-04 Fri]
+
+** Fixed
+
+- Prevent accidental horizontal swipes during vertical scrolling on iOS
+  - Improved touch handling to detect vertical scrolling intent and prevent unwanted horizontal swipe actions
+  - PR: https://github.com/200ok-ch/organice/pull/1012
+
+* [2024-11-11 Mon]
+
+** Changed
+
+- No UI/UX changes, but lots of tooling upgrades
+- Major version technical upgrades
+  - nodejs (from 12 to 20)
+  - Create React App (from 3 to 4)
+  - eslint (from 6 to 7)
+  - node-sass to sass
+- Minor version technical upgrades
+  - redux-undo
+  - React
+
+PRs:
+
+- https://github.com/200ok-ch/organice/pull/1000
+- https://github.com/200ok-ch/organice/pull/999
+- https://github.com/200ok-ch/organice/pull/998
+
+* [2024-11-09 Sat]
+** Fixed
+
+- Prevent app crash when deleting a list item immediately after exiting edit mode
+  - PR: https://github.com/200ok-ch/organice/pull/996
+  - Thank you [[https://github.com/kjmatsuda][kjmatsuda]] for the PR🙏
+** Changed
+
+- doc: Clarify where to find docs (interactive tutorial vs. manual)
+  - PR: https://github.com/200ok-ch/organice/pull/991
+* [2024-09-19 Thu]
+
+** Added
+
+- Add a =flake.nix= file to provide a development shell for
+  [[https://nixos.org/][Nix]] users.
+  - PR: https://github.com/200ok-ch/organice/pull/987
+
 * [2023-11-15 Wed]
 
 ** Added
 
 - Ability to print all content (including below the fold)
   - PR: https://github.com/200ok-ch/organice/pull/969
-
+    
 * [2023-08-29 Tue]
 
 ** Added

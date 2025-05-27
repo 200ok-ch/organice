@@ -54,3 +54,11 @@
 .swipe-action-container__icon--right {
   left: 10px;
 }
+
+.header-deadline {
+  padding-right: 0.5em;
+}
+
+.header-deadline--overdue {
+  color: var(--red);
+}

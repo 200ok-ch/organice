@@ -49,6 +49,7 @@ class Header extends PureComponent {
       'handleShareHeaderClick',
       'handleRefileHeaderRequest',
       'handleAddNoteClick',
+      'handleDuplicateHeader',
     ]);
 
     this.state = {
@@ -59,6 +60,9 @@ class Header extends PureComponent {
       isPlayingRemoveAnimation: false,
       heightBeforeRemove: null,
       disabledBackgroundColor: readRgbaVariable('--base3'),
+      // Track vertical touch positions to detect vertical scrolling intent
+      touchStartY: null,
+      currentTouchY: null,
     };
 
     // Store member callbacks handling global mouse/touch events to be able to handle dragging
@@ -184,18 +188,56 @@ class Header extends PureComponent {
   }
 
   handleTouchStart(event) {
-    this.handleDragStart(event, event.changedTouches[0].clientX);
+    // Capture the initial Y position of the touch to track vertical movement
+    const touch = event.changedTouches[0];
+    this.setState({
+      touchStartY: touch.clientY,
+    });
+    this.handleDragStart(event, touch.clientX);
   }
 
   handleTouchMove(event) {
-    this.handleDragMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    const touch = event.changedTouches[0];
+    const currentY = touch.clientY;
+    const currentX = touch.clientX;
+
+    // Update the current Y position for vertical movement tracking
+    this.setState({ currentTouchY: currentY });
+
+    // Detect if this is primarily a vertical scroll gesture
+    // If the user is moving more vertically than horizontally, we should
+    // cancel the horizontal drag to allow normal page scrolling
+    if (this.state.touchStartY !== null && this.state.dragStartX !== null) {
+      const verticalDistance = Math.abs(currentY - this.state.touchStartY);
+      const horizontalDistance = Math.abs(currentX - this.state.dragStartX);
+
+      // If vertical movement is significantly greater than horizontal movement,
+      // cancel the drag operation to allow normal page scrolling
+      // The threshold of 10px ensures small movements don't trigger cancellation
+      if (verticalDistance > horizontalDistance && verticalDistance > 10) {
+        this.handleDragCancel();
+        return;
+      }
+    }
+
+    this.handleDragMove(currentX, currentY);
   }
 
   handleTouchEnd() {
+    // Reset vertical touch tracking when touch ends
+    this.setState({
+      touchStartY: null,
+      currentTouchY: null,
+    });
     this.handleDragEnd();
   }
 
   handleTouchCancel() {
+    // Reset vertical touch tracking when touch is cancelled
+    this.setState({
+      touchStartY: null,
+      currentTouchY: null,
+    });
     this.handleDragCancel();
   }
 
@@ -238,6 +280,10 @@ class Header extends PureComponent {
 
   handleAddNewHeader() {
     this.props.org.addHeaderAndEdit(this.props.header.get('id'));
+  }
+
+  handleDuplicateHeader() {
+    this.props.org.duplicateHeader(this.props.header.get('id'));
   }
 
   handleRest() {
@@ -353,13 +399,25 @@ ${header.get('rawDescription')}`;
       .map((p) => p.get('timestamp'))
       .get(0);
 
-    const headerDeadline =
-      headerDeadlineMap !== undefined
-        ? headerDeadlineMap.get('month') +
-          '-' +
-          headerDeadlineMap.get('day') +
-          '-' +
-          headerDeadlineMap.get('year')
+    let isOverdue = false;
+    let deadlineString = '';
+    if (showDeadlineDisplay && headerDeadlineMap) {
+      const year = headerDeadlineMap.get('year');
+      const month = headerDeadlineMap.get('month');
+      const day = headerDeadlineMap.get('day');
+      // Ensure parts are parsed as integers for Date constructor
+      const deadlineDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Normalize today to midnight for date-only comparison
+
+      isOverdue = deadlineDate < today;
+      deadlineString = `${year}-${month}-${day}`;
+    }
+
+    const clockDisplayString =
+      showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
+        ? millisDuration(header.get('totalTimeLoggedRecursive'))
         : '';
 
     const {
@@ -511,15 +569,11 @@ ${header.get('rawDescription')}`;
                 isSelected={isSelected}
                 shouldDisableExplicitWidth={swipedDistance === 0}
                 shouldDisableActions={shouldDisableActions}
-                addition={
-                  (showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
-                    ? millisDuration(header.get('totalTimeLoggedRecursive'))
-                    : '') +
-                  // Spacing between 'clock display' and 'deadline
-                  // display' overlays
-                  (showClockDisplay && showDeadlineDisplay ? ' ' : '') +
-                  (showDeadlineDisplay && headerDeadline !== undefined ? headerDeadline : '')
-                }
+                addition={clockDisplayString}
+                showDeadlineDisplay={showDeadlineDisplay}
+                headerDeadlineMap={headerDeadlineMap}
+                deadlineString={deadlineString}
+                isOverdue={isOverdue}
               />
 
               <Collapse
@@ -543,6 +597,7 @@ ${header.get('rawDescription')}`;
                   onShareHeader={this.handleShareHeaderClick}
                   onRefileHeader={this.handleRefileHeaderRequest}
                   onAddNote={this.handleAddNoteClick}
+                  onDuplicateHeader={this.handleDuplicateHeader}
                 />
               </Collapse>
 

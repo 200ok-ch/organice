@@ -27,15 +27,6 @@ import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 afterEach(cleanup);
 
 describe('Render all views', () => {
-  jest.mock('react-hotkeys', () => {
-    const React = require('react');
-    const Fragment = React.Fragment;
-
-    return {
-      HotKeys: ({ children }) => <Fragment>{children}</Fragment>,
-    };
-  });
-
   const testOrgFile = readFixture('main_test_file');
 
   let store;

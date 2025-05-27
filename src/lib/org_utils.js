@@ -1,6 +1,6 @@
 import { List, Map, fromJS } from 'immutable';
 import _ from 'lodash';
-import raw from 'raw.macro';
+import changelogContent from 'bundle-text:../../changelog.org';
 import { formatDistanceToNow } from 'date-fns';
 
 import generateId from './id_generator';
@@ -31,9 +31,7 @@ function generateHash(list) {
 
 export const changelogHash = () => {
   return new Promise((resolve, reject) => {
-    const changelogFile = raw('../../changelog.org');
-
-    generateHash(changelogFile.split('').map((c) => c.charCodeAt(0))).then((hash) => {
+    generateHash(changelogContent.split('').map((c) => c.charCodeAt(0))).then((hash) => {
       resolve(hash);
     });
   });
@@ -389,7 +387,7 @@ export const pathAndPartOfTimestampItemWithIdInAttributedString = (parts, timest
     .filter((result) => result)
     .first();
 
-const listPartContainsItemId = (listPart, itemId) =>
+export const listPartContainsItemId = (listPart, itemId) =>
   listPart.get('items').some((item) => item.get('id') === itemId);
 
 export const headerThatContainsListItemId = (headers, listItemId) => {

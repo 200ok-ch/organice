@@ -1,7 +1,8 @@
 import { parseFile, resetFileDisplay, setPath } from './org';
 import { STATIC_FILE_PREFIX } from '../lib/org_utils';
 
-import raw from 'raw.macro';
+import changelogContent from 'bundle-text:../../changelog.org';
+import sampleContent from 'bundle-text:../../sample.org';
 
 export const setLoadingMessage = (loadingMessage) => ({
   type: 'SET_LOADING_MESSAGE',
@@ -38,8 +39,8 @@ export const restoreStaticFile = (staticFile, lastViewedFilePath) => {
     dispatch(setLastViewedFile(lastViewedFilePath));
 
     const fileContents = {
-      changelog: raw('../../changelog.org'),
-      sample: raw('../../sample.org'),
+      changelog: changelogContent,
+      sample: sampleContent,
     }[staticFile];
 
     dispatch(parseFile(STATIC_FILE_PREFIX + staticFile, fileContents));

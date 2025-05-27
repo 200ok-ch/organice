@@ -376,6 +376,30 @@ const addHeader = (state, action) => {
   );
 };
 
+const duplicateHeader = (state, action) => {
+  const headers = state.get('headers');
+  const { header: originalHeader, headerIndex: originalHeaderIndex } = indexAndHeaderWithId(
+    headers,
+    action.headerId
+  );
+
+  if (!originalHeader) {
+    return state;
+  }
+
+  const subheaders = subheadersOfHeaderWithId(headers, action.headerId);
+  const headersToClone = [originalHeader].concat(subheaders.toJS());
+
+  const clonedHeaders = headersToClone.map((header) => {
+    // Deep clone and generate new ID
+    return fromJS(header).set('id', generateId());
+  });
+
+  return state.update('headers', (headers) =>
+    headers.splice(originalHeaderIndex + subheaders.size + 1, 0, ...clonedHeaders)
+  );
+};
+
 const createFirstHeader = (state) => {
   let newHeader = newHeaderWithTitle('First header', 1, state.get('todoKeywordSets'));
 
@@ -1820,6 +1844,8 @@ const reducer = (state, action) => {
       return inFile(updateHeaderDescription);
     case 'ADD_HEADER':
       return inFile(addHeader);
+    case 'DUPLICATE_HEADER':
+      return inFile(duplicateHeader);
     case 'CREATE_FIRST_HEADER':
       return inFile(createFirstHeader);
     case 'SELECT_NEXT_SIBLING_HEADER':
