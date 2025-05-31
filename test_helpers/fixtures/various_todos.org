@@ -3,4 +3,13 @@
 * This is not a todo
 * TODO Task with active timestamp and repeater <2020-11-15 Sun +1d>
 * TODO Repeating task
-  SCHEDULED: <2019-11-27 Wed +1d>
+  SCHEDULED: <2019-11-28 Thu +1d>
+* TODO Repeating task with +1d repeater
+  SCHEDULED: <2021-05-17 Mon 08:00 .+1d>
+
+  When repeaterUnit is not "h", hour and minutes are never touched.
+* TODO Repeating task with +1h repeater
+  SCHEDULED: <2021-05-17 Mon 08:00 .+1h>
+
+  When repeaterUnit is "h", hour and minutes are set to
+  n hour(s) from now.
