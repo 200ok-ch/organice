@@ -2059,6 +2059,9 @@ function updatePlanningItemsWithRepeaters({
   logIntoDrawer,
   timestamp,
 }) {
+  const headerId = state.getIn(['headers', headerIndex, 'id']);
+  state = selectHeader(state, { headerId });
+
   indexedPlanningItemsWithRepeaters.forEach(([planningItem, planningItemIndex]) => {
     const adjustedTimestamp = applyRepeater(planningItem.get('timestamp'), timestamp);
     state = state.setIn(
@@ -2146,6 +2149,7 @@ function updatePlanningItemsWithRepeaters({
             })
           )
     );
+
     state = addTodoStateChangeLogItem(
       state,
       headerIndex,
