@@ -7,13 +7,16 @@ import _ from 'lodash';
 // TODO: Extract all match groups of `beginningRegexp` (for example
 // like `emailRegexp`), so that they can be documented and are less
 // unwieldly.
-const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|((^|\s|[({'"])([*/~=_+])([^\s,'](.*?))\11([\s\-.,:;!?'")}]?))/;
+const beginningRegexp =
+  /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|((^|\s|[({'"])([*/~=_+])([^\s,'](.*?))\11([\s\-.,:;!?'")}]?))/;
 
 // Regexp taken from https://stackoverflow.com/a/3809435/999007
-const httpUrlRegexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
+const httpUrlRegexp =
+  /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
 
 // Regexp taken from https://stackoverflow.com/a/1373724/999007
-const urlRegexp = /([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)/;
+const urlRegexp =
+  /([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)/;
 
 const internationalPhoneRegexp = /((\+|00)\d{8,30})/;
 
@@ -29,7 +32,8 @@ const swissPhoneRegexp2 = /(0[0-9]{9,11})/;
 
 const wwwUrlRegexp = /(www(\.[-_a-zA-Z0-9]+){2,}(\/[-_a-zA-Z0-9]+)*)/;
 
-const timestampOptionalRepeaterOrDelayRegexp = /(?: (\+|\+\+|\.\+|-|--)(\d+)([hdwmy])(?:\/(\d+)([hdwmy]))?)?/;
+const timestampOptionalRepeaterOrDelayRegexp =
+  /(?: (\+|\+\+|\.\+|-|--)(\d+)([hdwmy])(?:\/(\d+)([hdwmy]))?)?/;
 const timestampRegex = new RegExp(
   [
     /([<[])/,
@@ -690,13 +694,8 @@ export const parseDescriptionPrefixElements = (rawText) => {
 };
 
 export const _updateHeaderFromDescription = (header, rawUnstrippedDescription) => {
-  const {
-    planningItems,
-    propertyListItems,
-    logNotes,
-    logBookEntries,
-    strippedDescription,
-  } = parseDescriptionPrefixElements(rawUnstrippedDescription);
+  const { planningItems, propertyListItems, logNotes, logBookEntries, strippedDescription } =
+    parseDescriptionPrefixElements(rawUnstrippedDescription);
   const parsedDescription = parseRawText(strippedDescription);
 
   const parsedTitle = header.getIn(['titleLine', 'title']);
