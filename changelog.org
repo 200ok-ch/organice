@@ -7,6 +7,16 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* <2025-06-06 Fri>
+
+** Fixed
+
+*** Repeater state changes will now always be filed to the correct header
+
+- =updatePlanningItemsWithRepeaters= now selects the header it intends to update
+
+PR: [[https://github.com/200ok-ch/organice/pull/1029]]  
+  
 * [2025-05-24 Sat]
 
 ** Added

@@ -1,8 +1,8 @@
 /* global process */
-/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "check_is_undoable", "check_just_dirtying", "check_is_undoable_on_table"] }] */
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "check_is_undoable", "check_just_dirtying", "check_is_undoable_on_table", "assertElementDidNotChangeForHeaderIds"] }] */
 
 import { Map, fromJS } from 'immutable';
-
+import { curry, forEach } from 'lodash/fp';
 import generateId from '../lib/id_generator';
 import reducer from './org';
 import rootReducer from './index';
@@ -90,6 +90,25 @@ describe('org reducer', () => {
       .set('path', path);
     return state;
   }
+
+  function assertElementDidNotChangeForHeaderIds(element, oldHeaders, newHeaders, headerIds) {
+    forEach((headerId) => {
+      expect(headerWithId(newHeaders, headerId).get(element).size).toEqual(
+        headerWithId(oldHeaders, headerId).get(element).size
+      );
+    })(headerIds);
+  }
+
+  const curriedAssertElementDidNotChangeForHeaderIds = curry(assertElementDidNotChangeForHeaderIds);
+  const assertDescriptionDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'description'
+  );
+  const assertLogNotesDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'logNotes'
+  );
+  const assertPlanningItemsDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'planningItems'
+  );
 
   describe('REFILE_SUBTREE', () => {
     let state;
@@ -824,7 +843,11 @@ describe('org reducer', () => {
     let doneHeaderId;
     let repeatingHeaderId;
     let activeTimestampWithRepeaterHeaderId;
+    let notDoneId;
+    let notDoneWithLogsId;
     let state;
+    let allTestHeaderIds;
+
     const testOrgFile = readFixture('various_todos');
     const path = 'testfile';
 
@@ -843,6 +866,17 @@ describe('org reducer', () => {
         .get(3)
         .get('id');
       repeatingHeaderId = state.org.present.getIn(['files', path, 'headers']).get(4).get('id');
+      notDoneId = state.org.present.getIn(['files', path, 'headers']).get(5).get('id');
+      notDoneWithLogsId = state.org.present.getIn(['files', path, 'headers']).get(6).get('id');
+      allTestHeaderIds = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        activeTimestampWithRepeaterHeaderId,
+        repeatingHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
     });
 
     function check_todo_keyword_kept(oldHeaders, newHeaders, headerId) {
@@ -911,13 +945,26 @@ describe('org reducer', () => {
         types.advanceTodoState(repeatingHeaderId)
       ).getIn(['files', path, 'headers']);
       check_todo_keyword_kept(oldHeaders, newHeaders, repeatingHeaderId);
-      expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
-        headerWithId(oldHeaders, repeatingHeaderId).get('description').size
-      );
+
+      // no descriptions should change
+      assertDescriptionDidNotChangeForHeaderIds(oldHeaders, newHeaders, allTestHeaderIds);
+      const unchangedHeaders = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        activeTimestampWithRepeaterHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
+
+      // logNotes and planningItems of unmodified headers should not change
+      assertLogNotesDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+      assertPlanningItemsDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+
+      // logNotes and planningItems of header with repeater should chnage
       expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toBeGreaterThan(
         headerWithId(oldHeaders, repeatingHeaderId).get('logNotes').size
       );
-
       expect(headerWithId(newHeaders, repeatingHeaderId).get('planningItems')).not.toEqual(
         headerWithId(oldHeaders, repeatingHeaderId).get('planningItems')
       );
@@ -935,8 +982,25 @@ describe('org reducer', () => {
         'headers',
       ]);
       check_todo_keyword_kept(intermHeaders, newHeaders, repeatingHeaderId);
+      const unchangedHeaders = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        activeTimestampWithRepeaterHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
+
+      // logNotes and planningItems of unmodified headers should not change
+      assertLogNotesDidNotChangeForHeaderIds(intermHeaders, newHeaders, unchangedHeaders);
+      assertPlanningItemsDidNotChangeForHeaderIds(intermHeaders, newHeaders, unchangedHeaders);
+
       expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
         headerWithId(intermHeaders, repeatingHeaderId).get('description').size
+      );
+
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toBeGreaterThan(
+        headerWithId(intermHeaders, repeatingHeaderId).get('logNotes').size
       );
 
       expect(headerWithId(newHeaders, repeatingHeaderId).get('planningItems')).not.toEqual(
@@ -953,7 +1017,27 @@ describe('org reducer', () => {
         state.org.present,
         types.advanceTodoState(activeTimestampWithRepeaterHeaderId)
       ).getIn(['files', path, 'headers']);
+
+      const unchangedHeaders = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        repeatingHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
+
+      // logNotes and planningItems of unmodified headers should not change
+      assertLogNotesDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+      assertPlanningItemsDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+
       check_todo_keyword_kept(oldHeaders, newHeaders, activeTimestampWithRepeaterHeaderId);
+
+      expect(
+        headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).get('logNotes').size
+      ).toBeGreaterThan(
+        headerWithId(oldHeaders, activeTimestampWithRepeaterHeaderId).get('logNotes').size
+      );
 
       expect(
         headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).get('planningItems')
