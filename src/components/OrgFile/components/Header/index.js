@@ -150,10 +150,11 @@ class Header extends PureComponent {
       }
 
       if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
-        this.setState({
-          isPlayingRemoveAnimation: true,
-          heightBeforeRemove: this.containerDiv.offsetHeight,
-        });
+        window.confirm('Please confirm your request to delete this header') &&
+          this.setState({
+            isPlayingRemoveAnimation: true,
+            heightBeforeRemove: this.containerDiv.offsetHeight,
+          });
       }
     }
 
