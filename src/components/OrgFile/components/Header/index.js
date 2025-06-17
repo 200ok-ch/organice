@@ -140,16 +140,14 @@ class Header extends PureComponent {
     const { dragStartX, currentDragX } = this.state;
 
     if (!!dragStartX && !!currentDragX) {
-      const swipeDistance = currentDragX - dragStartX;
-
-      if (swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
+      if (currentDragX >= 2 * dragStartX) {
         this.props.org.advanceTodoState(
           this.props.header.get('id'),
           this.props.shouldLogIntoDrawer
         );
       }
 
-      if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
+      if (dragStartX >= 2 * currentDragX) {
         this.setState({
           isPlayingRemoveAnimation: true,
           heightBeforeRemove: this.containerDiv.offsetHeight,
