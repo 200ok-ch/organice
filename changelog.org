@@ -7,6 +7,17 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-06-18 Wed]
+
+** Fixed
+
+*** Made it harder to accidentally swipe left or right on headers
+
+- Changed swipe detection from fixed distance to relative distance (2x)
+- This reduces accidental swipes while maintaining intentional swipe functionality
+- PR: https://github.com/200ok-ch/organice/pull/1034
+- Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
+
 * [2025-06-06 Fri]
 
 ** Fixed
