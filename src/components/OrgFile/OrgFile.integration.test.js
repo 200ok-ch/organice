@@ -525,8 +525,9 @@ describe('Render all views', () => {
         });
 
         test('Clicking the Timestamp in a TODO within the agenda toggles from the date to the time', () => {
+          const expectedDate = new Date(2019, 8, 19, 12, 0);
           fireEvent.click(getByTitle('Show agenda'));
-          const timeSinceScheduled = formatDistanceToNow(new Date('2019-09-19'));
+          const timeSinceScheduled = formatDistanceToNow(expectedDate);
           expect(queryByText(timeSinceScheduled)).toBeFalsy();
           expect(queryByText('09/19')).toBeTruthy();
           fireEvent.click(queryByText('09/19'));
