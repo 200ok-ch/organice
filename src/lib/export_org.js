@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
-import { isRegularPlanningItem } from './org_utils';
+import { isRegularPlanningItem, subheadersOfHeaderWithId } from './org_utils';
 import { renderAsText, timestampDuration } from './timestamps';
 
 const linkPartToRawText = (linkPart) => {
@@ -382,4 +382,60 @@ export const createRawDescriptionText = (header, includeTitle, dontIndent) => {
   contents += fixedRawDescription;
 
   return contents;
+};
+
+/**
+ * Get all nested sub-headers recursively
+ * @param {Array} headers - All headers in the file
+ * @param {string} headerId - ID of the parent header
+ * @returns {Array} Array of all nested sub-headers
+ */
+const getAllNestedSubheaders = (headers, headerId) => {
+  const directSubheaders = subheadersOfHeaderWithId(headers, headerId);
+  let allSubheaders = directSubheaders;
+
+  directSubheaders.forEach((subheader) => {
+    const nestedSubheaders = getAllNestedSubheaders(headers, subheader.get('id'));
+    allSubheaders = allSubheaders.concat(nestedSubheaders);
+  });
+
+  return allSubheaders;
+};
+
+/**
+ * Export a header with optional sub-headers
+ * @param {Object} header - The header to export
+ * @param {Array} headers - All headers in the file
+ * @param {Object} options - Export options
+ * @param {boolean} options.includeSubheaders - Include sub-headers
+ * @param {boolean} options.recursive - Include nested sub-headers
+ * @param {boolean} options.includeTitle - Include the header title
+ * @param {boolean} options.dontIndent - If true keep all text flush-left
+ * @returns {string} Exported content as text
+ */
+export const exportHeaderWithSubheaders = (header, headers, options = {}) => {
+  const {
+    includeSubheaders = true,
+    recursive = true,
+    includeTitle = true,
+    dontIndent = false,
+  } = options;
+
+  let content = createRawDescriptionText(header, includeTitle, dontIndent);
+
+  if (includeSubheaders) {
+    const subheaders = recursive
+      ? getAllNestedSubheaders(headers, header.get('id'))
+      : subheadersOfHeaderWithId(headers, header.get('id'));
+
+    const subheaderContent = subheaders
+      .map((subheader) => createRawDescriptionText(subheader, true, dontIndent))
+      .join('\n');
+
+    if (subheaderContent) {
+      content += '\n' + subheaderContent;
+    }
+  }
+
+  return content;
 };

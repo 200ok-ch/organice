@@ -382,7 +382,9 @@ describe('Render all views', () => {
           expect(global.open).toBeCalledWith(
             `mailto:?subject=${encodeURIComponent(
               'Another top level header'
-            )}&body=${encodeURIComponent('\n\nSome description content\n')}`
+            )}&body=${encodeURIComponent(
+              '* Another top level header\nSome description content\n\n** TODO A repeating todo\n   SCHEDULED: <2020-04-05 Sun +1d>\n\n'
+            )}`
           );
         });
       });

@@ -163,7 +163,7 @@ export default class HeaderActionDrawer extends PureComponent {
 
         <div className="header-action-drawer__row">
           {this.iconWithFFClickCatcher({
-            className: 'fas fa-envelope fa-lg',
+            className: 'fas fa-share fa-lg',
             onClick: onShareHeader,
             testId: 'share',
             title: 'Share this header via email',

@@ -21,6 +21,8 @@ import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString, readRgbaVariable } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
 import { Map } from 'immutable';
+import { shareContent } from '../../../../lib/share_utils';
+import { exportHeaderWithSubheaders } from '../../../../lib/export_org';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -333,32 +335,26 @@ class Header extends PureComponent {
   }
 
   handleShareHeaderClick() {
-    const { header } = this.props;
+    const { header, headers } = this.props;
 
     const titleLine = header.get('titleLine');
     const todoKeyword = titleLine.get('todoKeyword');
-    const tags = titleLine.get('tags');
     const title = titleLine.get('rawTitle').trim();
-    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
-    const body = `
-${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
-${header.get('rawDescription')}`;
-    //const titleParts = titleLine.get('title'); // List of parsed tokens in title
-    //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
-    //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
-    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-      body
-    )}`;
-    // TODO: If available, use webshare
-    // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
+    const fullTitle = todoKeyword ? `${todoKeyword} ${title}` : title;
 
-    window.open(mailtoURI);
-    // INFO: Alternative implementation that works without having a
-    // popup window. We didn't go this route, because it's non-trivial
-    // to mock the window object, so it's harder to test. Having
-    // slightly worse UX in favor of having a test is not optimal, as
-    // well, of course.
-    // window.location.href = mailtoURI;
+    // Export header with all sub-headers
+    const content = exportHeaderWithSubheaders(header, headers, {
+      includeSubheaders: true,
+      recursive: true,
+      includeTitle: true,
+      dontIndent: false,
+    });
+
+    // Use Web Share API with fallback to email
+    shareContent({
+      title: fullTitle,
+      text: content,
+    });
   }
 
   handleAddNoteClick() {
@@ -622,6 +618,7 @@ const mapStateToProps = (state, ownProps) => {
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
     showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
+    headers: file.get('headers'),
   };
 };
 
