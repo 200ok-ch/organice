@@ -217,7 +217,7 @@ class TableEditorModal extends PureComponent {
       <>
         <h2 className="drawer-modal__title">Edit table</h2>
         <div style={{ overflowX: 'auto', overflowY: 'auto' }}>
-          <table className="table-part">
+          <table data-testid="edit-table" className="table-part">
             <tbody>
               {table.get('contents').map((row) => (
                 <tr key={row.get('id')}>
@@ -237,6 +237,7 @@ class TableEditorModal extends PureComponent {
                         {isCellSelected && inTableEditMode ? (
                           <div className="table-cell__edit-container">
                             <textarea
+                              data-testid="edit-cell-container"
                               autoFocus
                               className="textarea"
                               rows="3"

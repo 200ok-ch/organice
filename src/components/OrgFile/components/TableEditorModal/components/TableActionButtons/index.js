@@ -25,7 +25,7 @@ export default ({
               className=" table-action-drawer__edit-icon-container"
               onClick={() => (selectedTableCellId ? onEnterTableEditMode() : undefined)}
             >
-              <i className="fas fa-pencil-alt fa-lg" />
+              <i data-testid="edit-cell-button" className="fas fa-pencil-alt fa-lg" />
             </div>
 
             <div
@@ -33,7 +33,10 @@ export default ({
               onClick={() => (selectedTableCellId ? onAddNewTableColumn() : undefined)}
             >
               <i className="fas fa-plus fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated" />
+              <i
+                data-testid="add-column-button"
+                className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated"
+              />
             </div>
 
             <div
@@ -41,7 +44,10 @@ export default ({
               onClick={() => (selectedTableCellId ? onRemoveTableColumn() : undefined)}
             >
               <i className="fas fa-times fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated" />
+              <i
+                data-testid="delete-column-button"
+                className="fas fa-columns fa-sm table-action-drawer__sub-icon table-action-drawer__sub-icon--rotated"
+              />
             </div>
 
             <div
@@ -49,7 +55,10 @@ export default ({
               onClick={() => (selectedTableCellId ? onAddNewTableRow() : undefined)}
             >
               <i className="fas fa-plus fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon" />
+              <i
+                data-testid="add-row-button"
+                className="fas fa-columns fa-sm table-action-drawer__sub-icon"
+              />
             </div>
 
             <div
@@ -57,7 +66,10 @@ export default ({
               onClick={() => (selectedTableCellId ? onRemoveTableRow() : undefined)}
             >
               <i className="fas fa-times fa-lg table-action-drawer__main-icon" />
-              <i className="fas fa-columns fa-sm table-action-drawer__sub-icon" />
+              <i
+                data-testid="delete-row-button"
+                className="fas fa-columns fa-sm table-action-drawer__sub-icon"
+              />
             </div>
           </div>
 
