@@ -601,7 +601,7 @@ describe('Render all views', () => {
 
         test('opens when a table cell is clicked on', () => {
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
           // click cell to open table ediotr
           fireEvent.click(getByText('Argos'));
           // assert edit table component
@@ -611,7 +611,7 @@ describe('Render all views', () => {
         test('can edit cell value', () => {
           const cellToClick = 'Bauschan';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
           // click cell to open table editor
           fireEvent.click(getByText(cellToClick));
           // assert pencil edit button exists
@@ -633,7 +633,7 @@ describe('Render all views', () => {
         test('can insert timestamp in a cell', () => {
           const cellToClick = 'Luster';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
           // click cell to open table editor
           fireEvent.click(getByText(cellToClick));
           // assert pencil edit button exists
@@ -657,7 +657,7 @@ describe('Render all views', () => {
         test('can move row up', () => {
           const cellToClick = '6';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -675,7 +675,7 @@ describe('Render all views', () => {
           // move row up
           fireEvent.click(document.querySelector('.table-action-movement__up'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -691,7 +691,7 @@ describe('Render all views', () => {
         test('can move row down', () => {
           const cellToClick = '17';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -709,7 +709,7 @@ describe('Render all views', () => {
           // move row down
           fireEvent.click(document.querySelector('.table-action-movement__down'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -724,7 +724,7 @@ describe('Render all views', () => {
         test('can move column to the right', () => {
           const cellToClick = 'Rufus';
 
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
           // get the first column
@@ -743,7 +743,7 @@ describe('Render all views', () => {
           // move column to the right
           fireEvent.click(document.querySelector('.table-action-movement__right'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -759,7 +759,7 @@ describe('Render all views', () => {
         test('can move column to the left', () => {
           const cellToClick = 'Edward Rochester';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -777,7 +777,7 @@ describe('Render all views', () => {
           // move column to the left
           fireEvent.click(document.querySelector('.table-action-movement__left'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -793,7 +793,7 @@ describe('Render all views', () => {
         test('can add row', () => {
           const cellToClick = 'Anika R.';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -812,7 +812,7 @@ describe('Render all views', () => {
           // add row
           fireEvent.click(getByTestId('add-row-button'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -838,7 +838,7 @@ describe('Render all views', () => {
         test('can add column', () => {
           const cellToClick = '45';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -859,7 +859,7 @@ describe('Render all views', () => {
           // add column
           fireEvent.click(getByTestId('add-column-button'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -885,7 +885,7 @@ describe('Render all views', () => {
         test('can delete row', () => {
           const cellToClick = 'Gyp';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -903,7 +903,7 @@ describe('Render all views', () => {
           // delete row
           fireEvent.click(getByTestId('delete-row-button'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 
@@ -920,7 +920,7 @@ describe('Render all views', () => {
         test('can delete column', () => {
           const cellToClick = 'Score';
           // click table
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableBeforeMove = document.querySelector('.table-part');
 
@@ -938,7 +938,7 @@ describe('Render all views', () => {
           // delete column
           fireEvent.click(getByTestId('delete-column-button'));
           // exit table editor
-          fireEvent.click(getByText('A table'));
+          fireEvent.click(getByText('Dogs'));
 
           const tableAfterMove = document.querySelector('.table-part');
 

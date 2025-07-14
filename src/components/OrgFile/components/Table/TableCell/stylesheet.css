@@ -1,0 +1,13 @@
+@import '../../../../../../colors.css';
+
+.table-part__cell {
+  border: 1px solid var(--base01);
+
+  white-space: pre;
+
+  vertical-align: top;
+}
+
+.table-part__cell--selected {
+  background-color: var(--green-soft);
+}
