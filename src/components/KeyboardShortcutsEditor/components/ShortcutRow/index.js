@@ -20,6 +20,11 @@ export default class ShortcutRow extends PureComponent {
     this.rebindArea.addEventListener('blur', () => this.setState({ isEditMode: false }));
   }
 
+  componentWillUnmount() {
+    // Clean up any remaining event listeners to prevent memory leaks
+    document.removeEventListener('keypress', this.handleKeyPress);
+  }
+
   handleRebindClick() {
     this.setState({ isEditMode: true });
     document.addEventListener('keypress', this.handleKeyPress);
