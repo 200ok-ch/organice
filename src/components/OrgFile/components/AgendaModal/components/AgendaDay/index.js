@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment, useCallback, useMemo } from 'react';
 
 import './stylesheet.css';
 
@@ -29,32 +29,130 @@ import {
 import classNames from 'classnames';
 import { List } from 'immutable';
 
-export default class AgendaDay extends PureComponent {
-  handleHeaderClick(path, headerId) {
-    return () => this.props.onHeaderClick(path, headerId);
-  }
+// Extracted utility function for testing
+export const getPlanningItemsAndHeaders = ({
+  files,
+  date,
+  agendaDefaultDeadlineDelayValue,
+  agendaDefaultDeadlineDelayUnit,
+  dateStart,
+  dateEnd,
+}) => {
+  const headers = List().concat(
+    ...files
+      .mapEntries(([path, file]) => [
+        path,
+        file.get('headers').map((header) => header.set('path', path)),
+      ])
+      .valueSeq()
+  );
+  const todoKeywordSets = files.map((file) => file.get('todoKeywordSets'));
 
-  render() {
-    const {
-      date,
-      files,
-      dateDisplayType,
-      onToggleDateDisplayType,
-      agendaDefaultDeadlineDelayValue,
-      agendaDefaultDeadlineDelayUnit,
-    } = this.props;
-
-    const dateStart = startOfDay(date);
-    const dateEnd = endOfDay(date);
-
-    const planningItemsAndHeaders = this.getPlanningItemsAndHeaders({
-      files,
-      date,
-      agendaDefaultDeadlineDelayValue,
-      agendaDefaultDeadlineDelayUnit,
-      dateStart,
-      dateEnd,
+  return headers
+    .flatMap((header) => {
+      const planningItemsforDate = header.get('planningItems').filter((planningItem) => {
+        const timestamp = planningItem.get('timestamp');
+        if (!timestamp.get('isActive')) {
+          return false;
+        }
+        const planningItemDate = dateForTimestamp(timestamp);
+        const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
+        const isCompletedTodo =
+          todoKeyword &&
+          isTodoKeywordCompleted(todoKeywordSets.get(header.get('path')), todoKeyword);
+        if (isCompletedTodo) {
+          return false;
+        }
+        switch (planningItem.get('type')) {
+          case 'DEADLINE':
+            if (isToday(date)) {
+              if (isBefore(planningItemDate, new Date())) {
+                return true;
+              }
+              const [delayValue, delayUnit] = timestamp.get('delayType')
+                ? [timestamp.get('delayValue'), timestamp.get('delayUnit')]
+                : [agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit];
+              const appearDate = subtractTimestampUnitFromDate(
+                planningItemDate,
+                delayValue,
+                delayUnit
+              );
+              return isAfter(date, appearDate) || isEqual(date, appearDate);
+            } else {
+              return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
+            }
+          case 'SCHEDULED':
+            let appearDate = planningItemDate;
+            if (timestamp.get('delayType')) {
+              const hasBeenRepeated = header
+                .get('propertyListItems')
+                .some((propertyListItem) => propertyListItem.get('property') === 'LAST_REPEAT');
+              if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
+                appearDate = addTimestampUnitToDate(
+                  planningItemDate,
+                  timestamp.get('delayValue'),
+                  timestamp.get('delayUnit')
+                );
+              }
+            }
+            if (isToday(date) && isAfter(date, appearDate)) {
+              return true;
+            }
+            return isWithinInterval(appearDate, { start: dateStart, end: dateEnd });
+          default:
+            return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
+        }
+      });
+      return planningItemsforDate.map((planningItem) => [planningItem, header]);
+    })
+    .sortBy(([planningItem]) => {
+      const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
+        .get('timestamp')
+        .toJS();
+      return [startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
     });
+};
+
+const AgendaDay = React.memo(
+  ({
+    date,
+    files,
+    dateDisplayType,
+    onToggleDateDisplayType,
+    agendaDefaultDeadlineDelayValue,
+    agendaDefaultDeadlineDelayUnit,
+    onHeaderClick,
+  }) => {
+    const handleHeaderClick = useCallback(
+      (path, headerId) => {
+        return () => onHeaderClick(path, headerId);
+      },
+      [onHeaderClick]
+    );
+
+    const dateStart = useMemo(() => startOfDay(date), [date]);
+    const dateEnd = useMemo(() => endOfDay(date), [date]);
+
+    const planningItemsAndHeaders = useMemo(
+      () =>
+        getPlanningItemsAndHeaders({
+          files,
+          date,
+          agendaDefaultDeadlineDelayValue,
+          agendaDefaultDeadlineDelayUnit,
+          dateStart,
+          dateEnd,
+        }),
+      [
+        getPlanningItemsAndHeaders,
+        files,
+        date,
+        agendaDefaultDeadlineDelayValue,
+        agendaDefaultDeadlineDelayUnit,
+        dateStart,
+        dateEnd,
+      ]
+    );
 
     return (
       <div className="agenda-day__container">
@@ -102,7 +200,7 @@ export default class AgendaDay extends PureComponent {
                       isSelected={false}
                       shouldDisableActions
                       shouldDisableExplicitWidth
-                      onClick={this.handleHeaderClick(header.get('path'), header.get('id'))}
+                      onClick={handleHeaderClick(header.get('path'), header.get('id'))}
                     />
                   </div>
                 </div>
@@ -113,87 +211,5 @@ export default class AgendaDay extends PureComponent {
       </div>
     );
   }
-
-  getPlanningItemsAndHeaders({
-    files,
-    date,
-    agendaDefaultDeadlineDelayValue,
-    agendaDefaultDeadlineDelayUnit,
-    dateStart,
-    dateEnd,
-  }) {
-    const headers = List().concat(
-      ...files
-        .mapEntries(([path, file]) => [
-          path,
-          file.get('headers').map((header) => header.set('path', path)),
-        ])
-        .valueSeq()
-    );
-    const todoKeywordSets = files.map((file) => file.get('todoKeywordSets'));
-
-    return headers
-      .flatMap((header) => {
-        const planningItemsforDate = header.get('planningItems').filter((planningItem) => {
-          const timestamp = planningItem.get('timestamp');
-          if (!timestamp.get('isActive')) {
-            return false;
-          }
-          const planningItemDate = dateForTimestamp(timestamp);
-          const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
-          const isCompletedTodo =
-            todoKeyword &&
-            isTodoKeywordCompleted(todoKeywordSets.get(header.get('path')), todoKeyword);
-          if (isCompletedTodo) {
-            return false;
-          }
-          switch (planningItem.get('type')) {
-            case 'DEADLINE':
-              if (isToday(date)) {
-                if (isBefore(planningItemDate, new Date())) {
-                  return true;
-                }
-                const [delayValue, delayUnit] = timestamp.get('delayType')
-                  ? [timestamp.get('delayValue'), timestamp.get('delayUnit')]
-                  : [agendaDefaultDeadlineDelayValue, agendaDefaultDeadlineDelayUnit];
-                const appearDate = subtractTimestampUnitFromDate(
-                  planningItemDate,
-                  delayValue,
-                  delayUnit
-                );
-                return isAfter(date, appearDate) || isEqual(date, appearDate);
-              } else {
-                return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
-              }
-            case 'SCHEDULED':
-              let appearDate = planningItemDate;
-              if (timestamp.get('delayType')) {
-                const hasBeenRepeated = header
-                  .get('propertyListItems')
-                  .some((propertyListItem) => propertyListItem.get('property') === 'LAST_REPEAT');
-                if (timestamp.get('delayType') === '--' && !hasBeenRepeated) {
-                  appearDate = addTimestampUnitToDate(
-                    planningItemDate,
-                    timestamp.get('delayValue'),
-                    timestamp.get('delayUnit')
-                  );
-                }
-              }
-              if (isToday(date) && isAfter(date, appearDate)) {
-                return true;
-              }
-              return isWithinInterval(appearDate, { start: dateStart, end: dateEnd });
-            default:
-              return isWithinInterval(planningItemDate, { start: dateStart, end: dateEnd });
-          }
-        });
-        return planningItemsforDate.map((planningItem) => [planningItem, header]);
-      })
-      .sortBy(([planningItem]) => {
-        const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
-          .get('timestamp')
-          .toJS();
-        return [startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
-      });
-  }
-}
+);
+export default AgendaDay;
