@@ -627,7 +627,7 @@ describe('Render all views', () => {
           const newValue = 'Motz';
           fireEvent.change(getByTestId(editCellContainerId), { target: { value: newValue } });
           fireEvent.click(getByText('Edit table'));
-          expect(getByText(newValue)).toBeTruthy();
+          expect(getAllByText(newValue)).toBeTruthy();
         });
 
         test('can insert timestamp in a cell', () => {

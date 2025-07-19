@@ -1,6 +1,6 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux'
-import { 
+import { useDispatch, useSelector } from 'react-redux';
+import {
   addNewTableRow,
   removeTableRow,
   addNewTableColumn,
@@ -9,54 +9,53 @@ import {
   moveTableRowUp,
   moveTableRowDown,
   moveTableColumnLeft,
-  moveTableColumnRight  
+  moveTableColumnRight,
 } from '../../../../../../actions/org';
-
 
 import './stylesheet.css';
 
-const TableActionButtons = ({filePath, shouldDisableActions}) => {
+const TableActionButtons = ({ filePath, shouldDisableActions }) => {
   const dispatch = useDispatch();
-  const selectedTableCellId = useSelector((state) => state.org.present.getIn(['files', filePath, "selectedTableCellId"]));
+  const selectedTableCellId = useSelector((state) =>
+    state.org.present.getIn(['files', filePath, 'selectedTableCellId'])
+  );
 
   const handleEnterTableEditMode = () => {
     dispatch(enterEditMode('table'));
-  }
+  };
 
   const handleAddNewTableRow = () => {
     dispatch(addNewTableRow());
-  }
+  };
 
-const handleRemoveTableRow = () => {
-  dispatch(removeTableRow());
-  }
+  const handleRemoveTableRow = () => {
+    dispatch(removeTableRow());
+  };
 
-const handleAddNewTableColumn = () => {
-  dispatch(addNewTableColumn());
-}
+  const handleAddNewTableColumn = () => {
+    dispatch(addNewTableColumn());
+  };
 
-const handleRemoveTableColumn = () => {
-  dispatch(removeTableColumn());
-  }
+  const handleRemoveTableColumn = () => {
+    dispatch(removeTableColumn());
+  };
 
+  const handleUpClick = () => {
+    dispatch(moveTableRowUp());
+  };
 
-const handleUpClick = () => {
-  dispatch(moveTableRowUp());
-  }
+  const handleDownClick = () => {
+    dispatch(moveTableRowDown());
+  };
 
-const handleDownClick = () => {
-  dispatch(moveTableRowDown());
-  }
+  const handleLeftClick = () => {
+    dispatch(moveTableColumnLeft());
+  };
 
-const handleLeftClick = () => {
-  dispatch(moveTableColumnLeft());
-  }
+  const handleRightClick = () => {
+    dispatch(moveTableColumnRight());
+  };
 
-const handleRightClick = () => {
-  dispatch(moveTableColumnRight());
-}
-
-  
   return (
     <div className="table-action-drawer">
       {
@@ -119,30 +118,38 @@ const handleRightClick = () => {
               className="table-action-movement__up"
               onClick={() => (selectedTableCellId ? handleUpClick() : undefined)}
             >
-              <i data-testid="up-button"
-		className="fas fa-arrow-up fa-lg table-action-drawer__main-icon" />
+              <i
+                data-testid="up-button"
+                className="fas fa-arrow-up fa-lg table-action-drawer__main-icon"
+              />
             </div>
             <div
               className="table-action-movement__left"
               onClick={() => (selectedTableCellId ? handleLeftClick() : undefined)}
             >
-              <i data-testid="left-button"
-		className="fas fa-arrow-left fa-lg table-action-drawer__main-icon" />
+              <i
+                data-testid="left-button"
+                className="fas fa-arrow-left fa-lg table-action-drawer__main-icon"
+              />
             </div>
 
             <div
               className="table-action-movement__right"
               onClick={() => (selectedTableCellId ? handleRightClick() : undefined)}
             >
-              <i data-testid="right-button"
-		className="fas fa-arrow-right fa-lg table-action-drawer__main-icon" />
+              <i
+                data-testid="right-button"
+                className="fas fa-arrow-right fa-lg table-action-drawer__main-icon"
+              />
             </div>
             <div
               className="table-action-movement__down"
               onClick={() => (selectedTableCellId ? handleDownClick() : undefined)}
             >
-              <i data-testid="down-button"
-		className="fas fa-arrow-down fa-lg table-action-drawer__main-icon" />
+              <i
+                data-testid="down-button"
+                className="fas fa-arrow-down fa-lg table-action-drawer__main-icon"
+              />
             </div>
           </div>
         </>

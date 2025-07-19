@@ -311,6 +311,8 @@ class OrgFile extends PureComponent {
 
   handleTablePopupClose() {
     this.props.base.closePopup();
+    this.props.org.setSelectedDescriptionItemIndex(null);
+    this.props.org.selectHeaderIndex(null);
     this.props.org.setSelectedTableCellId(null);
     this.props.org.setSelectedTableId(null);
   }

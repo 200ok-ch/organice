@@ -77,8 +77,10 @@ class HeaderContent extends PureComponent {
     return createRawDescriptionText(header, false, dontIndent);
   }
 
-  handleTableSelect(tableId) {
+  handleTableSelect(tableId, descriptionItemIndex) {
     this.props.org.selectHeader(this.props.header.get('id'));
+    this.props.org.selectHeaderIndex(this.props.headerIndex);
+    this.props.org.setSelectedDescriptionItemIndex(descriptionItemIndex);
     this.props.org.setSelectedTableId(tableId);
     this.props.base.activatePopup('table-editor');
   }

@@ -692,7 +692,8 @@ const setDirty = (state, action) => state.set('isDirty', action.isDirty);
 
 const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
 
-const setSelectedDescriptionItemIndex = (state, action) => state.set("selectedDescriptionItemIndex", action.itemIndex)
+const setSelectedDescriptionItemIndex = (state, action) =>
+  state.set('selectedDescriptionItemIndex', action.itemIndex);
 
 const setSelectedTableCellId = (state, action) => state.set('selectedTableCellId', action.cellId);
 

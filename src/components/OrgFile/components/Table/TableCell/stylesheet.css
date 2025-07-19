@@ -1,11 +1,12 @@
-@import '../../../../../../colors.css';
+@import '../../../../../colors.css';
 
 .table-part__cell {
   border: 1px solid var(--base01);
-
   white-space: pre;
-
   vertical-align: top;
+  min-width: 20px;
+  height: 20px;
+
 }
 
 .table-part__cell--selected {
