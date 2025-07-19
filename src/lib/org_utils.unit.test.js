@@ -11,7 +11,7 @@ import {
   setSelectedTableCellId,
 } from '../actions/org';
 
-import { fromJS, get, toJS, Map, List, Set } from 'immutable';
+import { fromJS, Map, List, Set } from 'immutable';
 import { pipe, shuffle, first, range } from 'lodash/fp';
 import format from 'date-fns/format';
 import { createStore, applyMiddleware } from 'redux';

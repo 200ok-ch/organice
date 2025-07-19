@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
-import OrgFile from './../../../../';
+
 import HeaderBar from '../../../../../HeaderBar';
 import rootReducer from '../../../../../../reducers/';
 
@@ -16,14 +16,12 @@ import {
   selectHeaderIndex,
   setSelectedDescriptionItemIndex,
   setSelectedTableId,
-  enterEditMode,
   setSelectedTableCellId,
 } from '../../../../../../actions/org';
 import { STATIC_FILE_PREFIX, getSelectedTable } from '../../../../../../lib/org_utils';
 
-import { Map, Set, fromJS, List, is } from 'immutable';
-import { shuffle, first, trim, pipe, range, take, curry, add } from 'lodash/fp';
-import { formatDistanceToNow } from 'date-fns';
+import { Map, Set, fromJS, List } from 'immutable';
+import { shuffle, first, pipe, range, curry, add } from 'lodash/fp';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import TableActionButtons from './index';
 
@@ -67,11 +65,9 @@ describe('TableCell tests', () => {
 
   const testOrgFile = readFixture('multiple_tables');
   const testFilePath = STATIC_FILE_PREFIX + 'fixtureTestFile.org';
-  const testShouldDisableActions = false;
   const testHeaderIndex = 5;
   const testDescriptionItemIndex = 2;
 
-  const editCellContainerId = 'edit-cell-container';
 
   const addOne = add(1);
   const minusOne = add(-1);
@@ -95,14 +91,12 @@ describe('TableCell tests', () => {
 
   let testStore,
     testTableActionsRenderer,
-    testListOfTableCellArguments,
     testRandomRowIndex,
     testRandomColumnIndex,
     testTable,
     testTableContents,
     testTableTotalRows,
     testTableTotalColumns,
-    testTableRowContents,
     testCell;
 
   beforeEach(() => {
@@ -143,21 +137,19 @@ describe('TableCell tests', () => {
     testTableTotalColumns = getTableTotalColumnsCount(testTable);
 
     testRandomRowIndex = randomArrayIndex(testTableTotalRows);
-    testTableRowContents = testTableContents.get(testRandomRowIndex);
 
     testRandomColumnIndex = randomArrayIndex(testTableTotalColumns);
     testCell = testTableContents.getIn([testRandomRowIndex, 'contents', testRandomColumnIndex]);
 
     testStore.dispatch(setSelectedTableCellId(testCell.get('id')));
 
-    tableActionsRenderer = curry((testStore, testFilePath) => {
+    const tableActionsRenderer = curry((testStore, testFilePath) => {
       return render(
         <MemoryRouter keyLength={0} initialEntries={['/file/dir1/dir2/fixtureTestFile.org']}>
           <Provider store={testStore}>
             <HeaderBar />
             <TableActionButtons
               filePath={testFilePath}
-              shouldDisableActions={testShouldDisableActions}
             />
           </Provider>
         </MemoryRouter>

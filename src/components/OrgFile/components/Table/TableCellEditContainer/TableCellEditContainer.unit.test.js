@@ -22,9 +22,8 @@ import {
 import { STATIC_FILE_PREFIX, getSelectedTable } from '../../../../../lib/org_utils';
 
 import { Map, Set, fromJS, List } from 'immutable';
-import { formatDistanceToNow } from 'date-fns';
-import { pipe, shuffle, range, first, take, property, curry, trim } from 'lodash/fp';
-import { render, fireEvent, cleanup, createEvent } from '@testing-library/react';
+import { pipe, shuffle, range, first, curry, trim } from 'lodash/fp';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 import TableCellEditContainer from './index';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -73,7 +72,7 @@ describe('TableCellEditContainer tests', () => {
 
   const randomArrayValue = pipe([shuffle, first]);
   const randomArrayIndex = pipe([range(0), randomArrayValue]);
-  const twoRandomArrayIndices = pipe([range(0), shuffle, take(2)]);
+
 
   const getTableTotalColumnsCount = (table) => table.getIn(['contents', 0, 'contents']).size;
   const getTableTotalRowsCount = (table) => table.getIn(['contents']).size;
@@ -194,7 +193,7 @@ describe('TableCellEditContainer tests', () => {
     const testCellText = testCellWithText.get('rawContents');
     testStore.dispatch(setSelectedTableCellId(testCellId));
 
-    const { getByTestId, getByText } = testCellEditContainerRenderer(testCellText, testCellId);
+    const { getByTestId } = testCellEditContainerRenderer(testCellText, testCellId);
     expect(getByTestId(editCellContainerId)).toBeTruthy();
     fireEvent.click(document.querySelector('.table-cell__insert-timestamp-button'));
     const expectedValue = `${expectedTimestamp}${testCellText}`;
@@ -206,7 +205,7 @@ describe('TableCellEditContainer tests', () => {
     const testCellText = testCellWithText.get('rawContents');
     testStore.dispatch(setSelectedTableCellId(testCellId));
 
-    const { getByTestId, getByText } = testCellEditContainerRenderer(testCellText, testCellId);
+    const { getByTestId } = testCellEditContainerRenderer(testCellText, testCellId);
     const newValue = 'Seymour';
     fireEvent.change(getByTestId(editCellContainerId), { target: { value: newValue } });
 

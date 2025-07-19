@@ -83,8 +83,8 @@ describe('Render all views', () => {
       getByTestId,
       queryByText,
       queryAllByText,
-      getByPlaceholderText,
-      debug;
+      getByPlaceholderText;
+    
     beforeEach(() => {
       let res = render(
         <MemoryRouter keyLength={0} initialEntries={['/file/dir1/dir2/fixtureTestFile.org']}>
@@ -103,7 +103,6 @@ describe('Render all views', () => {
       queryByText = res.queryByText;
       queryAllByText = res.queryAllByText;
       getByPlaceholderText = res.getByPlaceholderText;
-      debug = res.debug;
     });
 
     describe('Works with Org files without headlines', () => {
@@ -555,12 +554,10 @@ describe('Render all views', () => {
         let testOrgFileWithTable;
 
         const drawerWithTable = 'drawer';
-        const editTableComponentId = 'edit-table';
         const editCellButtonId = 'edit-cell-button';
         const editCellContainerId = 'edit-cell-container';
 
         const convertToSet = (collection) => new Set(collection);
-        const getTextContentOfElement = property(['textContent']);
         const getTableRows = property(['rows']);
 
         const getContentOfTableColumn = curry((columnNumber, table) => {

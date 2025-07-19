@@ -15,13 +15,11 @@ import {
   selectHeaderIndex,
   setSelectedDescriptionItemIndex,
   setSelectedTableId,
-  enterEditMode,
 } from '../../../../../actions/org';
 import { STATIC_FILE_PREFIX, getSelectedTable } from '../../../../../lib/org_utils';
 
-import { Map, Set, fromJS, List, is } from 'immutable';
-import { shuffle, first, trim, pipe, range, take, curry } from 'lodash/fp';
-import { formatDistanceToNow } from 'date-fns';
+import { Map, Set, fromJS, List } from 'immutable';
+import { shuffle, first, trim, pipe, range, curry, take } from 'lodash/fp';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import TableCell from './index';
 
@@ -68,7 +66,7 @@ describe('TableCell tests', () => {
   const testHeaderIndex = 2;
   const testDescriptionItemIndex = 1;
 
-  const editCellContainerId = 'edit-cell-container';
+
 
   const randomArrayValue = pipe([shuffle, first]);
   const randomArrayIndex = pipe([range(0), randomArrayValue]);

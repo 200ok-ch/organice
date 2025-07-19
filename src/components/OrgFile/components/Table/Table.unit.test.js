@@ -19,9 +19,8 @@ import {
 import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
 import { STATIC_FILE_PREFIX, getSelectedTable } from '../../../../lib/org_utils';
 
-import { Map, Set, fromJS, List, is } from 'immutable';
+import { Map, Set, fromJS, List } from 'immutable';
 import { shuffle, first, trim, pipe, range, take, curry } from 'lodash/fp';
-import { formatDistanceToNow } from 'date-fns';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import Table from './index';
 
@@ -79,8 +78,7 @@ describe('Table tests', () => {
 
   let testStore,
     testTable,
-    testCellRenderer,
-    testListOfTableCellArguments,
+    testTableRenderer,
     testTextOfFirstCell,
     testTextOfSecondCell,
     testTextOfThirdCell,
@@ -124,17 +122,7 @@ describe('Table tests', () => {
     const testTableTotalColumns = getTableTotalColumnsCount(testTable);
 
     const testRandomRowIndex = randomArrayIndex(testTableTotalRows);
-    const testTableRowContents = testTableContents.get(testRandomRowIndex);
-    testListOfTableCellArguments = testTableRowContents.get('contents').map((testCell, index) => {
-      return {
-        filePath: testFilePath,
-        headerIndex: testHeaderIndex,
-        descriptionItemIndex: testDescriptionItemIndex,
-        cellId: testCell.get('id'),
-        row: testRandomRowIndex,
-        column: index,
-      };
-    });
+
 
     const [
       testFirstRandomColumnIndex,
