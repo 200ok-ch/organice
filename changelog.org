@@ -7,6 +7,15 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-07-24 Thu]
+
+** Fixed
+
+*** Cannot open files at bottom of screen on mobile
+
+- Issue: https://github.com/200ok-ch/organice/issues/1044
+- Thank you [[https://github.com/chasecaleb][chasecaleb]] for the fix🙏
+
 * [2025-06-22 Sun]
 
 ** Fixed
