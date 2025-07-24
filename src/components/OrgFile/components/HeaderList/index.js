@@ -41,11 +41,12 @@ class HeaderList extends PureComponent {
   render() {
     const { headers, selectedHeaderId, narrowedHeaderId, shouldDisableActions } = this.props;
     const headerRenderData = headers
-      .map((header) => {
+      .map((header, index) => {
         return {
           header,
           displayed: false,
           hasContent: hasHeaderContent(header),
+          absoluteIndex: index,
         };
       })
       .toArray();
@@ -115,12 +116,14 @@ class HeaderList extends PureComponent {
       <div className={className}>
         {displayedHeaderRenderData.map((headerRenderDatum) => {
           const header = headerRenderDatum.header;
+          const headerIndex = headerRenderDatum.absoluteIndex;
           const color = headerColors[(header.get('nestingLevel') - 1) % headerColors.length];
 
           return (
             <Header
               key={header.get('id')}
               header={header}
+              headerIndex={headerIndex}
               color={color}
               hasContent={headerRenderDatum.hasContent}
               isSelected={header.get('id') === selectedHeaderId}

@@ -1,13 +1,31 @@
 import readFixture from '../../test_helpers/index';
 import { parseOrg } from './parse_org.js';
-import { fromJS } from 'immutable';
-import format from 'date-fns/format';
 
 import {
+  setPath,
+  parseFile,
+  selectHeader,
+  selectHeaderIndex,
+  setSelectedDescriptionItemIndex,
+  setSelectedTableId,
+  setSelectedTableCellId,
+} from '../actions/org';
+
+import { fromJS, Map, List, Set } from 'immutable';
+import { pipe, shuffle, first, range } from 'lodash/fp';
+import format from 'date-fns/format';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from '../reducers/';
+import {
+  STATIC_FILE_PREFIX,
   extractAllOrgProperties,
   computeAllPropertyNames,
   computeAllPropertyValuesFor,
   headerWithPath,
+  getTable,
+  getSelectedTable,
+  getTableCell,
 } from './org_utils';
 
 describe('Extracting and computing property names and values', () => {
@@ -162,5 +180,136 @@ describe('Find the headline at the end of the headline-path', () => {
     const headerPath = fromJS(['%u', '%t', 'test']);
 
     expect(headerWithPath(headers, headerPath).toJS()).toStrictEqual(expectedHeadline);
+  });
+});
+
+describe('Table Functions', () => {
+  const testOrgFile = readFixture('multiple_tables');
+  const testFilePath = STATIC_FILE_PREFIX + 'fixtureTestFile.org';
+  const capture = Map({ captureTemplates: [] });
+  const testBaseState = {
+    org: {
+      past: [],
+      present: Map({
+        files: Map(),
+        fileSettings: [],
+        search: Map({
+          searchFilter: '',
+          searchFilterExpr: [],
+        }),
+        bookmarks: Map({
+          search: List(),
+          'task-list': List(),
+          refile: List(),
+        }),
+      }),
+      future: [],
+    },
+    syncBackend: Map({
+      isAuthenticated: true,
+    }),
+    capture,
+    base: new fromJS({
+      customKeybindings: {},
+      shouldTapTodoToAdvance: true,
+      isLoading: Set(),
+      finderTab: 'Search',
+      agendaTimeframe: 'Week',
+      preferEditRawValues: false,
+    }),
+  };
+
+  const testStore = createStore(rootReducer, testBaseState, applyMiddleware(thunk));
+
+  testStore.dispatch(parseFile(testFilePath, testOrgFile));
+  testStore.dispatch(setPath(testFilePath));
+
+  const testState = testStore.getState();
+
+  const randomArrayValue = pipe([shuffle, first]);
+  const randomArrayIndex = pipe([range(0), randomArrayValue]);
+
+  const getTableTotalColumnsCount = (table) => table.getIn(['contents', 0, 'contents']).size;
+  const getTableTotalRowsCount = (table) => table.getIn(['contents']).size;
+
+  const testHeaderIndex = 5;
+  const testHeaderId = testState.org.present.getIn([
+    'files',
+    testFilePath,
+    'headers',
+    testHeaderIndex,
+    'id',
+  ]);
+  const testRandomDescriptionItemIndex = randomArrayValue([0, 2, 6]);
+  const testTableId = testState.org.present.getIn([
+    'files',
+    testFilePath,
+    'headers',
+    testHeaderIndex,
+    'description',
+    testRandomDescriptionItemIndex,
+    'id',
+  ]);
+
+  const testTable = testState.org.present.getIn([
+    'files',
+    testFilePath,
+    'headers',
+    testHeaderIndex,
+    'description',
+    testRandomDescriptionItemIndex,
+  ]);
+
+  const testTableContents = testTable.get('contents');
+  const testTableTotalRows = testTableContents.size;
+  const testTableTotalColumns = testTableContents.get('0').size;
+
+  const testRandomRowIndex = randomArrayIndex(testTableTotalRows);
+  const testRandomColumnIndex = randomArrayIndex(testTableTotalColumns);
+  const testTableCell = testTableContents.getIn([
+    testRandomRowIndex,
+    'contents',
+    testRandomColumnIndex,
+  ]);
+  const testTableCellId = testTableCell.get('id');
+
+  testStore.dispatch(selectHeader(testHeaderId));
+  testStore.dispatch(selectHeaderIndex(testHeaderIndex));
+
+  testStore.dispatch(setSelectedDescriptionItemIndex(testRandomDescriptionItemIndex));
+  testStore.dispatch(setSelectedTableId(testTableId));
+
+  testStore.dispatch(setSelectedTableCellId(testTableCellId));
+
+  test('getTable', () => {
+    const actualTable = getTable(
+      {
+        filePath: testFilePath,
+        headerIndex: testHeaderIndex,
+        descriptionItemIndex: testRandomDescriptionItemIndex,
+      },
+      testStore.getState()
+    );
+
+    expect(Map.isMap(actualTable)).toBeTruthy();
+    expect(getTableTotalRowsCount(actualTable)).toBeGreaterThan(0);
+    expect(getTableTotalColumnsCount(actualTable)).toBeGreaterThan(0);
+  });
+
+  test('getSelectedTable', () => {
+    const actualTable = getSelectedTable(testStore.getState());
+    expect(actualTable.equals(testTable)).toBeTruthy();
+  });
+
+  test('getTableCell', () => {
+    const testCellArguments = {
+      filePath: testFilePath,
+      headerIndex: testHeaderIndex,
+      descriptionItemIndex: testRandomDescriptionItemIndex,
+      row: testRandomRowIndex,
+      column: testRandomColumnIndex,
+    };
+    const actualTableCell = getTableCell(testCellArguments, testStore.getState());
+    expect(actualTableCell.equals(testTableCell)).toBeTruthy();
   });
 });

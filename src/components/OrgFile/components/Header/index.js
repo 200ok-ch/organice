@@ -372,6 +372,7 @@ class Header extends PureComponent {
   render() {
     const {
       header,
+      headerIndex,
       color,
       hasContent,
       isSelected,
@@ -594,7 +595,11 @@ class Header extends PureComponent {
                 />
               </Collapse>
 
-              <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
+              <HeaderContent
+                header={header}
+                headerIndex={headerIndex}
+                shouldDisableActions={shouldDisableActions}
+              />
             </div>
           );
         }}

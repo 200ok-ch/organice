@@ -47,7 +47,7 @@ export default class TablePart extends PureComponent {
   }
 
   handleTableSelect(tableId) {
-    this.props.subPartDataAndHandlers.onTableSelect(tableId);
+    this.props.subPartDataAndHandlers.onTableSelect(tableId, this.props.descriptionItemIndex);
   }
 
   render() {
