@@ -222,7 +222,7 @@ const ActionDrawer = ({
         {(style) => (
           <div
             className="action-drawer__arrow-buttons-container"
-            style={{ 
+            style={{
               left: style.centerXOffset,
               pointerEvents: isDisplayingCaptureButtons ? 'none' : 'all',
             }}
@@ -308,7 +308,7 @@ const ActionDrawer = ({
               additionalClassName="action-drawer__main-arrow-button"
               isDisabled={false}
               onClick={handleMainArrowButtonClick}
-              style={{ 
+              style={{
                 opacity: isDisplayingCaptureButtons ? 0 : 1,
                 pointerEvents: isDisplayingCaptureButtons ? 'none' : 'all',
               }}
