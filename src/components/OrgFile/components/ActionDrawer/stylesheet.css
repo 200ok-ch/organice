@@ -21,6 +21,7 @@
 
   transition-property: opacity;
   transition-duration: 0.2s;
+  pointer-events: all !important;
 }
 
 .action-drawer__done-btn {
@@ -47,7 +48,6 @@
 
 .action-drawer__capture-buttons-container {
   position: relative;
-  pointer-events: all; /* Re-enable clicks on the button itself */
 }
 
 .active-clock-indicator {
