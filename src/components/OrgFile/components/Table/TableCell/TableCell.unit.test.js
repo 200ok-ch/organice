@@ -66,8 +66,6 @@ describe('TableCell tests', () => {
   const testHeaderIndex = 2;
   const testDescriptionItemIndex = 1;
 
-
-
   const randomArrayValue = pipe([shuffle, first]);
   const randomArrayIndex = pipe([range(0), randomArrayValue]);
   const twoRandomArrayIndices = pipe([range(0), shuffle, take(2)]);
@@ -131,9 +129,8 @@ describe('TableCell tests', () => {
       };
     });
 
-    const [testFirstRandomColumnIndex, testSecondRandomColumnIndex] = twoRandomArrayIndices(
-      testTableTotalColumns
-    );
+    const [testFirstRandomColumnIndex, testSecondRandomColumnIndex] =
+      twoRandomArrayIndices(testTableTotalColumns);
 
     testFirstCell = testTableContents.getIn([
       testRandomRowIndex,

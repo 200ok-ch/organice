@@ -123,12 +123,8 @@ describe('Table tests', () => {
 
     const testRandomRowIndex = randomArrayIndex(testTableTotalRows);
 
-
-    const [
-      testFirstRandomColumnIndex,
-      testSecondRandomColumnIndex,
-      testThirdRandomColumnIndex,
-    ] = threeRandomArrayIndices(testTableTotalColumns);
+    const [testFirstRandomColumnIndex, testSecondRandomColumnIndex, testThirdRandomColumnIndex] =
+      threeRandomArrayIndices(testTableTotalColumns);
 
     const testFirstCell = testTableContents.getIn([
       testRandomRowIndex,

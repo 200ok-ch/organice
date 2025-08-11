@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
-
 import HeaderBar from '../../../../../HeaderBar';
 import rootReducer from '../../../../../../reducers/';
 
@@ -67,7 +66,6 @@ describe('TableCell tests', () => {
   const testFilePath = STATIC_FILE_PREFIX + 'fixtureTestFile.org';
   const testHeaderIndex = 5;
   const testDescriptionItemIndex = 2;
-
 
   const addOne = add(1);
   const minusOne = add(-1);
@@ -148,9 +146,7 @@ describe('TableCell tests', () => {
         <MemoryRouter keyLength={0} initialEntries={['/file/dir1/dir2/fixtureTestFile.org']}>
           <Provider store={testStore}>
             <HeaderBar />
-            <TableActionButtons
-              filePath={testFilePath}
-            />
+            <TableActionButtons filePath={testFilePath} />
           </Provider>
         </MemoryRouter>
       );

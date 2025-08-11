@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { curry } from "lodash/fp"
+import { curry } from 'lodash/fp';
 import {
   addNewTableRow,
   removeTableRow,
@@ -16,12 +16,12 @@ import {
 import './stylesheet.css';
 
 const getSelectedCellId = curry((filePath, state) => {
-  return state.org.present.getIn(['files', filePath, 'selectedTableCellId'])
-})
+  return state.org.present.getIn(['files', filePath, 'selectedTableCellId']);
+});
 
 const TableActionButtons = ({ filePath }) => {
   const dispatch = useDispatch();
-  const selectedTableCellId = useSelector(getSelectedCellId(filePath))
+  const selectedTableCellId = useSelector(getSelectedCellId(filePath));
 
   const handleEnterTableEditMode = () => {
     dispatch(enterEditMode('table'));

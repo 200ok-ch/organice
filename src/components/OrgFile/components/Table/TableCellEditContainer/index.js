@@ -1,21 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { curry } from "lodash/fp"
+import { curry } from 'lodash/fp';
 
 import { getCurrentTimestampAsText } from '../../../../../lib/timestamps';
-import {
-  exitEditMode,
-  updateTableCellValue,
-} from '../../../../../actions/org';
+import { exitEditMode, updateTableCellValue } from '../../../../../actions/org';
 import './stylesheet.css';
 
 const getSelectedCellId = curry((filePath, state) => {
-  return state.org.present.getIn(['files', filePath, 'selectedTableCellId'])
-})
+  return state.org.present.getIn(['files', filePath, 'selectedTableCellId']);
+});
 
 const CellEditContainer = ({ filePath, cellValue, cellId }) => {
   const dispatch = useDispatch();
-  const selectedCellId = useSelector(getSelectedCellId(filePath))
+  const selectedCellId = useSelector(getSelectedCellId(filePath));
   const [isCellSelected, setIsCellSelected] = useState(cellId == selectedCellId);
   const [currentCellValue, setCurrentCellValue] = useState(cellValue);
   const [shouldIgnoreBlur, setShouldIgnoreBlur] = useState(false);

@@ -9,10 +9,10 @@ import TableActionButtons from './components/TableActionButtons';
 import { closePopup } from '../../../../actions/base';
 import { getTable } from '../../../../lib/org_utils';
 
-const getFilePath = (state) => state.org.present.get('path')
+const getFilePath = (state) => state.org.present.get('path');
 const getFile = curry((filePath, state) => {
-  return state.org.present.getIn(['files', filePath], Map())
-})
+  return state.org.present.getIn(['files', filePath], Map());
+});
 
 const TableEditorModal = () => {
   const dispatch = useDispatch();

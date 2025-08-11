@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { is } from 'immutable';
-import { curry } from "lodash/fp"
+import { curry } from 'lodash/fp';
 import AttributedString from '../../AttributedString';
 import TableCellEditContainer from '../TableCellEditContainer/index';
 import { getTableCell } from '../../../../../lib/org_utils';
@@ -10,17 +10,19 @@ import { activatePopup } from '../../../../../actions/base';
 import { setSelectedTableCellId, advanceCheckboxState } from '../../../../../actions/org';
 import './stylesheet.css';
 
-const getInTableEditMode = curry((filePath, state) => state.org.present.getIn(['files', filePath, 'editMode']) === 'table')
+const getInTableEditMode = curry(
+  (filePath, state) => state.org.present.getIn(['files', filePath, 'editMode']) === 'table'
+);
 const getSelectedCellId = curry((filePath, state) => {
-  return state.org.present.getIn(['files', filePath, 'selectedTableCellId'])
-})
+  return state.org.present.getIn(['files', filePath, 'selectedTableCellId']);
+});
 const TableCell = ({
   props: { filePath, headerIndex, descriptionItemIndex, cellId, row, column },
 }) => {
   const dispatch = useDispatch();
-  const inTableEditMode = useSelector(getInTableEditMode(filePath))    
-  const selectedCellId = useSelector(getSelectedCellId(filePath))
-  
+  const inTableEditMode = useSelector(getInTableEditMode(filePath));
+  const selectedCellId = useSelector(getSelectedCellId(filePath));
+
   const [isCellSelected, setIsCellSelected] = useState(cellId === selectedCellId);
 
   const tableCellGetter = getTableCell({

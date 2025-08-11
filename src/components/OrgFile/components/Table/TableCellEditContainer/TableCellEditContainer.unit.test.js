@@ -73,7 +73,6 @@ describe('TableCellEditContainer tests', () => {
   const randomArrayValue = pipe([shuffle, first]);
   const randomArrayIndex = pipe([range(0), randomArrayValue]);
 
-
   const getTableTotalColumnsCount = (table) => table.getIn(['contents', 0, 'contents']).size;
   const getTableTotalRowsCount = (table) => table.getIn(['contents']).size;
 
