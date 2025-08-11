@@ -7,6 +7,19 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-08-11 Mon]
+
+** Changed
+
+*** Refactored =TableEditorModal= from class to functional component
+
+- Converted TableEditorModal to a functional component for better maintainability
+- This refactor lays the groundwork for future table enhancements, including touch scrolling support
+- No functional changes to the TableEditorModal's behavior
+
+PR: https://github.com/200ok-ch/organice/pull/1043
+Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
+
 * [2025-07-26 Sat]
 
 ** Fixed
@@ -15,7 +28,6 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 The fix from yesterday introduced a regression. Now, we have a fix for
 the regression and the initial bug report.
-
 
 * [2025-07-24 Thu]
 

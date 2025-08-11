@@ -1,0 +1,8 @@
+.table-part {
+  align-self: center;
+  border-collapse: collapse;
+  margin-top: 2.5px;
+  margin-bottom: 3px;
+  empty-cells: show;
+}
+

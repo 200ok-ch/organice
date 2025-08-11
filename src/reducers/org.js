@@ -109,6 +109,10 @@ const selectHeader = (state, action) => {
   return state.set('selectedHeaderId', action.headerId);
 };
 
+const selectHeaderIndex = (state, action) => {
+  return state.set('selectedHeaderIndex', action.headerIndex);
+};
+
 const openParentsOfHeader = (state, action) => {
   let headers = state.get('headers');
   const { headerId } = action;
@@ -687,6 +691,9 @@ const setOpennessState = (state, action) => {
 const setDirty = (state, action) => state.set('isDirty', action.isDirty);
 
 const setSelectedTableId = (state, action) => state.set('selectedTableId', action.tableId);
+
+const setSelectedDescriptionItemIndex = (state, action) =>
+  state.set('selectedDescriptionItemIndex', action.itemIndex);
 
 const setSelectedTableCellId = (state, action) => state.set('selectedTableCellId', action.cellId);
 
@@ -1774,6 +1781,8 @@ const reducer = (state, action) => {
       return inFile(openHeader);
     case 'SELECT_HEADER':
       return inFile(selectHeader);
+    case 'SELECT_HEADER_INDEX':
+      return inFile(selectHeaderIndex);
     case 'OPEN_PARENTS_OF_HEADER':
       return inFile(openParentsOfHeader);
     case 'ADVANCE_TODO_STATE':
@@ -1828,6 +1837,8 @@ const reducer = (state, action) => {
       return inFile(narrowHeader);
     case 'WIDEN_HEADER':
       return inFile(widenHeader);
+    case 'SET_SELECTED_DESCRIPTION_ITEM_INDEX':
+      return inFile(setSelectedDescriptionItemIndex);
     case 'SET_SELECTED_TABLE_ID':
       return inFile(setSelectedTableId);
     case 'SET_SELECTED_TABLE_CELL_ID':

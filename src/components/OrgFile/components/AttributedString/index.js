@@ -86,7 +86,7 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
 
   return (
     <span>
-      {parts.map((part) => {
+      {parts.map((part, index) => {
         switch (part.get('type')) {
           case 'text':
             return part.get('contents');
@@ -121,6 +121,7 @@ const AttributedString = ({ org, parts, subPartDataAndHandlers }) => {
               <TablePart
                 key={part.get('id')}
                 table={part}
+                descriptionItemIndex={index}
                 subPartDataAndHandlers={subPartDataAndHandlers}
               />
             );

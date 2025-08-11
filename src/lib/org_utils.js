@@ -1,5 +1,6 @@
 import { List, Map, fromJS } from 'immutable';
 import _ from 'lodash';
+import { curry } from 'lodash/fp';
 import changelogContent from 'bundle-text:../../changelog.org';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -864,3 +865,29 @@ export const getBreadcrumbsStringFunction = (allHeaders, path) => {
     return breadcrumbs.join(' > ');
   };
 };
+
+export const getTable = curry(({ filePath, headerIndex, descriptionItemIndex }, state) => {
+  return state.org.present.getIn([
+    'files',
+    filePath,
+    'headers',
+    headerIndex,
+    'description',
+    descriptionItemIndex,
+  ]);
+});
+
+export const getSelectedTable = (state) => {
+  const filePath = state.org.present.get('path');
+  const file = state.org.present.getIn(['files', filePath], Map());
+  const headerIndex = file.get('selectedHeaderIndex');
+  const descriptionItemIndex = file.get('selectedDescriptionItemIndex');
+  return getTable({ filePath, headerIndex, descriptionItemIndex }, state);
+};
+
+export const getTableCell = curry(
+  ({ filePath, headerIndex, descriptionItemIndex, row, column }, state) => {
+    const table = getTable({ filePath, headerIndex, descriptionItemIndex }, state);
+    return table.getIn(['contents', row, 'contents', column]);
+  }
+);

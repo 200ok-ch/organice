@@ -244,6 +244,10 @@ export const selectHeader = (headerId) => (dispatch) => {
   }
 };
 
+export const selectHeaderIndex = (headerIndex) => (dispatch) => {
+  dispatch({ type: 'SELECT_HEADER_INDEX', headerIndex });
+};
+
 export const setPath = (path) => (dispatch) => {
   dispatch({
     type: 'SET_PATH',
@@ -433,6 +437,10 @@ export const dirtyAction = (isDirty, path) => ({
 export const setDirty = (isDirty, path) => (dispatch) => {
   persistIsDirty(isDirty, path);
   dispatch(dirtyAction(isDirty, path));
+};
+
+export const setSelectedDescriptionItemIndex = (itemIndex) => (dispatch) => {
+  dispatch({ type: 'SET_SELECTED_DESCRIPTION_ITEM_INDEX', itemIndex });
 };
 
 export const setSelectedTableId = (tableId) => (dispatch) => {
