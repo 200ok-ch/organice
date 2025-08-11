@@ -129,8 +129,9 @@ describe('TableCell tests', () => {
       };
     });
 
-    const [testFirstRandomColumnIndex, testSecondRandomColumnIndex] =
-      twoRandomArrayIndices(testTableTotalColumns);
+    const [testFirstRandomColumnIndex, testSecondRandomColumnIndex] = twoRandomArrayIndices(
+      testTableTotalColumns
+    );
 
     testFirstCell = testTableContents.getIn([
       testRandomRowIndex,

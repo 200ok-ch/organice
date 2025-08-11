@@ -839,10 +839,13 @@ describe('Render all views', () => {
 
           const tableBeforeMove = document.querySelector('.table-part');
 
-          const [firstTestColumnBeforeEdit, secondTestColumnBeforeEdit, columnCountBeforeEdit] =
-            over([getContentOfTableColumn(2), getContentOfTableColumn(3), getTableColumnsCount])(
-              tableBeforeMove
-            );
+          const [
+            firstTestColumnBeforeEdit,
+            secondTestColumnBeforeEdit,
+            columnCountBeforeEdit,
+          ] = over([getContentOfTableColumn(2), getContentOfTableColumn(3), getTableColumnsCount])(
+            tableBeforeMove
+          );
 
           // click cell to open table editor
           fireEvent.click(getByText(cellToClick));

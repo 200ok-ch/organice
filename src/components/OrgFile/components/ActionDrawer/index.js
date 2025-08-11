@@ -45,29 +45,29 @@ const ActionDrawer = ({
     !!selectedHeaderId
       ? org.moveHeaderUp(selectedHeaderId)
       : !!selectedTableCellId
-        ? org.moveTableRowUp()
-        : org.moveListItemUp();
+      ? org.moveTableRowUp()
+      : org.moveListItemUp();
 
   const handleDownClick = () =>
     !!selectedHeaderId
       ? org.moveHeaderDown(selectedHeaderId)
       : !!selectedTableCellId
-        ? org.moveTableRowDown()
-        : org.moveListItemDown();
+      ? org.moveTableRowDown()
+      : org.moveListItemDown();
 
   const handleLeftClick = () =>
     !!selectedHeaderId
       ? org.moveHeaderLeft(selectedHeaderId)
       : !!selectedTableCellId
-        ? org.moveTableColumnLeft()
-        : org.moveListItemLeft();
+      ? org.moveTableColumnLeft()
+      : org.moveListItemLeft();
 
   const handleRightClick = () =>
     !!selectedHeaderId
       ? org.moveHeaderRight(selectedHeaderId)
       : !!selectedTableCellId
-        ? org.moveTableColumnRight()
-        : org.moveListItemRight();
+      ? org.moveTableColumnRight()
+      : org.moveListItemRight();
 
   const handleMoveSubtreeLeftClick = () =>
     !!selectedHeaderId ? org.moveSubtreeLeft(selectedHeaderId) : org.moveListSubtreeLeft();

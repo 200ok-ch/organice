@@ -100,12 +100,15 @@ describe('org reducer', () => {
   }
 
   const curriedAssertElementDidNotChangeForHeaderIds = curry(assertElementDidNotChangeForHeaderIds);
-  const assertDescriptionDidNotChangeForHeaderIds =
-    curriedAssertElementDidNotChangeForHeaderIds('description');
-  const assertLogNotesDidNotChangeForHeaderIds =
-    curriedAssertElementDidNotChangeForHeaderIds('logNotes');
-  const assertPlanningItemsDidNotChangeForHeaderIds =
-    curriedAssertElementDidNotChangeForHeaderIds('planningItems');
+  const assertDescriptionDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'description'
+  );
+  const assertLogNotesDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'logNotes'
+  );
+  const assertPlanningItemsDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'planningItems'
+  );
 
   describe('REFILE_SUBTREE', () => {
     let state;

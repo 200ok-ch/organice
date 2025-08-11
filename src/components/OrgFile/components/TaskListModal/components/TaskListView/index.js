@@ -24,8 +24,12 @@ function TaskListView(props) {
     return () => props.onHeaderClick(path, headerId);
   }
 
-  const { dateDisplayType, onToggleDateDisplayType, headersForFiles, todoKeywordSetsForFiles } =
-    props;
+  const {
+    dateDisplayType,
+    onToggleDateDisplayType,
+    headersForFiles,
+    todoKeywordSetsForFiles,
+  } = props;
 
   // Populate filteredHeaders
   useEffect(() => {
