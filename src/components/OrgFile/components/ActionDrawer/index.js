@@ -222,7 +222,10 @@ const ActionDrawer = ({
         {(style) => (
           <div
             className="action-drawer__arrow-buttons-container"
-            style={{ left: style.centerXOffset }}
+            style={{
+              left: style.centerXOffset,
+              pointerEvents: isDisplayingCaptureButtons ? 'none' : 'all',
+            }}
           >
             <ActionButton
               additionalClassName="action-drawer__arrow-button"
@@ -305,7 +308,10 @@ const ActionDrawer = ({
               additionalClassName="action-drawer__main-arrow-button"
               isDisabled={false}
               onClick={handleMainArrowButtonClick}
-              style={{ opacity: isDisplayingCaptureButtons ? 0 : 1 }}
+              style={{
+                opacity: isDisplayingCaptureButtons ? 0 : 1,
+                pointerEvents: isDisplayingCaptureButtons ? 'none' : 'all',
+              }}
               tooltip={isDisplayingArrowButtons ? 'Hide movement buttons' : 'Show movement buttons'}
               onRef={mainArrowButton}
             />
@@ -329,6 +335,8 @@ const ActionDrawer = ({
             onClick={handleSync}
             style={{
               opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
+              pointerEvents:
+                isDisplayingArrowButtons || isDisplayingCaptureButtons ? 'none' : 'all',
             }}
             tooltip="Sync changes"
           />
@@ -339,6 +347,8 @@ const ActionDrawer = ({
             onClick={handleAgendaClick}
             style={{
               opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
+              pointerEvents:
+                isDisplayingArrowButtons || isDisplayingCaptureButtons ? 'none' : 'all',
             }}
             tooltip="Show agenda"
           />
@@ -354,6 +364,8 @@ const ActionDrawer = ({
               opacity: isDisplayingArrowButtons || isDisplayingCaptureButtons ? 0 : 1,
               position: 'relative',
               zIndex: 1,
+              pointerEvents:
+                isDisplayingArrowButtons || isDisplayingCaptureButtons ? 'none' : 'all',
             }}
             tooltip="Show Search / Task List"
           />

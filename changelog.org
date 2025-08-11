@@ -20,6 +20,24 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 PR: https://github.com/200ok-ch/organice/pull/1043
 Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
 
+* [2025-07-26 Sat]
+
+** Fixed
+
+*** Action Drawer buttons not clickable
+
+The fix from yesterday introduced a regression. Now, we have a fix for
+the regression and the initial bug report.
+
+* [2025-07-24 Thu]
+
+** Fixed
+
+*** Cannot open files at bottom of screen on mobile
+
+- Issue: https://github.com/200ok-ch/organice/issues/1044
+- Thank you [[https://github.com/chasecaleb][chasecaleb]] for the fix🙏
+
 * [2025-06-22 Sun]
 
 ** Fixed

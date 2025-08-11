@@ -17,6 +17,10 @@ run: setup
 test: setup
 	yarn test
 
+.PHONY: test-update-snapshots
+test-update-snapshots: setup
+	yarn test -u
+
 .PHONY: docs
 docs:
 	./bin/compile_doc.sh

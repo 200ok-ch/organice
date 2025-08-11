@@ -1087,7 +1087,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
     >
       <button
         class="btn btn--circle action-drawer__btn fas fa-lg fa-cloud action-drawer__btn--with-sub-icon btn--disabled"
-        style="opacity: 1;"
+        style="opacity: 1; pointer-events: all;"
         title="Sync changes"
       >
         <i
@@ -1096,12 +1096,12 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </button>
       <button
         class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-alt"
-        style="opacity: 1;"
+        style="opacity: 1; pointer-events: all;"
         title="Show agenda"
       />
       <div
         class="action-drawer__arrow-buttons-container"
-        style="left: 0px;"
+        style="left: 0px; pointer-events: all;"
       >
         <button
           class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-arrow-up"
@@ -1135,13 +1135,13 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         />
         <button
           class="btn btn--circle action-drawer__btn action-drawer__main-arrow-button fas fa-lg fa-arrows-alt"
-          style="opacity: 1;"
+          style="opacity: 1; pointer-events: all;"
           title="Show movement buttons"
         />
       </div>
       <button
         class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
-        style="opacity: 1; position: relative; z-index: 1;"
+        style="opacity: 1; position: relative; z-index: 1; pointer-events: all;"
         title="Show Search / Task List"
       />
       <div

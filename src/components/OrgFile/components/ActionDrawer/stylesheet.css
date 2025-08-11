@@ -10,6 +10,7 @@
   justify-content: space-between;
 
   z-index: 2;
+  pointer-events: none; /* Allow clicks to pass through to elements below */
 }
 
 .action-drawer__btn {
@@ -20,6 +21,7 @@
 
   transition-property: opacity;
   transition-duration: 0.2s;
+  pointer-events: all !important;
 }
 
 .action-drawer__done-btn {
