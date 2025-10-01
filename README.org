@@ -434,7 +434,7 @@ organice has support for WebDAV and ships with a Docker container with
 a WebDAV server based on Apache. You can make use of that and use this
 WebDAV back-end for local development.
 
-Having said that, if you're a Dropbox, then it's convenient to have a
+Having said that, if you're a Dropbox user, then it's convenient to have a
 working setup for it if you want to test on files that are already in
 those back-ends. But it doesn't have to be a barrier, just to get
 started. And maybe you don't want to host your files with either of
