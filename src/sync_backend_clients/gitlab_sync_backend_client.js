@@ -13,8 +13,8 @@ export const createGitlabOAuth = () => {
   let expiryPromise;
   let invalidGrantPromise;
   return new OAuth2AuthCodePKCE({
-    authorizationUrl: 'https://gitlab.com/oauth/authorize',
-    tokenUrl: 'https://gitlab.com/oauth/token',
+    authorizationUrl: `https://${getPersistedField('gitLabHost')}/oauth/authorize`,
+    tokenUrl: `https://${getPersistedField('gitLabHost')}/oauth/token`,
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
     redirectUrl: window.location.origin,
     scopes: ['api'],
@@ -65,8 +65,8 @@ export const gitLabProjectIdFromURL = (projectURL) => {
     // to a project. Reminder: a project path is not necessarily
     // /user/project because it may be under one or more groups such
     // as /user/group/subgroup/project.
-    if (url.hostname === 'gitlab.com' && path.split('/').length > 1) {
-      return encodeURIComponent(path);
+    if (path.split('/').length > 1) {
+      return [url.hostname, encodeURIComponent(path)];
     } else {
       return undefined;
     }
@@ -131,8 +131,6 @@ export const treeToDirectoryListing = (tree) => {
   );
 };
 
-const API_URL = 'https://gitlab.com/api/v4';
-
 /**
  * GitLab sync backend, implemented using their REST API.
  *
@@ -142,7 +140,9 @@ const API_URL = 'https://gitlab.com/api/v4';
 export default (oauthClient) => {
   const decoratedFetch = oauthClient.decorateFetchHTTPClient(fetch);
 
-  const getProjectApi = () => `${API_URL}/projects/${getPersistedField('gitLabProject')}`;
+  const getApiUrl = () => `https://${getPersistedField('gitLabHost')}/api/v4`;
+
+  const getProjectApi = () => `${getApiUrl()}/projects/${getPersistedField('gitLabProject')}`;
 
   const isSignedIn = async () => {
     if (!oauthClient.isAuthorized()) {
@@ -175,7 +175,7 @@ export default (oauthClient) => {
     // commit.
     const [userResponse, membersResponse] = await Promise.all([
       // https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users
-      decoratedFetch(`${API_URL}/user`),
+      decoratedFetch(`${getApiUrl()}/user`),
       // https://docs.gitlab.com/ee/api/members.html#list-all-members-of-a-group-or-project
       decoratedFetch(`${getProjectApi()}/members`),
     ]);
