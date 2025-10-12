@@ -1,6 +1,6 @@
 import { parseOrg } from '../../../../../../lib/parse_org';
 
-import AgendaDay from './index';
+import { getPlanningItemsAndHeaders } from './index';
 
 import { Map } from 'immutable';
 import { parseISO } from 'date-fns';
@@ -8,7 +8,6 @@ import { parseISO } from 'date-fns';
 import readFixture from '../../../../../../../test_helpers/index';
 
 describe('Unit Tests for AgendaDay', () => {
-  const component = new AgendaDay();
   test('Given some headlines, it constructs a datastructure for the relevant ones for the "today" view', () => {
     let input = {
       headers: [],
@@ -63,6 +62,6 @@ describe('Unit Tests for AgendaDay', () => {
     const parsedOrgFile = parseOrg(testOrgFile);
     input.files = Map({ '/testfile.org': parsedOrgFile });
 
-    expect(JSON.parse(JSON.stringify(component.getPlanningItemsAndHeaders(input)))).toEqual(output);
+    expect(JSON.parse(JSON.stringify(getPlanningItemsAndHeaders(input)))).toEqual(output);
   });
 });
