@@ -103,8 +103,8 @@ class TimestampEditor extends PureComponent {
 
       const [hourKey, minuteKey] =
         startOrEnd === 'start' ? ['startHour', 'startMinute'] : ['endHour', 'endMinute'];
-      let [hour, minute] = event.target.value.split(':');
-      hour = hour.startsWith('0') ? hour.substring(1) : hour;
+      const [hour, minute] = event.target.value.split(':');
+
       onChange(timestamp.set(hourKey, hour).set(minuteKey, minute));
     };
   }
