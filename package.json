@@ -44,7 +44,7 @@
     "webdav": "^3.3.0"
   },
   "scripts": {
-    "start": "./bin/compile_search_parser.sh && parcel --port 3000",
+    "start": "./bin/compile_search_parser.sh && parcel --host 0.0.0.0 --port 3000",
     "compile-sass": "parcel build src/components/Landing/vendor_css/template.scss",
     "build": "./bin/compile_search_parser.sh && parcel build",
     "test": "./bin/compile_search_parser.sh && jest --env=jsdom",
