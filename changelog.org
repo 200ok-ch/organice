@@ -7,6 +7,15 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-10-22 Wed]
+
+** Fixed
+
+*** Components/OrgFile/TimestampEditor: Incorrect Timestamp Format
+
+PR: https://github.com/200ok-ch/organice/pull/1053
+Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
+
 * [2025-08-11 Mon]
 
 ** Changed
