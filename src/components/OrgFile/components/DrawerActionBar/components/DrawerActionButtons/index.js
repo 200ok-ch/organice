@@ -99,7 +99,7 @@ export default class DrawerActionButtons extends PureComponent {
           })}
           {this.iconWithFFClickCatcher({
             className:
-              'far fa-calendar-times fa-lg' +
+              'far fa-calendar-check fa-lg' +
               ('scheduled-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
