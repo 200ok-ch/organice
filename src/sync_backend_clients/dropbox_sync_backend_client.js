@@ -29,6 +29,8 @@ export const filterAndSortDirectoryListing = (listing) => {
     // Folders before files
     if (a['.tag'] === 'folder' && b['.tag'] === 'file') {
       return -1;
+    } else if (a['.tag'] === 'file' && b['.tag'] === 'folder') {
+      return 1;
     } else {
       // Sorth both folders and files alphabetically
       return a.name > b.name ? 1 : -1;
