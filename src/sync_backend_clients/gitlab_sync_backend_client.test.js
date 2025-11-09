@@ -7,9 +7,11 @@ import {
 
 test('Parses GitLab project from URL', () => {
   [
-    ['https://gitlab.com/user/foo', 'user%2Ffoo'],
-    ['https://gitlab.com/group/subgroup/project', 'group%2Fsubgroup%2Fproject'],
-    ['gitlab.com/foo/bar', 'foo%2Fbar'],
+    ['https://gitlab.com/user/foo', ['gitlab.com', 'user%2Ffoo']],
+    ['https://gitlab.com/group/subgroup/project', ['gitlab.com', 'group%2Fsubgroup%2Fproject']],
+    ['https://gitlab.example.com/user/foo', ['gitlab.example.com', 'user%2Ffoo']],
+    ['gitlab.com/foo/bar', ['gitlab.com', 'foo%2Fbar']],
+    ['gitlab.example.com/foo/bar', ['gitlab.example.com', 'foo%2Fbar']],
     ['gitlab.com/user-but-no-project', undefined],
     ['', undefined],
   ].forEach(([input, expected]) => {
