@@ -6,12 +6,17 @@ import './stylesheet.css';
 
 import DropboxLogo from 'url:./dropbox.svg';
 import GitLabLogo from 'url:./gitlab.svg';
+import GiteaLogo from 'url:./gitea.svg';
 
 import { persistField } from '../../util/settings_persister';
 import {
   createGitlabOAuth,
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
+import {
+  createGiteaOAuth,
+  giteaProjectFromURL,
+} from '../../sync_backend_clients/gitea_sync_backend_client';
 
 import { DropboxAuth } from 'dropbox';
 import _ from 'lodash';
@@ -149,6 +154,118 @@ function GitLab() {
   );
 }
 
+function Gitea() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
+
+  const defaultURL = 'https://gitea.example.com';
+  const defaultProject = 'https://gitea.example.com/owner/repo';
+  const [giteaURL, setGiteaURL] = useState(defaultURL);
+  const [project, setProject] = useState(defaultProject);
+  const [clientId, setClientId] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
+  const [branch, setBranch] = useState('');
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const projectInfo = giteaProjectFromURL(project);
+    if (!giteaURL) {
+      alert('Please enter your Gitea instance URL');
+      return;
+    }
+    if (!clientId || !clientSecret) {
+      alert('Please enter your OAuth Client ID and Secret');
+      return;
+    }
+    if (projectInfo) {
+      persistField('authenticatedSyncService', 'Gitea');
+      persistField('giteaURL', giteaURL);
+      persistField('giteaProject', JSON.stringify(projectInfo));
+      persistField('giteaClientId', clientId);
+      persistField('giteaClientSecret', clientSecret);
+      // Only persist branch if user specified one (empty string means use default)
+      if (branch) {
+        persistField('giteaBranch', branch);
+      } else {
+        persistField('giteaBranch', null);
+      }
+      try {
+        createGiteaOAuth().fetchAuthorizationCode();
+      } catch (e) {
+        alert('Error initializing OAuth: ' + e.message);
+      }
+    } else {
+      alert('Project does not appear to be a valid Gitea repository URL (should be owner/repo)');
+    }
+  };
+
+  return (
+    <>
+      <a href="#gitea" onClick={toggleVisible}>
+        <img src={GiteaLogo} alt="Gitea logo" />
+      </a>
+      {isVisible && (
+        <form onSubmit={handleSubmit}>
+          <p>
+            <label htmlFor="input-gitea-url">Gitea Instance URL:</label>
+            <input
+              id="input-gitea-url"
+              type="url"
+              className="textfield"
+              placeholder={defaultURL}
+              value={giteaURL}
+              onChange={(e) => setGiteaURL(e.target.value)}
+            />
+          </p>
+          <p>
+            <label htmlFor="input-gitea-project">Repository:</label>
+            <input
+              id="input-gitea-project"
+              type="url"
+              className="textfield"
+              placeholder={defaultProject}
+              value={project}
+              onChange={(e) => setProject(e.target.value)}
+            />
+          </p>
+          <p>
+            <label htmlFor="input-gitea-client-id">OAuth Client ID:</label>
+            <input
+              id="input-gitea-client-id"
+              type="text"
+              className="textfield"
+              value={clientId}
+              onChange={(e) => setClientId(e.target.value)}
+            />
+          </p>
+          <p>
+            <label htmlFor="input-gitea-client-secret">OAuth Client Secret:</label>
+            <input
+              id="input-gitea-client-secret"
+              type="password"
+              className="textfield"
+              value={clientSecret}
+              onChange={(e) => setClientSecret(e.target.value)}
+            />
+          </p>
+          <p>
+            <label htmlFor="input-gitea-branch">Branch (optional):</label>
+            <input
+              id="input-gitea-branch"
+              type="text"
+              className="textfield"
+              placeholder="Leave empty for default branch"
+              value={branch}
+              onChange={(e) => setBranch(e.target.value)}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
+    </>
+  );
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -178,7 +295,7 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox, GitLab, and WebDAV.
+          organice syncs your files with Dropbox, GitLab, Gitea, and WebDAV.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
@@ -190,6 +307,10 @@ export default class SyncServiceSignIn extends PureComponent {
 
         <div className="sync-service-container">
           <GitLab />
+        </div>
+
+        <div className="sync-service-container">
+          <Gitea />
         </div>
 
         <div className="sync-service-container">

@@ -4,6 +4,7 @@ import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } 
 import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
 import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
+import { createGiteaOAuth } from '../sync_backend_clients/gitea_sync_backend_client';
 
 import { addSeconds } from 'date-fns';
 
@@ -29,6 +30,13 @@ export const signOut = () => (dispatch, getState) => {
     case 'GitLab':
       persistField('gitLabProject', null);
       createGitlabOAuth().reset();
+      break;
+    case 'Gitea':
+      persistField('giteaURL', null);
+      persistField('giteaProject', null);
+      persistField('giteaClientId', null);
+      persistField('giteaClientSecret', null);
+      createGiteaOAuth().reset();
       break;
     default:
   }
@@ -113,7 +121,8 @@ export const pushBackup = (pathOrFileId, contents) => {
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;
       case 'GitLab':
-        // No-op for GitLab, because the beauty of version control makes backup files redundant.
+      case 'Gitea':
+        // No-op for GitLab/Gitea, because the beauty of version control makes backup files redundant.
         break;
       default:
     }
