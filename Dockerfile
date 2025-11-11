@@ -1,50 +1,22 @@
 # Multi-stage Dockerfile for organice
 # Supports both development and production builds
 
-FROM node:20.17.0-bookworm AS base
+FROM node:20.17.0-bookworm-slim AS build
+
+# Copy source code
+COPY . /opt/organice
 
 WORKDIR /opt/organice
 
-# Copy package files
-COPY package.json yarn.lock /opt/organice/
-
-# Development stage
-FROM base AS development
-
-# Copy source code
-COPY . /opt/organice
-
-# Generate environment variables
-RUN bin/transient_env_vars.sh bait >> .env
-
-# Create non-root user
-RUN groupadd organice \
-        && useradd -g organice organice \
-        && chown -R organice: /opt/organice
-
-USER organice
-
-# Install dependencies
-RUN yarn install
-
-ENV NODE_ENV=development
-EXPOSE 3000
-CMD ["/bin/bash"]
-
-# Build stage
-FROM base AS build
-
-# Copy source code
-COPY . /opt/organice
-
 # Install dependencies, including devDependencies like Parcel
-RUN yarn install --frozen-lockfile
+# But remove the cache to save 1+ gb of container size.
+RUN yarn install --frozen-lockfile && yarn cache clean
 
 # Generate environment variables
 RUN bin/transient_env_vars.sh bait >> .env
 
 # Build the application
-RUN yarn build
+RUN yarn build && rm -rf .parcel-cache
 
 # Production stage
 FROM node:20.17.0-bookworm-slim AS production
