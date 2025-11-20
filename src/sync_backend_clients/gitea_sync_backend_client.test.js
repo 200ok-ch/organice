@@ -95,6 +95,57 @@ describe('Converts file tree to directory listing', () => {
     ).toEqual(fromJS([]));
   });
 
+  test('Filters a symlink (unless it has org extension)', () => {
+    expect(
+      treeToDirectoryListing([
+        {
+          name: 'link-to-file',
+          path: 'link-to-file',
+          sha: '1abc234',
+          type: 'symlink',
+          size: 0,
+        },
+      ])
+    ).toEqual(fromJS([]));
+  });
+
+  test('Filters a submodule', () => {
+    expect(
+      treeToDirectoryListing([
+        {
+          name: 'submodule-dir',
+          path: 'submodule-dir',
+          sha: '2def456',
+          type: 'submodule',
+          size: 0,
+        },
+      ])
+    ).toEqual(fromJS([]));
+  });
+
+  test('Handles symlink with .org extension', () => {
+    expect(
+      treeToDirectoryListing([
+        {
+          name: 'link.org',
+          path: 'link.org',
+          sha: '3ghi789',
+          type: 'symlink',
+          size: 0,
+        },
+      ])
+    ).toEqual(
+      fromJS([
+        {
+          id: '3ghi789',
+          name: 'link.org',
+          path: '/link.org',
+          isDirectory: false,
+        },
+      ])
+    );
+  });
+
   test('Sorts correctly', () => {
     const data = [
       {

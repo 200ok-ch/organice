@@ -1,4 +1,5 @@
 import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
+import { formatISO } from 'date-fns';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
 
@@ -268,7 +269,7 @@ export default (oauthClient) => {
     const commitsParams = new URLSearchParams({
       sha: await getDefaultBranch(),
       path: cleanPath,
-      per_page: 1, // Changed from 'limit' to 'per_page' (GitHub/Gitea API standard)
+      limit: 1, // Gitea API uses 'limit' parameter for page size
     });
     const commitsResponse = await decoratedFetch(`${getProjectApi()}/commits?${commitsParams}`);
     if (!commitsResponse.ok) {
@@ -319,6 +320,7 @@ export default (oauthClient) => {
   const createFile = async (path, content) => {
     const message = `[organice] Create ${path}\n\nAutomatic commit from organice app.`;
     const cleanPath = path.replace(/^\//, '');
+    const now = formatISO(new Date()); // ISO 8601 with local timezone offset
     // https://docs.gitea.io/en-us/api-usage/#create-a-file
     // Note: Gitea uses PUT for both create and update (GitHub-compatible API)
     const response = await decoratedFetch(`${getProjectApi()}/contents/${cleanPath}`, {
@@ -330,6 +332,10 @@ export default (oauthClient) => {
         branch: await getDefaultBranch(),
         message,
         content: btoa(unescape(encodeURIComponent(content))), // Proper UTF-8 to base64 encoding
+        dates: {
+          author: now,
+          committer: now,
+        },
       }),
     });
     if (!response.ok) {
@@ -340,6 +346,7 @@ export default (oauthClient) => {
   const updateFile = async (path, content) => {
     const message = `[organice] Update ${path}\n\nAutomatic commit from organice app.`;
     const cleanPath = path.replace(/^\//, '');
+    const now = formatISO(new Date()); // ISO 8601 with local timezone offset
     // Need to get the current file blob SHA for update
     const file = await getRawFile(path);
     // https://docs.gitea.io/en-us/api-usage/#update-a-file
@@ -353,6 +360,10 @@ export default (oauthClient) => {
         message,
         sha: file.blobSha, // Use blob SHA, not commit SHA
         content: btoa(unescape(encodeURIComponent(content))), // Proper UTF-8 to base64 encoding
+        dates: {
+          author: now,
+          committer: now,
+        },
       }),
     });
     if (!response.ok) {
@@ -363,6 +374,7 @@ export default (oauthClient) => {
   const deleteFile = async (path) => {
     const message = `[organice] Delete ${path}\n\nAutomatic commit from organice app.`;
     const cleanPath = path.replace(/^\//, '');
+    const now = formatISO(new Date()); // ISO 8601 with local timezone offset
     // Need to get the current file blob SHA for deletion
     const file = await getRawFile(path);
     // https://docs.gitea.io/en-us/api-usage/#delete-a-file
@@ -375,6 +387,10 @@ export default (oauthClient) => {
         branch: await getDefaultBranch(),
         message,
         sha: file.blobSha, // Use blob SHA, not commit SHA
+        dates: {
+          author: now,
+          committer: now,
+        },
       }),
     });
     if (!response.ok) {
