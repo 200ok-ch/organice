@@ -7,6 +7,16 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2025-12-01 Mon]
+
+** Fixed
+
+*** On Chrome > 137: GitLab sign-in for private repository fails with "Unexpected sign in error, please try again"
+
+PR: https://github.com/200ok-ch/organice/pull/1061
+
+Thank you [[github.com/mcwitt][mcwitt]] for the PR and [[https://github.com/dtvillafana][dtvillafana]] for support and testing🙏
+
 * [2025-10-22 Wed]
 
 ** Changed
