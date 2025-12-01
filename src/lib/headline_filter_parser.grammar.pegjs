@@ -168,7 +168,7 @@ PropertyName "property name"
 
 // https://orgmode.org/manual/Tags.html
 TagName "tag name"
-  = [a-zA-Z0-9_@]+ { return text() }
+  = [a-zA-Z0-9_@#%]+ { return text() }
 
 _ "whitespace"
   = [ \t]
