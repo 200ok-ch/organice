@@ -19,6 +19,16 @@ Thank you [[https://github.com/cperl82][cperl82]] for the PR🙏
 
 ** Fixed
 
+*** Dropbox sorting
+
+The old Dropbox sorting could do the wrong thing when the sort
+comparator is called with the first argument being a file and the
+second argument being a folder.
+
+PR: https://github.com/200ok-ch/organice/pull/1054
+
+Thank you [[https://github.com/cperl82][cperl82]] for the PR🙏
+
 *** On Chrome > 137: GitLab sign-in for private repository fails with "Unexpected sign in error, please try again"
 
 PR: https://github.com/200ok-ch/organice/pull/1061
