@@ -1,4 +1,4 @@
-* TODO Spec header							  :spec_tag:tag2:
+* TODO Spec header                                                       :spec_tag:tag2:#technology:
 
 :PROPERTIES:
 :prop1: abc
