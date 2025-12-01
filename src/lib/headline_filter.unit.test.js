@@ -68,6 +68,10 @@ describe('Match function for headline filter', () => {
       ]);
       expectMatch(filterExpr).toBe(true);
     });
+    test('Matching tag with #', () => {
+      const filterExpr = gtag('#technology');
+      expectMatch(filterExpr).toBe(true);
+    });
   });
 
   describe('Tests for case-sensitive matching in headline text', () => {

@@ -48,6 +48,7 @@
     "compile-sass": "parcel build src/components/Landing/vendor_css/template.scss",
     "build": "./bin/compile_search_parser.sh && parcel build",
     "test": "./bin/compile_search_parser.sh && jest --env=jsdom",
+    "watch": "./bin/compile_search_parser.sh && jest --watch --env=jsdom",
     "coverage": "./bin/compile_search_parser.sh && jest --env=jsdom --coverage --watchAll=false",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
