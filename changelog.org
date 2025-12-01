@@ -9,6 +9,14 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 * [2025-12-01 Mon]
 
+** Added
+
+*** Add "#" and "%" as valid characters for tag searches
+
+PR: https://github.com/200ok-ch/organice/pull/1055
+
+Thank you [[https://github.com/cperl82][cperl82]] for the PR🙏
+
 ** Fixed
 
 *** On Chrome > 137: GitLab sign-in for private repository fails with "Unexpected sign in error, please try again"
