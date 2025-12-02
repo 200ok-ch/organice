@@ -140,6 +140,7 @@ export const setShouldStoreSettingsInSyncBackend = (newShouldStoreSettingsInSync
       switch (client.type) {
         case 'Dropbox':
         case 'GitLab':
+        case 'Gitea':
         case 'WebDAV':
           client
             .deleteFile('/.organice-config.json')
