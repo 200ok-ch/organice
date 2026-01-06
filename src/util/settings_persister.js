@@ -207,6 +207,12 @@ export const persistableFields = [
     type: 'boolean',
   },
   {
+    category: 'base',
+    name: 'orgHabitShowAllToday',
+    type: 'boolean',
+    default: false,
+  },
+  {
     category: 'org',
     name: 'bookmarks',
     type: 'json',

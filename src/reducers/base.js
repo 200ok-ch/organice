@@ -133,6 +133,9 @@ const setFinderTab = (state, action) => state.set('finderTab', action.finderTab)
 const setPreferEditRawValues = (state, action) =>
   state.set('preferEditRawValues', action.preferEditRawValues);
 
+const setOrgHabitShowAllToday = (state, action) =>
+  state.set('orgHabitShowAllToday', action.orgHabitShowAllToday);
+
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
 };
@@ -214,6 +217,8 @@ export default (state = Map(), action) => {
       return setFinderTab(state, action);
     case 'PREFER_EDIT_RAW_VALUES':
       return setPreferEditRawValues(state, action);
+    case 'SET_ORG_HABIT_SHOW_ALL_TODAY':
+      return setOrgHabitShowAllToday(state, action);
     default:
       return state;
   }

@@ -42,6 +42,7 @@ export default class AgendaDay extends PureComponent {
       onToggleDateDisplayType,
       agendaDefaultDeadlineDelayValue,
       agendaDefaultDeadlineDelayUnit,
+      orgHabitShowAllToday,
     } = this.props;
 
     const dateStart = startOfDay(date);
@@ -54,6 +55,7 @@ export default class AgendaDay extends PureComponent {
       agendaDefaultDeadlineDelayUnit,
       dateStart,
       dateEnd,
+      orgHabitShowAllToday,
     });
 
     return (
@@ -121,6 +123,7 @@ export default class AgendaDay extends PureComponent {
     agendaDefaultDeadlineDelayUnit,
     dateStart,
     dateEnd,
+    orgHabitShowAllToday,
   }) {
     const headers = List().concat(
       ...files
@@ -139,6 +142,28 @@ export default class AgendaDay extends PureComponent {
           if (!timestamp.get('isActive')) {
             return false;
           }
+
+          // Check if this is a habit
+          const isHabit = header
+            .get('propertyListItems')
+            .some((item) => {
+              const prop = item.get('property');
+              const value = item.get('value');
+              return (
+                prop &&
+                prop.toLowerCase() === 'style' &&
+                value.some(
+                  (v) => v.get('type') === 'text' && v.get('contents').trim() === 'habit'
+                )
+              );
+            });
+
+          // When org-habit-show-all-today is enabled and viewing today:
+          // Show ALL habits (even if not scheduled or completed)
+          if (orgHabitShowAllToday && isHabit && isToday(date)) {
+            return true;
+          }
+
           const planningItemDate = dateForTimestamp(timestamp);
           const todoKeyword = header.getIn(['titleLine', 'todoKeyword']);
           const isCompletedTodo =

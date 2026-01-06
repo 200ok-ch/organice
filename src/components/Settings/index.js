@@ -34,6 +34,7 @@ const Settings = ({
   syncBackend,
   preferEditRawValues,
   showClockDisplay,
+  orgHabitShowAllToday,
   colorScheme,
   theme,
   base,
@@ -109,6 +110,8 @@ const Settings = ({
   const handleShowClockDisplayClick = () => org.setShowClockDisplay(!showClockDisplay);
 
   const handlePreferEditRawValues = () => base.setPreferEditRawValues(!preferEditRawValues);
+
+  const handleOrgHabitShowAllToday = () => base.setOrgHabitShowAllToday(!orgHabitShowAllToday);
 
   return (
     <div className="settings-container">
@@ -309,6 +312,17 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
+          Show all habits today
+          <div className="setting-label__description">
+            When enabled, all habits are shown in today's agenda view, even if not scheduled or
+            already marked as DONE today. Only applies to today's date in the agenda.
+          </div>
+        </div>
+        <Switch isEnabled={orgHabitShowAllToday} onToggle={handleOrgHabitShowAllToday} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
           Display time summaries
           <div className="setting-label__description">
             This puts overlays at the end of each headline, showing the total time recorded under
@@ -417,6 +431,7 @@ const mapStateToProps = (state) => {
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
+    orgHabitShowAllToday: state.base.get('orgHabitShowAllToday'),
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
   };

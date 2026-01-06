@@ -230,3 +230,9 @@ export const setPreferEditRawValues = (preferEditRawValues) => (dispatch) =>
     type: 'PREFER_EDIT_RAW_VALUES',
     preferEditRawValues,
   });
+
+export const setOrgHabitShowAllToday = (orgHabitShowAllToday) => (dispatch) =>
+  dispatch({
+    type: 'SET_ORG_HABIT_SHOW_ALL_TODAY',
+    orgHabitShowAllToday,
+  });
