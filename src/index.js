@@ -3,4 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const rootElement = document.getElementById('root');
+
+function render() {
+  ReactDOM.render(<App />, rootElement);
+}
+
+render();
+
+// Enable Hot Module Replacement (full reload for ES modules)
+if (module.hot) {
+  module.hot.accept();
+}
