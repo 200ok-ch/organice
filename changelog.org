@@ -29,6 +29,14 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 See the [[https://organice.200ok.ch/documentation.html#org_habits][documentation]] for more details on habit configuration and usage.
 
+** Fixed
+
+*** Settings reset to defaults when config file is missing fields
+
+Base settings (including Org habits settings) were being overwritten with =undefined= values when the sync backend config file didn't contain those fields. This happened when using an older config file or when settings were added after the initial config file was created.
+
+Settings now correctly persist from localStorage even when the config file is missing specific fields.
+
 * [2025-12-01 Mon]
 
 ** Added

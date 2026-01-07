@@ -272,9 +272,12 @@ export const applyCategorySettingsFromConfig = (state, config, category) => {
   persistableFields
     .filter((field) => field.category === category)
     .forEach((field) => {
-      field.type === 'json'
-        ? (state = state.set(field.name, fromJS(JSON.parse(config[field.name]))))
-        : (state = state.set(field.name, config[field.name]));
+      // Only set value if it exists in config to avoid overwriting localStorage values with undefined
+      if (config[field.name] !== undefined) {
+        field.type === 'json'
+          ? (state = state.set(field.name, fromJS(JSON.parse(config[field.name]))))
+          : (state = state.set(field.name, config[field.name]));
+      }
     });
 
   return state;
