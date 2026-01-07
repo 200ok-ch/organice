@@ -11,6 +11,14 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 
 ** Added
 
+*** UI for editing slash syntax in SCHEDULED timestamp repeaters
+    - When editing a SCHEDULED timestamp with a repeater, you can now set a deadline range using the slash syntax (e.g., =.+2d/3d=)
+    - This means "do this task at most every 2 days, but at least every 3 days"
+    - The slash UI only appears for SCHEDULED timestamps, not DEADLINE timestamps
+    - The deadline part can be removed by setting the value to 0
+    - Upstream documentation: https://orgmode.org/manual/Tracking-your-habits.html
+    - The parser already supported this syntax, but now you can edit it visually in the timestamp editor
+
 *** Org Habits consistency graph
     - Visual consistency graph showing habit completion over time
     - Color-coded status indicators matching Emacs org-mode:

@@ -54,6 +54,13 @@
   margin-right: 10px;
 }
 
+.timestamp-editor__slash {
+  color: var(--magenta);
+  font-weight: bold;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 .timestamp-editor__icon--add {
   height: 34px;
   padding-right: 12px;
