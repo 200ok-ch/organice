@@ -7,6 +7,28 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-01-07 Tue]
+
+** Added
+
+*** Org Habits consistency graph
+    - Visual consistency graph showing habit completion over time
+    - Color-coded status indicators matching Emacs org-mode:
+      - Green: Completed on this day
+      - Blue: Not due yet (in grace period)
+      - Yellow: Scheduled for this day, or due tomorrow
+      - Red: Overdue (you missed this day)
+    - Habits sorted before non-habits in agenda view
+    - Settings for graph configuration:
+      - Org habit preceding days (default: 21)
+      - Org habit following days (default: 7)
+      - Show all habits today
+    - Habits identified by =STYLE: habit= property
+    - Uses =:LOGBOOK:= entries to track completion history
+    - Automatically sets =LAST_REPEAT= property on completion
+
+See the [[https://organice.200ok.ch/documentation.html#org_habits][documentation]] for more details on habit configuration and usage.
+
 * [2025-12-01 Mon]
 
 ** Added
