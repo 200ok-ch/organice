@@ -37,6 +37,16 @@ Base settings (including Org habits settings) were being overwritten with =undef
 
 Settings now correctly persist from localStorage even when the config file is missing specific fields.
 
+*** PWA updates not applying on iOS Safari
+
+When deploying new versions of organice, iOS Safari users often didn't receive updates and had to remove/reinstall the PWA from their home screen.
+
+Fixed by:
+- Adding =skipWaiting()= to force immediate service worker activation
+- Adding =clients.claim()= to ensure new service worker controls all clients immediately
+- Adding proper fetch event handler for cache-first strategy
+- Adding cache headers in =.htaccess= to prevent service worker file from being cached
+
 * [2025-12-01 Mon]
 
 ** Added
