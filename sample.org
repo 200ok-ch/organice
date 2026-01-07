@@ -221,11 +221,56 @@ Try tapping on the timestamps below to get a feel for the editor:
 
 ** Habit tracking
 
-Org has the ability to track the consistency of a special category of TODO, called "habits." From the [[https://orgmode.org/manual/Tracking-your-habits.html][upstream doc]]: A timestamp may have minimum and maximum ranges specified by using the syntax =.+2d/3d=, which says that you want to do the task at least every three days, but at most every two days.
+organice supports Emacs Org mode's habit tracking feature with a visual consistency graph. Habits are TODO items that you want to track consistently over time, like daily exercise or meditation.
 
-Example timestamp: <2009-10-17 Sat .+2d/4d>
+*** Creating a habit
 
-organice supports parsing and preserving the minimum/maximum range timestamps. Alas, only the minimum range is handled as a [[https://orgmode.org/manual/Repeated-tasks.html][repeated task]]. There's no UI for the maximum range, it can be edited as raw text. Also, there is no UI to show how well a habit has been exercised.
+To create a habit, add a =STYLE= property with the value =habit= to your TODO item:
+
+*** TODO Exercise
+    SCHEDULED: <2026-01-07 Wed .+1d>
+    :PROPERTIES:
+    :STYLE:    habit
+    :END:
+
+The =.+= repeater means "do this at least once per day". When you mark it DONE, the date shifts from today (not from the original scheduled date). This means if you miss a few days, the habit stays overdue until you complete it.
+
+*** Understanding the consistency graph
+
+In the agenda view, habits display a visual consistency graph below the title showing your completion history:
+
+- *Green*: You completed the habit on this day
+- *Blue*: Not due yet (in the grace period)
+- *Yellow*: Scheduled for this day, or due tomorrow
+- *Red*: Overdue (you missed this day)
+
+The graph displays the configured number of preceding days (default: 21) and following days (default: 7).
+
+*** Example with completion history
+
+Here's a more complete example with a LOGBOOK showing when you completed the habit:
+
+*** TODO Meditate for 15 minutes
+    SCHEDULED: <2026-01-07 Wed .+1d>
+    :PROPERTIES:
+    :STYLE:    habit
+    :LAST_REPEAT: [2026-01-06 Tue 08:00]
+    :END:
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2026-01-06 Tue 08:00]
+    - State "DONE"       from "TODO"       [2026-01-05 Mon 08:00]
+    - State "DONE"       from "TODO"       [2026-01-03 Sat 07:30]
+    :END:
+
+The =LAST_REPEAT= property is automatically updated when you mark the habit as DONE, and the consistency graph uses your LOGBOOK entries to show which days you completed the habit.
+
+*** Habit frequency examples
+
+- Daily: =SCHEDULED: <2026-01-07 Wed .+1d>=
+- Every 2 days: =SCHEDULED: <2026-01-07 Wed .+2d>=
+- Weekly: =SCHEDULED: <2026-01-07 Wed .+1w>=
+
+See the [[https://organice.200ok.ch/documentation.html#org_habits][documentation]] for more details on habit configuration.
 
 * Automatic/Implicit links
 
@@ -289,7 +334,27 @@ For simple appointments, it is enough to mark the entry with a simple plain time
 
 The =+1w= is a repeater; the intended interpretation is that the task has a deadline on '2019-01-10' and repeats itself every (one) week starting from that time. You can use yearly, monthly, weekly, daily and hourly repeat cookies by using the 'y', 'w', 'm', 'd' and 'h' letters.
 
-With the =+1w= cookie, the date shift is always exactly one week. So if you completed the TODO for three months, marking this entry DONE still keeps it as an overdue deadline. Depending on the task, this may not be the best way to handle it. For example, if you forgot to call your father for 3 weeks, it does not make sense to call him 3 times in a single day to make up for it. Finally, there are tasks, like changing batteries, which should always repeat a certain time after the last time you did it. For these tasks, Org mode has special repeaters =++= and =.+=. For example:
+*** Types of repeaters
+
+There are three types of repeaters in Org mode:
+
+**** + (plus repeater)
+
+Shifts the date by a fixed amount from the /original/ date. If you miss deadlines, all missed instances appear in the agenda as overdue. This is useful for tasks that must happen on a specific schedule regardless of when you complete them.
+
+Example: =+1w= repeats exactly one week from the original date. If the deadline was Thursday and you complete it three weeks late on Wednesday, the next deadline will still be Thursday (one week after the original), which will appear as overdue.
+
+**** ++ (plus-plus repeater)
+
+Shifts the date to a future occurrence, but preserves certain properties like the day of week. The date shifts by at least the specified amount, but also by as much as needed to get the date into the future.
+
+Example: =++1w= repeats weekly but stays on the same weekday. If the deadline is Sunday and you complete it on Saturday, the next deadline will be the next Sunday (preserving the Sunday schedule).
+
+**** .+ (dot repeater)
+
+Shifts the date from /today/ when you mark the task DONE. This is the most common style for habits and tasks that should repeat a certain time after you last did them. If you miss days, the task stays overdue until you complete it.
+
+Example: =.+1d= means "do this at least once per day." If you complete it today, the next deadline is tomorrow. If you miss three days and then complete it, the next deadline is still tomorrow (not three days from the original schedule).
 
 *** TODO Call kitchen trash
     DEADLINE: <2019-02-11 Mon ++1w>

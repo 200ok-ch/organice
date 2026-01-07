@@ -133,6 +133,15 @@ const setFinderTab = (state, action) => state.set('finderTab', action.finderTab)
 const setPreferEditRawValues = (state, action) =>
   state.set('preferEditRawValues', action.preferEditRawValues);
 
+const setOrgHabitShowAllToday = (state, action) =>
+  state.set('orgHabitShowAllToday', action.orgHabitShowAllToday);
+
+const setOrgHabitPrecedingDays = (state, action) =>
+  state.set('orgHabitPrecedingDays', action.orgHabitPrecedingDays);
+
+const setOrgHabitFollowingDays = (state, action) =>
+  state.set('orgHabitFollowingDays', action.orgHabitFollowingDays);
+
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
 };
@@ -214,6 +223,12 @@ export default (state = Map(), action) => {
       return setFinderTab(state, action);
     case 'PREFER_EDIT_RAW_VALUES':
       return setPreferEditRawValues(state, action);
+    case 'SET_ORG_HABIT_SHOW_ALL_TODAY':
+      return setOrgHabitShowAllToday(state, action);
+    case 'SET_ORG_HABIT_PRECEDING_DAYS':
+      return setOrgHabitPrecedingDays(state, action);
+    case 'SET_ORG_HABIT_FOLLOWING_DAYS':
+      return setOrgHabitFollowingDays(state, action);
     default:
       return state;
   }

@@ -2,11 +2,12 @@ import { List, Map, fromJS } from 'immutable';
 import _ from 'lodash';
 import { curry } from 'lodash/fp';
 import changelogContent from 'bundle-text:../../changelog.org';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, parse } from 'date-fns';
 
 import generateId from './id_generator';
 import { attributedStringToRawText } from './export_org';
 import substituteTemplateVariables from './capture_template_substitution';
+import { dateForTimestamp } from './timestamps';
 
 export const STATIC_FILE_PREFIX = 'organice_internal_';
 
@@ -891,3 +892,423 @@ export const getTableCell = curry(
     return table.getIn(['contents', row, 'contents', column]);
   }
 );
+
+// ============================================================================
+// Org Mode Habits Support
+// See: https://orgmode.org/manual/Tracking-your-habits.html
+// ============================================================================
+
+/**
+ * Default configuration values for habit tracking.
+ * These match Emacs Org mode defaults.
+ */
+export const HABIT_DEFAULTS = {
+  PRECEDING_DAYS: 21,
+  FOLLOWING_DAYS: 7,
+};
+
+/**
+ * Check if a header is a habit.
+ * A habit is defined by having the STYLE property set to "habit".
+ *
+ * @param {Map} header - Immutable header map
+ * @returns {boolean} true if the header is a habit
+ */
+export const isHabit = (header) => {
+  if (!header || !header.get('propertyListItems')) {
+    return false;
+  }
+  return header.get('propertyListItems').some((item) => {
+    const prop = item.get('property');
+    const value = item.get('value');
+    return (
+      prop &&
+      prop.toLowerCase() === 'style' &&
+      value &&
+      value.some((v) => v.get('type') === 'text' && v.get('contents').trim() === 'habit')
+    );
+  });
+};
+
+/**
+ * Parse the habit repeat interval from a timestamp.
+ * Habits use the .+ repeater with an optional deadline: .+N/d[/d]
+ *
+ * Examples:
+ *   .+1d - Repeat every 1 day
+ *   .+2d/3d - At most every 2 days, at least every 3 days
+ *
+ * @param {Map} timestamp - Immutable timestamp map with repeater info
+ * @returns {Object|null} Object with {minDays, maxDays} or null if not a habit repeater
+ */
+export const parseHabitRepeat = (timestamp) => {
+  if (!timestamp) {
+    return null;
+  }
+
+  const repeaterType = timestamp.get('repeaterType');
+  if (!['.+', '+', '++'].includes(repeaterType)) {
+    return null; // Habits use one of the repeater types
+  }
+
+  const repeaterUnit = timestamp.get('repeaterUnit');
+  const validUnits = ['d', 'w', 'm', 'y'];
+  if (!validUnits.includes(repeaterUnit)) {
+    return null; // Habits only work with days, weeks, months, years
+  }
+
+  const convertToDays = (val, unit) => {
+    const v = parseInt(val, 10) || 0;
+    switch (unit) {
+      case 'd':
+        return v;
+      case 'w':
+        return v * 7;
+      case 'm':
+        return v * 30;
+      case 'y':
+        return v * 365;
+      default:
+        return v;
+    }
+  };
+
+  const maxDays = convertToDays(timestamp.get('repeaterValue'), repeaterUnit) || 1;
+
+  const deadlineValue = timestamp.get('repeaterDeadlineValue');
+  const deadlineUnit = timestamp.get('repeaterDeadlineUnit') || repeaterUnit;
+  const minDays = deadlineValue ? convertToDays(deadlineValue, deadlineUnit) : maxDays;
+
+  return { minDays, maxDays };
+};
+
+/**
+ * Check if a header is a valid habit with proper scheduling.
+ *
+ * @param {Map} header - Immutable header map
+ * @returns {boolean} true if the header is a properly configured habit
+ */
+export const isValidHabit = (header) => {
+  if (!isHabit(header)) {
+    return false;
+  }
+
+  // Habits need a scheduled date with a .+ repeater
+  const planningItems = header.get('planningItems');
+  if (!planningItems) {
+    return false;
+  }
+
+  const scheduledItem = planningItems.find((item) => item.get('type') === 'SCHEDULED');
+  if (!scheduledItem) {
+    return false;
+  }
+
+  const timestamp = scheduledItem.get('timestamp');
+  return parseHabitRepeat(timestamp) !== null;
+};
+
+/**
+ * Extract completion dates from a header's log notes.
+ * Looks for lines like: - State "DONE" from "TODO" [date]
+ *
+ * @param {Map} header - Immutable header map
+ * @returns {Array<Date>} Array of completion dates
+ */
+export const getHabitHistory = (header) => {
+  if (!header) {
+    return [];
+  }
+
+  const completionDates = [];
+
+  const logNotes = header.get('logNotes');
+  if (logNotes) {
+    // Parse log notes for state change entries.
+    // We process the list items if they exist, or the raw text if it's just a string.
+    logNotes.forEach((part) => {
+      if (part.get('type') === 'list') {
+        part.get('items').forEach((item) => {
+          const titleLine = item.get('titleLine');
+          const raw = attributedStringToRawText(titleLine || List());
+
+          // Match pattern: - State "DONE" from "TODO" [date]
+          const stateChangeMatch = raw.match(/State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/);
+          if (stateChangeMatch) {
+            const dateStr = stateChangeMatch[3];
+            const date = parseHabitTimestamp(dateStr);
+            if (date) {
+              completionDates.push(date);
+            }
+          }
+        });
+      } else if (part.get('type') === 'text') {
+        const contents = part.get('contents');
+        const lines = contents.split('\n');
+        lines.forEach((line) => {
+          const stateChangeMatch = line.match(
+            /State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/
+          );
+          if (stateChangeMatch) {
+            const dateStr = stateChangeMatch[3];
+            const date = parseHabitTimestamp(dateStr);
+            if (date) {
+              completionDates.push(date);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  const logBookEntries = header.get('logBookEntries');
+  if (logBookEntries) {
+    logBookEntries.forEach((entry) => {
+      const raw = entry.get('raw');
+      if (raw) {
+        // Match pattern: - State "DONE" from "TODO" [date]
+        const stateChangeMatch = raw.match(/State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/);
+        if (stateChangeMatch) {
+          const dateStr = stateChangeMatch[3];
+          const date = parseHabitTimestamp(dateStr);
+          if (date) {
+            completionDates.push(date);
+          }
+        }
+      }
+    });
+  }
+
+  return completionDates.sort((a, b) => a - b);
+};
+
+/**
+ * Parse a timestamp string from habit log entries.
+ * Supports formats like: "2024-01-15 Mon 09:30" or "2024-01-15 Mon"
+ *
+ * @param {string} dateStr - Date string from log entry
+ * @returns {Date|null} Parsed date or null
+ */
+const parseHabitTimestamp = (dateStr) => {
+  try {
+    // Remove the day name (e.g. "Mon", "Tue") as date-fns v2 cannot parse 'eee' and 'yyyy' together
+    // Pattern matches 3 letters surrounded by spaces or at end
+    const cleanDateStr = dateStr.replace(/\s+[A-Za-z]{3}(\s+|$)/, ' ').trim();
+
+    // Try with time first
+    let date = parse(cleanDateStr, 'yyyy-MM-dd HH:mm', new Date());
+    if (!isNaN(date)) {
+      return date;
+    }
+    // Try without time
+    date = parse(cleanDateStr, 'yyyy-MM-dd', new Date());
+    if (!isNaN(date)) {
+      return date;
+    }
+  } catch (e) {
+    // Return null if parsing fails
+  }
+  return null;
+};
+
+/**
+ * Calculate the consistency graph for a habit.
+ * Returns an array of daily consistency data points.
+ *
+ * Each data point has:
+ * - date: The date for this point
+ * - status: 'done', 'missed', 'future', 'not-scheduled', 'overdue', 'due-soon'
+ *
+ * @param {Map} header - Immutable header map (must be a valid habit)
+ * @param {Date} viewDate - The reference date for the graph (usually today)
+ * @param {Object} options - Configuration options
+ * @returns {Array} Array of daily data points
+ */
+export const calculateHabitConsistency = (header, viewDate = new Date(), options = {}) => {
+  const {
+    precedingDays = HABIT_DEFAULTS.PRECEDING_DAYS,
+    followingDays = HABIT_DEFAULTS.FOLLOWING_DAYS,
+  } = options;
+
+  if (!isValidHabit(header)) {
+    return [];
+  }
+
+  // Get the scheduled date and repeat info
+  const planningItems = header.get('planningItems');
+  const scheduledItem = planningItems.find((item) => item.get('type') === 'SCHEDULED');
+  const scheduledTimestamp = scheduledItem.get('timestamp');
+  const repeatInfo = parseHabitRepeat(scheduledTimestamp);
+  const { minDays, maxDays } = repeatInfo;
+
+  // Get completion history
+  const completionDates = getHabitHistory(header);
+
+  // Calculate the start date for the graph
+  const startDate = new Date(viewDate);
+  startDate.setDate(startDate.getDate() - precedingDays);
+
+  // Calculate the end date for the graph
+  const endDate = new Date(viewDate);
+  endDate.setDate(endDate.getDate() + followingDays);
+
+  // Generate data points for each day
+  const dataPoints = [];
+  const currentDate = new Date(startDate);
+
+  while (currentDate <= endDate) {
+    const dataPoint = calculateDayStatus(
+      currentDate,
+      viewDate,
+      scheduledTimestamp,
+      minDays,
+      maxDays,
+      completionDates
+    );
+    dataPoints.push({
+      date: new Date(currentDate),
+      ...dataPoint,
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dataPoints;
+};
+
+/**
+ * Calculate the status for a single day in the habit graph.
+ *
+ * Status values (matching Org mode colors):
+ * - 'done': Task was completed on this day (green in org mode)
+ * - 'missed': Task was not done and deadline passed (red)
+ * - 'future': Not due yet (blue)
+ * - 'due-soon': Due tomorrow (yellow)
+ * - 'not-scheduled': Before the initial scheduled date
+ * - 'overdue': Past the max deadline
+ *
+ * @param {Date} day - The day to calculate status for
+ * @param {Date} today - The reference date (usually today)
+ * @param {Map} scheduledTimestamp - The scheduled timestamp from the habit
+ * @param {number} minDays - Minimum days between completions
+ * @param {number} maxDays - Maximum days between completions
+ * @param {Array<Date>} completionDates - Array of completion dates
+ * @returns {Object} { status, scheduledDeadline }
+ */
+const calculateDayStatus = (day, today, scheduledTimestamp, minDays, maxDays, completionDates) => {
+  // Get the base scheduled date from the timestamp
+  const baseScheduledDate = dateForTimestamp(scheduledTimestamp);
+
+  // For the initial calculation, we need to find the most recent completion
+  // before this day and calculate the expected schedule from there
+  const sortedCompletions = [...completionDates].filter((d) => d <= day).sort((a, b) => b - a);
+  const lastCompletion = sortedCompletions[0];
+
+  let expectedDate;
+  if (lastCompletion) {
+    // Calculate when this task should be due based on last completion
+    expectedDate = new Date(lastCompletion);
+    expectedDate.setDate(expectedDate.getDate() + maxDays);
+  } else {
+    // Use the original scheduled date
+    expectedDate = new Date(baseScheduledDate);
+  }
+
+  // Check if this day was a completion day
+  const isCompleted = completionDates.some((d) => isSameDay(d, day));
+  if (isCompleted) {
+    return { status: 'done', scheduledDeadline: expectedDate };
+  }
+
+  // Calculate the "not due yet" window
+  // After completion, we're not due until minDays pass
+  if (lastCompletion) {
+    const notDueUntil = new Date(lastCompletion);
+    notDueUntil.setDate(notDueUntil.getDate() + minDays);
+    // Only return 'future' if day is BEFORE notDueUntil and NOT the expected deadline day
+    if (!isSameDay(day, notDueUntil) && !isSameDay(day, expectedDate) && day < notDueUntil) {
+      return { status: 'future', scheduledDeadline: expectedDate };
+    }
+  } else {
+    // Before the first scheduled date (use isSameDay to handle time component issues)
+    if (!isSameDay(day, baseScheduledDate) && day < baseScheduledDate) {
+      return { status: 'not-scheduled', scheduledDeadline: expectedDate };
+    }
+    // In the grace period before first deadline (excluding expected deadline day)
+    const gracePeriodEnd = new Date(baseScheduledDate);
+    gracePeriodEnd.setDate(gracePeriodEnd.getDate() + minDays);
+    if (
+      !isSameDay(day, gracePeriodEnd) &&
+      !isSameDay(day, expectedDate) &&
+      day < gracePeriodEnd &&
+      day >= baseScheduledDate
+    ) {
+      return { status: 'future', scheduledDeadline: expectedDate };
+    }
+  }
+
+  // Check if deadline is today (due-soon) - must come before overdue check
+  if (isSameDay(day, expectedDate) && day <= today) {
+    return { status: 'due-soon', scheduledDeadline: expectedDate };
+  }
+
+  // Check if we're past the deadline
+  if (day > expectedDate && !isSameDay(day, expectedDate)) {
+    return { status: 'overdue', scheduledDeadline: expectedDate };
+  }
+
+  // Check if deadline is tomorrow
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  if (isSameDay(day, tomorrow)) {
+    return { status: 'due-soon', scheduledDeadline: expectedDate };
+  }
+
+  // Within the valid window
+  return { status: 'scheduled', scheduledDeadline: expectedDate };
+};
+
+/**
+ * Check if two dates are the same day (ignoring time).
+ */
+const isSameDay = (date1, date2) => {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+};
+
+/**
+ * Get the next scheduled date for a habit after a given date.
+ *
+ * @param {Map} header - Immutable header map (must be a valid habit)
+ * @param {Date} afterDate - The date after which to find the next schedule
+ * @returns {Date|null} The next scheduled date or null
+ */
+export const getHabitNextScheduled = (header, afterDate = new Date()) => {
+  if (!isValidHabit(header)) {
+    return null;
+  }
+
+  const planningItems = header.get('planningItems');
+  const scheduledItem = planningItems.find((item) => item.get('type') === 'SCHEDULED');
+  const scheduledTimestamp = scheduledItem.get('timestamp');
+  const repeatInfo = parseHabitRepeat(scheduledTimestamp);
+  const { maxDays } = repeatInfo;
+
+  const completionDates = getHabitHistory(header);
+  const lastCompletion =
+    completionDates.length > 0 ? completionDates[completionDates.length - 1] : null;
+
+  const baseScheduledDate = dateForTimestamp(scheduledTimestamp);
+
+  if (!lastCompletion) {
+    return baseScheduledDate > afterDate ? baseScheduledDate : null;
+  }
+
+  // Calculate next deadline based on last completion
+  const nextDeadline = new Date(lastCompletion);
+  nextDeadline.setDate(nextDeadline.getDate() + maxDays);
+
+  return nextDeadline > afterDate ? nextDeadline : null;
+};

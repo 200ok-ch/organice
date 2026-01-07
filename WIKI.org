@@ -334,6 +334,56 @@ WebDAV server for your instance, you can by setting the variable
    compatible way, and the feature follows the [[#contributing][contribution guideline]],
    then: Yes, the feature can be added to organice.
 
+** Org Habits
+   :PROPERTIES:
+   :CUSTOM_ID: org_habits
+   :END:
+
+organice supports Emacs Org mode's habit tracking feature with a visual consistency graph. Habits are TODO items that you want to track consistently over time, like daily exercise or meditation.
+
+*** Creating a habit
+
+To create a habit, add a =STYLE= property with the value =habit= to your TODO item:
+
+#+BEGIN_SRC org
+  ,* TODO Exercise
+    SCHEDULED: <2026-01-07 Wed .+1d>
+    :PROPERTIES:
+    :STYLE:    habit
+    :END:
+#+END_SRC
+
+The habit uses standard Org mode repeater syntax on the scheduled date to define when the task should repeat (e.g., =.+1d= for daily, =.+1w= for weekly). See the [[https://orgmode.org/manual/Repeated-tasks.html][upstream Org documentation]] for details on the different repeater types (=.=, =++=, =+=).
+
+Habits also support a special minimum/maximum range syntax using a slash: =.+2d/4d=. This means "do this task at most every 2 days, but at least every 4 days." The first value is when it will first appear in the agenda, and the second value is when it becomes overdue.
+
+*** Understanding the consistency graph
+
+In the agenda view, habits display a visual consistency graph below the title. This graph shows your habit completion history with color-coded days:
+
+- *Green*: You completed the habit on this day
+- *Blue*: Not due yet (in the grace period before the next scheduled date)
+- *Yellow*: Scheduled for this day, or due tomorrow
+- *Red*: Overdue (you missed this day)
+
+The graph displays the configured number of preceding days (default: 21) and following days (default: 7). Each day shows the first letter of the weekday (M T W T F S S).
+
+*** Habits vs regular tasks
+
+Habits are sorted before regular tasks in the agenda view, making them easy to find. The consistency graph only appears for items with the =STYLE: habit= property.
+
+The habit calculation uses your =:LOGBOOK:= entries to determine which days you completed the habit. When you mark a habit as DONE, a =LAST_REPEAT= property is automatically set to track when you last completed it.
+
+*** Habit settings
+
+In Settings > Base, you can configure:
+
+- =Org habit preceding days=: How many days of history to show in the graph (default: 21)
+- =Org habit following days=: How many future days to show (default: 7)
+- =Show all habits today=: When enabled, all habits appear in today's agenda view, even if not scheduled or already marked DONE
+
+These settings sync across devices when using a sync backend.
+
 ** Can I access local files?
 :PROPERTIES:
 :CUSTOM_ID: access_local_files

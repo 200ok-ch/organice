@@ -65,4 +65,32 @@ describe('Unit Tests for AgendaDay', () => {
 
     expect(JSON.parse(JSON.stringify(component.getPlanningItemsAndHeaders(input)))).toEqual(output);
   });
+
+  test('sorts habits before non-habits in agenda', () => {
+    const input = {
+      headers: [],
+      todoKeywordSets: [],
+      date: parseISO('2019-08-27T15:50:32.624Z'),
+      agendaDefaultDeadlineDelayValue: 5,
+      agendaDefaultDeadlineDelayUnit: 'd',
+      dateStart: parseISO('2019-08-26T22:00:00.000Z'),
+      dateEnd: parseISO('2019-08-27T21:59:59.999Z'),
+      orgHabitShowAllToday: false,
+    };
+    const testOrgFile = readFixture('habit_and_nonhabit');
+    const parsedOrgFile = parseOrg(testOrgFile);
+    input.files = Map({ '/testfile.org': parsedOrgFile });
+
+    const result = component.getPlanningItemsAndHeaders(input);
+
+    // Should have 3 items (1 habit, 2 non-habits)
+    expect(result.size).toBe(3);
+
+    // First item should be the habit (Exercise Habit)
+    expect(result.get(0)[1].getIn(['titleLine', 'rawTitle'])).toContain('Exercise Habit');
+
+    // Items 1 and 2 should be non-habits (sorted by time, so Another Regular Task with time comes first)
+    expect(result.get(1)[1].getIn(['titleLine', 'rawTitle'])).toContain('Another Regular Task');
+    expect(result.get(2)[1].getIn(['titleLine', 'rawTitle'])).toContain('Regular Task');
+  });
 });
