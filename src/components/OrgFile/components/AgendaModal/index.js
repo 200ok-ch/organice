@@ -39,6 +39,8 @@ function AgendaModal(props) {
     agendaDefaultDeadlineDelayUnit,
     agendaStartOnWeekday,
     orgHabitShowAllToday,
+    orgHabitPrecedingDays,
+    orgHabitFollowingDays,
   } = props;
 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -162,6 +164,8 @@ function AgendaModal(props) {
             agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
             agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
             orgHabitShowAllToday={orgHabitShowAllToday}
+            orgHabitPrecedingDays={orgHabitPrecedingDays}
+            orgHabitFollowingDays={orgHabitFollowingDays}
           />
         ))}
       </div>
@@ -185,6 +189,8 @@ const mapStateToProps = (state) => {
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
     orgHabitShowAllToday: state.base.get('orgHabitShowAllToday'),
+    orgHabitPrecedingDays: state.base.get('orgHabitPrecedingDays') || 21,
+    orgHabitFollowingDays: state.base.get('orgHabitFollowingDays') || 7,
   };
 };
 

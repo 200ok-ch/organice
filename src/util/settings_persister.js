@@ -213,6 +213,18 @@ export const persistableFields = [
     default: false,
   },
   {
+    category: 'base',
+    name: 'orgHabitPrecedingDays',
+    type: 'number',
+    default: 21,
+  },
+  {
+    category: 'base',
+    name: 'orgHabitFollowingDays',
+    type: 'number',
+    default: 7,
+  },
+  {
     category: 'org',
     name: 'bookmarks',
     type: 'json',
@@ -334,6 +346,10 @@ const loadContentFromLocalStorage = (initialState) => {
       }
     } else if (field.type === 'boolean') {
       value = value === 'true';
+    } else if (field.type === 'number') {
+      if (value) {
+        value = parseInt(value, 10);
+      }
     } else if (field.type === 'json') {
       if (!value) {
         value = field.default || Map();

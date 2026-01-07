@@ -35,6 +35,8 @@ const Settings = ({
   preferEditRawValues,
   showClockDisplay,
   orgHabitShowAllToday,
+  orgHabitPrecedingDays,
+  orgHabitFollowingDays,
   colorScheme,
   theme,
   base,
@@ -112,6 +114,12 @@ const Settings = ({
   const handlePreferEditRawValues = () => base.setPreferEditRawValues(!preferEditRawValues);
 
   const handleOrgHabitShowAllToday = () => base.setOrgHabitShowAllToday(!orgHabitShowAllToday);
+
+  const handleOrgHabitPrecedingDaysChange = (event) =>
+    base.setOrgHabitPrecedingDays(parseInt(event.target.value, 10) || 0);
+
+  const handleOrgHabitFollowingDaysChange = (event) =>
+    base.setOrgHabitFollowingDays(parseInt(event.target.value, 10) || 0);
 
   return (
     <div className="settings-container">
@@ -321,6 +329,40 @@ const Settings = ({
         <Switch isEnabled={orgHabitShowAllToday} onToggle={handleOrgHabitShowAllToday} />
       </div>
 
+      <div className="setting-container setting-container--vertical">
+        <div className="setting-label">Habit consistency graph preceding days</div>
+        <div className="setting-label__description">
+          The number of days before today that will be shown in the habit consistency graph.
+        </div>
+
+        <div className="default-deadline-warning-container">
+          <input
+            type="number"
+            min="0"
+            className="textfield default-deadline-value-textfield"
+            value={orgHabitPrecedingDays}
+            onChange={handleOrgHabitPrecedingDaysChange}
+          />
+        </div>
+      </div>
+
+      <div className="setting-container setting-container--vertical">
+        <div className="setting-label">Habit consistency graph following days</div>
+        <div className="setting-label__description">
+          The number of days after today that will be shown in the habit consistency graph.
+        </div>
+
+        <div className="default-deadline-warning-container">
+          <input
+            type="number"
+            min="0"
+            className="textfield default-deadline-value-textfield"
+            value={orgHabitFollowingDays}
+            onChange={handleOrgHabitFollowingDaysChange}
+          />
+        </div>
+      </div>
+
       <div className="setting-container">
         <div className="setting-label">
           Display time summaries
@@ -432,6 +474,8 @@ const mapStateToProps = (state) => {
     showClockDisplay: state.org.present.get('showClockDisplay'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
     orgHabitShowAllToday: state.base.get('orgHabitShowAllToday'),
+    orgHabitPrecedingDays: state.base.get('orgHabitPrecedingDays') || 21,
+    orgHabitFollowingDays: state.base.get('orgHabitFollowingDays') || 7,
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
   };

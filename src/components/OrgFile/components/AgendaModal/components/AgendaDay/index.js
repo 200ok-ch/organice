@@ -3,11 +3,14 @@ import React, { PureComponent, Fragment } from 'react';
 import './stylesheet.css';
 
 import TitleLine from '../../../TitleLine';
+import HabitConsistencyGraph from '../HabitConsistencyGraph';
 
 import {
   isTodoKeywordCompleted,
   customFormatDistanceToNow,
   getPlanningItemTypeText,
+  isHabit,
+  isValidHabit,
 } from '../../../../../../lib/org_utils';
 import {
   dateForTimestamp,
@@ -43,6 +46,8 @@ export default class AgendaDay extends PureComponent {
       agendaDefaultDeadlineDelayValue,
       agendaDefaultDeadlineDelayUnit,
       orgHabitShowAllToday,
+      orgHabitPrecedingDays,
+      orgHabitFollowingDays,
     } = this.props;
 
     const dateStart = startOfDay(date);
@@ -106,6 +111,15 @@ export default class AgendaDay extends PureComponent {
                       shouldDisableExplicitWidth
                       onClick={this.handleHeaderClick(header.get('path'), header.get('id'))}
                     />
+                    {/* Show habit consistency graph for valid habits */}
+                    {isValidHabit(header) && (
+                      <HabitConsistencyGraph
+                        header={header}
+                        viewDate={date}
+                        precedingDays={orgHabitPrecedingDays}
+                        followingDays={orgHabitFollowingDays}
+                      />
+                    )}
                   </div>
                 </div>
               );
@@ -143,24 +157,12 @@ export default class AgendaDay extends PureComponent {
             return false;
           }
 
-          // Check if this is a habit
-          const isHabit = header
-            .get('propertyListItems')
-            .some((item) => {
-              const prop = item.get('property');
-              const value = item.get('value');
-              return (
-                prop &&
-                prop.toLowerCase() === 'style' &&
-                value.some(
-                  (v) => v.get('type') === 'text' && v.get('contents').trim() === 'habit'
-                )
-              );
-            });
+          // Check if this is a habit using the utility function
+          const headerIsHabit = isHabit(header);
 
           // When org-habit-show-all-today is enabled and viewing today:
           // Show ALL habits (even if not scheduled or completed)
-          if (orgHabitShowAllToday && isHabit && isToday(date)) {
+          if (orgHabitShowAllToday && headerIsHabit && isToday(date)) {
             return true;
           }
 
@@ -214,11 +216,11 @@ export default class AgendaDay extends PureComponent {
         });
         return planningItemsforDate.map((planningItem) => [planningItem, header]);
       })
-      .sortBy(([planningItem]) => {
+      .sortBy(([planningItem, header]) => {
         const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
           .get('timestamp')
           .toJS();
-        return [startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
+        return [isHabit(header) ? 0 : 1, startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
       });
   }
 }

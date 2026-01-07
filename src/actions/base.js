@@ -236,3 +236,15 @@ export const setOrgHabitShowAllToday = (orgHabitShowAllToday) => (dispatch) =>
     type: 'SET_ORG_HABIT_SHOW_ALL_TODAY',
     orgHabitShowAllToday,
   });
+
+export const setOrgHabitPrecedingDays = (orgHabitPrecedingDays) => (dispatch) =>
+  dispatch({
+    type: 'SET_ORG_HABIT_PRECEDING_DAYS',
+    orgHabitPrecedingDays,
+  });
+
+export const setOrgHabitFollowingDays = (orgHabitFollowingDays) => (dispatch) =>
+  dispatch({
+    type: 'SET_ORG_HABIT_FOLLOWING_DAYS',
+    orgHabitFollowingDays,
+  });
