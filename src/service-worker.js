@@ -1,13 +1,39 @@
 import { manifest, version } from '@parcel/service-worker';
 
-async function install() {
-  const cache = await caches.open(version);
-  await cache.addAll(manifest);
-}
-addEventListener('install', (e) => e.waitUntil(install()));
+addEventListener('install', (event) => {
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(version).then((cache) => cache.addAll(manifest))
+  );
+});
 
-async function activate() {
-  const keys = await caches.keys();
-  await Promise.all(keys.map((key) => key !== version && caches.delete(key)));
-}
-addEventListener('activate', (e) => e.waitUntil(activate()));
+addEventListener('activate', (event) => {
+  event.waitUntil(
+    Promise.all([
+      clients.claim(),
+      caches.keys().then((keys) => {
+        return Promise.all(
+          keys.map((key) => {
+            if (key !== version) {
+              return caches.delete(key);
+            }
+          })
+        );
+      }),
+    ])
+  );
+});
+
+addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});
+
+addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
