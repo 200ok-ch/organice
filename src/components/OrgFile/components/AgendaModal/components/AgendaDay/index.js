@@ -220,7 +220,16 @@ export default class AgendaDay extends PureComponent {
         const { startHour, startMinute, endHour, endMinute, month, day } = planningItem
           .get('timestamp')
           .toJS();
-        return [isHabit(header) ? 0 : 1, startHour ? 0 : 1, startHour, startMinute, endHour, endMinute, month, day];
+        return [
+          isHabit(header) ? 0 : 1,
+          startHour ? 0 : 1,
+          startHour,
+          startMinute,
+          endHour,
+          endMinute,
+          month,
+          day,
+        ];
       });
   }
 }

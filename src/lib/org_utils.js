@@ -1033,9 +1033,7 @@ export const getHabitHistory = (header) => {
           const raw = attributedStringToRawText(titleLine || List());
 
           // Match pattern: - State "DONE" from "TODO" [date]
-          const stateChangeMatch = raw.match(
-            /State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/
-          );
+          const stateChangeMatch = raw.match(/State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/);
           if (stateChangeMatch) {
             const dateStr = stateChangeMatch[3];
             const date = parseHabitTimestamp(dateStr);
@@ -1069,9 +1067,7 @@ export const getHabitHistory = (header) => {
       const raw = entry.get('raw');
       if (raw) {
         // Match pattern: - State "DONE" from "TODO" [date]
-        const stateChangeMatch = raw.match(
-          /State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/
-        );
+        const stateChangeMatch = raw.match(/State\s+"([^"]+)"\s+from\s+"([^"]+)"\s+\[([^\]]+)\]/);
         if (stateChangeMatch) {
           const dateStr = stateChangeMatch[3];
           const date = parseHabitTimestamp(dateStr);
@@ -1240,7 +1236,12 @@ const calculateDayStatus = (day, today, scheduledTimestamp, minDays, maxDays, co
     // In the grace period before first deadline (excluding expected deadline day)
     const gracePeriodEnd = new Date(baseScheduledDate);
     gracePeriodEnd.setDate(gracePeriodEnd.getDate() + minDays);
-    if (!isSameDay(day, gracePeriodEnd) && !isSameDay(day, expectedDate) && day < gracePeriodEnd && day >= baseScheduledDate) {
+    if (
+      !isSameDay(day, gracePeriodEnd) &&
+      !isSameDay(day, expectedDate) &&
+      day < gracePeriodEnd &&
+      day >= baseScheduledDate
+    ) {
       return { status: 'future', scheduledDeadline: expectedDate };
     }
   }
@@ -1293,7 +1294,7 @@ export const getHabitNextScheduled = (header, afterDate = new Date()) => {
   const scheduledItem = planningItems.find((item) => item.get('type') === 'SCHEDULED');
   const scheduledTimestamp = scheduledItem.get('timestamp');
   const repeatInfo = parseHabitRepeat(scheduledTimestamp);
-  const { minDays, maxDays } = repeatInfo;
+  const { maxDays } = repeatInfo;
 
   const completionDates = getHabitHistory(header);
   const lastCompletion =
