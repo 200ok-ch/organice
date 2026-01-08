@@ -1,10 +1,10 @@
+/* global clients */
+
 import { manifest, version } from '@parcel/service-worker';
 
 addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(version).then((cache) => cache.addAll(manifest))
-  );
+  event.waitUntil(caches.open(version).then((cache) => cache.addAll(manifest)));
 });
 
 addEventListener('activate', (event) => {
