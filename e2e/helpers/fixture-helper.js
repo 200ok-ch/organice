@@ -19,9 +19,10 @@ class FixtureHelper {
     if (!fs.existsSync(fixturesDir)) {
       return [];
     }
-    return fs.readdirSync(fixturesDir)
-      .filter(file => file.endsWith('.org'))
-      .map(file => file.replace('.org', ''));
+    return fs
+      .readdirSync(fixturesDir)
+      .filter((file) => file.endsWith('.org'))
+      .map((file) => file.replace('.org', ''));
   }
 
   createTempOrgFile(content) {

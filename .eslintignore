@@ -2,3 +2,4 @@ build/
 config/jest/
 __mocks__/
 node_modules/
+dist/

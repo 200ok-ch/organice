@@ -38,13 +38,13 @@ class E2ETestHelper {
   async captureScreenshot(testName) {
     await this.page.screenshot({
       path: `e2e/screenshots/${testName}.png`,
-      fullPage: true
+      fullPage: true,
     });
   }
 
   async waitForOrgFileLoad() {
     await this.page.waitForSelector('[data-testid="org-file-container"]', {
-      timeout: 10000
+      timeout: 10000,
     });
   }
 }
