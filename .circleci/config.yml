@@ -86,6 +86,37 @@ jobs:
 
       - run: yarn test
 
+  e2e:
+    docker:
+      - image: cimg/node:20.17.0-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Javascript Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Install Playwright Browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: Run E2E Tests
+          command: yarn test:e2e
+      - store_test_results:
+          path: e2e/test-results
+      - store_artifacts:
+          path: e2e/test-results
+      - store_artifacts:
+          path: e2e/playwright-report
+
   build-docs:
     docker:
       - image: cimg/node:20.17.0
@@ -120,10 +151,12 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - e2e
       - build-docs
       - deploy-prod:
           requires:
             - build
+            - e2e
             - build-docs
           filters:
             branches:
