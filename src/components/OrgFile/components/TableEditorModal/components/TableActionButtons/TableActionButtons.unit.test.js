@@ -24,8 +24,6 @@ import { shuffle, first, pipe, range, curry, add } from 'lodash/fp';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import TableActionButtons from './index';
 
-import '@testing-library/jest-dom/extend-expect';
-
 const capture = Map({ captureTemplates: [] });
 const testBaseState = {
   org: {

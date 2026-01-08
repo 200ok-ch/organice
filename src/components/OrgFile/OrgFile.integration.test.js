@@ -20,7 +20,6 @@ import { property, pipe, map, over, curry, times } from 'lodash/fp';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 // Debugging help:
 // console.log(prettyDOM(container, 999999999999999999999999));
-import '@testing-library/jest-dom/extend-expect';
 import { STATIC_FILE_PREFIX } from '../../lib/org_utils';
 
 afterEach(cleanup);

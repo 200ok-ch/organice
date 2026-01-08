@@ -24,8 +24,6 @@ import { shuffle, first, trim, pipe, range, take, curry } from 'lodash/fp';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import Table from './index';
 
-import '@testing-library/jest-dom/extend-expect';
-
 const capture = Map({ captureTemplates: [] });
 const testBaseState = {
   org: {
