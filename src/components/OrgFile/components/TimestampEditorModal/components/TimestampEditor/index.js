@@ -30,6 +30,8 @@ class TimestampEditor extends PureComponent {
       'handleRepeaterTypeChange',
       'handleRepeaterValueChange',
       'handleRepeaterUnitChange',
+      'handleRepeaterDeadlineValueChange',
+      'handleRepeaterDeadlineUnitChange',
       'handleAddDelay',
       'handleRemoveDelay',
       'handleDelayTypeChange',
@@ -117,7 +119,12 @@ class TimestampEditor extends PureComponent {
   handleRemoveRepeater() {
     const { onChange, timestamp } = this.props;
     onChange(
-      timestamp.set('repeaterType', null).set('repeaterValue', null).set('repeaterUnit', null)
+      timestamp
+        .set('repeaterType', null)
+        .set('repeaterValue', null)
+        .set('repeaterUnit', null)
+        .set('repeaterDeadlineValue', null)
+        .set('repeaterDeadlineUnit', null)
     );
   }
 
@@ -134,6 +141,29 @@ class TimestampEditor extends PureComponent {
   handleRepeaterUnitChange(newRepeaterUnit) {
     const { onChange, timestamp } = this.props;
     onChange(timestamp.set('repeaterUnit', newRepeaterUnit));
+  }
+
+  handleRepeaterDeadlineValueChange(event) {
+    const { onChange, timestamp } = this.props;
+    const newValue = event.target.value;
+
+    // If user enters 0 or clears the value, remove the deadline part
+    if (newValue === '0' || newValue === '') {
+      onChange(timestamp.set('repeaterDeadlineValue', null).set('repeaterDeadlineUnit', null));
+      return;
+    }
+
+    // If setting a deadline value and no unit is set yet, default to 'd' (days)
+    if (newValue && !timestamp.get('repeaterDeadlineUnit')) {
+      onChange(timestamp.set('repeaterDeadlineValue', newValue).set('repeaterDeadlineUnit', 'd'));
+    } else {
+      onChange(timestamp.set('repeaterDeadlineValue', newValue));
+    }
+  }
+
+  handleRepeaterDeadlineUnitChange(newRepeaterDeadlineUnit) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterDeadlineUnit', newRepeaterDeadlineUnit));
   }
 
   handleAddDelay() {
@@ -193,7 +223,13 @@ class TimestampEditor extends PureComponent {
   }
 
   renderRepeater() {
-    const { repeaterType, repeaterValue, repeaterUnit } = this.props.timestamp.toJS();
+    const {
+      repeaterType,
+      repeaterValue,
+      repeaterUnit,
+      repeaterDeadlineValue,
+      repeaterDeadlineUnit,
+    } = this.props.timestamp.toJS();
 
     return (
       <div className="timestamp-editor__field-container">
@@ -228,6 +264,27 @@ class TimestampEditor extends PureComponent {
                   onSelect={this.handleRepeaterUnitChange}
                 />
               </div>
+              {repeaterType && this.props.activePopupType === 'scheduled-editor' && (
+                <Fragment>
+                  <span className="timestamp-editor__slash">/</span>
+                  <input
+                    type="number"
+                    min="0"
+                    className="textfield delay-repeater-value-input"
+                    value={repeaterDeadlineValue || ''}
+                    onChange={this.handleRepeaterDeadlineValueChange}
+                    placeholder="Optional deadline"
+                  />
+                  <div>
+                    <TabButtons
+                      buttons={['h', 'd', 'w', 'm', 'y']}
+                      titles={['hours', 'days', 'weeks', 'months', 'years']}
+                      selectedButton={repeaterDeadlineUnit || 'd'}
+                      onSelect={this.handleRepeaterDeadlineUnitChange}
+                    />
+                  </div>
+                </Fragment>
+              )}
               <i
                 className="fas fa-times fa-lg timestamp-editor__icon timestamp-editor__icon--remove"
                 onClick={this.handleRemoveRepeater}
