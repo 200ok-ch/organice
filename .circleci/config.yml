@@ -146,9 +146,18 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+      - restore_cache:
+          name: Restore Playwright Browsers Cache
+          keys:
+            - playwright-browsers-{{ checksum "yarn.lock" }}
       - run:
           name: Install Playwright Browsers
           command: npx playwright install --with-deps
+      - save_cache:
+          name: Save Playwright Browsers Cache
+          key: playwright-browsers-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/ms-playwright
       - run:
           name: Run E2E Tests
           command: yarn test:e2e
