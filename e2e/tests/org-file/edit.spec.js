@@ -337,3 +337,82 @@ test.describe('Header Title', () => {
     await expect(titleInputVerify).toHaveValue('Updated Tables Title');
   });
 });
+
+test.describe('Header Properties', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should edit header properties', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the properties icon to open the properties editor
+    await clickClickCatcherButton(page, 'drawer-action-properties');
+
+    // Wait for the properties editor modal to open
+    await expect(page.locator('.drawer-modal__title:has-text("Edit property list")')).toBeVisible();
+
+    // Initially, there should be no items message
+    await expect(page.locator('.no-items-message')).toBeVisible();
+
+    // Click the plus button to add a new property
+    const addButton = page.locator('.property-list-editor__add-new-container button');
+    await addButton.click();
+
+    // Wait for a new property item to appear (should have two textfields for property name and value)
+    const propertyInputs = page.locator('.textfield.item-container__textfield');
+    await expect(propertyInputs).toHaveCount(2);
+
+    // Fill in the property name (first input)
+    const propertyNameInput = propertyInputs.nth(0);
+    await propertyNameInput.fill('TestProperty');
+
+    // Fill in the property value (second input)
+    const propertyValueInput = propertyInputs.nth(1);
+    await propertyValueInput.fill('TestValue');
+
+    // Save by switching to title editor (this should save the properties)
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait for the title editor to open (confirms the switch happened)
+    await expect(page.locator('.drawer-modal__title:has-text("Edit title")')).toBeVisible();
+
+    // Close the drawer by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify the property appears on the header
+    // Properties are displayed in a collapsed :PROPERTIES:... block by default
+    await expect(page.locator('text=:PROPERTIES:')).toBeVisible();
+
+    // Click on the :PROPERTIES: block to expand and see the individual properties
+    await page.locator('.property-list__property:has-text(":PROPERTIES:")').first().click();
+
+    // Verify the individual property is now visible
+    await expect(page.locator('text=:TestProperty:')).toBeVisible();
+
+    // Re-open the properties editor to verify the property persists
+    await tablesHeader.click();
+    await clickClickCatcherButton(page, 'drawer-action-properties');
+    await expect(page.locator('.drawer-modal__title:has-text("Edit property list")')).toBeVisible();
+
+    // Verify the property is still there
+    const savedPropertyInputs = page.locator('.textfield.item-container__textfield');
+    await expect(savedPropertyInputs.nth(0)).toHaveValue('TestProperty');
+    await expect(savedPropertyInputs.nth(1)).toHaveValue('TestValue');
+  });
+});
