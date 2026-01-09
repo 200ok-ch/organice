@@ -41,39 +41,27 @@ jobs:
           name: Deploy documentation to https://organice.200ok.ch/documentation.html
           command: ./bin/compile_doc_and_upload.sh
 
-  build:
+  lint:
     docker:
       - image: cimg/node:20.17.0
-
     working_directory: ~/repo
-
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}
-
       - run:
           name: Install Javascript Dependencies
           command: yarn install --frozen-lockfile
-
-      - run:
-          name: Show Dependencies
-          command: yarn list
-
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-
       - run:
           name: eslint
           command: yarn eslint
-
       - run:
           name: prettier-eslint
           # Make the build output more useful by immediately showing full details of
@@ -84,9 +72,63 @@ jobs:
             git reset --hard HEAD
             yarn prettier-eslint --list-different
 
-      - run: yarn test
+  test-unit:
+    docker:
+      - image: cimg/node:20.17.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Javascript Dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Show Dependencies
+          command: yarn list
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Run Unit Tests
+          command: yarn test
+      - store_test_results:
+          path: coverage
 
-  e2e:
+  build-production:
+    docker:
+      - image: cimg/node:20.17.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Javascript Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Build Production Bundle
+          command: yarn build
+      - save_cache:
+          name: Save Production Build Cache
+          key: prod-build-{{ .Revision }}
+          paths:
+            - dist/
+      - store_artifacts:
+          path: dist
+
+  test-e2e:
     docker:
       - image: cimg/node:20.17.0-browsers
     working_directory: ~/repo
@@ -150,34 +192,39 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
-      - e2e
+      # Phase 1: Parallel testing and linting
+      - lint
+      - test-unit
+      - test-e2e
       - build-docs
+
+      # Phase 2: Build jobs (require all tests/lint to pass)
+      - build-production:
+          requires:
+            - lint
+            - test-unit
+            - test-e2e
+      - push-image:
+          requires:
+            - lint
+            - test-unit
+            - test-e2e
+
+      # Phase 3: Deploy (requires build + docs)
       - deploy-prod:
           requires:
-            - build
-            - e2e
+            - build-production
+            - push-image
             - build-docs
+            - lint
+            - test-unit
+            - test-e2e
           filters:
             branches:
               only: master
       - deploy-stage:
           requires:
-            # - build
-            # - build-docs
+            # Staging: fast iteration, no gates
           filters:
             branches:
               only: develop
-      # FIXME: This used to work and broke due to erosion
-      # Related issue: https://github.com/200ok-ch/organice/issues/909
-      - push-image:
-          requires:
-            # Staging deployments are free of linting and test checks,
-            # so that we can quickly build, deploy and iterate.
-            # There's still visual feedback on Github on whether or
-            # not the tasks failed.
-            # - build # because of tests
-            # - build-docs
-          filters:
-            branches:
-              only: master
