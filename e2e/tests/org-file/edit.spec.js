@@ -155,6 +155,67 @@ test.describe('Header Tags', () => {
   });
 });
 
+test.describe('Header Description', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should edit header description', async ({ page }) => {
+    const tapHeader = page
+      .locator('.header')
+      .filter({ hasText: 'Tap on any header to open it' })
+      .first();
+
+    // Scroll into view and click on the header to select it
+    await tapHeader.scrollIntoViewIfNeeded();
+    await tapHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the edit description button (pen in square icon)
+    // The data-id is 'edit-header-title' (this appears to be the description editor button)
+    await clickClickCatcherButton(page, 'edit-header-title');
+
+    // Wait for the description editor modal to open
+    await expect(page.locator('.drawer-modal__title:has-text("Edit description")')).toBeVisible();
+
+    // Type new description (note: textarea value may have trailing newline)
+    const descriptionTextarea = page.locator('.header-content__edit-container textarea');
+    const newDescription = 'This is an updated description for testing purposes.';
+    await descriptionTextarea.fill(newDescription);
+
+    // Save by clicking outside the drawer (on the drawer outer container)
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify the new description appears below the header
+    const headerWithDescription = page
+      .locator('.header')
+      .filter({ hasText: 'Tap on any header to open it' })
+      .first();
+    await expect(headerWithDescription.locator('..')).toContainText(newDescription);
+
+    // Re-open the header to verify the description persists
+    await tapHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await clickClickCatcherButton(page, 'edit-header-title');
+    await expect(page.locator('.drawer-modal__title:has-text("Edit description")')).toBeVisible();
+    // Re-locate the textarea as it's a new element
+    // Note: textarea value includes trailing newline from the editor
+    const descriptionTextareaVerify = page.locator('.header-content__edit-container textarea');
+    const textareaValue = await descriptionTextareaVerify.inputValue();
+    expect(textareaValue.trim()).toBe(newDescription);
+  });
+});
+
 test.describe('Header Title', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
