@@ -54,3 +54,4 @@ overrides:
     rules:
       jest/no-disabled-tests: off
       jest/no-test-callback: off
+      jest/no-standalone-expect: off
