@@ -353,6 +353,72 @@ test.describe('Planning Items (Timestamps)', () => {
     const dateInputVerify = page.locator('[data-testid="timestamp-selector"]');
     await expect(dateInputVerify).toHaveValue(`${year}-${month}-${day}`);
   });
+
+  test('should set scheduled datetime for a header', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the scheduled button (calendar icon 2)
+    await clickClickCatcherButton(page, 'drawer-action-scheduled');
+
+    // Wait for the scheduled editor modal to open
+    await expect(
+      page.locator('.timestamp-editor__title:has-text("Edit scheduled timestamp")')
+    ).toBeVisible();
+
+    // When there's no existing scheduled date, we need to click "Add Timestamp" first
+    const addTimestampButton = page.locator('.timestamp-editor__icon--add').first();
+    if (await addTimestampButton.isVisible()) {
+      await addTimestampButton.click();
+    }
+
+    // Set a date by selecting the 20th of the current month using the date input
+    const dateInput = page.locator('[data-testid="timestamp-selector"]');
+    // Get current date to construct a valid date string (20th of current month)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = '20';
+    await dateInput.fill(`${year}-${month}-${day}`);
+
+    // Switch to title editor to save the scheduled date (similar to how tags test does it)
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait for the title editor to open (confirms scheduled date was saved)
+    await expect(page.locator('.drawer-modal__title:has-text("Edit title")')).toBeVisible();
+
+    // Close the drawer by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify SCHEDULED: appears with the date on the header
+    await expect(page.locator('text=SCHEDULED:')).toBeVisible();
+
+    // Re-open the header to verify the scheduled date persisted
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+
+    // Click scheduled button again to verify the date is still set
+    await clickClickCatcherButton(page, 'drawer-action-scheduled');
+    await expect(
+      page.locator('.timestamp-editor__title:has-text("Edit scheduled timestamp")')
+    ).toBeVisible();
+
+    // Verify the date input still has our selected date
+    const dateInputVerify = page.locator('[data-testid="timestamp-selector"]');
+    await expect(dateInputVerify).toHaveValue(`${year}-${month}-${day}`);
+  });
 });
 
 test.describe('Header Title', () => {
