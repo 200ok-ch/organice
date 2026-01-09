@@ -887,26 +887,6 @@ exports[`<Landing /> renders 1`] = `
                         class="fab fa-github"
                       />
                     </a>
-                    <a
-                      class="icon-list-social-link"
-                      href="https://www.linkedin.com/in/alafon/"
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
-                      <i
-                        class="fab fa-linkedin"
-                      />
-                    </a>
-                    <a
-                      class="icon-list-social-link"
-                      href="https://twitter.com/munen_200ok"
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
-                      <i
-                        class="fab fa-twitter"
-                      />
-                    </a>
                   </div>
                 </div>
               </div>

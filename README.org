@@ -467,6 +467,29 @@ yarn start
 yarn test
 #+END_SRC
 
+**** E2E Tests
+
+End-to-end tests are written with [[https://playwright.dev/][Playwright]] and test the application in real browsers.
+
+#+BEGIN_SRC shell
+# Run all E2E tests (Chromium, Firefox, WebKit, Mobile)
+yarn test:e2e
+
+# Run specific browser
+yarn test:e2e --project=chromium
+
+# Run with UI mode
+yarn test:e2e:ui
+
+# View HTML report
+yarn test:e2e:report
+
+# Run Jest + Playwright
+yarn test:all
+#+END_SRC
+
+E2E tests are located in the ~e2e/~ directory. See ~e2e/README.md~ for detailed E2E testing documentation.
+
 *** Search
 :PROPERTIES:
 :CUSTOM_ID: search_grammar

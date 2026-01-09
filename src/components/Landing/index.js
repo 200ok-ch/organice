@@ -550,22 +550,6 @@ export default () => {
                         >
                           <i className="fab fa-github"></i>
                         </a>
-                        <a
-                          className="icon-list-social-link"
-                          target="_blank"
-                          href="https://www.linkedin.com/in/alafon/"
-                          rel="noreferrer noopener"
-                        >
-                          <i className="fab fa-linkedin"></i>
-                        </a>
-                        <a
-                          className="icon-list-social-link"
-                          target="_blank"
-                          href="https://twitter.com/munen_200ok"
-                          rel="noreferrer noopener"
-                        >
-                          <i className="fab fa-twitter"></i>
-                        </a>
                       </div>
                     </div>
                   </div>

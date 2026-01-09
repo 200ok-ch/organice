@@ -38,3 +38,19 @@ rules:
 settings:
   react:
     version: detect
+overrides:
+  - files:
+      - 'e2e/**'
+    env:
+      jest:
+        globals: false
+    extends:
+      - eslint:recommended
+      - plugin:react/recommended
+      - plugin:react-redux/recommended
+    plugins:
+      - react
+      - react-redux
+    rules:
+      jest/no-disabled-tests: off
+      jest/no-test-callback: off
