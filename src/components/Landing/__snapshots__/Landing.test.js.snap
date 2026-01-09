@@ -428,7 +428,7 @@ exports[`<Landing /> renders 1`] = `
                   class="col-md-4"
                 >
                   <i
-                    class="fab fa-firefox-browser"
+                    class="fab fa-firefox"
                   />
                 </div>
               </div>
