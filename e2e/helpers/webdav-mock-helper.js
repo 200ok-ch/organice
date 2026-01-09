@@ -1,3 +1,5 @@
+/* global process */
+
 /**
  * WebDAVMockHelper - Mock WebDAV server responses for e2e testing
  *
