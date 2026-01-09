@@ -2,12 +2,10 @@ import { test, expect } from '@playwright/test';
 
 // Helper function to click on the click-catcher wrapper elements
 // These elements may not be visible to Playwright, so we dispatch click events directly
-// Works with both data-id and data-testid attributes
-async function clickClickCatcherButton(page, selectorValue, selectorType = 'id') {
+// Uses data-testid attribute (the standard for E2E testing)
+async function clickClickCatcherButton(page, selectorValue) {
   await page.evaluate((value) => {
-    const element =
-      document.querySelector(`[data-id="${value}"]`) ||
-      document.querySelector(`[data-testid="${value}"]`);
+    const element = document.querySelector(`[data-testid="${value}"]`);
     if (element) {
       element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
     }

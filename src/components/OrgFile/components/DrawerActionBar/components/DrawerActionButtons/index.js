@@ -11,7 +11,6 @@ export default class DrawerActionButtons extends PureComponent {
         title={title}
         onClick={!disabled ? onClick : undefined}
         className="header-action-drawer__ff-click-catcher-container"
-        data-id={testId}
       >
         <div className="header-action-drawer__ff-click-catcher" />
         <i className={className} data-testid={testId} />
