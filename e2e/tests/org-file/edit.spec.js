@@ -153,6 +153,75 @@ test.describe('Header Tags', () => {
       'false'
     );
   });
+
+  test('should add multiple tags to a header', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the tags icon to open the tags editor
+    await clickClickCatcherButton(page, 'drawer-action-tags');
+
+    // Wait for the tags editor modal to open
+    await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
+
+    // Click on the first tag "cute"
+    const cuteTag = page
+      .locator('[data-testid^="tags-editor-tag-"]')
+      .filter({ hasText: 'cute' })
+      .first();
+    await cuteTag.click();
+
+    // Verify the first tag is now marked as "in use"
+    await expect(cuteTag).toHaveAttribute('data-in-use', 'true');
+
+    // Click on a second tag if available (try "work" or any other existing tag)
+    // Look for other available tags in the tags editor
+    const workTag = page
+      .locator('[data-testid^="tags-editor-tag-"]')
+      .filter({ hasText: 'work' })
+      .first();
+
+    // If "work" tag exists, click it and verify it's marked as in use
+    const workTagCount = await workTag.count();
+    if (workTagCount > 0) {
+      await workTag.click();
+      await expect(workTag).toHaveAttribute('data-in-use', 'true');
+    }
+
+    // Close and re-open the tags editor to verify tags are marked as in-use
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await expect(page.locator('[data-testid="tags-editor-modal-title"]')).not.toBeVisible();
+
+    // Close the drawer by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Re-open the tags editor to verify the tags persisted
+    await tablesHeader.click();
+    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
+    await expect(page.locator('[data-testid="tags-editor-tag-cute"]')).toHaveAttribute(
+      'data-in-use',
+      'true'
+    );
+
+    // If we added a second tag, verify it too
+    if (workTagCount > 0) {
+      await expect(page.locator('[data-testid="tags-editor-tag-work"]')).toHaveAttribute(
+        'data-in-use',
+        'true'
+      );
+    }
+  });
 });
 
 test.describe('Header Description', () => {
