@@ -73,6 +73,7 @@ export default class HeaderActionDrawer extends PureComponent {
         onTouchEnd={handleMouseUp}
         onTouchCancel={handleMouseLeave}
         className="header-action-drawer__ff-click-catcher-container"
+        data-id={testId}
       >
         <div className="header-action-drawer__ff-click-catcher" />
         <i className={className} data-testid={testId} />
