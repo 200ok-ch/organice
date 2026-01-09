@@ -17,9 +17,10 @@ class WebDAVMockHelper {
    */
   async setupMocks() {
     const baseUrlPattern = this.baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const routePattern = new RegExp(`^${baseUrlPattern}.*`, 'i');
 
     // Intercept PROPFIND requests (directory listings)
-    await this.page.route(new RegExp(`^${baseUrlPattern}.*`, 'i'), async (route) => {
+    await this.page.route(routePattern, async (route) => {
       const request = route.request();
       const method = request.method().toUpperCase();
       const url = request.url();
@@ -51,8 +52,25 @@ class WebDAVMockHelper {
    */
   async mockDirectoryListing(route, url) {
     const path = this.extractPath(url);
-    const files = this.getDirectoryContents(path);
 
+    // Check if this is a request for a specific file (stat request)
+    // or a directory listing request
+    if (this.mockFiles.has(path)) {
+      // This is a stat request for a specific file
+      // Return metadata for just this file
+      const xml = this.generateFileStatXml(path);
+      await route.fulfill({
+        status: 207,
+        headers: {
+          'Content-Type': 'application/xml; charset=utf-8',
+        },
+        body: xml,
+      });
+      return;
+    }
+
+    // This is a directory listing request
+    const files = this.getDirectoryContents(path);
     const xml = this.generatePropfindXml(files, path);
 
     await route.fulfill({
@@ -151,6 +169,14 @@ class WebDAVMockHelper {
   }
 
   /**
+   * Clear all route handlers
+   * Call this in test teardown to ensure clean state between tests
+   */
+  async clearAllRoutes() {
+    await this.page.unrouteAll();
+  }
+
+  /**
    * Extract path from full WebDAV URL
    * @param {string} url - Full URL
    * @returns {string} - Path portion
@@ -161,9 +187,15 @@ class WebDAVMockHelper {
       const basePath = new URL(this.baseUrl).pathname;
       const fullPath = urlObj.pathname;
 
-      if (fullPath.startsWith(basePath)) {
-        const path = fullPath.substring(basePath.length - 1);
-        return path || '/';
+      // Remove trailing slashes for comparison
+      const basePathNormalized = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+      const fullPathNormalized = fullPath.endsWith('/') ? fullPath.slice(0, -1) : fullPath;
+
+      if (fullPathNormalized.startsWith(basePathNormalized)) {
+        const path = fullPath.substring(basePathNormalized.length);
+        // Ensure path starts with /
+        const result = path.startsWith('/') ? path : '/' + path;
+        return result || '/';
       }
       return fullPath;
     } catch {
@@ -200,7 +232,36 @@ class WebDAVMockHelper {
   }
 
   /**
-   * Generate WebDAV PROPFIND XML response
+   * Generate WebDAV PROPFIND XML response for a single file (stat request)
+   * @param {string} path - File path
+   * @returns {string} - XML response
+   */
+  generateFileStatXml(path) {
+    const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`;
+    const href = `${baseUrl}${path.substring(1)}`;
+    const content = this.mockFiles.get(path);
+    const fileName = path.split('/').pop();
+
+    return `<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
+  <D:response>
+    <D:href>${this.escapeXml(href)}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:displayname>${this.escapeXml(fileName)}</D:displayname>
+        <D:getcontentlength>${content.length}</D:getcontentlength>
+        <D:getlastmodified>${new Date().toISOString()}</D:getlastmodified>
+        <D:resourcetype/>
+        <D:getetag>${Date.now()}</D:getetag>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>
+</D:multistatus>`;
+  }
+
+  /**
+   * Generate WebDAV PROPFIND XML response for directory listing
    * @param {Array} files - Array of file info objects
    * @param {string} path - Request path
    * @returns {string} - XML response
