@@ -99,7 +99,104 @@ const content = fixtures.readOrgFixture('all_the_features');
 - Use =/sample= route for unauthenticated tests
 - Target footer elements specifically with =.footer= prefix to avoid navbar matches
 
+** Authenticated Testing
+
+*** Overview
+
+Authenticated tests use a mock-based approach to test WebDAV sync functionality without requiring a real server. This allows testing of:
+- File browser functionality
+- File upload/download
+- Sync operations
+- Authentication flows
+
+*** Running Authenticated Tests
+
+#+BEGIN_SRC shell
+# Run authenticated e2e tests only
+yarn test:e2e:auth
+
+# Run all e2e tests (unauthenticated + authenticated)
+yarn test:e2e:full
+#+END_SRC
+
+*** Mock-Based Testing Approach
+
+Authenticated tests use =WebDAVMockHelper= to intercept WebDAV API calls and return mock responses. This approach:
+- Eliminates need for external test servers
+- Provides deterministic test data
+- Enables testing of error conditions
+- Improves test speed and reliability
+
+**** WebDAVMockHelper Usage
+
+#+BEGIN_SRC javascript
+import WebDAVMockHelper from '../../helpers/webdav-mock-helper';
+
+const webdavMock = new WebDAVMockHelper(page);
+await webdavMock.setupMocks();
+
+// Add test files
+webdavMock.addMockFile('/test.org', '* TODO Test task\n');
+
+// Clear after test
+webdavMock.clearMockFiles();
+#+END_SRC
+
+**** AuthHelper for Authentication
+
+The =AuthHelper= provides two methods for WebDAV authentication:
+
+#+BEGIN_SRC javascript
+import AuthHelper from '../../helpers/auth-helper';
+
+const auth = new AuthHelper(page);
+
+// UI-based sign-in (tests the actual form)
+await auth.signInWithWebDAV({ url, username, password });
+
+// Direct sign-in via localStorage (faster, bypasses UI)
+await auth.signInWithWebDAVDirect({ url, username, password });
+#+END_SRC
+
+** Troubleshooting
+
+*** Common Issues
+
+**** Tests Fail with "No tests found"
+
+Ensure the =chromium-authenticated= project is configured in =playwright.config.js=. Run:
+
+#+BEGIN_SRC shell
+npx playwright test --project=chromium-authenticated --list
+#+END_SRC
+
+**** Mock Responses Not Working
+
+1. Verify =setupMocks()= is called before navigation
+2. Check that WebDAV URL pattern matches your mock configuration
+3. Use =--debug= flag to inspect network requests
+
+**** Authentication Fails
+
+1. Verify localStorage keys are set correctly (=webdavEndpoint=, =webdavUsername=, =webdavPassword=)
+2. Check that =authenticatedSyncService= is set to ='WebDAV'=
+3. Ensure file browser selector (=data-testid="file-browser"=) is present
+
+**** File Operations Not Working
+
+1. Verify mock files are added before test execution
+2. Check file paths start with =/=
+3. Ensure route interception is set up before any WebDAV calls
+
+**** CI/CD Test Failures
+
+Check CircleCI logs for:
+- Browser installation failures
+- Network timeouts during =yarn install=
+- Playwright browser installation
+
 ** Resources
 
 - [[https://playwright.dev/][Playwright Documentation]]
 - [[https://playwright.dev/docs/best-practices][Best Practices]]
+- [[https://playwright.dev/docs/mock][Playwright Mocking Guide]]
