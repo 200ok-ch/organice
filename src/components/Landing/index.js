@@ -107,6 +107,7 @@ export default () => {
                         className="nav-link navbar-brand"
                         href="https://github.com/200ok-ch/organice"
                         rel="noreferrer noopener"
+                        data-testid="landing-github-link"
                       >
                         Code
                       </a>
@@ -118,12 +119,17 @@ export default () => {
                         className="nav-link navbar-brand"
                         href="https://organice.200ok.ch/documentation.html"
                         rel="noreferrer noopener"
+                        data-testid="landing-docs-link"
                       >
                         Documentation
                       </a>
                     </li>
                   </ul>
-                  <a className="btn fw-500 ms-lg-4 btn-teal" href="/sign_in">
+                  <a
+                    className="btn fw-500 ms-lg-4 btn-teal"
+                    href="/sign_in"
+                    data-testid="landing-sign-in-navbar"
+                  >
                     Sign in
                     {/* <i className="ms-2" data-feather="arrow-right"></i> */}
                     <ArrowRight className="ms-2" />
@@ -150,13 +156,21 @@ export default () => {
                         files.
                       </p>
 
-                      <a className="btn btn-teal fw-500 me-2" href="/sample">
+                      <a
+                        className="btn btn-teal fw-500 me-2"
+                        href="/sample"
+                        data-testid="landing-live-demo-hero"
+                      >
                         Live demo
                         {/* <i className="ms-2" data-feather="arrow-right"></i> */}
                         <ArrowRight className="ms-2" />
                       </a>
 
-                      <a className="btn btn-white fw-500 me-2" href="/sign_in">
+                      <a
+                        className="btn btn-white fw-500 me-2"
+                        href="/sign_in"
+                        data-testid="landing-sign-in-hero"
+                      >
                         Sign in
                         {/* <i className="ms-2" data-feather="arrow-right"></i> */}
                         <ArrowRight className="ms-2" />
@@ -460,7 +474,11 @@ export default () => {
                         </p>
                       </div>
 
-                      <a className="btn btn-teal fw-500" href="/sample">
+                      <a
+                        className="btn btn-teal fw-500"
+                        href="/sample"
+                        data-testid="landing-live-demo-bottom"
+                      >
                         Live demo
                       </a>
                     </div>

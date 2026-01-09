@@ -6,7 +6,7 @@ test.describe('Landing Page', () => {
   });
 
   test('should navigate to sample org file', async ({ page }) => {
-    const liveDemoLink = page.locator('a[href="/sample"]').first();
+    const liveDemoLink = page.locator('[data-testid="landing-live-demo-hero"]');
     await liveDemoLink.click();
     await page.waitForURL('/sample', { timeout: 10000 });
     expect(page.url()).toContain('/sample');
@@ -18,9 +18,8 @@ test.describe('Landing Page', () => {
   });
 
   test('should navigate to sign in page', async ({ page }) => {
-    // On mobile, the hero section sign-in link is always visible
-    // Use page-header-ui-content to target hero section specifically
-    const signInLink = page.locator('.page-header-ui-content a[href="/sign_in"]');
+    // Use data-testid to target the hero section sign-in link
+    const signInLink = page.locator('[data-testid="landing-sign-in-hero"]');
     await expect(signInLink).toBeVisible();
     await signInLink.click();
     await page.waitForURL('/sign_in', { timeout: 10000 });
@@ -33,13 +32,13 @@ test.describe('Landing Page', () => {
   });
 
   test('should have working external GitHub link', async ({ page }) => {
-    const githubLink = page.locator('a[href*="github.com/200ok-ch/organice"]').first();
+    const githubLink = page.locator('[data-testid="landing-github-link"]');
     await expect(githubLink).toHaveAttribute('target', '_blank');
     await expect(githubLink).toHaveAttribute('rel', 'noreferrer noopener');
   });
 
   test('should have working external documentation link', async ({ page }) => {
-    const docsLink = page.locator('a[href*="organice.200ok.ch/documentation.html"]');
+    const docsLink = page.locator('[data-testid="landing-docs-link"]');
     await expect(docsLink).toHaveAttribute('target', '_blank');
     await expect(docsLink).toHaveAttribute('rel', 'noreferrer noopener');
   });

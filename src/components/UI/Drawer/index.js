@@ -108,7 +108,11 @@ export default ({ children, shouldIncludeCloseButton, onClose, maxSize = false }
         }
 
         return (
-          <div className={outerClassName} onClick={!!onClose ? handleClose : null}>
+          <div
+            className={outerClassName}
+            onClick={!!onClose ? handleClose : null}
+            data-testid="drawer-outer-container"
+          >
             <div
               onClick={handleInnerContainerClick}
               className="drawer-inner-container nice-scroll"

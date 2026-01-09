@@ -85,6 +85,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
+                    data-testid="landing-github-link"
                     href="https://github.com/200ok-ch/organice"
                     rel="noreferrer noopener"
                     target="_blank"
@@ -97,6 +98,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
+                    data-testid="landing-docs-link"
                     href="https://organice.200ok.ch/documentation.html"
                     rel="noreferrer noopener"
                     target="_blank"
@@ -107,6 +109,7 @@ exports[`<Landing /> renders 1`] = `
               </ul>
               <a
                 class="btn fw-500 ms-lg-4 btn-teal"
+                data-testid="landing-sign-in-navbar"
                 href="/sign_in"
               >
                 Sign in
@@ -165,6 +168,7 @@ exports[`<Landing /> renders 1`] = `
                   </p>
                   <a
                     class="btn btn-teal fw-500 me-2"
+                    data-testid="landing-live-demo-hero"
                     href="/sample"
                   >
                     Live demo
@@ -193,6 +197,7 @@ exports[`<Landing /> renders 1`] = `
                   </a>
                   <a
                     class="btn btn-white fw-500 me-2"
+                    data-testid="landing-sign-in-hero"
                     href="/sign_in"
                   >
                     Sign in
@@ -731,6 +736,7 @@ exports[`<Landing /> renders 1`] = `
                   </div>
                   <a
                     class="btn btn-teal fw-500"
+                    data-testid="landing-live-demo-bottom"
                     href="/sample"
                   >
                     Live demo
