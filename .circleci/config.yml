@@ -89,6 +89,7 @@ jobs:
   e2e:
     docker:
       - image: cimg/node:20.17.0-browsers
+    resource_class: large
     working_directory: ~/repo
     steps:
       - checkout
