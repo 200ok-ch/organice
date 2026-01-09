@@ -130,3 +130,64 @@ test.describe('Header Title', () => {
     await expect(titleInputVerify).toHaveValue('Updated Tables Title');
   });
 });
+
+test.describe('TODO States', () => {
+  // Run tests serially to avoid state interference
+  test.describe.configure({ mode: 'serial' });
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should advance TODO state by swiping right', async ({ page }) => {
+    // "Todos" is nested under "Actions" - need to expand both
+    const actionsHeader = page.locator('.header').filter({ hasText: 'Actions' }).first();
+    await actionsHeader.click();
+    await page.waitForTimeout(500);
+
+    // Close the Actions drawer
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+
+    const todosHeader = page.locator('.header').filter({ hasText: 'Todos' }).first();
+    await todosHeader.scrollIntoViewIfNeeded();
+    await expect(todosHeader).toBeVisible();
+    await todosHeader.click();
+    await page.waitForTimeout(500);
+
+    // Close the Todos drawer
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+
+    // Find the child TODO header
+    const todoHeader = page
+      .locator('.header')
+      .filter({ hasText: 'Learn how to use TODOs in organice' })
+      .first();
+    await todoHeader.scrollIntoViewIfNeeded();
+
+    // Get bounding box for swipe gesture
+    const box = await todoHeader.boundingBox();
+    expect(box).toBeTruthy();
+
+    // Perform swipe right gesture
+    await page.mouse.move(box.x + 10, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 2, box.y + box.height / 2);
+    await page.mouse.up();
+
+    // Wait for the state change to take effect
+    await page.waitForTimeout(500);
+
+    // Verify TODO state advanced to DONE
+    const doneHeader = page
+      .locator('.header')
+      .filter({ hasText: 'Learn how to use TODOs in organice' })
+      .first();
+    await expect(doneHeader).toBeVisible();
+
+    // Verify the DONE state has the green color class
+    const todoKeyword = doneHeader.locator('.todo-keyword');
+    await expect(todoKeyword).toHaveClass(/todo-keyword--done-state/);
+  });
+});
