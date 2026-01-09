@@ -2,13 +2,16 @@ import { test, expect } from '@playwright/test';
 
 // Helper function to click on the click-catcher wrapper elements
 // These elements may not be visible to Playwright, so we dispatch click events directly
-async function clickClickCatcherButton(page, dataId) {
-  await page.evaluate((id) => {
-    const element = document.querySelector(`[data-id="${id}"]`);
+// Works with both data-id and data-testid attributes
+async function clickClickCatcherButton(page, selectorValue, selectorType = 'id') {
+  await page.evaluate((value) => {
+    const element =
+      document.querySelector(`[data-id="${value}"]`) ||
+      document.querySelector(`[data-testid="${value}"]`);
     if (element) {
       element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
     }
-  }, dataId);
+  }, selectorValue);
 }
 
 test.describe('Header Tags', () => {
@@ -264,5 +267,96 @@ test.describe('Header Title', () => {
     // Re-locate the title input as it's a new element
     const titleInputVerify = page.locator('[data-testid="titleLineInput"]');
     await expect(titleInputVerify).toHaveValue('Updated Tables Title');
+  });
+});
+
+test.describe('Clocking', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should clock in and out on a header', async ({ page }) => {
+    // Use the Tables header which is reliably found in other tests
+    const targetHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await targetHeader.scrollIntoViewIfNeeded();
+    await targetHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the clock in button (hourglass-start icon)
+    await clickClickCatcherButton(page, 'org-clock-in');
+
+    // Verify button changes to clock out (hourglass-end icon)
+    // Use waitForSelector with 'attached' state because the button is in a click-catcher wrapper
+    await page.waitForSelector('[data-testid="org-clock-out"]', {
+      state: 'attached',
+      timeout: 5000,
+    });
+    // Verify the clock in button is no longer present
+    await expect(page.locator('[data-testid="org-clock-in"]')).toHaveCount(0);
+
+    // The drawer might close automatically after clock in, so first wait for it to potentially close
+    await page.waitForTimeout(500);
+
+    // If drawer is still visible, close it by clicking outside
+    const drawerOuter = page.locator('[data-testid="drawer-outer-container"]');
+    if (await drawerOuter.isVisible()) {
+      await drawerOuter.first().click();
+    }
+
+    // Wait for the drawer to be fully closed
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify :LOGBOOK: appears indicating clock is running
+    await expect(page.locator('text=:LOGBOOK:')).toBeVisible();
+
+    // Re-open the header
+    await targetHeader.click();
+    await expect(actionDrawer).toBeVisible();
+
+    // Click clock out button (hourglass-end icon)
+    await clickClickCatcherButton(page, 'org-clock-out');
+
+    // Verify the button changed back to clock in
+    // Use waitForSelector with 'attached' state because the button is in a click-catcher wrapper
+    await page.waitForSelector('[data-testid="org-clock-in"]', {
+      state: 'attached',
+      timeout: 5000,
+    });
+    // Verify the clock out button is no longer present
+    await expect(page.locator('[data-testid="org-clock-out"]')).toHaveCount(0);
+
+    // The drawer might close automatically after clock out, so wait and check
+    await page.waitForTimeout(500);
+
+    // If drawer is still visible, close it by clicking outside
+    // Use page.evaluate for Firefox compatibility
+    await page.evaluate(() => {
+      const drawerOuter = document.querySelector('[data-testid="drawer-outer-container"]');
+      if (drawerOuter) {
+        drawerOuter.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      }
+    });
+
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify :LOGBOOK: is still visible (with the clock entry)
+    await expect(page.locator('text=:LOGBOOK:')).toBeVisible();
+
+    // Click on the LOGBOOK to expand it and see the CLOCK: entry
+    await page.locator('text=:LOGBOOK:').click();
+
+    // Verify CLOCK: entry appears in the logbook
+    await expect(page.locator('text=CLOCK:')).toBeVisible();
   });
 });
