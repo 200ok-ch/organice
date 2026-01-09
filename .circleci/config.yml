@@ -152,7 +152,7 @@ jobs:
             - playwright-browsers-{{ checksum "yarn.lock" }}
       - run:
           name: Install Playwright Browsers
-          command: npx playwright install --with-deps
+          command: npx playwright install
       - save_cache:
           name: Save Playwright Browsers Cache
           key: playwright-browsers-{{ checksum "yarn.lock" }}
