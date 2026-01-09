@@ -19,24 +19,21 @@ async function signInWithWebDAVMock(page, webdavMock) {
     password: 'testpass',
   };
 
-  // First, navigate to about:blank to avoid triggering any app logic
-  await page.goto('about:blank');
-
-  // Set up route interception BEFORE navigating to the app
+  // Set up route interception
   await webdavMock.setupMocks();
 
   // Add test files to the mock
   webdavMock.addMockFile('/test.org', SAMPLE_ORG_CONTENT);
 
-  // Set localStorage via context (before page load)
-  await page.evaluate(({ url, username, password }) => {
+  // Set localStorage via addInitScript (runs before page loads)
+  await page.context().addInitScript(({ url, username, password }) => {
     localStorage.setItem('authenticatedSyncService', 'WebDAV');
     localStorage.setItem('webdavEndpoint', url);
     localStorage.setItem('webdavUsername', username);
     localStorage.setItem('webdavPassword', password);
   }, credentials);
 
-  // Now navigate to the app - localStorage will already be set
+  // Navigate to the app - localStorage will already be set
   await page.goto('/');
 
   // Wait for page to load
@@ -64,7 +61,6 @@ test.describe('WebDAV Mock Tests', () => {
   test.describe('Authentication', () => {
     test('1. should sign in via UI', async ({ page }) => {
       // Set up mocks BEFORE navigating
-      await page.goto('about:blank');
       await webdavMock.setupMocks();
       webdavMock.addMockFile('/test.org', SAMPLE_ORG_CONTENT);
 
@@ -195,7 +191,6 @@ test.describe('WebDAV Mock Tests', () => {
   test.describe('Error Handling', () => {
     test('7. should handle auth failure', async ({ page }) => {
       // Set up mock to return 401 for auth check
-      await page.goto('about:blank');
       await page.route('**/webdav/**', async (route) => {
         await route.fulfill({
           status: 401,
