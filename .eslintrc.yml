@@ -44,10 +44,6 @@ overrides:
     env:
       jest:
         globals: false
-    extends:
-      - eslint:recommended
-      - plugin:react/recommended
-      - plugin:react-redux/recommended
     plugins:
       - react
       - react-redux
