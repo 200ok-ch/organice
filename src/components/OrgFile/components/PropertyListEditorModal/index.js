@@ -89,7 +89,9 @@ export default class PropertyListEditorModal extends PureComponent {
 
     return (
       <>
-        <h2 className="drawer-modal__title">Edit property list</h2>
+        <h2 className="drawer-modal__title" data-testid="property-list-editor-title">
+          Edit property list
+        </h2>
 
         <datalist id="drawer-modal__datalist-property-names">
           {allPropertyNames.map((propertyName, idx) => (
@@ -98,7 +100,7 @@ export default class PropertyListEditorModal extends PureComponent {
         </datalist>
 
         {propertyListItems.size === 0 ? (
-          <div className="no-items-message">
+          <div className="no-items-message" data-testid="property-list-editor-no-items">
             There are no items in this property list.
             <br />
             <br />
@@ -136,6 +138,7 @@ export default class PropertyListEditorModal extends PureComponent {
                                 onChange={this.handlePropertyChange(propertyListItem.get('id'))}
                                 ref={(textfield) => (this.lastTextfield = textfield)}
                                 list="drawer-modal__datalist-property-names"
+                                data-testid={`property-list-editor-property-name-${index}`}
                               />
                               <input
                                 type="text"
@@ -143,6 +146,7 @@ export default class PropertyListEditorModal extends PureComponent {
                                 value={attributedStringToRawText(propertyListItem.get('value'))}
                                 onChange={this.handleValueChange(propertyListItem.get('id'))}
                                 list={`drawer-modal__datalist-property-${index}-values`}
+                                data-testid={`property-list-editor-property-value-${index}`}
                               />
                               <datalist id={`drawer-modal__datalist-property-${index}-values`}>
                                 {allPropertyValues.map((propertyValue, idx) => (
@@ -174,7 +178,11 @@ export default class PropertyListEditorModal extends PureComponent {
         )}
 
         <div className="property-list-editor__add-new-container">
-          <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewItem} />
+          <button
+            className="fas fa-plus fa-lg btn btn--circle"
+            onClick={this.handleAddNewItem}
+            data-testid="property-list-editor-add-button"
+          />
         </div>
       </>
     );
