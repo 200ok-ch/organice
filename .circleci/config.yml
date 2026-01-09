@@ -218,6 +218,9 @@ workflows:
             - lint
             - test-unit
             - test-e2e
+          filters:
+            branches:
+              only: master
 
       # Phase 3: Deploy (requires build + docs)
       - deploy-prod:
