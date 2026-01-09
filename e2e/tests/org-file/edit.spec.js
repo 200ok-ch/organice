@@ -650,3 +650,63 @@ test.describe('Header Properties', () => {
     await expect(savedPropertyValueInput).toHaveValue('TestValue');
   });
 });
+
+test.describe('Header Creation', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should add new header below current header', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the plus button to add a new header below
+    await clickClickCatcherButton(page, 'header-action-plus');
+
+    // Wait for the title editor modal to open (new header creation opens title editor)
+    await expect(page.locator('.drawer-modal__title:has-text("Edit title")')).toBeVisible();
+
+    // Type the new header title
+    const titleInput = page.locator('[data-testid="titleLineInput"]');
+    await titleInput.fill('New Test Header');
+
+    // Save by pressing Enter (the title editor saves on newline)
+    await titleInput.press('Enter');
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify the new header appears at the same nesting level as "Tables"
+    // The new header should appear right after the "Tables" header
+    const newHeader = page.locator('.header').filter({ hasText: 'New Test Header' });
+    await expect(newHeader).toBeVisible();
+
+    // Verify the new header is at the same level (same number of asterisks)
+    // Get the Tables header level and compare with new header
+    const tablesHeaderElement = await tablesHeader.first().elementHandle();
+    const newHeaderElement = await newHeader.first().elementHandle();
+
+    const tablesLevel = await tablesHeaderElement.evaluate((el) => {
+      const titleElement = el.querySelector('.header__title');
+      return titleElement ? titleElement.getAttribute('data-level') : null;
+    });
+
+    const newHeaderLevel = await newHeaderElement.evaluate((el) => {
+      const titleElement = el.querySelector('.header__title');
+      return titleElement ? titleElement.getAttribute('data-level') : null;
+    });
+
+    expect(newHeaderLevel).toBe(tablesLevel);
+  });
+});
