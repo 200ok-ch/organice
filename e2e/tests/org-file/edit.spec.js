@@ -1,5 +1,15 @@
 import { test, expect } from '@playwright/test';
 
+// Helper function to click on click-catcher wrapper elements
+async function clickClickCatcherButton(page, selector) {
+  await page.evaluate((sel) => {
+    const element = document.querySelector(sel);
+    if (element) {
+      element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    }
+  }, selector);
+}
+
 test.describe('Header Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
@@ -20,10 +30,9 @@ test.describe('Header Tags', () => {
 
     // Click on the tags icon to open the tags editor
     // Note: Need to click the container div due to click-catcher wrapper
-    const tagsButton = page.locator(
-      '.header-action-drawer__ff-click-catcher-container:has([data-testid="drawer-action-tags"])'
-    );
-    await tagsButton.click();
+    const tagsButtonSelector =
+      '.header-action-drawer__ff-click-catcher-container:has([data-testid="drawer-action-tags"])';
+    await clickClickCatcherButton(page, tagsButtonSelector);
 
     // Wait for the tags editor modal to open
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
@@ -43,10 +52,9 @@ test.describe('Header Tags', () => {
     // Close the drawer by switching to title editor (this should save the tags)
     // Click on the pencil icon (edit title) button in the drawer action bar
     // Note: The tags editor modal has its own action bar at the bottom
-    const titleEditButton = page.locator(
-      '[data-testid="drawer"] .header-action-drawer__ff-click-catcher-container:has([data-testid="drawer-action-edit-title"])'
-    );
-    await titleEditButton.click();
+    const titleEditButtonSelector =
+      '[data-testid="drawer"] .header-action-drawer__ff-click-catcher-container:has([data-testid="drawer-action-edit-title"])';
+    await clickClickCatcherButton(page, titleEditButtonSelector);
 
     // Wait for the title editor to open (confirms the switch happened)
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).not.toBeVisible();
@@ -64,11 +72,92 @@ test.describe('Header Tags', () => {
     await expect(page.locator('text=cute')).toBeVisible();
     // Re-open the tags editor to verify the tag was saved
     await tablesHeader.click();
-    await tagsButton.click();
+    await clickClickCatcherButton(page, tagsButtonSelector);
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
     await expect(page.locator('[data-testid="tags-editor-tag-cute"]')).toHaveAttribute(
       'data-in-use',
       'true'
+    );
+  });
+
+  test('should remove a tag from a header', async ({ page }) => {
+    // Helper function to expand a header and close its drawer
+    const expandAndCloseDrawer = async (headerLocator) => {
+      await headerLocator.scrollIntoViewIfNeeded();
+      await headerLocator.click();
+      // Wait for header action drawer to appear
+      await expect(page.locator('[data-testid="header-action-drawer"]')).toBeVisible();
+      // Close by clicking on the "Sample" link to deselect
+      await page.getByText('Sample').click();
+      // Wait for drawer to close
+      await expect(page.locator('[data-testid="header-action-drawer"]')).toHaveCount(0, {
+        timeout: 5000,
+      });
+    };
+
+    // First, expand the "Actions" section (level 1 header) to reveal its children
+    const actionsHeader = page.locator('.header').filter({ hasText: 'Actions' }).first();
+    await expandAndCloseDrawer(actionsHeader);
+
+    // Then expand the "Tags" section (level 2 header under Actions)
+    const tagsSectionHeader = page.locator('.header').filter({ hasText: 'Tags' }).first();
+    await expandAndCloseDrawer(tagsSectionHeader);
+
+    // Then expand the "Dogs" section (level 3 header under Tags)
+    const dogsHeader = page.locator('.header').filter({ hasText: 'Dogs' }).first();
+    await expandAndCloseDrawer(dogsHeader);
+
+    // Now find and click on the Eloise header (level 4 header)
+    const eloiseHeader = page.locator('.header').filter({ hasText: 'Eloise' }).first();
+    await eloiseHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the tags icon to open the tags editor
+    const tagsButtonSelector =
+      '.header-action-drawer__ff-click-catcher-container:has([data-testid="drawer-action-tags"])';
+    await clickClickCatcherButton(page, tagsButtonSelector);
+
+    // Wait for the tags editor modal to open
+    await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
+
+    // Find and click on the "tiny" tag to remove it
+    const tinyTag = page.locator('[data-testid="tags-editor-tag-tiny"]');
+    await expect(tinyTag).toHaveAttribute('data-in-use', 'true');
+    await tinyTag.click();
+
+    // Verify the tag is now marked as "not in use"
+    await expect(tinyTag).toHaveAttribute('data-in-use', 'false');
+
+    // Close the drawer by switching to title editor (this should save the changes)
+    const titleEditButtonSelector =
+      '[data-testid="drawer"] .header-action-drawer__ff-click-catcher-container:has([data-testid="drawer-action-edit-title"])';
+    await clickClickCatcherButton(page, titleEditButtonSelector);
+
+    // Wait for the title editor to open
+    await expect(page.locator('[data-testid="tags-editor-modal-title"]')).not.toBeVisible();
+
+    // Close the drawer by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify the "tiny" tag is no longer displayed on the header
+    const headerTags = page.locator('.header').filter({ hasText: 'Eloise' }).first();
+    await expect(headerTags).not.toHaveText(/:.*tiny:.*/);
+
+    // Re-open the tags editor to verify the removal persisted
+    await eloiseHeader.click();
+    await clickClickCatcherButton(page, tagsButtonSelector);
+    await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
+    await expect(page.locator('[data-testid="tags-editor-tag-tiny"]')).toHaveAttribute(
+      'data-in-use',
+      'false'
     );
   });
 });
