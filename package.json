@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@bity/oauth2-auth-code-pkce": "^2.13.0",
+    "@fortawesome/fontawesome-free": "5.1.1",
     "@parcel/service-worker": "^2.14.4",
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
