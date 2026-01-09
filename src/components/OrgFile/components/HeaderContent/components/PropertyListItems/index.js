@@ -11,22 +11,30 @@ export default ({ propertyListItems, shouldDisableActions, onTimestampClick, onE
 
   return propertyListItems.size === 0 ? null : (
     <div className="property-list-container">
-      <div className="property-list__property" onClick={handleCollapseToggle}>
+      <div
+        className="property-list__property"
+        onClick={handleCollapseToggle}
+        data-testid="property-list-properties-toggle"
+      >
         :PROPERTIES:
         {isDrawerCollapsed ? '...' : ''}
       </div>
 
       {!isDrawerCollapsed && (
         <Fragment>
-          {propertyListItems.map((propertyListItem) => (
+          {propertyListItems.map((propertyListItem, index) => (
             <div className="property-list__item-container" key={propertyListItem.get('id')}>
               <div
                 className="property-list__property"
                 onClick={shouldDisableActions ? null : onEdit}
+                data-testid={`property-list-item-property-${index}`}
               >
                 :{propertyListItem.get('property')}:
               </div>
-              <div className="property-list__value">
+              <div
+                className="property-list__value"
+                data-testid={`property-list-item-value-${index}`}
+              >
                 <AttributedString
                   parts={propertyListItem.get('value') || []}
                   subPartDataAndHandlers={{
@@ -38,7 +46,7 @@ export default ({ propertyListItems, shouldDisableActions, onTimestampClick, onE
             </div>
           ))}
 
-          <div className="property-list__property" onClick={onEdit}>
+          <div className="property-list__property" onClick={onEdit} data-testid="property-list-end">
             :END:
           </div>
         </Fragment>
