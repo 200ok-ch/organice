@@ -2,11 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Header Removal', () => {
   test('should remove header by swiping left', async ({ page }) => {
-    // Skip mobile browsers - they need touch events instead of mouse events
-    test.skip(
-      test.info().project.name === 'Mobile Chrome' || test.info().project.name === 'Mobile Safari',
-      'Mobile browsers require touch events - this test uses mouse events for desktop'
-    );
+    const isMobile =
+      test.info().project.name === 'Mobile Chrome' || test.info().project.name === 'Mobile Safari';
 
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
     // Wait for the sample content to load by checking for specific text
@@ -26,18 +23,46 @@ test.describe('Header Removal', () => {
     const box = await targetHeader.boundingBox();
     expect(box).toBeTruthy();
 
-    // Perform swipe left gesture using mouse events
+    // Perform swipe left gesture
     // The remove condition is: dragStartX >= 2 * currentDragX
     // If we start at x=300 and end at x=100, then 300 >= 200, which triggers removal
     const startX = box.x + box.width * 0.8; // Start at 80% of width
     const endX = box.x - 50; // Swipe past the left edge to ensure removal
     const y = box.y + box.height / 2; // Middle of the header vertically
 
-    // Use Playwright's mouse API to simulate the swipe
-    await page.mouse.move(startX, y);
-    await page.mouse.down();
-    await page.mouse.move(endX, y, { steps: 10 });
-    await page.mouse.up();
+    if (isMobile) {
+      // Use touch events for mobile browsers
+      // Playwright's Touchscreen API only supports tap(), so we manually dispatch touch events
+      const touches = [{ identifier: 0, clientX: startX, clientY: y }];
+      await targetHeader.dispatchEvent('touchstart', {
+        touches,
+        changedTouches: touches,
+        targetTouches: touches,
+      });
+
+      const steps = 10;
+      for (let i = 1; i <= steps; i++) {
+        const currentX = startX + (endX - startX) * (i / steps);
+        const touches = [{ identifier: 0, clientX: currentX, clientY: y }];
+        await targetHeader.dispatchEvent('touchmove', {
+          touches,
+          changedTouches: touches,
+          targetTouches: touches,
+        });
+      }
+
+      await targetHeader.dispatchEvent('touchend', {
+        touches: [],
+        changedTouches: [{ identifier: 0, clientX: endX, clientY: y }],
+        targetTouches: [],
+      });
+    } else {
+      // Use mouse events for desktop browsers
+      await page.mouse.move(startX, y);
+      await page.mouse.down();
+      await page.mouse.move(endX, y, { steps: 10 });
+      await page.mouse.up();
+    }
 
     // Wait for the remove animation to complete
     // The animation uses spring physics and the handleRest callback removes the header
