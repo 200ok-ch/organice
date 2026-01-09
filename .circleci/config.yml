@@ -41,40 +41,9 @@ jobs:
           name: Deploy documentation to https://organice.200ok.ch/documentation.html
           command: ./bin/compile_doc_and_upload.sh
 
-  lint:
+  build:
     docker:
-      - image: cimg/node:20.17.0
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Javascript Dependencies
-          command: yarn install --frozen-lockfile
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-      - run:
-          name: eslint
-          command: yarn eslint
-      - run:
-          name: prettier-eslint
-          # Make the build output more useful by immediately showing full details of
-          # any style violations.
-          command: |
-            yarn prettier-eslint --write
-            GIT_PAGER= git diff
-            git reset --hard HEAD
-            yarn prettier-eslint --list-different
-
-  test-unit:
-    docker:
-      - image: cimg/node:20.17.0
+      - image: cimg/node:20.17.0-browsers
     working_directory: ~/repo
     steps:
       - checkout
@@ -94,70 +63,21 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
+          name: Install Playwright Browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: eslint
+          command: yarn eslint
+      - run:
+          name: prettier-eslint
+          command: |
+            yarn prettier-eslint --write
+            GIT_PAGER= git diff
+            git reset --hard HEAD
+            yarn prettier-eslint --list-different
+      - run:
           name: Run Unit Tests
           command: yarn test
-      - store_test_results:
-          path: coverage
-
-  build-production:
-    docker:
-      - image: cimg/node:20.17.0
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Javascript Dependencies
-          command: yarn install --frozen-lockfile
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-      - run:
-          name: Build Production Bundle
-          command: yarn build
-      - save_cache:
-          name: Save Production Build Cache
-          key: prod-build-{{ .Revision }}
-          paths:
-            - dist/
-      - store_artifacts:
-          path: dist
-
-  test-e2e:
-    docker:
-      - image: cimg/node:20.17.0-browsers
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Javascript Dependencies
-          command: yarn install --frozen-lockfile
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-      - restore_cache:
-          name: Restore Playwright Browsers Cache
-          keys:
-            - playwright-browsers-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Playwright Browsers
-          command: npx playwright install
-      - save_cache:
-          name: Save Playwright Browsers Cache
-          key: playwright-browsers-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/ms-playwright
       - run:
           name: Run E2E Tests
           command: yarn test:e2e
@@ -201,42 +121,25 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      # Phase 1: Parallel testing and linting
-      - lint
-      - test-unit
-      - test-e2e
+      - build
       - build-docs
-
-      # Phase 2: Build jobs (require all tests/lint to pass)
-      - build-production:
-          requires:
-            - lint
-            - test-unit
-            - test-e2e
-      - push-image:
-          requires:
-            - lint
-            - test-unit
-            - test-e2e
-          filters:
-            branches:
-              only: master
-
-      # Phase 3: Deploy (requires build + docs)
       - deploy-prod:
           requires:
-            - build-production
-            - push-image
+            - build
             - build-docs
-            - lint
-            - test-unit
-            - test-e2e
           filters:
             branches:
               only: master
       - deploy-stage:
           requires:
-            # Staging: fast iteration, no gates
+            - build
+            - build-docs
           filters:
             branches:
               only: develop
+      - push-image:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
