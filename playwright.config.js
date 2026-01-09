@@ -14,6 +14,8 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
+  workers: process.env.CI ? 6 : undefined,
+
   // Reporter to use
   reporter: 'html',
 
