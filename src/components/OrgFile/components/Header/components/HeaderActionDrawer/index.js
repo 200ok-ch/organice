@@ -76,7 +76,7 @@ export default class HeaderActionDrawer extends PureComponent {
         data-id={testId}
       >
         <div className="header-action-drawer__ff-click-catcher" />
-        <i className={className} data-id={testId} />
+        <i className={className} data-testid={testId} />
       </div>
     );
   }
