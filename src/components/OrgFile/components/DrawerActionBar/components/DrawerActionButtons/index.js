@@ -14,7 +14,7 @@ export default class DrawerActionButtons extends PureComponent {
         data-id={testId}
       >
         <div className="header-action-drawer__ff-click-catcher" />
-        <i className={className} data-testid={testId} />
+        <i className={className} data-id={testId} />
       </div>
     );
   }
@@ -100,6 +100,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onDeadlineClick,
             title: 'Set deadline datetime',
             disabled: 'deadline-editor' === activePopupType,
+            testId: 'drawer-action-deadline',
           })}
           {this.iconWithFFClickCatcher({
             className:
@@ -108,6 +109,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
             disabled: 'scheduled-editor' === activePopupType,
+            testId: 'drawer-action-scheduled',
           })}
 
           {this.iconWithFFClickCatcher({

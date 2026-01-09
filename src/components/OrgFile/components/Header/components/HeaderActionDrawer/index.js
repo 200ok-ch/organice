@@ -76,7 +76,7 @@ export default class HeaderActionDrawer extends PureComponent {
         data-id={testId}
       >
         <div className="header-action-drawer__ff-click-catcher" />
-        <i className={className} data-testid={testId} />
+        <i className={className} data-id={testId} />
       </div>
     );
   }
@@ -175,11 +175,13 @@ export default class HeaderActionDrawer extends PureComponent {
           {this.iconWithFFClickCatcher({
             className: 'fas fa-calendar-check fa-lg',
             onClick: onDeadlineClick,
+            testId: 'drawer-action-deadline',
             title: 'Set deadline datetime',
           })}
           {this.iconWithFFClickCatcher({
             className: 'far fa-calendar-check fa-lg',
             onClick: onScheduledClick,
+            testId: 'drawer-action-scheduled',
             title: 'Set scheduled datetime',
           })}
           {hasActiveClock
