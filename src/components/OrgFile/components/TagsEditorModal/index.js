@@ -66,7 +66,9 @@ export default class TagsEditorModal extends PureComponent {
 
     return (
       <>
-        <h2 className="drawer-modal__title">Edit tags</h2>
+        <h2 className="drawer-modal__title" data-testid="tags-editor-modal-title">
+          Edit tags
+        </h2>
 
         <datalist id="drawer-modal__datalist-tag-names">
           {allTags.map((tagName, idx) => (
@@ -128,14 +130,18 @@ export default class TagsEditorModal extends PureComponent {
         )}
 
         <div className="tags-editor__add-new-container">
-          <button className="fas fa-plus fa-lg btn btn--circle" onClick={this.handleAddNewTag} />
+          <button
+            className="fas fa-plus fa-lg btn btn--circle"
+            onClick={this.handleAddNewTag}
+            data-testid="tags-editor-add-button"
+          />
         </div>
 
         <hr className="tags-editor__separator" />
 
         <h2 className="tags-editor__title">All tags</h2>
 
-        <div className="all-tags-container">
+        <div className="all-tags-container" data-testid="tags-editor-all-tags-container">
           {allTags
             .filter((tag) => !!tag)
             .map((tag) => {
@@ -144,7 +150,13 @@ export default class TagsEditorModal extends PureComponent {
               });
 
               return (
-                <div className={className} key={tag} onClick={this.handleExistingTagClick(tag)}>
+                <div
+                  className={className}
+                  key={tag}
+                  onClick={this.handleExistingTagClick(tag)}
+                  data-testid={`tags-editor-tag-${tag}`}
+                  data-in-use={headerTags.includes(tag) ? 'true' : 'false'}
+                >
                   {tag}
                 </div>
               );

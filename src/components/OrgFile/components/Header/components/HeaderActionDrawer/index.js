@@ -111,12 +111,13 @@ export default class HeaderActionDrawer extends PureComponent {
       });
 
     return (
-      <div className="header-action-drawer-container">
+      <div className="header-action-drawer-container" data-testid="header-action-drawer">
         <div className="header-action-drawer__row">
           {this.iconWithFFClickCatcher({
             className: 'fas fa-pencil-alt fa-lg',
             onClick: onTitleClick,
             title: 'Edit header title',
+            testId: 'drawer-action-edit-title',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -130,12 +131,14 @@ export default class HeaderActionDrawer extends PureComponent {
             className: 'fas fa-tags fa-lg',
             onClick: onTagsClick,
             title: 'Modify tags',
+            testId: 'drawer-action-tags',
           })}
 
           {this.iconWithFFClickCatcher({
             className: 'fas fa-list fa-lg',
             onClick: onPropertiesClick,
             title: 'Modify properties',
+            testId: 'drawer-action-properties',
           })}
 
           {isNarrowed

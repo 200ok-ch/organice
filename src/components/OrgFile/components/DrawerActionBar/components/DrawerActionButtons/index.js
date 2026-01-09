@@ -52,6 +52,7 @@ export default class DrawerActionButtons extends PureComponent {
               onTitleClick();
             },
             title: 'Edit title',
+            testId: 'drawer-action-edit-title',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -78,6 +79,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onTagsClick,
             title: 'Modify tags',
             disabled: 'tags-editor' === activePopupType,
+            testId: 'drawer-action-tags',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -87,6 +89,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onPropertiesClick,
             title: 'Modify properties',
             disabled: 'property-list-editor' === activePopupType,
+            testId: 'drawer-action-properties',
           })}
 
           {this.iconWithFFClickCatcher({
