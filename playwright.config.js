@@ -57,6 +57,11 @@ export default defineConfig({
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
     },
+    {
+      name: 'chromium-authenticated',
+      testMatch: '**/e2e/tests/authenticated/**/*.spec.js',
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
 
   // Run your local dev server before starting the tests
