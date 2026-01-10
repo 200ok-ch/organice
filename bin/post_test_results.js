@@ -42,7 +42,9 @@ if (!GITHUB_TOKEN) {
 }
 
 if (!CIRCLE_SHA1 || !OWNER || !REPO) {
-  console.warn('CircleCI environment variables (CIRCLE_SHA1, CIRCLE_PROJECT_USERNAME, CIRCLE_PROJECT_REPONAME) missing. Skipping.');
+  console.warn(
+    'CircleCI environment variables (CIRCLE_SHA1, CIRCLE_PROJECT_USERNAME, CIRCLE_PROJECT_REPONAME) missing. Skipping.'
+  );
   process.exit(0);
 }
 
@@ -51,7 +53,7 @@ console.log(`Processing test results for ${name} from ${filePath}...`);
 const xmlData = fs.readFileSync(filePath, 'utf8');
 const parser = new XMLParser({
   ignoreAttributes: false,
-  attributeNamePrefix: ''
+  attributeNamePrefix: '',
 });
 const result = parser.parse(xmlData);
 
@@ -60,9 +62,13 @@ let failureCount = 0;
 let totalCount = 0;
 
 function processTestSuite(suite) {
-  const testCases = Array.isArray(suite.testcase) ? suite.testcase : (suite.testcase ? [suite.testcase] : []);
+  const testCases = Array.isArray(suite.testcase)
+    ? suite.testcase
+    : suite.testcase
+    ? [suite.testcase]
+    : [];
 
-  testCases.forEach(testCase => {
+  testCases.forEach((testCase) => {
     totalCount++;
     if (testCase.failure) {
       failureCount++;
@@ -81,7 +87,7 @@ function processTestSuite(suite) {
 
       // Fallback for Playwright or other formats if classname isn't a file
       if (testCase.file) {
-          relPath = testCase.file;
+        relPath = testCase.file;
       }
 
       // Try to extract line number from stack trace or message
@@ -100,20 +106,28 @@ function processTestSuite(suite) {
         annotation_level: 'failure',
         title: testCase.name,
         message: message.substring(0, 200) + (message.length > 200 ? '...' : ''), // Truncate for safety
-        raw_details: rawDetails.substring(0, 60000) // GitHub limit is 64kb usually
+        raw_details: rawDetails.substring(0, 60000), // GitHub limit is 64kb usually
       });
     }
   });
 
   // Recursively process nested suites if any
-  const nestedSuites = Array.isArray(suite.testsuite) ? suite.testsuite : (suite.testsuite ? [suite.testsuite] : []);
+  const nestedSuites = Array.isArray(suite.testsuite)
+    ? suite.testsuite
+    : suite.testsuite
+    ? [suite.testsuite]
+    : [];
   nestedSuites.forEach(processTestSuite);
 }
 
 // Handle root testsuites or single testsuite
 const rootSuites = Array.isArray(result.testsuites?.testsuite)
   ? result.testsuites.testsuite
-  : (result.testsuites?.testsuite ? [result.testsuites.testsuite] : (result.testsuite ? [result.testsuite] : []));
+  : result.testsuites?.testsuite
+  ? [result.testsuites.testsuite]
+  : result.testsuite
+  ? [result.testsuite]
+  : [];
 
 rootSuites.forEach(processTestSuite);
 
@@ -135,19 +149,19 @@ async function postCheckRun() {
     output: {
       title: title,
       summary: summary,
-      annotations: annotations.slice(0, BATCH_SIZE) // First 50
-    }
+      annotations: annotations.slice(0, BATCH_SIZE), // First 50
+    },
   };
 
   try {
     const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/check-runs`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
         'Content-Type': 'application/json',
-        'User-Agent': 'organice-circleci-reporter'
+        'User-Agent': 'organice-circleci-reporter',
       },
-      body: JSON.stringify(checkRunData)
+      body: JSON.stringify(checkRunData),
     });
 
     if (!response.ok) {
@@ -161,7 +175,7 @@ async function postCheckRun() {
       // If we have more annotations, we technically should update the check run,
       // but for "Land the Plane" simpler is better. 50 is usually enough to see what's broken.
       if (annotations.length > BATCH_SIZE) {
-          console.warn(`Note: Only first 50 annotations posted (Total: ${annotations.length}).`);
+        console.warn(`Note: Only first 50 annotations posted (Total: ${annotations.length}).`);
       }
     }
   } catch (error) {
