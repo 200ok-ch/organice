@@ -84,11 +84,21 @@ jobs:
             git reset --hard HEAD
             yarn prettier-eslint --list-different
 
-      - run: yarn test
+      - run:
+          name: Create test results directory
+          command: mkdir -p test-results
+      - run:
+          name: Run Tests
+          command: yarn test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
 
   e2e:
     docker:
       - image: cimg/node:20.17.0-browsers
+    resource_class: large
     working_directory: ~/repo
     steps:
       - checkout
@@ -108,8 +118,14 @@ jobs:
           name: Install Playwright Browsers
           command: npx playwright install --with-deps
       - run:
+          name: Build Production Bundle
+          command: yarn build
+      - run:
+          name: Create test results directory
+          command: mkdir -p e2e/test-results
+      - run:
           name: Run E2E Tests
-          command: yarn test:e2e
+          command: PLAYWRIGHT_JUNIT_OUTPUT_NAME=e2e/test-results/results.xml yarn test:e2e --reporter=junit
       - store_test_results:
           path: e2e/test-results
       - store_artifacts:

@@ -14,8 +14,7 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // Opt out of parallel tests on CI
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 6 : undefined,
 
   // Reporter to use
   reporter: 'html',
@@ -39,29 +38,39 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: '**/e2e/tests/authenticated/**/*.spec.js',
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'firefox',
+      testIgnore: '**/e2e/tests/authenticated/**/*.spec.js',
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'webkit',
+      testIgnore: '**/e2e/tests/authenticated/**/*.spec.js',
       use: { ...devices['Desktop Safari'] },
     },
     {
       name: 'Mobile Chrome',
+      testIgnore: '**/e2e/tests/authenticated/**/*.spec.js',
       use: { ...devices['Pixel 5'] },
     },
     {
       name: 'Mobile Safari',
+      testIgnore: '**/e2e/tests/authenticated/**/*.spec.js',
       use: { ...devices['iPhone 12'] },
+    },
+    {
+      name: 'chromium-authenticated',
+      testMatch: '**/e2e/tests/authenticated/**/*.spec.js',
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 
   // Run your local dev server before starting the tests
   webServer: {
-    command: 'yarn start',
+    command: 'yarn serve:e2e',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
