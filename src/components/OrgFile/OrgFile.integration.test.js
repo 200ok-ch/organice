@@ -109,7 +109,7 @@ describe('Render all views', () => {
         store.dispatch(
           parseFile(STATIC_FILE_PREFIX + 'fixtureTestFile.org', readFixture('empty_file'))
         );
-        expect(queryByText('This file has no headlines')).toBeTruthy();
+        expect(queryByText('Foo file has no headlines')).toBeTruthy();
         expect(queryAllByText('Yes, your file has content.').length).toEqual(0);
         // Sanity check, ensure that not the regular test file is loaded.
         expect(queryByText('Top level header')).toBeFalsy();
