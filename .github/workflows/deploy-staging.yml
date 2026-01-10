@@ -1,0 +1,75 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.organice.200ok.ch
+
+    needs: [lint, test, e2e, docs]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.17.0'
+          cache: 'yarn'
+
+      - name: Install deployment dependencies
+        run: sudo apt-get update -yq && sudo apt install -yq lftp
+
+      - name: Create .env file
+        run: cp .env.sample .env
+
+      - name: Configure Dropbox client ID
+        if: env.REACT_APP_DROPBOX_CLIENT_ID != ''
+        run: |
+          sed -i "s/your_dropbox_client_id/${REACT_APP_DROPBOX_CLIENT_ID}/" .env
+        env:
+          REACT_APP_DROPBOX_CLIENT_ID: ${{ secrets.REACT_APP_DROPBOX_CLIENT_ID }}
+
+      - name: Configure GitLab client ID
+        if: env.REACT_APP_GITLAB_CLIENT_ID != ''
+        run: |
+          sed -i "s/your_gitlab_client_id/${REACT_APP_GITLAB_CLIENT_ID}/" .env
+        env:
+          REACT_APP_GITLAB_CLIENT_ID: ${{ secrets.REACT_APP_GITLAB_CLIENT_ID }}
+
+      - name: Configure GitLab secret
+        if: env.REACT_APP_GITLAB_SECRET != ''
+        run: |
+          sed -i "s/your_gitlab_secret/${REACT_APP_GITLAB_SECRET}/" .env
+        env:
+          REACT_APP_GITLAB_SECRET: ${{ secrets.REACT_APP_GITLAB_SECRET }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build application
+        run: yarn build
+
+      - name: Deploy to https://staging.organice.200ok.ch
+        run: |
+          cd dist
+          lftp ${{ secrets.FTP_HOST }} <<END_SCRIPT
+          user ${{ secrets.FTP_USER_STAGE }} ${{ secrets.FTP_PASSWD_STAGE }}
+          mirror -R ./
+          quit
+          END_SCRIPT
+
+      - name: Deploy documentation to https://staging.organice.200ok.ch/documentation.html
+        run: ./bin/compile_doc_and_upload.sh
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER_STAGE }}
+          FTP_PASSWD: ${{ secrets.FTP_PASSWD_STAGE }}
