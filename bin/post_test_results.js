@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
+/* global process */
+
 const fs = require('fs');
 const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
-const https = require('https');
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const CIRCLE_SHA1 = process.env.CIRCLE_SHA1;
@@ -60,7 +61,7 @@ let totalCount = 0;
 
 function processTestSuite(suite) {
   const testCases = Array.isArray(suite.testcase) ? suite.testcase : (suite.testcase ? [suite.testcase] : []);
-  
+
   testCases.forEach(testCase => {
     totalCount++;
     if (testCase.failure) {
@@ -68,16 +69,16 @@ function processTestSuite(suite) {
       const failure = Array.isArray(testCase.failure) ? testCase.failure[0] : testCase.failure;
       const message = failure.message || failure['#text'] || 'Test failed';
       const rawDetails = failure['#text'] || failure.message || '';
-      
+
       // Attempt to extract file path and line number
       // Jest-junit with usePathForSuiteName: true puts file path in classname
       let relPath = testCase.classname || 'unknown';
-      
+
       // Clean up path if it looks like a path
       if (relPath.startsWith(process.cwd())) {
         relPath = path.relative(process.cwd(), relPath);
       }
-      
+
       // Fallback for Playwright or other formats if classname isn't a file
       if (testCase.file) {
           relPath = testCase.file;
@@ -110,8 +111,8 @@ function processTestSuite(suite) {
 }
 
 // Handle root testsuites or single testsuite
-const rootSuites = Array.isArray(result.testsuites?.testsuite) 
-  ? result.testsuites.testsuite 
+const rootSuites = Array.isArray(result.testsuites?.testsuite)
+  ? result.testsuites.testsuite
   : (result.testsuites?.testsuite ? [result.testsuites.testsuite] : (result.testsuite ? [result.testsuite] : []));
 
 rootSuites.forEach(processTestSuite);
@@ -156,8 +157,8 @@ async function postCheckRun() {
     } else {
       const data = await response.json();
       console.log(`Check run created: ${data.html_url}`);
-      
-      // If we have more annotations, we technically should update the check run, 
+
+      // If we have more annotations, we technically should update the check run,
       // but for "Land the Plane" simpler is better. 50 is usually enough to see what's broken.
       if (annotations.length > BATCH_SIZE) {
           console.warn(`Note: Only first 50 annotations posted (Total: ${annotations.length}).`);
