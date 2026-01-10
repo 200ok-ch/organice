@@ -155,7 +155,7 @@ test.describe('Header Tags', () => {
   });
 
   test('should add multiple tags to a header', async ({ page }) => {
-    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables not' }).first();
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
 
     // Scroll into view and click on the header to select it
     await tablesHeader.scrollIntoViewIfNeeded();
