@@ -112,8 +112,11 @@ jobs:
           name: Build Production Bundle
           command: yarn build
       - run:
+          name: Create test results directory
+          command: mkdir -p e2e/test-results
+      - run:
           name: Run E2E Tests
-          command: yarn test:e2e
+          command: PLAYWRIGHT_JUNIT_OUTPUT_NAME=e2e/test-results/results.xml yarn test:e2e --reporter=junit
       - store_test_results:
           path: e2e/test-results
       - store_artifacts:
