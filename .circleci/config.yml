@@ -90,6 +90,10 @@ jobs:
       - run:
           name: Run Tests
           command: yarn test
+      - run:
+          name: Report Test Results to GitHub
+          command: ./bin/post_test_results.js --name "Jest Unit Tests" --file test-results/jest-results.xml
+          when: always
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -126,6 +130,10 @@ jobs:
       - run:
           name: Run E2E Tests
           command: PLAYWRIGHT_JUNIT_OUTPUT_NAME=e2e/test-results/results.xml yarn test:e2e --reporter=junit
+      - run:
+          name: Report E2E Results to GitHub
+          command: ./bin/post_test_results.js --name "Playwright E2E Tests" --file e2e/test-results/results.xml
+          when: always
       - store_test_results:
           path: e2e/test-results
       - store_artifacts:
