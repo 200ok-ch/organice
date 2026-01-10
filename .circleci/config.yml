@@ -84,7 +84,16 @@ jobs:
             git reset --hard HEAD
             yarn prettier-eslint --list-different
 
-      - run: yarn test
+      - run:
+          name: Create test results directory
+          command: mkdir -p test-results
+      - run:
+          name: Run Tests
+          command: yarn test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
 
   e2e:
     docker:
