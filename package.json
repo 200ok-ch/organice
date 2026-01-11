@@ -16,7 +16,6 @@
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^4.0.0",
     "aos": "^2.3.4",
-    "bootstrap": "5.0.2",
     "bowser": "^2.11.0",
     "buffer": "^5.5.0||^6.0.0",
     "classnames": "^2.2.6",

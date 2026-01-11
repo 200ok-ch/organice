@@ -6,14 +6,14 @@ import * as classes from './vendor_css/template.scss';
 document.body.className = classes.body;
 
 import './stylesheet.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import '@fortawesome/fontawesome-free/js/all.min.js';
 
 // import AOS from 'aos';
 // import 'aos/dist/aos.css';
 
 import logo from 'url:../../images/organice.svg';
 // import ExternalLink from '../UI/ExternalLink';
+
+import { useEffect } from 'react';
 
 import { Menu, ArrowRight, CheckSquare, EyeOff, Calendar } from 'react-feather';
 
@@ -30,6 +30,35 @@ export default () => {
   //     once: true,
   //   });
   // }, []);
+
+  // Working around the fact that the original LP was designed with
+  // stateful libraries in mind.
+  useEffect(() => {
+    const files = [
+      'font_awesome_all.min.js',
+      // TODO: Reprogram false_bottom the React way
+      // 'false_bottom.js',
+      'bootstrap.bundle.min.js',
+      // XXX: Some parts of scripts.js are implemented the React way
+      // (Feather), others are worked around (navbar is always black),
+      // the remainder is not implemented atm.
+      // 'scripts.js',
+    ];
+
+    for (const file of files) {
+      const script = document.createElement('script');
+      // Do not download/eval asynchronously
+      script.async = false;
+      script.src = `https://200ok.ch/landing_page/js/${file}`;
+      document.head.appendChild(script);
+    }
+
+    // HACK: scripts.js waits for this event. Since we're already in a
+    // `useEffect` handler, this event has been fired long ago.
+    // setTimeout(function () {
+    //   window.dispatchEvent(new Event('DOMContentLoaded'));
+    // }, 500);
+  }, []);
 
   return (
     <>
@@ -245,7 +274,7 @@ export default () => {
                     </div>
 
                     <div className="col-md-4">
-                      <i className="fab fa-firefox"></i>
+                      <i className="fab fa-firefox-browser"></i>
                     </div>
                   </div>
                 </div>
