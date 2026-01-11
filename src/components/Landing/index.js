@@ -31,33 +31,28 @@ export default () => {
   //   });
   // }, []);
 
-  // Working around the fact that the original LP was designed with
-  // stateful libraries in mind.
+  // Load Bootstrap and FontAwesome JS via dynamic import
   useEffect(() => {
-    const files = [
-      'font_awesome_all.min.js',
-      // TODO: Reprogram false_bottom the React way
-      // 'false_bottom.js',
-      'bootstrap.bundle.min.js',
-      // XXX: Some parts of scripts.js are implemented the React way
-      // (Feather), others are worked around (navbar is always black),
-      // the remainder is not implemented atm.
-      // 'scripts.js',
-    ];
+    let mounted = true;
 
-    for (const file of files) {
-      const script = document.createElement('script');
-      // Do not download/eval asynchronously
-      script.async = false;
-      script.src = `https://200ok.ch/landing_page/js/${file}`;
-      document.head.appendChild(script);
-    }
+    const loadScripts = async () => {
+      if (!mounted) return;
 
-    // HACK: scripts.js waits for this event. Since we're already in a
-    // `useEffect` handler, this event has been fired long ago.
-    // setTimeout(function () {
-    //   window.dispatchEvent(new Event('DOMContentLoaded'));
-    // }, 500);
+      try {
+        // Load Bootstrap JS first (no dependencies, but foundation for others)
+        await import('bootstrap/dist/js/bootstrap.bundle.min.js');
+        // Load FontAwesome JS second (replaces <i> tags with <svg>)
+        await import('@fortawesome/fontawesome-free/js/all.min.js');
+      } catch (err) {
+        console.error('Failed to load scripts:', err);
+      }
+    };
+
+    loadScripts();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
@@ -274,7 +269,7 @@ export default () => {
                     </div>
 
                     <div className="col-md-4">
-                      <i className="fab fa-firefox-browser"></i>
+                      <i className="fab fa-firefox"></i>
                     </div>
                   </div>
                 </div>
