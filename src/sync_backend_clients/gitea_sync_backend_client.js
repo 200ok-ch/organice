@@ -322,9 +322,9 @@ export default (oauthClient) => {
     const cleanPath = path.replace(/^\//, '');
     const now = formatISO(new Date()); // ISO 8601 with local timezone offset
     // https://docs.gitea.io/en-us/api-usage/#create-a-file
-    // Note: Gitea uses PUT for both create and update (GitHub-compatible API)
+    // Note: Gitea uses POST for creating files (no SHA required) and PUT for updates (SHA required)
     const response = await decoratedFetch(`${getProjectApi()}/contents/${cleanPath}`, {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
