@@ -31,6 +31,10 @@ export default ({ template, onCapture, headers }) => {
 
   const [textareaValue, setTextareaValue] = useState(substitutedTemplate);
   const [shouldPrepend, setShouldPrepend] = useState(template.get('shouldPrepend'));
+  const [shouldCaptureAsNewHeader, setShouldCaptureAsNewHeader] = useState(
+    !template.has('shouldCaptureAsNewHeader') ||
+    template.get('shouldCaptureAsNewHeader')
+  );
 
   /** INFO: Some versions of Mobile Safari do _not_ like it when the
   focus is set without an explicit user interaction. This is the case
@@ -91,11 +95,15 @@ export default ({ template, onCapture, headers }) => {
     }
   }, [textarea, initialCursorIndex]);
 
-  const handleCaptureClick = () => onCapture(template.get('id'), textareaValue, shouldPrepend);
+  const handleCaptureClick = () =>
+    onCapture(template.get('id'), textareaValue, shouldPrepend, shouldCaptureAsNewHeader);
 
   const handleTextareaChange = (event) => setTextareaValue(event.target.value);
 
   const handlePrependSwitchToggle = () => setShouldPrepend(!shouldPrepend);
+
+  const handleCaptureAsNewHeaderSwitchToggle = () =>
+    setShouldCaptureAsNewHeader(!shouldCaptureAsNewHeader);
 
   return (
     <>
@@ -133,11 +141,18 @@ export default ({ template, onCapture, headers }) => {
               <span className="capture-modal-prepend-label">Prepend:</span>
               <Switch isEnabled={shouldPrepend} onToggle={handlePrependSwitchToggle} />
             </div>
-
+            <div className="capture-modal-prepend-container">
+              <span className="capture-modal-prepend-label">Capture as new header:</span>
+              <Switch
+                isEnabled={shouldCaptureAsNewHeader}
+                onToggle={handleCaptureAsNewHeaderSwitchToggle}
+              />
+            </div>
             <button className="btn capture-modal-button" onClick={handleCaptureClick}>
               Capture
             </button>
           </div>
+
           {/* Add padding to move the above textarea above the fold.
           More documentation, see getMinHeight(). */}
           {isMobileSafari13 && <div style={{ minHeight: getMinHeight() }} />}

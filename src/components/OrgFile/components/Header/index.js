@@ -414,13 +414,8 @@ class Header extends PureComponent {
         ? millisDuration(header.get('totalTimeLoggedRecursive'))
         : '';
 
-    const {
-      dragStartX,
-      currentDragX,
-      isDraggingFreely,
-      isPlayingRemoveAnimation,
-      containerWidth,
-    } = this.state;
+    const { dragStartX, currentDragX, isDraggingFreely, isPlayingRemoveAnimation, containerWidth } =
+      this.state;
     const marginLeft =
       !!dragStartX && !!currentDragX && isDraggingFreely
         ? currentDragX - dragStartX
