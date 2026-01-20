@@ -291,6 +291,63 @@ test.describe('Planning Items (Timestamps)', () => {
     // Wait for the sample content to load by checking for specific text
     await expect(page.getByText('This is an actual org file')).toBeVisible();
   });
+
+  test('should set deadline timestamp', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the deadline button to open the deadline editor
+    await clickClickCatcherButton(page, 'drawer-action-deadline');
+
+    // Wait for the timestamp editor to appear (it shows "Add Timestamp" initially)
+    // The timestamp editor modal title is "Edit deadline"
+    await expect(page.locator('.timestamp-editor__title:has-text("Edit deadline")')).toBeVisible();
+
+    // Click the plus icon to add a new timestamp
+    await page.locator('.timestamp-editor__icon--add').first().click();
+
+    // Now set the date using the timestamp-selector input
+    const dateInput = page.locator('[data-testid="timestamp-selector"]');
+    const currentDate = await dateInput.inputValue();
+
+    // Set date to the 15th of the current month
+    const [year, month] = currentDate.split('-');
+    const newDate = `${year}-${month}-15`;
+    await dateInput.fill(newDate);
+
+    // Close the drawer by switching to title editor mode
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait for the drawer to close by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify the deadline appears on the header
+    // The deadline should be displayed as "DEADLINE: <date>"
+    const headerWithDeadline = page.locator('.header').filter({ hasText: 'Tables' }).first();
+    await expect(headerWithDeadline.locator('..')).toContainText('DEADLINE:');
+
+    // Re-open the header to verify the deadline persists
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await clickClickCatcherButton(page, 'drawer-action-deadline');
+    await expect(page.locator('.timestamp-editor__title:has-text("Edit deadline")')).toBeVisible();
+
+    // Verify the date is still set to the 15th
+    const dateInputVerify = page.locator('[data-testid="timestamp-selector"]');
+    await expect(dateInputVerify).toHaveValue(newDate);
+  });
 });
 
 test.describe('Header Properties', () => {
@@ -337,7 +394,10 @@ test.describe('Header Properties', () => {
     await expect(propertyValueInput).toHaveValue('Maverick');
     await propertyValueInput.fill('Goose');
 
-    // Close the drawer by clicking outside
+    // Close the drawer by switching to title editor mode (this saves the properties)
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait for the drawer to close by clicking outside (now that we're in a different mode)
     await page.locator('[data-testid="drawer-outer-container"]').first().click();
 
     // Wait for the drawer to close
