@@ -31,6 +31,7 @@ const FileBrowser = ({
     switch (syncBackendType) {
       case 'Dropbox':
       case 'GitLab':
+      case 'Gitea':
       case 'WebDAV':
         const pathParts = path.split('/');
         return pathParts.slice(0, pathParts.length - 1).join('/');
