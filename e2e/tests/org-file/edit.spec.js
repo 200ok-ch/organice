@@ -293,6 +293,72 @@ test.describe('Planning Items (Timestamps)', () => {
   });
 });
 
+test.describe('Header Properties', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should edit header property value', async ({ page }) => {
+    // Expand the "Property lists" section (level 1 header)
+    const propertyListsHeader = page
+      .locator('.header')
+      .filter({ hasText: 'Property lists' })
+      .first();
+    await propertyListsHeader.scrollIntoViewIfNeeded();
+    await propertyListsHeader.click();
+
+    // Wait for header action drawer to appear and close it to expand the section
+    await expect(page.locator('[data-testid="header-action-drawer"]')).toBeVisible();
+    await page.getByText('Sample').click();
+    await expect(page.locator('[data-testid="header-action-drawer"]')).toHaveCount(0, {
+      timeout: 5000,
+    });
+
+    // Now click on the "Example" header (level 2 header under Property lists)
+    const exampleHeader = page.locator('.header').filter({ hasText: 'Example' }).first();
+    await exampleHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the properties icon to open the property list editor
+    await clickClickCatcherButton(page, 'drawer-action-properties');
+
+    // Wait for the property list editor modal to open
+    await expect(page.locator('[data-testid="property-list-editor-title"]')).toBeVisible();
+
+    // Find the "callsign" property (index 0) and change its value from "Maverick" to "Goose"
+    const propertyValueInput = page.locator(
+      '[data-testid="property-list-editor-property-value-0"]'
+    );
+    await expect(propertyValueInput).toHaveValue('Maverick');
+    await propertyValueInput.fill('Goose');
+
+    // Close the drawer by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Re-open the header to verify the property value persists
+    await exampleHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await clickClickCatcherButton(page, 'drawer-action-properties');
+    await expect(page.locator('[data-testid="property-list-editor-title"]')).toBeVisible();
+
+    // Verify the value is now "Goose"
+    const propertyValueInputVerify = page.locator(
+      '[data-testid="property-list-editor-property-value-0"]'
+    );
+    await expect(propertyValueInputVerify).toHaveValue('Goose');
+  });
+});
+
 test.describe('Header Title', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
