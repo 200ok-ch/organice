@@ -43,7 +43,6 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "redux-undo": "1.1.0",
-    "serve": "^14.2.5",
     "webdav": "^3.3.0"
   },
   "scripts": {
@@ -51,7 +50,6 @@
     "clean": "rm -rf .parcel-cache",
     "compile-sass": "parcel build src/components/Landing/vendor_css/template.scss",
     "build": "./bin/compile_search_parser.sh && parcel build",
-    "serve:e2e": "serve -p 3000 -s dist",
     "test": "./bin/compile_search_parser.sh && jest --env=jsdom",
     "watch": "./bin/compile_search_parser.sh && jest --watch --env=jsdom",
     "coverage": "./bin/compile_search_parser.sh && jest --env=jsdom --coverage --watchAll=false",
