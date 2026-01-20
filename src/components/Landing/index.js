@@ -11,6 +11,8 @@ import './stylesheet.css';
 // import 'aos/dist/aos.css';
 
 import logo from 'url:../../images/organice.svg';
+import screenshotOverview from 'url:../../images/screenshot-overview.png';
+import screenshotWide from 'url:../../images/screenshot-wide.png';
 // import ExternalLink from '../UI/ExternalLink';
 
 import { useEffect } from 'react';
@@ -179,7 +181,7 @@ export default () => {
                       <img
                         className="img-fluid main-image"
                         alt=""
-                        src="https://200ok.ch/landing_page/img/organice/screenshot-overview.png"
+                        src={screenshotOverview}
                         style={{ filter: 'drop-shadow(0.5em 0.5em 0.5em #444)' }}
                       />
                     </div>
@@ -293,7 +295,7 @@ export default () => {
                       <div className="content-skewed content-skewed-right">
                         <img
                           className="content-skewed-item img-fluid shadow-lg rounded-3"
-                          src="https://200ok.ch/landing_page/img/organice/screenshot-wide.png"
+                          src={screenshotWide}
                           alt="Sample organice document"
                         />
                       </div>
