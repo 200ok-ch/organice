@@ -608,3 +608,44 @@ test.describe('Clocking', () => {
     await expect(clockOutButton).toHaveCount(0);
   });
 });
+
+test.describe('Header Creation', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should add new header below current header', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click the add new header button (plus icon)
+    await clickClickCatcherButton(page, 'header-action-plus');
+
+    // A new header should be created below the Tables header
+    // The new header should be editable (title input should be visible)
+    const titleInput = page.locator('[data-testid="titleLineInput"]');
+    await expect(titleInput).toBeVisible();
+
+    // Enter a title for the new header
+    await titleInput.fill('New Test Header');
+
+    // Save by pressing Enter
+    await titleInput.press('Enter');
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // Verify the new header appears below Tables
+    const newHeader = page.locator('.header').filter({ hasText: 'New Test Header' });
+    await expect(newHeader).toBeVisible();
+  });
+});
