@@ -532,3 +532,79 @@ test.describe('Header Title', () => {
     await expect(titleInputVerify).toHaveValue('Updated Tables Title');
   });
 });
+
+test.describe('Clocking', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should clock in and out on a header', async ({ page }) => {
+    // Use "Tables" header which we know exists from other tests
+    const targetHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await targetHeader.scrollIntoViewIfNeeded();
+    await targetHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Verify the clock in button is visible (hourglass-start icon)
+    const clockInButton = page.locator('[data-testid="org-clock-in"]');
+    await expect(clockInButton).toBeVisible();
+
+    // Verify the clock out button is not visible yet
+    const clockOutButton = page.locator('[data-testid="org-clock-out"]');
+    await expect(clockOutButton).toHaveCount(0);
+
+    // Click the clock in button
+    await clickClickCatcherButton(page, 'org-clock-in');
+
+    // After clocking in, the clock in button should be gone and clock out should appear
+    await expect(clockInButton).toHaveCount(0);
+    await expect(clockOutButton).toBeVisible();
+
+    // Close the drawer by switching to title editor mode (ensures clean state)
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait a moment for the state to settle
+    await page.waitForTimeout(100);
+
+    // Now click outside to close
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // Re-open the header to verify the clock is still running
+    await targetHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await expect(clockOutButton).toBeVisible();
+
+    // Click the clock out button
+    await clickClickCatcherButton(page, 'org-clock-out');
+
+    // After clocking out, the clock in button should be back and clock out should be gone
+    await expect(clockInButton).toBeVisible();
+    await expect(clockOutButton).toHaveCount(0);
+
+    // Close the drawer by switching to title editor mode (ensures clean state)
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait a moment for the state to settle
+    await page.waitForTimeout(100);
+
+    // Now click outside to close
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // Re-open to verify the clock state persisted (clocked out)
+    await targetHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await expect(clockInButton).toBeVisible();
+    await expect(clockOutButton).toHaveCount(0);
+  });
+});
