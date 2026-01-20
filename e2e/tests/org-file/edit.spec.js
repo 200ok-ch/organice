@@ -348,6 +348,67 @@ test.describe('Planning Items (Timestamps)', () => {
     const dateInputVerify = page.locator('[data-testid="timestamp-selector"]');
     await expect(dateInputVerify).toHaveValue(newDate);
   });
+
+  test('should set scheduled timestamp', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Click on the scheduled button to open the scheduled editor
+    await clickClickCatcherButton(page, 'drawer-action-scheduled');
+
+    // Wait for the timestamp editor to appear
+    // The timestamp editor modal title is "Edit scheduled timestamp"
+    await expect(
+      page.locator('.timestamp-editor__title:has-text("Edit scheduled timestamp")')
+    ).toBeVisible();
+
+    // Click the plus icon to add a new timestamp
+    await page.locator('.timestamp-editor__icon--add').first().click();
+
+    // Now set the date using the timestamp-selector input
+    const dateInput = page.locator('[data-testid="timestamp-selector"]');
+    const currentDate = await dateInput.inputValue();
+
+    // Set date to the 20th of the current month
+    const [year, month] = currentDate.split('-');
+    const newDate = `${year}-${month}-20`;
+    await dateInput.fill(newDate);
+
+    // Close the drawer by switching to title editor mode
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+
+    // Wait for the drawer to close by clicking outside
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+
+    // Wait for the drawer to close
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // Verify the scheduled date appears on the header
+    // The scheduled date should be displayed as "SCHEDULED: <date>"
+    const headerWithScheduled = page.locator('.header').filter({ hasText: 'Tables' }).first();
+    await expect(headerWithScheduled.locator('..')).toContainText('SCHEDULED:');
+
+    // Re-open the header to verify the scheduled date persists
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await clickClickCatcherButton(page, 'drawer-action-scheduled');
+    await expect(
+      page.locator('.timestamp-editor__title:has-text("Edit scheduled timestamp")')
+    ).toBeVisible();
+
+    // Verify the date is still set to the 20th
+    const dateInputVerify = page.locator('[data-testid="timestamp-selector"]');
+    await expect(dateInputVerify).toHaveValue(newDate);
+  });
 });
 
 test.describe('Header Properties', () => {
