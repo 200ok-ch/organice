@@ -11,6 +11,36 @@ async function clickClickCatcherButton(page, dataId) {
   }, dataId);
 }
 
+// Helper function to long press on the click-catcher wrapper elements
+// Simulates holding the mouse button down for the specified duration
+async function longPressClickCatcherButton(page, dataId, duration = 1000) {
+  await page.evaluate(
+    (args) => {
+      const { id, delay } = args;
+      const element = document.querySelector(`[data-testid="${id}"]`);
+      if (element) {
+        // Dispatch mousedown event
+        element.dispatchEvent(
+          new MouseEvent('mousedown', { bubbles: true, cancelable: true, buttons: 1 })
+        );
+
+        // Use setTimeout to simulate holding the button
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            // Dispatch mouseup and click events
+            element.dispatchEvent(
+              new MouseEvent('mouseup', { bubbles: true, cancelable: true, buttons: 0 })
+            );
+            element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+            resolve();
+          }, delay);
+        });
+      }
+    },
+    { id: dataId, delay: duration }
+  );
+}
+
 test.describe('Header Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
@@ -647,5 +677,44 @@ test.describe('Header Creation', () => {
     // Verify the new header appears below Tables
     const newHeader = page.locator('.header').filter({ hasText: 'New Test Header' });
     await expect(newHeader).toBeVisible();
+  });
+
+  test('should duplicate header via long press on plus button', async ({ page }) => {
+    // Use "Actions" header which has subheaders
+    const targetHeader = page.locator('.header').filter({ hasText: 'Actions' }).first();
+
+    // Scroll into view and click on the header to select it
+    await targetHeader.scrollIntoViewIfNeeded();
+    await targetHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Get count of "Editing headers" subheaders before duplication (should be 1)
+    const editingHeaderCountBefore = await page
+      .locator('.header')
+      .filter({ hasText: 'Editing headers' })
+      .count();
+
+    // Long press the plus button to duplicate the header
+    await longPressClickCatcherButton(page, 'header-action-plus', 1000);
+
+    // Wait for duplication to complete
+    await page.waitForTimeout(500);
+
+    // Close the drawer
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await page.waitForTimeout(100);
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // Verify the header was duplicated by checking for duplicate subheaders
+    // "Editing headers" should now appear twice (original and duplicate)
+    const editingHeaderCountAfter = await page
+      .locator('.header')
+      .filter({ hasText: 'Editing headers' })
+      .count();
+    expect(editingHeaderCountAfter).toBe(editingHeaderCountBefore + 1);
   });
 });
