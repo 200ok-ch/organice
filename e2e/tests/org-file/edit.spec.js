@@ -718,3 +718,71 @@ test.describe('Header Creation', () => {
     expect(editingHeaderCountAfter).toBe(editingHeaderCountBefore + 1);
   });
 });
+
+test.describe('Narrowing', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should narrow to subtree and widen back', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the Tables header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Verify the narrow button (compress icon) exists and click it
+    await expect(page.locator('[data-testid="header-action-narrow"]')).toBeVisible();
+    await clickClickCatcherButton(page, 'header-action-narrow');
+
+    // Wait for narrowing to take effect
+    await page.waitForTimeout(500);
+
+    // Close the drawer before clicking Tables again
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await page.waitForTimeout(100);
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // After narrowing, clicking on Tables should still work
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+
+    // The expand icon should be visible (no testid on expand button, so look for the icon class)
+    await expect(page.locator('.fa-expand')).toBeVisible();
+
+    // Click the expand icon to widen - since it doesn't have a testid, use the icon class selector
+    // Note: We need to click on the click-catcher wrapper, not the icon itself
+    await page.evaluate(() => {
+      const expandIcon = document.querySelector('.fa-expand');
+      if (expandIcon) {
+        const clickCatcher = expandIcon.closest(
+          '.header-action-drawer__ff-click-catcher-container'
+        );
+        if (clickCatcher) {
+          clickCatcher.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        }
+      }
+    });
+
+    // Wait for widening to take effect
+    await page.waitForTimeout(500);
+
+    // Close the drawer before clicking Tables again
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await page.waitForTimeout(100);
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // After widening, clicking on Tables and the narrow button should work again
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await expect(page.locator('[data-testid="header-action-narrow"]')).toBeVisible();
+  });
+});
