@@ -233,7 +233,7 @@ exports[`<Landing /> renders 1`] = `
                   <img
                     alt=""
                     class="img-fluid main-image"
-                    src="https://200ok.ch/landing_page/img/organice/screenshot-overview.png"
+                    src="test-file-stub"
                     style="filter: drop-shadow(0.5em 0.5em 0.5em #444);"
                   />
                 </div>
@@ -467,7 +467,7 @@ exports[`<Landing /> renders 1`] = `
                     <img
                       alt="Sample organice document"
                       class="content-skewed-item img-fluid shadow-lg rounded-3"
-                      src="https://200ok.ch/landing_page/img/organice/screenshot-wide.png"
+                      src="test-file-stub"
                     />
                   </div>
                 </div>
