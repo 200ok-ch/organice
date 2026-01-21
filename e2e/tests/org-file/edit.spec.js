@@ -11,6 +11,36 @@ async function clickClickCatcherButton(page, dataId) {
   }, dataId);
 }
 
+// Helper function to long press on the click-catcher wrapper elements
+// Simulates holding the mouse button down for the specified duration
+async function longPressClickCatcherButton(page, dataId, duration = 1000) {
+  await page.evaluate(
+    (args) => {
+      const { id, delay } = args;
+      const element = document.querySelector(`[data-testid="${id}"]`);
+      if (element) {
+        // Dispatch mousedown event
+        element.dispatchEvent(
+          new MouseEvent('mousedown', { bubbles: true, cancelable: true, buttons: 1 })
+        );
+
+        // Use setTimeout to simulate holding the button
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            // Dispatch mouseup and click events
+            element.dispatchEvent(
+              new MouseEvent('mouseup', { bubbles: true, cancelable: true, buttons: 0 })
+            );
+            element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+            resolve();
+          }, delay);
+        });
+      }
+    },
+    { id: dataId, delay: duration }
+  );
+}
+
 test.describe('Header Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
@@ -246,7 +276,7 @@ test.describe('Header Description', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the edit description button (pen in square icon)
-    // The data-id is 'edit-header-title' (this appears to be the description editor button)
+    // The data-testid is 'edit-header-title' (this is the description editor button)
     await clickClickCatcherButton(page, 'edit-header-title');
 
     // Wait for the description editor modal to open
@@ -647,5 +677,112 @@ test.describe('Header Creation', () => {
     // Verify the new header appears below Tables
     const newHeader = page.locator('.header').filter({ hasText: 'New Test Header' });
     await expect(newHeader).toBeVisible();
+  });
+
+  test('should duplicate header via long press on plus button', async ({ page }) => {
+    // Use "Actions" header which has subheaders
+    const targetHeader = page.locator('.header').filter({ hasText: 'Actions' }).first();
+
+    // Scroll into view and click on the header to select it
+    await targetHeader.scrollIntoViewIfNeeded();
+    await targetHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Get count of "Editing headers" subheaders before duplication (should be 1)
+    const editingHeaderCountBefore = await page
+      .locator('.header')
+      .filter({ hasText: 'Editing headers' })
+      .count();
+
+    // Long press the plus button to duplicate the header
+    await longPressClickCatcherButton(page, 'header-action-plus', 1000);
+
+    // Wait for duplication to complete
+    await page.waitForTimeout(500);
+
+    // Close the drawer
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await page.waitForTimeout(100);
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // Verify the header was duplicated by checking for duplicate subheaders
+    // "Editing headers" should now appear twice (original and duplicate)
+    const editingHeaderCountAfter = await page
+      .locator('.header')
+      .filter({ hasText: 'Editing headers' })
+      .count();
+    expect(editingHeaderCountAfter).toBe(editingHeaderCountBefore + 1);
+  });
+});
+
+test.describe('Narrowing', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    // Wait for the sample content to load by checking for specific text
+    await expect(page.getByText('This is an actual org file')).toBeVisible();
+  });
+
+  test('should narrow to subtree and widen back', async ({ page }) => {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+
+    // Scroll into view and click on the Tables header to select it
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+
+    // Wait for the header action drawer to appear
+    const actionDrawer = page.locator('[data-testid="header-action-drawer"]');
+    await expect(actionDrawer).toBeVisible();
+
+    // Verify the narrow button (compress icon) exists and click it
+    await expect(page.locator('[data-testid="header-action-narrow"]')).toBeVisible();
+    await clickClickCatcherButton(page, 'header-action-narrow');
+
+    // Wait for narrowing to take effect
+    await page.waitForTimeout(500);
+
+    // Close the drawer before clicking Tables again
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await page.waitForTimeout(100);
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // After narrowing, clicking on Tables should still work
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+
+    // The expand icon should be visible (no testid on expand button, so look for the icon class)
+    await expect(page.locator('.fa-expand')).toBeVisible();
+
+    // Click the expand icon to widen - since it doesn't have a testid, use the icon class selector
+    // Note: We need to click on the click-catcher wrapper, not the icon itself
+    await page.evaluate(() => {
+      const expandIcon = document.querySelector('.fa-expand');
+      if (expandIcon) {
+        const clickCatcher = expandIcon.closest(
+          '.header-action-drawer__ff-click-catcher-container'
+        );
+        if (clickCatcher) {
+          clickCatcher.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        }
+      }
+    });
+
+    // Wait for widening to take effect
+    await page.waitForTimeout(500);
+
+    // Close the drawer before clicking Tables again
+    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await page.waitForTimeout(100);
+    await page.locator('[data-testid="drawer-outer-container"]').first().click();
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible();
+
+    // After widening, clicking on Tables and the narrow button should work again
+    await tablesHeader.click();
+    await expect(actionDrawer).toBeVisible();
+    await expect(page.locator('[data-testid="header-action-narrow"]')).toBeVisible();
   });
 });
