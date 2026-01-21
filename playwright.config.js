@@ -14,7 +14,10 @@ export default defineConfig({
   // Retry on CI and locally (1 retry locally, 2 in CI)
   retries: process.env.CI ? 2 : 1,
 
-  workers: process.env.CI ? 6 : undefined,
+  // Worker count configuration
+  // CI: Reduced from 6 to 4 to minimize resource contention in CircleCI containers
+  // Local: undefined lets Playwright use all available CPU cores
+  workers: process.env.CI ? 4 : undefined,
 
   // Per-test timeout (60 seconds for WebDAV sync and file loading)
   testTimeout: 60 * 1000,

@@ -66,7 +66,9 @@ class FirefoxHelper {
       await this.page.waitForTimeout(100);
     }
 
-    throw new Error(`Failed to click element with data-testid="${dataTestId}" after ${retry} attempts`);
+    throw new Error(
+      `Failed to click element with data-testid="${dataTestId}" after ${retry} attempts`
+    );
   }
 
   /**

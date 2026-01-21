@@ -58,10 +58,16 @@ test.describe('WebDAV Mock Tests', () => {
     }, DEFAULT_CREDENTIALS);
 
     // Reload to apply the authentication
-    await page.reload();
-    await page.waitForLoadState('networkidle');
+    // Use 'load' instead of 'networkidle' for CI reliability
+    await page.reload({ waitUntil: 'load' });
 
-    // Wait for WebDAV sync to complete
+    // Wait for file browser or sync status to appear (indicates authentication succeeded)
+    await page.waitForSelector(
+      '.file-browser-container, .component-browser-sync__file-list, .component-browser-sync__status',
+      { state: 'attached', timeout: 10000 }
+    );
+
+    // Additional wait for WebDAV sync to complete
     await page.waitForTimeout(2000);
   }
 
