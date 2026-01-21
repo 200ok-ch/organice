@@ -11,13 +11,21 @@ export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
-  // Retry on CI only
-  retries: process.env.CI ? 2 : 0,
+  // Retry on CI and locally (1 retry locally, 2 in CI)
+  retries: process.env.CI ? 2 : 1,
 
-  workers: process.env.CI ? 6 : undefined,
+  // Worker count configuration
+  // CI: Reduced from 6 to 4 to minimize resource contention in CircleCI containers
+  // Local: undefined lets Playwright use all available CPU cores
+  workers: process.env.CI ? 4 : undefined,
 
-  // Reporter to use
-  reporter: 'html',
+  // Per-test timeout (60 seconds for WebDAV sync and file loading)
+  testTimeout: 60 * 1000,
+
+  // Reporter to use (HTML for local, JUnit for CI)
+  reporter: process.env.CI
+    ? [['junit', { outputFile: 'test-results/junit.xml' }], ['html']]
+    : 'html',
 
   // Shared settings for all tests
   use: {
@@ -32,6 +40,12 @@ export default defineConfig({
 
     // Video on failure
     video: 'retain-on-failure',
+
+    // Action timeout (clicks, fills, etc.)
+    actionTimeout: 10 * 1000,
+
+    // Navigation timeout (page.goto, etc.)
+    navigationTimeout: 30 * 1000,
   },
 
   // Configure projects for major browsers

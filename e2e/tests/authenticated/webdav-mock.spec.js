@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import FirefoxHelper from '../../helpers/firefox-helper.js';
 import WebDAVMockHelper from '../../helpers/webdav-mock-helper';
 
 // Sample org file content for testing
@@ -20,20 +21,27 @@ const DEFAULT_CREDENTIALS = {
 
 test.describe('WebDAV Mock Tests', () => {
   let webdavMock;
+  let firefoxHelper;
 
   // Set up fresh mocks for each test
   test.beforeEach(async ({ page }) => {
+    firefoxHelper = new FirefoxHelper(page);
     webdavMock = new WebDAVMockHelper(page);
     await webdavMock.setupMocks();
     webdavMock.addMockFile('/test.org', SAMPLE_ORG_CONTENT);
   });
 
   // Clean up after each test to prevent state leakage
-  test.afterEach(async () => {
+  test.afterEach(async ({ page }) => {
     if (webdavMock) {
       await webdavMock.clearAllRoutes();
       webdavMock.clearMockFiles();
     }
+    // Clear storage state for test isolation
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
   });
 
   // Helper to sign in via localStorage
@@ -50,10 +58,16 @@ test.describe('WebDAV Mock Tests', () => {
     }, DEFAULT_CREDENTIALS);
 
     // Reload to apply the authentication
-    await page.reload();
-    await page.waitForLoadState('networkidle');
+    // Use 'load' instead of 'networkidle' for CI reliability
+    await page.reload({ waitUntil: 'load' });
 
-    // Wait for WebDAV sync to complete
+    // Wait for file browser or sync status to appear (indicates authentication succeeded)
+    await page.waitForSelector(
+      '.file-browser-container, .component-browser-sync__file-list, .component-browser-sync__status',
+      { state: 'attached', timeout: 10000 }
+    );
+
+    // Additional wait for WebDAV sync to complete
     await page.waitForTimeout(2000);
   }
 
@@ -161,11 +175,8 @@ test.describe('WebDAV Mock Tests', () => {
       // Wait for action drawer
       await expect(page.locator('[data-testid="header-action-drawer"]')).toBeVisible();
 
-      // Click edit title
-      await page.evaluate((sel) => {
-        const el = document.querySelector(sel);
-        if (el) el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      }, '[data-testid="drawer-action-edit-title"]');
+      // Click edit title using Firefox helper
+      await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
       // Wait for title editor modal
       await expect(page.locator('.drawer-modal__title:has-text("Edit title")')).toBeVisible();

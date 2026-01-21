@@ -1,8 +1,21 @@
 import { test, expect } from '@playwright/test';
+import AppHelper from '../../helpers/app-helper.js';
 
 test.describe('Landing Page', () => {
+  let appHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await appHelper.waitForLandingReady();
+  });
+
+  test.afterEach(async ({ page }) => {
+    // Clear storage state after each test for isolation
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
   });
 
   test('should navigate to sample org file', async ({ page }) => {
