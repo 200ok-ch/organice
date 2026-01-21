@@ -47,6 +47,22 @@ class E2ETestHelper {
       timeout: 10000,
     });
   }
+
+  /**
+   * Resets the application state to ensure test isolation.
+   *
+   * Clears localStorage and sessionStorage, then navigates to the root path.
+   * Use this in beforeEach hooks to ensure each test starts with a clean state.
+   *
+   * @returns {Promise<void>}
+   */
+  async resetAppState() {
+    await this.page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+    await this.page.goto('/');
+  }
 }
 
 export default E2ETestHelper;
