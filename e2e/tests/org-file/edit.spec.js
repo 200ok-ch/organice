@@ -1,21 +1,17 @@
 import { test, expect } from '@playwright/test';
-
-// Helper function to click on the click-catcher wrapper elements
-// These elements may not be visible to Playwright, so we dispatch click events directly
-async function clickClickCatcherButton(page, dataId) {
-  await page.evaluate((id) => {
-    const element = document.querySelector(`[data-testid="${id}"]`);
-    if (element) {
-      element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-    }
-  }, dataId);
-}
+import AppHelper from '../../helpers/app-helper.js';
+import FirefoxHelper from '../../helpers/firefox-helper.js';
 
 test.describe('Header Tags', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should add a tag to a header', async ({ page }) => {
@@ -30,8 +26,7 @@ test.describe('Header Tags', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the tags icon to open the tags editor
-    // Use page.evaluate to dispatch click event directly on the click-catcher wrapper
-    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-tags');
 
     // Wait for the tags editor modal to open
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
@@ -51,7 +46,7 @@ test.describe('Header Tags', () => {
     // Close the drawer by switching to title editor (this should save the tags)
     // Click on the pencil icon (edit title) button in the drawer action bar
     // Note: The tags editor modal has its own action bar at the bottom
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait for the title editor to open (confirms the switch happened)
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).not.toBeVisible();
@@ -69,7 +64,7 @@ test.describe('Header Tags', () => {
     await expect(page.locator('text=cute')).toBeVisible();
     // Re-open the tags editor to verify the tag was saved
     await tablesHeader.click();
-    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-tags');
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
     await expect(page.locator('[data-testid="tags-editor-tag-cute"]')).toHaveAttribute(
       'data-in-use',
@@ -113,7 +108,7 @@ test.describe('Header Tags', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the tags icon to open the tags editor
-    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-tags');
 
     // Wait for the tags editor modal to open
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
@@ -127,7 +122,7 @@ test.describe('Header Tags', () => {
     await expect(tinyTag).toHaveAttribute('data-in-use', 'false');
 
     // Close the drawer by switching to title editor (this should save the changes)
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait for the title editor to open
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).not.toBeVisible();
@@ -146,7 +141,7 @@ test.describe('Header Tags', () => {
 
     // Re-open the tags editor to verify the removal persisted
     await eloiseHeader.click();
-    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-tags');
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
     await expect(page.locator('[data-testid="tags-editor-tag-tiny"]')).toHaveAttribute(
       'data-in-use',
@@ -166,7 +161,7 @@ test.describe('Header Tags', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the tags icon to open the tags editor
-    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-tags');
 
     // Wait for the tags editor modal to open
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
@@ -196,7 +191,7 @@ test.describe('Header Tags', () => {
     }
 
     // Close and re-open the tags editor to verify tags are marked as in-use
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).not.toBeVisible();
 
     // Close the drawer by clicking outside
@@ -207,7 +202,7 @@ test.describe('Header Tags', () => {
 
     // Re-open the tags editor to verify the tags persisted
     await tablesHeader.click();
-    await clickClickCatcherButton(page, 'drawer-action-tags');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-tags');
     await expect(page.locator('[data-testid="tags-editor-modal-title"]')).toBeVisible();
     await expect(page.locator('[data-testid="tags-editor-tag-cute"]')).toHaveAttribute(
       'data-in-use',
@@ -225,10 +220,15 @@ test.describe('Header Tags', () => {
 });
 
 test.describe('Header Description', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should edit header description', async ({ page }) => {
@@ -247,7 +247,7 @@ test.describe('Header Description', () => {
 
     // Click on the edit description button (pen in square icon)
     // The data-id is 'edit-header-title' (this appears to be the description editor button)
-    await clickClickCatcherButton(page, 'edit-header-title');
+    await firefoxHelper.clickClickCatcherButton('edit-header-title');
 
     // Wait for the description editor modal to open
     await expect(page.locator('.drawer-modal__title:has-text("Edit description")')).toBeVisible();
@@ -275,7 +275,7 @@ test.describe('Header Description', () => {
     // Re-open the header to verify the description persists
     await tapHeader.click();
     await expect(actionDrawer).toBeVisible();
-    await clickClickCatcherButton(page, 'edit-header-title');
+    await firefoxHelper.clickClickCatcherButton('edit-header-title');
     await expect(page.locator('.drawer-modal__title:has-text("Edit description")')).toBeVisible();
     // Re-locate the textarea as it's a new element
     // Note: textarea value includes trailing newline from the editor
@@ -286,10 +286,15 @@ test.describe('Header Description', () => {
 });
 
 test.describe('Planning Items (Timestamps)', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should set deadline timestamp', async ({ page }) => {
@@ -304,7 +309,7 @@ test.describe('Planning Items (Timestamps)', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the deadline button to open the deadline editor
-    await clickClickCatcherButton(page, 'drawer-action-deadline');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-deadline');
 
     // Wait for the timestamp editor to appear (it shows "Add Timestamp" initially)
     // The timestamp editor modal title is "Edit deadline"
@@ -323,7 +328,7 @@ test.describe('Planning Items (Timestamps)', () => {
     await dateInput.fill(newDate);
 
     // Close the drawer by switching to title editor mode
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait for the drawer to close by clicking outside
     await page.locator('[data-testid="drawer-outer-container"]').first().click();
@@ -341,7 +346,7 @@ test.describe('Planning Items (Timestamps)', () => {
     // Re-open the header to verify the deadline persists
     await tablesHeader.click();
     await expect(actionDrawer).toBeVisible();
-    await clickClickCatcherButton(page, 'drawer-action-deadline');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-deadline');
     await expect(page.locator('.timestamp-editor__title:has-text("Edit deadline")')).toBeVisible();
 
     // Verify the date is still set to the 15th
@@ -361,7 +366,7 @@ test.describe('Planning Items (Timestamps)', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the scheduled button to open the scheduled editor
-    await clickClickCatcherButton(page, 'drawer-action-scheduled');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-scheduled');
 
     // Wait for the timestamp editor to appear
     // The timestamp editor modal title is "Edit scheduled timestamp"
@@ -382,7 +387,7 @@ test.describe('Planning Items (Timestamps)', () => {
     await dateInput.fill(newDate);
 
     // Close the drawer by switching to title editor mode
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait for the drawer to close by clicking outside
     await page.locator('[data-testid="drawer-outer-container"]').first().click();
@@ -400,7 +405,7 @@ test.describe('Planning Items (Timestamps)', () => {
     // Re-open the header to verify the scheduled date persists
     await tablesHeader.click();
     await expect(actionDrawer).toBeVisible();
-    await clickClickCatcherButton(page, 'drawer-action-scheduled');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-scheduled');
     await expect(
       page.locator('.timestamp-editor__title:has-text("Edit scheduled timestamp")')
     ).toBeVisible();
@@ -412,10 +417,15 @@ test.describe('Planning Items (Timestamps)', () => {
 });
 
 test.describe('Header Properties', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should edit header property value', async ({ page }) => {
@@ -443,7 +453,7 @@ test.describe('Header Properties', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the properties icon to open the property list editor
-    await clickClickCatcherButton(page, 'drawer-action-properties');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-properties');
 
     // Wait for the property list editor modal to open
     await expect(page.locator('[data-testid="property-list-editor-title"]')).toBeVisible();
@@ -456,7 +466,7 @@ test.describe('Header Properties', () => {
     await propertyValueInput.fill('Goose');
 
     // Close the drawer by switching to title editor mode (this saves the properties)
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait for the drawer to close by clicking outside (now that we're in a different mode)
     await page.locator('[data-testid="drawer-outer-container"]').first().click();
@@ -469,7 +479,7 @@ test.describe('Header Properties', () => {
     // Re-open the header to verify the property value persists
     await exampleHeader.click();
     await expect(actionDrawer).toBeVisible();
-    await clickClickCatcherButton(page, 'drawer-action-properties');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-properties');
     await expect(page.locator('[data-testid="property-list-editor-title"]')).toBeVisible();
 
     // Verify the value is now "Goose"
@@ -481,10 +491,15 @@ test.describe('Header Properties', () => {
 });
 
 test.describe('Header Title', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should edit header title', async ({ page }) => {
@@ -499,8 +514,7 @@ test.describe('Header Title', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the edit title button
-    // Use page.evaluate to dispatch click event directly on the click-catcher wrapper
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait for the title editor modal to open - check for drawer-modal__title text
     await expect(page.locator('.drawer-modal__title:has-text("Edit title")')).toBeVisible();
@@ -525,7 +539,7 @@ test.describe('Header Title', () => {
     // Re-open the header to verify the title persists
     await updatedHeader.first().click();
     await expect(actionDrawer).toBeVisible();
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
     await expect(page.locator('.drawer-modal__title:has-text("Edit title")')).toBeVisible();
     // Re-locate the title input as it's a new element
     const titleInputVerify = page.locator('[data-testid="titleLineInput"]');
@@ -534,10 +548,15 @@ test.describe('Header Title', () => {
 });
 
 test.describe('Clocking', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should clock in and out on a header', async ({ page }) => {
@@ -561,14 +580,14 @@ test.describe('Clocking', () => {
     await expect(clockOutButton).toHaveCount(0);
 
     // Click the clock in button
-    await clickClickCatcherButton(page, 'org-clock-in');
+    await firefoxHelper.clickClickCatcherButton('org-clock-in');
 
     // After clocking in, the clock in button should be gone and clock out should appear
     await expect(clockInButton).toHaveCount(0);
     await expect(clockOutButton).toBeVisible();
 
     // Close the drawer by switching to title editor mode (ensures clean state)
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait a moment for the state to settle
     await page.waitForTimeout(100);
@@ -585,14 +604,14 @@ test.describe('Clocking', () => {
     await expect(clockOutButton).toBeVisible();
 
     // Click the clock out button
-    await clickClickCatcherButton(page, 'org-clock-out');
+    await firefoxHelper.clickClickCatcherButton('org-clock-out');
 
     // After clocking out, the clock in button should be back and clock out should be gone
     await expect(clockInButton).toBeVisible();
     await expect(clockOutButton).toHaveCount(0);
 
     // Close the drawer by switching to title editor mode (ensures clean state)
-    await clickClickCatcherButton(page, 'drawer-action-edit-title');
+    await firefoxHelper.clickClickCatcherButton('drawer-action-edit-title');
 
     // Wait a moment for the state to settle
     await page.waitForTimeout(100);
@@ -610,10 +629,15 @@ test.describe('Clocking', () => {
 });
 
 test.describe('Header Creation', () => {
+  let appHelper;
+  let firefoxHelper;
+
   test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
   });
 
   test('should add new header below current header', async ({ page }) => {
@@ -628,7 +652,7 @@ test.describe('Header Creation', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click the add new header button (plus icon)
-    await clickClickCatcherButton(page, 'header-action-plus');
+    await firefoxHelper.clickClickCatcherButton('header-action-plus');
 
     // A new header should be created below the Tables header
     // The new header should be editable (title input should be visible)

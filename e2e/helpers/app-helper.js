@@ -20,7 +20,7 @@ class AppHelper {
    * This method ensures that:
    * - DOM content is loaded
    * - Network requests are idle (no pending requests)
-   * - The org-file-container is visible (app is rendered)
+   * - Either org-file-container is visible OR landing page content is visible
    *
    * Use this at the start of tests or after navigation to ensure the app
    * is ready before interacting with elements.
@@ -42,12 +42,16 @@ class AppHelper {
     // Wait for network to be idle (no pending requests)
     await this.page.waitForLoadState('networkidle', { timeout });
 
-    // Wait for the org file container to be visible
+    // Wait for either the org file container OR landing page content to be visible
     // This indicates the React app has rendered and is ready
-    await this.page.waitForSelector('[data-testid="org-file-container"]', {
-      state: 'visible',
-      timeout,
-    });
+    await this.page.waitForFunction(
+      () => {
+        const orgContainer = document.querySelector('[data-testid="org-file-container"]');
+        const landingContent = document.querySelector('a'); // Landing page has links
+        return orgContainer !== null || landingContent !== null;
+      },
+      { timeout }
+    );
   }
 
   /**

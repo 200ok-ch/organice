@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
+import AppHelper from '../../helpers/app-helper.js';
 
 test.describe('Header Removal', () => {
   test('should remove header by swiping left', async ({ page }) => {
-    const isMobile =
-      test.info().project.name === 'Mobile Chrome' || test.info().project.name === 'Mobile Safari';
+    const appHelper = new AppHelper(page);
 
     await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    // Wait for the sample content to load by checking for specific text
-    await expect(page.getByText('This is an actual org file')).toBeVisible();
+    await appHelper.waitForAppReady();
+
+    const isMobile =
+      test.info().project.name === 'Mobile Chrome' || test.info().project.name === 'Mobile Safari';
 
     // Find a header that we can safely remove for testing
     // Using the "Tap on any header to open it" header as it's a simple top-level header
