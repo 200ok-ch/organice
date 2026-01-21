@@ -276,7 +276,7 @@ test.describe('Header Description', () => {
     await expect(actionDrawer).toBeVisible();
 
     // Click on the edit description button (pen in square icon)
-    // The data-id is 'edit-header-title' (this appears to be the description editor button)
+    // The data-testid is 'edit-header-title' (this is the description editor button)
     await clickClickCatcherButton(page, 'edit-header-title');
 
     // Wait for the description editor modal to open
