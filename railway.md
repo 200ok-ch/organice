@@ -42,8 +42,7 @@ railway login
 # Link to your project (or create new)
 railway link
 
-# Set environment variables: configure on railway
-
+# set env variables
 # Deploy
 railway up
 ```

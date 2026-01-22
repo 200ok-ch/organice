@@ -58,6 +58,7 @@ COPY --from=build /opt/organice/dist ./build/
 COPY --from=build /opt/organice/bin ./bin/
 COPY --from=build /opt/organice/package.json .
 COPY --from=build /opt/organice/.env .
+COPY --from=build /opt/organice/.env.sample .
 
 # Create non-root user
 RUN groupadd organice \
