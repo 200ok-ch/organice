@@ -377,6 +377,9 @@ class Header extends PureComponent {
     if (this.pendingDragY !== null && this.state.dragStartY !== null) {
       const translateY = this.pendingDragY - this.state.dragStartY;
 
+      // Handle scrolling if dragged header is at viewport boundary
+      this.handleScrollIfAtBoundary();
+
       // Update drop target detection
       const dropTarget = this.findDropTarget(this.pendingDragY);
       this.setState({
@@ -388,6 +391,24 @@ class Header extends PureComponent {
       this.pendingDragY = null;
     }
     this.dragReorderRAFId = null;
+  }
+
+  handleScrollIfAtBoundary() {
+    if (!this.containerDiv) return;
+
+    const SCROLL_THRESHOLD = 50; // pixels from edge
+    const SCROLL_AMOUNT = 10; // pixels to scroll per frame
+    const draggedRect = this.containerDiv.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Check if dragged header is near the top edge
+    if (draggedRect.top < SCROLL_THRESHOLD) {
+      window.scrollBy(0, -SCROLL_AMOUNT);
+    }
+    // Check if dragged header is near the bottom edge
+    else if (draggedRect.bottom > viewportHeight - SCROLL_THRESHOLD) {
+      window.scrollBy(0, SCROLL_AMOUNT);
+    }
   }
 
   findDropTarget(pointerY) {
