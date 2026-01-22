@@ -1,0 +1,5 @@
+[build]
+buildCommand = "yarn railway:build"
+
+[deploy]
+startCommand = "yarn railway:start"
