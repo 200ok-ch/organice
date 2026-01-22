@@ -1,6 +1,7 @@
 #!/bin/bash
 
-shopt -s globstar
+# REMOVE due bash error
+# shopt -s globstar
 
 RVARS=$(cut -d = -f 1 .env.sample)
 
