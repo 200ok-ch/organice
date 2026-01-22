@@ -6,14 +6,13 @@ cmds = ['yarn install --frozen-lockfile']
 
 [phases.build]
 cmds = [
+  'chmod +x bin/railway_build.sh',
   'chmod +x bin/transient_env_vars.sh',
-  'bin/transient_env_vars.sh bait >> .env',
-  'yarn build',
-  'bin/transient_env_vars.sh switch dist serve'
+  './bin/railway_build.sh'
 ]
 
 [start]
 cmd = 'npx serve -s serve -p $PORT'
 
 [variables]
-NODE_ENV = 'production'
+NODE_ENV = 'production''
