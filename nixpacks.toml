@@ -7,9 +7,8 @@ cmds = ['yarn install --frozen-lockfile']
 [phases.build]
 cmds = [
   'yarn build',
-  'chmod +x bin/build_env.sh',
-  'bin/build_env.sh bait > .env.production',
-  'bin/build_env.sh switch build build-runtime'
+  'chmod +x bin/transcient_env_vars.sh',
+  './bin/transcient_env_vars.sh switch build build-runtime'
 ]
 
 [start]

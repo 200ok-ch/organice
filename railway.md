@@ -18,10 +18,16 @@ Configure these environment variables in your Railway project settings:
 
 ### Build Process
 
-The build process uses the `bin/build_env.sh` script to:
-1. Generate environment variable mappings from `ORGANICE_*` to `REACT_APP_*` format
-2. Inject these variables into the built JavaScript files
-3. Create a production-ready build in `build-runtime/`
+The build process uses the `bin/transcient_env_vars.sh` script to:
+1. Build the React application to the `build/` directory
+2. Copy the build to `build-runtime/` directory
+3. Replace placeholder strings in JavaScript files with actual environment variable values
+4. The script converts `ORGANICE_*` environment variables into the built JavaScript bundle
+
+**How it works:**
+- During build, Railway provides `ORGANICE_GITLAB_CLIENT_ID` and `ORGANICE_GITLAB_SECRET` as environment variables
+- The `transcient_env_vars.sh switch` command copies `build/` to `build-runtime/` and injects these values into the JavaScript files
+- This allows environment-specific configuration without rebuilding the application
 
 ## Deployment Steps
 
@@ -68,10 +74,21 @@ The `nixpacks.toml` file configures the build process:
 - **Setup phase**: Installs Node.js and Yarn via Nix packages
 - **Install phase**: Installs dependencies with `yarn install --frozen-lockfile`
 - **Build phase**: 
-  - Builds the React app
-  - Runs the environment variable injection script
-  - Creates the runtime build directory
-- **Start phase**: Serves static files using `serve` on Railway's assigned port
+  - Builds the React app to `build/` directory
+  - Makes the `transcient_env_vars.sh` script executable
+  - Runs `transcient_env_vars.sh switch build build-runtime` to:
+    - Copy the build directory
+    - Inject environment variable values into JavaScript files
+- **Start phase**: Serves static files from `build-runtime/` using `serve` on Railway's assigned port
+
+### Environment Variable Injection
+
+The deployment uses a unique approach to inject environment variables:
+
+1. React build creates static JavaScript files with placeholder strings
+2. The `transcient_env_vars.sh` script performs string replacement in the built files
+3. `ORGANICE_*` prefixed variables are injected into the JavaScript bundle
+4. This allows the same build to be configured for different environments
 
 ### Custom Domain
 
@@ -85,15 +102,23 @@ To add a custom domain:
 
 ### Build fails with permission denied
 
-Ensure the build script is executable:
+Ensure the script is executable:
 ```bash
-chmod +x bin/build_env.sh
+chmod +x bin/transcient_env_vars.sh
 ```
+This is automatically handled in the nixpacks build phase.
 
 ### Environment variables not applied
 
-Make sure you're using the `ORGANICE_` prefix for environment variables in Railway, not `REACT_APP_`. The build script handles the conversion.
+Make sure you're using the `ORGANICE_` prefix for environment variables in Railway, not `REACT_APP_`. The `transcient_env_vars.sh` script handles the variable naming conversion and injection.
 
 ### Port binding issues
 
 Railway automatically provides a `$PORT` environment variable. The nixpacks configuration uses this for the serve command.
+
+### GitLab OAuth not working
+
+Verify that:
+1. Your GitLab OAuth application callback URL is set correctly
+2. Environment variables `ORGANICE_GITLAB_CLIENT_ID` and `ORGANICE_GITLAB_SECRET` are set in Railway
+3. The variables were set before the deployment (redeploy if you added them after)
