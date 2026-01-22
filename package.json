@@ -65,9 +65,7 @@
     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",
     "prettier-eslint": "./node_modules/.bin/prettier-eslint \"`pwd`/**/*.js\"",
     "lint": "eslint src",
-    "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi",
-    "railway:build": "chmod +x bin/railway_build.sh && ./bin/railway_build.sh",
-    "railway:start": "serve -s serve -p $PORT"
+    "postinstall": "if [ \"$ON_HEROKU\" ]; then npm install -g serve; fi"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
