@@ -52,11 +52,10 @@ railway up
 1. Go to [Railway Dashboard](https://railway.app/dashboard)
 2. Click "New Project" → "Deploy from GitHub repo"
 3. Select your Organice fork/repository
-4. Railway will automatically detect the `nixpacks.toml` configuration
-5. Add environment variables in the "Variables" tab:
+4. Add environment variables in the "Variables" tab:
    - `ORGANICE_GITLAB_CLIENT_ID`
    - `ORGANICE_GITLAB_SECRET`
-6. Railway will automatically build and deploy
+5. Railway will automatically build and deploy
 
 ### Option 3: Using Railway Button
 
@@ -65,20 +64,6 @@ Add this button to your README for one-click deployment:
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template?referralCode=YOUR_CODE)
 
 ## Configuration Details
-
-### nixpacks.toml
-
-The `nixpacks.toml` file configures the build process:
-
-- **Setup phase**: Installs Node.js and Yarn via Nix packages
-- **Install phase**: Installs dependencies with `yarn install --frozen-lockfile`
-- **Build phase**: 
-  - Builds the React app to `build/` directory
-  - Makes the `transcient_env_vars.sh` script executable
-  - Runs `transcient_env_vars.sh switch build build-runtime` to:
-    - Copy the build directory
-    - Inject environment variable values into JavaScript files
-- **Start phase**: Serves static files from `build-runtime/` using `serve` on Railway's assigned port
 
 ### Environment Variable Injection
 
