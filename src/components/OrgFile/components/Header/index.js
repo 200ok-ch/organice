@@ -454,6 +454,35 @@ class Header extends PureComponent {
     return { headerId: targetElement.headerId, position };
   }
 
+  getParentHeaderId(headerId) {
+    // Returns the immediate parent header ID for a given header, or null for top-level headers
+    const headers = this.props.headers || this.props.file?.get('headers');
+    if (!headers) return null;
+
+    const headerIndex = headers.findIndex(h => h.get('id') === headerId);
+    if (headerIndex === -1) return null;
+
+    const headerLevel = headers.getIn([headerIndex, 'nestingLevel']);
+
+    // Top-level headers have no parent
+    if (headerLevel === 1) {
+      return null;
+    }
+
+    // Search backwards for the parent header
+    // Parent is the most recent header with a lower nesting level
+    for (let i = headerIndex - 1; i >= 0; i--) {
+      const header = headers.get(i);
+      const nestingLevel = header.get('nestingLevel');
+
+      if (nestingLevel < headerLevel) {
+        return header.get('id');
+      }
+    }
+
+    return null;
+  }
+
   isDescendantHeader(potentialDescendantId, ancestorId) {
     // Check if potentialDescendantId is a child/grandchild of ancestorId
     const headers = this.props.headers || this.props.file?.get('headers');
