@@ -15,7 +15,7 @@ FROM base AS development
 COPY . /opt/organice
 
 # Generate environment variables
-RUN bin/transient_env_vars.sh bait > .env
+RUN bin/transient_env_vars.sh bait >> .env
 
 # Create non-root user
 RUN groupadd organice \
@@ -41,7 +41,7 @@ COPY . /opt/organice
 RUN yarn install --frozen-lockfile
 
 # Generate environment variables
-RUN bin/transient_env_vars.sh bait > .env
+RUN bin/transient_env_vars.sh bait >> .env
 
 # Build the application
 RUN yarn build
