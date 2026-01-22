@@ -534,6 +534,94 @@ const moveSubtreeRight = (state, action) => {
   return openDirectParent(state, action.headerId);
 };
 
+const moveHeaderToPosition = (state, action) => {
+  let headers = state.get('headers');
+  const { header: sourceHeader, headerIndex: sourceHeaderIndex } = indexAndHeaderWithId(
+    headers,
+    action.headerId
+  );
+  const { headerIndex: targetHeaderIndex } = indexAndHeaderWithId(
+    headers,
+    action.targetHeaderId
+  );
+
+  // Get the subtree of the header being moved
+  const sourceSubheaders = subheadersOfHeaderWithId(headers, action.headerId);
+  const sourceSubtreeSize = 1 + sourceSubheaders.size;
+
+  // Validate: Cannot move a header to its own descendant
+  if (
+    action.targetHeaderId === action.headerId ||
+    isDescendantOf(headers, action.targetHeaderId, action.headerId)
+  ) {
+    return state;
+  }
+
+  // Validate: Target and source must be at the same nesting level
+  const sourceLevel = sourceHeader.get('nestingLevel');
+  const targetLevel = headers.getIn([targetHeaderIndex, 'nestingLevel']);
+
+  // Only allow reordering within the same level (siblings only)
+  if (targetLevel !== sourceLevel) {
+    return state;
+  }
+
+  // Extract the source subtree
+  const sourceSubtree = headers.slice(sourceHeaderIndex, sourceHeaderIndex + sourceSubtreeSize);
+
+  // Remove source subtree from original position
+  headers = headers.delete(sourceHeaderIndex, sourceHeaderIndex + sourceSubtreeSize);
+
+  // Recalculate target index after removal
+  const adjustedTargetIndex =
+    targetHeaderIndex > sourceHeaderIndex
+      ? targetHeaderIndex - sourceSubtreeSize
+      : targetHeaderIndex;
+
+  // Insert at the calculated position
+  const insertIndex =
+    action.position === 'above'
+      ? adjustedTargetIndex
+      : adjustedTargetIndex + 1; // +1 because we need to account for the target header itself
+
+  headers = headers.splice(insertIndex, 0, ...sourceSubtree);
+
+  state = state.set('headers', headers);
+
+  // Update cookies if nesting level changed
+  const parentHeaderId = parentIdOfHeaderWithId(headers, action.headerId);
+  if (parentHeaderId) {
+    state = updateCookiesOfHeaderWithId(state, parentHeaderId);
+  }
+
+  return state;
+};
+
+// Helper function to check if a header is a descendant of another
+const isDescendantOf = (headers, potentialDescendantId, ancestorId) => {
+  const ancestorIndex = indexOfHeaderWithId(headers, ancestorId);
+  if (ancestorIndex === -1) return false;
+
+  const ancestorLevel = headers.getIn([ancestorIndex, 'nestingLevel']);
+
+  // Search for the potential descendant after the ancestor
+  for (let i = ancestorIndex + 1; i < headers.size; i++) {
+    const header = headers.get(i);
+    const nestingLevel = header.get('nestingLevel');
+
+    // If we've reached a sibling or parent of the ancestor, stop looking
+    if (nestingLevel <= ancestorLevel) {
+      return false;
+    }
+
+    if (header.get('id') === potentialDescendantId) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 /**
  * Move an item in immutablejs Lists.
  * @param {list} List
@@ -1819,6 +1907,8 @@ const reducer = (state, action) => {
       return inFile(moveHeaderLeft);
     case 'MOVE_HEADER_RIGHT':
       return inFile(moveHeaderRight);
+    case 'MOVE_HEADER_TO_POSITION':
+      return inFile(moveHeaderToPosition);
     case 'MOVE_SUBTREE_LEFT':
       return inFile(moveSubtreeLeft);
     case 'MOVE_SUBTREE_RIGHT':
