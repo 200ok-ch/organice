@@ -27,6 +27,8 @@ import { exportHeaderWithSubheaders } from '../../../../lib/export_org';
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
   FREE_DRAG_ACTIVATION_DISTANCE = 10;
+  DRAG_REORDER_LONG_PRESS_DURATION = 600;
+  DRAG_REORDER_MOVEMENT_THRESHOLD = 10;
 
   constructor(props) {
     super(props);
@@ -52,6 +54,12 @@ class Header extends PureComponent {
       'handleRefileHeaderRequest',
       'handleAddNoteClick',
       'handleDuplicateHeader',
+      // Drag-reorder long-press handlers
+      'handleDragReorderPressStart',
+      'handleDragReorderPressMove',
+      'handleDragReorderPressEnd',
+      'handleDragReorderPressCancel',
+      'handleEscapeKey',
     ]);
 
     this.state = {
@@ -65,6 +73,15 @@ class Header extends PureComponent {
       // Track vertical touch positions to detect vertical scrolling intent
       touchStartY: null,
       currentTouchY: null,
+      // Track vertical drag-reorder state
+      isDraggingVertically: false,
+      dragStartY: null,
+      currentDragY: null,
+      dragModeActive: false,
+      dragTranslateY: 0,
+      // Drop target detection
+      dropTargetHeaderId: null,
+      dropPosition: null, // 'above' or 'below'
     };
 
     // Store member callbacks handling global mouse/touch events to be able to handle dragging
@@ -73,6 +90,15 @@ class Header extends PureComponent {
     this.globalMouseUpHandler = this.handleMouseUp.bind(this);
     this.globalTouchMoveHandler = this.handleTouchMove.bind(this);
     this.globalTouchEndHandler = this.handleTouchEnd.bind(this);
+
+    // Long-press timer for drag-reorder mode
+    this.dragReorderLongPressTimer = null;
+    this.dragReorderPressStartPosition = null;
+    this.isDragReorderLongPressing = false;
+
+    // RequestAnimationFrame for smooth drag updates
+    this.dragReorderRAFId = null;
+    this.pendingDragY = null;
   }
 
   addGlobalDragHandlers() {
@@ -91,6 +117,14 @@ class Header extends PureComponent {
     window.removeEventListener('touchend', this.globalTouchEndHandler);
   }
 
+  addEscapeKeyHandler() {
+    window.addEventListener('keydown', this.handleEscapeKey);
+  }
+
+  removeEscapeKeyHandler() {
+    window.removeEventListener('keydown', this.handleEscapeKey);
+  }
+
   componentDidMount() {
     if (this.containerDiv) {
       this.setState({ containerWidth: this.containerDiv.offsetWidth });
@@ -99,6 +133,13 @@ class Header extends PureComponent {
 
   componentWillUnmount() {
     this.removeGlobalDragHandlers();
+    this.removeEscapeKeyHandler();
+    if (this.dragReorderLongPressTimer) {
+      clearTimeout(this.dragReorderLongPressTimer);
+    }
+    if (this.dragReorderRAFId) {
+      cancelAnimationFrame(this.dragReorderRAFId);
+    }
   }
 
   handleRef(containerDiv) {
@@ -175,23 +216,37 @@ class Header extends PureComponent {
   }
 
   handleMouseDown(event) {
+    // Start drag-reorder long-press detection
+    this.handleDragReorderPressStart(event.clientX, event.clientY, event);
+    // Also start horizontal swipe detection (will be canceled if drag-reorder activates)
     this.handleDragStart(event, event.clientX);
   }
 
   handleMouseMove(event) {
+    // Handle drag-reorder movement
+    this.handleDragReorderPressMove(event.clientX, event.clientY);
+    // Handle horizontal swipe movement
     this.handleDragMove(event.clientX, event.clientY);
   }
 
   handleMouseUp() {
+    // Handle drag-reorder end
+    this.handleDragReorderPressEnd();
+    // Handle horizontal swipe end
     this.handleDragEnd();
   }
 
   handleTouchStart(event) {
-    // Capture the initial Y position of the touch to track vertical movement
     const touch = event.changedTouches[0];
+
+    // Capture the initial Y position of the touch to track vertical movement
     this.setState({
       touchStartY: touch.clientY,
     });
+
+    // Start drag-reorder long-press detection
+    this.handleDragReorderPressStart(touch.clientX, touch.clientY, event);
+    // Also start horizontal swipe detection (will be canceled if drag-reorder activates)
     this.handleDragStart(event, touch.clientX);
   }
 
@@ -202,6 +257,9 @@ class Header extends PureComponent {
 
     // Update the current Y position for vertical movement tracking
     this.setState({ currentTouchY: currentY });
+
+    // Handle drag-reorder movement
+    this.handleDragReorderPressMove(currentX, currentY);
 
     // Detect if this is primarily a vertical scroll gesture
     // If the user is moving more vertically than horizontally, we should
@@ -228,6 +286,9 @@ class Header extends PureComponent {
       touchStartY: null,
       currentTouchY: null,
     });
+    // Handle drag-reorder end
+    this.handleDragReorderPressEnd();
+    // Handle horizontal swipe end
     this.handleDragEnd();
   }
 
@@ -237,10 +298,281 @@ class Header extends PureComponent {
       touchStartY: null,
       currentTouchY: null,
     });
+    // Handle drag-reorder cancel
+    this.handleDragReorderPressCancel();
+    // Handle horizontal swipe cancel
     this.handleDragCancel();
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  // Drag-Reorder Long-Press Handlers
+  ////////////////////////////////////////////////////////////////////////////////
+
+  handleDragReorderPressStart(clientX, clientY, event) {
+    // Prevent drag if actions are disabled (e.g., during editing)
+    if (this.props.shouldDisableActions) {
+      return;
+    }
+
+    // Prevent drag if the target is within a table cell
+    if (event && event.target && event.target.closest('.table-part')) {
+      return;
+    }
+
+    // Prevent drag if the target is within the action drawer
+    if (event && event.target && event.target.closest('.header-action-drawer-container')) {
+      return;
+    }
+
+    this.isDragReorderLongPressing = false;
+    this.didDragReorder = false; // Reset flag at start
+    this.dragReorderPressStartPosition = { x: clientX, y: clientY };
+
+    this.dragReorderLongPressTimer = setTimeout(() => {
+      this.isDragReorderLongPressing = true;
+      this.didDragReorder = true; // Mark that drag-reorder mode activated
+      this.addEscapeKeyHandler();
+      this.setState({
+        dragModeActive: true,
+        isDraggingVertically: true,
+        dragStartY: clientY,
+        currentDragY: clientY,
+      });
+    }, this.DRAG_REORDER_LONG_PRESS_DURATION);
+  }
+
+  handleDragReorderPressMove(clientX, clientY) {
+    if (this.dragReorderPressStartPosition && !this.isDragReorderLongPressing) {
+      const deltaX = Math.abs(clientX - this.dragReorderPressStartPosition.x);
+      const deltaY = Math.abs(clientY - this.dragReorderPressStartPosition.y);
+
+      // Only cancel if there's significant movement
+      if (deltaX > 5 || deltaY > 5) {
+        // If horizontal movement dominates (horizontal swipe intent), cancel drag-reorder
+        // The + 10px threshold gives preference to horizontal swipe when ambiguous
+        if (deltaX > deltaY + 10) {
+          this.handleDragReorderPressCancel();
+          return;
+        }
+
+        // If total movement exceeds threshold but vertical intent isn't clear,
+        // cancel to let normal scrolling/swiping work
+        const movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (movement > this.DRAG_REORDER_MOVEMENT_THRESHOLD && deltaX >= deltaY) {
+          this.handleDragReorderPressCancel();
+          return;
+        }
+      }
+    }
+
+    if (this.state.isDraggingVertically) {
+      this.pendingDragY = clientY;
+      if (!this.dragReorderRAFId) {
+        this.dragReorderRAFId = requestAnimationFrame(this.updateDragPosition.bind(this));
+      }
+    }
+  }
+
+  updateDragPosition() {
+    if (this.pendingDragY !== null && this.state.dragStartY !== null) {
+      const translateY = this.pendingDragY - this.state.dragStartY;
+
+      // Update drop target detection
+      const dropTarget = this.findDropTarget(this.pendingDragY);
+      this.setState({
+        currentDragY: this.pendingDragY,
+        dragTranslateY: translateY,
+        dropTargetHeaderId: dropTarget.headerId,
+        dropPosition: dropTarget.position,
+      });
+      this.pendingDragY = null;
+    }
+    this.dragReorderRAFId = null;
+  }
+
+  findDropTarget(pointerY) {
+    // Find the header element under the pointer
+    const headerElements = document.querySelectorAll('.header');
+    const currentHeaderId = this.props.header.get('id');
+
+    let targetElement = null;
+    let minDistance = Infinity;
+    let firstValidElement = null;
+    let lastValidElement = null;
+
+    headerElements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      const headerId = element.dataset?.headerId;
+
+      // Skip the dragged header itself and its children
+      if (headerId === currentHeaderId || this.isDescendantHeader(headerId, currentHeaderId)) {
+        return;
+      }
+
+      // Track first and last valid elements for boundary handling
+      if (!firstValidElement) {
+        firstValidElement = { element, rect, headerId };
+      }
+      lastValidElement = { element, rect, headerId };
+
+      // Check if pointer is within or near this header element
+      if (pointerY >= rect.top - 20 && pointerY <= rect.bottom + 20) {
+        const distance = Math.abs(pointerY - (rect.top + rect.height / 2));
+        if (distance < minDistance) {
+          minDistance = distance;
+          targetElement = { element, rect, headerId };
+        }
+      }
+    });
+
+    // Handle document boundaries
+    if (!targetElement) {
+      if (!firstValidElement) {
+        return { headerId: null, position: null };
+      }
+
+      // Pointer is above all headers - target the first one
+      const firstRect = firstValidElement.rect;
+      if (pointerY < firstRect.top) {
+        return { headerId: firstValidElement.headerId, position: 'above' };
+      }
+
+      // Pointer is below all headers - target the last one
+      const lastRect = lastValidElement.rect;
+      if (pointerY > lastRect.bottom) {
+        return { headerId: lastValidElement.headerId, position: 'below' };
+      }
+
+      // No valid target found
+      return { headerId: null, position: null };
+    }
+
+    // Determine if pointer is in top or bottom half of target header
+    const midpoint = targetElement.rect.top + targetElement.rect.height / 2;
+    const position = pointerY < midpoint ? 'above' : 'below';
+
+    return { headerId: targetElement.headerId, position };
+  }
+
+  isDescendantHeader(potentialDescendantId, ancestorId) {
+    // Check if potentialDescendantId is a child/grandchild of ancestorId
+    const headers = this.props.headers || this.props.file?.get('headers');
+    if (!headers) return false;
+
+    const ancestorIndex = headers.findIndex(h => h.get('id') === ancestorId);
+    if (ancestorIndex === -1) return false;
+
+    const ancestorLevel = headers.getIn([ancestorIndex, 'nestingLevel']);
+
+    // Find the potential descendant
+    for (let i = ancestorIndex + 1; i < headers.size; i++) {
+      const header = headers.get(i);
+      const headerId = header.get('id');
+      const nestingLevel = header.get('nestingLevel');
+
+      // If we've reached a sibling or parent of the ancestor, stop looking
+      if (nestingLevel <= ancestorLevel) {
+        return false;
+      }
+
+      if (headerId === potentialDescendantId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  handleDragReorderPressEnd() {
+    if (this.dragReorderLongPressTimer) {
+      clearTimeout(this.dragReorderLongPressTimer);
+      this.dragReorderLongPressTimer = null;
+    }
+
+    this.dragReorderPressStartPosition = null;
+
+    if (this.dragReorderRAFId) {
+      cancelAnimationFrame(this.dragReorderRAFId);
+      this.dragReorderRAFId = null;
+    }
+
+    this.pendingDragY = null;
+
+    this.removeEscapeKeyHandler();
+
+    // Commit the drop if we have a valid drop target
+    if (
+      this.state.isDraggingVertically &&
+      this.state.dropTargetHeaderId &&
+      this.state.dropPosition
+    ) {
+      this.props.org.moveHeaderToPosition(
+        this.props.header.get('id'),
+        this.state.dropTargetHeaderId,
+        this.state.dropPosition
+      );
+    }
+
+    if (this.state.isDraggingVertically) {
+      this.setState({
+        isDraggingVertically: false,
+        dragStartY: null,
+        currentDragY: null,
+        dragModeActive: false,
+        dragTranslateY: 0,
+        dropTargetHeaderId: null,
+        dropPosition: null,
+      });
+    }
+
+    this.isDragReorderLongPressing = false;
+  }
+
+  handleDragReorderPressCancel() {
+    if (this.dragReorderLongPressTimer) {
+      clearTimeout(this.dragReorderLongPressTimer);
+      this.dragReorderLongPressTimer = null;
+    }
+
+    this.dragReorderPressStartPosition = null;
+
+    if (this.dragReorderRAFId) {
+      cancelAnimationFrame(this.dragReorderRAFId);
+      this.dragReorderRAFId = null;
+    }
+
+    this.pendingDragY = null;
+
+    this.removeEscapeKeyHandler();
+
+    if (this.state.isDraggingVertically) {
+      this.setState({
+        isDraggingVertically: false,
+        dragStartY: null,
+        currentDragY: null,
+        dragModeActive: false,
+        dragTranslateY: 0,
+        dropTargetHeaderId: null,
+        dropPosition: null,
+      });
+    }
+
+    this.isDragReorderLongPressing = false;
+  }
+
+  handleEscapeKey(event) {
+    if (event.key === 'Escape' && this.state.isDraggingVertically) {
+      this.handleDragReorderPressCancel();
+    }
+  }
+
   handleHeaderClick(event) {
+    // Prevent click if a drag-reorder was just completed
+    if (this.didDragReorder) {
+      this.didDragReorder = false;
+      return;
+    }
+
     const classList = event.target.classList;
     if (classList.contains('header') || classList.contains('header__bullet')) {
       const { header, hasContent, isSelected, closeSubheadersRecursively } = this.props;
@@ -437,6 +769,7 @@ class Header extends PureComponent {
     const className = classNames('header', {
       'header--selected': isSelected,
       'header--removing': isPlayingRemoveAnimation,
+      'header--dragging': this.state.isDraggingVertically,
     });
 
     const logBookEntries = header
@@ -474,6 +807,13 @@ class Header extends PureComponent {
             headerStyle.height = this.state.heightBeforeRemove * heightFactor;
           }
 
+          // Apply vertical drag transform when drag-reorder is active
+          if (this.state.isDraggingVertically && this.state.dragTranslateY !== 0) {
+            headerStyle.transform = `translateY(${this.state.dragTranslateY}px)`;
+            // Ensure the dragged header appears on top of other headers
+            headerStyle.zIndex = 1000;
+          }
+
           return (
             <div
               className={className}
@@ -483,6 +823,7 @@ class Header extends PureComponent {
               onMouseDown={this.handleMouseDown}
               onTouchStart={this.handleTouchStart}
               onTouchCancel={this.handleTouchCancel}
+              data-header-id={header.get('id')}
             >
               <Motion style={leftSwipeActionContainerStyle}>
                 {(leftInterpolatedStyle) => {
