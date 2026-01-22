@@ -5,6 +5,53 @@ This directory contains end-to-end tests for organice using [[https://playwright
 
 ** Running Tests
 
+Playwright automatically starts the dev server (=yarn start=) before running tests.
+See =playwright.config.js= for the =webServer= configuration.
+
+#+BEGIN_SRC shell
+# Run all E2E tests (Chromium, Firefox, WebKIT, Mobile)
+yarn test:e2e
+
+# Run specific browser
+yarn test:e2e --project=chromium
+
+# Run with UI mode
+yarn test:e2e:ui
+
+# Run in debug mode
+yarn test:e2e:debug
+
+# Run in headed mode (show browser)
+yarn test:e2e:headed
+
+# View HTML report
+yarn test:e2e:report
+
+# Run Jest + Playwright
+yarn test:all
+#+END_SRC
+
+*** Production Build vs Dev Server
+
+The e2e tests use the development server (=yarn start=) by default.
+
+*Dev Server (Default):*
+- Faster iteration (no build step)
+- Hot module reloading
+- Better for development and debugging
+- Used by: =yarn test:e2e=
+
+*Production Build:*
+- Tests the actual production bundle
+- Catches build-related bugs
+- Slower iteration (requires rebuild)
+- To use: Build first with =yarn build=, then update =webServer= command
+
+For most cases, the dev server is sufficient. Use production builds for:
+- Pre-release validation
+- Performance testing
+- Size/bundle verification
+
 #+BEGIN_SRC shell
 # Run all E2E tests (Chromium, Firefox, WebKIT, Mobile)
 yarn test:e2e
@@ -56,6 +103,32 @@ test.describe('My Feature', () => {
 
 ** Test Helpers
 
+*** AppHelper (Recommended for all new tests)
+
+Application-level helper for waiting for the app to be fully loaded and ready.
+This helper uses DOM-based ready detection instead of =networkidle= for reliability.
+
+#+BEGIN_SRC javascript
+import AppHelper from '../helpers/app-helper';
+
+const appHelper = new AppHelper(page);
+
+// Wait for app to be ready (works for both org-file and landing page)
+await appHelper.waitForAppReady();
+
+// Wait specifically for org file to be loaded
+await appHelper.waitForOrgFileReady();
+
+// Wait for authenticated state
+await appHelper.waitForAuthenticatedReady();
+
+// Wait for landing page
+await appHelper.waitForLandingReady();
+#+END_SRC
+
+*Important:* Always use =waitForAppReady()= or =waitForOrgFileReady()= after navigation.
+Do NOT use =waitForLoadState('networkidle')= as it is unreliable in CI environments.
+
 *** E2ETestHelper
 
 Common operations like navigation, element interaction, and waiting.
@@ -92,12 +165,72 @@ const content = fixtures.readOrgFixture('all_the_features');
 
 ** Best Practices
 
-- Use specific selectors (class names or data-testid)
+*** Always Use AppHelper for Ready Detection
+
+#+BEGIN_SRC javascript
+import AppHelper from '../../helpers/app-helper';
+
+test('my test', async ({ page }) => {
+  const appHelper = new AppHelper(page);
+
+  await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+  await appHelper.waitForOrgFileReady(); // Wait for app to be ready
+
+  // Now interact with elements
+  const header = page.locator('.header').first();
+  await expect(header).toBeVisible();
+});
+#+END_SRC
+
+*** Use data-testid Attributes (Not CSS Classes)
+
+CSS classes like =.header-action-drawer__add-button= can change during refactoring.
+Always use =data-testid= attributes for test selectors:
+
+#+BEGIN_SRC javascript
+// ✅ GOOD - Stable selector
+const addButton = page.locator('[data-testid="property-list-editor-add-button"]');
+
+// ❌ BAD - Fragile selector
+const addButton = page.locator('.property-list-editor__add-new-container');
+#+END_SRC
+
+When adding new components, include =data-testid= attributes:
+#+BEGIN_SRC javascript
+<button
+  data-testid="my-component-action-button"
+  onClick={handleAction}
+/>
+#+END_SRC
+
+*** Use DOM-Based Ready Detection (NOT networkidle)
+
+=waitForLoadState('networkidle')= is unreliable in CI because Service Workers
+keep connections open indefinitely. Instead:
+
+#+BEGIN_SRC javascript
+// ✅ GOOD - DOM-based detection
+await page.goto('/sample', { waitUntil: 'load' });
+await page.waitForSelector('[data-testid="org-file-container"]', { state: 'attached' });
+
+// ❌ BAD - networkidle can hang forever
+await page.goto('/sample');
+await page.waitForLoadState('networkidle', { timeout: 30000 });
+#+END_SRC
+
+Or use AppHelper which wraps this pattern:
+#+BEGIN_SRC javascript
+await appHelper.waitForOrgFileReady();
+#+END_SRC
+
+*** Other Best Practices
+
 - Keep tests isolated and independent
 - Use auto-waiting (Playwright waits automatically)
 - Test user flows, not implementation details
 - Use =/sample= route for unauthenticated tests
 - Target footer elements specifically with =.footer= prefix to avoid navbar matches
+- Clean up state in =afterEach= if tests modify data
 
 ** Authenticated Testing
 
@@ -194,6 +327,30 @@ Check CircleCI logs for:
 - Browser installation failures
 - Network timeouts during =yarn install=
 - Playwright browser installation
+
+**** Flaky Tests (Inconsistent Pass/Fail)
+
+Common causes and solutions:
+
+1. *Not waiting for app to be ready*
+   - Always use =appHelper.waitForAppReady()= after navigation
+   - Don't rely on fixed timeouts
+
+2. *Using networkidle detection*
+   - Replace =waitForLoadState('networkidle')= with DOM-based waiting
+   - Use =waitForSelector= with specific elements
+
+3. *Race conditions with state updates*
+   - Use =waitForSelector= or =waitForFunction= for dynamic content
+   - Avoid relying on element presence without explicit waiting
+
+4. *Multiple tests modifying the same data*
+   - Clean up state in =afterEach= hooks
+   - Use unique test data for each test
+
+5. *Browser differences*
+   - Test in multiple browsers (Chromium, Firefox, WebKit)
+   - Use browser-specific selectors if needed
 
 ** Resources
 
