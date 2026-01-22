@@ -395,6 +395,9 @@ class Header extends PureComponent {
     const headerElements = document.querySelectorAll('.header');
     const currentHeaderId = this.props.header.get('id');
 
+    // Get the parent of the dragged header to constrain drops to same-level siblings
+    const draggedParentId = this.getParentHeaderId(currentHeaderId);
+
     let targetElement = null;
     let minDistance = Infinity;
     let firstValidElement = null;
@@ -406,6 +409,12 @@ class Header extends PureComponent {
 
       // Skip the dragged header itself and its children
       if (headerId === currentHeaderId || this.isDescendantHeader(headerId, currentHeaderId)) {
+        return;
+      }
+
+      // Filter to only include headers with the same parent (same-level siblings)
+      const candidateParentId = this.getParentHeaderId(headerId);
+      if (candidateParentId !== draggedParentId) {
         return;
       }
 
