@@ -62,3 +62,60 @@
 .header-deadline--overdue {
   color: var(--red);
 }
+
+/******************************************************************************/
+/* Drag-Reorder Visual Feedback Styles */
+/******************************************************************************/
+
+.header--dragging {
+  position: relative;
+  z-index: 1000;
+  opacity: 0.9;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+              0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-out,
+              opacity 0.2s ease-out,
+              box-shadow 0.2s ease-out;
+}
+
+.header--dragging-placeholder {
+  opacity: 0.4;
+  background-color: var(--base1-soft);
+  border-radius: 4px;
+  transition: opacity 0.15s ease-out,
+              background-color 0.15s ease-out;
+}
+
+.header--drop-target {
+  position: relative;
+}
+
+.header--drop-target::before,
+.header--drop-target::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--base0B);
+  border-radius: 2px;
+  transition: opacity 0.15s ease-out;
+}
+
+.header--drop-target-above::before {
+  opacity: 1;
+  top: -2px;
+}
+
+.header--drop-target-below::after {
+  opacity: 1;
+  bottom: -2px;
+}
+
+.header--dragging-child {
+  opacity: 0.6;
+  transition: opacity 0.15s ease-out;
+}
+
+
