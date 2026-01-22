@@ -16,15 +16,14 @@ case $1 in
   "switch")
     SRC=$2
     DST=$3
-
     rm -rf "$DST"
     cp -r "$SRC" "$DST"
-
     OVARS=${RVARS//REACT_APP_/ORGANICE_}
-
     for KEY in $OVARS; do
       VALUE=${!KEY}
-      sed -i "s/$KEY/$VALUE/" "$DST"/**/*.js
+      find "$DST" -name "*.js" -type f | while read -r file; do
+        awk -v key="$KEY" -v val="$VALUE" '{gsub(key, val)} 1' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+      done
     done
     ;;
 
