@@ -36,9 +36,7 @@ railway login
 # Link to your project (or create new)
 railway link
 
-# Set environment variables
-railway variables set ORGANICE_GITLAB_CLIENT_ID=your_client_id
-railway variables set ORGANICE_GITLAB_SECRET=your_secret
+# Set environment variables: configure on railway
 
 # Deploy
 railway up
