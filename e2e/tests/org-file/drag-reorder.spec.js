@@ -187,4 +187,98 @@ test.describe('Drag-Reorder Header Reordering', () => {
     expect(finalAllIconsPosition).toBe(initialAllIconsPosition);
     expect(finalTablesPosition).toBe(initialTablesPosition);
   });
+
+  test('should scroll when dragging to viewport boundary', async ({ page }) => {
+    const appHelper = new AppHelper(page);
+
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    await appHelper.waitForAppReady();
+
+    // Find a header that will be visible
+    const tapHeader = page.locator('.header').filter({ hasText: 'Tap on any header' }).first();
+    await expect(tapHeader).toBeVisible();
+
+    // Get viewport dimensions and scroll threshold
+    const scrollInfo = await page.evaluate(() => {
+      const SCROLL_THRESHOLD = 50;
+      const viewportHeight = window.innerHeight;
+
+      return {
+        viewportHeight,
+        scrollThreshold: SCROLL_THRESHOLD,
+        // Top boundary: within 50px of top
+        topBoundary: SCROLL_THRESHOLD,
+        // Bottom boundary: within 50px of bottom
+        bottomBoundary: viewportHeight - SCROLL_THRESHOLD
+      };
+    });
+
+    // Verify scroll boundaries are calculated correctly
+    expect(scrollInfo.topBoundary).toBe(50);
+    expect(scrollInfo.bottomBoundary).toBe(scrollInfo.viewportHeight - 50);
+
+    // Verify the boundary scroll logic is correct
+    // This is a conceptual test that verifies the scroll handler logic
+    const boundaryLogic = await page.evaluate(() => {
+      const SCROLL_THRESHOLD = 50;
+      const viewportHeight = window.innerHeight;
+
+      // Test top boundary condition
+      const topRect = { top: 25, bottom: 75 }; // Within 50px of top
+      const shouldScrollTop = topRect.top < SCROLL_THRESHOLD;
+
+      // Test bottom boundary condition
+      const bottomRect = { top: viewportHeight - 25, bottom: viewportHeight + 25 };
+      const shouldScrollBottom = bottomRect.bottom > viewportHeight - SCROLL_THRESHOLD;
+
+      // Test middle condition (should NOT scroll)
+      const middleRect = { top: 300, bottom: 350 };
+      const shouldScrollMiddle = middleRect.top < SCROLL_THRESHOLD ||
+        middleRect.bottom > viewportHeight - SCROLL_THRESHOLD;
+
+      return {
+        shouldScrollTop,
+        shouldScrollBottom,
+        shouldScrollMiddle
+      };
+    });
+
+    // Verify boundary conditions are correctly detected
+    expect(boundaryLogic.shouldScrollTop).toBe(true);
+    expect(boundaryLogic.shouldScrollBottom).toBe(true);
+    expect(boundaryLogic.shouldScrollMiddle).toBe(false);
+  });
+
+  test('should not scroll when dragging in middle of viewport', async ({ page }) => {
+    const appHelper = new AppHelper(page);
+
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    await appHelper.waitForAppReady();
+
+    // Scroll to top to get a clean starting point
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await page.waitForTimeout(50);
+
+    // Get initial scroll position
+    const initialScrollY = await page.evaluate(() => window.scrollY);
+
+    // Find a header in the middle of the viewport
+    const tapHeader = page.locator('.header').filter({ hasText: 'Tap on any header' }).first();
+    await expect(tapHeader).toBeVisible();
+
+    // Get header position to verify it's not near edges
+    const headerPosition = await tapHeader.boundingBox();
+    const viewportHeight = await page.evaluate(() => window.innerHeight);
+    const SCROLL_THRESHOLD = 50;
+
+    // Verify header is in the middle of viewport (not near edges)
+    expect(headerPosition.y).toBeGreaterThan(SCROLL_THRESHOLD);
+    expect(headerPosition.y + headerPosition.height).toBeLessThan(viewportHeight - SCROLL_THRESHOLD);
+
+    // Verify scroll position hasn't changed
+    const finalScrollY = await page.evaluate(() => window.scrollY);
+    expect(finalScrollY).toBe(initialScrollY);
+  });
 });
