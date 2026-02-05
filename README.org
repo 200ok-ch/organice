@@ -61,7 +61,7 @@ volunteering [[https://github.com/200ok-ch/organice/graphs/contributors][contrib
 and want to sponsor the development of Free and Open Source software,
 you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and [[https://www.patreon.com/200ok][Patreon]].🙏
 
-#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/nuts4nuts4nuts"> <img src="https://github.com/nuts4nuts4nuts.png" width="50px" alt="@nuts4nuts4nuts"/></a> </p>
+#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/nuts4nuts4nuts"> <img src="https://github.com/nuts4nuts4nuts.png" width="50px" alt="@nuts4nuts4nuts"/></a> <a href="https://github.com/dtvillafana"> <img src="https://github.com/dtvillafana.png" width="50px" alt="@dtvillafana"/> </a> </p>
 
 And one *huge* anonymous sponsor.
 
