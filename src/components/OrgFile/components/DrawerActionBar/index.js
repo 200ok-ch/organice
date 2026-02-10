@@ -93,7 +93,11 @@ class DrawerActionBar extends PureComponent {
   }
 
   handleRemoveHeader() {
-    if (this.props.captureMode) return;
+    if (this.props.captureMode) {
+      // In capture mode, "delete" discards the capture by closing the popup
+      this.props.base.closePopup();
+      return;
+    }
     this.props.base.closePopup();
     this.props.org.selectHeader(null);
     this.props.org.removeHeader(this.props.header.get('id'));
