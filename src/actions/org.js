@@ -512,6 +512,19 @@ export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, 
   dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
 };
 
+export const insertCaptureFromHeader = (templateId, header, shouldPrepend) => (
+  dispatch,
+  getState
+) => {
+  dispatch(closePopup());
+
+  const template = getState()
+    .capture.get('captureTemplates')
+    .concat(sampleCaptureTemplates)
+    .find((template) => template.get('id') === templateId);
+  dispatch({ type: 'INSERT_CAPTURE_FROM_HEADER', template, header, shouldPrepend, dirtying: true });
+};
+
 export const clearPendingCapture = () => ({
   type: 'CLEAR_PENDING_CAPTURE',
 });

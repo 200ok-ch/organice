@@ -904,6 +904,37 @@ const insertCapture = (state, action) => {
   return state;
 };
 
+const insertCaptureFromHeader = (state, action) => {
+  const headers = state.get('headers');
+  const { template, header, shouldPrepend } = action;
+
+  const { newIndex, nestingLevel, parentHeader } = insertCapturePosition(
+    template,
+    headers,
+    shouldPrepend
+  );
+  if (newIndex === undefined) {
+    // Should never happen; see comment in insertCapturePosition below.
+    return state;
+  }
+
+  // Take the pre-parsed header and set its nesting level
+  // Ensure it has a unique ID (generate one if not present)
+  let newHeader = header.set('nestingLevel', nestingLevel);
+  if (!newHeader.get('id')) {
+    newHeader = newHeader.set('id', generateId());
+  }
+
+  state = state.update('headers', (headers) => headers.insert(newIndex, newHeader));
+  if (parentHeader !== undefined) {
+    // We inserted the new header under a parent rather than at the top or
+    // bottom of the file.
+    state = updateCookiesOfHeaderWithId(state, parentHeader.get('id'));
+  }
+
+  return state;
+};
+
 const insertCapturePosition = (template, headers, shouldPrepend) => {
   const headerPaths = template.get('headerPaths');
   if (headerPaths.size === 0) {
@@ -1865,6 +1896,10 @@ const reducer = (state, action) => {
       return action.template.get('file')
         ? reduceInFile(state, action, action.template.get('file'))(insertCapture)
         : inFile(insertCapture);
+    case 'INSERT_CAPTURE_FROM_HEADER':
+      return action.template.get('file')
+        ? reduceInFile(state, action, action.template.get('file'))(insertCaptureFromHeader)
+        : inFile(insertCaptureFromHeader);
     case 'CLEAR_PENDING_CAPTURE':
       return clearPendingCapture(state, action);
     case 'ADVANCE_CHECKBOX_STATE':
@@ -1970,7 +2005,7 @@ export const determineAffectedFiles = (state, action) => {
   if (action.dirtying) {
     if (action.type === 'REFILE_SUBTREE') {
       return [action.sourcePath, action.targetPath];
-    } else if (action.type === 'INSERT_CAPTURE') {
+    } else if (action.type === 'INSERT_CAPTURE' || action.type === 'INSERT_CAPTURE_FROM_HEADER') {
       const captureTarget = action.template.get('file');
       if (captureTarget) {
         return [captureTarget];
