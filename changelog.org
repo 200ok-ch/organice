@@ -7,6 +7,14 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-02-10 Mon]
+
+** Fixed
+
+*** Theme/color scheme flash on startup
+    - Fixed a bug where the app would briefly show dark mode before switching to the configured light mode
+    - The color scheme is now applied immediately from localStorage before React renders, eliminating the visual flash
+
 * [2026-01-08 Thu]
 
 ** Added

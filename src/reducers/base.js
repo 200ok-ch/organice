@@ -146,6 +146,12 @@ const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
 };
 
+const osColorSchemeChanged = (state) => {
+  // Increment a counter to force a re-render in Entry (PureComponent).
+  // The colorScheme value stays as 'OS'; loadTheme() re-queries the OS preference.
+  return state.update('osColorSchemeChangeCount', (c) => (c || 0) + 1);
+};
+
 const setTheme = (state, action) => {
   return state.set('theme', action.theme);
 };
@@ -177,6 +183,8 @@ export default (state = Map(), action) => {
       return setShouldStoreSettingsInSyncBackend(state, action);
     case 'SET_COLOR_SCHEME':
       return setColorScheme(state, action);
+    case 'OS_COLOR_SCHEME_CHANGED':
+      return osColorSchemeChanged(state);
     case 'SET_THEME':
       return setTheme(state, action);
     case 'SET_SHOULD_LIVE_SYNC':

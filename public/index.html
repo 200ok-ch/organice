@@ -16,6 +16,18 @@
     <link rel="apple-touch-icon" href="./organice.png" />
     <title>organice - keep your life nicely organized</title>
     <link rel="manifest" href="./manifest.json" />
+    <script>
+      // Restore cached theme CSS variables before CSS loads to prevent
+      // a flash of Solarized Light (the :root default in colors.css).
+      try {
+        var v = localStorage.getItem('themeVariables');
+        if (v) {
+          var vars = JSON.parse(v);
+          var s = document.documentElement.style;
+          for (var k in vars) s.setProperty(k, vars[k]);
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <noscript>

@@ -229,6 +229,7 @@ const mapStateToProps = (state) => {
     hasDirtyFiles,
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
+    osColorSchemeChangeCount: state.base.get('osColorSchemeChangeCount'),
   };
 };
 
