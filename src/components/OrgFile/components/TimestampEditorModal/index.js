@@ -68,6 +68,8 @@ export default class TimestampEditorModal extends PureComponent {
           planningItemIndex={planningItemIndex}
           onClose={onClose}
           onChange={this.handleChange('firstTimestamp')}
+          onCreatePlanningItem={this.props.onCreatePlanningItem}
+          onRemovePlanningItem={this.props.onRemovePlanningItem}
         />
 
         {!singleTimestampOnly &&

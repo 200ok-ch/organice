@@ -44,7 +44,8 @@ import {
 } from '../../lib/org_utils';
 import { parseCaptureTemplate } from '../../lib/capture_template_parsing';
 import { parseTitleLine, parseMarkupAndCookies, parseRawText, _updateHeaderFromDescription, updatePlanningItemsFromHeader } from '../../lib/parse_org';
-import { getTimestampAsText } from '../../lib/timestamps';
+import { getTimestampAsText, timestampForDate } from '../../lib/timestamps';
+import generateId from '../../lib/id_generator';
 import { formatTextWrap } from '../../util/misc';
 
 import _ from 'lodash';
@@ -99,6 +100,8 @@ class OrgFile extends PureComponent {
       'handleCaptureTimestampChange',
       'handleCaptureDescriptionChange',
       'handleCaptureAddNote',
+      'handleCaptureCreatePlanningItem',
+      'handleCaptureRemovePlanningItem',
     ]);
 
     this.state = {
@@ -447,6 +450,40 @@ class OrgFile extends PureComponent {
     );
     this.setState({
       captureHeader: updatedHeader.set('planningItems', updatePlanningItemsFromHeader(updatedHeader)),
+    });
+  }
+
+  handleCaptureCreatePlanningItem(planningType) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    const newPlanningItem = fromJS({
+      id: generateId(),
+      type: planningType,
+      timestamp: timestampForDate(new Date()),
+    });
+
+    const updatedHeader = captureHeader.update('planningItems', (planningItems) =>
+      planningItems ? planningItems.push(newPlanningItem) : fromJS([newPlanningItem])
+    );
+    const newIndex = updatedHeader.get('planningItems').size - 1;
+
+    this.setState({ captureHeader: updatedHeader });
+
+    // Re-open the popup with the new planning item index
+    const popupType = { DEADLINE: 'deadline-editor', SCHEDULED: 'scheduled-editor' }[planningType];
+    this.props.base.activatePopup(popupType, {
+      headerId: captureHeader.get('id'),
+      planningItemIndex: newIndex,
+    });
+  }
+
+  handleCaptureRemovePlanningItem(planningItemIndex) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    this.setState({
+      captureHeader: captureHeader.removeIn(['planningItems', planningItemIndex]),
     });
   }
 
@@ -1028,6 +1065,12 @@ class OrgFile extends PureComponent {
                     this.state.captureMode
                       ? this.handleCaptureTimestampChange
                       : this.handleTimestampChange
+                  }
+                  onCreatePlanningItem={
+                    this.state.captureMode ? this.handleCaptureCreatePlanningItem : null
+                  }
+                  onRemovePlanningItem={
+                    this.state.captureMode ? this.handleCaptureRemovePlanningItem : null
                   }
                   allTags={extractAllOrgTags(headers)}
                   allOrgProperties={extractAllOrgProperties(headers)}

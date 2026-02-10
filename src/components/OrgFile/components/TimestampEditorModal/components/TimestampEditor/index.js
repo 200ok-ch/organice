@@ -50,7 +50,12 @@ class TimestampEditor extends PureComponent {
     if (_.isEmpty(event.target.value)) {
       // It's a planning item and the parser knows which one.
       if (_.isNumber(planningItemIndex)) {
-        this.props.org.removePlanningItem(this.props.headerId, planningItemIndex);
+        if (this.props.onRemovePlanningItem) {
+          // Capture mode: remove from local state via callback
+          this.props.onRemovePlanningItem(planningItemIndex);
+        } else {
+          this.props.org.removePlanningItem(this.props.headerId, planningItemIndex);
+        }
       } else if (_.isNumber(timestampId)) {
         this.props.org.removeTimestamp(this.props.headerId, timestampId);
       }
@@ -353,15 +358,20 @@ class TimestampEditor extends PureComponent {
   }
 
   createPlanningItem() {
-    const { selectedHeaderId, header, activePopupType } = this.props;
+    const { selectedHeaderId, header, activePopupType, onCreatePlanningItem } = this.props;
     const planningType = { 'deadline-editor': 'DEADLINE', 'scheduled-editor': 'SCHEDULED' }[
       activePopupType
     ];
-    this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
-    this.props.base.activatePopup(activePopupType, {
-      headerId: selectedHeaderId,
-      planningItemIndex: header.get('planningItems').size,
-    });
+    if (onCreatePlanningItem) {
+      // Capture mode: add planning item to local state via callback
+      onCreatePlanningItem(planningType);
+    } else {
+      this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
+      this.props.base.activatePopup(activePopupType, {
+        headerId: selectedHeaderId,
+        planningItemIndex: header.get('planningItems').size,
+      });
+    }
   }
 
   render() {

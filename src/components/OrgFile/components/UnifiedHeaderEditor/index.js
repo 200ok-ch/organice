@@ -42,6 +42,8 @@ class UnifiedHeaderEditor extends PureComponent {
       handleTagsChange,
       handlePropertyListItemsChange,
       handleTimestampChange,
+      onCreatePlanningItem,
+      onRemovePlanningItem,
       allTags,
       allOrgProperties,
       getPopupCloseAction,
@@ -127,6 +129,8 @@ class UnifiedHeaderEditor extends PureComponent {
             singleTimestampOnly={!activePopupData.get('timestampId')}
             onClose={getPopupCloseAction(activePopupType)}
             onChange={handleTimestampChange(activePopupData)}
+            onCreatePlanningItem={onCreatePlanningItem}
+            onRemovePlanningItem={onRemovePlanningItem}
           />
         );
       case 'note-editor':
