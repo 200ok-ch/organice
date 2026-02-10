@@ -24,6 +24,7 @@ import SearchModal from './components/SearchModal';
 import ExternalLink from '../UI/ExternalLink';
 import Drawer from '../UI/Drawer/';
 import DrawerActionBar from './components/DrawerActionBar';
+import UnifiedHeaderEditor, { UNIFIED_EDITOR_POPUP_TYPES } from './components/UnifiedHeaderEditor';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -82,6 +83,7 @@ class OrgFile extends PureComponent {
       'handleSyncConfirmationCancel',
       'handleTagsChange',
       'handlePropertyListItemsChange',
+      'handleTimestampChange',
       'getPopupCloseAction',
       'getPopupSwitchAction',
       'checkPopupAndHeader',
@@ -600,6 +602,7 @@ class OrgFile extends PureComponent {
       customKeybindings,
       orgFileErrorMessage,
       activePopupType,
+      activePopupData,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -732,16 +735,25 @@ class OrgFile extends PureComponent {
               }}
               maxSize={this.getPopupMaxSize(activePopupType)}
             >
-              {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
-              {(activePopupType === 'title-editor' ||
-                activePopupType === 'description-editor' ||
-                activePopupType === 'tags-editor' ||
-                activePopupType === 'property-list-editor' ||
-                activePopupType === 'timestamp-editor' ||
-                activePopupType === 'scheduled-editor' ||
-                activePopupType === 'deadline-editor' ||
-                activePopupType === 'note-editor') && (
-                <DrawerActionBar
+              {UNIFIED_EDITOR_POPUP_TYPES.includes(activePopupType) ? (
+                <UnifiedHeaderEditor
+                  activePopupType={activePopupType}
+                  activePopupData={activePopupData}
+                  selectedHeader={this.props.selectedHeader}
+                  headers={headers}
+                  todoKeywordSets={this.props.todoKeywordSets}
+                  editRawValues={this.state.editRawValues}
+                  dontIndent={this.props.dontIndent}
+                  shouldDisableActions={shouldDisableActions}
+                  setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
+                  saveTitle={this.saveTitle}
+                  handleTodoChange={this.handleTodoChange}
+                  handleTagsChange={this.handleTagsChange}
+                  handlePropertyListItemsChange={this.handlePropertyListItemsChange}
+                  handleTimestampChange={this.handleTimestampChange}
+                  allTags={extractAllOrgTags(headers)}
+                  allOrgProperties={extractAllOrgProperties(headers)}
+                  getPopupCloseAction={this.getPopupCloseAction}
                   onSwitch={() => {
                     this.getPopupSwitchAction(activePopupType)(
                       ...(this.state.popupCloseActionValuesAccessor
@@ -749,12 +761,13 @@ class OrgFile extends PureComponent {
                         : [])
                     );
                   }}
-                  editRawValues={this.state.editRawValues}
                   setEditRawValues={(editRawValues) => this.setState({ editRawValues })}
                   restorePreferEditRawValues={() =>
                     this.setState({ editRawValues: this.props.preferEditRawValues })
                   }
                 />
+              ) : (
+                this.renderActivePopup(setPopupCloseActionValuesAccessor)
               )}
             </Drawer>
           ) : null}
