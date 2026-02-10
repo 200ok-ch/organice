@@ -10,15 +10,8 @@ import './stylesheet.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
-import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
-import TagsEditorModal from './components/TagsEditorModal';
-import TimestampEditorModal from './components/TimestampEditorModal';
-import PropertyListEditorModal from './components/PropertyListEditorModal';
-import TitleEditorModal from './components/TitleEditorModal';
-import DescriptionEditorModal from './components/DescriptionEditorModal';
 import TableEditorModal from './components/TableEditorModal';
-import NoteEditorModal from './components/NoteEditorModal';
 import AgendaModal from './components/AgendaModal';
 import SearchModal from './components/SearchModal';
 import ExternalLink from '../UI/ExternalLink';
@@ -35,8 +28,6 @@ import { ActionCreators as undoActions } from 'redux-undo';
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
 import {
-  timestampWithId,
-  headerWithId,
   extractAllOrgTags,
   extractAllOrgProperties,
   changelogHash,
@@ -74,7 +65,6 @@ class OrgFile extends PureComponent {
       'handleMoveHeaderRightHotKey',
       'handleUndoHotKey',
       'handleContainerRef',
-      'handleCapture',
       'handlePopupClose',
       'handleSearchPopupClose',
       'handleRefilePopupClose',
@@ -305,10 +295,6 @@ class OrgFile extends PureComponent {
     if (this.container) {
       this.container.focus();
     }
-  }
-
-  handleCapture(templateId, content, shouldPrepend) {
-    this.props.org.insertCapture(templateId, content, shouldPrepend);
   }
 
   handleCaptureFromEditor() {
@@ -732,97 +718,6 @@ class OrgFile extends PureComponent {
             onCancel={this.handleSyncConfirmationCancel}
           />
         );
-      case 'capture':
-        // Look up by ID first, then fall back to matching by description.
-        // Template IDs are regenerated when settings reload from the sync
-        // backend, which can happen asynchronously while a capture modal
-        // is already open. Falling back to description keeps the modal
-        // working through that reload.
-        const template =
-          captureTemplates.find(
-            (template) => template.get('id') === activePopupData.get('templateId')
-          ) ||
-          captureTemplates.find(
-            (template) =>
-              template.get('description') === activePopupData.get('templateDescription')
-          );
-        if (!template) {
-          this.props.base.closePopup();
-          return null;
-        }
-        const path = template.get('file');
-        let headersOfCaptureTarget = headers;
-        if (path) {
-          const file = files.get(path);
-          headersOfCaptureTarget = file ? file.get('headers') : List();
-        }
-        return (
-          <CaptureModal
-            template={template}
-            headers={headersOfCaptureTarget}
-            onCapture={this.handleCapture}
-            onClose={this.getPopupCloseAction(activePopupType)}
-          />
-        );
-      case 'tags-editor':
-        const allTags = extractAllOrgTags(headers);
-        return (
-          <TagsEditorModal
-            header={selectedHeader}
-            allTags={allTags}
-            onChange={this.handleTagsChange}
-          />
-        );
-      case 'timestamp-editor':
-      case 'scheduled-editor':
-      case 'deadline-editor':
-        let editingTimestamp = null;
-        if (activePopupData.get('timestampId')) {
-          editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
-        } else if (activePopupData.get('logEntryIndex') !== undefined) {
-          editingTimestamp = fromJS({
-            firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
-              'logBookEntries',
-              activePopupData.get('logEntryIndex'),
-              activePopupData.get('entryType'),
-            ]),
-          });
-        } else if (
-          // for scheduled timestamp and deadline the modal can be opened when no timestamp exists
-          (activePopupType !== 'scheduled-editor' && activePopupType !== 'deadline-editor') ||
-          activePopupData.get('planningItemIndex') !== -1
-        ) {
-          editingTimestamp = fromJS({
-            firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
-              'planningItems',
-              activePopupData.get('planningItemIndex'),
-              'timestamp',
-            ]),
-          });
-        }
-
-        return (
-          <TimestampEditorModal
-            headerId={activePopupData.get('headerId')}
-            timestamp={editingTimestamp}
-            timestampId={activePopupData.get('timestampId')}
-            popupType={activePopupType}
-            planningItemIndex={activePopupData.get('planningItemIndex')}
-            singleTimestampOnly={!activePopupData.get('timestampId')}
-            onClose={this.getPopupCloseAction(activePopupType)}
-            onChange={this.handleTimestampChange(activePopupData)}
-          />
-        );
-
-      case 'property-list-editor':
-        const allOrgProperties = extractAllOrgProperties(headers);
-        return selectedHeader ? (
-          <PropertyListEditorModal
-            onChange={this.handlePropertyListItemsChange}
-            propertyListItems={selectedHeader.get('propertyListItems')}
-            allOrgProperties={allOrgProperties}
-          />
-        ) : null;
       case 'agenda':
         return (
           <AgendaModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
@@ -833,31 +728,8 @@ class OrgFile extends PureComponent {
         );
       case 'refile':
         return <SearchModal context="refile" onClose={this.getPopupCloseAction(activePopupType)} />;
-      case 'title-editor':
-        return (
-          <TitleEditorModal
-            editRawValues={this.state.editRawValues}
-            todoKeywordSets={todoKeywordSets}
-            onClose={this.getPopupCloseAction('title-editor')}
-            saveTitle={this.saveTitle}
-            onTodoClicked={this.handleTodoChange}
-            header={selectedHeader}
-            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-          />
-        );
-      case 'description-editor':
-        return (
-          <DescriptionEditorModal
-            editRawValues={this.state.editRawValues}
-            header={selectedHeader}
-            dontIndent={this.props.dontIndent}
-            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-          />
-        );
       case 'table-editor':
         return <TableEditorModal shouldDisableActions={shouldDisableActions} />;
-      case 'note-editor':
-        return <NoteEditorModal shouldDisableActions={shouldDisableActions} />;
       default:
         return null;
     }
