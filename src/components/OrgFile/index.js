@@ -43,7 +43,9 @@ import {
   STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
 import { parseCaptureTemplate } from '../../lib/capture_template_parsing';
-import { parseTitleLine, parseMarkupAndCookies, _updateHeaderFromDescription } from '../../lib/parse_org';
+import { parseTitleLine, parseMarkupAndCookies, parseRawText, _updateHeaderFromDescription, updatePlanningItemsFromHeader } from '../../lib/parse_org';
+import { getTimestampAsText } from '../../lib/timestamps';
+import { formatTextWrap } from '../../util/misc';
 
 import _ from 'lodash';
 import { fromJS, List, Map, Set } from 'immutable';
@@ -96,6 +98,7 @@ class OrgFile extends PureComponent {
       'handleCapturePropertyListItemsChange',
       'handleCaptureTimestampChange',
       'handleCaptureDescriptionChange',
+      'handleCaptureAddNote',
     ]);
 
     this.state = {
@@ -429,6 +432,22 @@ class OrgFile extends PureComponent {
         });
       }
     }
+  }
+
+  handleCaptureAddNote(inputText, currentDate) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/g, '\n  $1');
+    const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
+    const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
+
+    const updatedHeader = captureHeader.update('logNotes', (logNotes) =>
+      parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
+    );
+    this.setState({
+      captureHeader: updatedHeader.set('planningItems', updatePlanningItemsFromHeader(updatedHeader)),
+    });
   }
 
   handlePopupClose() {
@@ -1027,6 +1046,7 @@ class OrgFile extends PureComponent {
                   captureMode={this.state.captureMode}
                   captureTemplate={this.state.captureTemplate}
                   captureShouldPrepend={this.state.captureShouldPrepend}
+                  onAddNote={this.state.captureMode ? this.handleCaptureAddNote : null}
                   onCapture={this.handleCaptureFromEditor}
                   onTogglePrepend={() =>
                     this.setState({ captureShouldPrepend: !this.state.captureShouldPrepend })

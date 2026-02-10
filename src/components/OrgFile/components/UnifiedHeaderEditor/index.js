@@ -130,7 +130,12 @@ class UnifiedHeaderEditor extends PureComponent {
           />
         );
       case 'note-editor':
-        return <NoteEditorModal shouldDisableActions={shouldDisableActions} />;
+        return (
+          <NoteEditorModal
+            shouldDisableActions={shouldDisableActions}
+            onAddNote={this.props.onAddNote}
+          />
+        );
       default:
         return null;
     }
