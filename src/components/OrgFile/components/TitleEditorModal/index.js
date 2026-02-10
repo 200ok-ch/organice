@@ -25,17 +25,20 @@ export default class TitleEditorModal extends PureComponent {
       'handleNextTodoKeywordSet',
     ]);
 
+    const header = props.header;
     const todoKeywordSet = this.chooseTodoKeywordSet(
       props.todoKeywordSets,
-      props.header.getIn(['titleLine', 'todoKeyword'])
+      header ? header.getIn(['titleLine', 'todoKeyword']) : undefined
     );
 
     this.state = {
       todoKeywordSet,
       todoKeywordSetIndex: props.todoKeywordSets.indexOf(todoKeywordSet),
-      titleValue: props.editRawValues
-        ? this.calculateRawTitle(props.header)
-        : props.header.getIn(['titleLine', 'rawTitle']),
+      titleValue: header
+        ? props.editRawValues
+          ? this.calculateRawTitle(header)
+          : header.getIn(['titleLine', 'rawTitle'])
+        : '',
     };
   }
 
@@ -45,22 +48,30 @@ export default class TitleEditorModal extends PureComponent {
 
   componentDidMount() {
     this.props.setPopupCloseActionValuesAccessor(() => [this.state.titleValue]);
+    // Ensure cursor is at end of text after mount (autoFocus may not trigger onFocus reliably)
+    if (this.textarea) {
+      const len = this.textarea.value.length;
+      this.textarea.selectionStart = len;
+      this.textarea.selectionEnd = len;
+    }
   }
 
   componentDidUpdate(prevProps) {
     const { header, editRawValues } = this.props;
+    if (!header) return;
     if (prevProps.header !== header || prevProps.editRawValues !== editRawValues) {
       this.setState({
         titleValue: editRawValues
           ? this.calculateRawTitle(header)
           : header.getIn(['titleLine', 'rawTitle']),
       });
-      this.textarea.focus();
+      if (this.textarea) this.textarea.focus();
     }
   }
 
   handleTextareaFocus(event) {
     const { header } = this.props;
+    if (!header) return;
     const rawTitle = header.getIn(['titleLine', 'rawTitle']);
     if (rawTitle === '') {
       const text = event.target.value;
@@ -112,7 +123,9 @@ export default class TitleEditorModal extends PureComponent {
   }
 
   handleTodoChange(newTodoKeyword) {
-    const currentTodoKeyword = this.props.header.getIn(['titleLine', 'todoKeyword']);
+    const currentTodoKeyword = this.props.header
+      ? this.props.header.getIn(['titleLine', 'todoKeyword'])
+      : undefined;
     // Unselecting a keyword happens by writing an empty string as
     // keyword. Checking if the newly clicked todo keyword is the same
     // as the currently set todo keyword.
@@ -153,14 +166,14 @@ export default class TitleEditorModal extends PureComponent {
                       .get('completedKeywords')
                       .filter((completed) => todo === completed).size === 0
                 )}
-              selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
+              selectedButton={this.props.header ? this.props.header.getIn(['titleLine', 'todoKeyword']) : undefined}
               onSelect={this.handleTodoChange}
             />
             <TabButtons
               buttons={this.state.todoKeywordSet
                 .get('completedKeywords')
                 .filter((todo) => todo !== '')}
-              selectedButton={this.props.header.getIn(['titleLine', 'todoKeyword'])}
+              selectedButton={this.props.header ? this.props.header.getIn(['titleLine', 'todoKeyword']) : undefined}
               onSelect={this.handleTodoChange}
             />
 

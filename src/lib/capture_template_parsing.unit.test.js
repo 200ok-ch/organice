@@ -16,9 +16,9 @@ describe('parseCaptureTemplate', () => {
       const result = parseCaptureTemplate('* TODO %?', defaultTodoKeywordSets);
 
       // When template is '* TODO %?', after substitution it becomes '* TODO '
-      // newHeaderFromText strips to 'TODO' which doesn't match 'TODO ' pattern
-      // so it's treated as title text, not a keyword
-      expect(result.header.getIn(['titleLine', 'rawTitle'])).toBe('TODO');
+      // parseTitleLine recognizes 'TODO' as a keyword even without trailing text
+      expect(result.header.getIn(['titleLine', 'todoKeyword'])).toBe('TODO');
+      expect(result.header.getIn(['titleLine', 'rawTitle'])).toBe('');
       expect(result.header.get('description').size).toBe(0);
       expect(result.initialSubEditor).toBe('title-editor');
       expect(result.substitutedText).toBe('* TODO ');

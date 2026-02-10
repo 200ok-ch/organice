@@ -16,10 +16,13 @@ class DescriptionEditorModal extends PureComponent {
 
     _.bindAll(this, ['handleTextareaRef', 'handleDescriptionChange', 'handleInsertTimestamp']);
 
+    const header = props.header;
     this.state = {
-      descriptionValue: props.editRawValues
-        ? this.calculateRawDescription(props.header)
-        : props.header.get('rawDescription'),
+      descriptionValue: header
+        ? props.editRawValues
+          ? this.calculateRawDescription(header)
+          : header.get('rawDescription')
+        : '',
       editorDescriptionHeightValue: props.editorDescriptionHeightValue
         ? props.editorDescriptionHeightValue
         : '8',
@@ -32,13 +35,14 @@ class DescriptionEditorModal extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const { header, editRawValues } = this.props;
+    if (!header) return;
     if (prevProps.header !== header || prevProps.editRawValues !== editRawValues) {
       this.setState({
         descriptionValue: this.props.editRawValues
           ? this.calculateRawDescription(header)
           : header.get('rawDescription'),
       });
-      this.textarea.focus();
+      if (this.textarea) this.textarea.focus();
     }
   }
 

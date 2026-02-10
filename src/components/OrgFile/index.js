@@ -43,6 +43,7 @@ import {
   STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
 import { parseCaptureTemplate } from '../../lib/capture_template_parsing';
+import { parseTitleLine, parseMarkupAndCookies, _updateHeaderFromDescription } from '../../lib/parse_org';
 
 import _ from 'lodash';
 import { fromJS, List, Map, Set } from 'immutable';
@@ -197,16 +198,20 @@ class OrgFile extends PureComponent {
         Map()
       );
 
-      // Store capture state and switch to the initial sub-editor
-      this.setState({
-        captureMode: true,
-        captureHeader: header,
-        captureTemplate: template,
-        captureShouldPrepend: template.get('shouldPrepend', false),
-      });
-
-      // Switch popup type to the initial sub-editor
-      this.props.base.activatePopup(initialSubEditor);
+      // Store capture state first, then switch popup type in the callback
+      // to ensure state is committed before the popup type triggers a re-render
+      this.setState(
+        {
+          captureMode: true,
+          captureHeader: header,
+          captureTemplate: template,
+          captureShouldPrepend: template.get('shouldPrepend', false),
+        },
+        () => {
+          // Switch popup type to the initial sub-editor only after state is committed
+          this.props.base.activatePopup(initialSubEditor);
+        }
+      );
     }
   }
 
@@ -301,8 +306,28 @@ class OrgFile extends PureComponent {
   }
 
   handleCaptureFromEditor() {
-    const { captureHeader, captureTemplate, captureShouldPrepend } = this.state;
+    let { captureHeader, captureTemplate, captureShouldPrepend } = this.state;
     if (!captureHeader || !captureTemplate) return;
+
+    // Flush the current sub-editor's values to captureHeader before saving.
+    const activePopupType = this.props.activePopupType;
+    if (this.state.popupCloseActionValuesAccessor) {
+      const values = this.state.popupCloseActionValuesAccessor();
+      // Apply the values directly to captureHeader instead of going through setState
+      if (activePopupType === 'title-editor' && values[0] !== undefined) {
+        const titleValue = values[0];
+        if (this.state.editRawValues) {
+          const newTitleLine = parseTitleLine(titleValue.trim(), this.props.todoKeywordSets);
+          captureHeader = captureHeader.set('titleLine', newTitleLine);
+        } else {
+          captureHeader = captureHeader
+            .setIn(['titleLine', 'rawTitle'], titleValue)
+            .setIn(['titleLine', 'title'], fromJS(parseMarkupAndCookies(titleValue)));
+        }
+      } else if (activePopupType === 'description-editor' && values[0] !== undefined) {
+        captureHeader = _updateHeaderFromDescription(captureHeader, values[0]);
+      }
+    }
 
     this.props.org.insertCaptureFromHeader(
       captureTemplate.get('id'),
@@ -320,25 +345,28 @@ class OrgFile extends PureComponent {
   }
 
   saveCaptureTitle(titleValue) {
-    const { captureHeader } = this.state;
-    if (!captureHeader) return;
+    // Use functional setState so this chains correctly with handleTodoChange
+    this.setState((prevState) => {
+      const { captureHeader } = prevState;
+      if (!captureHeader) return null;
 
-    if (this.state.editRawValues) {
-      if (generateTitleLine(captureHeader.toJS(), false) !== titleValue) {
-        this.setState({
-          captureHeader: captureHeader.setIn(
-            ['titleLine'],
-            captureHeader.getIn(['titleLine']).set('rawTitle', titleValue)
-          ),
-        });
+      if (prevState.editRawValues) {
+        if (generateTitleLine(captureHeader.toJS(), false) !== titleValue) {
+          // Re-parse the full title line to extract TODO keyword, rawTitle, and tags
+          const newTitleLine = parseTitleLine(titleValue.trim(), this.props.todoKeywordSets);
+          return { captureHeader: captureHeader.set('titleLine', newTitleLine) };
+        }
+      } else {
+        if (captureHeader.getIn(['titleLine', 'rawTitle']) !== titleValue) {
+          return {
+            captureHeader: captureHeader
+              .setIn(['titleLine', 'rawTitle'], titleValue)
+              .setIn(['titleLine', 'title'], fromJS(parseMarkupAndCookies(titleValue))),
+          };
+        }
       }
-    } else {
-      if (captureHeader.getIn(['titleLine', 'rawTitle']) !== titleValue) {
-        this.setState({
-          captureHeader: captureHeader.setIn(['titleLine', 'rawTitle'], titleValue),
-        });
-      }
-    }
+      return null;
+    });
   }
 
   handleCaptureTagsChange(newTags) {
@@ -392,12 +420,12 @@ class OrgFile extends PureComponent {
 
     if (this.state.editRawValues) {
       this.setState({
-        captureHeader: captureHeader.set('rawDescription', descriptionValue),
+        captureHeader: _updateHeaderFromDescription(captureHeader, descriptionValue),
       });
     } else {
       if (captureHeader.get('rawDescription') !== descriptionValue) {
         this.setState({
-          captureHeader: captureHeader.set('rawDescription', descriptionValue),
+          captureHeader: _updateHeaderFromDescription(captureHeader, descriptionValue),
         });
       }
     }
@@ -524,6 +552,17 @@ class OrgFile extends PureComponent {
   }
 
   handleTodoChange(newTodoKeyword) {
+    if (this.state.captureMode) {
+      // Use functional setState to avoid race with saveCaptureTitle (called just before this)
+      this.setState((prevState) => {
+        const { captureHeader } = prevState;
+        if (!captureHeader) return null;
+        return {
+          captureHeader: captureHeader.setIn(['titleLine', 'todoKeyword'], newTodoKeyword || undefined),
+        };
+      });
+      return;
+    }
     this.props.org.setTodoState(
       this.props.selectedHeaderId,
       newTodoKeyword,
@@ -532,6 +571,26 @@ class OrgFile extends PureComponent {
   }
 
   getPopupSwitchAction(activePopupType) {
+    if (this.state.captureMode) {
+      // In capture mode, save to local state instead of dispatching Redux actions
+      switch (activePopupType) {
+        case 'title-editor':
+          return (titleValue) => {
+            if (titleValue !== undefined) {
+              this.saveCaptureTitle(titleValue);
+            }
+          };
+        case 'description-editor':
+          return (descriptionValue) => {
+            if (descriptionValue !== undefined) {
+              this.handleCaptureDescriptionChange(descriptionValue);
+            }
+          };
+        default:
+          return () => {};
+      }
+    }
+
     switch (activePopupType) {
       case 'title-editor':
         return (titleValue) => this.handleTitlePopupClose(titleValue);
@@ -543,6 +602,28 @@ class OrgFile extends PureComponent {
   }
 
   getPopupCloseAction(activePopupType) {
+    if (this.state.captureMode) {
+      // In capture mode, save to local state instead of dispatching Redux actions
+      switch (activePopupType) {
+        case 'title-editor':
+          return (titleValue) => {
+            if (titleValue !== undefined) {
+              this.saveCaptureTitle(titleValue);
+            }
+            this.props.base.closePopup();
+          };
+        case 'description-editor':
+          return (descriptionValue) => {
+            if (descriptionValue !== undefined) {
+              this.handleCaptureDescriptionChange(descriptionValue);
+            }
+            this.props.base.closePopup();
+          };
+        default:
+          return this.handlePopupClose;
+      }
+    }
+
     switch (activePopupType) {
       case 'search':
         return this.handleSearchPopupClose;

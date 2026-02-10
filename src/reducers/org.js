@@ -914,7 +914,6 @@ const insertCaptureFromHeader = (state, action) => {
     shouldPrepend
   );
   if (newIndex === undefined) {
-    // Should never happen; see comment in insertCapturePosition below.
     return state;
   }
 
