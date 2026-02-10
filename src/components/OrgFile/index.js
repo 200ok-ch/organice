@@ -42,6 +42,7 @@ import {
   changelogHash,
   STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
+import { parseCaptureTemplate } from '../../lib/capture_template_parsing';
 
 import _ from 'lodash';
 import { fromJS, List, Map, Set } from 'immutable';
@@ -88,11 +89,21 @@ class OrgFile extends PureComponent {
       'getPopupSwitchAction',
       'checkPopupAndHeader',
       'checkPopup',
+      'handleCaptureFromEditor',
+      'saveCaptureTitle',
+      'handleCaptureTagsChange',
+      'handleCapturePropertyListItemsChange',
+      'handleCaptureTimestampChange',
+      'handleCaptureDescriptionChange',
     ]);
 
     this.state = {
       hasUncaughtError: false,
       editRawValues: props.preferEditRawValues,
+      captureMode: false,
+      captureHeader: null,
+      captureTemplate: null,
+      captureShouldPrepend: false,
     };
   }
 
@@ -141,7 +152,7 @@ class OrgFile extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { headers, pendingCapture } = this.props;
+    const { headers, pendingCapture, activePopupType, activePopupData } = this.props;
     if (!!pendingCapture && !!headers && headers.size > 0) {
       this.props.org.insertPendingCapture();
     }
@@ -150,6 +161,52 @@ class OrgFile extends PureComponent {
     if (!_.isEmpty(path) && path !== prevProps.path) {
       this.props.syncBackend.downloadFile(path);
       this.props.org.setPath(path);
+    }
+
+    // Intercept capture popup activation and switch to capture mode
+    if (activePopupType === 'capture' && prevProps.activePopupType !== 'capture') {
+      const { captureTemplates, files, todoKeywordSets } = this.props;
+
+      // Look up template by ID first, then fall back to matching by description
+      const template =
+        captureTemplates.find(
+          (template) => template.get('id') === activePopupData.get('templateId')
+        ) ||
+        captureTemplates.find(
+          (template) =>
+            template.get('description') === activePopupData.get('templateDescription')
+        );
+
+      if (!template) {
+        this.props.base.closePopup();
+        return;
+      }
+
+      // Get headers for capture target file
+      const targetPath = template.get('file');
+      let headersOfCaptureTarget = headers;
+      if (targetPath) {
+        const file = files.get(targetPath);
+        headersOfCaptureTarget = file ? file.get('headers') : List();
+      }
+
+      // Parse the template into structured fields
+      const { header, initialSubEditor } = parseCaptureTemplate(
+        template.get('template'),
+        todoKeywordSets,
+        Map()
+      );
+
+      // Store capture state and switch to the initial sub-editor
+      this.setState({
+        captureMode: true,
+        captureHeader: header,
+        captureTemplate: template,
+        captureShouldPrepend: template.get('shouldPrepend', false),
+      });
+
+      // Switch popup type to the initial sub-editor
+      this.props.base.activatePopup(initialSubEditor);
     }
   }
 
@@ -241,6 +298,109 @@ class OrgFile extends PureComponent {
 
   handleCapture(templateId, content, shouldPrepend) {
     this.props.org.insertCapture(templateId, content, shouldPrepend);
+  }
+
+  handleCaptureFromEditor() {
+    const { captureHeader, captureTemplate, captureShouldPrepend } = this.state;
+    if (!captureHeader || !captureTemplate) return;
+
+    this.props.org.insertCaptureFromHeader(
+      captureTemplate.get('id'),
+      captureHeader,
+      captureShouldPrepend
+    );
+
+    // Reset capture state
+    this.setState({
+      captureMode: false,
+      captureHeader: null,
+      captureTemplate: null,
+      captureShouldPrepend: false,
+    });
+  }
+
+  saveCaptureTitle(titleValue) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    if (this.state.editRawValues) {
+      if (generateTitleLine(captureHeader.toJS(), false) !== titleValue) {
+        this.setState({
+          captureHeader: captureHeader.setIn(
+            ['titleLine'],
+            captureHeader.getIn(['titleLine']).set('rawTitle', titleValue)
+          ),
+        });
+      }
+    } else {
+      if (captureHeader.getIn(['titleLine', 'rawTitle']) !== titleValue) {
+        this.setState({
+          captureHeader: captureHeader.setIn(['titleLine', 'rawTitle'], titleValue),
+        });
+      }
+    }
+  }
+
+  handleCaptureTagsChange(newTags) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    this.setState({
+      captureHeader: captureHeader.setIn(['titleLine', 'tags'], newTags),
+    });
+  }
+
+  handleCapturePropertyListItemsChange(newPropertyListItems) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    this.setState({
+      captureHeader: captureHeader.set('propertyListItems', newPropertyListItems),
+    });
+  }
+
+  handleCaptureTimestampChange(popupData) {
+    // Similar logic to handleTimestampChange but updates captureHeader state
+    if (!!popupData.get('timestampId')) {
+      return (newTimestamp) => {
+        // For captures, we don't have timestampId in description, only planning items
+        console.warn('timestampId editing not supported in capture mode');
+      };
+    } else if (popupData.get('logEntryIndex') !== undefined) {
+      return (newTimestamp) => {
+        console.warn('logEntry editing not supported in capture mode');
+      };
+    } else {
+      return (newTimestamp) => {
+        const { captureHeader } = this.state;
+        if (!captureHeader) return;
+
+        const planningItemIndex = popupData.get('planningItemIndex');
+        this.setState({
+          captureHeader: captureHeader.setIn(
+            ['planningItems', planningItemIndex, 'timestamp'],
+            newTimestamp.get('firstTimestamp')
+          ),
+        });
+      };
+    }
+  }
+
+  handleCaptureDescriptionChange(descriptionValue) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    if (this.state.editRawValues) {
+      this.setState({
+        captureHeader: captureHeader.set('rawDescription', descriptionValue),
+      });
+    } else {
+      if (captureHeader.get('rawDescription') !== descriptionValue) {
+        this.setState({
+          captureHeader: captureHeader.set('rawDescription', descriptionValue),
+        });
+      }
+    }
   }
 
   handlePopupClose() {
@@ -730,7 +890,13 @@ class OrgFile extends PureComponent {
                     ? this.state.popupCloseActionValuesAccessor()
                     : [])
                 );
-                this.setState({ editRawValues: this.props.preferEditRawValues });
+                this.setState({
+                  editRawValues: this.props.preferEditRawValues,
+                  captureMode: false,
+                  captureHeader: null,
+                  captureTemplate: null,
+                  captureShouldPrepend: false,
+                });
                 this.container.focus();
               }}
               maxSize={this.getPopupMaxSize(activePopupType)}
@@ -739,18 +905,30 @@ class OrgFile extends PureComponent {
                 <UnifiedHeaderEditor
                   activePopupType={activePopupType}
                   activePopupData={activePopupData}
-                  selectedHeader={this.props.selectedHeader}
+                  selectedHeader={
+                    this.state.captureMode ? this.state.captureHeader : this.props.selectedHeader
+                  }
                   headers={headers}
                   todoKeywordSets={this.props.todoKeywordSets}
                   editRawValues={this.state.editRawValues}
                   dontIndent={this.props.dontIndent}
                   shouldDisableActions={shouldDisableActions}
                   setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-                  saveTitle={this.saveTitle}
+                  saveTitle={this.state.captureMode ? this.saveCaptureTitle : this.saveTitle}
                   handleTodoChange={this.handleTodoChange}
-                  handleTagsChange={this.handleTagsChange}
-                  handlePropertyListItemsChange={this.handlePropertyListItemsChange}
-                  handleTimestampChange={this.handleTimestampChange}
+                  handleTagsChange={
+                    this.state.captureMode ? this.handleCaptureTagsChange : this.handleTagsChange
+                  }
+                  handlePropertyListItemsChange={
+                    this.state.captureMode
+                      ? this.handleCapturePropertyListItemsChange
+                      : this.handlePropertyListItemsChange
+                  }
+                  handleTimestampChange={
+                    this.state.captureMode
+                      ? this.handleCaptureTimestampChange
+                      : this.handleTimestampChange
+                  }
                   allTags={extractAllOrgTags(headers)}
                   allOrgProperties={extractAllOrgProperties(headers)}
                   getPopupCloseAction={this.getPopupCloseAction}
@@ -764,6 +942,13 @@ class OrgFile extends PureComponent {
                   setEditRawValues={(editRawValues) => this.setState({ editRawValues })}
                   restorePreferEditRawValues={() =>
                     this.setState({ editRawValues: this.props.preferEditRawValues })
+                  }
+                  captureMode={this.state.captureMode}
+                  captureTemplate={this.state.captureTemplate}
+                  captureShouldPrepend={this.state.captureShouldPrepend}
+                  onCapture={this.handleCaptureFromEditor}
+                  onTogglePrepend={() =>
+                    this.setState({ captureShouldPrepend: !this.state.captureShouldPrepend })
                   }
                 />
               ) : (

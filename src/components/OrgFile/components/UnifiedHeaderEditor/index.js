@@ -133,10 +133,43 @@ class UnifiedHeaderEditor extends PureComponent {
   }
 
   render() {
-    const { onSwitch, editRawValues, setEditRawValues, restorePreferEditRawValues } = this.props;
+    const {
+      onSwitch,
+      editRawValues,
+      setEditRawValues,
+      restorePreferEditRawValues,
+      captureMode,
+      captureTemplate,
+      captureShouldPrepend,
+      onCapture,
+      onTogglePrepend,
+    } = this.props;
 
     return (
       <div className="unified-header-editor" data-testid="unified-header-editor">
+        {captureMode && captureTemplate && (
+          <div className="capture-header-bar">
+            <div className="capture-header-bar__template-info">
+              <span className="capture-header-bar__letter">{captureTemplate.get('letter')}</span>
+              <span className="capture-header-bar__description">
+                {captureTemplate.get('description')}
+              </span>
+            </div>
+            <div className="capture-header-bar__controls">
+              <label className="capture-header-bar__prepend-toggle">
+                <input
+                  type="checkbox"
+                  checked={captureShouldPrepend}
+                  onChange={onTogglePrepend}
+                />
+                <span>Prepend</span>
+              </label>
+              <button className="btn capture-header-bar__capture-btn" onClick={onCapture}>
+                Capture
+              </button>
+            </div>
+          </div>
+        )}
         {this.renderSubEditor()}
         <DrawerActionBar
           onSwitch={onSwitch}
