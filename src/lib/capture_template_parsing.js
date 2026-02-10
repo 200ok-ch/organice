@@ -1,3 +1,5 @@
+import { Map } from 'immutable';
+
 import substituteTemplateVariables from './capture_template_substitution';
 import { newHeaderFromText } from './parse_org';
 
@@ -73,7 +75,7 @@ const determineInitialSubEditor = (substitutedText, cursorIndex) => {
 export const parseCaptureTemplate = (
   templateString,
   todoKeywordSets,
-  customVariables = null
+  customVariables = Map()
 ) => {
   // Handle empty template
   if (!templateString || templateString.trim() === '') {
