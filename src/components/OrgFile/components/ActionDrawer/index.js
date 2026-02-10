@@ -75,9 +75,12 @@ const ActionDrawer = ({
   const handleMoveSubtreeRightClick = () =>
     !!selectedHeaderId ? org.moveSubtreeRight(selectedHeaderId) : org.moveListSubtreeRight();
 
-  const handleCaptureButtonClick = (templateId) => () => {
+  const handleCaptureButtonClick = (template) => () => {
     setIsDisplayingCaptureButtons(false);
-    base.activatePopup('capture', { templateId });
+    base.activatePopup('capture', {
+      templateId: template.get('id'),
+      templateDescription: template.get('description'),
+    });
   };
 
   const getSampleCaptureTemplates = () => sampleCaptureTemplates;
@@ -160,7 +163,7 @@ const ActionDrawer = ({
                 letter={template.get('letter')}
                 iconName={template.get('iconName')}
                 isDisabled={false}
-                onClick={handleCaptureButtonClick(template.get('id'))}
+                onClick={handleCaptureButtonClick(template)}
                 style={{ ...baseCaptureButtonStyle, bottom: style.bottom * (index + 1) }}
                 tooltip={`Activate "${template.get('description')}" capture template`}
               />

@@ -434,9 +434,23 @@ class OrgFile extends PureComponent {
           />
         );
       case 'capture':
-        const template = captureTemplates.find(
-          (template) => template.get('id') === activePopupData.get('templateId')
-        );
+        // Look up by ID first, then fall back to matching by description.
+        // Template IDs are regenerated when settings reload from the sync
+        // backend, which can happen asynchronously while a capture modal
+        // is already open. Falling back to description keeps the modal
+        // working through that reload.
+        const template =
+          captureTemplates.find(
+            (template) => template.get('id') === activePopupData.get('templateId')
+          ) ||
+          captureTemplates.find(
+            (template) =>
+              template.get('description') === activePopupData.get('templateDescription')
+          );
+        if (!template) {
+          this.props.base.closePopup();
+          return null;
+        }
         const path = template.get('file');
         let headersOfCaptureTarget = headers;
         if (path) {

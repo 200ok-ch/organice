@@ -15,6 +15,10 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
     - Fixed a bug where the app would briefly show dark mode before switching to the configured light mode
     - The color scheme is now applied immediately from localStorage before React renders, eliminating the visual flash
 
+*** Capture template crash when used before sync completes
+    - Fixed a crash where opening a capture template immediately after starting organice could cause the entire UI to go blank
+    - This happened because settings reloading from the sync backend regenerated template IDs, invalidating the open modal's reference
+
 * [2026-01-08 Thu]
 
 ** Added
