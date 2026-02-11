@@ -920,6 +920,7 @@ class OrgFile extends PureComponent {
                   todoKeywordSets={this.props.todoKeywordSets}
                   editRawValues={this.state.editRawValues}
                   dontIndent={this.props.dontIndent}
+                  editorDescriptionHeightValue={this.props.editorDescriptionHeightValue}
                   shouldDisableActions={shouldDisableActions}
                   setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
                   saveTitle={this.state.captureMode ? this.saveCaptureTitle : this.saveTitle}
@@ -1010,6 +1011,7 @@ const mapStateToProps = (state) => {
     orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
     todoKeywordSets: file.get('todoKeywordSets'),
+    editorDescriptionHeightValue: state.base.get('editorDescriptionHeightValue'),
   };
 };
 

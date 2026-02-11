@@ -1,7 +1,25 @@
+@import '../../../../colors.css';
+
 /* UnifiedHeaderEditor wrapper */
 .unified-header-editor {
   /* The component inherits styles from existing sub-editors and DrawerActionBar */
   /* No additional styling needed - container only */
+}
+
+/* Title editor: TODO keyword buttons */
+.todo-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.todo-editor__icon {
+  color: var(--magenta);
+  cursor: pointer;
 }
 
 /* Capture mode header bar */

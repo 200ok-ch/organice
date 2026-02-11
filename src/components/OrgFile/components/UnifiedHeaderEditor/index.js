@@ -3,15 +3,19 @@ import { fromJS } from 'immutable';
 
 import './stylesheet.css';
 
-import TitleEditorModal from '../TitleEditorModal';
-import DescriptionEditorModal from '../DescriptionEditorModal';
+import _ from 'lodash';
+
+import TabButtons from '../../../UI/TabButtons';
 import TagsEditorModal from '../TagsEditorModal';
 import PropertyListEditorModal from '../PropertyListEditorModal';
 import TimestampEditorModal from '../TimestampEditorModal';
 import NoteEditorModal from '../NoteEditorModal';
 import DrawerActionBar from '../DrawerActionBar';
 
-import { timestampWithId, headerWithId } from '../../../../lib/org_utils';
+import { generateTitleLine, createRawDescriptionText } from '../../../../lib/export_org';
+import { getCurrentTimestampAsText } from '../../../../lib/timestamps';
+import { todoKeywordSetForKeyword, timestampWithId, headerWithId } from '../../../../lib/org_utils';
+import { isMobileBrowser } from '../../../../lib/browser_utils';
 
 // Header-editing popup types that use the unified editor
 export const UNIFIED_EDITOR_POPUP_TYPES = [
@@ -26,19 +30,326 @@ export const UNIFIED_EDITOR_POPUP_TYPES = [
 ];
 
 class UnifiedHeaderEditor extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'handleTitleTextareaRef',
+      'handleTitleTextareaFocus',
+      'handleTitleChange',
+      'handleTitleFieldClick',
+      'handleTitleInsertTimestamp',
+      'handleTitleTodoChange',
+      'handleNextTodoKeywordSet',
+      'handleDescriptionTextareaRef',
+      'handleDescriptionChange',
+      'handleDescriptionInsertTimestamp',
+    ]);
+
+    const header = props.selectedHeader;
+
+    // Title editor state
+    const todoKeywordSet = todoKeywordSetForKeyword(
+      props.todoKeywordSets,
+      header ? header.getIn(['titleLine', 'todoKeyword']) : undefined
+    );
+
+    this.state = {
+      // Title state
+      todoKeywordSet,
+      todoKeywordSetIndex: props.todoKeywordSets
+        ? props.todoKeywordSets.indexOf(todoKeywordSet)
+        : 0,
+      titleValue: header
+        ? props.editRawValues
+          ? this.calculateRawTitle(header)
+          : header.getIn(['titleLine', 'rawTitle'])
+        : '',
+      // Description state
+      descriptionValue: header
+        ? props.editRawValues
+          ? this.calculateRawDescription(header)
+          : header.get('rawDescription')
+        : '',
+      editorDescriptionHeightValue: props.editorDescriptionHeightValue
+        ? props.editorDescriptionHeightValue
+        : '8',
+    };
+  }
+
+  // --- Title editor methods ---
+
+  handleTitleTextareaRef(textarea) {
+    this.titleTextarea = textarea;
+  }
+
+  handleTitleTextareaFocus(event) {
+    const { selectedHeader } = this.props;
+    if (!selectedHeader) return;
+    const rawTitle = selectedHeader.getIn(['titleLine', 'rawTitle']);
+    if (rawTitle === '') {
+      const text = event.target.value;
+      event.target.selectionStart = text.length;
+      event.target.selectionEnd = text.length;
+    }
+  }
+
+  handleTitleChange(event) {
+    const newTitle = event.target.value;
+    const lastCharacter = newTitle[newTitle.length - 1];
+    if (
+      this.state.titleValue === newTitle.substring(0, newTitle.length - 1) &&
+      lastCharacter === '\n'
+    ) {
+      this.props.getPopupCloseAction('title-editor')(newTitle);
+      return;
+    }
+    this.setState({ titleValue: newTitle });
+  }
+
+  handleTitleFieldClick(event) {
+    event.stopPropagation();
+  }
+
+  calculateRawTitle(header) {
+    return generateTitleLine(header.toJS(), false);
+  }
+
+  handleTitleInsertTimestamp(event) {
+    const { titleValue } = this.state;
+    const insertionIndex = this.titleTextarea.selectionStart;
+    this.setState({
+      titleValue:
+        titleValue.substring(0, insertionIndex) +
+        getCurrentTimestampAsText() +
+        titleValue.substring(this.titleTextarea.selectionEnd || insertionIndex),
+    });
+    this.titleTextarea.focus();
+    event.stopPropagation();
+  }
+
+  handleTitleTodoChange(newTodoKeyword) {
+    const currentTodoKeyword = this.props.selectedHeader
+      ? this.props.selectedHeader.getIn(['titleLine', 'todoKeyword'])
+      : undefined;
+    const keyword = currentTodoKeyword === newTodoKeyword ? '' : newTodoKeyword;
+    this.props.saveTitle(this.state.titleValue);
+    this.props.handleTodoChange(keyword);
+  }
+
+  handleNextTodoKeywordSet() {
+    const { todoKeywordSets } = this.props;
+    const newIndex =
+      this.state.todoKeywordSetIndex + 1 !== todoKeywordSets.size
+        ? this.state.todoKeywordSetIndex + 1
+        : 0;
+    const newTodoKeywordSet =
+      newIndex !== todoKeywordSets.size ? todoKeywordSets.get(newIndex) : todoKeywordSets.get(0);
+    this.setState({
+      todoKeywordSet: newTodoKeywordSet,
+      todoKeywordSetIndex: newIndex,
+    });
+  }
+
+  // --- Description editor methods ---
+
+  handleDescriptionTextareaRef(textarea) {
+    this.descriptionTextarea = textarea;
+  }
+
+  calculateRawDescription(header) {
+    const dontIndent = this.props.dontIndent;
+    return createRawDescriptionText(header, false, dontIndent);
+  }
+
+  descriptionModifier(event) {
+    const {
+      target: { value },
+    } = event;
+    const eachValList = value.split('\n');
+    eachValList.forEach((item, index) => {
+      if (item.startsWith('* ')) {
+        eachValList[index] = '- ' + item.slice(2);
+      }
+    });
+    return eachValList.join('\n');
+  }
+
+  handleDescriptionChange(event) {
+    this.setState({ descriptionValue: this.descriptionModifier(event) });
+  }
+
+  handleDescriptionInsertTimestamp() {
+    const { descriptionValue } = this.state;
+    const insertionIndex = this.descriptionTextarea.selectionStart;
+    this.setState({
+      descriptionValue:
+        descriptionValue.substring(0, insertionIndex) +
+        getCurrentTimestampAsText() +
+        descriptionValue.substring(this.descriptionTextarea.selectionEnd || insertionIndex),
+    });
+    this.descriptionTextarea.focus();
+  }
+
+  // --- Lifecycle ---
+
+  componentDidMount() {
+    this.updateCloseActionAccessor();
+    // Title textarea: ensure cursor is at end after mount
+    if (this.props.activePopupType === 'title-editor' && this.titleTextarea) {
+      const len = this.titleTextarea.value.length;
+      this.titleTextarea.selectionStart = len;
+      this.titleTextarea.selectionEnd = len;
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedHeader, editRawValues, activePopupType } = this.props;
+
+    // Update close action accessor when sub-editor changes
+    if (prevProps.activePopupType !== activePopupType) {
+      this.updateCloseActionAccessor();
+    }
+
+    if (!selectedHeader) return;
+
+    if (prevProps.selectedHeader !== selectedHeader || prevProps.editRawValues !== editRawValues) {
+      if (activePopupType === 'title-editor') {
+        this.setState({
+          titleValue: editRawValues
+            ? this.calculateRawTitle(selectedHeader)
+            : selectedHeader.getIn(['titleLine', 'rawTitle']),
+        });
+        if (this.titleTextarea) this.titleTextarea.focus();
+      }
+      if (activePopupType === 'description-editor') {
+        this.setState({
+          descriptionValue: editRawValues
+            ? this.calculateRawDescription(selectedHeader)
+            : selectedHeader.get('rawDescription'),
+        });
+        if (this.descriptionTextarea) this.descriptionTextarea.focus();
+      }
+    }
+  }
+
+  updateCloseActionAccessor() {
+    const { activePopupType, setPopupCloseActionValuesAccessor } = this.props;
+    if (activePopupType === 'title-editor') {
+      setPopupCloseActionValuesAccessor(() => [this.state.titleValue]);
+    } else if (activePopupType === 'description-editor') {
+      setPopupCloseActionValuesAccessor(() => [this.state.descriptionValue]);
+    }
+  }
+
+  // --- Render sub-editors ---
+
+  renderTitleEditor() {
+    const { editRawValues, selectedHeader, todoKeywordSets } = this.props;
+    const { todoKeywordSet, titleValue } = this.state;
+
+    return (
+      <>
+        <h2 className="drawer-modal__title">
+          {editRawValues ? 'Edit full title' : 'Edit title'}
+        </h2>
+
+        {editRawValues ? null : (
+          <div className="todo-container">
+            <TabButtons
+              buttons={todoKeywordSet
+                .get('keywords')
+                .filter(
+                  (todo) =>
+                    todoKeywordSet
+                      .get('completedKeywords')
+                      .filter((completed) => todo === completed).size === 0
+                )}
+              selectedButton={
+                selectedHeader ? selectedHeader.getIn(['titleLine', 'todoKeyword']) : undefined
+              }
+              onSelect={this.handleTitleTodoChange}
+            />
+            <TabButtons
+              buttons={todoKeywordSet.get('completedKeywords').filter((todo) => todo !== '')}
+              selectedButton={
+                selectedHeader ? selectedHeader.getIn(['titleLine', 'todoKeyword']) : undefined
+              }
+              onSelect={this.handleTitleTodoChange}
+            />
+
+            {todoKeywordSets.size > 1 ? (
+              <button
+                className="btn-passive"
+                onClick={this.handleNextTodoKeywordSet}
+                title="Next keyword set"
+              >
+                Next set
+              </button>
+            ) : null}
+          </div>
+        )}
+
+        <div className="title-line__edit-container">
+          <textarea
+            autoFocus
+            className="textarea drag-handle"
+            data-testid="titleLineInput"
+            rows="3"
+            ref={this.handleTitleTextareaRef}
+            value={titleValue}
+            onFocus={this.handleTitleTextareaFocus}
+            onChange={this.handleTitleChange}
+            onClick={this.handleTitleFieldClick}
+          />
+          <div className="title-line__insert-timestamp-button" onClick={this.handleTitleInsertTimestamp}>
+            <i className="fas fa-plus insert-timestamp-icon" />
+            Insert timestamp
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  renderDescriptionEditor() {
+    const { editRawValues } = this.props;
+    const { descriptionValue, editorDescriptionHeightValue } = this.state;
+
+    return (
+      <>
+        <h2 className="drawer-modal__title">
+          {editRawValues ? 'Edit full description' : 'Edit description'}
+        </h2>
+
+        <div className="header-content__edit-container">
+          <textarea
+            autoFocus
+            className="textarea drag-handle"
+            rows={isMobileBrowser ? '8' : editorDescriptionHeightValue}
+            ref={this.handleDescriptionTextareaRef}
+            value={descriptionValue}
+            onChange={this.handleDescriptionChange}
+          />
+          <div
+            className="header-content__insert-timestamp-button"
+            onClick={this.handleDescriptionInsertTimestamp}
+          >
+            <i className="fas fa-plus insert-timestamp-icon" />
+            Insert timestamp
+          </div>
+        </div>
+      </>
+    );
+  }
+
   renderSubEditor() {
     const {
       activePopupType,
       activePopupData,
       selectedHeader,
       headers,
-      todoKeywordSets,
       editRawValues,
-      dontIndent,
       shouldDisableActions,
-      setPopupCloseActionValuesAccessor,
-      saveTitle,
-      handleTodoChange,
       handleTagsChange,
       handlePropertyListItemsChange,
       handleTimestampChange,
@@ -51,26 +362,9 @@ class UnifiedHeaderEditor extends PureComponent {
 
     switch (activePopupType) {
       case 'title-editor':
-        return (
-          <TitleEditorModal
-            editRawValues={editRawValues}
-            todoKeywordSets={todoKeywordSets}
-            onClose={getPopupCloseAction('title-editor')}
-            saveTitle={saveTitle}
-            onTodoClicked={handleTodoChange}
-            header={selectedHeader}
-            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-          />
-        );
+        return this.renderTitleEditor();
       case 'description-editor':
-        return (
-          <DescriptionEditorModal
-            editRawValues={editRawValues}
-            header={selectedHeader}
-            dontIndent={dontIndent}
-            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-          />
-        );
+        return this.renderDescriptionEditor();
       case 'tags-editor':
         return (
           <TagsEditorModal header={selectedHeader} allTags={allTags} onChange={handleTagsChange} />
@@ -87,7 +381,6 @@ class UnifiedHeaderEditor extends PureComponent {
       case 'scheduled-editor':
       case 'deadline-editor':
         let editingTimestamp = null;
-        // In capture mode, the header isn't in Redux headers, so look it up from props
         const captureMode = this.props.captureMode;
         const headerId = activePopupData.get('headerId');
         const resolvedHeader = captureMode ? selectedHeader : headerWithId(headers, headerId);
@@ -106,7 +399,6 @@ class UnifiedHeaderEditor extends PureComponent {
               })
             : null;
         } else if (
-          // for scheduled timestamp and deadline the modal can be opened when no timestamp exists
           (activePopupType !== 'scheduled-editor' && activePopupType !== 'deadline-editor') ||
           activePopupData.get('planningItemIndex') !== -1
         ) {
