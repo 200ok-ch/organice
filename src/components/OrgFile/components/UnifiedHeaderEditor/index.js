@@ -250,9 +250,7 @@ class UnifiedHeaderEditor extends PureComponent {
 
     return (
       <>
-        <h2 className="drawer-modal__title">
-          {editRawValues ? 'Edit full title' : 'Edit title'}
-        </h2>
+        <h2 className="drawer-modal__title">{editRawValues ? 'Edit full title' : 'Edit title'}</h2>
 
         {editRawValues ? null : (
           <div className="todo-container">
@@ -302,7 +300,10 @@ class UnifiedHeaderEditor extends PureComponent {
             onChange={this.handleTitleChange}
             onClick={this.handleTitleFieldClick}
           />
-          <div className="title-line__insert-timestamp-button" onClick={this.handleTitleInsertTimestamp}>
+          <div
+            className="title-line__insert-timestamp-button"
+            onClick={this.handleTitleInsertTimestamp}
+          >
             <i className="fas fa-plus insert-timestamp-icon" />
             Insert timestamp
           </div>
@@ -348,7 +349,6 @@ class UnifiedHeaderEditor extends PureComponent {
       activePopupData,
       selectedHeader,
       headers,
-      editRawValues,
       shouldDisableActions,
       handleTagsChange,
       handlePropertyListItemsChange,
