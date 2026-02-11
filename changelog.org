@@ -7,6 +7,15 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-02-11 Wed]
+
+** Added
+
+*** Harmonize modals for managing headers
+    - For capture templates, the '+' button or editing a header, now all modals have the same functionality
+    - Removes the old TitleEditorModal and DescriptionEditorModal components
+    - PR: https://github.com/200ok-ch/organice/pull/1099
+
 * [2026-02-10 Mon]
 
 ** Fixed
