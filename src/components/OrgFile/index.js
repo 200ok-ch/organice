@@ -658,9 +658,25 @@ class OrgFile extends PureComponent {
         case 'title-editor':
           return (titleValue) => {
             if (titleValue !== undefined) {
-              this.saveCaptureTitle(titleValue);
+              this.setState((prevState) => {
+                const { captureHeader, editRawValues } = prevState;
+                if (!captureHeader) return null;
+                let updatedHeader;
+                if (editRawValues) {
+                  const newTitleLine = parseTitleLine(titleValue.trim(), this.props.todoKeywordSets);
+                  updatedHeader = captureHeader.set('titleLine', newTitleLine);
+                } else {
+                  updatedHeader = captureHeader
+                    .setIn(['titleLine', 'rawTitle'], titleValue)
+                    .setIn(['titleLine', 'title'], fromJS(parseMarkupAndCookies(titleValue)));
+                }
+                return { captureHeader: updatedHeader };
+              }, () => {
+                this.handleCaptureFromEditor();
+              });
+            } else {
+              this.handleCaptureFromEditor();
             }
-            this.props.base.closePopup();
           };
         case 'description-editor':
           return (descriptionValue) => {
