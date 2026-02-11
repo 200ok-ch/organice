@@ -173,9 +173,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
       if (!headers) return false;
       return headers.some(
         (h) =>
-          h.titleLine &&
-          h.titleLine.rawTitle &&
-          h.titleLine.rawTitle.includes('EnterCaptureTest')
+          h.titleLine && h.titleLine.rawTitle && h.titleLine.rawTitle.includes('EnterCaptureTest')
       );
     });
     expect(titleFound).toBe(true);
