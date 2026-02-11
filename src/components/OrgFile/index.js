@@ -16,7 +16,6 @@ import AgendaModal from './components/AgendaModal';
 import SearchModal from './components/SearchModal';
 import ExternalLink from '../UI/ExternalLink';
 import Drawer from '../UI/Drawer/';
-import DrawerActionBar from './components/DrawerActionBar';
 import UnifiedHeaderEditor, { UNIFIED_EDITOR_POPUP_TYPES } from './components/UnifiedHeaderEditor';
 
 import * as baseActions from '../../actions/base';
@@ -40,7 +39,7 @@ import generateId from '../../lib/id_generator';
 import { formatTextWrap } from '../../util/misc';
 
 import _ from 'lodash';
-import { fromJS, List, Map, Set } from 'immutable';
+import { fromJS, Map, Set } from 'immutable';
 import { createRawDescriptionText, generateTitleLine } from '../../lib/export_org';
 import FinderModal from './components/FinderModal';
 
@@ -162,7 +161,7 @@ class OrgFile extends PureComponent {
 
     // Intercept capture popup activation and switch to capture mode
     if (activePopupType === 'capture' && prevProps.activePopupType !== 'capture') {
-      const { captureTemplates, files, todoKeywordSets } = this.props;
+      const { captureTemplates, todoKeywordSets } = this.props;
 
       // Look up template by ID first, then fall back to matching by description
       const template =
@@ -181,10 +180,8 @@ class OrgFile extends PureComponent {
 
       // Get headers for capture target file
       const targetPath = template.get('file');
-      let headersOfCaptureTarget = headers;
       if (targetPath) {
-        const file = files.get(targetPath);
-        headersOfCaptureTarget = file ? file.get('headers') : List();
+        // Target file lookup reserved for future refile-to-header support
       }
 
       // Parse the template into structured fields
@@ -382,12 +379,12 @@ class OrgFile extends PureComponent {
   handleCaptureTimestampChange(popupData) {
     // Similar logic to handleTimestampChange but updates captureHeader state
     if (!!popupData.get('timestampId')) {
-      return (newTimestamp) => {
+      return (_newTimestamp) => {
         // For captures, we don't have timestampId in description, only planning items
         console.warn('timestampId editing not supported in capture mode');
       };
     } else if (popupData.get('logEntryIndex') !== undefined) {
-      return (newTimestamp) => {
+      return (_newTimestamp) => {
         console.warn('logEntry editing not supported in capture mode');
       };
     } else {
@@ -694,16 +691,12 @@ class OrgFile extends PureComponent {
     }
   }
 
-  renderActivePopup(setPopupCloseActionValuesAccessor) {
+  renderActivePopup(_setPopupCloseActionValuesAccessor) {
     const {
       activePopupType,
       activePopupData,
-      captureTemplates,
-      files,
       headers,
-      selectedHeader,
       shouldDisableActions,
-      todoKeywordSets,
     } = this.props;
 
     switch (activePopupType) {
