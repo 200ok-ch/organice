@@ -121,6 +121,66 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     expect(headerCount).toBeGreaterThan(0);
   });
 
+  test('should capture header when pressing Enter in title editor', async ({ page }) => {
+    // Open capture via Groceries template
+    await page.locator('[data-testid="capture-main-button"]').click();
+    const groceriesBtn = page.locator('[data-testid="capture-template-groceries"]');
+    await expect(groceriesBtn).toBeVisible({ timeout: 5000 });
+    await groceriesBtn.click();
+
+    // Wait for unified editor
+    await expect(page.locator('[data-testid="unified-header-editor"]')).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Type a title
+    const titleInput = page.locator('[data-testid="titleLineInput"]');
+    await expect(titleInput).toBeVisible();
+    await titleInput.fill('EnterCaptureTest');
+
+    // Press Enter to trigger capture (this is the bug scenario -- Enter should insert the header)
+    await titleInput.press('Enter');
+
+    // The drawer should close (capture completed)
+    await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+      timeout: 5000,
+    });
+
+    // The unified editor should no longer be visible
+    await expect(page.locator('[data-testid="unified-header-editor"]')).not.toBeVisible({
+      timeout: 3000,
+    });
+
+    // Verify the header was actually inserted into Redux state
+    const titleFound = await page.evaluate(() => {
+      const container = document.querySelector('.org-file-container');
+      if (!container) return false;
+      const fiberKey = Object.keys(container).find((k) => k.startsWith('__reactInternalInstance'));
+      if (!fiberKey) return false;
+      let fiber = container[fiberKey];
+      let headers = null;
+      for (let i = 0; i < 50 && fiber; i++) {
+        if (
+          fiber.memoizedProps &&
+          fiber.memoizedProps.headers &&
+          fiber.memoizedProps.headers.toJS
+        ) {
+          headers = fiber.memoizedProps.headers.toJS();
+          break;
+        }
+        fiber = fiber.return;
+      }
+      if (!headers) return false;
+      return headers.some(
+        (h) =>
+          h.titleLine &&
+          h.titleLine.rawTitle &&
+          h.titleLine.rawTitle.includes('EnterCaptureTest')
+      );
+    });
+    expect(titleFound).toBe(true);
+  });
+
   test('should preserve title through description editor round-trip', async ({ page }) => {
     // Open capture via Groceries template
     await page.locator('[data-testid="capture-main-button"]').click();
