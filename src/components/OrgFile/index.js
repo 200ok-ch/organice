@@ -10,20 +10,13 @@ import './stylesheet.css';
 
 import HeaderList from './components/HeaderList';
 import ActionDrawer from './components/ActionDrawer';
-import CaptureModal from './components/CaptureModal';
 import SyncConfirmationModal from './components/SyncConfirmationModal';
-import TagsEditorModal from './components/TagsEditorModal';
-import TimestampEditorModal from './components/TimestampEditorModal';
-import PropertyListEditorModal from './components/PropertyListEditorModal';
-import TitleEditorModal from './components/TitleEditorModal';
-import DescriptionEditorModal from './components/DescriptionEditorModal';
 import TableEditorModal from './components/TableEditorModal';
-import NoteEditorModal from './components/NoteEditorModal';
 import AgendaModal from './components/AgendaModal';
 import SearchModal from './components/SearchModal';
 import ExternalLink from '../UI/ExternalLink';
 import Drawer from '../UI/Drawer/';
-import DrawerActionBar from './components/DrawerActionBar';
+import UnifiedHeaderEditor, { UNIFIED_EDITOR_POPUP_TYPES } from './components/UnifiedHeaderEditor';
 
 import * as baseActions from '../../actions/base';
 import * as syncBackendActions from '../../actions/sync_backend';
@@ -34,16 +27,25 @@ import { ActionCreators as undoActions } from 'redux-undo';
 import sampleCaptureTemplates from '../../lib/sample_capture_templates';
 import { calculateActionedKeybindings } from '../../lib/keybindings';
 import {
-  timestampWithId,
-  headerWithId,
   extractAllOrgTags,
   extractAllOrgProperties,
   changelogHash,
   STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
+import { parseCaptureTemplate } from '../../lib/capture_template_parsing';
+import {
+  parseTitleLine,
+  parseMarkupAndCookies,
+  parseRawText,
+  _updateHeaderFromDescription,
+  updatePlanningItemsFromHeader,
+} from '../../lib/parse_org';
+import { getTimestampAsText, timestampForDate } from '../../lib/timestamps';
+import generateId from '../../lib/id_generator';
+import { formatTextWrap } from '../../util/misc';
 
 import _ from 'lodash';
-import { fromJS, List, Map, Set } from 'immutable';
+import { fromJS, Map, Set } from 'immutable';
 import { createRawDescriptionText, generateTitleLine } from '../../lib/export_org';
 import FinderModal from './components/FinderModal';
 
@@ -68,7 +70,6 @@ class OrgFile extends PureComponent {
       'handleMoveHeaderRightHotKey',
       'handleUndoHotKey',
       'handleContainerRef',
-      'handleCapture',
       'handlePopupClose',
       'handleSearchPopupClose',
       'handleRefilePopupClose',
@@ -82,15 +83,29 @@ class OrgFile extends PureComponent {
       'handleSyncConfirmationCancel',
       'handleTagsChange',
       'handlePropertyListItemsChange',
+      'handleTimestampChange',
       'getPopupCloseAction',
       'getPopupSwitchAction',
       'checkPopupAndHeader',
       'checkPopup',
+      'handleCaptureFromEditor',
+      'saveCaptureTitle',
+      'handleCaptureTagsChange',
+      'handleCapturePropertyListItemsChange',
+      'handleCaptureTimestampChange',
+      'handleCaptureDescriptionChange',
+      'handleCaptureAddNote',
+      'handleCaptureCreatePlanningItem',
+      'handleCaptureRemovePlanningItem',
     ]);
 
     this.state = {
       hasUncaughtError: false,
       editRawValues: props.preferEditRawValues,
+      captureMode: false,
+      captureHeader: null,
+      captureTemplate: null,
+      captureShouldPrepend: false,
     };
   }
 
@@ -139,7 +154,7 @@ class OrgFile extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { headers, pendingCapture } = this.props;
+    const { headers, pendingCapture, activePopupType, activePopupData } = this.props;
     if (!!pendingCapture && !!headers && headers.size > 0) {
       this.props.org.insertPendingCapture();
     }
@@ -148,6 +163,53 @@ class OrgFile extends PureComponent {
     if (!_.isEmpty(path) && path !== prevProps.path) {
       this.props.syncBackend.downloadFile(path);
       this.props.org.setPath(path);
+    }
+
+    // Intercept capture popup activation and switch to capture mode
+    if (activePopupType === 'capture' && prevProps.activePopupType !== 'capture') {
+      const { captureTemplates, todoKeywordSets } = this.props;
+
+      // Look up template by ID first, then fall back to matching by description
+      const template =
+        captureTemplates.find(
+          (template) => template.get('id') === activePopupData.get('templateId')
+        ) ||
+        captureTemplates.find(
+          (template) => template.get('description') === activePopupData.get('templateDescription')
+        );
+
+      if (!template) {
+        this.props.base.closePopup();
+        return;
+      }
+
+      // Get headers for capture target file
+      const targetPath = template.get('file');
+      if (targetPath) {
+        // Target file lookup reserved for future refile-to-header support
+      }
+
+      // Parse the template into structured fields
+      const { header, initialSubEditor } = parseCaptureTemplate(
+        template.get('template'),
+        todoKeywordSets,
+        Map()
+      );
+
+      // Store capture state first, then switch popup type in the callback
+      // to ensure state is committed before the popup type triggers a re-render
+      this.setState(
+        {
+          captureMode: true,
+          captureHeader: header,
+          captureTemplate: template,
+          captureShouldPrepend: template.get('shouldPrepend', false),
+        },
+        () => {
+          // Switch popup type to the initial sub-editor only after state is committed
+          this.props.base.activatePopup(initialSubEditor);
+        }
+      );
     }
   }
 
@@ -237,8 +299,183 @@ class OrgFile extends PureComponent {
     }
   }
 
-  handleCapture(templateId, content, shouldPrepend) {
-    this.props.org.insertCapture(templateId, content, shouldPrepend);
+  handleCaptureFromEditor() {
+    let { captureHeader, captureTemplate, captureShouldPrepend } = this.state;
+    if (!captureHeader || !captureTemplate) return;
+
+    // Flush the current sub-editor's values to captureHeader before saving.
+    const activePopupType = this.props.activePopupType;
+    if (this.state.popupCloseActionValuesAccessor) {
+      const values = this.state.popupCloseActionValuesAccessor();
+      // Apply the values directly to captureHeader instead of going through setState
+      if (activePopupType === 'title-editor' && values[0] !== undefined) {
+        const titleValue = values[0];
+        if (this.state.editRawValues) {
+          const newTitleLine = parseTitleLine(titleValue.trim(), this.props.todoKeywordSets);
+          captureHeader = captureHeader.set('titleLine', newTitleLine);
+        } else {
+          captureHeader = captureHeader
+            .setIn(['titleLine', 'rawTitle'], titleValue)
+            .setIn(['titleLine', 'title'], fromJS(parseMarkupAndCookies(titleValue)));
+        }
+      } else if (activePopupType === 'description-editor' && values[0] !== undefined) {
+        captureHeader = _updateHeaderFromDescription(captureHeader, values[0]);
+      }
+    }
+
+    this.props.org.insertCaptureFromHeader(
+      captureTemplate.get('id'),
+      captureHeader,
+      captureShouldPrepend
+    );
+
+    // Reset capture state
+    this.setState({
+      captureMode: false,
+      captureHeader: null,
+      captureTemplate: null,
+      captureShouldPrepend: false,
+    });
+  }
+
+  saveCaptureTitle(titleValue) {
+    // Use functional setState so this chains correctly with handleTodoChange
+    this.setState((prevState) => {
+      const { captureHeader } = prevState;
+      if (!captureHeader) return null;
+
+      if (prevState.editRawValues) {
+        if (generateTitleLine(captureHeader.toJS(), false) !== titleValue) {
+          // Re-parse the full title line to extract TODO keyword, rawTitle, and tags
+          const newTitleLine = parseTitleLine(titleValue.trim(), this.props.todoKeywordSets);
+          return { captureHeader: captureHeader.set('titleLine', newTitleLine) };
+        }
+      } else {
+        if (captureHeader.getIn(['titleLine', 'rawTitle']) !== titleValue) {
+          return {
+            captureHeader: captureHeader
+              .setIn(['titleLine', 'rawTitle'], titleValue)
+              .setIn(['titleLine', 'title'], fromJS(parseMarkupAndCookies(titleValue))),
+          };
+        }
+      }
+      return null;
+    });
+  }
+
+  handleCaptureTagsChange(newTags) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    this.setState({
+      captureHeader: captureHeader.setIn(['titleLine', 'tags'], newTags),
+    });
+  }
+
+  handleCapturePropertyListItemsChange(newPropertyListItems) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    this.setState({
+      captureHeader: captureHeader.set('propertyListItems', newPropertyListItems),
+    });
+  }
+
+  handleCaptureTimestampChange(popupData) {
+    // Similar logic to handleTimestampChange but updates captureHeader state
+    if (!!popupData.get('timestampId')) {
+      return (_newTimestamp) => {
+        // For captures, we don't have timestampId in description, only planning items
+        console.warn('timestampId editing not supported in capture mode');
+      };
+    } else if (popupData.get('logEntryIndex') !== undefined) {
+      return (_newTimestamp) => {
+        console.warn('logEntry editing not supported in capture mode');
+      };
+    } else {
+      return (newTimestamp) => {
+        const { captureHeader } = this.state;
+        if (!captureHeader) return;
+
+        const planningItemIndex = popupData.get('planningItemIndex');
+        this.setState({
+          captureHeader: captureHeader.setIn(
+            ['planningItems', planningItemIndex, 'timestamp'],
+            newTimestamp.get('firstTimestamp')
+          ),
+        });
+      };
+    }
+  }
+
+  handleCaptureDescriptionChange(descriptionValue) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    if (this.state.editRawValues) {
+      this.setState({
+        captureHeader: _updateHeaderFromDescription(captureHeader, descriptionValue),
+      });
+    } else {
+      if (captureHeader.get('rawDescription') !== descriptionValue) {
+        this.setState({
+          captureHeader: _updateHeaderFromDescription(captureHeader, descriptionValue),
+        });
+      }
+    }
+  }
+
+  handleCaptureAddNote(inputText, currentDate) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    const wrappedInput = formatTextWrap(inputText, 70).replace(/\n(.)/g, '\n  $1');
+    const timestamp = getTimestampAsText(currentDate, { isActive: false, withStartTime: true });
+    const noteText = `- Note taken on ${timestamp} \\\\\n  ${wrappedInput}`;
+
+    const updatedHeader = captureHeader.update('logNotes', (logNotes) =>
+      parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
+    );
+    this.setState({
+      captureHeader: updatedHeader.set(
+        'planningItems',
+        updatePlanningItemsFromHeader(updatedHeader)
+      ),
+    });
+  }
+
+  handleCaptureCreatePlanningItem(planningType) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    const newPlanningItem = fromJS({
+      id: generateId(),
+      type: planningType,
+      timestamp: timestampForDate(new Date()),
+    });
+
+    const updatedHeader = captureHeader.update('planningItems', (planningItems) =>
+      planningItems ? planningItems.push(newPlanningItem) : fromJS([newPlanningItem])
+    );
+    const newIndex = updatedHeader.get('planningItems').size - 1;
+
+    this.setState({ captureHeader: updatedHeader });
+
+    // Re-open the popup with the new planning item index
+    const popupType = { DEADLINE: 'deadline-editor', SCHEDULED: 'scheduled-editor' }[planningType];
+    this.props.base.activatePopup(popupType, {
+      headerId: captureHeader.get('id'),
+      planningItemIndex: newIndex,
+    });
+  }
+
+  handleCaptureRemovePlanningItem(planningItemIndex) {
+    const { captureHeader } = this.state;
+    if (!captureHeader) return;
+
+    this.setState({
+      captureHeader: captureHeader.removeIn(['planningItems', planningItemIndex]),
+    });
   }
 
   handlePopupClose() {
@@ -362,6 +599,20 @@ class OrgFile extends PureComponent {
   }
 
   handleTodoChange(newTodoKeyword) {
+    if (this.state.captureMode) {
+      // Use functional setState to avoid race with saveCaptureTitle (called just before this)
+      this.setState((prevState) => {
+        const { captureHeader } = prevState;
+        if (!captureHeader) return null;
+        return {
+          captureHeader: captureHeader.setIn(
+            ['titleLine', 'todoKeyword'],
+            newTodoKeyword || undefined
+          ),
+        };
+      });
+      return;
+    }
     this.props.org.setTodoState(
       this.props.selectedHeaderId,
       newTodoKeyword,
@@ -370,6 +621,26 @@ class OrgFile extends PureComponent {
   }
 
   getPopupSwitchAction(activePopupType) {
+    if (this.state.captureMode) {
+      // In capture mode, save to local state instead of dispatching Redux actions
+      switch (activePopupType) {
+        case 'title-editor':
+          return (titleValue) => {
+            if (titleValue !== undefined) {
+              this.saveCaptureTitle(titleValue);
+            }
+          };
+        case 'description-editor':
+          return (descriptionValue) => {
+            if (descriptionValue !== undefined) {
+              this.handleCaptureDescriptionChange(descriptionValue);
+            }
+          };
+        default:
+          return () => {};
+      }
+    }
+
     switch (activePopupType) {
       case 'title-editor':
         return (titleValue) => this.handleTitlePopupClose(titleValue);
@@ -381,6 +652,50 @@ class OrgFile extends PureComponent {
   }
 
   getPopupCloseAction(activePopupType) {
+    if (this.state.captureMode) {
+      // In capture mode, save to local state instead of dispatching Redux actions
+      switch (activePopupType) {
+        case 'title-editor':
+          return (titleValue) => {
+            if (titleValue !== undefined) {
+              this.setState(
+                (prevState) => {
+                  const { captureHeader, editRawValues } = prevState;
+                  if (!captureHeader) return null;
+                  let updatedHeader;
+                  if (editRawValues) {
+                    const newTitleLine = parseTitleLine(
+                      titleValue.trim(),
+                      this.props.todoKeywordSets
+                    );
+                    updatedHeader = captureHeader.set('titleLine', newTitleLine);
+                  } else {
+                    updatedHeader = captureHeader
+                      .setIn(['titleLine', 'rawTitle'], titleValue)
+                      .setIn(['titleLine', 'title'], fromJS(parseMarkupAndCookies(titleValue)));
+                  }
+                  return { captureHeader: updatedHeader };
+                },
+                () => {
+                  this.handleCaptureFromEditor();
+                }
+              );
+            } else {
+              this.handleCaptureFromEditor();
+            }
+          };
+        case 'description-editor':
+          return (descriptionValue) => {
+            if (descriptionValue !== undefined) {
+              this.handleCaptureDescriptionChange(descriptionValue);
+            }
+            this.props.base.closePopup();
+          };
+        default:
+          return this.handlePopupClose;
+      }
+    }
+
     switch (activePopupType) {
       case 'search':
         return this.handleSearchPopupClose;
@@ -409,17 +724,8 @@ class OrgFile extends PureComponent {
     }
   }
 
-  renderActivePopup(setPopupCloseActionValuesAccessor) {
-    const {
-      activePopupType,
-      activePopupData,
-      captureTemplates,
-      files,
-      headers,
-      selectedHeader,
-      shouldDisableActions,
-      todoKeywordSets,
-    } = this.props;
+  renderActivePopup(_setPopupCloseActionValuesAccessor) {
+    const { activePopupType, activePopupData, headers, shouldDisableActions } = this.props;
 
     switch (activePopupType) {
       case 'sync-confirmation':
@@ -433,97 +739,6 @@ class OrgFile extends PureComponent {
             onCancel={this.handleSyncConfirmationCancel}
           />
         );
-      case 'capture':
-        // Look up by ID first, then fall back to matching by description.
-        // Template IDs are regenerated when settings reload from the sync
-        // backend, which can happen asynchronously while a capture modal
-        // is already open. Falling back to description keeps the modal
-        // working through that reload.
-        const template =
-          captureTemplates.find(
-            (template) => template.get('id') === activePopupData.get('templateId')
-          ) ||
-          captureTemplates.find(
-            (template) =>
-              template.get('description') === activePopupData.get('templateDescription')
-          );
-        if (!template) {
-          this.props.base.closePopup();
-          return null;
-        }
-        const path = template.get('file');
-        let headersOfCaptureTarget = headers;
-        if (path) {
-          const file = files.get(path);
-          headersOfCaptureTarget = file ? file.get('headers') : List();
-        }
-        return (
-          <CaptureModal
-            template={template}
-            headers={headersOfCaptureTarget}
-            onCapture={this.handleCapture}
-            onClose={this.getPopupCloseAction(activePopupType)}
-          />
-        );
-      case 'tags-editor':
-        const allTags = extractAllOrgTags(headers);
-        return (
-          <TagsEditorModal
-            header={selectedHeader}
-            allTags={allTags}
-            onChange={this.handleTagsChange}
-          />
-        );
-      case 'timestamp-editor':
-      case 'scheduled-editor':
-      case 'deadline-editor':
-        let editingTimestamp = null;
-        if (activePopupData.get('timestampId')) {
-          editingTimestamp = timestampWithId(headers, activePopupData.get('timestampId'));
-        } else if (activePopupData.get('logEntryIndex') !== undefined) {
-          editingTimestamp = fromJS({
-            firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
-              'logBookEntries',
-              activePopupData.get('logEntryIndex'),
-              activePopupData.get('entryType'),
-            ]),
-          });
-        } else if (
-          // for scheduled timestamp and deadline the modal can be opened when no timestamp exists
-          (activePopupType !== 'scheduled-editor' && activePopupType !== 'deadline-editor') ||
-          activePopupData.get('planningItemIndex') !== -1
-        ) {
-          editingTimestamp = fromJS({
-            firstTimestamp: headerWithId(headers, activePopupData.get('headerId')).getIn([
-              'planningItems',
-              activePopupData.get('planningItemIndex'),
-              'timestamp',
-            ]),
-          });
-        }
-
-        return (
-          <TimestampEditorModal
-            headerId={activePopupData.get('headerId')}
-            timestamp={editingTimestamp}
-            timestampId={activePopupData.get('timestampId')}
-            popupType={activePopupType}
-            planningItemIndex={activePopupData.get('planningItemIndex')}
-            singleTimestampOnly={!activePopupData.get('timestampId')}
-            onClose={this.getPopupCloseAction(activePopupType)}
-            onChange={this.handleTimestampChange(activePopupData)}
-          />
-        );
-
-      case 'property-list-editor':
-        const allOrgProperties = extractAllOrgProperties(headers);
-        return selectedHeader ? (
-          <PropertyListEditorModal
-            onChange={this.handlePropertyListItemsChange}
-            propertyListItems={selectedHeader.get('propertyListItems')}
-            allOrgProperties={allOrgProperties}
-          />
-        ) : null;
       case 'agenda':
         return (
           <AgendaModal headers={headers} onClose={this.getPopupCloseAction(activePopupType)} />
@@ -534,31 +749,8 @@ class OrgFile extends PureComponent {
         );
       case 'refile':
         return <SearchModal context="refile" onClose={this.getPopupCloseAction(activePopupType)} />;
-      case 'title-editor':
-        return (
-          <TitleEditorModal
-            editRawValues={this.state.editRawValues}
-            todoKeywordSets={todoKeywordSets}
-            onClose={this.getPopupCloseAction('title-editor')}
-            saveTitle={this.saveTitle}
-            onTodoClicked={this.handleTodoChange}
-            header={selectedHeader}
-            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-          />
-        );
-      case 'description-editor':
-        return (
-          <DescriptionEditorModal
-            editRawValues={this.state.editRawValues}
-            header={selectedHeader}
-            dontIndent={this.props.dontIndent}
-            setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
-          />
-        );
       case 'table-editor':
         return <TableEditorModal shouldDisableActions={shouldDisableActions} />;
-      case 'note-editor':
-        return <NoteEditorModal shouldDisableActions={shouldDisableActions} />;
       default:
         return null;
     }
@@ -600,6 +792,7 @@ class OrgFile extends PureComponent {
       customKeybindings,
       orgFileErrorMessage,
       activePopupType,
+      activePopupData,
     } = this.props;
 
     if (!path && !staticFile) {
@@ -727,21 +920,55 @@ class OrgFile extends PureComponent {
                     ? this.state.popupCloseActionValuesAccessor()
                     : [])
                 );
-                this.setState({ editRawValues: this.props.preferEditRawValues });
+                this.setState({
+                  editRawValues: this.props.preferEditRawValues,
+                  captureMode: false,
+                  captureHeader: null,
+                  captureTemplate: null,
+                  captureShouldPrepend: false,
+                });
                 this.container.focus();
               }}
               maxSize={this.getPopupMaxSize(activePopupType)}
             >
-              {this.renderActivePopup(setPopupCloseActionValuesAccessor)}
-              {(activePopupType === 'title-editor' ||
-                activePopupType === 'description-editor' ||
-                activePopupType === 'tags-editor' ||
-                activePopupType === 'property-list-editor' ||
-                activePopupType === 'timestamp-editor' ||
-                activePopupType === 'scheduled-editor' ||
-                activePopupType === 'deadline-editor' ||
-                activePopupType === 'note-editor') && (
-                <DrawerActionBar
+              {UNIFIED_EDITOR_POPUP_TYPES.includes(activePopupType) ? (
+                <UnifiedHeaderEditor
+                  activePopupType={activePopupType}
+                  activePopupData={activePopupData}
+                  selectedHeader={
+                    this.state.captureMode ? this.state.captureHeader : this.props.selectedHeader
+                  }
+                  headers={headers}
+                  todoKeywordSets={this.props.todoKeywordSets}
+                  editRawValues={this.state.editRawValues}
+                  dontIndent={this.props.dontIndent}
+                  editorDescriptionHeightValue={this.props.editorDescriptionHeightValue}
+                  shouldDisableActions={shouldDisableActions}
+                  setPopupCloseActionValuesAccessor={setPopupCloseActionValuesAccessor}
+                  saveTitle={this.state.captureMode ? this.saveCaptureTitle : this.saveTitle}
+                  handleTodoChange={this.handleTodoChange}
+                  handleTagsChange={
+                    this.state.captureMode ? this.handleCaptureTagsChange : this.handleTagsChange
+                  }
+                  handlePropertyListItemsChange={
+                    this.state.captureMode
+                      ? this.handleCapturePropertyListItemsChange
+                      : this.handlePropertyListItemsChange
+                  }
+                  handleTimestampChange={
+                    this.state.captureMode
+                      ? this.handleCaptureTimestampChange
+                      : this.handleTimestampChange
+                  }
+                  onCreatePlanningItem={
+                    this.state.captureMode ? this.handleCaptureCreatePlanningItem : null
+                  }
+                  onRemovePlanningItem={
+                    this.state.captureMode ? this.handleCaptureRemovePlanningItem : null
+                  }
+                  allTags={extractAllOrgTags(headers)}
+                  allOrgProperties={extractAllOrgProperties(headers)}
+                  getPopupCloseAction={this.getPopupCloseAction}
                   onSwitch={() => {
                     this.getPopupSwitchAction(activePopupType)(
                       ...(this.state.popupCloseActionValuesAccessor
@@ -749,12 +976,21 @@ class OrgFile extends PureComponent {
                         : [])
                     );
                   }}
-                  editRawValues={this.state.editRawValues}
                   setEditRawValues={(editRawValues) => this.setState({ editRawValues })}
                   restorePreferEditRawValues={() =>
                     this.setState({ editRawValues: this.props.preferEditRawValues })
                   }
+                  captureMode={this.state.captureMode}
+                  captureTemplate={this.state.captureTemplate}
+                  captureShouldPrepend={this.state.captureShouldPrepend}
+                  onAddNote={this.state.captureMode ? this.handleCaptureAddNote : null}
+                  onCapture={this.handleCaptureFromEditor}
+                  onTogglePrepend={() =>
+                    this.setState({ captureShouldPrepend: !this.state.captureShouldPrepend })
+                  }
                 />
+              ) : (
+                this.renderActivePopup(setPopupCloseActionValuesAccessor)
               )}
             </Drawer>
           ) : null}
@@ -797,6 +1033,7 @@ const mapStateToProps = (state) => {
     orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
     todoKeywordSets: file.get('todoKeywordSets'),
+    editorDescriptionHeightValue: state.base.get('editorDescriptionHeightValue'),
   };
 };
 

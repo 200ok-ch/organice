@@ -1149,6 +1149,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       >
         <button
           class="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
+          data-testid="capture-main-button"
           style="opacity: 1; position: relative; z-index: 1;"
           title="Show capture templates"
         />

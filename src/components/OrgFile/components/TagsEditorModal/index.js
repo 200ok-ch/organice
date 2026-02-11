@@ -19,6 +19,7 @@ export default class TagsEditorModal extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.props.header || !prevProps.header) return;
     const prevTags = prevProps.header.getIn(['titleLine', 'tags']);
     const currentTags = this.props.header.getIn(['titleLine', 'tags']);
     if (prevTags.size === currentTags.size - 1 && currentTags.last() === '') {

@@ -152,6 +152,7 @@ const ActionDrawer = ({
               isDisabled={false}
               onClick={handleMainCaptureButtonClick}
               style={mainButtonStyle}
+              dataTestId="capture-main-button"
               tooltip={
                 isDisplayingCaptureButtons ? 'Hide capture templates' : 'Show capture templates'
               }
@@ -165,6 +166,10 @@ const ActionDrawer = ({
                 isDisabled={false}
                 onClick={handleCaptureButtonClick(template)}
                 style={{ ...baseCaptureButtonStyle, bottom: style.bottom * (index + 1) }}
+                dataTestId={`capture-template-${template
+                  .get('description')
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')}`}
                 tooltip={`Activate "${template.get('description')}" capture template`}
               />
             ))}

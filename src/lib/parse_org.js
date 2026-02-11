@@ -728,10 +728,12 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
   const allKeywords = todoKeywordSets.flatMap((todoKeywordSet) => {
     return todoKeywordSet.get('keywords');
   });
-  const todoKeyword = allKeywords.filter((keyword) => titleLine.startsWith(keyword + ' ')).first();
+  const todoKeyword = allKeywords
+    .filter((keyword) => titleLine.startsWith(keyword + ' ') || titleLine === keyword)
+    .first();
   let rawTitle = titleLine;
   if (todoKeyword) {
-    rawTitle = rawTitle.substr(todoKeyword.length + 1);
+    rawTitle = rawTitle.substr(todoKeyword.length + 1).trimStart();
   }
 
   // Check for tags.

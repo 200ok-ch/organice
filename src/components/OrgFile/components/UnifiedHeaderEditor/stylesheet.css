@@ -1,0 +1,90 @@
+@import '../../../../colors.css';
+
+/* UnifiedHeaderEditor wrapper */
+.unified-header-editor {
+  /* The component inherits styles from existing sub-editors and DrawerActionBar */
+  /* No additional styling needed - container only */
+}
+
+/* Title editor: TODO keyword buttons */
+.todo-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.todo-editor__icon {
+  color: var(--magenta);
+  cursor: pointer;
+}
+
+/* Capture mode header bar */
+.capture-header-bar {
+  padding: 12px 16px;
+  background: var(--base01);
+  border-bottom: 1px solid var(--base02);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.capture-header-bar__template-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.capture-header-bar__letter {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--base03);
+  color: var(--base1);
+  text-align: center;
+  line-height: 24px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.capture-header-bar__description {
+  font-weight: 600;
+  color: var(--base1);
+}
+
+.capture-header-bar__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.capture-header-bar__prepend-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--base0);
+}
+
+.capture-header-bar__prepend-toggle input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.capture-header-bar__capture-btn {
+  background: var(--green);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.capture-header-bar__capture-btn:hover {
+  background: var(--green-dark, #2d5f3f);
+}

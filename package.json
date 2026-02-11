@@ -60,6 +60,7 @@
     "test:e2e:report": "playwright show-report",
     "test:e2e:auth": "playwright test --project=chromium-authenticated",
     "test:all": "yarn test && yarn test:e2e",
+    "ci": "yarn eslint && yarn prettier-eslint --list-different && yarn test",
     "eslint": "./node_modules/.bin/eslint --cache .",
     "nibble": "./node_modules/.bin/eslint-nibble --cache .",
     "prettier": "./node_modules/.bin/prettier \"**/*.js\"",

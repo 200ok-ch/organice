@@ -30,7 +30,11 @@ class NoteEditorModal extends PureComponent {
     if (note !== null) note = note.trim();
     if (!note) return;
 
-    this.props.org.addNote(note, new Date());
+    if (this.props.onAddNote) {
+      this.props.onAddNote(note, new Date());
+    } else {
+      this.props.org.addNote(note, new Date());
+    }
     this.setState({ note: '' });
   }
 
