@@ -33,7 +33,13 @@ import {
   STATIC_FILE_PREFIX,
 } from '../../lib/org_utils';
 import { parseCaptureTemplate } from '../../lib/capture_template_parsing';
-import { parseTitleLine, parseMarkupAndCookies, parseRawText, _updateHeaderFromDescription, updatePlanningItemsFromHeader } from '../../lib/parse_org';
+import {
+  parseTitleLine,
+  parseMarkupAndCookies,
+  parseRawText,
+  _updateHeaderFromDescription,
+  updatePlanningItemsFromHeader,
+} from '../../lib/parse_org';
 import { getTimestampAsText, timestampForDate } from '../../lib/timestamps';
 import generateId from '../../lib/id_generator';
 import { formatTextWrap } from '../../util/misc';
@@ -169,8 +175,7 @@ class OrgFile extends PureComponent {
           (template) => template.get('id') === activePopupData.get('templateId')
         ) ||
         captureTemplates.find(
-          (template) =>
-            template.get('description') === activePopupData.get('templateDescription')
+          (template) => template.get('description') === activePopupData.get('templateDescription')
         );
 
       if (!template) {
@@ -432,7 +437,10 @@ class OrgFile extends PureComponent {
       parseRawText(noteText + (logNotes.isEmpty() ? '\n' : '')).concat(logNotes)
     );
     this.setState({
-      captureHeader: updatedHeader.set('planningItems', updatePlanningItemsFromHeader(updatedHeader)),
+      captureHeader: updatedHeader.set(
+        'planningItems',
+        updatePlanningItemsFromHeader(updatedHeader)
+      ),
     });
   }
 
@@ -597,7 +605,10 @@ class OrgFile extends PureComponent {
         const { captureHeader } = prevState;
         if (!captureHeader) return null;
         return {
-          captureHeader: captureHeader.setIn(['titleLine', 'todoKeyword'], newTodoKeyword || undefined),
+          captureHeader: captureHeader.setIn(
+            ['titleLine', 'todoKeyword'],
+            newTodoKeyword || undefined
+          ),
         };
       });
       return;
@@ -692,12 +703,7 @@ class OrgFile extends PureComponent {
   }
 
   renderActivePopup(_setPopupCloseActionValuesAccessor) {
-    const {
-      activePopupType,
-      activePopupData,
-      headers,
-      shouldDisableActions,
-    } = this.props;
+    const { activePopupType, activePopupData, headers, shouldDisableActions } = this.props;
 
     switch (activePopupType) {
       case 'sync-confirmation':

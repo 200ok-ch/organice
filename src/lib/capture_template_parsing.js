@@ -72,11 +72,7 @@ const determineInitialSubEditor = (substitutedText, cursorIndex) => {
  * @param {Immutable.Map} customVariables - Custom template variables (default: empty Map)
  * @returns {Object} { header: Immutable.Map, initialSubEditor: string, substitutedText: string }
  */
-export const parseCaptureTemplate = (
-  templateString,
-  todoKeywordSets,
-  customVariables = Map()
-) => {
+export const parseCaptureTemplate = (templateString, todoKeywordSets, customVariables = Map()) => {
   // Handle empty template
   if (!templateString || templateString.trim() === '') {
     const emptyHeader = newHeaderFromText('', todoKeywordSets);

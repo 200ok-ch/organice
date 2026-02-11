@@ -203,7 +203,11 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
       let fiber = container[fiberKey];
       let headers = null;
       for (let i = 0; i < 50 && fiber; i++) {
-        if (fiber.memoizedProps && fiber.memoizedProps.headers && fiber.memoizedProps.headers.toJS) {
+        if (
+          fiber.memoizedProps &&
+          fiber.memoizedProps.headers &&
+          fiber.memoizedProps.headers.toJS
+        ) {
           headers = fiber.memoizedProps.headers.toJS();
           break;
         }
@@ -213,7 +217,10 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
 
       // Check if any header has our title
       return headers.some(
-        (h) => h.titleLine && h.titleLine.rawTitle && h.titleLine.rawTitle.includes('UniqueTestCapture123')
+        (h) =>
+          h.titleLine &&
+          h.titleLine.rawTitle &&
+          h.titleLine.rawTitle.includes('UniqueTestCapture123')
       );
     });
     expect(titleFound).toBe(true);
@@ -245,9 +252,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     const titleParsed = await page.evaluate(() => {
       const container = document.querySelector('.org-file-container');
       if (!container) return null;
-      const fiberKey = Object.keys(container).find((k) =>
-        k.startsWith('__reactInternalInstance')
-      );
+      const fiberKey = Object.keys(container).find((k) => k.startsWith('__reactInternalInstance'));
       if (!fiberKey) return null;
       let fiber = container[fiberKey];
       let headers = null;
@@ -273,7 +278,8 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
       return {
         rawTitle: h.titleLine.rawTitle,
         titleLength: h.titleLine.title ? h.titleLine.title.length : 0,
-        titleFirstType: h.titleLine.title && h.titleLine.title[0] ? h.titleLine.title[0].type : null,
+        titleFirstType:
+          h.titleLine.title && h.titleLine.title[0] ? h.titleLine.title[0].type : null,
       };
     });
     expect(titleParsed).not.toBeNull();
@@ -313,9 +319,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     const descResult = await page.evaluate(() => {
       const container = document.querySelector('.org-file-container');
       if (!container) return null;
-      const fiberKey = Object.keys(container).find((k) =>
-        k.startsWith('__reactInternalInstance')
-      );
+      const fiberKey = Object.keys(container).find((k) => k.startsWith('__reactInternalInstance'));
       if (!fiberKey) return null;
       let fiber = container[fiberKey];
       let headers = null;
@@ -333,16 +337,13 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
       if (!headers) return null;
       // Find the captured header (most recent TODO with our description)
       const h = headers.find(
-        (h) =>
-          h.rawDescription &&
-          h.rawDescription.includes('This is my capture description')
+        (h) => h.rawDescription && h.rawDescription.includes('This is my capture description')
       );
       if (!h) return null;
       return {
         rawDescription: h.rawDescription,
         descriptionLength: h.description ? h.description.length : 0,
-        descriptionFirstType:
-          h.description && h.description[0] ? h.description[0].type : null,
+        descriptionFirstType: h.description && h.description[0] ? h.description[0].type : null,
       };
     });
     expect(descResult).not.toBeNull();
@@ -389,9 +390,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     const tagResult = await page.evaluate(() => {
       const container = document.querySelector('.org-file-container');
       if (!container) return null;
-      const fiberKey = Object.keys(container).find((k) =>
-        k.startsWith('__reactInternalInstance')
-      );
+      const fiberKey = Object.keys(container).find((k) => k.startsWith('__reactInternalInstance'));
       if (!fiberKey) return null;
       let fiber = container[fiberKey];
       let headers = null;
@@ -409,9 +408,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
       if (!headers) return null;
       const h = headers.find(
         (h) =>
-          h.titleLine &&
-          h.titleLine.rawTitle &&
-          h.titleLine.rawTitle.includes('TagTestCapture')
+          h.titleLine && h.titleLine.rawTitle && h.titleLine.rawTitle.includes('TagTestCapture')
       );
       if (!h) return null;
       return {
@@ -422,9 +419,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     expect(tagResult.tags).toContain('urgent');
   });
 
-  test('should capture with all attributes and verify immediate Redux state', async ({
-    page,
-  }) => {
+  test('should capture with all attributes and verify immediate Redux state', async ({ page }) => {
     // Open capture via Groceries template
     await page.locator('[data-testid="capture-main-button"]').click();
     const groceriesBtn = page.locator('[data-testid="capture-template-groceries"]');
@@ -467,9 +462,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     const result = await page.evaluate(() => {
       const container = document.querySelector('.org-file-container');
       if (!container) return null;
-      const fiberKey = Object.keys(container).find((k) =>
-        k.startsWith('__reactInternalInstance')
-      );
+      const fiberKey = Object.keys(container).find((k) => k.startsWith('__reactInternalInstance'));
       if (!fiberKey) return null;
       let fiber = container[fiberKey];
       let headers = null;
@@ -487,9 +480,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
       if (!headers) return null;
       const h = headers.find(
         (h) =>
-          h.titleLine &&
-          h.titleLine.rawTitle &&
-          h.titleLine.rawTitle.includes('FullCaptureTest')
+          h.titleLine && h.titleLine.rawTitle && h.titleLine.rawTitle.includes('FullCaptureTest')
       );
       if (!h) return null;
       return {
