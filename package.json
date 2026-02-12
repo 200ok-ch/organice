@@ -28,7 +28,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react-hooks": "^4.0.8",
     "immutable": "^3.8.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "parcel": "^2.14.4",
     "peggy": "^5.0.0",
     "react": "16.10.0",
