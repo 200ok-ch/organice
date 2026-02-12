@@ -2,9 +2,9 @@
 // Grammar for the parser for the headline filter.
 
 // It will automatically be compiled to the parser JavaScript file using the
-// parser generator pegjs.
+// parser generator peggy.
 
-// You can use https://pegjs.org/online to debug it.
+// You can use https://peggyjs.org/online to debug it.
 
 // Note: As suggested by alphapapa, the parser can be extended to support
 // additional types of filter terms ("predicates"), e.g. ts:on=today

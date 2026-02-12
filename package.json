@@ -30,7 +30,7 @@
     "immutable": "^3.8.2",
     "lodash": "^4.17.21",
     "parcel": "^2.14.4",
-    "pegjs": "^0.10.0",
+    "peggy": "^5.0.0",
     "react": "16.10.0",
     "react-beautiful-dnd": "^13.0.0",
     "react-collapse": "^4.0.3",
