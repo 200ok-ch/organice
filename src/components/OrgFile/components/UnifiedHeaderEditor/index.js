@@ -43,6 +43,7 @@ class UnifiedHeaderEditor extends PureComponent {
       'handleNextTodoKeywordSet',
       'handleDescriptionTextareaRef',
       'handleDescriptionChange',
+      'handleDescriptionKeyDown',
       'handleDescriptionInsertTimestamp',
     ]);
 
@@ -177,6 +178,77 @@ class UnifiedHeaderEditor extends PureComponent {
 
   handleDescriptionChange(event) {
     this.setState({ descriptionValue: this.descriptionModifier(event) });
+  }
+
+  handleDescriptionKeyDown(event) {
+    if (event.key !== 'Enter') return;
+
+    const textarea = this.descriptionTextarea;
+    const { selectionStart, selectionEnd } = textarea;
+    const { descriptionValue } = this.state;
+
+    const textBeforeCursor = descriptionValue.substring(0, selectionStart);
+    const lastNewlineIndex = textBeforeCursor.lastIndexOf('\n');
+    const currentLine = textBeforeCursor.substring(lastNewlineIndex + 1);
+
+    // Check for ordered list: "1. item" or "  2) item"
+    const orderedMatch = currentLine.match(/^(\s*)(\d+)([.)]) (.*)$/);
+    if (orderedMatch) {
+      const [, indent, num, separator, content] = orderedMatch;
+      event.preventDefault();
+      if (content.trim() === '') {
+        // Empty item — remove the prefix to exit list mode
+        const lineStart = lastNewlineIndex + 1;
+        const newValue =
+          descriptionValue.substring(0, lineStart) + descriptionValue.substring(selectionStart);
+        this.setState({ descriptionValue: newValue }, () => {
+          textarea.selectionStart = lineStart;
+          textarea.selectionEnd = lineStart;
+        });
+      } else {
+        const nextNum = parseInt(num, 10) + 1;
+        const prefix = '\n' + indent + nextNum + separator + ' ';
+        const newValue =
+          descriptionValue.substring(0, selectionStart) +
+          prefix +
+          descriptionValue.substring(selectionEnd);
+        this.setState({ descriptionValue: newValue }, () => {
+          const newCursorPos = selectionStart + prefix.length;
+          textarea.selectionStart = newCursorPos;
+          textarea.selectionEnd = newCursorPos;
+        });
+      }
+      return;
+    }
+
+    // Check for unordered list: "- item" or "  + item"
+    const unorderedMatch = currentLine.match(/^(\s*)([-+]) (.*)$/);
+    if (unorderedMatch) {
+      const [, indent, bullet, content] = unorderedMatch;
+      event.preventDefault();
+      if (content.trim() === '') {
+        // Empty item — remove the prefix to exit list mode
+        const lineStart = lastNewlineIndex + 1;
+        const newValue =
+          descriptionValue.substring(0, lineStart) + descriptionValue.substring(selectionStart);
+        this.setState({ descriptionValue: newValue }, () => {
+          textarea.selectionStart = lineStart;
+          textarea.selectionEnd = lineStart;
+        });
+      } else {
+        const prefix = '\n' + indent + bullet + ' ';
+        const newValue =
+          descriptionValue.substring(0, selectionStart) +
+          prefix +
+          descriptionValue.substring(selectionEnd);
+        this.setState({ descriptionValue: newValue }, () => {
+          const newCursorPos = selectionStart + prefix.length;
+          textarea.selectionStart = newCursorPos;
+          textarea.selectionEnd = newCursorPos;
+        });
+      }
+      return;
+    }
   }
 
   handleDescriptionInsertTimestamp() {
@@ -326,10 +398,12 @@ class UnifiedHeaderEditor extends PureComponent {
           <textarea
             autoFocus
             className="textarea drag-handle"
+            data-testid="description-textarea"
             rows={isMobileBrowser ? '8' : editorDescriptionHeightValue}
             ref={this.handleDescriptionTextareaRef}
             value={descriptionValue}
             onChange={this.handleDescriptionChange}
+            onKeyDown={this.handleDescriptionKeyDown}
           />
           <div
             className="header-content__insert-timestamp-button"

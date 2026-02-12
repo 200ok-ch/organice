@@ -285,6 +285,90 @@ test.describe('Header Description', () => {
   });
 });
 
+test.describe('Description List Auto-Continuation', () => {
+  let appHelper;
+  let firefoxHelper;
+
+  test.beforeEach(async ({ page }) => {
+    appHelper = new AppHelper(page);
+    firefoxHelper = new FirefoxHelper(page);
+
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    await appHelper.waitForAppReady();
+  });
+
+  // Helper to open the description editor on the "Tables" header
+  async function openDescriptionEditor(page, firefoxHelper) {
+    const tablesHeader = page.locator('.header').filter({ hasText: 'Tables' }).first();
+    await tablesHeader.scrollIntoViewIfNeeded();
+    await tablesHeader.click();
+    await expect(page.locator('[data-testid="header-action-drawer"]')).toBeVisible();
+    await firefoxHelper.clickClickCatcherButton('edit-header-title');
+    await expect(page.locator('.drawer-modal__title:has-text("Edit description")')).toBeVisible();
+    return page.locator('[data-testid="description-textarea"]');
+  }
+
+  test('should auto-continue unordered list with dash on Enter', async ({ page }) => {
+    const textarea = await openDescriptionEditor(page, firefoxHelper);
+
+    // Clear the textarea and type a list item
+    await textarea.fill('');
+    await textarea.click();
+    await textarea.type('- item one');
+    await textarea.press('Enter');
+
+    // Verify the next line starts with "- "
+    const value = await textarea.inputValue();
+    expect(value).toBe('- item one\n- ');
+  });
+
+  test('should auto-continue ordered list on Enter', async ({ page }) => {
+    const textarea = await openDescriptionEditor(page, firefoxHelper);
+
+    // Clear and type an ordered list item
+    await textarea.fill('');
+    await textarea.click();
+    await textarea.type('1. first item');
+    await textarea.press('Enter');
+
+    // Verify the next line starts with "2. "
+    const value = await textarea.inputValue();
+    expect(value).toBe('1. first item\n2. ');
+  });
+
+  test('should exit unordered list when pressing Enter on empty item', async ({ page }) => {
+    const textarea = await openDescriptionEditor(page, firefoxHelper);
+
+    // Clear and type a list item, then Enter twice
+    await textarea.fill('');
+    await textarea.click();
+    await textarea.type('- item one');
+    await textarea.press('Enter');
+    // Now cursor is after "- " on the second line — press Enter again to exit
+    await textarea.press('Enter');
+
+    // The empty "- " should be removed, leaving just the first item with a trailing newline
+    const value = await textarea.inputValue();
+    expect(value).toBe('- item one\n');
+  });
+
+  test('should exit ordered list when pressing Enter on empty item', async ({ page }) => {
+    const textarea = await openDescriptionEditor(page, firefoxHelper);
+
+    // Clear and type an ordered list item, then Enter twice
+    await textarea.fill('');
+    await textarea.click();
+    await textarea.type('1. first item');
+    await textarea.press('Enter');
+    // Now cursor is after "2. " on the second line — press Enter again to exit
+    await textarea.press('Enter');
+
+    // The empty "2. " should be removed
+    const value = await textarea.inputValue();
+    expect(value).toBe('1. first item\n');
+  });
+});
+
 test.describe('Planning Items (Timestamps)', () => {
   let appHelper;
   let firefoxHelper;
