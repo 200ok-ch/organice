@@ -7,6 +7,16 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-02-12 Thu]
+
+** Added
+
+*** Auto-continue lists in description editor
+    - When editing a header description, pressing Enter after a list item (=- item= or =1. item=) automatically starts the next list item
+    - Ordered lists increment the number (=1.= → =2.= → =3.=)
+    - Pressing Enter on an empty list prefix removes it, exiting the list
+    - Works with both dash (=-=) and plus (=+=) unordered lists, and dot (=1.=) and paren (=1)=) ordered lists
+
 * [2026-02-11 Wed]
 
 ** Added
