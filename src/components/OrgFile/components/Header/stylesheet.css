@@ -9,6 +9,7 @@
   overflow-x: visible;
   min-height: 23px;
   touch-action: pan-y;
+  transition: transform 130ms ease, margin-top 120ms ease, margin-bottom 120ms ease;
 }
 
 .header--selected {
@@ -29,18 +30,30 @@
   border-radius: 6px;
   opacity: 1;
   pointer-events: none;
+  transition: none;
 }
 
 .header--reorder-drop-before {
   border-top: 4px solid var(--blue);
   box-shadow: inset 0 10px 0 rgba(38, 139, 210, 0.24);
   background-image: linear-gradient(to bottom, rgba(38, 139, 210, 0.28), rgba(38, 139, 210, 0));
+  margin-top: 16px;
+  transform: translateY(8px);
 }
 
 .header--reorder-drop-after {
   border-bottom: 4px solid var(--blue);
   box-shadow: inset 0 -10px 0 rgba(38, 139, 210, 0.24);
   background-image: linear-gradient(to top, rgba(38, 139, 210, 0.28), rgba(38, 139, 210, 0));
+  margin-bottom: 16px;
+}
+
+.header--reorder-drop-after + .header {
+  transform: translateY(12px);
+}
+
+.header--reorder-drop-after + .header + .header {
+  transform: translateY(6px);
 }
 
 .left-swipe-action-container {

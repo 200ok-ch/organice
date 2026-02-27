@@ -11,14 +11,8 @@ const headerIndexByText = async (page, text) => {
   }, text);
 };
 
-const longPressDragHeader = async (
-  page,
-  sourceText,
-  targetText,
-  { position = 'after', scrollDirection = null } = {}
-) => {
+const beginLongPressDrag = async (page, sourceText) => {
   const sourceHeader = page.locator('.header').filter({ hasText: sourceText }).first();
-  const targetHeader = page.locator('.header').filter({ hasText: targetText }).first();
 
   await sourceHeader.scrollIntoViewIfNeeded();
   await expect(sourceHeader).toBeVisible();
@@ -34,6 +28,17 @@ const longPressDragHeader = async (
   await page.waitForTimeout(450);
 
   await expect(sourceHeader).toHaveClass(/header--long-press-dragging/);
+
+  return { sourceHeader, startX, startY };
+};
+
+const moveDragToTarget = async (
+  page,
+  startX,
+  targetText,
+  { position = 'after', scrollDirection = null } = {}
+) => {
+  const targetHeader = page.locator('.header').filter({ hasText: targetText }).first();
 
   if (scrollDirection) {
     const viewportHeight = page.viewportSize().height;
@@ -59,6 +64,16 @@ const longPressDragHeader = async (
       : targetBox.y + targetBox.height * 0.2;
 
   await page.mouse.move(targetBox.x + targetBox.width / 2, targetY);
+};
+
+const longPressDragHeader = async (
+  page,
+  sourceText,
+  targetText,
+  { position = 'after', scrollDirection = null } = {}
+) => {
+  const { startX } = await beginLongPressDrag(page, sourceText);
+  await moveDragToTarget(page, startX, targetText, { position, scrollDirection });
   await page.mouse.up();
   await page.waitForTimeout(250);
 };
@@ -162,5 +177,70 @@ test.describe('Long Press Reorder', () => {
     expect(captureIndex).toBe(0);
     expect(titles[captureIndex + 1]).toContain(groceriesText);
     expect(titles[captureIndex + 2]).toContain(deeplyText);
+  });
+
+  test('shows a clear insertion gap while dragging', async ({ page }, testInfo) => {
+    const appHelper = new AppHelper(page);
+
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    await appHelper.waitForAppReady();
+
+    const target = page.locator('.header').filter({ hasText: 'Planning' }).first();
+    await target.scrollIntoViewIfNeeded();
+    await expect(target).toBeVisible();
+
+    const beforeMetrics = await page.evaluate(() => {
+      const allHeaders = Array.from(document.querySelectorAll('.header[data-header-id]'));
+      const targetHeader = allHeaders.find((header) => header.textContent.includes('Planning'));
+      const targetIndex = allHeaders.findIndex((header) => header === targetHeader);
+      const nextHeader = allHeaders[targetIndex + 1];
+
+      if (!targetHeader || !nextHeader) {
+        return null;
+      }
+
+      const targetRect = targetHeader.getBoundingClientRect();
+      const nextRect = nextHeader.getBoundingClientRect();
+
+      return {
+        targetHeaderId: targetHeader.dataset.headerId,
+        nextHeaderId: nextHeader.dataset.headerId,
+        targetBottom: targetRect.bottom,
+        nextTop: nextRect.top,
+      };
+    });
+    expect(beforeMetrics).toBeTruthy();
+
+    const { startX } = await beginLongPressDrag(page, SOURCE_HEADER_TEXT);
+    await moveDragToTarget(page, startX, 'Planning', { position: 'after' });
+    const duringMetrics = await page.evaluate(({ targetHeaderId, nextHeaderId }) => {
+      const targetHeader = document.querySelector(`.header[data-header-id="${targetHeaderId}"]`);
+      const nextHeader = document.querySelector(`.header[data-header-id="${nextHeaderId}"]`);
+
+      if (!targetHeader || !nextHeader) {
+        return null;
+      }
+
+      const targetRect = targetHeader.getBoundingClientRect();
+      const nextRect = nextHeader.getBoundingClientRect();
+
+      return {
+        targetHasDropClass:
+          targetHeader.classList.contains('header--reorder-drop-after') ||
+          targetHeader.classList.contains('header--reorder-drop-before'),
+        targetBottom: targetRect.bottom,
+        nextTop: nextRect.top,
+        nextTransform: window.getComputedStyle(nextHeader).transform,
+      };
+    }, beforeMetrics);
+    expect(duringMetrics).toBeTruthy();
+    expect(duringMetrics.targetHasDropClass).toBe(true);
+
+    const gapBefore = beforeMetrics.nextTop - beforeMetrics.targetBottom;
+    const gapDuring = duringMetrics.nextTop - duringMetrics.targetBottom;
+    expect(gapDuring > gapBefore + 4 || duringMetrics.nextTransform !== 'none').toBe(true);
+
+    await page.screenshot({ path: testInfo.outputPath('drag-gap-preview.png'), fullPage: false });
+    await page.mouse.up();
   });
 });
