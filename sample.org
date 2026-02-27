@@ -87,6 +87,8 @@ To move a header, click on the four-way arrows button at the bottom of the scree
 
 The center 4 move the header up, down, left, and right. The 2 outermost buttons move the header and its entire nested subtree.
 
+You can also long-press and drag headers directly in the list on desktop and mobile. Parent headers move together with their subheaders, and top-level headers can only be dropped between other top-level headers.
+
 Give them a try on these nested headers to get a feel for how they operate:
 *** A few of my favorite things:
 **** Food
