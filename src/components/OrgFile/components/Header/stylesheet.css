@@ -24,19 +24,21 @@
 }
 
 .header--long-press-dragging {
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
-  background-color: var(--base2);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.42);
+  background-color: rgba(238, 232, 213, 0.94);
   border-radius: 6px;
-  opacity: 0.96;
+  opacity: 0.98;
   pointer-events: none;
 }
 
 .header--reorder-drop-before {
-  border-top: 2px solid var(--blue);
+  border-top: 3px solid var(--blue);
+  background-image: linear-gradient(to bottom, rgba(38, 139, 210, 0.2), rgba(38, 139, 210, 0));
 }
 
 .header--reorder-drop-after {
-  border-bottom: 2px solid var(--blue);
+  border-bottom: 3px solid var(--blue);
+  background-image: linear-gradient(to top, rgba(38, 139, 210, 0.2), rgba(38, 139, 210, 0));
 }
 
 .left-swipe-action-container {

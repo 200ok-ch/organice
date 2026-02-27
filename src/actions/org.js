@@ -368,6 +368,14 @@ export const moveHeaderDown = (headerId) => ({
   dirtying: true,
 });
 
+export const moveHeaderToPosition = (sourceHeaderId, targetHeaderId, position) => ({
+  type: 'MOVE_HEADER_TO_POSITION',
+  sourceHeaderId,
+  targetHeaderId,
+  position,
+  dirtying: true,
+});
+
 export const moveHeaderLeft = (headerId) => ({
   type: 'MOVE_HEADER_LEFT',
   headerId,

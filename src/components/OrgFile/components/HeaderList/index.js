@@ -7,11 +7,7 @@ import './stylesheet.css';
 import Header from '../Header';
 
 import * as orgActions from '../../../../actions/org';
-import {
-  numSubheadersOfHeaderWithId,
-  hasHeaderContent,
-  indexOfHeaderWithId,
-} from '../../../../lib/org_utils';
+import { numSubheadersOfHeaderWithId, hasHeaderContent } from '../../../../lib/org_utils';
 
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -139,6 +135,53 @@ class HeaderList extends PureComponent {
     return matchingHeader ? matchingHeader.get('id') : null;
   }
 
+  dropTargetFromPointer(pointerX, pointerY, draggingHeaderId) {
+    const headerElements = Array.from(document.querySelectorAll('.header[data-header-id]'));
+    const candidateElements = headerElements.filter(
+      (headerElement) =>
+        this.headerIdFromDatasetValue(headerElement.dataset.headerId) !== draggingHeaderId
+    );
+
+    if (candidateElements.length === 0) {
+      return {
+        targetHeaderId: null,
+        dropPosition: null,
+      };
+    }
+
+    const directHitElement = document
+      .elementFromPoint(pointerX, pointerY)
+      ?.closest('.header[data-header-id]');
+    const directHitHeaderId = this.headerIdFromDatasetValue(directHitElement?.dataset.headerId);
+
+    let targetElement =
+      directHitElement && directHitHeaderId !== draggingHeaderId ? directHitElement : null;
+
+    if (!targetElement) {
+      targetElement = _.minBy(candidateElements, (headerElement) => {
+        const rectangle = headerElement.getBoundingClientRect();
+        const centerY = rectangle.top + rectangle.height / 2;
+        return Math.abs(pointerY - centerY);
+      });
+    }
+
+    if (!targetElement) {
+      return {
+        targetHeaderId: null,
+        dropPosition: null,
+      };
+    }
+
+    const targetHeaderId = this.headerIdFromDatasetValue(targetElement.dataset.headerId);
+    const rectangle = targetElement.getBoundingClientRect();
+    const dropPosition = pointerY < rectangle.top + rectangle.height / 2 ? 'before' : 'after';
+
+    return {
+      targetHeaderId,
+      dropPosition,
+    };
+  }
+
   handleWindowPointerMove(event) {
     const coordinates = this.pointerCoordinatesFromEvent(event);
     if (!coordinates) {
@@ -221,15 +264,15 @@ class HeaderList extends PureComponent {
   updateDragState(pointerX, pointerY) {
     this.pointerX = pointerX;
     this.pointerY = pointerY;
-
-    const hoveredHeaderElement = document
-      .elementFromPoint(pointerX, pointerY)
-      ?.closest('.header[data-header-id]');
-
     const draggedHeaderId = this.state.draggingHeaderId;
-    const targetHeaderId = this.headerIdFromDatasetValue(hoveredHeaderElement?.dataset.headerId);
 
-    if (!hoveredHeaderElement || !targetHeaderId || targetHeaderId === draggedHeaderId) {
+    const { targetHeaderId, dropPosition } = this.dropTargetFromPointer(
+      pointerX,
+      pointerY,
+      draggedHeaderId
+    );
+
+    if (!targetHeaderId) {
       this.setState({
         currentPointerY: pointerY,
         dropTargetHeaderId: null,
@@ -237,10 +280,6 @@ class HeaderList extends PureComponent {
       });
       return;
     }
-
-    const hoveredHeaderRect = hoveredHeaderElement.getBoundingClientRect();
-    const dropPosition =
-      pointerY < hoveredHeaderRect.top + hoveredHeaderRect.height / 2 ? 'before' : 'after';
 
     this.setState({
       currentPointerY: pointerY,
@@ -254,40 +293,17 @@ class HeaderList extends PureComponent {
     let { dropTargetHeaderId, dropPosition } = this.state;
 
     if (shouldPersist && draggingHeaderId && this.pointerX !== null && this.pointerY !== null) {
-      const hoveredHeaderElement = document
-        .elementFromPoint(this.pointerX, this.pointerY)
-        ?.closest('.header[data-header-id]');
-      const hoveredHeaderId = this.headerIdFromDatasetValue(hoveredHeaderElement?.dataset.headerId);
-
-      if (hoveredHeaderElement && hoveredHeaderId && hoveredHeaderId !== draggingHeaderId) {
-        const hoveredHeaderRect = hoveredHeaderElement.getBoundingClientRect();
-        dropTargetHeaderId = hoveredHeaderId;
-        dropPosition =
-          this.pointerY < hoveredHeaderRect.top + hoveredHeaderRect.height / 2 ? 'before' : 'after';
-      }
+      const latestDropTarget = this.dropTargetFromPointer(
+        this.pointerX,
+        this.pointerY,
+        draggingHeaderId
+      );
+      dropTargetHeaderId = latestDropTarget.targetHeaderId;
+      dropPosition = latestDropTarget.dropPosition;
     }
 
     if (shouldPersist && draggingHeaderId && dropTargetHeaderId && dropPosition) {
-      const sourceIndex = indexOfHeaderWithId(this.props.headers, draggingHeaderId);
-      const targetIndex = indexOfHeaderWithId(this.props.headers, dropTargetHeaderId);
-
-      if (sourceIndex !== -1 && targetIndex !== -1) {
-        if (sourceIndex < targetIndex) {
-          const moves =
-            dropPosition === 'after'
-              ? targetIndex - sourceIndex
-              : Math.max(0, targetIndex - sourceIndex - 1);
-
-          _.times(moves).forEach(() => this.props.org.moveHeaderDown(draggingHeaderId));
-        } else if (sourceIndex > targetIndex) {
-          const moves =
-            dropPosition === 'after'
-              ? Math.max(0, sourceIndex - targetIndex - 1)
-              : sourceIndex - targetIndex;
-
-          _.times(moves).forEach(() => this.props.org.moveHeaderUp(draggingHeaderId));
-        }
-      }
+      this.props.org.moveHeaderToPosition(draggingHeaderId, dropTargetHeaderId, dropPosition);
     }
 
     this.stopAutoScrollLoop();
