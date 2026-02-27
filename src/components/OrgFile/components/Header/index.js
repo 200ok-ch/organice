@@ -52,6 +52,7 @@ class Header extends PureComponent {
       'handleRefileHeaderRequest',
       'handleAddNoteClick',
       'handleDuplicateHeader',
+      'handleDragStartFromPending',
     ]);
 
     this.state = {
@@ -73,6 +74,11 @@ class Header extends PureComponent {
     this.globalMouseUpHandler = this.handleMouseUp.bind(this);
     this.globalTouchMoveHandler = this.handleTouchMove.bind(this);
     this.globalTouchEndHandler = this.handleTouchEnd.bind(this);
+    this.pendingPointerStart = null;
+  }
+
+  handleDragStartFromPending(dragX, targetElement) {
+    this.handleDragStart(targetElement, dragX);
   }
 
   addGlobalDragHandlers() {
@@ -106,12 +112,12 @@ class Header extends PureComponent {
     this.props.onRef(containerDiv);
   }
 
-  handleDragStart(event, dragX) {
+  handleDragStart(targetElement, dragX) {
     if (this.props.shouldDisableActions) {
       return;
     }
 
-    if (!!event.target.closest('.table-part')) {
+    if (!!targetElement?.closest('.table-part')) {
       return;
     }
 
@@ -172,33 +178,81 @@ class Header extends PureComponent {
       currentDragX: null,
       isDraggingFreely: false,
     });
+
+    this.removeGlobalDragHandlers();
   }
 
   handleMouseDown(event) {
-    this.handleDragStart(event, event.clientX);
+    this.pendingPointerStart = {
+      x: event.clientX,
+      y: event.clientY,
+      target: event.target,
+    };
+
+    this.props.onLongPressPointerStart(this.props.header.get('id'), event.clientX, event.clientY);
   }
 
   handleMouseMove(event) {
+    if (this.props.isLongPressDragging) {
+      this.pendingPointerStart = null;
+      return;
+    }
+
+    if (this.pendingPointerStart && this.state.dragStartX === null) {
+      this.handleDragStartFromPending(this.pendingPointerStart.x, this.pendingPointerStart.target);
+      this.pendingPointerStart = null;
+    }
+
     this.handleDragMove(event.clientX, event.clientY);
   }
 
   handleMouseUp() {
+    this.pendingPointerStart = null;
+    this.props.onLongPressPointerEnd();
     this.handleDragEnd();
   }
 
   handleTouchStart(event) {
-    // Capture the initial Y position of the touch to track vertical movement
     const touch = event.changedTouches[0];
+    this.pendingPointerStart = {
+      x: touch.clientX,
+      y: touch.clientY,
+      target: event.target,
+    };
+
+    this.props.onLongPressPointerStart(this.props.header.get('id'), touch.clientX, touch.clientY);
+
     this.setState({
       touchStartY: touch.clientY,
     });
-    this.handleDragStart(event, touch.clientX);
   }
 
   handleTouchMove(event) {
     const touch = event.changedTouches[0];
     const currentY = touch.clientY;
     const currentX = touch.clientX;
+
+    if (this.props.isLongPressDragging) {
+      this.pendingPointerStart = null;
+      return;
+    }
+
+    if (this.pendingPointerStart && this.state.dragStartX === null) {
+      const verticalDistance = Math.abs(currentY - this.pendingPointerStart.y);
+      const horizontalDistance = Math.abs(currentX - this.pendingPointerStart.x);
+
+      if (verticalDistance > horizontalDistance && verticalDistance > 10) {
+        this.pendingPointerStart = null;
+        return;
+      }
+
+      if (horizontalDistance < 5) {
+        return;
+      }
+
+      this.handleDragStartFromPending(this.pendingPointerStart.x, this.pendingPointerStart.target);
+      this.pendingPointerStart = null;
+    }
 
     // Update the current Y position for vertical movement tracking
     this.setState({ currentTouchY: currentY });
@@ -223,7 +277,9 @@ class Header extends PureComponent {
   }
 
   handleTouchEnd() {
-    // Reset vertical touch tracking when touch ends
+    this.pendingPointerStart = null;
+    this.props.onLongPressPointerEnd();
+
     this.setState({
       touchStartY: null,
       currentTouchY: null,
@@ -232,7 +288,9 @@ class Header extends PureComponent {
   }
 
   handleTouchCancel() {
-    // Reset vertical touch tracking when touch is cancelled
+    this.pendingPointerStart = null;
+    this.props.onLongPressPointerEnd();
+
     this.setState({
       touchStartY: null,
       currentTouchY: null,
@@ -437,6 +495,11 @@ class Header extends PureComponent {
     const className = classNames('header', {
       'header--selected': isSelected,
       'header--removing': isPlayingRemoveAnimation,
+      'header--long-press-dragging': this.props.isDraggedForReorder,
+      'header--reorder-drop-before':
+        this.props.isReorderDropTarget && this.props.reorderDropPosition === 'before',
+      'header--reorder-drop-after':
+        this.props.isReorderDropTarget && this.props.reorderDropPosition === 'after',
     });
 
     const logBookEntries = header
@@ -474,11 +537,17 @@ class Header extends PureComponent {
             headerStyle.height = this.state.heightBeforeRemove * heightFactor;
           }
 
+          if (this.props.isDraggedForReorder) {
+            headerStyle.transform = `translateY(${this.props.reorderDragOffsetY}px)`;
+            headerStyle.zIndex = 10;
+          }
+
           return (
             <div
               className={className}
               style={headerStyle}
               ref={this.handleRef}
+              data-header-id={header.get('id')}
               onClick={this.handleHeaderClick}
               onMouseDown={this.handleMouseDown}
               onTouchStart={this.handleTouchStart}

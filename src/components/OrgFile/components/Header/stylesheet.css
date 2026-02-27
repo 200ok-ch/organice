@@ -8,6 +8,7 @@
   overflow-y: visible;
   overflow-x: visible;
   min-height: 23px;
+  touch-action: pan-y;
 }
 
 .header--selected {
@@ -20,6 +21,22 @@
   margin-bottom: 0;
   padding-top: 0;
   margin-top: -2px;
+}
+
+.header--long-press-dragging {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  background-color: var(--base2);
+  border-radius: 6px;
+  opacity: 0.96;
+  pointer-events: none;
+}
+
+.header--reorder-drop-before {
+  border-top: 2px solid var(--blue);
+}
+
+.header--reorder-drop-after {
+  border-bottom: 2px solid var(--blue);
 }
 
 .left-swipe-action-container {
