@@ -135,12 +135,21 @@ class HeaderList extends PureComponent {
     return matchingHeader ? matchingHeader.get('id') : null;
   }
 
+  nestingLevelOfHeaderId(headerId) {
+    const matchingHeader = this.props.headers.find((header) => header.get('id') === headerId);
+    return matchingHeader ? matchingHeader.get('nestingLevel') : null;
+  }
+
   dropTargetFromPointer(pointerX, pointerY, draggingHeaderId) {
+    const draggingNestingLevel = this.nestingLevelOfHeaderId(draggingHeaderId);
     const headerElements = Array.from(document.querySelectorAll('.header[data-header-id]'));
-    const candidateElements = headerElements.filter(
-      (headerElement) =>
-        this.headerIdFromDatasetValue(headerElement.dataset.headerId) !== draggingHeaderId
-    );
+    const candidateElements = headerElements.filter((headerElement) => {
+      const candidateHeaderId = this.headerIdFromDatasetValue(headerElement.dataset.headerId);
+      return (
+        candidateHeaderId !== draggingHeaderId &&
+        this.nestingLevelOfHeaderId(candidateHeaderId) === draggingNestingLevel
+      );
+    });
 
     if (candidateElements.length === 0) {
       return {
@@ -153,9 +162,14 @@ class HeaderList extends PureComponent {
       .elementFromPoint(pointerX, pointerY)
       ?.closest('.header[data-header-id]');
     const directHitHeaderId = this.headerIdFromDatasetValue(directHitElement?.dataset.headerId);
+    const directHitNestingLevel = this.nestingLevelOfHeaderId(directHitHeaderId);
 
     let targetElement =
-      directHitElement && directHitHeaderId !== draggingHeaderId ? directHitElement : null;
+      directHitElement &&
+      directHitHeaderId !== draggingHeaderId &&
+      directHitNestingLevel === draggingNestingLevel
+        ? directHitElement
+        : null;
 
     if (!targetElement) {
       targetElement = _.minBy(candidateElements, (headerElement) => {

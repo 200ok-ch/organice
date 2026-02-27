@@ -86,6 +86,19 @@ const visibleHeaderTitles = async (page) => {
   });
 };
 
+const visibleHeaderEntries = async (page) => {
+  return page.evaluate(() => {
+    return Array.from(document.querySelectorAll('.header')).map((header) => {
+      const text = header.textContent.trim();
+      const style = window.getComputedStyle(header);
+      return {
+        text,
+        paddingLeft: parseFloat(style.paddingLeft),
+      };
+    });
+  });
+};
+
 test.describe('Long Press Reorder', () => {
   test('long press shows hover state and reorders across multiple view pages', async ({ page }) => {
     const appHelper = new AppHelper(page);
@@ -242,5 +255,42 @@ test.describe('Long Press Reorder', () => {
 
     await page.screenshot({ path: testInfo.outputPath('drag-gap-preview.png'), fullPage: false });
     await page.mouse.up();
+  });
+
+  test('prevents dropping a top-level header into another header child list', async ({ page }) => {
+    const appHelper = new AppHelper(page);
+
+    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
+    await appHelper.waitForAppReady();
+
+    const timestamps = page.locator('.header').filter({ hasText: 'Timestamps' }).first();
+    await timestamps.scrollIntoViewIfNeeded();
+    await timestamps.click();
+    await expect(
+      page.locator('.header').filter({ hasText: 'Habit tracking' }).first()
+    ).toBeVisible();
+
+    const { startX } = await beginLongPressDrag(page, 'Capture');
+    await moveDragToTarget(page, startX, 'Habit tracking', { position: 'before' });
+    await page.mouse.up();
+    await page.waitForTimeout(250);
+
+    const headers = await visibleHeaderEntries(page);
+    const timestampsIndex = headers.findIndex((header) => header.text.includes('Timestamps'));
+    const captureIndex = headers.findIndex((header) => header.text.includes('Capture'));
+
+    expect(timestampsIndex).toBeGreaterThan(-1);
+    expect(captureIndex).toBeGreaterThan(-1);
+
+    const timestampsPadding = headers[timestampsIndex].paddingLeft;
+    let subtreeEndIndex = headers.length - 1;
+    for (let index = timestampsIndex + 1; index < headers.length; index += 1) {
+      if (headers[index].paddingLeft <= timestampsPadding) {
+        subtreeEndIndex = index - 1;
+        break;
+      }
+    }
+
+    expect(captureIndex <= timestampsIndex || captureIndex > subtreeEndIndex).toBe(true);
   });
 });
