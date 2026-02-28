@@ -65,7 +65,6 @@ class Header extends PureComponent {
       disabledBackgroundColor: readRgbaVariable('--base3'),
       // Track vertical touch positions to detect vertical scrolling intent
       touchStartY: null,
-      currentTouchY: null,
     };
 
     // Store member callbacks handling global mouse/touch events to be able to handle dragging
@@ -124,10 +123,6 @@ class Header extends PureComponent {
     this.setState({
       dragStartX: dragX,
     });
-
-    // Begin listening to global mouse/touch events to allow dragging outside of the current
-    // component.
-    this.addGlobalDragHandlers();
   }
 
   handleDragMove(dragX) {
@@ -190,6 +185,7 @@ class Header extends PureComponent {
     };
 
     this.props.onLongPressPointerStart(this.props.header.get('id'), event.clientX, event.clientY);
+    this.addGlobalDragHandlers();
   }
 
   handleMouseMove(event) {
@@ -221,6 +217,7 @@ class Header extends PureComponent {
     };
 
     this.props.onLongPressPointerStart(this.props.header.get('id'), touch.clientX, touch.clientY);
+    this.addGlobalDragHandlers();
 
     this.setState({
       touchStartY: touch.clientY,
@@ -254,9 +251,6 @@ class Header extends PureComponent {
       this.pendingPointerStart = null;
     }
 
-    // Update the current Y position for vertical movement tracking
-    this.setState({ currentTouchY: currentY });
-
     // Detect if this is primarily a vertical scroll gesture
     // If the user is moving more vertically than horizontally, we should
     // cancel the horizontal drag to allow normal page scrolling
@@ -282,7 +276,6 @@ class Header extends PureComponent {
 
     this.setState({
       touchStartY: null,
-      currentTouchY: null,
     });
     this.handleDragEnd();
   }
@@ -293,7 +286,6 @@ class Header extends PureComponent {
 
     this.setState({
       touchStartY: null,
-      currentTouchY: null,
     });
     this.handleDragCancel();
   }
