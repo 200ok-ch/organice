@@ -411,6 +411,26 @@ describe('Render all views', () => {
           expect(drawerElem).toHaveTextContent('A nested header');
           expect(drawerElem).toHaveTextContent('A todo item with schedule and deadline');
         });
+
+        test('can save a search bookmark and surface it as suggestion', () => {
+          fireEvent.click(getByTitle('Show Search / Task List'));
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          fireEvent.change(input, { target: { value: ':tag1', selectionStart: 5 } });
+
+          const bookmarkButton = container.querySelector('.bookmark__icon');
+          expect(bookmarkButton.classList.contains('fa-star')).toBe(true);
+          fireEvent.click(bookmarkButton);
+          expect(bookmarkButton.classList.contains('fa-trash')).toBe(true);
+
+          fireEvent.change(input, { target: { value: '', selectionStart: 0 } });
+          const bookmarkSuggestions = Array.from(
+            container.querySelectorAll('#task-list__datalist-filter option')
+          ).map((option) => option.value);
+          expect(bookmarkSuggestions).toContain(':tag1');
+        });
       });
 
       describe('Refile', () => {
