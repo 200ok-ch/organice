@@ -477,6 +477,46 @@ const moveHeaderDown = (state, action) => {
   return state.set('headers', headers);
 };
 
+const moveHeaderToPosition = (state, action) => {
+  let headers = state.get('headers');
+  const { sourceHeaderId, targetHeaderId, position } = action;
+
+  if (!sourceHeaderId || !targetHeaderId || sourceHeaderId === targetHeaderId) {
+    return state;
+  }
+
+  const sourceHeaderIndex = indexOfHeaderWithId(headers, sourceHeaderId);
+  const targetHeaderIndex = indexOfHeaderWithId(headers, targetHeaderId);
+  if (sourceHeaderIndex < 0 || targetHeaderIndex < 0) {
+    return state;
+  }
+
+  const sourceSubheaders = subheadersOfHeaderWithId(headers, sourceHeaderId);
+  const sourceTreeSize = 1 + sourceSubheaders.size;
+  const sourceTreeEndIndex = sourceHeaderIndex + sourceTreeSize - 1;
+
+  if (targetHeaderIndex >= sourceHeaderIndex && targetHeaderIndex <= sourceTreeEndIndex) {
+    return state;
+  }
+
+  const sourceTree = headers.slice(sourceHeaderIndex, sourceHeaderIndex + sourceTreeSize);
+  headers = headers.splice(sourceHeaderIndex, sourceTreeSize);
+
+  let insertionTargetIndex = indexOfHeaderWithId(headers, targetHeaderId);
+  if (insertionTargetIndex < 0) {
+    return state;
+  }
+
+  if (position === 'after') {
+    const targetSubheaders = subheadersOfHeaderWithId(headers, targetHeaderId);
+    insertionTargetIndex += 1 + targetSubheaders.size;
+  }
+
+  headers = headers.splice(insertionTargetIndex, 0, ...sourceTree.toArray());
+
+  return state.set('headers', headers);
+};
+
 const moveHeaderLeft = (state, action) => {
   const headers = state.get('headers');
   const headerIndex = indexOfHeaderWithId(headers, action.headerId);
@@ -1845,6 +1885,8 @@ const reducer = (state, action) => {
       return inFile(moveHeaderUp);
     case 'MOVE_HEADER_DOWN':
       return inFile(moveHeaderDown);
+    case 'MOVE_HEADER_TO_POSITION':
+      return inFile(moveHeaderToPosition);
     case 'MOVE_HEADER_LEFT':
       return inFile(moveHeaderLeft);
     case 'MOVE_HEADER_RIGHT':

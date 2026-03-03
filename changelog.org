@@ -7,6 +7,13 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-02-27 Fri]
+** Added
+*** Long-press drag and drop reordering for headers
+    - Long-press a header to drag and drop it with clear drop indicators on desktop and mobile
+    - Moving a parent header now keeps its subtree together and prevents dropping top-level headers into nested child lists
+    - PR: https://github.com/200ok-ch/organice/pull/1108
+
 * [2026-02-26 Thu]
 ** Fixed
 *** Help/Sample modal for authenticated users

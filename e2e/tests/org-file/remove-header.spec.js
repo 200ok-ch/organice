@@ -20,6 +20,8 @@ test.describe('Header Removal', () => {
 
     // Verify the header exists before swiping
     await expect(targetHeader).toBeVisible();
+    const targetHeaderId = await targetHeader.getAttribute('data-header-id');
+    expect(targetHeaderId).toBeTruthy();
 
     // Get the bounding box of the header to calculate swipe coordinates
     const box = await targetHeader.boundingBox();
@@ -70,7 +72,9 @@ test.describe('Header Removal', () => {
     // The animation uses spring physics and the handleRest callback removes the header
     await page.waitForTimeout(800);
 
-    // Verify the header is no longer visible after the animation
-    await expect(targetHeader).not.toBeVisible({ timeout: 5000 });
+    // Verify the specific header is removed from the DOM.
+    await expect(page.locator(`.header[data-header-id="${targetHeaderId}"]`)).toHaveCount(0, {
+      timeout: 5000,
+    });
   });
 });

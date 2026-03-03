@@ -458,6 +458,50 @@ describe('org reducer', () => {
       });
     });
 
+    describe('MOVE_HEADER_TO_POSITION', () => {
+      it('moves a header together with its subtree', () => {
+        const action = types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'after');
+        const newState = reducer(state.org.present, action);
+
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
+          ['Top level header', 1],
+          ['A second nested header', 2],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+        ]);
+      });
+
+      it('does not duplicate or leave behind subtree children across repeated moves', () => {
+        const movedOnce = reducer(
+          state.org.present,
+          types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'after')
+        );
+
+        const movedTwice = reducer(
+          movedOnce,
+          types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'before')
+        );
+
+        const headers = movedTwice.getIn(['files', path, 'headers']);
+        expect(extractTitlesAndNestings(headers)).toEqual([
+          ['Top level header', 1],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+          ['A second nested header', 2],
+        ]);
+
+        const titles = headers.map((header) => header.getIn(['titleLine', 'rawTitle'])).toArray();
+        expect(titles.filter((title) => title === 'A deep nested header').length).toBe(1);
+      });
+
+      it('is undoable', () => {
+        check_is_undoable(
+          state,
+          types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'after')
+        );
+      });
+    });
+
     describe('MOVE_SUBTREE_LEFT', () => {
       it('should handle MOVE_SUBTREE_LEFT', () => {
         // Mapping the headers to their nesting level. This is how the
