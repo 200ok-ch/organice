@@ -502,6 +502,15 @@ describe('Render all views', () => {
           expect(bookmarks.includes('bookmark-2')).toBe(true);
           expect(bookmarks.includes('bookmark-1')).toBe(false);
         });
+
+        test('shows a clock list tab when there is an active clock', () => {
+          fireEvent.click(getByText('Top level header'));
+          fireEvent.click(container.querySelector("[data-testid='org-clock-in']"));
+
+          fireEvent.click(getByTitle('Show Search / Task List'));
+
+          expect(queryByText('Clock List')).toBeTruthy();
+        });
       });
 
       describe('Refile', () => {
