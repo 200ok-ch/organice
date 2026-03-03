@@ -431,6 +431,31 @@ describe('Render all views', () => {
           ).map((option) => option.value);
           expect(bookmarkSuggestions).toContain(':tag1');
         });
+
+        test('stores bookmarks separately for search and task-list contexts', () => {
+          fireEvent.click(getByTitle('Show Search / Task List'));
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          fireEvent.change(input, { target: { value: ':tag1', selectionStart: 5 } });
+          fireEvent.click(container.querySelector('.bookmark__icon'));
+
+          fireEvent.click(getByText('Task List'));
+          const taskListInput = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+          fireEvent.change(taskListInput, { target: { value: 'TODO', selectionStart: 4 } });
+          fireEvent.click(container.querySelector('.bookmark__icon'));
+
+          const searchBookmarks = store.getState().org.present.getIn(['bookmarks', 'search']);
+          const taskListBookmarks = store.getState().org.present.getIn(['bookmarks', 'task-list']);
+
+          expect(searchBookmarks.includes(':tag1')).toBe(true);
+          expect(searchBookmarks.includes('TODO')).toBe(false);
+          expect(taskListBookmarks.includes('TODO')).toBe(true);
+          expect(taskListBookmarks.includes(':tag1')).toBe(false);
+        });
       });
 
       describe('Refile', () => {
