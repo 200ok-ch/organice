@@ -456,6 +456,31 @@ describe('Render all views', () => {
           expect(taskListBookmarks.includes('TODO')).toBe(true);
           expect(taskListBookmarks.includes(':tag1')).toBe(false);
         });
+
+        test('can delete a saved search bookmark', () => {
+          fireEvent.click(getByTitle('Show Search / Task List'));
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          fireEvent.change(input, { target: { value: ':tag1', selectionStart: 5 } });
+          const bookmarkButton = container.querySelector('.bookmark__icon');
+          fireEvent.click(bookmarkButton);
+          expect(
+            store.getState().org.present.getIn(['bookmarks', 'search']).includes(':tag1')
+          ).toBe(true);
+
+          fireEvent.click(bookmarkButton);
+          fireEvent.change(input, { target: { value: '', selectionStart: 0 } });
+
+          const bookmarkSuggestions = Array.from(
+            container.querySelectorAll('#task-list__datalist-filter option')
+          ).map((option) => option.value);
+          expect(bookmarkSuggestions).not.toContain(':tag1');
+          expect(
+            store.getState().org.present.getIn(['bookmarks', 'search']).includes(':tag1')
+          ).toBe(false);
+        });
       });
 
       describe('Refile', () => {
