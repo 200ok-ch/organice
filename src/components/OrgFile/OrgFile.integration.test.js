@@ -481,6 +481,27 @@ describe('Render all views', () => {
             store.getState().org.present.getIn(['bookmarks', 'search']).includes(':tag1')
           ).toBe(false);
         });
+
+        test('keeps only the ten most recent search bookmarks', () => {
+          fireEvent.click(getByTitle('Show Search / Task List'));
+          const input = getByPlaceholderText(
+            'e.g. -DONE doc|man :simple|easy :assignee:nobody|none'
+          );
+
+          for (let i = 1; i <= 11; i += 1) {
+            const bookmark = `bookmark-${i}`;
+            fireEvent.change(input, {
+              target: { value: bookmark, selectionStart: bookmark.length },
+            });
+            fireEvent.click(container.querySelector('.bookmark__icon'));
+          }
+
+          const bookmarks = store.getState().org.present.getIn(['bookmarks', 'search']);
+          expect(bookmarks.size).toBe(10);
+          expect(bookmarks.includes('bookmark-11')).toBe(true);
+          expect(bookmarks.includes('bookmark-2')).toBe(true);
+          expect(bookmarks.includes('bookmark-1')).toBe(false);
+        });
       });
 
       describe('Refile', () => {
