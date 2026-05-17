@@ -8,6 +8,10 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 * [2026-05-17 Sun]
+** Added
+*** Capture template target startup sync
+    - Files selected as capture template targets are now automatically marked to sync on startup
+    - PR: https://github.com/200ok-ch/organice/pull/1120
 ** Fixed
 *** Capture target file sync
     - Fixed capture templates that target a startup-synced file so new entries are saved even while viewing another file
