@@ -1824,6 +1824,42 @@ const addNewEmptyFileSetting = (state) =>
     )
   );
 
+const ensureFileSettingSyncOnStartup = (state, path) => {
+  if (!path) {
+    return state;
+  }
+
+  const fileSettings = state.get('fileSettings', List());
+  const settingIndex = fileSettings.findIndex((setting) => setting.get('path') === path);
+
+  if (settingIndex === -1) {
+    return state.set(
+      'fileSettings',
+      fileSettings.push(
+        fromJS({
+          id: generateId(),
+          path,
+          loadOnStartup: true,
+          includeInAgenda: false,
+          includeInSearch: false,
+          includeInRefile: false,
+          includeInTasklist: false,
+        })
+      )
+    );
+  }
+
+  return state.setIn(['fileSettings', settingIndex, 'loadOnStartup'], true);
+};
+
+const syncCaptureTemplateTargetOnStartup = (state, action) => {
+  if (!_.isEqual(action.fieldPath, ['file'])) {
+    return state;
+  }
+
+  return ensureFileSettingSyncOnStartup(state, action.newValue);
+};
+
 const restoreFileSettings = (state, action) => {
   if (!action.newSettings) {
     return state;
@@ -2007,6 +2043,8 @@ const reducer = (state, action) => {
       return setShowClockDisplay(state, action);
     case 'UPDATE_FILE_SETTING_FIELD_PATH_VALUE':
       return updateFileSettingFieldPathValue(state, action);
+    case 'UPDATE_TEMPLATE_FIELD_PATH_VALUE':
+      return syncCaptureTemplateTargetOnStartup(state, action);
     case 'REORDER_FILE_SETTING':
       return reorderFileSetting(state, action);
     case 'DELETE_FILE_SETTING':
