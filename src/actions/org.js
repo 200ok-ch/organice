@@ -510,6 +510,47 @@ export const updateTableCellValue = (cellId, newValue) => ({
   dirtying: true,
 });
 
+const ensureCaptureTargetLoaded = (template, dispatch, getState) => {
+  const targetPath = template.get('file');
+  if (!targetPath || getState().org.present.getIn(['files', targetPath, 'headers'])) {
+    return true;
+  }
+
+  const client = getState().syncBackend.get('client');
+  if (!client) {
+    dispatch(
+      setDisappearingLoadingMessage(`Capture failed: file ${targetPath} is not loaded`, 8000)
+    );
+    return Promise.resolve(false);
+  }
+
+  return client
+    .getFileContentsAndMetadata(targetPath)
+    .then(({ contents, lastModifiedAt }) => {
+      dispatch(parseFile(targetPath, contents));
+      dispatch(setDirty(false, targetPath));
+      dispatch(setLastSyncAt(parseISO(lastModifiedAt), targetPath));
+      return true;
+    })
+    .catch((error) => {
+      dispatch(
+        setDisappearingLoadingMessage(
+          `Capture failed: could not load ${targetPath}: ${error.toString()}`,
+          8000
+        )
+      );
+      return false;
+    });
+};
+
+const syncCaptureTarget = (template, dispatch, getState) => {
+  const targetPath = template.get('file');
+  const client = getState().syncBackend.get('client');
+  if (targetPath && client && client.updateFile) {
+    dispatch(sync({ path: targetPath, forceAction: 'push', successMessage: 'Item captured' }));
+  }
+};
+
 export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, getState) => {
   dispatch(closePopup());
 
@@ -517,7 +558,18 @@ export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, 
     .capture.get('captureTemplates')
     .concat(sampleCaptureTemplates)
     .find((template) => template.get('id') === templateId);
-  dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
+  const loaded = ensureCaptureTargetLoaded(template, dispatch, getState);
+  if (loaded === true) {
+    dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
+    syncCaptureTarget(template, dispatch, getState);
+    return Promise.resolve();
+  }
+  return loaded.then((loaded) => {
+    if (loaded) {
+      dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
+      syncCaptureTarget(template, dispatch, getState);
+    }
+  });
 };
 
 export const insertCaptureFromHeader = (templateId, header, shouldPrepend) => (
@@ -530,7 +582,30 @@ export const insertCaptureFromHeader = (templateId, header, shouldPrepend) => (
     .capture.get('captureTemplates')
     .concat(sampleCaptureTemplates)
     .find((template) => template.get('id') === templateId);
-  dispatch({ type: 'INSERT_CAPTURE_FROM_HEADER', template, header, shouldPrepend, dirtying: true });
+  const loaded = ensureCaptureTargetLoaded(template, dispatch, getState);
+  if (loaded === true) {
+    dispatch({
+      type: 'INSERT_CAPTURE_FROM_HEADER',
+      template,
+      header,
+      shouldPrepend,
+      dirtying: true,
+    });
+    syncCaptureTarget(template, dispatch, getState);
+    return Promise.resolve();
+  }
+  return loaded.then((loaded) => {
+    if (loaded) {
+      dispatch({
+        type: 'INSERT_CAPTURE_FROM_HEADER',
+        template,
+        header,
+        shouldPrepend,
+        dirtying: true,
+      });
+      syncCaptureTarget(template, dispatch, getState);
+    }
+  });
 };
 
 export const clearPendingCapture = () => ({

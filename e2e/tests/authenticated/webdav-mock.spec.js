@@ -12,6 +12,9 @@ const SAMPLE_ORG_CONTENT = `* Sample File
   Some notes here
 `;
 
+const TARGET_ORG_CONTENT = `* Target File
+`;
+
 // Default credentials for testing
 const DEFAULT_CREDENTIALS = {
   url: 'https://example.com/webdav',
@@ -46,16 +49,22 @@ test.describe('WebDAV Mock Tests', () => {
 
   // Helper to sign in via localStorage
   // Sets localStorage, then reloads the page to apply authentication
-  async function signInViaLocalStorage(page) {
+  async function signInViaLocalStorage(page, extraLocalStorage = {}) {
     await page.goto('/');
 
     // Set localStorage directly
-    await page.evaluate(({ url, username, password }) => {
-      localStorage.setItem('authenticatedSyncService', 'WebDAV');
-      localStorage.setItem('webdavEndpoint', url);
-      localStorage.setItem('webdavUsername', username);
-      localStorage.setItem('webdavPassword', password);
-    }, DEFAULT_CREDENTIALS);
+    await page.evaluate(
+      ({ url, username, password, extraLocalStorage }) => {
+        localStorage.setItem('authenticatedSyncService', 'WebDAV');
+        localStorage.setItem('webdavEndpoint', url);
+        localStorage.setItem('webdavUsername', username);
+        localStorage.setItem('webdavPassword', password);
+        Object.entries(extraLocalStorage).forEach(([key, value]) =>
+          localStorage.setItem(key, value)
+        );
+      },
+      { ...DEFAULT_CREDENTIALS, extraLocalStorage }
+    );
 
     // Reload to apply the authentication
     // Use 'load' instead of 'networkidle' for CI reliability
@@ -195,6 +204,44 @@ test.describe('WebDAV Mock Tests', () => {
       // Note: The app creates a backup file (.organice-bak) but doesn't sync
       // the modified content to WebDAV in this test scenario.
       // The main goal of this test is to verify the UI updates correctly.
+    });
+
+    test('should capture into an unloaded target file', async ({ page }) => {
+      webdavMock.addMockFile('/target.org', TARGET_ORG_CONTENT);
+      const captureTemplates = JSON.stringify([
+        {
+          description: 'Target File',
+          headerPaths: [],
+          iconName: 'todo',
+          id: 'target-file-capture-template',
+          isAvailableInAllOrgFiles: true,
+          letter: '',
+          file: '/target.org',
+          orgFilesWhereAvailable: [],
+          shouldPrepend: false,
+          template: '* TODO %?',
+        },
+      ]);
+
+      await signInViaLocalStorage(page, { captureTemplates });
+      await expect(page.locator('.file-browser-container')).toBeVisible();
+      await page.click('text=test.org');
+      await expect(page.locator('.org-file-container')).toBeVisible({ timeout: 10000 });
+
+      await page.locator('[data-testid="capture-main-button"]').click();
+      await page.locator('[data-testid="capture-template-target-file"]').click();
+      await expect(page.locator('[data-testid="unified-header-editor"]')).toBeVisible({
+        timeout: 5000,
+      });
+      await page.locator('[data-testid="titleLineInput"]').fill('Captured in target file');
+      await page.locator('[data-testid="capture-confirm-button"]').click();
+      await expect(page.locator('[data-testid="drawer-outer-container"]')).not.toBeVisible({
+        timeout: 5000,
+      });
+
+      await expect
+        .poll(() => webdavMock.mockFiles.get('/target.org'), { timeout: 10000 })
+        .toContain('* TODO Captured in target file');
     });
   });
 

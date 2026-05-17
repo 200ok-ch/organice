@@ -270,6 +270,32 @@ describe('org reducer', () => {
       expect(last.get('rawDescription')).toEqual('Some description\n');
     });
 
+    it('should load the target file before inserting capture from a header', async () => {
+      const targetPath = 'targetfile';
+      const targetTemplate = { ...templateTopLevel, id: generateId(), file: targetPath };
+      const captureHeader = parseOrg('* TODO Captured elsewhere\n').get('headers').first();
+      const syncClient = {
+        getFileContentsAndMetadata: jest.fn(() =>
+          Promise.resolve({ contents: testOrgFile, lastModifiedAt: new Date().toISOString() })
+        ),
+      };
+
+      state.capture = state.capture.update('captureTemplates', (templates) =>
+        templates.push(fromJS(targetTemplate))
+      );
+      state.syncBackend = Map({ client: syncClient });
+      store = createStore(rootReducer, state, applyMiddleware(thunk));
+
+      await store.dispatch(types.insertCaptureFromHeader(targetTemplate.id, captureHeader, false));
+
+      expect(syncClient.getFileContentsAndMetadata).toHaveBeenCalledWith(targetPath);
+      expect(store.getState().org.present.getIn(['files', path, 'headers']).size).toEqual(4);
+
+      const targetHeaders = store.getState().org.present.getIn(['files', targetPath, 'headers']);
+      expect(targetHeaders.size).toEqual(5);
+      expect(targetHeaders.last().getIn(['titleLine', 'rawTitle'])).toEqual('Captured elsewhere');
+    });
+
     it('should insert as the first child', () => {
       const newHeaders = insertCapture(path, templateNested, true);
       expectOrigFirstHeader(newHeaders);
