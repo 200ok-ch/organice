@@ -110,6 +110,64 @@ describe('org reducer', () => {
     'planningItems'
   );
 
+  describe('UPDATE_TEMPLATE_FIELD_PATH_VALUE', () => {
+    it('adds a sync-on-startup file setting when a capture template file is selected', () => {
+      const state = readInitialState().org.present;
+
+      const newState = reducer(state, {
+        type: 'UPDATE_TEMPLATE_FIELD_PATH_VALUE',
+        fieldPath: ['file'],
+        newValue: 'C.org',
+      });
+
+      expect(newState.get('fileSettings').toJS()).toMatchObject([
+        {
+          path: 'C.org',
+          loadOnStartup: true,
+          includeInAgenda: false,
+          includeInSearch: false,
+          includeInRefile: false,
+          includeInTasklist: false,
+        },
+      ]);
+    });
+
+    it('updates an existing target file setting without duplicating it', () => {
+      const state = readInitialState().org.present.set(
+        'fileSettings',
+        fromJS([
+          {
+            id: 'setting-id',
+            path: 'C.org',
+            loadOnStartup: false,
+            includeInAgenda: true,
+            includeInSearch: false,
+            includeInRefile: false,
+            includeInTasklist: false,
+          },
+        ])
+      );
+
+      const newState = reducer(state, {
+        type: 'UPDATE_TEMPLATE_FIELD_PATH_VALUE',
+        fieldPath: ['file'],
+        newValue: 'C.org',
+      });
+
+      expect(newState.get('fileSettings').toJS()).toEqual([
+        {
+          id: 'setting-id',
+          path: 'C.org',
+          loadOnStartup: true,
+          includeInAgenda: true,
+          includeInSearch: false,
+          includeInRefile: false,
+          includeInTasklist: false,
+        },
+      ]);
+    });
+  });
+
   describe('REFILE_SUBTREE', () => {
     let state;
     const path = 'testfile';

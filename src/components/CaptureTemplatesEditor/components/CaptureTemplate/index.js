@@ -200,8 +200,8 @@ export default ({
         <div className="capture-template__help-text">
           By default the file opened when capturing is the capture target. Select a specific file if
           you want this template to always capture to that file. Make sure the file is loaded for it
-          to be selectable here. You might also consider to set the file to load on startup in the
-          file settings so it's always available.
+          to be selectable here. Selected files are automatically synced on startup so they're
+          always available.
         </div>
       </div>
     );
