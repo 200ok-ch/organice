@@ -74,7 +74,7 @@ const syncDebounced = (dispatch, getState, options) => {
       debouncedSyncFunctions[path] = getDebouncedSyncFunction();
       debouncedSyncFunction = debouncedSyncFunctions[path];
     }
-    debouncedSyncFunction(dispatch, options);
+    debouncedSyncFunction(dispatch, { ...options, path });
   });
 };
 
@@ -530,7 +530,9 @@ export const insertCaptureFromHeader = (templateId, header, shouldPrepend) => (
     .capture.get('captureTemplates')
     .concat(sampleCaptureTemplates)
     .find((template) => template.get('id') === templateId);
+  const targetPath = template.get('file') || getState().org.present.get('path');
   dispatch({ type: 'INSERT_CAPTURE_FROM_HEADER', template, header, shouldPrepend, dirtying: true });
+  dispatch(sync({ successMessage: 'Item captured', path: targetPath }));
 };
 
 export const clearPendingCapture = () => ({
@@ -565,14 +567,15 @@ export const insertPendingCapture = () => (dispatch, getState) => {
     return;
   }
 
-  const targetHeader = headerWithPath(
-    getState().org.present.getIn(['files', path, 'headers']),
-    template.get('headerPaths')
-  );
-  if (!targetHeader) {
+  const targetPath = template.get('file') || path;
+
+  const headerPaths = template.get('headerPaths');
+  const targetHeaders = getState().org.present.getIn(['files', targetPath, 'headers']);
+  const targetHeader = targetHeaders && headerWithPath(targetHeaders, headerPaths);
+  if (headerPaths.size > 0 && !targetHeader) {
     dispatch(
       setDisappearingLoadingMessage(
-        `Capture failed: "${template.get('description')}" header path invalid in this file`,
+        `Capture failed: "${template.get('description')}" header path invalid in ${targetPath}`,
         8000
       )
     );
@@ -592,7 +595,7 @@ export const insertPendingCapture = () => (dispatch, getState) => {
     : `${substitutedTemplate}${captureContent}`;
 
   dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend')));
-  dispatch(sync({ successMessage: 'Item captured' }));
+  dispatch(sync({ successMessage: 'Item captured', path: targetPath }));
 };
 
 export const advanceCheckboxState = (listItemId) => ({

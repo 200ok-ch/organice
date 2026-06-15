@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-05-17 Sun]
+** Fixed
+*** Capture target file sync
+    - Fixed capture templates that target a startup-synced file so new entries are saved even while viewing another file
+    - PR: https://github.com/200ok-ch/organice/pull/1119
+
 * [2026-02-27 Fri]
 ** Added
 *** Long-press drag and drop reordering for headers

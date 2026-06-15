@@ -123,12 +123,16 @@ class OrgFile extends PureComponent {
 
       setTimeout(() => (document.querySelector('.App').scrollTop = 0), 0);
     } else if (!_.isEmpty(path)) {
-      if (this.props.fileIsLoaded(path)) {
+      const isFileLoaded = this.props.fileIsLoaded(path);
+      if (isFileLoaded) {
         this.props.org.sync({ path, shouldSuppressMessages: true });
       } else {
         this.props.syncBackend.downloadFile(path);
       }
       this.props.org.setPath(path);
+      if (isFileLoaded && this.props.pendingCapture) {
+        this.props.org.insertPendingCapture();
+      }
     }
 
     this.activatePopup();
