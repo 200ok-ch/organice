@@ -1039,7 +1039,7 @@ and you're good to go!
 
 Before starting work on organice, [[https://github.com/munen/][@munen]] (the original maintainer)
 used Beorg and donated to it multiple times, because he was very happy
-to have a good option to access Org files on my phone with it.
+to have a good option to access Org files on his phone with it.
 
 The important differences to him were:
 
