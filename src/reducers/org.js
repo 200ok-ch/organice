@@ -267,6 +267,13 @@ const setTodoState = (state, action) => {
     });
   } else {
     state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+    state = applyLogDoneClosedTimestamp({
+      state,
+      headerIndex,
+      wasCompleted: currentTodoSet.get('completedKeywords').includes(currentTodoState),
+      isNowCompleted: newTodoSet.get('completedKeywords').includes(newTodoState),
+      timestamp,
+    });
   }
 
   state = updateCookiesOfParentOfHeaderWithId(state, existingHeaderId);
@@ -2106,7 +2113,14 @@ function updateHeadlines({
       timestamp,
     });
   // Update simple headline (without repeaters)
-  return state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  state = state.setIn(['headers', headerIndex, 'titleLine', 'todoKeyword'], newTodoState);
+  return applyLogDoneClosedTimestamp({
+    state,
+    headerIndex,
+    wasCompleted: currentTodoSet.get('completedKeywords').includes(currentTodoState),
+    isNowCompleted: currentTodoSet.get('completedKeywords').includes(newTodoState),
+    timestamp,
+  });
 }
 
 /**
@@ -2276,6 +2290,100 @@ export function noLogRepeatEnabledP({ state, headerIndex }) {
         (v) => v.get('type') === 'text' && v.get('contents').match(/\s*nologrepeat\s*/)
       ))
   );
+}
+
+/**
+ * Does a `#+STARTUP:` line contain the given option as a whole word?
+ * Careful with substrings: `nologdone` must not match `logdone`.
+ */
+function startupHasOption(fileConfigLines, option) {
+  const re = new RegExp(`^#\\+STARTUP:.*(?:^|\\s)${option}(?:\\s|$)`);
+  return fileConfigLines.some((elt) => re.test(elt));
+}
+
+/**
+ * Extract whitespace-delimited tokens from a LOGGING property value.
+ */
+function loggingPropertyTokens(loggingProp) {
+  if (!loggingProp) {
+    return [];
+  }
+  return loggingProp
+    .filter((v) => v.get('type') === 'text')
+    .map((v) => v.get('contents'))
+    .join(' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+/**
+ * Is `org-log-done` / `#+STARTUP: logdone` enabled for this header?
+ * More info:
+ * https://www.gnu.org/software/emacs/manual/html_node/org/Tracking-TODO-state-changes.html
+ *
+ * Per-subtree `:LOGGING:` properties override buffer `#+STARTUP:` options.
+ */
+export function logDoneEnabledP({ state, headerIndex }) {
+  const loggingTokens = loggingPropertyTokens(
+    inheritedValueOfProperty(state.get('headers'), headerIndex, 'LOGGING')
+  );
+  if (loggingTokens.includes('nologdone')) {
+    return false;
+  }
+  if (loggingTokens.includes('logdone')) {
+    return true;
+  }
+
+  const configLines = state.get('fileConfigLines');
+  if (startupHasOption(configLines, 'nologdone')) {
+    return false;
+  }
+  return startupHasOption(configLines, 'logdone');
+}
+
+/**
+ * When logdone is enabled, add a CLOSED timestamp on completion and remove it
+ * when leaving a completed state. Matches Emacs `org-log-done` / `time` behavior.
+ */
+function applyLogDoneClosedTimestamp({
+  state,
+  headerIndex,
+  wasCompleted,
+  isNowCompleted,
+  timestamp,
+}) {
+  if (!logDoneEnabledP({ state, headerIndex })) {
+    return state;
+  }
+
+  if (isNowCompleted && !wasCompleted) {
+    const closedTimestamp = timestampForDate(timestamp, {
+      isActive: false,
+      withStartTime: true,
+    });
+    const newClosedItem = fromJS({
+      id: generateId(),
+      type: 'CLOSED',
+      timestamp: closedTimestamp,
+    });
+
+    return state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) => {
+      const existingIndex = planningItems.findIndex((item) => item.get('type') === 'CLOSED');
+      if (existingIndex >= 0) {
+        return planningItems.set(existingIndex, newClosedItem);
+      }
+      return planningItems.unshift(newClosedItem);
+    });
+  }
+
+  if (!isNowCompleted && wasCompleted) {
+    return state.updateIn(['headers', headerIndex, 'planningItems'], (planningItems) =>
+      planningItems.filter((item) => item.get('type') !== 'CLOSED')
+    );
+  }
+
+  return state;
 }
 
 /**

@@ -1,0 +1,7 @@
+#+STARTUP: logdone
+
+* TODO Incomplete task
+* DONE Already done
+  CLOSED: [2020-01-01 Wed 12:00]
+* TODO Scheduled task
+  SCHEDULED: <2020-01-02 Thu>
