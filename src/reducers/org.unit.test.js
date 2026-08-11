@@ -1153,6 +1153,128 @@ describe('org reducer', () => {
       check_is_undoable(state, types.advanceTodoState(todoHeaderId, true));
       check_is_undoable(state, types.advanceTodoState(doneHeaderId, false));
     });
+
+    describe('with #+STARTUP: logdone', () => {
+      const logdonePath = 'logdone-testfile';
+      const fixedTimestamp = new Date(2024, 3, 17, 15, 3);
+
+      const advanceWithTimestamp = (headerId) => ({
+        type: 'ADVANCE_TODO_STATE',
+        headerId,
+        logIntoDrawer: false,
+        dirtying: true,
+        timestamp: fixedTimestamp,
+      });
+
+      const setTodoWithTimestamp = (headerId, newTodoState) => ({
+        type: 'SET_TODO_STATE',
+        headerId,
+        newTodoState,
+        logIntoDrawer: false,
+        dirtying: true,
+        timestamp: fixedTimestamp,
+      });
+
+      it('adds a CLOSED timestamp when completing a TODO', () => {
+        const logdoneState = setUpStateForFile(logdonePath, readFixture('todo_with_logdone'));
+        const todoId = logdoneState.org.present.getIn(['files', logdonePath, 'headers']).get(0).get('id');
+
+        const newHeaders = reducer(logdoneState.org.present, advanceWithTimestamp(todoId)).getIn([
+          'files',
+          logdonePath,
+          'headers',
+        ]);
+        const header = headerWithId(newHeaders, todoId);
+
+        expect(header.getIn(['titleLine', 'todoKeyword'])).toEqual('DONE');
+        const closedItem = header.get('planningItems').find((item) => item.get('type') === 'CLOSED');
+        expect(closedItem).toBeTruthy();
+        expect(closedItem.getIn(['timestamp', 'isActive'])).toBe(false);
+        expect(closedItem.getIn(['timestamp', 'year'])).toEqual('2024');
+        expect(closedItem.getIn(['timestamp', 'month'])).toEqual('04');
+        expect(closedItem.getIn(['timestamp', 'day'])).toEqual('17');
+        expect(closedItem.getIn(['timestamp', 'startHour'])).toEqual('15');
+        expect(closedItem.getIn(['timestamp', 'startMinute'])).toEqual('03');
+      });
+
+      it('preserves existing SCHEDULED items when adding CLOSED', () => {
+        const logdoneState = setUpStateForFile(logdonePath, readFixture('todo_with_logdone'));
+        const scheduledId = logdoneState.org.present
+          .getIn(['files', logdonePath, 'headers'])
+          .get(2)
+          .get('id');
+
+        const newHeaders = reducer(
+          logdoneState.org.present,
+          advanceWithTimestamp(scheduledId)
+        ).getIn(['files', logdonePath, 'headers']);
+        const header = headerWithId(newHeaders, scheduledId);
+
+        expect(header.get('planningItems').map((item) => item.get('type')).toJS()).toEqual([
+          'CLOSED',
+          'SCHEDULED',
+        ]);
+      });
+
+      it('removes CLOSED when leaving a DONE state', () => {
+        const logdoneState = setUpStateForFile(logdonePath, readFixture('todo_with_logdone'));
+        const doneId = logdoneState.org.present.getIn(['files', logdonePath, 'headers']).get(1).get('id');
+
+        expect(
+          headerWithId(logdoneState.org.present.getIn(['files', logdonePath, 'headers']), doneId)
+            .get('planningItems')
+            .some((item) => item.get('type') === 'CLOSED')
+        ).toBe(true);
+
+        const newHeaders = reducer(logdoneState.org.present, advanceWithTimestamp(doneId)).getIn([
+          'files',
+          logdonePath,
+          'headers',
+        ]);
+        const header = headerWithId(newHeaders, doneId);
+
+        expect(header.getIn(['titleLine', 'todoKeyword'])).toEqual('');
+        expect(header.get('planningItems').some((item) => item.get('type') === 'CLOSED')).toBe(
+          false
+        );
+      });
+
+      it('does not add CLOSED when logdone is not enabled', () => {
+        const oldHeaders = state.org.present.getIn(['files', path, 'headers']);
+        const newHeaders = reducer(
+          state.org.present,
+          advanceWithTimestamp(todoHeaderId)
+        ).getIn(['files', path, 'headers']);
+
+        expect(headerWithId(newHeaders, todoHeaderId).getIn(['titleLine', 'todoKeyword'])).toEqual(
+          'DONE'
+        );
+        expect(
+          headerWithId(newHeaders, todoHeaderId)
+            .get('planningItems')
+            .some((item) => item.get('type') === 'CLOSED')
+        ).toBe(false);
+        expect(headerWithId(oldHeaders, todoHeaderId).get('planningItems')).toEqual(
+          headerWithId(newHeaders, todoHeaderId).get('planningItems')
+        );
+      });
+
+      it('adds CLOSED via setTodoState when completing a TODO', () => {
+        const logdoneState = setUpStateForFile(logdonePath, readFixture('todo_with_logdone'));
+        const todoId = logdoneState.org.present.getIn(['files', logdonePath, 'headers']).get(0).get('id');
+
+        const newHeaders = reducer(
+          logdoneState.org.present,
+          setTodoWithTimestamp(todoId, 'DONE')
+        ).getIn(['files', logdonePath, 'headers']);
+        const header = headerWithId(newHeaders, todoId);
+
+        expect(header.getIn(['titleLine', 'todoKeyword'])).toEqual('DONE');
+        expect(header.get('planningItems').some((item) => item.get('type') === 'CLOSED')).toBe(
+          true
+        );
+      });
+    });
   });
 
   describe('UPDATE_LOG_ENTRY_TIME', () => {

@@ -303,12 +303,14 @@ organice implements this customization strategy:
 *** =#+STARTUP:= options
 
 - =nologrepeat=: Do not record when reinstating repeating item
+- =logdone= / =nologdone=: Record a =CLOSED:= timestamp when a TODO is marked done (and remove it when leaving a done state)
 
 *** Drawer properties
     :PROPERTIES:
     :END:
 
 - =logrepeat= and =nologrepeat=: Whether to record when reinstating repeating item
+- =logdone= and =nologdone=: Whether to record a =CLOSED:= timestamp when marking TODO items done
 
 #+BEGIN_EXAMPLE
    :PROPERTIES:
