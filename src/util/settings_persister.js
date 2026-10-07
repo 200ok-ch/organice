@@ -9,13 +9,16 @@ import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
 import { loadFilesFromLocalStorage } from './file_persister';
+import { safeSetItem } from './local_storage';
 
+// Only check that localStorage can be read. A write probe fails when
+// the quota is exhausted, which would also hide all existing data
+// (sign-in, settings, cached files). Writes are guarded individually
+// through `safeSetItem`.
 export const localStorageAvailable = (() => {
   try {
-    localStorage.setItem('test', 'test');
-    const localStorageRes = localStorage.getItem('test') === 'test';
-    localStorage.removeItem('test');
-    return localStorageRes && localStorage;
+    localStorage.getItem('test');
+    return localStorage;
   } catch (e) {
     return false;
   }
@@ -462,7 +465,7 @@ export const subscribeToChanges = (store) => {
       const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
       fieldsToPersist.forEach(([name, value]) => {
-        if (name && value) localStorage.setItem(name, value);
+        if (name && value) safeSetItem(name, value);
       });
 
       if (state.base.get('shouldStoreSettingsInSyncBackend')) {
@@ -487,7 +490,7 @@ export const subscribeToChanges = (store) => {
         }
 
         opennessState[currentFilePath] = openHeaderPaths;
-        localStorage.setItem('headerOpenness', JSON.stringify(opennessState));
+        safeSetItem('headerOpenness', JSON.stringify(opennessState));
       }
     };
   }
@@ -497,7 +500,7 @@ export const persistField = (field, value) => {
   if (!localStorageAvailable) {
     return;
   } else {
-    localStorage.setItem(field, value);
+    safeSetItem(field, value);
   }
 };
 
