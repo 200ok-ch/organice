@@ -1,7 +1,7 @@
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
-import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
+import { fileErrorMessage, parseFile, reportFileError, setDirty, setLastSyncAt } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
 import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
@@ -134,10 +134,11 @@ export const downloadFile = (path) => {
         dispatch(setDirty(false, path));
         dispatch(ActionCreators.clearHistory());
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(`Downloading ${path} failed`, error);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+        dispatch(reportFileError(path, fileErrorMessage('load', path, error)));
       });
   };
 };
@@ -160,10 +161,11 @@ export const createFile = (path, content) => {
         dispatch(hideLoadingMessage());
         dispatch(getDirectoryListing(dirName(path)));
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(`Creating ${path} failed`, error);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+        dispatch(reportFileError(path, fileErrorMessage('create', path, error)));
       });
   };
 };

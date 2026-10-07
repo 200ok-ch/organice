@@ -150,7 +150,7 @@ const doSync = ({
     dispatch(setLoadingMessage(`Syncing ...`));
   }
   dispatch(setIsLoading(true, path));
-  dispatch(setOrgFileErrorMessage(null));
+  dispatch(clearOrgFileErrorMessage(path));
 
   client
     .getFileContentsAndMetadata(path)
@@ -217,10 +217,16 @@ const doSync = ({
         }
       }
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error(`Syncing ${path} failed`, error);
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      if (getState().org.present.hasIn(['files', path, 'headers'])) {
+        // The local copy is loaded and stays usable, e.g. while offline.
+        dispatch(setDisappearingLoadingMessage(fileErrorMessage('sync', path, error), 5000));
+      } else {
+        dispatch(reportFileError(path, fileErrorMessage('load', path, error)));
+      }
     });
 };
 
@@ -751,9 +757,40 @@ export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   dirtying: true,
 });
 
-export const setOrgFileErrorMessage = (message) => ({
+// Sync back-ends reject without an error when a file does not exist.
+// Every other failure carries an error, including exceptions thrown
+// while handling a successful download. Show those instead of
+// claiming that the file is missing.
+export const fileErrorMessage = (verb, path, error) => {
+  if (!error) {
+    return `File ${path} not found`;
+  }
+  const description = error.name && error.message ? `${error.name}: ${error.message}` : error;
+  return `Could not ${verb} ${path}: ${description}`;
+};
+
+// Takes over the screen only when `path` is the file being viewed.
+// Failures of files synced in the background show a message instead.
+export const reportFileError = (path, message) => (dispatch, getState) => {
+  if (path === getState().org.present.get('path')) {
+    dispatch(setOrgFileErrorMessage(message, path));
+  } else {
+    dispatch(setDisappearingLoadingMessage(message, 5000));
+  }
+};
+
+// Clears the error of `path`, leaving errors of other files alone.
+export const clearOrgFileErrorMessage = (path) => (dispatch, getState) => {
+  const errorPath = getState().org.present.get('orgFileErrorPath');
+  if (!errorPath || errorPath === path) {
+    dispatch(setOrgFileErrorMessage(null));
+  }
+};
+
+export const setOrgFileErrorMessage = (message, path = null) => ({
   type: 'SET_ORG_FILE_ERROR_MESSAGE',
   message,
+  path,
 });
 
 export const setLogEntryStop = (headerId, entryId, time) => ({
