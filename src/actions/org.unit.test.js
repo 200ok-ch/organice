@@ -7,13 +7,19 @@ import { parseOrg } from '../lib/parse_org';
 import { readInitialState } from '../util/settings_persister';
 import { insertCaptureFromHeader, insertPendingCapture, sync } from './org';
 
+// Sync first checks for an unsynced local copy (asynchronously) before
+// fetching the file.
+const flushPromises = async () => {
+  for (let i = 0; i < 10; i++) await Promise.resolve();
+};
+
 describe('org actions', () => {
   describe('sync', () => {
     afterEach(() => {
       jest.useRealTimers();
     });
 
-    it('syncs the dirty file instead of falling back to the currently viewed file', () => {
+    it('syncs the dirty file instead of falling back to the currently viewed file', async () => {
       jest.useFakeTimers();
 
       const client = {
@@ -42,6 +48,7 @@ describe('org actions', () => {
       };
 
       dispatch(sync({ successMessage: 'Item captured' }));
+      await flushPromises();
 
       expect(client.getFileContentsAndMetadata).toHaveBeenCalledWith('/b.org');
       expect(client.getFileContentsAndMetadata).not.toHaveBeenCalledWith('/a.org');
@@ -113,7 +120,7 @@ describe('org actions', () => {
       jest.useRealTimers();
     });
 
-    it('syncs the template target file after capturing from the editor', () => {
+    it('syncs the template target file after capturing from the editor', async () => {
       jest.useFakeTimers();
 
       const state = readInitialState();
@@ -151,6 +158,8 @@ describe('org actions', () => {
       const store = createStore(rootReducer, state, applyMiddleware(thunk));
 
       store.dispatch(insertCaptureFromHeader(template.get('id'), header, false));
+
+      await flushPromises();
 
       expect(client.getFileContentsAndMetadata).toHaveBeenCalledWith('/target.org');
       expect(client.getFileContentsAndMetadata).not.toHaveBeenCalledWith('/a.org');

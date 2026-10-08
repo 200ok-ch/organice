@@ -16,12 +16,15 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
-import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
+import { persistIsDirty, saveFileContents, saveSyncedFile } from '../util/file_persister';
+import { getFileRecord } from '../util/file_store';
 import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
 
-export const parseFile = (path, contents) => (dispatch) => {
+export const parseFile = (path, contents) => (dispatch, getState) => {
+  // Asynchronous, never throws: a failed write of the local copy must
+  // not fail the sync.
+  saveFileContents(getState(), path, contents);
   if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
-    saveFileContentsToLocalStorage(path, contents);
     const opennessState = readOpennessState();
     if (!!opennessState) {
       dispatch(setOpennessState(path, opennessState[path]));
@@ -152,8 +155,8 @@ const doSync = ({
   dispatch(setIsLoading(true, path));
   dispatch(clearOrgFileErrorMessage(path));
 
-  client
-    .getFileContentsAndMetadata(path)
+  restoreUnsyncedLocalCopy(path)(dispatch, getState)
+    .then(() => client.getFileContentsAndMetadata(path))
     .then(({ contents, lastModifiedAt }) => {
       const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
       const lastServerModifiedAt = parseISO(lastModifiedAt);
@@ -181,6 +184,7 @@ const doSync = ({
               dispatch(setIsLoading(false, path));
               dispatch(setDirty(false, path));
               dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+              saveSyncedFile(getState(), path);
             })
             .catch((error) => {
               const err = `There was an error pushing the file ${path}: ${error.toString()}`;
@@ -442,14 +446,39 @@ export const applyOpennessState = (path) => ({
   path,
 });
 
+// Normally, local copies are loaded before the app starts. If that
+// failed or timed out, a file whose local copy has unsynced edits is not
+// loaded. Load that copy before the file is synced or downloaded, so the
+// edits are pushed (or the user is asked) instead of replaced by the
+// remote version. Resolves with whether a copy was loaded; never rejects.
+export const restoreUnsyncedLocalCopy = (path) => (dispatch, getState) => {
+  const isLoaded = () => getState().org.present.hasIn(['files', path, 'headers']);
+  if (!path || path.startsWith(STATIC_FILE_PREFIX) || isLoaded()) {
+    return Promise.resolve(false);
+  }
+  return getFileRecord(path)
+    .then((record) => {
+      if (!record || !record.isDirty || isLoaded()) {
+        return false;
+      }
+      dispatch({ type: 'PARSE_FILE', path, contents: record.contents });
+      dispatch(dirtyAction(true, path));
+      if (record.lastSyncAt) {
+        dispatch(setLastSyncAt(parseISO(record.lastSyncAt), path));
+      }
+      return true;
+    })
+    .catch(() => false);
+};
+
 export const dirtyAction = (isDirty, path) => ({
   type: 'SET_DIRTY',
   isDirty,
   path,
 });
 
-export const setDirty = (isDirty, path) => (dispatch) => {
-  persistIsDirty(isDirty, path);
+export const setDirty = (isDirty, path) => (dispatch, getState) => {
+  persistIsDirty(isDirty, path || getState().org.present.get('path'));
   dispatch(dirtyAction(isDirty, path));
 };
 

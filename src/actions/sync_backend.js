@@ -1,8 +1,17 @@
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
-import { fileErrorMessage, parseFile, reportFileError, setDirty, setLastSyncAt } from './org';
+import {
+  fileErrorMessage,
+  parseFile,
+  reportFileError,
+  restoreUnsyncedLocalCopy,
+  setDirty,
+  setLastSyncAt,
+  sync,
+} from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
+import { clearFileStore } from '../util/file_store';
 import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
 import { addSeconds } from 'date-fns';
@@ -42,6 +51,7 @@ export const signOut = () => (dispatch, getState) => {
   if (localStorageAvailable) {
     localStorage.clear();
   }
+  clearFileStore().catch((error) => console.warn('Could not delete local file copies', error));
 };
 
 export const setCurrentFileBrowserDirectoryListing = (
@@ -123,6 +133,20 @@ export const pushBackup = (pathOrFileId, contents) => {
 export const downloadFile = (path) => {
   return (dispatch, getState) => {
     dispatch(setLoadingMessage(`Downloading file ...`));
+    restoreUnsyncedLocalCopy(path)(dispatch, getState).then((restored) => {
+      if (restored) {
+        // The local copy has unsynced edits: sync instead of replacing it.
+        dispatch(hideLoadingMessage());
+        dispatch(sync({ path }));
+      } else {
+        dispatch(fetchFile(path));
+      }
+    });
+  };
+};
+
+const fetchFile = (path) => {
+  return (dispatch, getState) => {
     getState()
       .syncBackend.get('client')
       .getFileContents(path)

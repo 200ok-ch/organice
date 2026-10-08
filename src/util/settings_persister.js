@@ -8,8 +8,8 @@ import { restoreCaptureSettings } from '../actions/capture';
 import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
-import { loadFilesFromLocalStorage } from './file_persister';
 import { safeSetItem } from './local_storage';
+import { loadCachedFiles } from './file_persister';
 
 // Only check that localStorage can be read. A write probe fails when
 // the quota is exhausted, which would also hide all existing data
@@ -400,13 +400,17 @@ const loadContentFromLocalStorage = (initialState) => {
     getFieldsToPersist(initialState, persistableFields)
   );
 
-  return loadFilesFromLocalStorage(initialState);
+  return initialState;
 };
 
-export const readInitialState = () => {
+// `cachedFiles` are the local copies of Org files, read asynchronously
+// before the app starts (see `readCachedFiles`).
+export const readInitialState = (cachedFiles) => {
   let initialState = getInitialStateWithDefaultValues();
-
-  return localStorageAvailable ? loadContentFromLocalStorage(initialState) : initialState;
+  if (localStorageAvailable) {
+    initialState = loadContentFromLocalStorage(initialState);
+  }
+  return loadCachedFiles(initialState, cachedFiles);
 };
 
 export const loadSettingsFromConfigFile = (dispatch, getState) => {
