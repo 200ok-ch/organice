@@ -23,6 +23,9 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 *** Changes made while syncing
     - Changes made while a file was being synced were marked as synced and could get lost. They now stay marked as unsynced and are synced right afterwards.
     - PR: https://github.com/200ok-ch/organice/pull/1132
+*** Disabled settings are remembered after reload
+    - Switching off a setting that is on by default, such as Live Sync, now persists across reloads
+    - PR: https://github.com/200ok-ch/organice/pull/1128
 ** Added
 *** Storage overview in the settings
     - The settings show how much browser storage organice uses, the largest entries, and any failed writes.

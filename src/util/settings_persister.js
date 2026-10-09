@@ -262,7 +262,12 @@ const getFieldsToPersist = (state, fields) => {
                 field.name,
                 JSON.stringify(state[field.category].get(field.name) || field.default || {}),
               ]
-            : [field.name, state[field.category].get(field.name) || field.default];
+            : [
+                field.name,
+                state[field.category].get(field.name) == null
+                  ? field.default
+                  : state[field.category].get(field.name),
+              ];
         })
     );
 };
@@ -351,7 +356,9 @@ const loadContentFromLocalStorage = (initialState) => {
         value = null;
       }
     } else if (field.type === 'boolean') {
-      value = value === 'true';
+      if (value !== null) {
+        value = value === 'true';
+      }
     } else if (field.type === 'number') {
       if (value) {
         value = parseInt(value, 10);
@@ -364,7 +371,9 @@ const loadContentFromLocalStorage = (initialState) => {
       }
     }
     // When nothing has been saved to localStorage before, keep the default.
-    value = value || field.default;
+    if (value == null) {
+      value = field.default;
+    }
 
     if (field.category === 'org') {
       initialState[field.category].present = initialState[field.category].present.set(
@@ -469,7 +478,7 @@ export const subscribeToChanges = (store) => {
       const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
       fieldsToPersist.forEach(([name, value]) => {
-        if (name && value) safeSetItem(name, value);
+        if (name && value != null) safeSetItem(name, value);
       });
 
       if (state.base.get('shouldStoreSettingsInSyncBackend')) {
