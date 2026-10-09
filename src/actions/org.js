@@ -182,9 +182,26 @@ const doSync = ({
                 setTimeout(() => dispatch(hideLoadingMessage()), 2000);
               }
               dispatch(setIsLoading(false, path));
-              dispatch(setDirty(false, path));
               dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
-              saveSyncedFile(getState(), path);
+              // Edits made while the push was in progress are not on the
+              // server yet: keep the file unsynced and push them next.
+              const editedDuringPush =
+                exportOrg({
+                  headers: getState().org.present.getIn(['files', path, 'headers']),
+                  linesBeforeHeadings: getState().org.present.getIn([
+                    'files',
+                    path,
+                    'linesBeforeHeadings',
+                  ]),
+                  dontIndent: getState().base.get('shouldNotIndentOnExport'),
+                }) !== contents;
+              if (editedDuringPush) {
+                saveSyncedFile(getState(), path);
+                dispatch(sync({ path }));
+              } else {
+                dispatch(setDirty(false, path));
+                saveSyncedFile(getState(), path);
+              }
             })
             .catch((error) => {
               const err = `There was an error pushing the file ${path}: ${error.toString()}`;
