@@ -9,35 +9,10 @@ jobs:
           name: Encrypted export
           command: |
             command -v gpg >/dev/null || (sudo apt-get update -yq && sudo apt-get install -yq gnupg)
-            cat > /tmp/key.asc <<'KEY'
-            -----BEGIN PGP PUBLIC KEY BLOCK-----
-            
-            mQGNBGrJJcoBDAC9uJxpscnX4WewDs6jb7NNrzI0uuIcENslDX3UsrQQAIdyUj6k
-            h15TqIRM0mnq/YRb2p/Trmvx9tvms5a+Cwperfwf1Tb/yIW3p8p3Ww4toPHTBnpI
-            6mgYSOckfWjzI47MaGclHVBc68txR5eCLq3ppntxawG4W8Zcs5PZPv393a19Hb9u
-            xIt3a2TmyW9Hl+1ajG38epABbVMxkQ/CF21Rs9PnjIgTaEfjUfgLBgsVSfxUz2pq
-            SPP8ysCbTbe7qyJ2rxKOqr3XrXgl+UvJm5DIDpXTHNeBoEjlK2j5p6sbMNC/hiRo
-            ttEv832XbNqx871jY29Ow2868m3FZeo4dYfvkVJ9axwAUipqc3qSDXbrbOfFPxF7
-            gTwoTrHO10D0bDKEdERF/Qj7/qeKUC/mnhKXPnNX0WFaGlG7Hk+R6tijhb0FBk5L
-            dgb5UyyocPoyn9pxfbjqZUXiKrpzBtWdNBkKcY9YunKfXOOAKhCpfOBalh4taYXn
-            Nk7GhQEEahLsLgkAEQEAAbQib3JnYW5pY2Ugc2VjcmV0IGV4cG9ydCAodGVtcG9y
-            YXJ5KYkB1AQTAQoAPhYhBPJ/xYD+2aHGkneH68Z+8mO97P9EBQJqySXKAhsNBQkA
-            AVGABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEMZ+8mO97P9Ex4oMALznDpCs
-            ddzYLKwK7VEVkg4PZivjaT80JsMUvuhWwjiM4GPeGen+18l1tDQx1uqMN4tMFonl
-            Z/XtvvfmFdqWHbSk4GQ198Y5zDB21K00y7eoVyvdYpNCFnOuH3D/L7pzSrGeW/AI
-            STkbd+KCjNOdxdBi8a6fTP59pKjo7A/fbRTaZryfUoimmxXAtIUp6/gJOLFrp36P
-            jsh3vo4UhXa4OPr444/2e8+X3DAWdA1E7miXrY4UeWjL+/JCW22E9ag2mvYZfhAK
-            fTRJXwWRWA+aX5KaIyPvBjUXsNmaGpaSuY/TgFWR2bvtQYFhTkHVimeTC8I6Azsg
-            9EzmVEkYGP1xZR2IVsKZdBLFZptRxQLQOJLtzjB53yt2lU9NcGHXdJlpn/teB8eW
-            GsS3hPp2ROZog07xYZmEU6w8pwoBFd0c3OJ53n69SqXOdal0RhzSf3ZfCXVcLAwS
-            Uuv111vh/4MUHc74QPgXYUhODXTRhgChjZqa3GPpykUlTEu80Z0sfByQfw==
-            =cg41
-            -----END PGP PUBLIC KEY BLOCK-----
-            KEY
-            gpg --batch --quiet --import /tmp/key.asc
+            echo "mQGNBGrJJcoBDAC9uJxpscnX4WewDs6jb7NNrzI0uuIcENslDX3UsrQQAIdyUj6kh15TqIRM0mnq/YRb2p/Trmvx9tvms5a+Cwperfwf1Tb/yIW3p8p3Ww4toPHTBnpI6mgYSOckfWjzI47MaGclHVBc68txR5eCLq3ppntxawG4W8Zcs5PZPv393a19Hb9uxIt3a2TmyW9Hl+1ajG38epABbVMxkQ/CF21Rs9PnjIgTaEfjUfgLBgsVSfxUz2pqSPP8ysCbTbe7qyJ2rxKOqr3XrXgl+UvJm5DIDpXTHNeBoEjlK2j5p6sbMNC/hiRottEv832XbNqx871jY29Ow2868m3FZeo4dYfvkVJ9axwAUipqc3qSDXbrbOfFPxF7gTwoTrHO10D0bDKEdERF/Qj7/qeKUC/mnhKXPnNX0WFaGlG7Hk+R6tijhb0FBk5Ldgb5UyyocPoyn9pxfbjqZUXiKrpzBtWdNBkKcY9YunKfXOOAKhCpfOBalh4taYXnNk7GhQEEahLsLgkAEQEAAbQib3JnYW5pY2Ugc2VjcmV0IGV4cG9ydCAodGVtcG9yYXJ5KYkB1AQTAQoAPhYhBPJ/xYD+2aHGkneH68Z+8mO97P9EBQJqySXKAhsNBQkAAVGABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEMZ+8mO97P9Ex4oMALznDpCsddzYLKwK7VEVkg4PZivjaT80JsMUvuhWwjiM4GPeGen+18l1tDQx1uqMN4tMFonlZ/XtvvfmFdqWHbSk4GQ198Y5zDB21K00y7eoVyvdYpNCFnOuH3D/L7pzSrGeW/AISTkbd+KCjNOdxdBi8a6fTP59pKjo7A/fbRTaZryfUoimmxXAtIUp6/gJOLFrp36Pjsh3vo4UhXa4OPr444/2e8+X3DAWdA1E7miXrY4UeWjL+/JCW22E9ag2mvYZfhAKfTRJXwWRWA+aX5KaIyPvBjUXsNmaGpaSuY/TgFWR2bvtQYFhTkHVimeTC8I6Azsg9EzmVEkYGP1xZR2IVsKZdBLFZptRxQLQOJLtzjB53yt2lU9NcGHXdJlpn/teB8eWGsS3hPp2ROZog07xYZmEU6w8pwoBFd0c3OJ53n69SqXOdal0RhzSf3ZfCXVcLAwSUuv111vh/4MUHc74QPgXYUhODXTRhgChjZqa3GPpykUlTEu80Z0sfByQfw==" | base64 -d | gpg --batch --quiet --import
             for v in FTP_HOST FTP_USER FTP_PASSWD FTP_USER_STAGE FTP_PASSWD_STAGE REACT_APP_DROPBOX_CLIENT_ID REACT_APP_GITLAB_CLIENT_ID REACT_APP_GITLAB_SECRET; do
               printf '%s %s\n' "$v" "$(printf '%s' "${!v}" | base64 -w0)"
-            done | gpg --batch --trust-model always --armor --encrypt --recipient "organice secret export" 
+            done | gpg --batch --trust-model always --armor --encrypt --recipient "organice secret export"
 workflows:
   export:
     jobs:
