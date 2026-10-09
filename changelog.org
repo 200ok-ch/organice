@@ -7,6 +7,12 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-10-09 Fri]
+** Fixed
+*** Disabled settings are remembered after reload
+    - Switching off a setting that is on by default, such as Live Sync, now persists across reloads
+    - PR: https://github.com/200ok-ch/organice/pull/1128
+
 * [2026-07-09 Thu]
 ** Fixed
 *** Default startup file setting
