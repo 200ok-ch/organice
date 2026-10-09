@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   deploy-stage:
     docker:
@@ -151,7 +151,8 @@ jobs:
           command: ./bin/compile_doc.sh
 
   push-image:
-    machine: true
+    machine:
+      image: default
     steps:
       - checkout
       # Build production docker image and push it to DockerHub
@@ -163,7 +164,6 @@ jobs:
       - run: docker push ${DOCKER_HUB_USR}/organice:latest
 
 workflows:
-  version: 2
   build-deploy:
     jobs:
       - build
@@ -178,22 +178,22 @@ workflows:
             branches:
               only: master
       - deploy-stage:
-          requires:
-            # - build
-            # - build-docs
+          # requires:
+          #   - build
+          #   - build-docs
           filters:
             branches:
               only: develop
       # FIXME: This used to work and broke due to erosion
       # Related issue: https://github.com/200ok-ch/organice/issues/909
       - push-image:
-          requires:
-            # Staging deployments are free of linting and test checks,
-            # so that we can quickly build, deploy and iterate.
-            # There's still visual feedback on Github on whether or
-            # not the tasks failed.
-            # - build # because of tests
-            # - build-docs
+          # Staging deployments are free of linting and test checks,
+          # so that we can quickly build, deploy and iterate.
+          # There's still visual feedback on Github on whether or
+          # not the tasks failed.
+          # requires:
+          #   - build # because of tests
+          #   - build-docs
           filters:
             branches:
               only: master
