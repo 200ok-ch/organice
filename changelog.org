@@ -7,6 +7,23 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-10-09 Fri]
+** Changed
+*** Most important change: local copies of your Org files are now kept in IndexedDB
+    - organice keeps a local copy of every file you open, so files load instantly and work offline. These copies used to live in the browser's localStorage, which iOS Safari limits to about 2.6 million characters. With a few large files loaded on startup, the copies no longer fit, and organice showed a full-screen "File ... not found" after syncing, although the file existed.
+    - The copies now live in IndexedDB, which may use a large share of your device's free space. Existing copies, including unsynced changes, are moved there automatically on the next start.
+    - See "Offline support" in the documentation for what organice stores where.
+** Fixed
+*** Clearer sync errors
+    - Sync errors now show their actual cause instead of always claiming that the file was not found.
+    - An error of a file synced in the background no longer replaces the file you are viewing.
+    - When a sync fails (for example while offline), the local copy of the file stays visible.
+*** Changes made while syncing
+    - Changes made while a file was being synced were marked as synced and could get lost. They now stay marked as unsynced and are synced right afterwards.
+** Added
+*** Storage overview in the settings
+    - The settings show how much browser storage organice uses, the largest entries, and any failed writes.
+
 * [2026-07-09 Thu]
 ** Fixed
 *** Default startup file setting
