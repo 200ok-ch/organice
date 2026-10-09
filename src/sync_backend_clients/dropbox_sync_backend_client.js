@@ -77,38 +77,22 @@ export default () => {
     );
   };
 
+  const toDirectoryListing = (response) => ({
+    listing: transformDirectoryListing(response.result.entries),
+    hasMore: response.result.has_more,
+    additionalSyncBackendState: Map({
+      cursor: response.result.cursor,
+    }),
+  });
+
   const getDirectoryListing = (path) =>
-    new Promise((resolve, reject) => {
-      dbxPromise
-        .then((dbx) => {
-          dbx.filesListFolder({ path }).then((response) => {
-            resolve({
-              listing: transformDirectoryListing(response.result.entries),
-              hasMore: response.result.has_more,
-              additionalSyncBackendState: Map({
-                cursor: response.result.cursor,
-              }),
-            });
-          });
-        })
-        .catch(reject);
-    });
+    dbxPromise.then((dbx) => dbx.filesListFolder({ path })).then(toDirectoryListing);
 
   const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const cursor = additionalSyncBackendState.get('cursor');
-    return new Promise((resolve, reject) =>
-      dbxPromise.then((dbx) => {
-        dbx.filesListFolderContinue({ cursor }).then((response) =>
-          resolve({
-            listing: transformDirectoryListing(response.result.entries),
-            hasMore: response.result.has_more,
-            additionalSyncBackendState: Map({
-              cursor: response.result.cursor,
-            }),
-          })
-        );
-      })
-    );
+    return dbxPromise
+      .then((dbx) => dbx.filesListFolderContinue({ cursor }))
+      .then(toDirectoryListing);
   };
 
   const uploadFile = (path, contents) =>

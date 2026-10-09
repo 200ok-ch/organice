@@ -15,6 +15,16 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
     - See "Offline support" in the documentation for what organice stores where.
     - PR: https://github.com/200ok-ch/organice/pull/1132
 ** Fixed
+*** organice starts again without a network connection
+    - Since the switch to a new build tool in April 2025, organice showed a blank page when started offline: the part that caches the app in the browser was never installed. It is installed again, so organice starts offline and opens your files from their local copies.
+    - Links to a file or folder (for example a bookmark or the home screen icon) work offline too.
+    - With WebDAV or GitLab, a sync service that can't be reached at startup (for example while offline) no longer signs you out. Signing out deletes the local copies of your files, including changes that were not synced yet.
+    - PR: https://github.com/200ok-ch/organice/pull/1135
+*** File browser while offline
+    - The file browser remembers every folder you visit. Offline, it shows the folder as of your last visit instead of an error, and greys out files and folders that are not available offline.
+    - With Dropbox, the file browser no longer hangs on "Getting listing..." when the listing can't be fetched.
+    - "Load more" no longer makes the file browser forget the current folder.
+    - PR: https://github.com/200ok-ch/organice/pull/1135
 *** Clearer sync errors
     - Sync errors now show their actual cause instead of always claiming that the file was not found.
     - An error of a file synced in the background no longer replaces the file you are viewing.

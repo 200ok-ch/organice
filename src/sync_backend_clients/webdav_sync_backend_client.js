@@ -27,6 +27,8 @@ export const filterAndSortDirectoryListing = (listing) => {
     });
 };
 
+const SIGNED_OUT_STATUSES = [401, 403, 404];
+
 export default (url, login, password) => {
   const webdavClient = createClient(url, { username: login, password: password });
   const isSignedIn = () =>
@@ -38,8 +40,17 @@ export default (url, login, password) => {
           resolve(true);
         })
         .catch((error) => {
-          console.error("Login didn't work, error: ", JSON.stringify(error));
-          resolve(false);
+          // Only a server rejecting the login or the URL means signed out.
+          // Signing out deletes the local copies, so a server that can't be
+          // reached (e.g. while offline) must not.
+          const status = error.status || (error.response && error.response.status);
+          if (SIGNED_OUT_STATUSES.includes(status)) {
+            console.error("Login didn't work, error: ", JSON.stringify(error));
+            resolve(false);
+          } else {
+            console.warn('Could not reach the WebDAV server', error);
+            resolve(true);
+          }
         });
     });
 
