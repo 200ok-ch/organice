@@ -8,14 +8,17 @@ import { restoreCaptureSettings } from '../actions/capture';
 import { restoreFileSettings } from '../actions/org';
 
 import generateId from '../lib/id_generator';
-import { loadFilesFromLocalStorage } from './file_persister';
+import { safeSetItem } from './local_storage';
+import { loadCachedFiles } from './file_persister';
 
+// Only check that localStorage can be read. A write probe fails when
+// the quota is exhausted, which would also hide all existing data
+// (sign-in, settings, cached files). Writes are guarded individually
+// through `safeSetItem`.
 export const localStorageAvailable = (() => {
   try {
-    localStorage.setItem('test', 'test');
-    const localStorageRes = localStorage.getItem('test') === 'test';
-    localStorage.removeItem('test');
-    return localStorageRes && localStorage;
+    localStorage.getItem('test');
+    return localStorage;
   } catch (e) {
     return false;
   }
@@ -260,7 +263,12 @@ const getFieldsToPersist = (state, fields) => {
                 field.name,
                 JSON.stringify(state[field.category].get(field.name) || field.default || {}),
               ]
-            : [field.name, state[field.category].get(field.name) || field.default];
+            : [
+                field.name,
+                state[field.category].get(field.name) == null
+                  ? field.default
+                  : state[field.category].get(field.name),
+              ];
         })
     );
 };
@@ -349,7 +357,9 @@ const loadContentFromLocalStorage = (initialState) => {
         value = null;
       }
     } else if (field.type === 'boolean') {
-      value = value === 'true';
+      if (value !== null) {
+        value = value === 'true';
+      }
     } else if (field.type === 'number') {
       if (value) {
         value = parseInt(value, 10);
@@ -362,7 +372,9 @@ const loadContentFromLocalStorage = (initialState) => {
       }
     }
     // When nothing has been saved to localStorage before, keep the default.
-    value = value || field.default;
+    if (value == null) {
+      value = field.default;
+    }
 
     if (field.category === 'org') {
       initialState[field.category].present = initialState[field.category].present.set(
@@ -398,13 +410,17 @@ const loadContentFromLocalStorage = (initialState) => {
     getFieldsToPersist(initialState, persistableFields)
   );
 
-  return loadFilesFromLocalStorage(initialState);
+  return initialState;
 };
 
-export const readInitialState = () => {
+// `cachedFiles` are the local copies of Org files, read asynchronously
+// before the app starts (see `readCachedFiles`).
+export const readInitialState = (cachedFiles) => {
   let initialState = getInitialStateWithDefaultValues();
-
-  return localStorageAvailable ? loadContentFromLocalStorage(initialState) : initialState;
+  if (localStorageAvailable) {
+    initialState = loadContentFromLocalStorage(initialState);
+  }
+  return loadCachedFiles(initialState, cachedFiles);
 };
 
 export const loadSettingsFromConfigFile = (dispatch, getState) => {
@@ -464,7 +480,7 @@ export const subscribeToChanges = (store) => {
       const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
       fieldsToPersist.forEach(([name, value]) => {
-        if (name && value) localStorage.setItem(name, value);
+        if (name && value != null) safeSetItem(name, value);
       });
 
       if (state.base.get('shouldStoreSettingsInSyncBackend')) {
@@ -489,7 +505,7 @@ export const subscribeToChanges = (store) => {
         }
 
         opennessState[currentFilePath] = openHeaderPaths;
-        localStorage.setItem('headerOpenness', JSON.stringify(opennessState));
+        safeSetItem('headerOpenness', JSON.stringify(opennessState));
       }
     };
   }
@@ -499,7 +515,7 @@ export const persistField = (field, value) => {
   if (!localStorageAvailable) {
     return;
   } else {
-    localStorage.setItem(field, value);
+    safeSetItem(field, value);
   }
 };
 

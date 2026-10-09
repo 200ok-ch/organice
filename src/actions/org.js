@@ -16,12 +16,15 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
-import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
+import { persistIsDirty, saveFileContents, saveSyncedFile } from '../util/file_persister';
+import { getFileRecord } from '../util/file_store';
 import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
 
-export const parseFile = (path, contents) => (dispatch) => {
+export const parseFile = (path, contents) => (dispatch, getState) => {
+  // Asynchronous, never throws: a failed write of the local copy must
+  // not fail the sync.
+  saveFileContents(getState(), path, contents);
   if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
-    saveFileContentsToLocalStorage(path, contents);
     const opennessState = readOpennessState();
     if (!!opennessState) {
       dispatch(setOpennessState(path, opennessState[path]));
@@ -150,10 +153,10 @@ const doSync = ({
     dispatch(setLoadingMessage(`Syncing ...`));
   }
   dispatch(setIsLoading(true, path));
-  dispatch(setOrgFileErrorMessage(null));
+  dispatch(clearOrgFileErrorMessage(path));
 
-  client
-    .getFileContentsAndMetadata(path)
+  restoreUnsyncedLocalCopy(path)(dispatch, getState)
+    .then(() => client.getFileContentsAndMetadata(path))
     .then(({ contents, lastModifiedAt }) => {
       const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
       const lastServerModifiedAt = parseISO(lastModifiedAt);
@@ -179,8 +182,26 @@ const doSync = ({
                 setTimeout(() => dispatch(hideLoadingMessage()), 2000);
               }
               dispatch(setIsLoading(false, path));
-              dispatch(setDirty(false, path));
               dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+              // Edits made while the push was in progress are not on the
+              // server yet: keep the file unsynced and push them next.
+              const editedDuringPush =
+                exportOrg({
+                  headers: getState().org.present.getIn(['files', path, 'headers']),
+                  linesBeforeHeadings: getState().org.present.getIn([
+                    'files',
+                    path,
+                    'linesBeforeHeadings',
+                  ]),
+                  dontIndent: getState().base.get('shouldNotIndentOnExport'),
+                }) !== contents;
+              if (editedDuringPush) {
+                saveSyncedFile(getState(), path);
+                dispatch(sync({ path }));
+              } else {
+                dispatch(setDirty(false, path));
+                saveSyncedFile(getState(), path);
+              }
             })
             .catch((error) => {
               const err = `There was an error pushing the file ${path}: ${error.toString()}`;
@@ -217,10 +238,11 @@ const doSync = ({
         }
       }
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error(`Syncing ${path} failed`, error);
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      dispatch(reportFileError(path, 'load', error));
     });
 };
 
@@ -436,14 +458,39 @@ export const applyOpennessState = (path) => ({
   path,
 });
 
+// Normally, local copies are loaded before the app starts. If that
+// failed or timed out, a file whose local copy has unsynced edits is not
+// loaded. Load that copy before the file is synced or downloaded, so the
+// edits are pushed (or the user is asked) instead of replaced by the
+// remote version. Resolves with whether a copy was loaded; never rejects.
+export const restoreUnsyncedLocalCopy = (path) => (dispatch, getState) => {
+  const isLoaded = () => getState().org.present.hasIn(['files', path, 'headers']);
+  if (!path || path.startsWith(STATIC_FILE_PREFIX) || isLoaded()) {
+    return Promise.resolve(false);
+  }
+  return getFileRecord(path)
+    .then((record) => {
+      if (!record || !record.isDirty || isLoaded()) {
+        return false;
+      }
+      dispatch({ type: 'PARSE_FILE', path, contents: record.contents });
+      dispatch(dirtyAction(true, path));
+      if (record.lastSyncAt) {
+        dispatch(setLastSyncAt(parseISO(record.lastSyncAt), path));
+      }
+      return true;
+    })
+    .catch(() => false);
+};
+
 export const dirtyAction = (isDirty, path) => ({
   type: 'SET_DIRTY',
   isDirty,
   path,
 });
 
-export const setDirty = (isDirty, path) => (dispatch) => {
-  persistIsDirty(isDirty, path);
+export const setDirty = (isDirty, path) => (dispatch, getState) => {
+  persistIsDirty(isDirty, path || getState().org.present.get('path'));
   dispatch(dirtyAction(isDirty, path));
 };
 
@@ -751,9 +798,45 @@ export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   dirtying: true,
 });
 
-export const setOrgFileErrorMessage = (message) => ({
+// Sync back-ends reject without an error when a file does not exist.
+// Every other failure carries an error, including exceptions thrown
+// while handling a successful download. Show those instead of
+// claiming that the file is missing.
+export const fileErrorMessage = (verb, path, error) => {
+  if (!error) {
+    return `File ${path} not found`;
+  }
+  const description = error.name && error.message ? `${error.name}: ${error.message}` : error;
+  return `Could not ${verb} ${path}: ${description}`;
+};
+
+// Takes over the screen only when nothing of `path` is loaded and it is
+// the file being viewed. A loaded file stays usable (e.g. while offline),
+// and failures of files synced in the background show a message instead.
+export const reportFileError = (path, verb, error) => (dispatch, getState) => {
+  const org = getState().org.present;
+  if (org.hasIn(['files', path, 'headers'])) {
+    const loadedVerb = verb === 'load' ? 'sync' : verb;
+    dispatch(setDisappearingLoadingMessage(fileErrorMessage(loadedVerb, path, error), 5000));
+  } else if (path === org.get('path')) {
+    dispatch(setOrgFileErrorMessage(fileErrorMessage(verb, path, error), path));
+  } else {
+    dispatch(setDisappearingLoadingMessage(fileErrorMessage(verb, path, error), 5000));
+  }
+};
+
+// Clears the error of `path`, leaving errors of other files alone.
+export const clearOrgFileErrorMessage = (path) => (dispatch, getState) => {
+  const errorPath = getState().org.present.get('orgFileErrorPath');
+  if (!errorPath || errorPath === path) {
+    dispatch(setOrgFileErrorMessage(null));
+  }
+};
+
+export const setOrgFileErrorMessage = (message, path = null) => ({
   type: 'SET_ORG_FILE_ERROR_MESSAGE',
   message,
+  path,
 });
 
 export const setLogEntryStop = (headerId, entryId, time) => ({

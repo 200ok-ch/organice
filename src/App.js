@@ -74,7 +74,7 @@ export default class App extends PureComponent {
 
     runAllMigrations();
 
-    const initialState = readInitialState();
+    const initialState = readInitialState(props.cachedFiles);
 
     const authenticatedSyncService = getPersistedField('authenticatedSyncService', true);
     let client = null;
@@ -161,6 +161,14 @@ export default class App extends PureComponent {
       client.isSignedIn().then((isSignedIn) => {
         if (isSignedIn) {
           loadSettingsFromConfigFile(this.store.dispatch, this.store.getState);
+          if (!props.fileStoreAvailable) {
+            this.store.dispatch(
+              setDisappearingLoadingMessage(
+                'This browser does not let organice keep local copies of your files. Changes that are not synced are lost when organice is closed.',
+                8000
+              )
+            );
+          }
         } else {
           this.store.dispatch(signOut());
         }

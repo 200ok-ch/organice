@@ -1,6 +1,22 @@
 import { sync } from '../actions/org';
-import { persistIsDirty, saveFileToLocalStorage } from '../util/file_persister';
+import { setDisappearingLoadingMessage } from '../actions/base';
+import { saveEditedFileDebounced } from '../util/file_persister';
 import { determineAffectedFiles } from '../reducers/org';
+
+// Paths for which the user has already been warned in this session,
+// so that every further edit doesn't repeat the warning.
+const pathsWarnedAboutLocalSave = new Set();
+
+const warnAboutFailedLocalSave = (store, path) => {
+  if (pathsWarnedAboutLocalSave.has(path)) return;
+  pathsWarnedAboutLocalSave.add(path);
+  store.dispatch(
+    setDisappearingLoadingMessage(
+      `Could not store changes to ${path} locally. Sync before closing organice.`,
+      5000
+    )
+  );
+};
 
 export default (store) => (next) => (action) => {
   // middleware is run before the reducer. to persist the result of the action,
@@ -8,8 +24,8 @@ export default (store) => (next) => (action) => {
   setTimeout(() => {
     let dirtyFiles = determineAffectedFiles(store.getState().org.present, action);
 
-    dirtyFiles.forEach((path) => saveFileToLocalStorage(store.getState(), path));
-    dirtyFiles.forEach((path) => persistIsDirty(true, path));
+    const onFailure = (path) => warnAboutFailedLocalSave(store, path);
+    dirtyFiles.forEach((path) => saveEditedFileDebounced(store.getState, path, onFailure));
 
     if (store.getState().base.get('shouldLiveSync')) {
       dirtyFiles.forEach((path) => store.dispatch(sync({ shouldSuppressMessages: true, path })));

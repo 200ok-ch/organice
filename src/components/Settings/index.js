@@ -13,6 +13,7 @@ import './stylesheet.css';
 import TabButtons from '../UI/TabButtons';
 import Switch from '../UI/Switch';
 import ExternalLink from '../UI/ExternalLink';
+import StorageDiagnostics from './StorageDiagnostics';
 
 const Settings = ({
   fontSize,
@@ -397,6 +398,8 @@ const Settings = ({
         </div>
         <Switch isEnabled={preferEditRawValues} onToggle={handlePreferEditRawValues} />
       </div>
+
+      <StorageDiagnostics />
 
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>

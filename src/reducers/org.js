@@ -1751,7 +1751,8 @@ export const setSearchFilterInformation = (state, action) => {
   return state.asImmutable();
 };
 
-const setOrgFileErrorMessage = (state, action) => state.set('orgFileErrorMessage', action.message);
+const setOrgFileErrorMessage = (state, action) =>
+  state.set('orgFileErrorMessage', action.message).set('orgFileErrorPath', action.path);
 
 const setPath = (state, action) => state.set('path', action.path);
 

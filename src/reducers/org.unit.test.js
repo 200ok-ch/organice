@@ -1226,8 +1226,9 @@ describe('org reducer', () => {
     });
 
     it('should handle SET_ORG_FILE_ERROR_MESSAGE', () => {
-      const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message));
+      const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message, path));
       expect(newState.get('orgFileErrorMessage')).toEqual(message);
+      expect(newState.get('orgFileErrorPath')).toEqual(path);
       expect(newState.getIn(['files', path, 'headers'])).toEqual(
         state.org.present.getIn(['files', path, 'headers'])
       );

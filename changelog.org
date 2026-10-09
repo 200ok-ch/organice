@@ -7,6 +7,40 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-10-09 Fri]
+** Changed
+*** Most important change: local copies of your Org files are now kept in IndexedDB
+    - organice keeps a local copy of every file you open, so files load instantly and work offline. These copies used to live in the browser's localStorage, which iOS Safari limits to about 2.6 million characters. With a few large files loaded on startup, the copies no longer fit, and organice showed a full-screen "File ... not found" after syncing, although the file existed.
+    - The copies now live in IndexedDB, which may use a large share of your device's free space. Existing copies, including unsynced changes, are moved there automatically on the next start.
+    - See "Offline support" in the documentation for what organice stores where.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+** Fixed
+*** organice starts again without a network connection
+    - Since the switch to a new build tool in April 2025, organice showed a blank page when started offline: the part that caches the app in the browser was never installed. It is installed again, so organice starts offline and opens your files from their local copies.
+    - Links to a file or folder (for example a bookmark or the home screen icon) work offline too.
+    - With WebDAV or GitLab, a sync service that can't be reached at startup (for example while offline) no longer signs you out. Signing out deletes the local copies of your files, including changes that were not synced yet.
+    - PR: https://github.com/200ok-ch/organice/pull/1135
+*** File browser while offline
+    - The file browser remembers every folder you visit. Offline, it shows the folder as of your last visit instead of an error, and greys out files and folders that are not available offline.
+    - With Dropbox, the file browser no longer hangs on "Getting listing..." when the listing can't be fetched.
+    - "Load more" no longer makes the file browser forget the current folder.
+    - PR: https://github.com/200ok-ch/organice/pull/1135
+*** Clearer sync errors
+    - Sync errors now show their actual cause instead of always claiming that the file was not found.
+    - An error of a file synced in the background no longer replaces the file you are viewing.
+    - When a sync fails (for example while offline), the local copy of the file stays visible.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+*** Changes made while syncing
+    - Changes made while a file was being synced were marked as synced and could get lost. They now stay marked as unsynced and are synced right afterwards.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+*** Disabled settings are remembered after reload
+    - Switching off a setting that is on by default, such as Live Sync, now persists across reloads
+    - PR: https://github.com/200ok-ch/organice/pull/1128
+** Added
+*** Storage overview in the settings
+    - The settings show how much browser storage organice uses, the largest entries, and any failed writes.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+
 * [2026-07-09 Thu]
 ** Fixed
 *** Default startup file setting

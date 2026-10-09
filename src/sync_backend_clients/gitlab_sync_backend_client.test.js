@@ -1,5 +1,7 @@
+/* global globalThis */
 import { fromJS } from 'immutable';
-import {
+import { ErrorInvalidGrant, ErrorUnknown } from '@bity/oauth2-auth-code-pkce';
+import createGitLabSyncBackendClient, {
   gitLabProjectIdFromURL,
   parseLinkHeader,
   treeToDirectoryListing,
@@ -119,5 +121,36 @@ describe('Converts file tree to directory listing', () => {
       .toJS()
       .map((it) => it.name);
     expect(names).toEqual(['mno', 'abc.org', 'xyz.org']);
+  });
+});
+
+describe('isSignedIn', () => {
+  const clientWithToken = (getAccessToken) =>
+    createGitLabSyncBackendClient({
+      decorateFetchHTTPClient: (fetch) => fetch,
+      isAuthorized: () => true,
+      getAccessToken,
+    });
+
+  beforeEach(() => {
+    // jsdom has no fetch; `isSignedIn` does not use it.
+    globalThis.fetch = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    delete globalThis.fetch;
+    jest.restoreAllMocks();
+  });
+
+  test('stays signed in when the token cannot be refreshed for lack of network', async () => {
+    const client = clientWithToken(() => Promise.reject(new ErrorUnknown()));
+    expect(await client.isSignedIn()).toBe(true);
+  });
+
+  test('is signed out when GitLab rejects the token', async () => {
+    const client = clientWithToken(() => Promise.reject(new ErrorInvalidGrant()));
+    expect(await client.isSignedIn()).toBe(false);
   });
 });

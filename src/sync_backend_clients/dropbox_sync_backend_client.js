@@ -38,6 +38,24 @@ export const filterAndSortDirectoryListing = (listing) => {
   });
 };
 
+// Dropbox SDK 10 passes the parsed error body as `error.error`; older
+// versions passed it as a JSON string.
+export const isNotFoundError = (error) => {
+  if (typeof error === 'string') {
+    return /missing required field 'path'/.test(error);
+  }
+  let body = error && error.error;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      return false;
+    }
+  }
+  const summary = body && body.error_summary;
+  return typeof summary === 'string' && summary.startsWith('path/not_found');
+};
+
 function getCodeFromUrl() {
   return parseQueryString(window.location.search).code;
 }
@@ -59,38 +77,22 @@ export default () => {
     );
   };
 
+  const toDirectoryListing = (response) => ({
+    listing: transformDirectoryListing(response.result.entries),
+    hasMore: response.result.has_more,
+    additionalSyncBackendState: Map({
+      cursor: response.result.cursor,
+    }),
+  });
+
   const getDirectoryListing = (path) =>
-    new Promise((resolve, reject) => {
-      dbxPromise
-        .then((dbx) => {
-          dbx.filesListFolder({ path }).then((response) => {
-            resolve({
-              listing: transformDirectoryListing(response.result.entries),
-              hasMore: response.result.has_more,
-              additionalSyncBackendState: Map({
-                cursor: response.result.cursor,
-              }),
-            });
-          });
-        })
-        .catch(reject);
-    });
+    dbxPromise.then((dbx) => dbx.filesListFolder({ path })).then(toDirectoryListing);
 
   const getMoreDirectoryListing = (additionalSyncBackendState) => {
     const cursor = additionalSyncBackendState.get('cursor');
-    return new Promise((resolve, reject) =>
-      dbxPromise.then((dbx) => {
-        dbx.filesListFolderContinue({ cursor }).then((response) =>
-          resolve({
-            listing: transformDirectoryListing(response.result.entries),
-            hasMore: response.result.has_more,
-            additionalSyncBackendState: Map({
-              cursor: response.result.cursor,
-            }),
-          })
-        );
-      })
-    );
+    return dbxPromise
+      .then((dbx) => dbx.filesListFolderContinue({ cursor }))
+      .then(toDirectoryListing);
   };
 
   const uploadFile = (path, contents) =>
@@ -114,12 +116,13 @@ export default () => {
   const createFile = uploadFile;
 
   const getFileContentsAndMetadata = (path) =>
-    new Promise((resolve, reject) =>
-      dbxPromise.then((dbx) => {
-        dbx
-          .filesDownload({ path })
-          .then((response) => {
+    dbxPromise
+      .then((dbx) => dbx.filesDownload({ path }))
+      .then(
+        (response) =>
+          new Promise((resolve, reject) => {
             const reader = new FileReader();
+            reader.addEventListener('error', () => reject(reader.error));
             reader.addEventListener('loadend', () =>
               resolve({
                 contents: reader.result,
@@ -128,35 +131,14 @@ export default () => {
             );
             reader.readAsText(response.result.fileBlob);
           })
-          .catch((error) => {
-            // INFO: It's possible organice is using the Dropbox API
-            // wrongly. In any case, for some files and only sometimes,
-            // when a file is requested, there's either:
-            //   - a 400 with a plain text error or
-            //   - a 409 with an embedded JSON error
-            //   - a 409 with a plain text error under `.error`
-            // coming back. Sometimes, there's even two API calls to
-            // `/download` happening at the same time (of types `json`
-            // and `octet-stream`) where one might fail and the other
-            // might prevail.
-            // More debug information in this issue:
-            // https://github.com/200ok-ch/organice/issues/108
-            const objectContainsTagErrorP = (function () {
-              try {
-                return JSON.parse(error.error).error.path['.tag'] === 'not_found';
-              } catch (e) {
-                return false;
-              }
-            })();
-            if (
-              (typeof error === 'string' && error.match(/missing required field 'path'/)) ||
-              objectContainsTagErrorP
-            ) {
-              reject();
-            }
-          });
-      })
-    );
+      )
+      .catch((error) => {
+        // A missing file rejects without an error; callers report that
+        // as "not found". Every other error is passed on. (It used to be
+        // swallowed, leaving the promise pending forever, see
+        // https://github.com/200ok-ch/organice/issues/108.)
+        return Promise.reject(isNotFoundError(error) ? undefined : error);
+      });
 
   const getFileContents = (path) => {
     if (isEmpty(path)) return Promise.reject('No path given');
