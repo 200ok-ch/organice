@@ -6,13 +6,17 @@ import { fromJS, Map } from 'immutable';
 // First path segments of Forgejo pages below a repository, such as
 // /owner/repo/src/branch/main.
 const REPOSITORY_ROUTES = [
+  '_edit',
+  '_new',
   'actions',
   'activity',
+  'archive',
   'blame',
   'branches',
   'commit',
   'commits',
   'compare',
+  'graph',
   'issues',
   'labels',
   'media',
@@ -32,30 +36,36 @@ const REPOSITORY_ROUTES = [
  * browser. A path in front of owner and repository belongs to the domain, for
  * Forgejo instances served from a subpath.
  *
+ * A URL alone can be ambiguous: in https://example.com/forgejo/alice/issues,
+ * "issues" is either the issues page of forgejo/alice or a repository on a
+ * subpath install. So this returns every candidate, most likely first, and
+ * the caller asks Forgejo which one exists.
+ *
  * @param {string} input Such as https://codeberg.org/owner/repo
- * @returns {{domain: string, owner: string, repository: string}|undefined}
+ * @returns {Array<{domain: string, owner: string, repository: string}>}
  */
-export const forgejoRepositoryFromURL = (input) => {
+export const forgejoRepositoriesFromURL = (input) => {
   let url;
   try {
     url = new URL(input.trim());
   } catch {
-    return;
+    return [];
   }
   const segments = url.pathname.split('/').filter(Boolean);
-  const routeIndex = segments.findIndex(
-    (segment, index) => index >= 2 && REPOSITORY_ROUTES.includes(segment)
-  );
-  const repositoryPath = routeIndex === -1 ? segments : segments.slice(0, routeIndex);
-  if (repositoryPath.length < 2) {
-    return;
-  }
-  const [owner, repository] = repositoryPath.slice(-2);
-  return {
-    domain: [url.origin, ...repositoryPath.slice(0, -2)].join('/'),
-    owner,
-    repository: repository.replace(/\.git$/, ''),
-  };
+  const routeIndexes = segments
+    .map((segment, index) => (index >= 2 && REPOSITORY_ROUTES.includes(segment) ? index : -1))
+    .filter((index) => index !== -1);
+  return [...routeIndexes, segments.length]
+    .filter((end) => end >= 2)
+    .map((end) => {
+      const repositoryPath = segments.slice(0, end);
+      const [owner, repository] = repositoryPath.slice(-2);
+      return {
+        domain: [url.origin, ...repositoryPath.slice(0, -2)].join('/'),
+        owner,
+        repository: repository.replace(/\.git$/, ''),
+      };
+    });
 };
 
 export const contentsResponseToDirectoryListing = (contents) => {
@@ -139,7 +149,9 @@ export default () => {
   };
 
   /**
-   * Check that the repository exists and the access token may push to it.
+   * Check that the token can read the repository and that its user may push
+   * to it. Older Forgejo versions report the user's permission here, not the
+   * token's scope, so a read-only token can still pass.
    */
   const isRepositoryAccessible = async () => {
     try {

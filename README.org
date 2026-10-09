@@ -907,8 +907,8 @@ On organice's sign-in page, click the Forgejo logo and enter:
   for example ~https://codeberg.org/owner/repo~.
 - *Access Token*: the token from above.
 
-organice checks that the token may write to the repository before it
-signs you in. The token is stored only in your browser.
+Before it signs you in, organice checks that it can read the repository
+and that your account may push to it. The token is stored only in your browser.
 
 *Self-hosted Forgejo*: organice runs in your browser and talks to the
 Forgejo API directly, so your instance must allow cross-origin

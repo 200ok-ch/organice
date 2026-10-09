@@ -1,6 +1,6 @@
 /* global process */
 
-import React, { PureComponent, useState } from 'react';
+import React, { PureComponent, useRef, useState } from 'react';
 
 import './stylesheet.css';
 
@@ -14,7 +14,7 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 import createForgejoSyncBackendClient, {
-  forgejoRepositoryFromURL,
+  forgejoRepositoriesFromURL,
 } from '../../sync_backend_clients/forgejo_sync_backend_client';
 
 import { DropboxAuth } from 'dropbox';
@@ -161,11 +161,22 @@ function Forgejo() {
   const defaultAccessToken = 'put your forgejo access token here';
   const [repository, setRepository] = useState('');
   const [accessToken, setAccessToken] = useState('');
+  // A ref, not state, so that a second submit before the next render sees it.
+  const isSigningIn = useRef(false);
+  const [isChecking, setIsChecking] = useState(false);
+
+  // The client reads its configuration from the persisted fields.
+  const persistFields = (fields) =>
+    Object.entries(fields).forEach(([field, value]) => persistField(field, value));
+
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    const urlParts = forgejoRepositoryFromURL(repository);
+    if (isSigningIn.current) {
+      return;
+    }
+    const candidates = forgejoRepositoriesFromURL(repository);
     const token = accessToken.trim();
-    if (!urlParts) {
+    if (candidates.length === 0) {
       alert('This does not appear to be a valid Forgejo repository URL');
       return;
     }
@@ -173,23 +184,32 @@ function Forgejo() {
       alert('You must provide an access token');
       return;
     }
-    const fields = {
-      forgejoAccessToken: token,
-      forgejoDomain: urlParts.domain,
-      forgejoOwner: urlParts.owner,
-      forgejoRepository: urlParts.repository,
-    };
-    // The client reads its configuration from the persisted fields.
-    Object.entries(fields).forEach(([field, value]) => persistField(field, value));
-    if (await createForgejoSyncBackendClient().isRepositoryAccessible()) {
-      persistField('authenticatedSyncService', 'Forgejo');
-      window.location = window.location.origin + '/';
-    } else {
-      Object.keys(fields).forEach((field) => persistField(field, null));
-      alert(
-        'Could not access the repository. Check the URL and that the access token has read and write permission for repositories.'
-      );
+    isSigningIn.current = true;
+    setIsChecking(true);
+    for (const candidate of candidates) {
+      persistFields({
+        forgejoAccessToken: token,
+        forgejoDomain: candidate.domain,
+        forgejoOwner: candidate.owner,
+        forgejoRepository: candidate.repository,
+      });
+      if (await createForgejoSyncBackendClient().isRepositoryAccessible()) {
+        persistField('authenticatedSyncService', 'Forgejo');
+        window.location = window.location.origin + '/';
+        return;
+      }
     }
+    persistFields({
+      forgejoAccessToken: null,
+      forgejoDomain: null,
+      forgejoOwner: null,
+      forgejoRepository: null,
+    });
+    isSigningIn.current = false;
+    setIsChecking(false);
+    alert(
+      'Could not access the repository. Check the URL and that the access token has read and write permission for repositories.'
+    );
   };
 
   return (
@@ -222,7 +242,7 @@ function Forgejo() {
               onChange={(e) => setAccessToken(e.target.value)}
             />
           </p>
-          <input type="submit" value="Sign-in" />
+          <input type="submit" value="Sign-in" disabled={isChecking} />
         </form>
       )}
     </>

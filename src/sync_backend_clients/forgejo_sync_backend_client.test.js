@@ -3,7 +3,7 @@ import { fromJS } from 'immutable';
 import createForgejoSyncBackendClient, {
   base64ToUnicode,
   contentsResponseToDirectoryListing,
-  forgejoRepositoryFromURL,
+  forgejoRepositoriesFromURL,
   unicodeToBase64,
 } from './forgejo_sync_backend_client';
 import { persistField } from '../util/settings_persister';
@@ -20,6 +20,8 @@ describe('Parses Forgejo repository from URL', () => {
     ['https://codeberg.org/owner/repo.git', 'https://codeberg.org', 'owner', 'repo'],
     ['https://codeberg.org/owner/repo/src/branch/main', 'https://codeberg.org', 'owner', 'repo'],
     ['https://codeberg.org/owner/repo/issues', 'https://codeberg.org', 'owner', 'repo'],
+    ['https://codeberg.org/owner/repo/graph', 'https://codeberg.org', 'owner', 'repo'],
+    ['https://codeberg.org/owner/issues', 'https://codeberg.org', 'owner', 'issues'],
     [
       'https://example.com:3000/forgejo/owner/repo',
       'https://example.com:3000/forgejo',
@@ -28,13 +30,20 @@ describe('Parses Forgejo repository from URL', () => {
     ],
     ['  https://codeberg.org/owner/repo  ', 'https://codeberg.org', 'owner', 'repo'],
   ])('%s', (url, domain, owner, repository) => {
-    expect(forgejoRepositoryFromURL(url)).toEqual({ domain, owner, repository });
+    expect(forgejoRepositoriesFromURL(url)[0]).toEqual({ domain, owner, repository });
+  });
+
+  test('offers the whole path as a later candidate, for a subpath and a route-named repository', () => {
+    expect(forgejoRepositoriesFromURL('https://forgejo.example/forgejo/alice/issues')).toEqual([
+      { domain: 'https://forgejo.example', owner: 'forgejo', repository: 'alice' },
+      { domain: 'https://forgejo.example/forgejo', owner: 'alice', repository: 'issues' },
+    ]);
   });
 
   test.each([[''], ['https://codeberg.org'], ['https://codeberg.org/owner'], ['not a url']])(
     'rejects %p',
     (url) => {
-      expect(forgejoRepositoryFromURL(url)).toBeUndefined();
+      expect(forgejoRepositoriesFromURL(url)).toEqual([]);
     }
   );
 });
@@ -115,7 +124,7 @@ describe('Forgejo client', () => {
       expect(await createForgejoSyncBackendClient().isRepositoryAccessible()).toBe(true);
     });
 
-    test('is false when the token may only read', async () => {
+    test('is false when the user may only read', async () => {
       globalThis.fetch.mockResolvedValue(response(200, { permissions: { push: false } }));
       expect(await createForgejoSyncBackendClient().isRepositoryAccessible()).toBe(false);
     });
