@@ -45,6 +45,11 @@ export const signOut = () => (dispatch, getState) => {
       persistField('gitLabProject', null);
       createGitlabOAuth().reset();
       break;
+    case 'Forgejo':
+      ['Domain', 'Owner', 'Repository', 'AccessToken'].forEach((e) => {
+        persistField('forgejo' + e, null);
+      });
+      break;
     default:
   }
 
@@ -180,7 +185,8 @@ export const pushBackup = (pathOrFileId, contents) => {
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;
       case 'GitLab':
-        // No-op for GitLab, because the beauty of version control makes backup files redundant.
+      case 'Forgejo':
+        // No-op for git based backends, because the beauty of version control makes backup files redundant.
         break;
       default:
     }

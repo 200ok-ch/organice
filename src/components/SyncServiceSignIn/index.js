@@ -6,12 +6,14 @@ import './stylesheet.css';
 
 import DropboxLogo from 'url:./dropbox.svg';
 import GitLabLogo from 'url:./gitlab.svg';
+import ForgejoLogo from 'url:./forgejo.svg';
 
 import { persistField } from '../../util/settings_persister';
 import {
   createGitlabOAuth,
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
+import { forgejoRepositoryFromURL } from '../../sync_backend_clients/forgejo_sync_backend_client';
 
 import { DropboxAuth } from 'dropbox';
 import _ from 'lodash';
@@ -149,6 +151,67 @@ function GitLab() {
   );
 }
 
+function Forgejo() {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisible = () => setIsVisible(!isVisible);
+
+  const defaultRepository = 'https://example.com/owner/repo';
+  const defaultAccessToken = 'put your forgejo access token here';
+  const [repository, setRepository] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const urlParts = forgejoRepositoryFromURL(repository);
+    if (urlParts && accessToken) {
+      persistField('authenticatedSyncService', 'Forgejo');
+      persistField('forgejoAccessToken', accessToken);
+      persistField('forgejoDomain', urlParts.domain);
+      persistField('forgejoOwner', urlParts.owner);
+      persistField('forgejoRepository', urlParts.repository);
+      window.location = window.location.origin + '/';
+    } else if (!urlParts) {
+      alert('This does not appear to be a valid forgejo URL');
+    } else {
+      alert('You must provide an access token');
+    }
+  };
+
+  return (
+    <>
+      <a href="#forgejo" onClick={toggleVisible}>
+        <img src={ForgejoLogo} alt="Forgejo logo" />
+      </a>
+      {isVisible && (
+        <form onSubmit={handleSubmit}>
+          <p>
+            <label htmlFor="input-forgejo-repository">Repository:</label>
+            <input
+              id="input-forgejo-repository"
+              type="url"
+              className="textfield"
+              placeholder={defaultRepository}
+              value={repository}
+              onChange={(e) => setRepository(e.target.value)}
+            />
+          </p>
+          <p>
+            <label htmlFor="input-forgejo-access-token">Access Token:</label>
+            <input
+              id="input-forgejo-access-token"
+              type="text"
+              className="textfield"
+              placeholder={defaultAccessToken}
+              value={accessToken}
+              onChange={(e) => setAccessToken(e.target.value)}
+            />
+          </p>
+          <input type="submit" value="Sign-in" />
+        </form>
+      )}
+    </>
+  );
+}
+
 export default class SyncServiceSignIn extends PureComponent {
   constructor(props) {
     super(props);
@@ -178,7 +241,7 @@ export default class SyncServiceSignIn extends PureComponent {
     return (
       <div className="sync-service-sign-in-container">
         <p className="sync-service-sign-in__help-text">
-          organice syncs your files with Dropbox, GitLab, and WebDAV.
+          organice syncs your files with Dropbox, GitLab, Forgejo, and WebDAV.
         </p>
         <p className="sync-service-sign-in__help-text">Click to sign in with:</p>
 
@@ -190,6 +253,10 @@ export default class SyncServiceSignIn extends PureComponent {
 
         <div className="sync-service-container">
           <GitLab />
+        </div>
+
+        <div className="sync-service-container">
+          <Forgejo />
         </div>
 
         <div className="sync-service-container">
