@@ -101,15 +101,12 @@ export default class App extends PureComponent {
           }
           break;
         case 'Forgejo':
-          if (getPersistedField('forgejoAccessToken')) {
+          if (getPersistedField('forgejoAccessToken', true)) {
             client = createForgejoSyncBackendClient();
             initialState.syncBackend = Map({
               isAuthenticated: true,
               client,
             });
-          } else {
-            // alert('Unexpected sign in error, please try again');
-            window.location.search = '';
           }
           break;
         case 'WebDAV':
