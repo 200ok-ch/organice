@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Supersede outdated PR runs, but let every master/develop run finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - name: Install Javascript Dependencies
+        run: yarn install --frozen-lockfile
+      - name: eslint
+        run: yarn eslint
+      - name: prettier-eslint
+        # Make the build output more useful by immediately showing full details of
+        # any style violations.
+        run: |
+          yarn prettier-eslint --write
+          git --no-pager diff
+          git reset --hard HEAD
+          yarn prettier-eslint --list-different
+      - name: Run Tests
+        run: yarn test
+      - name: Build Production Bundle
+        run: yarn build
+
+  e2e:
+    name: e2e (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { project: chromium, browser: chromium }
+          - { project: firefox, browser: firefox }
+          - { project: webkit, browser: webkit }
+          - { project: Mobile Chrome, browser: chromium }
+          - { project: Mobile Safari, browser: webkit }
+          - { project: chromium-authenticated, browser: chromium }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - name: Install Javascript Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('yarn.lock') }}
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Run E2E Tests
+        env:
+          PROJECT: ${{ matrix.project }}
+        run: yarn test:e2e --project="$PROJECT"
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-${{ matrix.project }}
+          path: |
+            test-results
+            playwright-report
+
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Documentation Dependencies
+        run: sudo apt-get update -yq && sudo apt-get install -yq pandoc emacs
+      - name: Compile documentation
+        run: ./bin/compile_doc.sh
+
+  deploy-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [build, e2e, docs]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency: deploy-prod
+    env:
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+      FTP_USER: ${{ secrets.FTP_USER }}
+      FTP_PASSWD: ${{ secrets.FTP_PASSWD }}
+      REACT_APP_DROPBOX_CLIENT_ID: ${{ secrets.REACT_APP_DROPBOX_CLIENT_ID }}
+      REACT_APP_GITLAB_CLIENT_ID: ${{ secrets.REACT_APP_GITLAB_CLIENT_ID }}
+      REACT_APP_GITLAB_SECRET: ${{ secrets.REACT_APP_GITLAB_SECRET }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - name: Install dependencies
+        run: sudo apt-get update -yq && sudo apt-get install -yq lftp pandoc gvfs emacs
+      - name: Deploy to https://organice.200ok.ch
+        run: ./bin/compile_and_upload.sh
+      - name: Deploy documentation to https://organice.200ok.ch/documentation.html
+        run: ./bin/compile_doc_and_upload.sh
+
+  deploy-stage:
+    # Staging deployments are free of linting and test checks, so that we can
+    # quickly build, deploy and iterate.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency: deploy-stage
+    env:
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+      FTP_USER: ${{ secrets.FTP_USER_STAGE }}
+      FTP_PASSWD: ${{ secrets.FTP_PASSWD_STAGE }}
+      REACT_APP_DROPBOX_CLIENT_ID: ${{ secrets.REACT_APP_DROPBOX_CLIENT_ID }}
+      REACT_APP_GITLAB_CLIENT_ID: ${{ secrets.REACT_APP_GITLAB_CLIENT_ID }}
+      REACT_APP_GITLAB_SECRET: ${{ secrets.REACT_APP_GITLAB_SECRET }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - name: Install dependencies
+        run: sudo apt-get update -yq && sudo apt-get install -yq lftp pandoc gvfs emacs
+      - name: Deploy to https://staging.organice.200ok.ch
+        run: ./bin/compile_and_upload.sh
+      - name: Deploy documentation to https://staging.organice.200ok.ch/documentation.html
+        run: ./bin/compile_doc_and_upload.sh
