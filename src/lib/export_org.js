@@ -268,9 +268,11 @@ export const generateTitleLine = (header, includeStars) => {
   }
   titleLine += ` ${header.titleLine.rawTitle}`;
 
-  if (header.titleLine.tags.length) {
-    // TODO: filter()? Why would we add empty tags in the first place?
-    let tagsString = `:${header.titleLine.tags.filter((x) => x).join(':')}:`;
+  // The tags editor adds an empty tag while the user is still typing it.
+  // Skip empty tags, and don't write `::` when no other tag remains.
+  const tags = header.titleLine.tags.filter((x) => x);
+  if (tags.length) {
+    let tagsString = `:${tags.join(':')}:`;
     if (!titleLine.match(/\s$/)) {
       // Insert as many spaces as orgmode auto-formatting does:
       let n = 77 - titleLine.length - tagsString.length;

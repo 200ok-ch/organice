@@ -1,6 +1,11 @@
 /* global process */
 
-import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
+import {
+  ErrorServerError,
+  ErrorTemporarilyUnavailable,
+  ErrorUnknown,
+  OAuth2AuthCodePKCE,
+} from '@bity/oauth2-auth-code-pkce';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
 
@@ -155,6 +160,17 @@ export default (oauthClient) => {
       await oauthClient.getAccessToken();
       return true;
     } catch (e) {
+      // Network errors (e.g. while offline) surface as `ErrorUnknown`.
+      // Signing out deletes the local copies, so only sign out when
+      // GitLab rejected the token.
+      if (
+        e instanceof ErrorUnknown ||
+        e instanceof ErrorServerError ||
+        e instanceof ErrorTemporarilyUnavailable
+      ) {
+        console.warn('Could not reach GitLab to refresh the OAuth access token', e);
+        return true;
+      }
       console.error('Error trying to get OAuth access token.');
       console.error(e);
       return false;

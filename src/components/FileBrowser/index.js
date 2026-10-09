@@ -9,6 +9,7 @@ import ActionDrawer from './components/ActionDrawer';
 import './stylesheet.css';
 
 import classNames from 'classnames';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 import * as syncBackendActions from '../../actions/sync_backend';
 
@@ -17,13 +18,22 @@ const FileBrowser = ({
   listing,
   hasMore,
   isLoadingMore,
+  offline,
+  isOnline,
   syncBackendType,
   syncBackend,
   // INFO: This was required back when we had Google Drive support.
   // Leaving it here in case another sync backend requires it.
   // additionalSyncBackendState,
 }) => {
-  useEffect(() => syncBackend.getDirectoryListing(path), [syncBackend, path]);
+  // Also when coming back online, to replace a saved listing.
+  useEffect(() => {
+    syncBackend.getDirectoryListing(path);
+  }, [syncBackend, path, isOnline]);
+
+  // In a saved listing, only entries with a local copy (files) or a
+  // saved listing (folders) can be opened.
+  const isAvailable = (file) => !offline || offline.get('availablePaths').has(file.get('path'));
 
   const handleLoadMoreClick = () => syncBackend.loadMoreDirectoryListing();
 
@@ -31,6 +41,7 @@ const FileBrowser = ({
     switch (syncBackendType) {
       case 'Dropbox':
       case 'GitLab':
+      case 'Forgejo':
       case 'WebDAV':
         const pathParts = path.split('/');
         return pathParts.slice(0, pathParts.length - 1).join('/');
@@ -48,6 +59,16 @@ const FileBrowser = ({
       )}
 
       <ActionDrawer />
+
+      {offline && (
+        <p className="file-browser__offline-notice">
+          {offline.get('savedAt')
+            ? `Can't reach the sync service. Showing this folder as of ${formatDistanceToNow(
+                parseISO(offline.get('savedAt'))
+              )} ago.`
+            : "Can't reach the sync service, and this folder hasn't been visited before."}
+        </p>
+      )}
 
       <ul className="file-browser__file-list">
         {!isTopLevelDirectory && (
@@ -72,6 +93,19 @@ const FileBrowser = ({
             'fa-copy': isBackupFile,
             'fa-cogs': isSettingsFile,
           });
+
+          if (!isAvailable(file)) {
+            return (
+              <li
+                className="file-browser__file-list__element file-browser__file-list__element--unavailable"
+                title="Not available offline"
+                key={file.get('id')}
+              >
+                <i className={iconClass} /> {file.get('name')}
+                {isDirectory ? '/' : ''}
+              </li>
+            );
+          }
 
           if (file.get('isDirectory')) {
             return (
@@ -115,6 +149,9 @@ const mapStateToProps = (state) => {
     'currentFileBrowserDirectoryListing'
   );
   return {
+    offline:
+      !!currentFileBrowserDirectoryListing && currentFileBrowserDirectoryListing.get('offline'),
+    isOnline: state.base.get('online'),
     syncBackendType: state.syncBackend.get('client').type,
     listing: !!currentFileBrowserDirectoryListing
       ? currentFileBrowserDirectoryListing.get('listing')

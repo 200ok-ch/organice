@@ -10,6 +10,7 @@ const setCurrentFileBrowserDirectoryListing = (state, action) =>
         listing: action.directoryListing,
         hasMore: action.hasMore,
         additionalSyncBackendState: action.additionalSyncBackendState,
+        offline: action.offline,
       })
     )
     .set('currentPath', action.path);

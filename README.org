@@ -72,7 +72,7 @@ And one *huge* anonymous sponsor.
 
 organice is an implementation of [[http://orgmode.org/][Org mode]] without the dependency of
 [[https://www.gnu.org/software/emacs/][Emacs]]. It is built for mobile and desktop browsers and syncs with
-[[https://www.dropbox.com/][Dropbox]], [[https://gitlab.com/][GitLab]], and [[https://en.wikipedia.org/wiki/WebDAV][WebDAV]].
+[[https://www.dropbox.com/][Dropbox]], [[https://gitlab.com/][GitLab]], [[https://forgejo.org/][Forgejo]] (for example [[https://codeberg.org/][Codeberg]]), and [[https://en.wikipedia.org/wiki/WebDAV][WebDAV]].
 
 At [[https://200ok.ch/][200ok]], we run an instance of organice at https://organice.200ok.ch,
 which is open for anyone to use! organice does not have a back-end
@@ -251,6 +251,10 @@ following offline capabilities:
 - Changes that are not synchronized yet are kept in the local copy, so
   they survive closing organice or reloading the page. They are pushed
   on the next successful synchronization.
+- The listing of every folder you visit in the file browser is saved
+  as well. When the synchronization back-end can't be reached, the file
+  browser shows the saved listing. Files without a local copy and
+  folders you haven't visited are greyed out.
 
 *** Data stored in your browser
     :PROPERTIES:
@@ -275,6 +279,11 @@ Contents and the =isDirty= flag are always written together. IndexedDB
 may use a large share of the device's free space. Should it ever run
 out, organice removes the oldest copies first, but never a copy with
 unsynchronized changes and never one of a file loaded on startup.
+
+The object store =listings= holds the last listing of every folder
+visited in the file browser: its =path=, the =listing= (name, path and
+type of each entry), and =savedAt=. Signing out deletes both object
+stores.
 
 *localStorage* holds small data that organice needs right at startup:
 
@@ -470,8 +479,8 @@ yarn install --production=false
 
 *** Setup any of the synchronization back-ends
 
-organice can sync your Org files using Dropbox, GitLab, and WebDAV as
-back-ends.
+organice can sync your Org files using Dropbox, GitLab, Forgejo, and
+WebDAV as back-ends.
 
 If you want to develop a feature that needs synchronization, then you
 will have to set up any of those options. If you want to work on a
@@ -490,6 +499,12 @@ started. And maybe you don't want to host your files with either of
 them anyway and use WebDAV all the way.
 
 In any case, [[https://organice.200ok.ch/documentation.html#faq_webdav][here's how to get running locally with a WebDAV setup]].
+
+**** Forgejo
+
+Forgejo needs no configuration: sign in with a repository URL and an
+access token, as described in the section [[https://organice.200ok.ch/documentation.html#forgejo][Forgejo]]. A free [[https://codeberg.org/][Codeberg]]
+account is enough for development.
 
 **** Dropbox or GitLab
 
@@ -686,7 +701,7 @@ Since organice is a front-end only application, it can easily be
 deployed to any server capable of serving a static application.
 
 Please note: If you want the hosted application to connect to Dropbox,
-GitLab or WebDAV, please read the section on [[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization
+GitLab, Forgejo or WebDAV, please read the section on [[https://organice.200ok.ch/documentation.html#synchronization_back_ends][Synchronization
 back-ends]].
 
 ** FTP
@@ -864,6 +879,52 @@ the following variables:
 
 You may also refer to [[https://docs.gitlab.com/ee/integration/oauth_provider.html#user-owned-applications][GitLab's documentation]] for more information
 regarding OAuth applications, if interested.
+
+*** Forgejo
+    :PROPERTIES:
+    :CUSTOM_ID: forgejo
+    :END:
+
+organice syncs with a repository on any [[https://forgejo.org/][Forgejo]] instance, such as
+[[https://codeberg.org/][Codeberg]] or one you host yourself. It reads and writes the files on
+the repository's default branch, and every change is a commit. You
+need no OAuth application and no ~.env~ variables; instead, you sign
+in with a personal access token:
+
+1. In Forgejo, go to /Settings/ → /Applications/ → /Generate new
+   token/.
+2. Under /Repository and organization access/, choose /Specific
+   repositories/ and select the repository with your Org files. Older
+   Forgejo versions don't offer this; choose /All/ there.
+3. Under /Select permissions/, set /repository/ to /Read and write/.
+   organice needs no other permission.
+4. Click /Generate token/ and copy the token. Forgejo shows it only
+   once.
+
+On organice's sign-in page, click the Forgejo logo and enter:
+
+- *Repository*: the URL of the repository as shown in your browser,
+  for example ~https://codeberg.org/owner/repo~.
+- *Access Token*: the token from above.
+
+Before it signs you in, organice checks that it can read the repository
+and that your account may push to it. The token is stored only in your browser.
+
+*Self-hosted Forgejo*: organice runs in your browser and talks to the
+Forgejo API directly, so your instance must allow cross-origin
+requests from organice's domain. Codeberg does. On your own instance,
+enable CORS in ~app.ini~:
+
+#+BEGIN_SRC conf
+[cors]
+ENABLED = true
+ALLOW_DOMAIN = https://organice.200ok.ch
+METHODS = GET,HEAD,POST,PUT,DELETE,OPTIONS
+HEADERS = Content-Type,Authorization
+#+END_SRC
+
+Replace ~https://organice.200ok.ch~ with the domain you serve organice
+from, if you host it yourself.
 
 *** Encryption
     :PROPERTIES:

@@ -28,7 +28,7 @@ export const localStorageAvailable = (() => {
  * GitLab doesn't allow updating a file that doesn't exist or creating one that already exists, so
  * need to figure out which to do.
  */
-const updateConfigForGitLab = async (client, contents) => {
+const updateConfigForGit = async (client, contents) => {
   const filename = '/.organice-config.json';
   let exists = false;
   try {
@@ -63,7 +63,8 @@ const debouncedPushConfigToSyncBackend = _.debounce(
           );
         break;
       case 'GitLab':
-        updateConfigForGitLab(syncBackendClient, contents).catch((error) =>
+      case 'Forgejo':
+        updateConfigForGit(syncBackendClient, contents).catch((error) =>
           alert(`There was an error trying to push settings to your sync backend: ${error}`)
         );
         break;
@@ -262,7 +263,12 @@ const getFieldsToPersist = (state, fields) => {
                 field.name,
                 JSON.stringify(state[field.category].get(field.name) || field.default || {}),
               ]
-            : [field.name, state[field.category].get(field.name) || field.default];
+            : [
+                field.name,
+                state[field.category].get(field.name) == null
+                  ? field.default
+                  : state[field.category].get(field.name),
+              ];
         })
     );
 };
@@ -351,7 +357,9 @@ const loadContentFromLocalStorage = (initialState) => {
         value = null;
       }
     } else if (field.type === 'boolean') {
-      value = value === 'true';
+      if (value !== null) {
+        value = value === 'true';
+      }
     } else if (field.type === 'number') {
       if (value) {
         value = parseInt(value, 10);
@@ -364,7 +372,9 @@ const loadContentFromLocalStorage = (initialState) => {
       }
     }
     // When nothing has been saved to localStorage before, keep the default.
-    value = value || field.default;
+    if (value == null) {
+      value = field.default;
+    }
 
     if (field.category === 'org') {
       initialState[field.category].present = initialState[field.category].present.set(
@@ -423,6 +433,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   switch (syncBackendClient.type) {
     case 'Dropbox':
     case 'GitLab':
+    case 'Forgejo':
     case 'WebDAV':
       fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
       break;
@@ -469,7 +480,7 @@ export const subscribeToChanges = (store) => {
       const fieldsToPersist = getFieldsToPersist(state, persistableFields);
 
       fieldsToPersist.forEach(([name, value]) => {
-        if (name && value) safeSetItem(name, value);
+        if (name && value != null) safeSetItem(name, value);
       });
 
       if (state.base.get('shouldStoreSettingsInSyncBackend')) {

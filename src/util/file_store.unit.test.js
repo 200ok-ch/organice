@@ -12,7 +12,7 @@ import {
   saveEditedFileDebounced,
 } from './file_persister';
 import { parseFile as parseFileReducer } from '../reducers/org';
-import { downloadFile } from '../actions/sync_backend';
+import { downloadFile, getDirectoryListing } from '../actions/sync_backend';
 import migrateFilesToIndexedDB from '../migrations/migrate_files_to_indexeddb';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
@@ -86,6 +86,136 @@ describe('file store', () => {
     await fileStore.putFileRecord({ path: '/a.org', contents: '* A' });
     await fileStore.clearFileStore();
     expect(await fileStore.getAllFileRecords()).toEqual([]);
+  });
+});
+
+describe('folder listings', () => {
+  const entry = (path, isDirectory = false) => ({
+    id: path,
+    name: path.split('/').pop(),
+    isDirectory,
+    path,
+  });
+
+  test('stores and reads a listing', async () => {
+    await fileStore.putListingRecord({ path: '/notes', listing: [entry('/notes/a.org')] });
+
+    const record = await fileStore.getListingRecord('/notes');
+    expect(record.listing).toEqual([entry('/notes/a.org')]);
+    expect(record.savedAt).toBeTruthy();
+  });
+
+  test('lists the paths available offline without reading contents', async () => {
+    await fileStore.putFileRecord({ path: '/notes/a.org', contents: '* A' });
+    await fileStore.putListingRecord({ path: '/notes', listing: [] });
+
+    expect(await fileStore.getOfflinePaths()).toEqual({
+      files: ['/notes/a.org'],
+      folders: ['/notes'],
+    });
+  });
+
+  test('clearing the store also deletes listings', async () => {
+    await fileStore.putListingRecord({ path: '/notes', listing: [] });
+    await fileStore.clearFileStore();
+    expect(await fileStore.getListingRecord('/notes')).toBeUndefined();
+  });
+
+  test('upgrading from version 1 keeps the local copies', async () => {
+    await new Promise((resolve, reject) => {
+      const request = indexedDB.open('organice', 1);
+      request.onupgradeneeded = () =>
+        request.result.createObjectStore('files', { keyPath: 'path' }).put({
+          path: '/a.org',
+          contents: '* A',
+        });
+      request.onsuccess = () => {
+        request.result.close();
+        resolve();
+      };
+      request.onerror = () => reject(request.error);
+    });
+
+    expect(await fileStore.getFileRecord('/a.org')).toMatchObject({ contents: '* A' });
+    await fileStore.putListingRecord({ path: '', listing: [] });
+    expect(await fileStore.getListingRecord('')).toBeTruthy();
+  });
+
+  describe('getDirectoryListing', () => {
+    const createListingStore = ({ online, client }) => {
+      const state = readInitialState();
+      state.base = state.base.set('online', online);
+      state.syncBackend = state.syncBackend.set('client', client);
+      return createStore(rootReducer, state, applyMiddleware(thunk));
+    };
+    const currentListing = (store) =>
+      store.getState().syncBackend.get('currentFileBrowserDirectoryListing');
+
+    test('saves a fetched listing', async () => {
+      const client = {
+        getDirectoryListing: jest.fn(() =>
+          Promise.resolve({ listing: fromJS([entry('/notes/a.org')]) })
+        ),
+      };
+      const store = createListingStore({ online: true, client });
+
+      await store.dispatch(getDirectoryListing('/notes'));
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      expect(currentListing(store).get('offline')).toBeFalsy();
+      expect((await fileStore.getListingRecord('/notes')).listing).toEqual([entry('/notes/a.org')]);
+    });
+
+    test('shows the saved listing when offline, without asking the back-end', async () => {
+      await fileStore.putListingRecord({
+        path: '/notes',
+        listing: [entry('/notes/a.org'), entry('/notes/b.org'), entry('/notes/sub', true)],
+      });
+      await fileStore.putFileRecord({ path: '/notes/a.org', contents: '* A' });
+      const client = { getDirectoryListing: jest.fn() };
+      const store = createListingStore({ online: false, client });
+
+      await store.dispatch(getDirectoryListing('/notes'));
+
+      expect(client.getDirectoryListing).not.toHaveBeenCalled();
+      const listing = currentListing(store);
+      expect(
+        listing
+          .get('listing')
+          .map((file) => file.get('name'))
+          .toJS()
+      ).toEqual(['a.org', 'b.org', 'sub']);
+      expect(listing.get('hasMore')).toBe(false);
+      expect(listing.getIn(['offline', 'savedAt'])).toBeTruthy();
+      const availablePaths = listing.getIn(['offline', 'availablePaths']);
+      expect(availablePaths.has('/notes/a.org')).toBe(true);
+      expect(availablePaths.has('/notes/b.org')).toBe(false);
+      expect(availablePaths.has('/notes/sub')).toBe(false);
+    });
+
+    test('falls back to the saved listing when fetching fails', async () => {
+      await fileStore.putListingRecord({ path: '/notes', listing: [entry('/notes/a.org')] });
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      const client = {
+        getDirectoryListing: jest.fn(() => Promise.reject(new Error('Network Error'))),
+      };
+      const store = createListingStore({ online: true, client });
+
+      await store.dispatch(getDirectoryListing('/notes'));
+
+      expect(currentListing(store).get('listing').size).toBe(1);
+      expect(currentListing(store).getIn(['offline', 'savedAt'])).toBeTruthy();
+      expect(store.getState().syncBackend.get('currentPath')).toBe('/notes');
+    });
+
+    test('reports a folder that was never visited', async () => {
+      const store = createListingStore({ online: false, client: {} });
+
+      await store.dispatch(getDirectoryListing('/never'));
+
+      expect(currentListing(store).get('listing')).toBeNull();
+      expect(currentListing(store).getIn(['offline', 'savedAt'])).toBeNull();
+    });
   });
 });
 

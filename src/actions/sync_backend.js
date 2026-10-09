@@ -10,7 +10,12 @@ import {
   sync,
 } from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
-import { clearFileStore } from '../util/file_store';
+import {
+  clearFileStore,
+  getListingRecord,
+  getOfflinePaths,
+  putListingRecord,
+} from '../util/file_store';
 import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
 import { addSeconds } from 'date-fns';
@@ -18,6 +23,8 @@ import { addSeconds } from 'date-fns';
 import _ from 'lodash';
 
 import pathParse from 'path-parse';
+
+import { List, Map, Set } from 'immutable';
 
 export const signOut = () => (dispatch, getState) => {
   switch (getState().syncBackend.get('client', {}).type) {
@@ -38,6 +45,11 @@ export const signOut = () => (dispatch, getState) => {
       persistField('gitLabProject', null);
       createGitlabOAuth().reset();
       break;
+    case 'Forgejo':
+      ['Domain', 'Owner', 'Repository', 'AccessToken'].forEach((e) => {
+        persistField('forgejo' + e, null);
+      });
+      break;
     default:
   }
 
@@ -53,17 +65,23 @@ export const signOut = () => (dispatch, getState) => {
   clearFileStore().catch((error) => console.warn('Could not delete local file copies', error));
 };
 
+// `offline` is set when showing a listing saved during an earlier visit
+// instead of a fresh one: `Map({ savedAt, availablePaths })`. `savedAt` is
+// `null` when no listing was saved. `availablePaths` are the files and
+// folders that can be opened without the sync back-end.
 export const setCurrentFileBrowserDirectoryListing = (
   directoryListing,
   hasMore,
   additionalSyncBackendState,
-  path
+  path,
+  offline = null
 ) => ({
   type: 'SET_CURRENT_FILE_BROWSER_DIRECTORY_LISTING',
   directoryListing,
   hasMore,
   additionalSyncBackendState,
   path,
+  offline,
 });
 
 export const setIsLoadingMoreDirectoryListing = (isLoadingMore) => ({
@@ -71,17 +89,51 @@ export const setIsLoadingMoreDirectoryListing = (isLoadingMore) => ({
   isLoadingMore,
 });
 
+const saveListing = (path, listing) =>
+  putListingRecord({ path, listing: listing.toJS() }).catch((error) =>
+    console.warn(`Could not save the listing of ${path}`, error)
+  );
+
+// Shows the listing of `path` saved during an earlier visit. Files can
+// be opened when they have a local copy or are loaded, folders when
+// their listing was saved.
+const showSavedListing = (path) => async (dispatch, getState) => {
+  let record;
+  let offlinePaths = { files: [], folders: [] };
+  try {
+    [record, offlinePaths] = await Promise.all([getListingRecord(path), getOfflinePaths()]);
+  } catch (error) {
+    console.warn(`Could not read the saved listing of ${path}`, error);
+  }
+  const loadedPaths = getState().org.present.get('files').keySeq();
+  const availablePaths = Set(offlinePaths.files).union(offlinePaths.folders).union(loadedPaths);
+  dispatch(
+    setCurrentFileBrowserDirectoryListing(
+      record ? List(record.listing.map((entry) => Map(entry))) : null,
+      false,
+      null,
+      path,
+      Map({ savedAt: record ? record.savedAt : null, availablePaths })
+    )
+  );
+};
+
 export const getDirectoryListing = (path) => (dispatch, getState) => {
+  if (getState().base.get('online') === false) {
+    return dispatch(showSavedListing(path));
+  }
+
   dispatch(setLoadingMessage('Getting listing...'));
 
   const client = getState().syncBackend.get('client');
-  client
+  return client
     .getDirectoryListing(path)
     .then(({ listing, hasMore, additionalSyncBackendState }) => {
       dispatch(
         setCurrentFileBrowserDirectoryListing(listing, hasMore, additionalSyncBackendState, path)
       );
       dispatch(hideLoadingMessage());
+      saveListing(path, listing);
     })
     .catch((error) => {
       dispatch(hideLoadingMessage());
@@ -89,8 +141,8 @@ export const getDirectoryListing = (path) => (dispatch, getState) => {
       if ([400, 401].includes(error.status) || error_summary.includes('expired_access_token')) {
         dispatch(signOut());
       } else {
-        alert('There was an error retrieving files!');
         console.error(error);
+        return dispatch(showSavedListing(path));
       }
     });
 };
@@ -99,16 +151,27 @@ export const loadMoreDirectoryListing = () => (dispatch, getState) => {
   dispatch(setIsLoadingMoreDirectoryListing(true));
 
   const client = getState().syncBackend.get('client');
+  const path = getState().syncBackend.get('currentPath');
   const currentFileBrowserDirectoryListing = getState().syncBackend.get(
     'currentFileBrowserDirectoryListing'
   );
-  client
+  return client
     .getMoreDirectoryListing(currentFileBrowserDirectoryListing.get('additionalSyncBackendState'))
     .then(({ listing, hasMore, additionalSyncBackendState }) => {
       const extendedListing = currentFileBrowserDirectoryListing.get('listing').concat(listing);
       dispatch(
-        setCurrentFileBrowserDirectoryListing(extendedListing, hasMore, additionalSyncBackendState)
+        setCurrentFileBrowserDirectoryListing(
+          extendedListing,
+          hasMore,
+          additionalSyncBackendState,
+          path
+        )
       );
+      dispatch(setIsLoadingMoreDirectoryListing(false));
+      saveListing(path, extendedListing);
+    })
+    .catch((error) => {
+      console.error(error);
       dispatch(setIsLoadingMoreDirectoryListing(false));
     });
 };
@@ -122,7 +185,8 @@ export const pushBackup = (pathOrFileId, contents) => {
         client.createFile(`${pathOrFileId}.organice-bak`, contents);
         break;
       case 'GitLab':
-        // No-op for GitLab, because the beauty of version control makes backup files redundant.
+      case 'Forgejo':
+        // No-op for git based backends, because the beauty of version control makes backup files redundant.
         break;
       default:
     }
