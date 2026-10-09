@@ -1,6 +1,6 @@
 import Store from '../store';
 import { readInitialState, subscribeToChanges } from './settings_persister';
-import { restoreBaseSettings, setShouldLiveSync } from '../actions/base';
+import { restoreBaseSettings, setShouldLiveSync, setShouldTapTodoToAdvance } from '../actions/base';
 
 describe('Settings persister', () => {
   let store;
@@ -50,5 +50,14 @@ describe('Settings persister', () => {
       localStorage.clear();
       expect(readInitialState().base.get('shouldLiveSync')).toBe(true);
     });
+  });
+
+  test('Keeps false after a reload for boolean settings without default', () => {
+    store.dispatch(restoreBaseSettings({ shouldStoreSettingsInSyncBackend: false }));
+    store.dispatch(setShouldTapTodoToAdvance(true));
+    subscribeToChanges(store)();
+    store.dispatch(setShouldTapTodoToAdvance(false));
+    subscribeToChanges(store)();
+    expect(readInitialState().base.get('shouldTapTodoToAdvance')).toBe(false);
   });
 });
