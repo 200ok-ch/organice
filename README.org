@@ -243,11 +243,60 @@ organice as a [[#progressive_web_app][progressive web app]] (see above) organice
 following offline capabilities:
 
 - Every file opened in organice will automatically be cached on your
-  device (through =localStorage=).
+  device (in the browser's IndexedDB).
 - When visiting the file, again, it will immediately be loaded from
-  the local storage and then loaded from the remote back-end.
+  the local copy and then synchronized with the remote back-end.
 - That makes loading and switching between files instant _and_ gives
   you the ability to work on multiple files when being offline.
+- Changes that are not synchronized yet are kept in the local copy, so
+  they survive closing organice or reloading the page. They are pushed
+  on the next successful synchronization.
+
+*** Data stored in your browser
+    :PROPERTIES:
+    :CUSTOM_ID: browser_storage
+    :END:
+
+organice stores data in two places in your browser. Nothing of it
+leaves your device, except through your own synchronization back-end.
+
+*IndexedDB* (database =organice=, object store =files=) holds the local
+copies of your Org files. There is one record per file:
+
+| Field        | Purpose                                                         |
+|--------------+-----------------------------------------------------------------|
+| =path=       | Path of the file in the synchronization back-end                |
+| =contents=   | Full text of the file                                           |
+| =isDirty=    | Whether the copy has changes that are not synchronized yet      |
+| =lastSyncAt= | Last synchronization; decides between push, pull and asking you |
+| =updatedAt=  | Time the record was last written                                |
+
+Contents and the =isDirty= flag are always written together. IndexedDB
+may use a large share of the device's free space. Should it ever run
+out, organice removes the oldest copies first, but never a copy with
+unsynchronized changes and never one of a file loaded on startup.
+
+*localStorage* holds small data that organice needs right at startup:
+
+- Your settings, capture templates, file settings, keyboard shortcuts
+  and bookmarks. If "Store settings in sync backend" is enabled, they
+  are also saved to =.organice-config.json= in your back-end.
+- Sign-in data for your synchronization back-end, for example the
+  Dropbox refresh token or the WebDAV URL and credentials.
+- Which headlines are folded open, per file, and the resolved colors of
+  your theme (applied before the rest of organice loads).
+
+Before IndexedDB, local copies of files were kept in localStorage as
+well. Browsers limit localStorage to a few million characters (iOS
+Safari to about 2.6 million), which a few large Org files can exceed.
+On startup, organice moves such old copies to IndexedDB, including
+unsynchronized changes. A copy is removed from localStorage only after
+it was written to IndexedDB and read back.
+
+The settings show an overview of the storage organice uses (section
+"Storage"), including the largest localStorage entries and any writes
+that failed since organice was started. Signing out deletes everything
+organice stored in your browser.
 
 ** Multi file support
    :PROPERTIES:

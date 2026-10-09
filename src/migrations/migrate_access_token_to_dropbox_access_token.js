@@ -1,4 +1,5 @@
 import { localStorageAvailable } from '../util/settings_persister';
+import { safeSetItem } from '../util/local_storage';
 
 export default () => {
   if (!localStorageAvailable) {
@@ -10,6 +11,7 @@ export default () => {
     return;
   }
 
-  localStorage.setItem('dropboxAccessToken', accessToken);
-  localStorage.removeItem('accessToken');
+  if (safeSetItem('dropboxAccessToken', accessToken)) {
+    localStorage.removeItem('accessToken');
+  }
 };

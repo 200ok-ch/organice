@@ -5,7 +5,13 @@ import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
 import { parseOrg } from '../lib/parse_org';
 import { readInitialState } from '../util/settings_persister';
-import { insertCaptureFromHeader, insertPendingCapture, sync } from './org';
+import { insertCaptureFromHeader, insertPendingCapture, sync, updateHeaderTitle } from './org';
+
+// Sync first checks for an unsynced local copy (asynchronously) before
+// fetching the file.
+const flushPromises = async () => {
+  for (let i = 0; i < 10; i++) await Promise.resolve();
+};
 
 describe('org actions', () => {
   describe('sync', () => {
@@ -13,7 +19,7 @@ describe('org actions', () => {
       jest.useRealTimers();
     });
 
-    it('syncs the dirty file instead of falling back to the currently viewed file', () => {
+    it('syncs the dirty file instead of falling back to the currently viewed file', async () => {
       jest.useFakeTimers();
 
       const client = {
@@ -42,9 +48,66 @@ describe('org actions', () => {
       };
 
       dispatch(sync({ successMessage: 'Item captured' }));
+      await flushPromises();
 
       expect(client.getFileContentsAndMetadata).toHaveBeenCalledWith('/b.org');
       expect(client.getFileContentsAndMetadata).not.toHaveBeenCalledWith('/a.org');
+    });
+  });
+
+  describe('editing while a push is in progress', () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('keeps the file unsynced and pushes the edits afterwards', async () => {
+      jest.useFakeTimers();
+
+      let finishPush;
+      const client = {
+        getFileContentsAndMetadata: jest.fn(() =>
+          Promise.resolve({ contents: '* Main\n', lastModifiedAt: '2020-01-01T00:00:00.000Z' })
+        ),
+        updateFile: jest.fn(
+          () =>
+            new Promise((resolve) => {
+              finishPush = resolve;
+            })
+        ),
+      };
+      const state = readInitialState();
+      state.base = state.base.set('online', true);
+      state.syncBackend = state.syncBackend.set('client', client);
+      state.org.present = state.org.present.set('path', '/a.org').set(
+        'files',
+        Map({
+          '/a.org': parseOrg('* Main\n')
+            .set('isDirty', true)
+            .set('lastSyncAt', new Date('2026-01-01T00:00:00.000Z')),
+        })
+      );
+      const store = createStore(rootReducer, state, applyMiddleware(thunk));
+
+      store.dispatch(sync({ path: '/a.org' }));
+      await flushPromises();
+      expect(client.updateFile).toHaveBeenCalledTimes(1);
+
+      // Edit while the push is in progress, then let the push succeed.
+      const headerId = store.getState().org.present.getIn(['files', '/a.org', 'headers', 0, 'id']);
+      store.dispatch(updateHeaderTitle(headerId, 'Edited during push'));
+      finishPush();
+      await flushPromises();
+
+      expect(store.getState().org.present.getIn(['files', '/a.org', 'isDirty'])).toBe(true);
+
+      // The edits are pushed with the next sync.
+      jest.advanceTimersByTime(3500);
+      await flushPromises();
+      expect(client.updateFile).toHaveBeenCalledTimes(2);
+      expect(client.updateFile).toHaveBeenLastCalledWith(
+        '/a.org',
+        expect.stringContaining('Edited during push')
+      );
     });
   });
 
@@ -113,7 +176,7 @@ describe('org actions', () => {
       jest.useRealTimers();
     });
 
-    it('syncs the template target file after capturing from the editor', () => {
+    it('syncs the template target file after capturing from the editor', async () => {
       jest.useFakeTimers();
 
       const state = readInitialState();
@@ -151,6 +214,8 @@ describe('org actions', () => {
       const store = createStore(rootReducer, state, applyMiddleware(thunk));
 
       store.dispatch(insertCaptureFromHeader(template.get('id'), header, false));
+
+      await flushPromises();
 
       expect(client.getFileContentsAndMetadata).toHaveBeenCalledWith('/target.org');
       expect(client.getFileContentsAndMetadata).not.toHaveBeenCalledWith('/a.org');

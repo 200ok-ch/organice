@@ -1,8 +1,16 @@
 import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
-import { parseFile, setDirty, setLastSyncAt, setOrgFileErrorMessage } from './org';
+import {
+  parseFile,
+  reportFileError,
+  restoreUnsyncedLocalCopy,
+  setDirty,
+  setLastSyncAt,
+  sync,
+} from './org';
 import { localStorageAvailable, persistField } from '../util/settings_persister';
+import { clearFileStore } from '../util/file_store';
 import { createGitlabOAuth } from '../sync_backend_clients/gitlab_sync_backend_client';
 
 import { addSeconds } from 'date-fns';
@@ -42,6 +50,7 @@ export const signOut = () => (dispatch, getState) => {
   if (localStorageAvailable) {
     localStorage.clear();
   }
+  clearFileStore().catch((error) => console.warn('Could not delete local file copies', error));
 };
 
 export const setCurrentFileBrowserDirectoryListing = (
@@ -123,21 +132,46 @@ export const pushBackup = (pathOrFileId, contents) => {
 export const downloadFile = (path) => {
   return (dispatch, getState) => {
     dispatch(setLoadingMessage(`Downloading file ...`));
+    restoreUnsyncedLocalCopy(path)(dispatch, getState).then((restored) => {
+      // The file may have been loaded with unsynced edits, by this call
+      // or by another one (e.g. `OrgFile` and `Entry` both download the
+      // opened file if it is also loaded on startup).
+      if (restored || hasUnsyncedEdits(getState(), path)) {
+        dispatch(hideLoadingMessage());
+        dispatch(sync({ path }));
+      } else {
+        dispatch(fetchFile(path));
+      }
+    });
+  };
+};
+
+const hasUnsyncedEdits = (state, path) => !!state.org.present.getIn(['files', path, 'isDirty']);
+
+const fetchFile = (path) => {
+  return (dispatch, getState) => {
     getState()
       .syncBackend.get('client')
       .getFileContents(path)
       .then((fileContents) => {
         dispatch(hideLoadingMessage());
+        if (hasUnsyncedEdits(getState(), path)) {
+          // Unsynced edits were loaded while downloading: sync them
+          // instead of replacing them with the remote version.
+          dispatch(sync({ path }));
+          return;
+        }
         dispatch(pushBackup(path, fileContents));
         dispatch(parseFile(path, fileContents));
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
         dispatch(setDirty(false, path));
         dispatch(ActionCreators.clearHistory());
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(`Downloading ${path} failed`, error);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+        dispatch(reportFileError(path, 'load', error));
       });
   };
 };
@@ -160,10 +194,11 @@ export const createFile = (path, content) => {
         dispatch(hideLoadingMessage());
         dispatch(getDirectoryListing(dirName(path)));
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(`Creating ${path} failed`, error);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+        dispatch(reportFileError(path, 'create', error));
       });
   };
 };

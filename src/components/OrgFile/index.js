@@ -1034,7 +1034,11 @@ const mapStateToProps = (state) => {
     captureTemplates: state.capture.get('captureTemplates').concat(sampleCaptureTemplates),
     pendingCapture: state.org.present.get('pendingCapture'),
     closeSubheadersRecursively: state.base.get('closeSubheadersRecursively'),
-    orgFileErrorMessage: state.org.present.get('orgFileErrorMessage'),
+    // An error of another file (synced in the background) must not
+    // replace the file being viewed.
+    orgFileErrorMessage: [null, undefined, path].includes(state.org.present.get('orgFileErrorPath'))
+      ? state.org.present.get('orgFileErrorMessage')
+      : null,
     preferEditRawValues: state.base.get('preferEditRawValues'),
     todoKeywordSets: file.get('todoKeywordSets'),
     editorDescriptionHeightValue: state.base.get('editorDescriptionHeightValue'),

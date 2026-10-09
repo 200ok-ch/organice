@@ -37,6 +37,26 @@ const CAPTURE_TEMPLATES = [
   },
 ];
 
+// Contents of the local copy of `path` in IndexedDB, or '' if none.
+const readLocalCopy = (page, path) =>
+  page.evaluate(
+    (path) =>
+      new Promise((resolve) => {
+        const request = indexedDB.open('organice');
+        request.onerror = () => resolve('');
+        request.onsuccess = () => {
+          const database = request.result;
+          const get = database.transaction('files', 'readonly').objectStore('files').get(path);
+          get.onsuccess = () => {
+            database.close();
+            resolve(get.result ? get.result.contents : '');
+          };
+          get.onerror = () => resolve('');
+        };
+      }),
+    path
+  );
+
 test.describe('Capture target sync', () => {
   let webdavMock;
 
@@ -84,11 +104,7 @@ test.describe('Capture target sync', () => {
     await expect(page.locator('.org-file-container')).toBeVisible({ timeout: 20000 });
     await expect(page).toHaveURL(/\/file\/a\.org$/);
 
-    await page.waitForFunction(
-      () => localStorage.getItem('files__/b.org')?.includes('* Inbox'),
-      null,
-      { timeout: 10000 }
-    );
+    await expect.poll(() => readLocalCopy(page, '/b.org'), { timeout: 10000 }).toContain('* Inbox');
 
     const captureUrl = new URL('/', 'http://localhost:3000');
     captureUrl.searchParams.set('captureTemplateName', 'Inbox to B');
@@ -98,11 +114,9 @@ test.describe('Capture target sync', () => {
     await page.goto(`${captureUrl.pathname}${captureUrl.search}`, { waitUntil: 'load' });
 
     await expect(page.locator('.org-file-container')).toBeVisible({ timeout: 20000 });
-    await page.waitForFunction(
-      () => localStorage.getItem('files__/b.org')?.includes('Saved from capture'),
-      null,
-      { timeout: 10000 }
-    );
+    await expect
+      .poll(() => readLocalCopy(page, '/b.org'), { timeout: 10000 })
+      .toContain('Saved from capture');
 
     await expect
       .poll(() => webdavMock.mockFiles.get('/b.org') || '', { timeout: 10000 })
