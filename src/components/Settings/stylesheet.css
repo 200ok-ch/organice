@@ -97,3 +97,17 @@
   width: 50px;
   margin-right: 10px;
 }
+
+.storage-diagnostics__list {
+  font-size: 14px;
+  color: var(--base0);
+  margin: 5px 0;
+  padding-left: 20px;
+  word-break: break-all;
+}
+
+.storage-diagnostics__details {
+  font-size: 14px;
+  color: var(--base0);
+  margin-top: 5px;
+}
