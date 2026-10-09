@@ -1,4 +1,4 @@
-/* global module */
+/* global module, process */
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -44,6 +44,14 @@ function render() {
 }
 
 render();
+
+// The service worker caches the app, so that it also starts offline.
+// Not in development: it would serve stale bundles.
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register(new URL('../public/service-worker.js', import.meta.url), { type: 'module' })
+    .catch((error) => console.warn('Could not register the service worker', error));
+}
 
 // Remove Parcel error overlay for e2e testing
 // See: https://github.com/parcel-bundler/parcel/issues/9738

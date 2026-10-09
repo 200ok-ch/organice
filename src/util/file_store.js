@@ -7,14 +7,19 @@
 // Contents and the dirty flag live in the same record, so they are always
 // written together. Otherwise unsynced edits could be stored while the
 // flag marking them as unsynced is lost.
+//
+// The last known listing of every visited folder, for browsing offline:
+//   { path, listing, savedAt }
+// `listing` holds the entries as plain objects: { id, name, isDirectory, path }.
 
 // Some WebKit versions never answer `indexedDB.open`. Treat that as
 // IndexedDB not being available instead of waiting forever.
 const OPEN_TIMEOUT_MS = 5000;
 
 const DB_NAME = 'organice';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = 'files';
+const LISTINGS_STORE_NAME = 'listings';
 
 let databasePromise = null;
 
@@ -52,7 +57,12 @@ export const openFileStore = () => {
       try {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
         request.onupgradeneeded = () => {
-          request.result.createObjectStore(STORE_NAME, { keyPath: 'path' });
+          const database = request.result;
+          [STORE_NAME, LISTINGS_STORE_NAME].forEach((name) => {
+            if (!database.objectStoreNames.contains(name)) {
+              database.createObjectStore(name, { keyPath: 'path' });
+            }
+          });
         };
         request.onsuccess = () => {
           const database = request.result;
@@ -77,15 +87,15 @@ export const openFileStore = () => {
   return databasePromise;
 };
 
-const withStore = async (mode, callback) => {
+const withStore = async (mode, callback, storeName = STORE_NAME) => {
   const database = await openFileStore();
   if (!database) {
     throw new Error('IndexedDB is not available');
   }
-  const transaction = database.transaction(STORE_NAME, mode);
+  const transaction = database.transaction(storeName, mode);
   const done = transactionDone(transaction);
   try {
-    callback(transaction.objectStore(STORE_NAME));
+    callback(transaction.objectStore(storeName));
   } catch (error) {
     // E.g. an invalid key. Don't leave a half-done transaction behind.
     done.catch(() => {});
@@ -182,13 +192,47 @@ export const updateFileRecord = (path, changes) =>
     };
   });
 
+export const getListingRecord = async (path) => {
+  const database = await openFileStore();
+  if (!database) {
+    return undefined;
+  }
+  const transaction = database.transaction(LISTINGS_STORE_NAME, 'readonly');
+  return requestToPromise(transaction.objectStore(LISTINGS_STORE_NAME).get(path));
+};
+
+export const putListingRecord = (record) =>
+  withStore(
+    'readwrite',
+    (store) => {
+      store.put({ ...record, savedAt: new Date().toISOString() });
+    },
+    LISTINGS_STORE_NAME
+  );
+
+// Paths with a local copy and folders with a saved listing: what can be
+// opened offline. Reads only the keys, not the file contents.
+export const getOfflinePaths = async () => {
+  const database = await openFileStore();
+  if (!database) {
+    return { files: [], folders: [] };
+  }
+  const transaction = database.transaction([STORE_NAME, LISTINGS_STORE_NAME], 'readonly');
+  const [files, folders] = await Promise.all([
+    requestToPromise(transaction.objectStore(STORE_NAME).getAllKeys()),
+    requestToPromise(transaction.objectStore(LISTINGS_STORE_NAME).getAllKeys()),
+  ]);
+  return { files, folders };
+};
+
 export const clearFileStore = async () => {
   const database = await openFileStore();
   if (!database) {
     return;
   }
-  const transaction = database.transaction(STORE_NAME, 'readwrite');
+  const transaction = database.transaction([STORE_NAME, LISTINGS_STORE_NAME], 'readwrite');
   transaction.objectStore(STORE_NAME).clear();
+  transaction.objectStore(LISTINGS_STORE_NAME).clear();
   await transactionDone(transaction);
 };
 

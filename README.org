@@ -251,6 +251,10 @@ following offline capabilities:
 - Changes that are not synchronized yet are kept in the local copy, so
   they survive closing organice or reloading the page. They are pushed
   on the next successful synchronization.
+- The listing of every folder you visit in the file browser is saved
+  as well. When the synchronization back-end can't be reached, the file
+  browser shows the saved listing. Files without a local copy and
+  folders you haven't visited are greyed out.
 
 *** Data stored in your browser
     :PROPERTIES:
@@ -275,6 +279,11 @@ Contents and the =isDirty= flag are always written together. IndexedDB
 may use a large share of the device's free space. Should it ever run
 out, organice removes the oldest copies first, but never a copy with
 unsynchronized changes and never one of a file loaded on startup.
+
+The object store =listings= holds the last listing of every folder
+visited in the file browser: its =path=, the =listing= (name, path and
+type of each entry), and =savedAt=. Signing out deletes both object
+stores.
 
 *localStorage* holds small data that organice needs right at startup:
 

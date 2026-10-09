@@ -51,3 +51,17 @@
 .file-browser__file-list__icon--directory {
   color: var(--base00);
 }
+
+.file-browser__offline-notice {
+  margin: 5px;
+  color: var(--base01);
+}
+
+.file-browser__file-list__element--unavailable {
+  color: var(--base1);
+  cursor: not-allowed;
+}
+
+.file-browser__file-list__element--unavailable .file-browser__file-list__icon {
+  color: var(--base1);
+}
