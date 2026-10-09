@@ -14,6 +14,10 @@ import {
 import { parseFile as parseFileReducer } from '../reducers/org';
 import { downloadFile } from '../actions/sync_backend';
 import migrateFilesToIndexedDB from '../migrations/migrate_files_to_indexeddb';
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from '../reducers';
+import { readInitialState } from './settings_persister';
 
 // jsdom has no structuredClone, which fake-indexeddb uses when storing.
 if (typeof globalThis.structuredClone === 'undefined') {
@@ -336,5 +340,78 @@ describe('opening a file whose unsynced local copy was not loaded', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(client.getFileContents).toHaveBeenCalledWith('/a.org');
+  });
+});
+
+describe('downloads with the real store', () => {
+  const createRealStore = (client) => {
+    const state = readInitialState();
+    state.base = state.base.set('online', true);
+    state.syncBackend = state.syncBackend.set('client', client);
+    state.org.present = state.org.present.set('path', '/a.org');
+    return createStore(rootReducer, state, applyMiddleware(thunk));
+  };
+  const titlesOf = (store, path) =>
+    store
+      .getState()
+      .org.present.getIn(['files', path, 'headers'])
+      .map((header) => header.getIn(['titleLine', 'rawTitle']))
+      .toJS();
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  // E.g. the opened file is also loaded on startup: `OrgFile` and `Entry`
+  // both download it.
+  test('a second download does not replace a restored unsynced copy', async () => {
+    await fileStore.putFileRecord({
+      path: '/a.org',
+      contents: '* Unsynced edits\n',
+      isDirty: true,
+      lastSyncAt: '2026-01-01T00:00:00.000Z',
+    });
+    const client = {
+      getFileContents: jest.fn(() => Promise.resolve('* Remote\n')),
+      getFileContentsAndMetadata: jest.fn(() => new Promise(() => {})),
+      createFile: jest.fn(() => Promise.resolve()),
+    };
+    const store = createRealStore(client);
+
+    store.dispatch(downloadFile('/a.org'));
+    store.dispatch(downloadFile('/a.org'));
+    await wait(100);
+
+    expect(client.getFileContents).not.toHaveBeenCalled();
+    expect(titlesOf(store, '/a.org')).toEqual(['Unsynced edits']);
+    expect(store.getState().org.present.getIn(['files', '/a.org', 'isDirty'])).toBe(true);
+    expect(await fileStore.getFileRecord('/a.org')).toMatchObject({
+      contents: '* Unsynced edits\n',
+      isDirty: true,
+    });
+  });
+
+  test('a download that arrives after unsynced edits were loaded does not replace them', async () => {
+    let finishDownload;
+    const client = {
+      getFileContents: jest.fn(
+        () =>
+          new Promise((resolve) => {
+            finishDownload = resolve;
+          })
+      ),
+      getFileContentsAndMetadata: jest.fn(() => new Promise(() => {})),
+      createFile: jest.fn(() => Promise.resolve()),
+    };
+    const store = createRealStore(client);
+
+    store.dispatch(downloadFile('/a.org'));
+    await wait(50);
+    expect(client.getFileContents).toHaveBeenCalled();
+    // Meanwhile, unsynced edits of the file are loaded.
+    store.dispatch({ type: 'PARSE_FILE', path: '/a.org', contents: '* Unsynced edits\n' });
+    store.dispatch({ type: 'SET_DIRTY', isDirty: true, path: '/a.org' });
+    finishDownload('* Remote\n');
+    await wait(50);
+
+    expect(titlesOf(store, '/a.org')).toEqual(['Unsynced edits']);
+    expect(store.getState().org.present.getIn(['files', '/a.org', 'isDirty'])).toBe(true);
   });
 });

@@ -225,12 +225,7 @@ const doSync = ({
       console.error(`Syncing ${path} failed`, error);
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      if (getState().org.present.hasIn(['files', path, 'headers'])) {
-        // The local copy is loaded and stays usable, e.g. while offline.
-        dispatch(setDisappearingLoadingMessage(fileErrorMessage('sync', path, error), 5000));
-      } else {
-        dispatch(reportFileError(path, fileErrorMessage('load', path, error)));
-      }
+      dispatch(reportFileError(path, 'load', error));
     });
 };
 
@@ -798,13 +793,18 @@ export const fileErrorMessage = (verb, path, error) => {
   return `Could not ${verb} ${path}: ${description}`;
 };
 
-// Takes over the screen only when `path` is the file being viewed.
-// Failures of files synced in the background show a message instead.
-export const reportFileError = (path, message) => (dispatch, getState) => {
-  if (path === getState().org.present.get('path')) {
-    dispatch(setOrgFileErrorMessage(message, path));
+// Takes over the screen only when nothing of `path` is loaded and it is
+// the file being viewed. A loaded file stays usable (e.g. while offline),
+// and failures of files synced in the background show a message instead.
+export const reportFileError = (path, verb, error) => (dispatch, getState) => {
+  const org = getState().org.present;
+  if (org.hasIn(['files', path, 'headers'])) {
+    const loadedVerb = verb === 'load' ? 'sync' : verb;
+    dispatch(setDisappearingLoadingMessage(fileErrorMessage(loadedVerb, path, error), 5000));
+  } else if (path === org.get('path')) {
+    dispatch(setOrgFileErrorMessage(fileErrorMessage(verb, path, error), path));
   } else {
-    dispatch(setDisappearingLoadingMessage(message, 5000));
+    dispatch(setDisappearingLoadingMessage(fileErrorMessage(verb, path, error), 5000));
   }
 };
 

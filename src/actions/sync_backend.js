@@ -2,7 +2,6 @@ import { ActionCreators } from 'redux-undo';
 
 import { setLoadingMessage, hideLoadingMessage, clearModalStack, setIsLoading } from './base';
 import {
-  fileErrorMessage,
   parseFile,
   reportFileError,
   restoreUnsyncedLocalCopy,
@@ -134,8 +133,10 @@ export const downloadFile = (path) => {
   return (dispatch, getState) => {
     dispatch(setLoadingMessage(`Downloading file ...`));
     restoreUnsyncedLocalCopy(path)(dispatch, getState).then((restored) => {
-      if (restored) {
-        // The local copy has unsynced edits: sync instead of replacing it.
+      // The file may have been loaded with unsynced edits, by this call
+      // or by another one (e.g. `OrgFile` and `Entry` both download the
+      // opened file if it is also loaded on startup).
+      if (restored || hasUnsyncedEdits(getState(), path)) {
         dispatch(hideLoadingMessage());
         dispatch(sync({ path }));
       } else {
@@ -145,6 +146,8 @@ export const downloadFile = (path) => {
   };
 };
 
+const hasUnsyncedEdits = (state, path) => !!state.org.present.getIn(['files', path, 'isDirty']);
+
 const fetchFile = (path) => {
   return (dispatch, getState) => {
     getState()
@@ -152,6 +155,12 @@ const fetchFile = (path) => {
       .getFileContents(path)
       .then((fileContents) => {
         dispatch(hideLoadingMessage());
+        if (hasUnsyncedEdits(getState(), path)) {
+          // Unsynced edits were loaded while downloading: sync them
+          // instead of replacing them with the remote version.
+          dispatch(sync({ path }));
+          return;
+        }
         dispatch(pushBackup(path, fileContents));
         dispatch(parseFile(path, fileContents));
         dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
@@ -162,7 +171,7 @@ const fetchFile = (path) => {
         console.error(`Downloading ${path} failed`, error);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(reportFileError(path, fileErrorMessage('load', path, error)));
+        dispatch(reportFileError(path, 'load', error));
       });
   };
 };
@@ -189,7 +198,7 @@ export const createFile = (path, content) => {
         console.error(`Creating ${path} failed`, error);
         dispatch(hideLoadingMessage());
         dispatch(setIsLoading(false, path));
-        dispatch(reportFileError(path, fileErrorMessage('create', path, error)));
+        dispatch(reportFileError(path, 'create', error));
       });
   };
 };
