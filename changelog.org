@@ -8,6 +8,13 @@ All user visible changes to organice will be documented in this file.
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
 * [2026-10-09 Fri]
+** Added
+*** Forgejo as a sync back-end
+    - Sync your Org files with a repository on Codeberg or any other Forgejo instance. Sign in with the repository URL and an access token that may only read and write that repository.
+    - Every change is a commit, so the history of your files is kept in the repository.
+    - See "Forgejo" in the documentation for how to create the token and, for self-hosted instances, how to allow organice to connect.
+    - Thanks to Martin Jung (@tarnung) for the contribution!
+    - PR: https://github.com/200ok-ch/organice/pull/1130
 ** Changed
 *** Most important change: local copies of your Org files are now kept in IndexedDB
     - organice keeps a local copy of every file you open, so files load instantly and work offline. These copies used to live in the browser's localStorage, which iOS Safari limits to about 2.6 million characters. With a few large files loaded on startup, the copies no longer fit, and organice showed a full-screen "File ... not found" after syncing, although the file existed.
