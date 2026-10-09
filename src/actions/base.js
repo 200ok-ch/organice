@@ -1,7 +1,8 @@
 import { parseFile, resetFileDisplay, setPath } from './org';
 import { STATIC_FILE_PREFIX } from '../lib/org_utils';
 
-import raw from 'raw.macro';
+import changelogContent from 'bundle-text:../../changelog.org';
+import sampleContent from 'bundle-text:../../sample.org';
 
 export const setLoadingMessage = (loadingMessage) => ({
   type: 'SET_LOADING_MESSAGE',
@@ -38,11 +39,13 @@ export const restoreStaticFile = (staticFile, lastViewedFilePath) => {
     dispatch(setLastViewedFile(lastViewedFilePath));
 
     const fileContents = {
-      changelog: raw('../../changelog.org'),
-      sample: raw('../../sample.org'),
+      changelog: changelogContent,
+      sample: sampleContent,
     }[staticFile];
 
-    dispatch(parseFile(STATIC_FILE_PREFIX + staticFile, fileContents));
+    const staticFilePath = STATIC_FILE_PREFIX + staticFile;
+    dispatch(parseFile(staticFilePath, fileContents));
+    dispatch(setPath(staticFilePath));
   };
 };
 
@@ -82,6 +85,11 @@ export const setAgendaDefaultDeadlineDelayValue = (newAgendaDefaultDeadlineDelay
   newAgendaDefaultDeadlineDelayValue,
 });
 
+export const setEditorDescriptionHeightValue = (newEditorDescriptionHeightValue) => ({
+  type: 'SET_EDITOR_DESCRIPTION_HEIGHT_VALUE',
+  newEditorDescriptionHeightValue,
+});
+
 export const setAgendaStartOnWeekday = (newAgendaStartOnWeekday) => ({
   type: 'SET_AGENDA_START_ON_WEEKDAY',
   newAgendaStartOnWeekday,
@@ -90,6 +98,11 @@ export const setAgendaStartOnWeekday = (newAgendaStartOnWeekday) => ({
 export const setShouldLiveSync = (shouldLiveSync) => ({
   type: 'SET_SHOULD_LIVE_SYNC',
   shouldLiveSync,
+});
+
+export const setShowDeadlineDisplay = (showDeadlineDisplay) => ({
+  type: 'SET_SHOW_DEADLINE_DISPLAY',
+  showDeadlineDisplay,
 });
 
 export const setShouldSyncOnBecomingVisibile = (shouldSyncOnBecomingVisibile) => ({
@@ -218,4 +231,22 @@ export const setPreferEditRawValues = (preferEditRawValues) => (dispatch) =>
   dispatch({
     type: 'PREFER_EDIT_RAW_VALUES',
     preferEditRawValues,
+  });
+
+export const setOrgHabitShowAllToday = (orgHabitShowAllToday) => (dispatch) =>
+  dispatch({
+    type: 'SET_ORG_HABIT_SHOW_ALL_TODAY',
+    orgHabitShowAllToday,
+  });
+
+export const setOrgHabitPrecedingDays = (orgHabitPrecedingDays) => (dispatch) =>
+  dispatch({
+    type: 'SET_ORG_HABIT_PRECEDING_DAYS',
+    orgHabitPrecedingDays,
+  });
+
+export const setOrgHabitFollowingDays = (orgHabitFollowingDays) => (dispatch) =>
+  dispatch({
+    type: 'SET_ORG_HABIT_FOLLOWING_DAYS',
+    orgHabitFollowingDays,
   });

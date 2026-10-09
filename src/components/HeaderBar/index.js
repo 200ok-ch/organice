@@ -6,7 +6,7 @@ import { isLandingPage } from '../../util/misc';
 
 import { Link, withRouter } from 'react-router-dom';
 
-import logo from '../../images/organice.svg';
+import logo from 'url:../../images/organice.svg';
 
 import './stylesheet.css';
 
@@ -170,6 +170,8 @@ class HeaderBar extends PureComponent {
         return this.renderSignInBackButton();
       case 'settings':
         return this.renderFileBrowserBackButton();
+      case 'changelog':
+        return this.renderFileBrowserBackButton();
       default:
         return <div />;
     }
@@ -305,6 +307,7 @@ class HeaderBar extends PureComponent {
                 <i
                   className="changelog-icon--has-unseen-changelog header-bar__actions__item fas fa-gift"
                   onClick={this.handleChangelogClick}
+                  title="Changelog"
                 />
               )}
               <Link to="/settings" onClick={this.handleSettingsClick}>

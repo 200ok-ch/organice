@@ -58,6 +58,15 @@ body,
   padding: 8px 16px;
 }
 
+.App:not(.landing-page) .btn-passive {
+  cursor: pointer;
+  background-color: var(--base0-soft);
+  color: var(--base3) !important;
+
+  border: 0;
+  padding: 8px 16px;
+}
+
 .App:not(.landing-page) .btn a {
   color: var(--base3) !important;
 }
@@ -82,7 +91,7 @@ body,
   width: 95%;
   font-size: 16px;
   font-family: Courier;
-
+  max-height: 60vh;
   -webkit-appearance: none;
   border-radius: 0;
 }
@@ -120,4 +129,13 @@ body,
   display: inline-block;
 
   color: var(--base00);
+}
+
+@media print {
+  html,
+  body,
+  .App:not(.landing-page) {
+    height: 100% !important;
+    overflow: visible;
+  }
 }

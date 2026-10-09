@@ -6,12 +6,15 @@
 // ensures rendering either a static page or a dynamic application
 // component.
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import Landing from '../Landing';
+// Lazy load Landing so its dependencies (FontAwesome JS) are not bundled into the main app.
+// This prevents the FontAwesome JS from executing and freezing the main app on load.
+// See: https://github.com/200ok-ch/organice/pull/1091
+const Landing = lazy(() => import('../Landing'));
 import Entry from '../Entry';
 import PrivacyPolicy from '../PrivacyPolicy';
 import SyncServiceSignIn from '../SyncServiceSignIn';
@@ -52,9 +55,11 @@ const Turnout = ({ isAuthenticated }) => {
             </div>
           </Route>
           <Route path="/" exact={true}>
-            <div className="App landing-page">
-              <Landing />
-            </div>
+            <Suspense fallback={<div className="App landing-page">Loading...</div>}>
+              <div className="App landing-page">
+                <Landing />
+              </div>
+            </Suspense>
           </Route>
           <Redirect to="/" />
         </Switch>

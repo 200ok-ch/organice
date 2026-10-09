@@ -12,44 +12,58 @@
   :CUSTOM_ID: general
   :END:
 
+** Code
+
 # REPO_PLACEHOLDER
 
-#+BEGIN_HTML
-<p>
-  <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice">
-    <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" />
-  </a>
-  <a href='#'>
-    <img src="https://badgen.net/uptime-robot/month/m789449277-7986138caa6b43ed68a91563" />
-  </a>
-  <a href="https://matrix.to/#/#organice:matrix.org">
-    <img src="https://badgen.net/matrix/members/organice/matrix.org?color=purple" />
-  </a>
-</p>
-#+END_HTML
+# INFO: We're using inline =#+HTML= notation in favor of the much more
+# readable =#+BEGIN_EXPORT html= notation, because GitHub uses legacy
+# Org parsers and wouldn't render the latter. GitHub would render
+# the legacy notation =#+BEGIN_HTML= which will not be properly
+# exported from Emacs, because it's legacy. Hence the glorious
+# solution: Write all HTML in one line.
 
-[[https://organice.200ok.ch/documentation.html][Documentation]]
+#+HTML: <p> <a href="https://app.circleci.com/pipelines/github/200ok-ch/organice"> <img src="https://badgen.net/circleci/github/200ok-ch/organice?label=circleci%20master" /> </a> <a href='#'> <img src="https://uptimekuma.twohundredok.com/api/badge/15/uptime/720?label=30d" /> </a> <a href="https://matrix.to/#/#organice:matrix.org"> <img src="https://img.shields.io/matrix/organice:matrix.org?label=%23organice%3Amatrix.org" /> </a> </p>
+
+** Getting started
+:PROPERTIES:
+:CUSTOM_ID: getting_started
+:END:
+
+To get you started, we have two kinds of documentation:
+
+1. [[https://organice.200ok.ch/sample][Interactive Tutorial]]
+2. [[https://organice.200ok.ch/documentation.html][Documentation (User manual and developer guide)]]
+
+The [[https://organice.200ok.ch/sample][interactive tutorial]] allows users to explore and experiment with
+various org-mode functionalities directly within the application. It
+provides hands-on examples of tasks, tables, timestamps, and (most)
+other features.
+
+On the other hand, the [[https://organice.200ok.ch/documentation.html][documentation]] contains more comprehensive and
+formal documentation, including installation instructions, deployment
+guides, contribution guidelines, and technical details about the
+project's architecture and development process. This file is aimed at
+both users seeking in-depth information and developers interested in
+contributing to the project.
+
+** Community chat
 
 Community chat:
 - #organice on IRC [[https://libera.chat/][Libera.Chat]]
 - [[https://matrix.to/#/#organice:matrix.org][#organice:matrix.org]] on Matrix
+
+
+** Sponsors
 
 Creating and maintaining organice is made possible by all the
 volunteering [[https://github.com/200ok-ch/organice/graphs/contributors][contributors]] and [[https://github.com/sponsors/200ok-ch][sponsors]]. If you enjoy using organice,
 and want to sponsor the development of Free and Open Source software,
 you can do so with [[https://github.com/sponsors/200ok-ch][Github Sponsors]] and [[https://www.patreon.com/200ok][Patreon]].🙏
 
-** Sponsors
+#+HTML: <p align="center"> <a href="https://github.com/mxparker"> <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/> </a> <a href="https://github.com/nuts4nuts4nuts"> <img src="https://github.com/nuts4nuts4nuts.png" width="50px" alt="@nuts4nuts4nuts"/></a> <a href="https://github.com/dtvillafana"> <img src="https://github.com/dtvillafana.png" width="50px" alt="@dtvillafana"/> </a> </p>
 
-#+BEGIN_HTML
-<p align="center">
-  <a href="https://github.com/mxparker">
-    <img src="https://github.com/mxparker.png" width="50px" alt="@mxparker"/>
-  </a>
-</p>
-#+END_HTML
-
-And 1 anonymous sponsor.
+And one *huge* anonymous sponsor.
 
 ** What does this project do?
    :PROPERTIES:
@@ -98,10 +112,8 @@ from there, it will run in full-screen as a Progressive Web
 Application (PWA) which will add offline capabilities (see chapters
 [[#progressive_web_app][progressive web app]] and [[#offline_support][offline support]]).
 
-First, go to the page that you want to use as your start screen when
-using organice as an app from your homescreen. This could be the
-"files" overview or your main Org file. Then to install to the
-homescreen follow these platform specific instructions:
+To install organice to the homescreen follow these platform specific
+instructions:
 
 - *iOS:*
 
@@ -119,7 +131,9 @@ homescreen follow these platform specific instructions:
   - On Chrome, tap the "menu" button (three vertically stacked dots)
     and select "Add to homescreen".
 
-  - On Firefox, tap the home icon with the plus sign inside it which
+  - On Firefox, "menu" button (three vertically stacked dots)
+    and select "Install". If you don't have that option, you may have
+    one to tap the home icon with the plus sign inside it which
     is immediately to the right of the URL in the address bar.
 
   - Other browsers may have a similar procedure to one of these.
@@ -127,24 +141,9 @@ homescreen follow these platform specific instructions:
   At this point, most browsers will present a popup banner with the
   option to "Add to homescreen" or "Install".
 
-  If you want the organice app icon on your home screen to jump to a
-  specific =.org= file, and/or if you want multiple app icons on the
-  home screen to jump to different files, things can get a bit more
-  tricky.  For instance, Chrome only offers "Add to homescreen" the
-  first time; once it has been added, the option changes to "Open
-  organice".  Firefox allows creation of multiple home screen icons,
-  but when opening any of these, organice does not jump directly to
-  the specific file which was open when the icon was created.
-
-  Therefore if you want multiple organice bookmark icons on your
-  homescreen which jump straight to particular files, you may have
-  better luck using another technique.  For example, you can use a
-  third-party program called "[[https://play.google.com/store/apps/details?id=com.tasomaniac.openwith][Open Link With...]]".  Once that's
-  installed, from Chrome, visit the page in organice you want to make
-  a homescreen icon for, then tap the "menu" button again, select
-  "Share...", and then "Add To Home", then "organice".  Once it's
-  added, your home launcher may allow you to change the visible icon
-  to the organice icon, or whatever other icon you choose.
+By default, when you start organice, it will display your root file
+directory. If you prefer to display a specific Org file instead, you
+can select it in the [[https://organice.200ok.ch/settings][file settings]].
 
 * Usage
   :PROPERTIES:
@@ -174,7 +173,7 @@ to put them under version control and to check for bugs and racing
 conditions between clients.
 
 Please [[https://github.com/200ok-ch/organice/issues/new][file an issue]] if you find additional restrictions, expectations
-or bugs that you you wouldn’t have expected.
+or bugs that you wouldn’t have expected.
 
 *** Background information
     :PROPERTIES:
@@ -193,7 +192,7 @@ hard. Therefore, we are in the process of implementing a proper EBNF
 based parser and a set of tests behind that. If you're interested,
 please check it out: [[https://github.com/200ok-ch/org-parser]]
 
-The strategy we're using with regards to the parser is this:
+The strategy we're using with regard to the parser is this:
 
 - Keep improving the existing custom parser for new features and make
   bug fixes as long as the new one isn't ready.
@@ -211,8 +210,8 @@ organice can run as a PWA (Progressive Web App) - see the
 support. From your home screen, organice will start up in full screen
 and it will use a [[https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API][Service Worker]] to cache the application. On a
 desktop browser, the Service Worker will be used automatically. This
-is implemented using the Create React App [[https://create-react-app.dev/docs/making-a-progressive-web-app/#docsNav][Progressive Web App]]
-functionality which enables the following features:
+is generally managed through the build process with Parcel and service
+worker configurations, enabling the following features:
 
 - All static assets are cached so that organice loads fast on
   subsequent visits, regardless of network connectivity.
@@ -226,11 +225,11 @@ organice will recognize that you are offline and queue up the
 synchronization until you are online again.
 
 organice also understands when it's local Org file is outdated
-compared to the upstream file and will ask you want you want to do -
+compared to the upstream file and will ask you what you want to do -
 pull the one from the synchronization back-end, push the one from
 organice or cancel. This happens when you made changes to your file on
 at least two machines at the same time without synchronizing them in
-the meantime. For this, we recommend to put your Org file under
+the meantime. For this, we recommend putting your Org file under
 version control which is the idiomatic solution for changing text
 based files on multiple machines in parallel.
 
@@ -244,11 +243,69 @@ organice as a [[#progressive_web_app][progressive web app]] (see above) organice
 following offline capabilities:
 
 - Every file opened in organice will automatically be cached on your
-  device (through =localStorage=).
+  device (in the browser's IndexedDB).
 - When visiting the file, again, it will immediately be loaded from
-  the local storage and then loaded from the remote back-end.
+  the local copy and then synchronized with the remote back-end.
 - That makes loading and switching between files instant _and_ gives
   you the ability to work on multiple files when being offline.
+- Changes that are not synchronized yet are kept in the local copy, so
+  they survive closing organice or reloading the page. They are pushed
+  on the next successful synchronization.
+- The listing of every folder you visit in the file browser is saved
+  as well. When the synchronization back-end can't be reached, the file
+  browser shows the saved listing. Files without a local copy and
+  folders you haven't visited are greyed out.
+
+*** Data stored in your browser
+    :PROPERTIES:
+    :CUSTOM_ID: browser_storage
+    :END:
+
+organice stores data in two places in your browser. Nothing of it
+leaves your device, except through your own synchronization back-end.
+
+*IndexedDB* (database =organice=, object store =files=) holds the local
+copies of your Org files. There is one record per file:
+
+| Field        | Purpose                                                         |
+|--------------+-----------------------------------------------------------------|
+| =path=       | Path of the file in the synchronization back-end                |
+| =contents=   | Full text of the file                                           |
+| =isDirty=    | Whether the copy has changes that are not synchronized yet      |
+| =lastSyncAt= | Last synchronization; decides between push, pull and asking you |
+| =updatedAt=  | Time the record was last written                                |
+
+Contents and the =isDirty= flag are always written together. IndexedDB
+may use a large share of the device's free space. Should it ever run
+out, organice removes the oldest copies first, but never a copy with
+unsynchronized changes and never one of a file loaded on startup.
+
+The object store =listings= holds the last listing of every folder
+visited in the file browser: its =path=, the =listing= (name, path and
+type of each entry), and =savedAt=. Signing out deletes both object
+stores.
+
+*localStorage* holds small data that organice needs right at startup:
+
+- Your settings, capture templates, file settings, keyboard shortcuts
+  and bookmarks. If "Store settings in sync backend" is enabled, they
+  are also saved to =.organice-config.json= in your back-end.
+- Sign-in data for your synchronization back-end, for example the
+  Dropbox refresh token or the WebDAV URL and credentials.
+- Which headlines are folded open, per file, and the resolved colors of
+  your theme (applied before the rest of organice loads).
+
+Before IndexedDB, local copies of files were kept in localStorage as
+well. Browsers limit localStorage to a few million characters (iOS
+Safari to about 2.6 million), which a few large Org files can exceed.
+On startup, organice moves such old copies to IndexedDB, including
+unsynchronized changes. A copy is removed from localStorage only after
+it was written to IndexedDB and read back.
+
+The settings show an overview of the storage organice uses (section
+"Storage"), including the largest localStorage entries and any writes
+that failed since organice was started. Signing out deletes everything
+organice stored in your browser.
 
 ** Multi file support
    :PROPERTIES:
@@ -389,7 +446,7 @@ header on the right).
   :END:
 
 organice is built with [[https://reactjs.org/][React]] and [[https://redux.js.org/][Redux]]. It was bootstrapped with
-[[https://github.com/facebook/create-react-app][Create React App]]. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
+[[https://parceljs.org/][Parcel]] as its build tool. The tests are written with [[https://testing-library.com/docs/react-testing-library/intro][React Testing Library]].
 The internal data structures are written as immutable persistent
 data collections with the [[https://github.com/immutable-js/immutable-js][Immutable]] library.
 
@@ -405,6 +462,10 @@ installed, the following commands should be sufficient:
 nvm install
 nvm use
 #+END_SRC
+
+If you have the [[https://nixos.org/][Nix package manager]] installed, just type:
+
+: nix develop
 
 ** Setup
 
@@ -432,7 +493,7 @@ organice has support for WebDAV and ships with a Docker container with
 a WebDAV server based on Apache. You can make use of that and use this
 WebDAV back-end for local development.
 
-Having said that, if you're a Dropbox, then it's convenient to have a
+Having said that, if you're a Dropbox user, then it's convenient to have a
 working setup for it if you want to test on files that are already in
 those back-ends. But it doesn't have to be a barrier, just to get
 started. And maybe you don't want to host your files with either of
@@ -464,6 +525,29 @@ yarn start
 #+BEGIN_SRC shell
 yarn test
 #+END_SRC
+
+**** E2E Tests
+
+End-to-end tests are written with [[https://playwright.dev/][Playwright]] and test the application in real browsers.
+
+#+BEGIN_SRC shell
+# Run all E2E tests (Chromium, Firefox, WebKit, Mobile)
+yarn test:e2e
+
+# Run specific browser
+yarn test:e2e --project=chromium
+
+# Run with UI mode
+yarn test:e2e:ui
+
+# View HTML report
+yarn test:e2e:report
+
+# Run Jest + Playwright
+yarn test:all
+#+END_SRC
+
+E2E tests are located in the ~e2e/~ directory. See ~e2e/README.md~ for detailed E2E testing documentation.
 
 *** Search
 :PROPERTIES:
@@ -527,7 +611,7 @@ ssh -L 3000:localhost:3000 user-dev-machine
 #+END_SRC
 
 If you don't have a shell on your phone, you can use a dedicated SSH
-application (like [[https://www.termius.com/][Terminus]]).
+application (like [[https://www.termius.com/][Termius]]).
 
 *** Native app on Android
 
@@ -588,15 +672,16 @@ about:inspect
 
 After opening that link, the Chrome Developer Tools will be displayed.
 Select inspect on your process and a breakpoint will be set at the
-first line of the react script (this is done to give you time to open
-the developer tools and to prevent Jest from executing before you have
-time to do so). Click the button that looks like a "play" button in
-the upper right hand side of the screen to continue execution. When
+first line of the test script (this is done to give you time to open the
+developer tools and to prevent Jest from executing before you have time
+to do so). Click the button that looks like a "play" button in the
+upper right hand side of the screen to continue execution. When
 Jest executes the test that contains the debugger statement, execution
 will pause and you can examine the current scope and call stack.
 
-The "Create React App" upstream docs for this feature are here:
-https://create-react-app.dev/docs/debugging-tests/
+For more details on test configuration after migrating from Create React App,
+see the Parcel migration guide:
+https://parceljs.org/migration/cra/#6.-migrate-tests
 
 ** Automatic deployments of reference instance
 
@@ -627,7 +712,7 @@ Please see our [[https://github.com/200ok-ch/organice/blob/master/CONTRIBUTING.o
 When discussing new UX, it is often helpful to add a mockup to the
 discussion to ensure that everyone is on the same page. When a new
 contributor suggests a UX change and it's not trivial, we will ask to
-included a mockup to the issue.
+include a mockup to the issue.
 
 Of course, you're completely free to create such a mockup with
 whatever tool you feel comfortable with. A scan of a pen and paper
@@ -689,36 +774,61 @@ deployed via FTP. The full build script is in
 organice is also available as a Docker image.
 
 The docker image recognizes a couple of environment variables. For
-example =ORGANICE_WEBDAV_URL= prefills the URL field in the WebDAV
-signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yaml][docker-compose.yaml]] for an example how to use it.
+example =REACT_APP_WEBDAV_URL= prefills the URL field in the WebDAV
+signin form. See [[https://github.com/200ok-ch/organice/blob/master/docker-compose.yml][docker-compose.yml]] for an example how to use it.
 
 A full list of such environment variables can be found in [[https://github.com/200ok-ch/organice/blob/master/.env.sample][.env.sample]].
-
 The prefix =REACT_APP_= has to be replaced with =ORGANICE_=. The
 naming should be pretty self explanatory.
 
 *** With =docker-compose=
 
-If [[https://docs.docker.com/compose/][docker-compose]] is installed, the following command downloads and
-runs the latest image automatically.
+Organice provides a unified =docker-compose.yml= file that supports both production and development environments using profiles.
+
+**** Production
+
+To download and run the latest production-ready image (or build it locally if not available). This uses the =organice= service defined in the =docker-compose.yml= file:
 
 #+BEGIN_SRC shell
-docker-compose up -d
+docker compose --profile prod up -d organice
 #+END_SRC
 
-The webserver is listening on port 5000 and can be reached here:
-http://localhost:5000
+The webserver will be listening on port 5000 by default: http://localhost:5000
 
-If you want to build the image yourself, use the
-=docker-compose-dev.yaml= file:
+To build the production image yourself and run it:
+#+BEGIN_SRC shell
+docker compose --profile prod build organice
+docker compose --profile prod up -d organice
+#+END_SRC
+
+The production image is optimized for size and contains only the necessary files to run organice.
+
+**** Development
+
+To set up a development environment with the source code mounted for hot-reloading. This uses the =organice-dev= service:
 
 #+BEGIN_SRC shell
-docker-compose -f docker-compose-dev.yaml up
+docker compose --profile dev up -d organice-dev
 #+END_SRC
 
-*** Without docker-compose
+This starts a container running a bash shell (via =tail -f /dev/null= to keep it alive). You can then execute commands inside it:
 
-If =docker-compose= is not installed the command looks like this:
+#+BEGIN_SRC shell
+# Start the development server (Parcel)
+docker compose --profile dev exec organice-dev yarn start
+
+# Run tests
+docker compose --profile dev exec organice-dev yarn test
+
+# Open an interactive shell in the container
+docker compose --profile dev exec organice-dev bash
+#+END_SRC
+
+The development server is typically available on port 3000: http://localhost:3000. Note that the =organice-dev= service in =docker-compose.yml= maps port 3000 on your host to port 3000 in the container.
+
+*** Without docker-compose (Running Production Image)
+
+If you prefer to run the production image directly without docker-compose (after pulling it from Docker Hub or building it locally using =docker build --target production -t twohundredok/organice:latest .=):
 
 #+BEGIN_SRC shell
 docker run -p 5000:5000 --name organice twohundredok/organice:latest
@@ -726,7 +836,6 @@ docker run -p 5000:5000 --name organice twohundredok/organice:latest
 
 Again the webserver is listening on port 5000 and can be reached here:
 http://localhost:5000
-
 ** Heroku
 Assuming, you have an account and have installed the [[https://devcenter.heroku.com/articles/heroku-cli][command line
 tools]], deployment is as easy as:
@@ -764,7 +873,7 @@ Your dropbox app needs permission to read and write files.
 
 With WebDAV support, organice can potentially be used with a multitude
 of synchronization back-ends: Client/Server services [[https://doc.owncloud.com/server/user_manual/files/access_webdav.html][ownCloud]],
-[[https://docs.nextcloud.com/server/stable/user_manual/files/access_webdav.html?highlight=webdav][Nextcloud]] and [[https://download.seafile.com/published/seafile-manual/extension/webdav.md][Seafile]], but also self hosted dedicated WebDAV servers
+[[https://docs.nextcloud.com/server/latest/user_manual/en/files/access_webdav.html][Nextcloud]] and [[https://manual.seafile.com/extension/webdav/][Seafile]], but also self hosted dedicated WebDAV servers
 like [[https://httpd.apache.org/docs/2.4/mod/mod_dav.html][Apache]] or [[https://nginx.org/en/docs/http/ngx_http_dav_module.html][Nginx]].
 
 **** More information
@@ -819,7 +928,7 @@ For example, you can encrypt your data on disk. organice itself is
 just a front-end application, requires no server and has no tracking
 system. Therefore, the data within any organice instance (self hosted
 or not) is already only accessible to you, your browser and the
-network between your browser and your chosen back-end. Therefore, if
+network between your browser and your chosen back-end. Therefore, if you
 have a strong SSL certificate configured on your WebDAV server and
 organice instance, then organice will communicate securely via HTTPS
 to your server where your data is as secure as you make it. Then, your
@@ -890,7 +999,7 @@ suited to a wider range of users. For that, organice follows the
 =contrib= model which many bigger projects use (i.e. [[https://orgmode.org/worg/org-contrib/][Org mode]]) for
 such contributions.
 
-The please see the [[https://github.com/200ok-ch/organice/tree/master/contrib][contrib folder]] for details.
+Please see the [[https://github.com/200ok-ch/organice/tree/master/contrib][contrib folder]] for details.
 
 * Capture templates
   :PROPERTIES:
@@ -907,7 +1016,7 @@ parameters are required and must be URL encoded:
   of the file in which to execute the capture template.
 - ~captureContent~: the content you'd like to capture. This content
   will be placed at the cursor position if specified in the capture
-  template (with ~%?~), or at the end of the template if its not
+  template (with ~%?~), or at the end of the template if it's not
   specified.
 
 You can also specify additional custom variables for use in your
@@ -991,9 +1100,7 @@ little bit of JavaScript:
 #+BEGIN_SRC javascript
   javascript:(function() {
     const {title} = document;
-    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${
-    window.location.href
-  }`;
+    const url = `https://organice.200ok.ch?captureTemplateName=Media&captureContent=${title}&captureFile=/org/media.org&captureVariable_mediaURL=${window.location.href}`;
     window.open(url, "_blank");
   })()
 #+END_SRC
@@ -1031,7 +1138,7 @@ and you're good to go!
 
 Before starting work on organice, [[https://github.com/munen/][@munen]] (the original maintainer)
 used Beorg and donated to it multiple times, because he was very happy
-to have a good option to access Org files on my phone with it.
+to have a good option to access Org files on his phone with it.
 
 The important differences to him were:
 

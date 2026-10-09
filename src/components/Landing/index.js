@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './vendor_css/template.scss';
+import * as classes from './vendor_css/template.scss';
+
+document.body.className = classes.body;
+
 import './stylesheet.css';
 
 // import AOS from 'aos';
 // import 'aos/dist/aos.css';
 
-import logo from '../../images/organice.svg';
+import logo from 'url:../../images/organice.svg';
+import screenshotOverview from 'url:../../images/screenshot-overview.png';
+import screenshotWide from 'url:../../images/screenshot-wide.png';
 // import ExternalLink from '../UI/ExternalLink';
 
 import { useEffect } from 'react';
@@ -28,33 +33,28 @@ export default () => {
   //   });
   // }, []);
 
-  // Working around the fact that the original LP was designed with
-  // stateful libraries in mind.
+  // Load Bootstrap and FontAwesome JS via dynamic import
   useEffect(() => {
-    const files = [
-      'font_awesome_all.min.js',
-      // TODO: Reprogram false_bottom the React way
-      // 'false_bottom.js',
-      'bootstrap.bundle.min.js',
-      // XXX: Some parts of scripts.js are implemented the React way
-      // (Feather), others are worked around (navbar is always black),
-      // the remainder is not implemented atm.
-      // 'scripts.js',
-    ];
+    let mounted = true;
 
-    for (const file of files) {
-      const script = document.createElement('script');
-      // Do not download/eval asynchronously
-      script.async = false;
-      script.src = `https://200ok.ch/landing_page/js/${file}`;
-      document.head.appendChild(script);
-    }
+    const loadScripts = async () => {
+      if (!mounted) return;
 
-    // HACK: scripts.js waits for this event. Since we're already in a
-    // `useEffect` handler, this event has been fired long ago.
-    // setTimeout(function () {
-    //   window.dispatchEvent(new Event('DOMContentLoaded'));
-    // }, 500);
+      try {
+        // Load Bootstrap JS first (no dependencies, but foundation for others)
+        await import('bootstrap/dist/js/bootstrap.bundle.min.js');
+        // Load FontAwesome JS second (replaces <i> tags with <svg>)
+        await import('@fortawesome/fontawesome-free/js/all.min.js');
+      } catch (err) {
+        console.error('Failed to load scripts:', err);
+      }
+    };
+
+    loadScripts();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
@@ -104,6 +104,7 @@ export default () => {
                         className="nav-link navbar-brand"
                         href="https://github.com/200ok-ch/organice"
                         rel="noreferrer noopener"
+                        data-testid="landing-github-link"
                       >
                         Code
                       </a>
@@ -115,12 +116,17 @@ export default () => {
                         className="nav-link navbar-brand"
                         href="https://organice.200ok.ch/documentation.html"
                         rel="noreferrer noopener"
+                        data-testid="landing-docs-link"
                       >
                         Documentation
                       </a>
                     </li>
                   </ul>
-                  <a className="btn fw-500 ms-lg-4 btn-teal" href="/sign_in">
+                  <a
+                    className="btn fw-500 ms-lg-4 btn-teal"
+                    href="/sign_in"
+                    data-testid="landing-sign-in-navbar"
+                  >
                     Sign in
                     {/* <i className="ms-2" data-feather="arrow-right"></i> */}
                     <ArrowRight className="ms-2" />
@@ -147,13 +153,21 @@ export default () => {
                         files.
                       </p>
 
-                      <a className="btn btn-teal fw-500 me-2" href="/sample">
+                      <a
+                        className="btn btn-teal fw-500 me-2"
+                        href="/sample"
+                        data-testid="landing-live-demo-hero"
+                      >
                         Live demo
                         {/* <i className="ms-2" data-feather="arrow-right"></i> */}
                         <ArrowRight className="ms-2" />
                       </a>
 
-                      <a className="btn btn-white fw-500 me-2" href="/sign_in">
+                      <a
+                        className="btn btn-white fw-500 me-2"
+                        href="/sign_in"
+                        data-testid="landing-sign-in-hero"
+                      >
                         Sign in
                         {/* <i className="ms-2" data-feather="arrow-right"></i> */}
                         <ArrowRight className="ms-2" />
@@ -167,7 +181,7 @@ export default () => {
                       <img
                         className="img-fluid main-image"
                         alt=""
-                        src="https://200ok.ch/landing_page/img/organice/screenshot-overview.png"
+                        src={screenshotOverview}
                         style={{ filter: 'drop-shadow(0.5em 0.5em 0.5em #444)' }}
                       />
                     </div>
@@ -257,7 +271,7 @@ export default () => {
                     </div>
 
                     <div className="col-md-4">
-                      <i className="fab fa-firefox-browser"></i>
+                      <i className="fab fa-firefox"></i>
                     </div>
                   </div>
                 </div>
@@ -281,7 +295,7 @@ export default () => {
                       <div className="content-skewed content-skewed-right">
                         <img
                           className="content-skewed-item img-fluid shadow-lg rounded-3"
-                          src="https://200ok.ch/landing_page/img/organice/screenshot-wide.png"
+                          src={screenshotWide}
                           alt="Sample organice document"
                         />
                       </div>
@@ -362,7 +376,7 @@ export default () => {
                       <div className="testimonial p-lg-5">
                         <p className="testimonial-quote text-primary">
                           "Been using organice for years. To me, it’s by far the most usable
-                          solution to interacting with org files on a mobile device."
+                          solution for interacting with org files on a mobile device."
                         </p>
                         <div className="row">
                           <div className="col-3">
@@ -457,7 +471,11 @@ export default () => {
                         </p>
                       </div>
 
-                      <a className="btn btn-teal fw-500" href="/sample">
+                      <a
+                        className="btn btn-teal fw-500"
+                        href="/sample"
+                        data-testid="landing-live-demo-bottom"
+                      >
                         Live demo
                       </a>
                     </div>
@@ -546,22 +564,6 @@ export default () => {
                           rel="noreferrer noopener"
                         >
                           <i className="fab fa-github"></i>
-                        </a>
-                        <a
-                          className="icon-list-social-link"
-                          target="_blank"
-                          href="https://www.linkedin.com/in/alafon/"
-                          rel="noreferrer noopener"
-                        >
-                          <i className="fab fa-linkedin"></i>
-                        </a>
-                        <a
-                          className="icon-list-social-link"
-                          target="_blank"
-                          href="https://twitter.com/munen_200ok"
-                          rel="noreferrer noopener"
-                        >
-                          <i className="fab fa-twitter"></i>
                         </a>
                       </div>
                     </div>

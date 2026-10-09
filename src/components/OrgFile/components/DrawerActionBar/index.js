@@ -27,6 +27,7 @@ class DrawerActionBar extends PureComponent {
       'handleShowDeadlineModal',
       'handleShowScheduledModal',
       'handleShowNoteModal',
+      'handleRemoveHeader',
     ]);
   }
 
@@ -37,7 +38,9 @@ class DrawerActionBar extends PureComponent {
 
   handleShowDescriptionEditModal() {
     this.props.onSwitch();
-    this.props.org.openHeader(this.props.selectedHeaderId);
+    if (!this.props.captureMode && this.props.selectedHeaderId) {
+      this.props.org.openHeader(this.props.selectedHeaderId);
+    }
     this.props.base.activatePopup('description-editor');
   }
 
@@ -52,21 +55,26 @@ class DrawerActionBar extends PureComponent {
   }
 
   handleDeadlineAndScheduledClick(planningType) {
-    const { header, selectedHeaderId } = this.props;
+    const { captureMode, captureHeader, header, selectedHeaderId } = this.props;
+    const activeHeader = captureMode ? captureHeader : header;
     const popupType = {
       DEADLINE: 'deadline-editor',
       SCHEDULED: 'scheduled-editor',
     }[planningType];
 
-    const existingDeadlinePlanningItemIndex = header
-      .get('planningItems', [])
-      .findIndex((planningItem) => planningItem.get('type') === planningType);
+    const existingDeadlinePlanningItemIndex = activeHeader
+      ? activeHeader
+          .get('planningItems', [])
+          .findIndex((planningItem) => planningItem.get('type') === planningType)
+      : -1;
     this.props.base.activatePopup(popupType, {
-      headerId: header.get('id'),
+      headerId: activeHeader ? activeHeader.get('id') : null,
       planningItemIndex: existingDeadlinePlanningItemIndex,
     });
 
-    this.props.org.openHeader(selectedHeaderId);
+    if (!captureMode && selectedHeaderId) {
+      this.props.org.openHeader(selectedHeaderId);
+    }
   }
 
   handleShowDeadlineModal() {
@@ -84,6 +92,17 @@ class DrawerActionBar extends PureComponent {
     this.props.base.activatePopup('note-editor');
   }
 
+  handleRemoveHeader() {
+    if (this.props.captureMode) {
+      // In capture mode, "delete" discards the capture by closing the popup
+      this.props.base.closePopup();
+      return;
+    }
+    this.props.base.closePopup();
+    this.props.org.selectHeader(null);
+    this.props.org.removeHeader(this.props.header.get('id'));
+  }
+
   render() {
     return (
       <div className="static-action-bar">
@@ -97,6 +116,7 @@ class DrawerActionBar extends PureComponent {
           onDeadlineClick={this.handleShowDeadlineModal}
           onScheduledClick={this.handleShowScheduledModal}
           onAddNote={this.handleShowNoteModal}
+          onRemoveHeader={this.handleRemoveHeader}
           editRawValues={this.props.editRawValues}
           setEditRawValues={this.props.setEditRawValues}
           restorePreferEditRawValues={this.props.restorePreferEditRawValues}

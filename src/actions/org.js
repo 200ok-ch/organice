@@ -16,12 +16,15 @@ import sampleCaptureTemplates from '../lib/sample_capture_templates';
 
 import { isAfter, addSeconds } from 'date-fns';
 import { parseISO } from 'date-fns';
-import { persistIsDirty, saveFileContentsToLocalStorage } from '../util/file_persister';
+import { persistIsDirty, saveFileContents, saveSyncedFile } from '../util/file_persister';
+import { getFileRecord } from '../util/file_store';
 import { localStorageAvailable, readOpennessState } from '../util/settings_persister';
 
-export const parseFile = (path, contents) => (dispatch) => {
+export const parseFile = (path, contents) => (dispatch, getState) => {
+  // Asynchronous, never throws: a failed write of the local copy must
+  // not fail the sync.
+  saveFileContents(getState(), path, contents);
   if (localStorageAvailable && !path.startsWith(STATIC_FILE_PREFIX)) {
-    saveFileContentsToLocalStorage(path, contents);
     const opennessState = readOpennessState();
     if (!!opennessState) {
       dispatch(setOpennessState(path, opennessState[path]));
@@ -74,7 +77,7 @@ const syncDebounced = (dispatch, getState, options) => {
       debouncedSyncFunctions[path] = getDebouncedSyncFunction();
       debouncedSyncFunction = debouncedSyncFunctions[path];
     }
-    debouncedSyncFunction(dispatch, options);
+    debouncedSyncFunction(dispatch, { ...options, path });
   });
 };
 
@@ -150,10 +153,10 @@ const doSync = ({
     dispatch(setLoadingMessage(`Syncing ...`));
   }
   dispatch(setIsLoading(true, path));
-  dispatch(setOrgFileErrorMessage(null));
+  dispatch(clearOrgFileErrorMessage(path));
 
-  client
-    .getFileContentsAndMetadata(path)
+  restoreUnsyncedLocalCopy(path)(dispatch, getState)
+    .then(() => client.getFileContentsAndMetadata(path))
     .then(({ contents, lastModifiedAt }) => {
       const isDirty = getState().org.present.getIn(['files', path, 'isDirty']);
       const lastServerModifiedAt = parseISO(lastModifiedAt);
@@ -161,17 +164,15 @@ const doSync = ({
 
       if (isAfter(lastSyncAt, lastServerModifiedAt) || forceAction === 'push') {
         if (isDirty) {
-          const contents =
-            localStorage.getItem('files__' + path) ||
-            exportOrg({
-              headers: getState().org.present.getIn(['files', path, 'headers']),
-              linesBeforeHeadings: getState().org.present.getIn([
-                'files',
-                path,
-                'linesBeforeHeadings',
-              ]),
-              dontIndent: getState().base.get('shouldNotIndentOnExport'),
-            });
+          const contents = exportOrg({
+            headers: getState().org.present.getIn(['files', path, 'headers']),
+            linesBeforeHeadings: getState().org.present.getIn([
+              'files',
+              path,
+              'linesBeforeHeadings',
+            ]),
+            dontIndent: getState().base.get('shouldNotIndentOnExport'),
+          });
           client
             .updateFile(path, contents)
             .then(() => {
@@ -181,8 +182,26 @@ const doSync = ({
                 setTimeout(() => dispatch(hideLoadingMessage()), 2000);
               }
               dispatch(setIsLoading(false, path));
-              dispatch(setDirty(false, path));
               dispatch(setLastSyncAt(addSeconds(new Date(), 5), path));
+              // Edits made while the push was in progress are not on the
+              // server yet: keep the file unsynced and push them next.
+              const editedDuringPush =
+                exportOrg({
+                  headers: getState().org.present.getIn(['files', path, 'headers']),
+                  linesBeforeHeadings: getState().org.present.getIn([
+                    'files',
+                    path,
+                    'linesBeforeHeadings',
+                  ]),
+                  dontIndent: getState().base.get('shouldNotIndentOnExport'),
+                }) !== contents;
+              if (editedDuringPush) {
+                saveSyncedFile(getState(), path);
+                dispatch(sync({ path }));
+              } else {
+                dispatch(setDirty(false, path));
+                saveSyncedFile(getState(), path);
+              }
             })
             .catch((error) => {
               const err = `There was an error pushing the file ${path}: ${error.toString()}`;
@@ -219,10 +238,11 @@ const doSync = ({
         }
       }
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error(`Syncing ${path} failed`, error);
       dispatch(hideLoadingMessage());
       dispatch(setIsLoading(false, path));
-      dispatch(setOrgFileErrorMessage(`File ${path} not found`));
+      dispatch(reportFileError(path, 'load', error));
     });
 };
 
@@ -242,7 +262,12 @@ export const selectHeader = (headerId) => (dispatch) => {
 
   if (!!headerId) {
     dispatch(setSelectedTableCellId(null));
+    dispatch(setSelectedListItemId(null));
   }
+};
+
+export const selectHeaderIndex = (headerIndex) => (dispatch) => {
+  dispatch({ type: 'SELECT_HEADER_INDEX', headerIndex });
 };
 
 export const setPath = (path) => (dispatch) => {
@@ -315,6 +340,12 @@ export const addHeader = (headerId) => ({
   dirtying: false,
 });
 
+export const duplicateHeader = (headerId) => ({
+  type: 'DUPLICATE_HEADER',
+  headerId,
+  dirtying: true,
+});
+
 export const createFirstHeader = () => ({
   type: 'CREATE_FIRST_HEADER',
   dirtying: true,
@@ -356,6 +387,14 @@ export const moveHeaderUp = (headerId) => ({
 export const moveHeaderDown = (headerId) => ({
   type: 'MOVE_HEADER_DOWN',
   headerId,
+  dirtying: true,
+});
+
+export const moveHeaderToPosition = (sourceHeaderId, targetHeaderId, position) => ({
+  type: 'MOVE_HEADER_TO_POSITION',
+  sourceHeaderId,
+  targetHeaderId,
+  position,
   dirtying: true,
 });
 
@@ -419,15 +458,44 @@ export const applyOpennessState = (path) => ({
   path,
 });
 
+// Normally, local copies are loaded before the app starts. If that
+// failed or timed out, a file whose local copy has unsynced edits is not
+// loaded. Load that copy before the file is synced or downloaded, so the
+// edits are pushed (or the user is asked) instead of replaced by the
+// remote version. Resolves with whether a copy was loaded; never rejects.
+export const restoreUnsyncedLocalCopy = (path) => (dispatch, getState) => {
+  const isLoaded = () => getState().org.present.hasIn(['files', path, 'headers']);
+  if (!path || path.startsWith(STATIC_FILE_PREFIX) || isLoaded()) {
+    return Promise.resolve(false);
+  }
+  return getFileRecord(path)
+    .then((record) => {
+      if (!record || !record.isDirty || isLoaded()) {
+        return false;
+      }
+      dispatch({ type: 'PARSE_FILE', path, contents: record.contents });
+      dispatch(dirtyAction(true, path));
+      if (record.lastSyncAt) {
+        dispatch(setLastSyncAt(parseISO(record.lastSyncAt), path));
+      }
+      return true;
+    })
+    .catch(() => false);
+};
+
 export const dirtyAction = (isDirty, path) => ({
   type: 'SET_DIRTY',
   isDirty,
   path,
 });
 
-export const setDirty = (isDirty, path) => (dispatch) => {
-  persistIsDirty(isDirty, path);
+export const setDirty = (isDirty, path) => (dispatch, getState) => {
+  persistIsDirty(isDirty, path || getState().org.present.get('path'));
   dispatch(dirtyAction(isDirty, path));
+};
+
+export const setSelectedDescriptionItemIndex = (itemIndex) => (dispatch) => {
+  dispatch({ type: 'SET_SELECTED_DESCRIPTION_ITEM_INDEX', itemIndex });
 };
 
 export const setSelectedTableId = (tableId) => (dispatch) => {
@@ -436,6 +504,10 @@ export const setSelectedTableId = (tableId) => (dispatch) => {
 
 export const setSelectedTableCellId = (cellId) => (dispatch) => {
   dispatch({ type: 'SET_SELECTED_TABLE_CELL_ID', cellId });
+
+  if (!!cellId) {
+    dispatch(setSelectedListItemId(null));
+  }
 };
 
 export const addNewTableRow = () => ({
@@ -495,6 +567,21 @@ export const insertCapture = (templateId, content, shouldPrepend) => (dispatch, 
   dispatch({ type: 'INSERT_CAPTURE', template, content, shouldPrepend, dirtying: true });
 };
 
+export const insertCaptureFromHeader = (templateId, header, shouldPrepend) => (
+  dispatch,
+  getState
+) => {
+  dispatch(closePopup());
+
+  const template = getState()
+    .capture.get('captureTemplates')
+    .concat(sampleCaptureTemplates)
+    .find((template) => template.get('id') === templateId);
+  const targetPath = template.get('file') || getState().org.present.get('path');
+  dispatch({ type: 'INSERT_CAPTURE_FROM_HEADER', template, header, shouldPrepend, dirtying: true });
+  dispatch(sync({ successMessage: 'Item captured', path: targetPath }));
+};
+
 export const clearPendingCapture = () => ({
   type: 'CLEAR_PENDING_CAPTURE',
 });
@@ -527,14 +614,15 @@ export const insertPendingCapture = () => (dispatch, getState) => {
     return;
   }
 
-  const targetHeader = headerWithPath(
-    getState().org.present.getIn(['files', path, 'headers']),
-    template.get('headerPaths')
-  );
-  if (!targetHeader) {
+  const targetPath = template.get('file') || path;
+
+  const headerPaths = template.get('headerPaths');
+  const targetHeaders = getState().org.present.getIn(['files', targetPath, 'headers']);
+  const targetHeader = targetHeaders && headerWithPath(targetHeaders, headerPaths);
+  if (headerPaths.size > 0 && !targetHeader) {
     dispatch(
       setDisappearingLoadingMessage(
-        `Capture failed: "${template.get('description')}" header path invalid in this file`,
+        `Capture failed: "${template.get('description')}" header path invalid in ${targetPath}`,
         8000
       )
     );
@@ -554,12 +642,85 @@ export const insertPendingCapture = () => (dispatch, getState) => {
     : `${substitutedTemplate}${captureContent}`;
 
   dispatch(insertCapture(template.get('id'), content, template.get('shouldPrepend')));
-  dispatch(sync({ successMessage: 'Item captured' }));
+  dispatch(sync({ successMessage: 'Item captured', path: targetPath }));
 };
 
 export const advanceCheckboxState = (listItemId) => ({
   type: 'ADVANCE_CHECKBOX_STATE',
   listItemId,
+  dirtying: true,
+});
+
+export const setSelectedListItemId = (listItemId) => (dispatch) => {
+  dispatch({ type: 'SET_SELECTED_LIST_ITEM_ID', listItemId });
+
+  if (!!listItemId) {
+    dispatch(selectHeader(null));
+    dispatch(setSelectedTableCellId(null));
+  }
+};
+
+export const updateListTitleValue = (listItemId, newValue) => ({
+  type: 'UPDATE_LIST_TITLE_VALUE',
+  listItemId,
+  newValue,
+  dirtying: true,
+});
+
+export const updateListContentsValue = (listItemId, newValue) => ({
+  type: 'UPDATE_LIST_CONTENTS_VALUE',
+  listItemId,
+  newValue,
+  dirtying: true,
+});
+
+export const addNewListItem = () => ({
+  type: 'ADD_NEW_LIST_ITEM',
+  dirtying: true,
+});
+
+export const selectNextSiblingListItem = () => ({
+  type: 'SELECT_NEXT_SIBLING_LIST_ITEM',
+});
+
+export const addNewListItemAndEdit = () => (dispatch) => {
+  dispatch(addNewListItem());
+  dispatch(selectNextSiblingListItem());
+  dispatch(enterEditMode('list-title'));
+};
+
+export const removeListItem = () => ({
+  type: 'REMOVE_LIST_ITEM',
+  dirtying: true,
+});
+
+export const moveListItemUp = () => ({
+  type: 'MOVE_LIST_ITEM_UP',
+  dirtying: true,
+});
+
+export const moveListItemDown = () => ({
+  type: 'MOVE_LIST_ITEM_DOWN',
+  dirtying: true,
+});
+
+export const moveListItemLeft = () => ({
+  type: 'MOVE_LIST_ITEM_LEFT',
+  dirtying: true,
+});
+
+export const moveListItemRight = () => ({
+  type: 'MOVE_LIST_ITEM_RIGHT',
+  dirtying: true,
+});
+
+export const moveListSubtreeLeft = () => ({
+  type: 'MOVE_LIST_SUBTREE_LEFT',
+  dirtying: true,
+});
+
+export const moveListSubtreeRight = () => ({
+  type: 'MOVE_LIST_SUBTREE_RIGHT',
   dirtying: true,
 });
 
@@ -637,9 +798,45 @@ export const updatePropertyListItems = (headerId, newPropertyListItems) => ({
   dirtying: true,
 });
 
-export const setOrgFileErrorMessage = (message) => ({
+// Sync back-ends reject without an error when a file does not exist.
+// Every other failure carries an error, including exceptions thrown
+// while handling a successful download. Show those instead of
+// claiming that the file is missing.
+export const fileErrorMessage = (verb, path, error) => {
+  if (!error) {
+    return `File ${path} not found`;
+  }
+  const description = error.name && error.message ? `${error.name}: ${error.message}` : error;
+  return `Could not ${verb} ${path}: ${description}`;
+};
+
+// Takes over the screen only when nothing of `path` is loaded and it is
+// the file being viewed. A loaded file stays usable (e.g. while offline),
+// and failures of files synced in the background show a message instead.
+export const reportFileError = (path, verb, error) => (dispatch, getState) => {
+  const org = getState().org.present;
+  if (org.hasIn(['files', path, 'headers'])) {
+    const loadedVerb = verb === 'load' ? 'sync' : verb;
+    dispatch(setDisappearingLoadingMessage(fileErrorMessage(loadedVerb, path, error), 5000));
+  } else if (path === org.get('path')) {
+    dispatch(setOrgFileErrorMessage(fileErrorMessage(verb, path, error), path));
+  } else {
+    dispatch(setDisappearingLoadingMessage(fileErrorMessage(verb, path, error), 5000));
+  }
+};
+
+// Clears the error of `path`, leaving errors of other files alone.
+export const clearOrgFileErrorMessage = (path) => (dispatch, getState) => {
+  const errorPath = getState().org.present.get('orgFileErrorPath');
+  if (!errorPath || errorPath === path) {
+    dispatch(setOrgFileErrorMessage(null));
+  }
+};
+
+export const setOrgFileErrorMessage = (message, path = null) => ({
   type: 'SET_ORG_FILE_ERROR_MESSAGE',
   message,
+  path,
 });
 
 export const setLogEntryStop = (headerId, entryId, time) => ({

@@ -7,6 +7,592 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-10-09 Fri]
+** Changed
+*** Most important change: local copies of your Org files are now kept in IndexedDB
+    - organice keeps a local copy of every file you open, so files load instantly and work offline. These copies used to live in the browser's localStorage, which iOS Safari limits to about 2.6 million characters. With a few large files loaded on startup, the copies no longer fit, and organice showed a full-screen "File ... not found" after syncing, although the file existed.
+    - The copies now live in IndexedDB, which may use a large share of your device's free space. Existing copies, including unsynced changes, are moved there automatically on the next start.
+    - See "Offline support" in the documentation for what organice stores where.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+** Fixed
+*** organice starts again without a network connection
+    - Since the switch to a new build tool in April 2025, organice showed a blank page when started offline: the part that caches the app in the browser was never installed. It is installed again, so organice starts offline and opens your files from their local copies.
+    - Links to a file or folder (for example a bookmark or the home screen icon) work offline too.
+    - With WebDAV or GitLab, a sync service that can't be reached at startup (for example while offline) no longer signs you out. Signing out deletes the local copies of your files, including changes that were not synced yet.
+    - PR: https://github.com/200ok-ch/organice/pull/1135
+*** File browser while offline
+    - The file browser remembers every folder you visit. Offline, it shows the folder as of your last visit instead of an error, and greys out files and folders that are not available offline.
+    - With Dropbox, the file browser no longer hangs on "Getting listing..." when the listing can't be fetched.
+    - "Load more" no longer makes the file browser forget the current folder.
+    - PR: https://github.com/200ok-ch/organice/pull/1135
+*** Clearer sync errors
+    - Sync errors now show their actual cause instead of always claiming that the file was not found.
+    - An error of a file synced in the background no longer replaces the file you are viewing.
+    - When a sync fails (for example while offline), the local copy of the file stays visible.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+*** Changes made while syncing
+    - Changes made while a file was being synced were marked as synced and could get lost. They now stay marked as unsynced and are synced right afterwards.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+*** Disabled settings are remembered after reload
+    - Switching off a setting that is on by default, such as Live Sync, now persists across reloads
+    - PR: https://github.com/200ok-ch/organice/pull/1128
+** Added
+*** Storage overview in the settings
+    - The settings show how much browser storage organice uses, the largest entries, and any failed writes.
+    - PR: https://github.com/200ok-ch/organice/pull/1132
+
+* [2026-07-09 Thu]
+** Fixed
+*** Default startup file setting
+    - Selecting a file to open on startup now automatically clears that option from other file settings
+    - PR: https://github.com/200ok-ch/organice/pull/1122
+
+* [2026-05-17 Sun]
+** Fixed
+*** Capture target file sync
+    - Fixed capture templates that target a startup-synced file so new entries are saved even while viewing another file
+    - PR: https://github.com/200ok-ch/organice/pull/1119
+
+* [2026-02-27 Fri]
+** Added
+*** Long-press drag and drop reordering for headers
+    - Long-press a header to drag and drop it with clear drop indicators on desktop and mobile
+    - Moving a parent header now keeps its subtree together and prevents dropping top-level headers into nested child lists
+    - PR: https://github.com/200ok-ch/organice/pull/1108
+
+* [2026-02-26 Thu]
+** Fixed
+*** Help/Sample modal for authenticated users
+    - Fixed an issue where clicking the question-mark help icon could show an empty Sample screen or get stuck on =Syncing ...=
+    - PR: https://github.com/200ok-ch/organice/pull/1106
+*** Unseen changelog gift icon in authenticated header
+    - Fixed the gift icon so opening changelog updates from the header renders the changelog modal correctly for logged-in users
+    - PR: https://github.com/200ok-ch/organice/pull/1107
+** Added
+*** Auto-continue lists with checkboxes in description editor
+    - When pressing Enter in an (unordered) checkbox list, the list
+      will be continued with a checkbox
+    - The new line has a checkbox with the same checked state as the
+      previous one (unchecked, checked, partially checked).
+
+    See [[https://orgmode.org/manual/Checkboxes.html][orgmode manual]] for more information on checkboxes.
+
+* [2026-02-12 Thu]
+
+** Changed
+
+*** Migrated search parser from pegjs to peggy
+    - pegjs is end of life (last commit 7+ years ago); peggy is the maintained fork
+    - PR: https://github.com/200ok-ch/organice/pull/1101
+
+** Added
+
+*** Auto-continue lists in description editor
+    - When editing a header description, pressing Enter after a list item (=- item= or =1. item=) automatically starts the next list item
+    - Ordered lists increment the number (=1.= → =2.= → =3.=)
+    - Pressing Enter on an empty list prefix removes it, exiting the list
+    - Works with both dash (=-=) and plus (=+=) unordered lists, and dot (=1.=) and paren (=1)=) ordered lists
+
+* [2026-02-11 Wed]
+
+** Added
+
+*** Harmonize modals for managing headers
+    - For capture templates, the '+' button or editing a header, now all modals have the same functionality
+    - Removes the old TitleEditorModal and DescriptionEditorModal components
+    - PR: https://github.com/200ok-ch/organice/pull/1099
+
+* [2026-02-10 Mon]
+
+** Fixed
+
+*** Theme/color scheme flash on startup
+    - Fixed a bug where the app would briefly show dark mode before switching to the configured light mode
+    - The color scheme is now applied immediately from localStorage before React renders, eliminating the visual flash
+
+*** Capture template crash when used before sync completes
+    - Fixed a crash where opening a capture template immediately after starting organice could cause the entire UI to go blank
+    - This happened because settings reloading from the sync backend regenerated template IDs, invalidating the open modal's reference
+
+* [2026-01-08 Thu]
+
+** Added
+
+*** UI for editing slash syntax in SCHEDULED timestamp repeaters
+    - When editing a SCHEDULED timestamp with a repeater, you can now set a deadline range using the slash syntax (e.g., =.+2d/3d=)
+    - This means "do this task at most every 2 days, but at least every 3 days"
+    - The slash UI only appears for SCHEDULED timestamps, not DEADLINE timestamps
+    - The deadline part can be removed by setting the value to 0
+    - Upstream documentation: https://orgmode.org/manual/Tracking-your-habits.html
+    - The parser already supported this syntax, but now you can edit it visually in the timestamp editor
+
+* [2026-01-07 Tue]
+
+** Added
+
+*** Org Habits consistency graph
+    - Visual consistency graph showing habit completion over time
+    - Color-coded status indicators matching Emacs org-mode:
+      - Green: Completed on this day
+      - Blue: Not due yet (in grace period)
+      - Yellow: Scheduled for this day, or due tomorrow
+      - Red: Overdue (you missed this day)
+    - Habits sorted before non-habits in agenda view
+    - Settings for graph configuration:
+      - Org habit preceding days (default: 21)
+      - Org habit following days (default: 7)
+      - Show all habits today
+    - Habits identified by =STYLE: habit= property
+    - Uses =:LOGBOOK:= entries to track completion history
+    - Automatically sets =LAST_REPEAT= property on completion
+
+See the [[https://organice.200ok.ch/documentation.html#org_habits][documentation]] for more details on habit configuration and usage.
+
+** Fixed
+
+*** Settings reset to defaults when config file is missing fields
+
+Base settings (including Org habits settings) were being overwritten with =undefined= values when the sync backend config file didn't contain those fields. This happened when using an older config file or when settings were added after the initial config file was created.
+
+Settings now correctly persist from localStorage even when the config file is missing specific fields.
+
+*** PWA updates not applying on iOS Safari
+
+When deploying new versions of organice, iOS Safari users often didn't receive updates and had to remove/reinstall the PWA from their home screen.
+
+Fixed by:
+- Adding =skipWaiting()= to force immediate service worker activation
+- Adding =clients.claim()= to ensure new service worker controls all clients immediately
+- Adding proper fetch event handler for cache-first strategy
+- Adding cache headers in =.htaccess= to prevent service worker file from being cached
+
+* [2025-12-01 Mon]
+
+** Added
+
+*** Add "#" and "%" as valid characters for tag searches
+
+PR: https://github.com/200ok-ch/organice/pull/1055
+
+Thank you [[https://github.com/cperl82][cperl82]] for the PR🙏
+
+** Fixed
+
+*** Dropbox sorting
+
+The old Dropbox sorting could do the wrong thing when the sort
+comparator is called with the first argument being a file and the
+second argument being a folder.
+
+PR: https://github.com/200ok-ch/organice/pull/1054
+
+Thank you [[https://github.com/cperl82][cperl82]] for the PR🙏
+
+*** On Chrome > 137: GitLab sign-in for private repository fails with "Unexpected sign in error, please try again"
+
+PR: https://github.com/200ok-ch/organice/pull/1061
+
+Thank you [[github.com/mcwitt][mcwitt]] for the PR and [[https://github.com/dtvillafana][dtvillafana]] for support and testing🙏
+
+* [2025-10-22 Wed]
+
+** Changed
+
+*** "Set scheduled datetime" action uses two different icons
+
+Issue: https://github.com/200ok-ch/organice/issues/1052
+
+** Fixed
+
+*** Components/OrgFile/TimestampEditor: Incorrect Timestamp Format
+
+PR: https://github.com/200ok-ch/organice/pull/1053
+Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
+
+* [2025-08-11 Mon]
+
+** Changed
+
+*** Refactored =TableEditorModal= from class to functional component
+
+- Converted TableEditorModal to a functional component for better maintainability
+- This refactor lays the groundwork for future table enhancements, including touch scrolling support
+- No functional changes to the TableEditorModal's behavior
+
+PR: https://github.com/200ok-ch/organice/pull/1043
+Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
+
+* [2025-07-26 Sat]
+
+** Fixed
+
+*** Action Drawer buttons not clickable
+
+The fix from yesterday introduced a regression. Now, we have a fix for
+the regression and the initial bug report.
+
+* [2025-07-24 Thu]
+
+** Fixed
+
+*** Cannot open files at bottom of screen on mobile
+
+- Issue: https://github.com/200ok-ch/organice/issues/1044
+- Thank you [[https://github.com/chasecaleb][chasecaleb]] for the fix🙏
+
+* [2025-06-22 Sun]
+
+** Fixed
+
+*** When exporting to email, don't just export the selected headline, but sub-headlines
+
+** Added
+
+*** Users can now share their headlines (including sub-headlines) to any app - with a fallback to mail.
+
+- PR: https://github.com/200ok-ch/organice/pull/1036
+
+* [2025-06-18 Wed]
+
+** Fixed
+
+*** Made it harder to accidentally swipe left or right on headers
+
+- Changed swipe detection from fixed distance to relative distance (2x)
+- This reduces accidental swipes while maintaining intentional swipe functionality
+- PR: https://github.com/200ok-ch/organice/pull/1034
+- Thank you [[https://github.com/vHugoObject][vHugoObject]] for the PR🙏
+
+* [2025-06-06 Fri]
+
+** Fixed
+
+*** Repeater state changes will now always be filed to the correct header
+
+- =updatePlanningItemsWithRepeaters= now selects the header it intends to update
+
+PR: https://github.com/200ok-ch/organice/pull/1029
+
+* [2025-05-24 Sat]
+
+** Added
+*** Duplicate header via long-press on '+' icon
+
+- Long-pressing the '+' icon in the header action drawer now
+  duplicates the current header and its entire subtree.
+- Visual feedback for the long-press interaction has been
+  significantly enhanced with larger surrounding shadows for better
+  visibility, especially on touch devices.
+- Short-press on the '+' icon continues to add a new, empty header.
+
+PR: https://github.com/200ok-ch/organice/pull/1025
+
+** Fixed
+*** Table add/remove button inverted
+
+PR: https://github.com/200ok-ch/organice/pull/1024
+
+* [2025-05-22 Thu]
+
+** Changed
+
+*** Refactor and unify Docker setup for improved development and production builds
+
+  - Introduce a multi-stage =Dockerfile=. This file defines distinct
+    stages for =base=, =development=, =build=, and =production=,
+    ensuring optimized layers and dependencies.
+  - The production Docker image is lean, containing only necessary built assets and runtime dependencies.
+
+This significantly simplifies Docker configuration management,
+enhances the developer experience when using Docker, and builds upon
+earlier work by @rogueai to create lean production images.
+
+The PR is: https://github.com/200ok-ch/organice/pull/1023
+
+* [2025-05-06 Tue]
+
+** Added
+
+*** Add visual cue for overdue headers when displaying headers
+
+- Before this change: When enabling the setting "Show Deadline
+  Display", the respective deadline will be displayed on each header
+  line.
+- After this change, in the deadline will show in grey if not overdue
+  and in red if overdue.
+
+This change was originally proposed and implemented by @dmorlitz:
+https://github.com/200ok-ch/organice/pull/970
+
+The merged PR is: https://github.com/200ok-ch/organice/pull/1019
+
+** Fixed
+
+*** Resolved issue where search input field could scroll off-screen on iOS devices
+  - The search input in popups (like Search, Task List) will no longer
+    attempt to automatically focus on iOS. This prevents the field
+    from being pushed out of view by the virtual keyboard. iOS users
+    will now need to tap the input to activate it.
+  - On non-iOS platforms, the search input will now auto-focus with a
+    slight delay to improve usability.
+  - PR: https://github.com/200ok-ch/organice/pull/1018
+
+*** CI Tasks: docker build/push and deploy-prod
+
+- Building the docker image has been broken for some time.
+- Deploying to prod via CI had an issue since switching to parcel.
+
+Both seem to be working as of commit
+e72d01081863e69f7410be87f09aeb2ac68e3c1d. There's no PR, because I
+made these changes directly to the =master= branch, because these CI
+tasks should only run for production ready code.
+
+* [2025-04-11 Fri]
+
+** Changed
+
+*** Switch from CRA to parcel
+
+PR: https://github.com/200ok-ch/organice/pull/1014
+
+This is a big one.
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+** Fixed
+
+- Upgrades: When upgrading from CRA v3 to v4, the upgrade process
+  broke. Clients that once started an old version of organice would
+  forever cache that one.
+  - Changing to Parcel (see above) also got rid of quite a bit of
+    complexity:
+    - Parcel has upstream capability to build scss which means we
+      could delete a good bit of code.
+    - Changelog Files are loaded not only at build time, but can be
+      changed while running the dev server.
+
+* [2025-04-05 Sat]
+
+** Fixed
+
+- Create a static =/manifest.json=
+  - This improves the PWA experience for people self hosting organice
+  - PR: https://github.com/200ok-ch/organice/pull/1013
+
+* [2025-04-04 Fri]
+
+** Fixed
+
+- Prevent accidental horizontal swipes during vertical scrolling on iOS
+  - Improved touch handling to detect vertical scrolling intent and prevent unwanted horizontal swipe actions
+  - PR: https://github.com/200ok-ch/organice/pull/1012
+
+* [2024-11-11 Mon]
+
+** Changed
+
+- No UI/UX changes, but lots of tooling upgrades
+- Major version technical upgrades
+  - nodejs (from 12 to 20)
+  - Create React App (from 3 to 4)
+  - eslint (from 6 to 7)
+  - node-sass to sass
+- Minor version technical upgrades
+  - redux-undo
+  - React
+
+PRs:
+
+- https://github.com/200ok-ch/organice/pull/1000
+- https://github.com/200ok-ch/organice/pull/999
+- https://github.com/200ok-ch/organice/pull/998
+
+* [2024-11-09 Sat]
+** Fixed
+
+- Prevent app crash when deleting a list item immediately after exiting edit mode
+  - PR: https://github.com/200ok-ch/organice/pull/996
+  - Thank you [[https://github.com/kjmatsuda][kjmatsuda]] for the PR🙏
+** Changed
+
+- doc: Clarify where to find docs (interactive tutorial vs. manual)
+  - PR: https://github.com/200ok-ch/organice/pull/991
+* [2024-09-19 Thu]
+
+** Added
+
+- Add a =flake.nix= file to provide a development shell for
+  [[https://nixos.org/][Nix]] users.
+  - PR: https://github.com/200ok-ch/organice/pull/987
+
+* [2023-11-15 Wed]
+
+** Added
+
+- Ability to print all content (including below the fold)
+  - PR: https://github.com/200ok-ch/organice/pull/969
+    
+* [2023-08-29 Tue]
+
+** Added
+
+- Capture template variable =%y= expanding to the raw year
+  - PR: https://github.com/200ok-ch/organice/pull/964
+
+** Fixed
+
+- Using a capture template that is available from all Org files, but should always capture to just one file (not necessarily the currently open one).
+  - PR: https://github.com/200ok-ch/organice/pull/965
+
+* [2023-04-11 Tue]
+
+** Changed
+
+- Ticking a checkbox should only tick the checkbox, not enable the list item manipulating functions from =handleListItemSelect=.
+  - Relevant discussion: https://github.com/200ok-ch/organice/discussions/950
+  - PR: https://github.com/200ok-ch/organice/pull/951
+
+* [2023-04-10 Mon]
+
+** Fixed
+- Color of unchecked checkbox in a list
+  - PR: https://github.com/200ok-ch/organice/pull/949
+
+* [2023-04-03 Mon]
+
+** Added
+
+- Implements list manipulation functions
+  - PR: https://github.com/200ok-ch/organice/pull/945
+  - Thank you [[https://github.com/kjmatsuda][kjmatsuda]] for the PR🙏
+    
+* [2023-01-28 Sat]
+
+** Fixed
+
+- On a header, don't cancel swipe due to vertical movements
+  - PR: https://github.com/200ok-ch/organice/pull/938
+  - Thank you [[https://github.com/neildavidforrest][neildavidforrest]] for the PR🙏
+
+* [2023-01-09 Mon]
+
+** Fixed
+
+- Checking or unchecking a checkbox discards text with markup
+  - PR: https://github.com/200ok-ch/organice/pull/928
+  - Thank you [[https://github.com/saikiransathpadi][saikiransathpadi]] for the PR🙏
+
+- Don’t replace all leading =*= in the description
+  - Only when followed by a space, it would become a headline. Otherwise it’s markup for bold text.
+  - PR: https://github.com/200ok-ch/organice/pull/931
+
+* [2023-01-05 Thu]
+
+** Fixed
+
+- Deadline overlay UI improvements
+  - PR: https://github.com/200ok-ch/organice/pull/925
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+
+* [2023-01-04 Wed]
+
+** Added
+
+- Configuration option for a default Org file on startup.
+  - By default, when you start organice, it will display your root
+    file directory. If you prefer to display a specific Org file
+    instead, you can select it in the [[https://organice.200ok.ch/settings][file settings]].
+
+- Option to display DEADLINE values (near the clocking value) on each headline
+  - The default for this option is false - so there is no change to the default behavior - until you enable this option via Settings.
+  - PR: https://github.com/200ok-ch/organice/pull/891
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+
+** Fixed
+
+- Rotation of table editor icons to reflect their action.
+  - PR: https://github.com/200ok-ch/organice/pull/890
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+
+- Prevent the user from invalidating her Org file by entering a description that leads with =*=
+  - If the user starts any line with a =*=, wanting to start a new list, it is immediately converted to a =-=.
+  - PR: https://github.com/200ok-ch/organice/pull/920
+  - Thank you [[https://github.com/saikiransathpadi][saikiransathpadi]] for the PR🙏
+   
+
+** Changed
+
+- Disable auto-capitalization for search
+  - Before:
+    - When using the search or task list text inputs the Android/iOS keyboards automatically apply the shift key, meaning that the first character is capitalized.
+    - 99% of the time this is not what we want because:
+      - Having mixed case triggers a case sensitive search. This is quite confusing when I did not intentionally use capitalization, but it was added anyway. For example, I type "and", and it actually inputs and searches for "And", which yields no results.
+      - Many of the keywords in the search grammar are lower case, e.g., =deadline:=, =desc:=.
+  - Now: Auto-capitalization is turned off
+  - PR: https://github.com/200ok-ch/organice/pull/914
+  - Thank you [[https://github.com/neildavidforrest][neildavidforrest]] for the PR🙏
+* [2022-12-03 Sat]
+** Fixed
+
+- Improve parser to read lines with multiple inline markup statements
+  - PR: https://github.com/200ok-ch/organice/pull/910
+  - Thank you [[https://github.com/lechten][lechten]] for the PR🙏
+
+* [2022-12-02 Fri]
+** Added
+- Filtering by description
+  - PR: https://github.com/200ok-ch/organice/pull/907
+  - Thank you [[https://github.com/neildavidforrest][neildavidforrest]] for the PR🙏
+* [2022-11-02 Wed]
+** Fixed
+- Use correct HTML anchor tag inside public.html <noscript>
+  - PR: https://github.com/200ok-ch/organice/pull/902
+  - Thank you [[https://github.com/josephmturner][josephmturner]] for the PR🙏
+* [2022-07-08 Fri]
+** Fixed
+- When opening an Org file, show it from the top
+  - PR: https://github.com/200ok-ch/organice/pull/878
+- Changelog has a =Back= button in the HeaderBar
+  - PR: https://github.com/200ok-ch/organice/pull/882
+* [2022-07-06 Wed]
+** Fixed
+- Change log renders above previously opened view component
+  - PR: https://github.com/200ok-ch/organice/pull/869
+- Make HeaderBar sticky
+  - PR: https://github.com/200ok-ch/organice/pull/870
+* [2022-07-04 Mon]
+** Added
+- Setting to change textbox height in the description editor
+  - PR: https://github.com/200ok-ch/organice/pull/875
+  - Thank you [[https://github.com/dmorlitz][dmorlitz]] for the PR🙏
+* [2022-06-30 Thu]
+** Changed
+- Upgrade Dropbox authentication flow: switch from OAuth to OAuth 2
+  and PKCE
+  - Rationale: Dropbox switched OAuth from long lived tokens to short
+    lived tokens.
+  - PR: https://github.com/200ok-ch/organice/pull/851
+* [2022-06-29 Wed]
+** Fixed
+- Undo looks like it is persisting changes, but it persisted old
+  state. Hence, reloading the file was bringing back the version of
+  the file before undoing.
+  - PR: https://github.com/200ok-ch/organice/pull/861
+** Changed
+- Simplify UX in task modal
+  - "Change todo keyword set" is now an explicit button. Also, it's
+    only shown when there is more than one todo keyword set configured
+    for the current Org file.
+  - Todo keywords can be selected and unselected on the same button.
+    No trash can necessary to unselect a todo keyword..
+  - PR: https://github.com/200ok-ch/organice/pull/862
+** Added
+- Ability to delete header from task modal.
+  - PR: https://github.com/200ok-ch/organice/pull/862
 * [2022-06-22 Wed]
 ** Added
 - Ability to handle empty files

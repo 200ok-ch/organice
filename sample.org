@@ -4,7 +4,7 @@
 #+TODO: START INPROGRESS STALLED | FINISHED
 
 * This is an actual org file - feel free to play around with it! (Don't worry about messing it up - your changes won't be saved, so just refresh the page to reset it)
-* For starters, tap on the next header to open it
+* Tap on any header to open it
 This header has some description text and a couple subheaders. Look through the next few top level headers to learn more about organice.
 ** This is a subheader
 ** This is a subheader too!
@@ -14,7 +14,7 @@ When you select a header, the "header action drawer" appears. The first two icon
 
 Title and Description fields are not edited as raw text by default. Instead, a semantic editor comes up when editing them. To edit raw values, click the 'edit' icon, again.
 
-If you want the "header action drawer" to disappear or to deselect the current header, tap into the title (or empty space) in the headerbar.
+If you want the "header action drawer" to disappear or to deselect the current header, tap onto the title (or empty space) in the application's headerbar.
 
 ** All icons in the header action bar
 
@@ -23,7 +23,7 @@ If you want the "header action drawer" to disappear or to deselect the current h
 3. Tags: [[https://orgmode.org/manual/Tags.html][Modify tags]]
 4. Properties: [[https://orgmode.org/manual/Properties-and-columns.html][Modify properties]]
 5. Expand: [[https://orgmode.org/manual/Structure-editing.html][Narrow to subtree]] (/Narrowing/ means focusing on this header, making the rest temporarily inaccessible.)
-6. Plus: Create new header below
+6. Plus: Create new header below. Long-pressing this icon duplicates the current header and its entire subtree, providing enhanced visual feedback with larger surrounding shadows. 
 7. Mail: Share this header via email
 8. Calendar 1: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set deadline datetime]]
 9. Calendar 2: [[https://orgmode.org/manual/Deadlines-and-scheduling.html][Set scheduled datetime]]
@@ -86,6 +86,8 @@ To remove a header, swipe left on the header until the background turns red.
 To move a header, click on the four-way arrows button at the bottom of the screen with a header selected. 6 buttons will appear for moving headers.
 
 The center 4 move the header up, down, left, and right. The 2 outermost buttons move the header and its entire nested subtree.
+
+You can also long-press and drag headers directly in the list on desktop and mobile. Parent headers move together with their subheaders, and top-level headers can only be dropped between other top-level headers.
 
 Give them a try on these nested headers to get a feel for how they operate:
 *** A few of my favorite things:
@@ -158,21 +160,21 @@ On the right side, the four-way arrow buttons allow you to manipulate tables by 
 
 Press up and down to move rows, and left and right to move columns.
 * Lists and checkboxes
-organice has native support for displaying plain lists and checkboxes
+organice has native support for displaying plain lists and checkboxes.
 
 Plain:
 
-- plain list item 1
-- plain list item 2
-  - sub item 1
-- plain list item 3
+- Plain list item 1
+- Plain list item 2
+  - Sub item 1
+- Plain list item 3
 
 Ordered:
 
-1. Item 1
-2. Item 2
-20. [@20] Item 20
-21. Item 21
+1. Ordered Item 1
+2. Ordered Item 2
+   1. Sub item
+3. Ordered Item 2
 
 Checkboxes:
 
@@ -182,7 +184,37 @@ Checkboxes:
   - [X] 1. 2
 - [X] 2
 
-Currently, plain lists are mostly display only (except that you can check/uncheck checkboxes). If native support for manipulating plain lists is important to you, please let me know by upvoting [[https://github.com/200ok-ch/organice/issues/26][the issue]] on Github
+** Auto-continuation
+
+When editing a description, lists are automatically continued when you press Enter:
+
+- Type =- item= and press Enter → the next line starts with =- =
+- Type =1. item= and press Enter → the next line starts with =2. =
+
+To stop the list, press Enter on an empty list prefix (the auto-generated =- = or =2. = is removed).
+
+** Editing workflow
+
+First, create the first list item by editing the description of a header. When you close the "edit description" modal, you can manipulate the list item with native list manipulation functions. The UX is analogous to manipulating a header. Here's what you can do:
+
+- Add new list item
+- Remove list item
+- Move list item up
+- Move list item down
+- Move list item left
+- Move list item right
+- Move list subtree left
+- Move list subtree right
+- Edit list item title
+- Edit list item contents
+
+** All icons in the list action bar
+
+1. Pen: Edit list item title
+2. Pen in square: Edit list item contents
+3. Plus: Create new list item below
+4. Cross: Delete list item
+
 * Timestamps
 organice has native support for displaying and editing [[https://orgmode.org/manual/Timestamps.html#Timestamps][timestamps]].
 
@@ -200,11 +232,56 @@ Try tapping on the timestamps below to get a feel for the editor:
 
 ** Habit tracking
 
-Org has the ability to track the consistency of a special category of TODO, called "habits." From the [[https://orgmode.org/manual/Tracking-your-habits.html][upstream doc]]: A timestamp may have minimum and maximum ranges specified by using the syntax =.+2d/3d=, which says that you want to do the task at least every three days, but at most every two days.
+organice supports Emacs Org mode's habit tracking feature with a visual consistency graph. Habits are TODO items that you want to track consistently over time, like daily exercise or meditation.
 
-Example timestamp: <2009-10-17 Sat .+2d/4d>
+*** Creating a habit
 
-organice supports parsing and preserving the minimum/maximum range timestamps. Alas, only the minimum range is handled as a [[https://orgmode.org/manual/Repeated-tasks.html][repeated task]]. There's no UI for the maximum range, it can be edited as raw text. Also, there is no UI to show how well a habit has been exercised.
+To create a habit, add a =STYLE= property with the value =habit= to your TODO item:
+
+*** TODO Exercise
+    SCHEDULED: <2026-01-07 Wed .+1d>
+    :PROPERTIES:
+    :STYLE:    habit
+    :END:
+
+The =.+= repeater means "do this at least once per day". When you mark it DONE, the date shifts from today (not from the original scheduled date). This means if you miss a few days, the habit stays overdue until you complete it.
+
+*** Understanding the consistency graph
+
+In the agenda view, habits display a visual consistency graph below the title showing your completion history:
+
+- *Green*: You completed the habit on this day
+- *Blue*: Not due yet (in the grace period)
+- *Yellow*: Scheduled for this day, or due tomorrow
+- *Red*: Overdue (you missed this day)
+
+The graph displays the configured number of preceding days (default: 21) and following days (default: 7).
+
+*** Example with completion history
+
+Here's a more complete example with a LOGBOOK showing when you completed the habit:
+
+*** TODO Meditate for 15 minutes
+    SCHEDULED: <2026-01-07 Wed .+1d>
+    :PROPERTIES:
+    :STYLE:    habit
+    :LAST_REPEAT: [2026-01-06 Tue 08:00]
+    :END:
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2026-01-06 Tue 08:00]
+    - State "DONE"       from "TODO"       [2026-01-05 Mon 08:00]
+    - State "DONE"       from "TODO"       [2026-01-03 Sat 07:30]
+    :END:
+
+The =LAST_REPEAT= property is automatically updated when you mark the habit as DONE, and the consistency graph uses your LOGBOOK entries to show which days you completed the habit.
+
+*** Habit frequency examples
+
+- Daily: =SCHEDULED: <2026-01-07 Wed .+1d>=
+- Every 2 days: =SCHEDULED: <2026-01-07 Wed .+2d>=
+- Weekly: =SCHEDULED: <2026-01-07 Wed .+1w>=
+
+See the [[https://organice.200ok.ch/documentation.html#org_habits][documentation]] for more details on habit configuration.
 
 * Automatic/Implicit links
 
@@ -246,10 +323,18 @@ organice has native support for adding and editing DEADLINE and SCHEDULED items.
 
 Scheduling an item should not be understood in the same way that we understand scheduling a meeting. Setting a date for a meeting is just a simple appointment, you can mark this entry with a simple plain timestamp, to get this item shown on the date where it applies.
 
-** An item with a deadline
-   DEADLINE: <2018-10-03 Wed>
+** Editing planning items in organice
 
-Deadlines and scheduled items produce entries in the agenda when they are over-due, so it is important to be able to mark such an entry as done once you have done so. When you mark a ‘DEADLINE’ or a ‘SCHEDULED’ with the TODO keyword ‘DONE’, it no longer produces entries in the agenda.
+To add a DEADLINE or SCHEDULED timestamp, tap a header to open the header action drawer, then use the calendar icons (see "All icons in the header action bar" above).
+
+To *remove* a DEADLINE or SCHEDULED timestamp, open the timestamp editor and clear the date field. When the date is empty, the planning item is removed entirely.
+
+Inside the timestamp editor, repeaters, delays, and time ranges each have a =+= button to add them and an =X= button to remove them.
+
+** An item with a deadline in the far future
+   DEADLINE: <2088-05-06 Thu>
+
+Deadlines and scheduled items produce entries in the agenda when they are over-due, so it is important to be able to mark such an entry as done once you have done so. When you mark a 'DEADLINE' or a 'SCHEDULED' with the TODO keyword 'DONE', it no longer produces entries in the agenda.
 ** An item that is scheduled
    SCHEDULED: <2018-10-18 Thu>
 ** Doctors appointment <2020-10-07 Wed>
@@ -268,7 +353,27 @@ For simple appointments, it is enough to mark the entry with a simple plain time
 
 The =+1w= is a repeater; the intended interpretation is that the task has a deadline on '2019-01-10' and repeats itself every (one) week starting from that time. You can use yearly, monthly, weekly, daily and hourly repeat cookies by using the 'y', 'w', 'm', 'd' and 'h' letters.
 
-With the =+1w= cookie, the date shift is always exactly one week. So if you completed the TODO for three months, marking this entry DONE still keeps it as an overdue deadline. Depending on the task, this may not be the best way to handle it. For example, if you forgot to call your father for 3 weeks, it does not make sense to call him 3 times in a single day to make up for it. Finally, there are tasks, like changing batteries, which should always repeat a certain time after the last time you did it. For these tasks, Org mode has special repeaters =++= and =.+=. For example:
+*** Types of repeaters
+
+There are three types of repeaters in Org mode:
+
+**** + (plus repeater)
+
+Shifts the date by a fixed amount from the /original/ date. If you miss deadlines, all missed instances appear in the agenda as overdue. This is useful for tasks that must happen on a specific schedule regardless of when you complete them.
+
+Example: =+1w= repeats exactly one week from the original date. If the deadline was Thursday and you complete it three weeks late on Wednesday, the next deadline will still be Thursday (one week after the original), which will appear as overdue.
+
+**** ++ (plus-plus repeater)
+
+Shifts the date to a future occurrence, but preserves certain properties like the day of week. The date shifts by at least the specified amount, but also by as much as needed to get the date into the future.
+
+Example: =++1w= repeats weekly but stays on the same weekday. If the deadline is Sunday and you complete it on Saturday, the next deadline will be the next Sunday (preserving the Sunday schedule).
+
+**** .+ (dot repeater)
+
+Shifts the date from /today/ when you mark the task DONE. This is the most common style for habits and tasks that should repeat a certain time after you last did them. If you miss days, the task stays overdue until you complete it.
+
+Example: =.+1d= means "do this at least once per day." If you complete it today, the next deadline is tomorrow. If you miss three days and then complete it, the next deadline is still tomorrow (not three days from the original schedule).
 
 *** TODO Call kitchen trash
     DEADLINE: <2019-02-11 Mon ++1w>
@@ -286,6 +391,8 @@ You can specify a different lead time for warnings for a specific deadlines usin
 
 In case the task contains a repeater, the delay is considered to affect all occurrences; if you want the delay to only affect the first scheduled occurrence of the task, use '--5d' instead.
 
+
+In the settings, there is an option to display deadline values on each headline.
 * Capture
 organice supports something like [[https://orgmode.org/manual/Capture.html][Org capture]] in the form of customizable, quickly accessible buttons for creating new headers.
 
@@ -408,6 +515,14 @@ Some examples on how to use time ranges:
 
 Note that negating time ranges is not implemented.
 
+To search for the description of your headlines, use =desc= or =description=:
+
+- =desc:"search term"=
+
+If you want to search for multiple terms, you can combine them like so:
+
+- =desc:term_1 desc:term_2=
+
 
 ** Auto-completion for filters
 
@@ -463,3 +578,7 @@ organice supports a flexible mechanism for capturing using URL parameters. This 
 You can use [[https://www.icloud.com/shortcuts/14f91f8cf8f547a183a0734396240984][this sample Shortcut]] to get started with this right away in iOS 12. Open the link on your iOS device and click "Get Shortcut". Then open up the Shortcuts app and edit the template by following the directions in the comments. Then record a Siri trigger and you're good to go!
 
 Alternatively, you can take advantage of the URL parameters yourself to build your own custom capture mechanism. You can find more details about this in [[https://github.com/200ok-ch/organice/#capture-params-and-siri-support][the README file]].
+
+* Further questions?
+
+If you've finished this interactive tutorial, but have further questions, we have you covered! There is additional [[https://organice.200ok.ch/documentation.html][documentation]] which contains more comprehensive and formal documentation, including installation instructions, deployment guides, contribution guidelines, and technical details about the project's architecture and development process. This file is aimed at both users seeking in-depth information and developers interested in contributing to the project.

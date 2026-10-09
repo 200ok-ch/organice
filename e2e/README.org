@@ -1,0 +1,202 @@
+# -*- org -*-
+* E2E Testing with Playwright
+
+This directory contains end-to-end tests for organice using [[https://playwright.dev/][Playwright]].
+
+** Running Tests
+
+#+BEGIN_SRC shell
+# Run all E2E tests (Chromium, Firefox, WebKIT, Mobile)
+yarn test:e2e
+
+# Run specific browser
+yarn test:e2e --project=chromium
+
+# Run with UI mode
+yarn test:e2e:ui
+
+# Run in debug mode
+yarn test:e2e:debug
+
+# Run in headed mode (show browser)
+yarn test:e2e:headed
+
+# View HTML report
+yarn test:e2e:report
+
+# Run Jest + Playwright
+yarn test:all
+#+END_SRC
+
+** Writing New Tests
+
+1. Create a new test file in the appropriate directory
+2. Use the existing helpers for common operations
+3. Follow the naming convention: =*.spec.js=
+4. Use CSS selectors or data-testid attributes for reliability
+
+*** Example Test
+
+#+BEGIN_SRC javascript
+import { test, expect } from '@playwright/test';
+
+test.describe('My Feature', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+
+  test('should do something', async ({ page }) => {
+    const element = page.locator('.my-selector');
+    await expect(element).toBeVisible();
+    await element.click();
+    await expect(page).toHaveURL('/new-page');
+  });
+});
+#+END_SRC
+
+** Test Helpers
+
+*** E2ETestHelper
+
+Common operations like navigation, element interaction, and waiting.
+
+#+BEGIN_SRC javascript
+import E2ETestHelper from '../helpers/test-helper';
+
+const helper = new E2ETestHelper(page);
+await helper.navigateTo('/sample');
+await helper.clickElement('.my-button');
+#+END_SRC
+
+*** AuthHelper
+
+Authentication flows for testing with and without sign-in.
+
+#+BEGIN_SRC javascript
+import AuthHelper from '../helpers/auth-helper';
+
+const auth = new AuthHelper(page);
+await auth.signInWithMock();
+#+END_SRC
+
+*** FixtureHelper
+
+Access to test fixtures and Org file data from =test_helpers/fixtures/=.
+
+#+BEGIN_SRC javascript
+import FixtureHelper from '../helpers/fixture-helper';
+
+const fixtures = new FixtureHelper();
+const content = fixtures.readOrgFixture('all_the_features');
+#+END_SRC
+
+** Best Practices
+
+- Use specific selectors (class names or data-testid)
+- Keep tests isolated and independent
+- Use auto-waiting (Playwright waits automatically)
+- Test user flows, not implementation details
+- Use =/sample= route for unauthenticated tests
+- Target footer elements specifically with =.footer= prefix to avoid navbar matches
+
+** Authenticated Testing
+
+*** Overview
+
+Authenticated tests use a mock-based approach to test WebDAV sync functionality without requiring a real server. This allows testing of:
+- File browser functionality
+- File upload/download
+- Sync operations
+- Authentication flows
+
+*** Running Authenticated Tests
+
+#+BEGIN_SRC shell
+# Run authenticated e2e tests only
+yarn test:e2e:auth
+
+# Run all e2e tests (unauthenticated + authenticated)
+yarn test:e2e:full
+#+END_SRC
+
+*** Mock-Based Testing Approach
+
+Authenticated tests use =WebDAVMockHelper= to intercept WebDAV API calls and return mock responses. This approach:
+- Eliminates need for external test servers
+- Provides deterministic test data
+- Enables testing of error conditions
+- Improves test speed and reliability
+
+**** WebDAVMockHelper Usage
+
+#+BEGIN_SRC javascript
+import WebDAVMockHelper from '../../helpers/webdav-mock-helper';
+
+const webdavMock = new WebDAVMockHelper(page);
+await webdavMock.setupMocks();
+
+// Add test files
+webdavMock.addMockFile('/test.org', '* TODO Test task\n');
+
+// Clear after test
+webdavMock.clearMockFiles();
+#+END_SRC
+
+**** AuthHelper for Authentication
+
+The =AuthHelper= provides two methods for WebDAV authentication:
+
+#+BEGIN_SRC javascript
+import AuthHelper from '../../helpers/auth-helper';
+
+const auth = new AuthHelper(page);
+
+// UI-based sign-in (tests the actual form)
+await auth.signInWithWebDAV({ url, username, password });
+
+// Direct sign-in via localStorage (faster, bypasses UI)
+await auth.signInWithWebDAVDirect({ url, username, password });
+#+END_SRC
+
+** Troubleshooting
+
+*** Common Issues
+
+**** Tests Fail with "No tests found"
+
+Ensure the =chromium-authenticated= project is configured in =playwright.config.js=. Run:
+
+#+BEGIN_SRC shell
+npx playwright test --project=chromium-authenticated --list
+#+END_SRC
+
+**** Mock Responses Not Working
+
+1. Verify =setupMocks()= is called before navigation
+2. Check that WebDAV URL pattern matches your mock configuration
+3. Use =--debug= flag to inspect network requests
+
+**** Authentication Fails
+
+1. Verify localStorage keys are set correctly (=webdavEndpoint=, =webdavUsername=, =webdavPassword=)
+2. Check that =authenticatedSyncService= is set to ='WebDAV'=
+3. Ensure file browser selector (=data-testid="file-browser"=) is present
+
+**** File Operations Not Working
+
+1. Verify mock files are added before test execution
+2. Check file paths start with =/=
+3. Ensure route interception is set up before any WebDAV calls
+
+**** CI/CD Test Failures
+
+Check CircleCI logs for:
+- Browser installation failures
+- Network timeouts during =yarn install=
+- Playwright browser installation
+
+** Resources
+
+- [[https://playwright.dev/][Playwright Documentation]]
+- [[https://playwright.dev/docs/best-practices][Best Practices]]
+- [[https://playwright.dev/docs/mock][Playwright Mocking Guide]]

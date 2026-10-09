@@ -1,0 +1,29 @@
+.list-action-drawer-container {
+  color: lightgray;
+
+  padding-bottom: 10px;
+
+  padding-right: 20px;
+}
+
+.list-action-drawer__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  padding-top: 10px;
+}
+
+.list-action-drawer__edit-icon-container {
+  position: relative;
+}
+
+.list-action-drawer__separator {
+  background-color: lightgray;
+
+  height: 15px;
+  width: 1px;
+
+  margin-left: 10px;
+  margin-right: 10px;
+}

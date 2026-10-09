@@ -362,8 +362,17 @@ export const loadTheme = (theme = 'Solarized', colorScheme = 'Light') => {
       colorScheme = 'Light';
     }
   }
+  const themeColors = themes[theme][colorScheme];
   const style = document.documentElement.style;
-  Object.entries(themes[theme][colorScheme]).forEach(([k, v]) => style.setProperty(k, v));
+  Object.entries(themeColors).forEach(([k, v]) => style.setProperty(k, v));
+
+  // Cache resolved CSS variables so the inline script in index.html can
+  // apply them before CSS loads on the next cold start (eliminates flash).
+  try {
+    localStorage.setItem('themeVariables', JSON.stringify(themeColors));
+  } catch (_e) {
+    // localStorage may be unavailable; ignore.
+  }
 
   // set theme color on android
   document

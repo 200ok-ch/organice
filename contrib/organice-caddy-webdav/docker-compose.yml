@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+  caddy:
+    # image: lucaslorentz/caddy-docker-proxy
+    build: ./caddy/src/
+    container_name: caddy
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - CADDY_INGRESS_NETWORKS=caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./caddy/caddy-data:/data/
+      - ./caddy/caddy-config:/config/
+      # Replace '/path/to/org-dir' with the path to the
+      # directory in which your Org files are stored.
+      - /path/to/org-dir:/srv/dav/Org/
+    restart: unless-stopped
+    networks:
+      - caddy
+
+  organice:
+    image: 'twohundredok/organice:latest'
+    container_name: organice
+    # ports:
+    #   - '5000:3000'
+    logging:
+      driver: json-file
+    environment:
+      # Replace 'organice.example.org' with your domain.
+      - ORGANICE_WEBDAV_URL=https://organice.example.org/dav
+    # /srv/dav/ volume is bound in caddy container
+    labels:
+      # Replace 'organice.example.org' with your domain.
+      caddy: organice.example.org
+      # Secure your server, either with IP whitelisting,
+      # by uncommenting the next three lines (obviously,
+      # change the value of the IP subnet):
+      # caddy.@blocked.not: "remote_ip 192.168.2.0/24"
+      # caddy.@blocked.path: "*"
+      # caddy.route.respond: "@blocked Forbidden. 403"
+      # Or with HTTP basic auth, by uncommenting the next two
+      # lines, replacing 'myser' with the desired username and
+      # 'mypassword' with a hashed password, which you can
+      # generate with 'docker run -it caddy caddy hash-password'.
+      # Don't forget to escape the dollar signs ('$') in the hash
+      # by doubling them (i.e '$foo$bar' should become '$$foo$$bar').
+      # caddy.route.basicauth: "*"
+      # caddy.route.basicauth.myuser: mypassword
+      # If you want to restrict the access to the Webdav server
+      # only and keep your Organice instance public, replace the
+      # '*' in the examples above with '/dav/*'.
+      caddy.@proxy.not: "path /dav/*"
+      caddy.route.reverse_proxy: "@proxy {{upstreams 5000}}"
+      caddy.route.rewrite: /dav /dav/
+      caddy.route.webdav: "/dav/*"
+      caddy.route.webdav.prefix: /dav
+      caddy.route.webdav.root: "/srv/dav/Org"
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    name: caddy

@@ -13,6 +13,7 @@ import './stylesheet.css';
 import TabButtons from '../UI/TabButtons';
 import Switch from '../UI/Switch';
 import ExternalLink from '../UI/ExternalLink';
+import StorageDiagnostics from './StorageDiagnostics';
 
 const Settings = ({
   fontSize,
@@ -20,11 +21,13 @@ const Settings = ({
   shouldTapTodoToAdvance,
   shouldStoreSettingsInSyncBackend,
   shouldLiveSync,
+  showDeadlineDisplay,
   shouldSyncOnBecomingVisibile,
   shouldShowTitleInOrgFile,
   shouldLogIntoDrawer,
   closeSubheadersRecursively,
   shouldNotIndentOnExport,
+  editorDescriptionHeightValue,
   agendaDefaultDeadlineDelayValue,
   agendaDefaultDeadlineDelayUnit,
   agendaStartOnWeekday,
@@ -32,6 +35,9 @@ const Settings = ({
   syncBackend,
   preferEditRawValues,
   showClockDisplay,
+  orgHabitShowAllToday,
+  orgHabitPrecedingDays,
+  orgHabitFollowingDays,
   colorScheme,
   theme,
   base,
@@ -72,6 +78,9 @@ const Settings = ({
   const handleShouldTapTodoToAdvanceChange = () =>
     base.setShouldTapTodoToAdvance(!shouldTapTodoToAdvance);
 
+  const handleEditorDescriptionHeightValueChange = (event) =>
+    base.setEditorDescriptionHeightValue(event.target.value);
+
   const handleAgendaDefaultDeadlineDelayValueChange = (event) =>
     base.setAgendaDefaultDeadlineDelayValue(event.target.value);
 
@@ -81,6 +90,8 @@ const Settings = ({
   const handleAgendaStartOnWeekdayChange = (value) => base.setAgendaStartOnWeekday(value);
 
   const handleShouldLiveSyncChange = () => base.setShouldLiveSync(!shouldLiveSync);
+
+  const handleShowDeadlineDisplayChange = () => base.setShowDeadlineDisplay(!showDeadlineDisplay);
 
   const handleShouldSyncOnBecomingVisibleChange = () =>
     base.setShouldSyncOnBecomingVisibile(!shouldSyncOnBecomingVisibile);
@@ -103,15 +114,13 @@ const Settings = ({
 
   const handlePreferEditRawValues = () => base.setPreferEditRawValues(!preferEditRawValues);
 
-  const handleChangelogClick = () => {
-    base.restoreStaticFile('changelog');
-    base.pushModalPage('changelog');
-  };
+  const handleOrgHabitShowAllToday = () => base.setOrgHabitShowAllToday(!orgHabitShowAllToday);
 
-  const handleHelpClick = () => {
-    base.restoreStaticFile('sample');
-    base.pushModalPage('sample');
-  };
+  const handleOrgHabitPrecedingDaysChange = (event) =>
+    base.setOrgHabitPrecedingDays(parseInt(event.target.value, 10) || 0);
+
+  const handleOrgHabitFollowingDaysChange = (event) =>
+    base.setOrgHabitFollowingDays(parseInt(event.target.value, 10) || 0);
 
   return (
     <div className="settings-container">
@@ -272,6 +281,25 @@ const Settings = ({
         </div>
       </div>
 
+      <div className="setting-container setting-container--vertical">
+        <div className="setting-label">Description editor height</div>
+        <div className="setting-label__description">
+          This setting controls the height of the description editor on computers only. The height
+          will be limited to ensure that all buttons are always visible. On mobile devices this
+          setting is ignored and the editor will always be 8 rows high.
+        </div>
+
+        <div className="default-deadline-warning-container">
+          <input
+            type="number"
+            min="2"
+            className="textfield default-deadline-value-textfield"
+            value={editorDescriptionHeightValue}
+            onChange={handleEditorDescriptionHeightValueChange}
+          />
+        </div>
+      </div>
+
       <div className="setting-container">
         <div className="setting-label">
           Start of week for weekly agenda
@@ -293,6 +321,51 @@ const Settings = ({
 
       <div className="setting-container">
         <div className="setting-label">
+          Show all habits today
+          <div className="setting-label__description">
+            When enabled, all habits are shown in today's agenda view, even if not scheduled or
+            already marked as DONE today. Only applies to today's date in the agenda.
+          </div>
+        </div>
+        <Switch isEnabled={orgHabitShowAllToday} onToggle={handleOrgHabitShowAllToday} />
+      </div>
+
+      <div className="setting-container setting-container--vertical">
+        <div className="setting-label">Habit consistency graph preceding days</div>
+        <div className="setting-label__description">
+          The number of days before today that will be shown in the habit consistency graph.
+        </div>
+
+        <div className="default-deadline-warning-container">
+          <input
+            type="number"
+            min="0"
+            className="textfield default-deadline-value-textfield"
+            value={orgHabitPrecedingDays}
+            onChange={handleOrgHabitPrecedingDaysChange}
+          />
+        </div>
+      </div>
+
+      <div className="setting-container setting-container--vertical">
+        <div className="setting-label">Habit consistency graph following days</div>
+        <div className="setting-label__description">
+          The number of days after today that will be shown in the habit consistency graph.
+        </div>
+
+        <div className="default-deadline-warning-container">
+          <input
+            type="number"
+            min="0"
+            className="textfield default-deadline-value-textfield"
+            value={orgHabitFollowingDays}
+            onChange={handleOrgHabitFollowingDaysChange}
+          />
+        </div>
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
           Display time summaries
           <div className="setting-label__description">
             This puts overlays at the end of each headline, showing the total time recorded under
@@ -300,6 +373,16 @@ const Settings = ({
           </div>
         </div>
         <Switch isEnabled={showClockDisplay} onToggle={handleShowClockDisplayClick} />
+      </div>
+
+      <div className="setting-container">
+        <div className="setting-label">
+          Show Deadline Display
+          <div className="setting-label__description">
+            If enabled, the deadline will displayed on each header line.
+          </div>
+        </div>
+        <Switch isEnabled={showDeadlineDisplay} onToggle={handleShowDeadlineDisplayChange} />
       </div>
 
       <div className="setting-container">
@@ -316,6 +399,8 @@ const Settings = ({
         <Switch isEnabled={preferEditRawValues} onToggle={handlePreferEditRawValues} />
       </div>
 
+      <StorageDiagnostics />
+
       <div className="settings-buttons-container">
         <button className="btn settings-btn" onClick={handleCaptureTemplatesClick}>
           Capture templates
@@ -329,7 +414,7 @@ const Settings = ({
 
         <hr className="settings-button-separator" />
 
-        <button className="btn settings-btn" onClick={handleChangelogClick}>
+        <Link to="/changelog" className="btn settings-btn">
           Changelog
           {hasUnseenChangelog && (
             <div className="changelog-badge-container">
@@ -337,9 +422,9 @@ const Settings = ({
               &nbsp; What's New?
             </div>
           )}
-        </button>
+        </Link>
 
-        <Link to="/sample" className="btn settings-btn" onClick={handleHelpClick}>
+        <Link to="/sample" className="btn settings-btn">
           Help
         </Link>
 
@@ -376,11 +461,13 @@ const mapStateToProps = (state) => {
     fontSize: state.base.get('fontSize') || 'Regular',
     bulletStyle: state.base.get('bulletStyle'),
     shouldTapTodoToAdvance: state.base.get('shouldTapTodoToAdvance'),
+    editorDescriptionHeightValue: state.base.get('editorDescriptionHeightValue') || 8,
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,
     shouldStoreSettingsInSyncBackend: state.base.get('shouldStoreSettingsInSyncBackend'),
     shouldLiveSync: state.base.get('shouldLiveSync'),
+    showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
     shouldSyncOnBecomingVisibile: state.base.get('shouldSyncOnBecomingVisibile'),
     shouldShowTitleInOrgFile: state.base.get('shouldShowTitleInOrgFile'),
     shouldLogIntoDrawer: state.base.get('shouldLogIntoDrawer'),
@@ -389,6 +476,9 @@ const mapStateToProps = (state) => {
     hasUnseenChangelog: state.base.get('hasUnseenChangelog'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
     preferEditRawValues: state.base.get('preferEditRawValues'),
+    orgHabitShowAllToday: state.base.get('orgHabitShowAllToday'),
+    orgHabitPrecedingDays: state.base.get('orgHabitPrecedingDays') || 21,
+    orgHabitFollowingDays: state.base.get('orgHabitFollowingDays') || 7,
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
   };

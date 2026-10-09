@@ -32,6 +32,7 @@ export default ({ state, onClick }) => {
             <div className="checkbox__inner-container">
               {state === 'checked' && <i className="fas fa-check" />}
               {state === 'partial' && <i className="fas fa-minus" />}
+              {state === 'unchecked' && <i className="fas fa-square" />}
             </div>
           </div>
         );

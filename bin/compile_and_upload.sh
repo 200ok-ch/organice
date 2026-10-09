@@ -16,7 +16,7 @@ cp .env.sample .env
 
 yarn install
 yarn run build
-cd build
+cd dist
 lftp "$FTP_HOST" <<END_SCRIPT
 user $FTP_USER $FTP_PASSWD
 mirror -R ./

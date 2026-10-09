@@ -19,6 +19,9 @@ const setAgendaDefaultDeadlineDelayUnit = (state, action) =>
 const setAgendaDefaultDeadlineDelayValue = (state, action) =>
   state.set('agendaDefaultDeadlineDelayValue', action.newAgendaDefaultDeadlineDelayValue);
 
+const setEditorDescriptionHeightValue = (state, action) =>
+  state.set('editorDescriptionHeightValue', action.newEditorDescriptionHeightValue);
+
 const setAgendaStartOnWeekday = (state, action) =>
   state.set('agendaStartOnWeekday', action.newAgendaStartOnWeekday);
 
@@ -26,6 +29,9 @@ const setShouldStoreSettingsInSyncBackend = (state, action) =>
   state.set('shouldStoreSettingsInSyncBackend', action.newShouldStoreSettingsInSyncBackend);
 
 const setShouldLiveSync = (state, action) => state.set('shouldLiveSync', action.shouldLiveSync);
+
+const setShowDeadlineDisplay = (state, action) =>
+  state.set('showDeadlineDisplay', action.showDeadlineDisplay);
 
 const setShouldSyncOnBecomingVisibile = (state, action) =>
   state.set('shouldSyncOnBecomingVisibile', action.shouldSyncOnBecomingVisibile);
@@ -127,8 +133,23 @@ const setFinderTab = (state, action) => state.set('finderTab', action.finderTab)
 const setPreferEditRawValues = (state, action) =>
   state.set('preferEditRawValues', action.preferEditRawValues);
 
+const setOrgHabitShowAllToday = (state, action) =>
+  state.set('orgHabitShowAllToday', action.orgHabitShowAllToday);
+
+const setOrgHabitPrecedingDays = (state, action) =>
+  state.set('orgHabitPrecedingDays', action.orgHabitPrecedingDays);
+
+const setOrgHabitFollowingDays = (state, action) =>
+  state.set('orgHabitFollowingDays', action.orgHabitFollowingDays);
+
 const setColorScheme = (state, action) => {
   return state.set('colorScheme', action.colorScheme);
+};
+
+const osColorSchemeChanged = (state) => {
+  // Increment a counter to force a re-render in Entry (PureComponent).
+  // The colorScheme value stays as 'OS'; loadTheme() re-queries the OS preference.
+  return state.update('osColorSchemeChangeCount', (c) => (c || 0) + 1);
 };
 
 const setTheme = (state, action) => {
@@ -154,16 +175,22 @@ export default (state = Map(), action) => {
       return setAgendaDefaultDeadlineDelayUnit(state, action);
     case 'SET_AGENDA_DEFAULT_DEADLINE_DELAY_VALUE':
       return setAgendaDefaultDeadlineDelayValue(state, action);
+    case 'SET_EDITOR_DESCRIPTION_HEIGHT_VALUE':
+      return setEditorDescriptionHeightValue(state, action);
     case 'SET_AGENDA_START_ON_WEEKDAY':
       return setAgendaStartOnWeekday(state, action);
     case 'SET_SHOULD_STORE_SETTINGS_IN_SYNC_BACKEND':
       return setShouldStoreSettingsInSyncBackend(state, action);
     case 'SET_COLOR_SCHEME':
       return setColorScheme(state, action);
+    case 'OS_COLOR_SCHEME_CHANGED':
+      return osColorSchemeChanged(state);
     case 'SET_THEME':
       return setTheme(state, action);
     case 'SET_SHOULD_LIVE_SYNC':
       return setShouldLiveSync(state, action);
+    case 'SET_SHOW_DEADLINE_DISPLAY':
+      return setShowDeadlineDisplay(state, action);
     case 'SET_SHOULD_SYNC_ON_BECOMING_VISIBLE':
       return setShouldSyncOnBecomingVisibile(state, action);
     case 'SET_SHOULD_SHOW_TITLE_IN_ORG_FILE':
@@ -204,6 +231,12 @@ export default (state = Map(), action) => {
       return setFinderTab(state, action);
     case 'PREFER_EDIT_RAW_VALUES':
       return setPreferEditRawValues(state, action);
+    case 'SET_ORG_HABIT_SHOW_ALL_TODAY':
+      return setOrgHabitShowAllToday(state, action);
+    case 'SET_ORG_HABIT_PRECEDING_DAYS':
+      return setOrgHabitPrecedingDays(state, action);
+    case 'SET_ORG_HABIT_FOLLOWING_DAYS':
+      return setOrgHabitFollowingDays(state, action);
     default:
       return state;
   }

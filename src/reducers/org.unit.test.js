@@ -1,7 +1,8 @@
-/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "check_is_undoable", "check_just_dirtying", "check_is_undoable_on_table"] }] */
+/* global process */
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "check_is_undoable", "check_just_dirtying", "check_is_undoable_on_table", "assertElementDidNotChangeForHeaderIds"] }] */
 
 import { Map, fromJS } from 'immutable';
-
+import { curry, forEach } from 'lodash/fp';
 import generateId from '../lib/id_generator';
 import reducer from './org';
 import rootReducer from './index';
@@ -90,6 +91,54 @@ describe('org reducer', () => {
     return state;
   }
 
+  function assertElementDidNotChangeForHeaderIds(element, oldHeaders, newHeaders, headerIds) {
+    forEach((headerId) => {
+      expect(headerWithId(newHeaders, headerId).get(element).size).toEqual(
+        headerWithId(oldHeaders, headerId).get(element).size
+      );
+    })(headerIds);
+  }
+
+  const curriedAssertElementDidNotChangeForHeaderIds = curry(assertElementDidNotChangeForHeaderIds);
+  const assertDescriptionDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'description'
+  );
+  const assertLogNotesDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'logNotes'
+  );
+  const assertPlanningItemsDidNotChangeForHeaderIds = curriedAssertElementDidNotChangeForHeaderIds(
+    'planningItems'
+  );
+
+  describe('file settings', () => {
+    it('keeps only one default startup file when enabling a file setting', () => {
+      const state = readInitialState().org.present.set(
+        'fileSettings',
+        fromJS([
+          { id: 'a', path: '/a.org', defaultOnStartup: false },
+          { id: 'b', path: '/b.org', defaultOnStartup: true },
+          { id: 'c', path: '/c.org', defaultOnStartup: true },
+        ])
+      );
+
+      const newState = reducer(
+        state,
+        types.updateFileSettingFieldPathValue('a', ['defaultOnStartup'], true)
+      );
+
+      expect(
+        newState
+          .get('fileSettings')
+          .map((setting) => [setting.get('path'), setting.get('defaultOnStartup')])
+          .toJS()
+      ).toEqual([
+        ['/a.org', true],
+        ['/b.org', false],
+        ['/c.org', false],
+      ]);
+    });
+  });
+
   describe('REFILE_SUBTREE', () => {
     let state;
     const path = 'testfile';
@@ -125,6 +174,7 @@ describe('org reducer', () => {
           ['PROJECT Foo', 2],
           ["A headline that's done since a loong time", 3],
           ["A headline that's done a day earlier even", 3],
+          ['A header with plain list items', 1],
           ['A header with a custom todo sequence in DONE state', 1],
         ]
       );
@@ -147,6 +197,7 @@ describe('org reducer', () => {
         ['A header with [[https://organice.200ok.ch][a link]]', 1],
         ['A header with various links as content', 1],
         ['A header with a URL, mail address and phone number as content', 1],
+        ['A header with plain list items', 1],
         ['A header with a custom todo sequence in DONE state', 1],
       ]);
     });
@@ -433,6 +484,50 @@ describe('org reducer', () => {
 
       it('is undoable', () => {
         check_is_undoable(state, types.moveHeaderUp(nestedHeader2Id));
+      });
+    });
+
+    describe('MOVE_HEADER_TO_POSITION', () => {
+      it('moves a header together with its subtree', () => {
+        const action = types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'after');
+        const newState = reducer(state.org.present, action);
+
+        expect(extractTitlesAndNestings(newState.getIn(['files', path, 'headers']))).toEqual([
+          ['Top level header', 1],
+          ['A second nested header', 2],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+        ]);
+      });
+
+      it('does not duplicate or leave behind subtree children across repeated moves', () => {
+        const movedOnce = reducer(
+          state.org.present,
+          types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'after')
+        );
+
+        const movedTwice = reducer(
+          movedOnce,
+          types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'before')
+        );
+
+        const headers = movedTwice.getIn(['files', path, 'headers']);
+        expect(extractTitlesAndNestings(headers)).toEqual([
+          ['Top level header', 1],
+          ['A nested header', 2],
+          ['A deep nested header', 3],
+          ['A second nested header', 2],
+        ]);
+
+        const titles = headers.map((header) => header.getIn(['titleLine', 'rawTitle'])).toArray();
+        expect(titles.filter((title) => title === 'A deep nested header').length).toBe(1);
+      });
+
+      it('is undoable', () => {
+        check_is_undoable(
+          state,
+          types.moveHeaderToPosition(nestedHeaderId, nestedHeader2Id, 'after')
+        );
       });
     });
 
@@ -821,7 +916,11 @@ describe('org reducer', () => {
     let doneHeaderId;
     let repeatingHeaderId;
     let activeTimestampWithRepeaterHeaderId;
+    let notDoneId;
+    let notDoneWithLogsId;
     let state;
+    let allTestHeaderIds;
+
     const testOrgFile = readFixture('various_todos');
     const path = 'testfile';
 
@@ -840,6 +939,17 @@ describe('org reducer', () => {
         .get(3)
         .get('id');
       repeatingHeaderId = state.org.present.getIn(['files', path, 'headers']).get(4).get('id');
+      notDoneId = state.org.present.getIn(['files', path, 'headers']).get(5).get('id');
+      notDoneWithLogsId = state.org.present.getIn(['files', path, 'headers']).get(6).get('id');
+      allTestHeaderIds = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        activeTimestampWithRepeaterHeaderId,
+        repeatingHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
     });
 
     function check_todo_keyword_kept(oldHeaders, newHeaders, headerId) {
@@ -908,13 +1018,26 @@ describe('org reducer', () => {
         types.advanceTodoState(repeatingHeaderId)
       ).getIn(['files', path, 'headers']);
       check_todo_keyword_kept(oldHeaders, newHeaders, repeatingHeaderId);
-      expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
-        headerWithId(oldHeaders, repeatingHeaderId).get('description').size
-      );
+
+      // no descriptions should change
+      assertDescriptionDidNotChangeForHeaderIds(oldHeaders, newHeaders, allTestHeaderIds);
+      const unchangedHeaders = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        activeTimestampWithRepeaterHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
+
+      // logNotes and planningItems of unmodified headers should not change
+      assertLogNotesDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+      assertPlanningItemsDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+
+      // logNotes and planningItems of header with repeater should chnage
       expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toBeGreaterThan(
         headerWithId(oldHeaders, repeatingHeaderId).get('logNotes').size
       );
-
       expect(headerWithId(newHeaders, repeatingHeaderId).get('planningItems')).not.toEqual(
         headerWithId(oldHeaders, repeatingHeaderId).get('planningItems')
       );
@@ -932,8 +1055,25 @@ describe('org reducer', () => {
         'headers',
       ]);
       check_todo_keyword_kept(intermHeaders, newHeaders, repeatingHeaderId);
+      const unchangedHeaders = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        activeTimestampWithRepeaterHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
+
+      // logNotes and planningItems of unmodified headers should not change
+      assertLogNotesDidNotChangeForHeaderIds(intermHeaders, newHeaders, unchangedHeaders);
+      assertPlanningItemsDidNotChangeForHeaderIds(intermHeaders, newHeaders, unchangedHeaders);
+
       expect(headerWithId(newHeaders, repeatingHeaderId).get('description').size).toEqual(
         headerWithId(intermHeaders, repeatingHeaderId).get('description').size
+      );
+
+      expect(headerWithId(newHeaders, repeatingHeaderId).get('logNotes').size).toBeGreaterThan(
+        headerWithId(intermHeaders, repeatingHeaderId).get('logNotes').size
       );
 
       expect(headerWithId(newHeaders, repeatingHeaderId).get('planningItems')).not.toEqual(
@@ -950,7 +1090,27 @@ describe('org reducer', () => {
         state.org.present,
         types.advanceTodoState(activeTimestampWithRepeaterHeaderId)
       ).getIn(['files', path, 'headers']);
+
+      const unchangedHeaders = [
+        doneHeaderId,
+        todoHeaderId,
+        regularHeaderId,
+        repeatingHeaderId,
+        notDoneId,
+        notDoneWithLogsId,
+      ];
+
+      // logNotes and planningItems of unmodified headers should not change
+      assertLogNotesDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+      assertPlanningItemsDidNotChangeForHeaderIds(oldHeaders, newHeaders, unchangedHeaders);
+
       check_todo_keyword_kept(oldHeaders, newHeaders, activeTimestampWithRepeaterHeaderId);
+
+      expect(
+        headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).get('logNotes').size
+      ).toBeGreaterThan(
+        headerWithId(oldHeaders, activeTimestampWithRepeaterHeaderId).get('logNotes').size
+      );
 
       expect(
         headerWithId(newHeaders, activeTimestampWithRepeaterHeaderId).get('planningItems')
@@ -1066,8 +1226,9 @@ describe('org reducer', () => {
     });
 
     it('should handle SET_ORG_FILE_ERROR_MESSAGE', () => {
-      const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message));
+      const newState = reducer(state.org.present, types.setOrgFileErrorMessage(message, path));
       expect(newState.get('orgFileErrorMessage')).toEqual(message);
+      expect(newState.get('orgFileErrorPath')).toEqual(path);
       expect(newState.getIn(['files', path, 'headers'])).toEqual(
         state.org.present.getIn(['files', path, 'headers'])
       );

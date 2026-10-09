@@ -28,6 +28,7 @@ export default class DrawerActionButtons extends PureComponent {
       onDeadlineClick,
       onScheduledClick,
       onAddNote,
+      onRemoveHeader,
       activePopupType,
       editRawValues,
       setEditRawValues,
@@ -51,6 +52,7 @@ export default class DrawerActionButtons extends PureComponent {
               onTitleClick();
             },
             title: 'Edit title',
+            testId: 'drawer-action-edit-title',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -77,6 +79,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onTagsClick,
             title: 'Modify tags',
             disabled: 'tags-editor' === activePopupType,
+            testId: 'drawer-action-tags',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -86,6 +89,7 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onPropertiesClick,
             title: 'Modify properties',
             disabled: 'property-list-editor' === activePopupType,
+            testId: 'drawer-action-properties',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -95,14 +99,16 @@ export default class DrawerActionButtons extends PureComponent {
             onClick: onDeadlineClick,
             title: 'Set deadline datetime',
             disabled: 'deadline-editor' === activePopupType,
+            testId: 'drawer-action-deadline',
           })}
           {this.iconWithFFClickCatcher({
             className:
-              'far fa-calendar-times fa-lg' +
+              'far fa-calendar-check fa-lg' +
               ('scheduled-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onScheduledClick,
             title: 'Set scheduled datetime',
             disabled: 'scheduled-editor' === activePopupType,
+            testId: 'drawer-action-scheduled',
           })}
 
           {this.iconWithFFClickCatcher({
@@ -111,6 +117,15 @@ export default class DrawerActionButtons extends PureComponent {
               ('note-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
             onClick: onAddNote,
             title: 'Add a note',
+            disabled: 'note-editor' === activePopupType,
+          })}
+
+          {this.iconWithFFClickCatcher({
+            className:
+              'fas fa-trash fa-lg' +
+              ('note-editor' === activePopupType ? ' drawer-action-button--selected' : ''),
+            onClick: onRemoveHeader,
+            title: 'Delete this header',
             disabled: 'note-editor' === activePopupType,
           })}
         </div>

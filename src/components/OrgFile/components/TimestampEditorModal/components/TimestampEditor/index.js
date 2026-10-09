@@ -30,6 +30,8 @@ class TimestampEditor extends PureComponent {
       'handleRepeaterTypeChange',
       'handleRepeaterValueChange',
       'handleRepeaterUnitChange',
+      'handleRepeaterDeadlineValueChange',
+      'handleRepeaterDeadlineUnitChange',
       'handleAddDelay',
       'handleRemoveDelay',
       'handleDelayTypeChange',
@@ -48,7 +50,12 @@ class TimestampEditor extends PureComponent {
     if (_.isEmpty(event.target.value)) {
       // It's a planning item and the parser knows which one.
       if (_.isNumber(planningItemIndex)) {
-        this.props.org.removePlanningItem(this.props.headerId, planningItemIndex);
+        if (this.props.onRemovePlanningItem) {
+          // Capture mode: remove from local state via callback
+          this.props.onRemovePlanningItem(planningItemIndex);
+        } else {
+          this.props.org.removePlanningItem(this.props.headerId, planningItemIndex);
+        }
       } else if (_.isNumber(timestampId)) {
         this.props.org.removeTimestamp(this.props.headerId, timestampId);
       }
@@ -103,8 +110,8 @@ class TimestampEditor extends PureComponent {
 
       const [hourKey, minuteKey] =
         startOrEnd === 'start' ? ['startHour', 'startMinute'] : ['endHour', 'endMinute'];
-      let [hour, minute] = event.target.value.split(':');
-      hour = hour.startsWith('0') ? hour.substring(1) : hour;
+      const [hour, minute] = event.target.value.split(':');
+
       onChange(timestamp.set(hourKey, hour).set(minuteKey, minute));
     };
   }
@@ -117,7 +124,12 @@ class TimestampEditor extends PureComponent {
   handleRemoveRepeater() {
     const { onChange, timestamp } = this.props;
     onChange(
-      timestamp.set('repeaterType', null).set('repeaterValue', null).set('repeaterUnit', null)
+      timestamp
+        .set('repeaterType', null)
+        .set('repeaterValue', null)
+        .set('repeaterUnit', null)
+        .set('repeaterDeadlineValue', null)
+        .set('repeaterDeadlineUnit', null)
     );
   }
 
@@ -134,6 +146,29 @@ class TimestampEditor extends PureComponent {
   handleRepeaterUnitChange(newRepeaterUnit) {
     const { onChange, timestamp } = this.props;
     onChange(timestamp.set('repeaterUnit', newRepeaterUnit));
+  }
+
+  handleRepeaterDeadlineValueChange(event) {
+    const { onChange, timestamp } = this.props;
+    const newValue = event.target.value;
+
+    // If user enters 0 or clears the value, remove the deadline part
+    if (newValue === '0' || newValue === '') {
+      onChange(timestamp.set('repeaterDeadlineValue', null).set('repeaterDeadlineUnit', null));
+      return;
+    }
+
+    // If setting a deadline value and no unit is set yet, default to 'd' (days)
+    if (newValue && !timestamp.get('repeaterDeadlineUnit')) {
+      onChange(timestamp.set('repeaterDeadlineValue', newValue).set('repeaterDeadlineUnit', 'd'));
+    } else {
+      onChange(timestamp.set('repeaterDeadlineValue', newValue));
+    }
+  }
+
+  handleRepeaterDeadlineUnitChange(newRepeaterDeadlineUnit) {
+    const { onChange, timestamp } = this.props;
+    onChange(timestamp.set('repeaterDeadlineUnit', newRepeaterDeadlineUnit));
   }
 
   handleAddDelay() {
@@ -193,7 +228,13 @@ class TimestampEditor extends PureComponent {
   }
 
   renderRepeater() {
-    const { repeaterType, repeaterValue, repeaterUnit } = this.props.timestamp.toJS();
+    const {
+      repeaterType,
+      repeaterValue,
+      repeaterUnit,
+      repeaterDeadlineValue,
+      repeaterDeadlineUnit,
+    } = this.props.timestamp.toJS();
 
     return (
       <div className="timestamp-editor__field-container">
@@ -228,6 +269,27 @@ class TimestampEditor extends PureComponent {
                   onSelect={this.handleRepeaterUnitChange}
                 />
               </div>
+              {repeaterType && this.props.activePopupType === 'scheduled-editor' && (
+                <Fragment>
+                  <span className="timestamp-editor__slash">/</span>
+                  <input
+                    type="number"
+                    min="0"
+                    className="textfield delay-repeater-value-input"
+                    value={repeaterDeadlineValue || ''}
+                    onChange={this.handleRepeaterDeadlineValueChange}
+                    placeholder="Optional deadline"
+                  />
+                  <div>
+                    <TabButtons
+                      buttons={['h', 'd', 'w', 'm', 'y']}
+                      titles={['hours', 'days', 'weeks', 'months', 'years']}
+                      selectedButton={repeaterDeadlineUnit || 'd'}
+                      onSelect={this.handleRepeaterDeadlineUnitChange}
+                    />
+                  </div>
+                </Fragment>
+              )}
               <i
                 className="fas fa-times fa-lg timestamp-editor__icon timestamp-editor__icon--remove"
                 onClick={this.handleRemoveRepeater}
@@ -296,15 +358,20 @@ class TimestampEditor extends PureComponent {
   }
 
   createPlanningItem() {
-    const { selectedHeaderId, header, activePopupType } = this.props;
+    const { selectedHeaderId, header, activePopupType, onCreatePlanningItem } = this.props;
     const planningType = { 'deadline-editor': 'DEADLINE', 'scheduled-editor': 'SCHEDULED' }[
       activePopupType
     ];
-    this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
-    this.props.base.activatePopup(activePopupType, {
-      headerId: selectedHeaderId,
-      planningItemIndex: header.get('planningItems').size,
-    });
+    if (onCreatePlanningItem) {
+      // Capture mode: add planning item to local state via callback
+      onCreatePlanningItem(planningType);
+    } else {
+      this.props.org.addNewPlanningItem(selectedHeaderId, planningType);
+      this.props.base.activatePopup(activePopupType, {
+        headerId: selectedHeaderId,
+        planningItemIndex: header.get('planningItems').size,
+      });
+    }
   }
 
   render() {

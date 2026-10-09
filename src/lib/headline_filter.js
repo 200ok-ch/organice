@@ -215,6 +215,13 @@ export const isMatch = (filterExpr) => {
     .filter(filterFilter('property', true))
     .map((x) => [x.property, x.words]);
 
+  const filterDesc = filterField
+    .filter((f) => f.field.type === 'description' && f.field.text.type === 'ignore-case')
+    .map((x) => x.field.text.words.map((y) => y.toLowerCase()));
+  const filterDescCS = filterField
+    .filter((f) => f.field.type === 'description' && f.field.text.type === 'case-sensitive')
+    .map((x) => x.field.text.words);
+
   return (header) => {
     const headLine = header.get('titleLine');
     const tags = headLine.get('tags');
@@ -234,6 +241,13 @@ export const isMatch = (filterExpr) => {
     const deadlines = planningItems
       .filter((p) => p.get('type') === 'DEADLINE')
       .map((p) => p.get('timestamp'));
+
+    var description = '';
+    if (filterDesc.length > 0 || filterDescCS.length > 0) {
+      const stripMarkup = (text) => text.replace(/\*([\w]*)\*/, (match, p1, _, __) => p1);
+      description = stripMarkup(header.get('rawDescription'));
+    }
+
     //const clocks = header
     //  .get('logBookEntries')
     //  .flatMap((l) => [l.get('start'), l.get('end')])
@@ -258,6 +272,8 @@ export const isMatch = (filterExpr) => {
       //filterClock.every(orChainDate(clocks)) &&
       filterSchedule.every(orChainDate(scheduleds)) &&
       filterDeadline.every(orChainDate(deadlines)) &&
+      filterDesc.every(orChain(description.toLowerCase())) &&
+      filterDescCS.every(orChain(description)) &&
       !filterTagsExcl.some(orChain(tags)) &&
       !filterCSExcl.some(orChain(headlineText)) &&
       !filterICExcl.some(orChain(headlineText.toLowerCase())) &&

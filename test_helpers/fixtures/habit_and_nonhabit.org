@@ -1,0 +1,13 @@
+#+TODO: TODO | DONE
+
+* TODO Regular Task
+  SCHEDULED: <2019-08-27 Tue>
+
+* TODO Exercise Habit
+  :PROPERTIES:
+  :STYLE:    habit
+  :END:
+  SCHEDULED: <2019-08-27 Tue .+1d>
+
+* TODO Another Regular Task
+  SCHEDULED: <2019-08-27 Tue 10:00>

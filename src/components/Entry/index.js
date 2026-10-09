@@ -149,6 +149,7 @@ class Entry extends PureComponent {
       location: { pathname },
       colorScheme,
       theme,
+      defaultFilePath,
     } = this.props;
 
     loadTheme(theme, colorScheme);
@@ -165,10 +166,9 @@ class Entry extends PureComponent {
         <HeaderBar />
         <LoadingIndicator message={loadingMessage} />
 
-        {activeModalPage === 'changelog' && this.renderChangelogFile()}
-
         {isAuthenticated &&
           ([
+            'changelog',
             'keyboard_shortcuts_editor',
             'settings',
             'capture_templates_editor',
@@ -179,6 +179,7 @@ class Entry extends PureComponent {
               {activeModalPage === 'keyboard_shortcuts_editor' && <KeyboardShortcutsEditor />}
               {activeModalPage === 'capture_templates_editor' && <CaptureTemplatesEditor />}
               {activeModalPage === 'file_settings_editor' && <FileSettingsEditor />}
+              {activeModalPage === 'changelog' && this.renderChangelogFile()}
               {activeModalPage === 'sample' && this.renderSampleFile()}
             </Fragment>
           ) : (
@@ -188,10 +189,11 @@ class Entry extends PureComponent {
               <Route path="/file/:path+" render={this.renderFile} />
               <Route path="/files/:path*" render={this.renderFileBrowser} />
               <Route path="/sample" exact={true} render={this.renderSampleFile} />
+              <Route path="/changelog" exact={true} render={this.renderChangelogFile} />
               <Route path="/settings" exact={true}>
                 <Settings />
               </Route>
-              <Redirect to="/files" />
+              {defaultFilePath ? <Redirect to={defaultFilePath} /> : <Redirect to="/files" />}
             </Switch>
           ))}
       </div>
@@ -202,6 +204,11 @@ class Entry extends PureComponent {
 const mapStateToProps = (state) => {
   const files = state.org.present.get('files');
   const path = state.org.present.get('path');
+  const defaultFilePath = state.org.present
+    .get('fileSettings')
+    .filter((setting) => setting.get('defaultOnStartup'))
+    .map((setting) => `file${setting.get('path')}`)
+    .first();
   const filesToLoadOnStartup = state.org.present
     .get('fileSettings')
     .filter((setting) => setting.get('loadOnStartup'))
@@ -215,6 +222,7 @@ const mapStateToProps = (state) => {
     path,
     filesToLoad,
     filesToSync,
+    defaultFilePath,
     loadingMessage: state.base.get('loadingMessage'),
     isAuthenticated: state.syncBackend.get('isAuthenticated'),
     fontSize: state.base.get('fontSize'),
@@ -224,6 +232,7 @@ const mapStateToProps = (state) => {
     hasDirtyFiles,
     colorScheme: state.base.get('colorScheme'),
     theme: state.base.get('theme'),
+    osColorSchemeChangeCount: state.base.get('osColorSchemeChangeCount'),
   };
 };
 

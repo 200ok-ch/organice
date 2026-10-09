@@ -230,6 +230,13 @@ export const dropboxDirectoryListing = [
     content_hash: '06d1c3c279a8f970e8f97f55f3a999beac733c0e68098c747d330afba498ba1a',
   },
   {
+    '.tag': 'folder',
+    name: 'zzz',
+    path_lower: '/org/zzz',
+    path_display: '/org/zzz',
+    id: 'id:F5f1JjqwcRQAAAAAAA3nFx',
+  },
+  {
     '.tag': 'file',
     name: 'media.org',
     path_lower: '/org/media.org',
@@ -342,6 +349,13 @@ export const dropboxDirectoryListingSorted = [
     path_lower: '/org/files',
     path_display: '/org/files',
     id: 'id:F5f1JjqwcRQAAAAAAA3nDQ',
+  },
+  {
+    '.tag': 'folder',
+    name: 'zzz',
+    path_lower: '/org/zzz',
+    path_display: '/org/zzz',
+    id: 'id:F5f1JjqwcRQAAAAAAA3nFx',
   },
   {
     '.tag': 'file',

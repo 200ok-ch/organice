@@ -3,12 +3,16 @@
 .header-bar {
   background-color: var(--base2);
   height: 30px;
+  min-height: 30px;
   padding: 10px;
 
   display: grid;
   grid-template-columns: minmax(2em, 3.5fr) minmax(1em, 3fr) minmax(1em, 3.5fr);
   grid-template-areas: 'back title actions';
   align-items: center;
+
+  position: sticky;
+  top: 0;
 
   z-index: 1;
 }

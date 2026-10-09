@@ -7,6 +7,9 @@ First off, thank you for considering contributing to organice. It's
 people like you that make organice such a great tool!
 
 ** Did you find a bug or do you want to implement a new feature?
+:PROPERTIES:
+:CUSTOM_ID: did-you-find-a-bug-or-want-to-implement-a-new-feature
+:END:
 
 What do we consider a bug? A bug is when an existing feature is
 broken.
@@ -63,11 +66,17 @@ one of the maintainers to do the work. If you want to hire us to
 implement a change request, please send us an email to [[mailto:info@200ok.ch][info@200ok.ch]].
 
 ** Contributing to the documentation
+:PROPERTIES:
+:CUSTOM_ID: contributing-to-the-documentation
+:END:
 
 The documentation is generated from =README.org= and various other files.
 The section on [[#building_docs][building documentation]] explains how it is assembled.
 
 ** Development collaboration
+:PROPERTIES:
+:CUSTOM_ID: development-collaboration
+:END:
 
 We have good quality assurance and an established workflow. This is it:
 
@@ -101,6 +110,9 @@ We have good quality assurance and an established workflow. This is it:
    Github
 
 *** Definition of Done
+:PROPERTIES:
+:CUSTOM_ID: definition-of-done
+:END:
 
 An issue is done when:
 

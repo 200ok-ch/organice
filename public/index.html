@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="description"
-      content="Directly edit org-mode files online. Optimized for mobile. Syncs with Dropbox, GitLab or WebDAV."
+      content="organice is the best way get stuff done"
     />
     <meta
       name="viewport"
@@ -12,16 +12,22 @@
     />
     <meta name="theme-color" content="#fdf6e3" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/organice.png" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
-      integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
-      crossorigin="anonymous"
-    />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="apple-touch-icon" href="./organice.png" />
     <title>organice - keep your life nicely organized</title>
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="./manifest.json" />
+    <script>
+      // Restore cached theme CSS variables before CSS loads to prevent
+      // a flash of Solarized Light (the :root default in colors.css).
+      try {
+        var v = localStorage.getItem('themeVariables');
+        if (v) {
+          var vars = JSON.parse(v);
+          var s = document.documentElement.style;
+          for (var k in vars) s.setProperty(k, vars[k]);
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <noscript>
@@ -33,47 +39,10 @@
         <br />
 
         If you're interested in inspecting the source code yourself (or even deploying your own
-        version of the project), you can find the project's repo here:
-        <ExternalLink href="https://github.com/200ok-ch/organice" />
+        version of the project), you can find the project's repo <a href="https://github.com/200ok-ch/organice">here</a>.
       </div>
     </noscript>
     <div id="root"></div>
-    <script>
-     var {pathname} = window.location;
-
-     const absoluteUrl = function(path) {
-        return new URL(path, document.baseURI).href;
-     };
-
-     var manifest = {
-         "short_name": "organice",
-         "name": "organice",
-         "icons": [
-             {
-                 "src": absoluteUrl("organice-512x512.png"),
-                 "sizes": "512x512",
-                 "type": "image/png"
-             },
-             {
-                 "src": absoluteUrl("organice-192x192.png"),
-                 "sizes": "192x192",
-                 "type": "image/png"
-             },
-             {
-                 "src": absoluteUrl("favicon.ico"),
-                 "sizes": "64x64 32x32 24x24 16x16",
-                 "type": "image/x-icon"
-             }
-         ],
-         "start_url": absoluteUrl(pathname || "/index.html"),
-         "display": "standalone",
-         "theme_color": "#000000",
-         "background_color": "#ffffff"
-     }
-
-     const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-     const manifestURL = URL.createObjectURL(manifestBlob);
-     document.querySelector("link[rel='manifest']").setAttribute('href', manifestURL);
-    </script>
+    <script type="module" src="../src/index.js"></script>
   </body>
 </html>

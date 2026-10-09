@@ -46,6 +46,8 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         class="search__input-container"
       >
         <input
+          autocapitalize="none"
+          autocomplete="off"
           class="textfield task-list__filter-input"
           list="task-list__datalist-filter"
           placeholder="e.g. -DONE doc|man :simple|easy :assignee:nobody|none"
@@ -525,6 +527,40 @@ exports[`Render all views Org Functionality Renders everything starting from an 
             <div
               class="title-line"
             >
+              
+              <div
+                style="width: 100%;"
+              >
+                <div
+                  class="title-line-text"
+                >
+                  <span
+                    style="word-break: break-word;"
+                  >
+                    <span>
+                      A header with plain list items
+                    </span>
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="agenda-day__header-container"
+        >
+          <div
+            class="search__breadcrumbs"
+          >
+            fixtureTestFile.org
+          </div>
+          <div
+            class="agenda-day__header__header-container"
+          >
+            <div
+              class="title-line"
+            >
               <span
                 class="todo-keyword todo-keyword--done-state"
               >
@@ -613,6 +649,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
     >
       <div
         class="header"
+        data-header-id="543"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -664,6 +701,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </div>
       <div
         class="header"
+        data-header-id="546"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -715,6 +753,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </div>
       <div
         class="header"
+        data-header-id="548"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -778,6 +817,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </div>
       <div
         class="header"
+        data-header-id="550"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -836,6 +876,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </div>
       <div
         class="header"
+        data-header-id="551"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -887,6 +928,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </div>
       <div
         class="header"
+        data-header-id="552"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -938,6 +980,59 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </div>
       <div
         class="header"
+        data-header-id="556"
+        style="padding-left: 20px; margin-left: 0px;"
+      >
+        <div
+          class="left-swipe-action-container"
+          style="width: 0px; background-color: rgba(0, 0, 0, 0);"
+        >
+          <i
+            class="fas fa-check swipe-action-container__icon swipe-action-container__icon--left"
+            style="display: none; color: rgb(0, 0, 0);"
+          />
+        </div>
+        <div
+          class="right-swipe-action-container"
+          style="width: 0px; background-color: rgba(0, 0, 0, 0);"
+        >
+          <i
+            class="fas fa-times swipe-action-container__icon swipe-action-container__icon--right"
+            style="display: none; color: rgb(0, 0, 0);"
+          />
+        </div>
+        <div
+          class="header__bullet"
+          style="margin-left: -16px;"
+        >
+          *
+        </div>
+        <div
+          class="title-line"
+        >
+          
+          <div
+            style="width: 100%;"
+          >
+            <div
+              class="title-line-text"
+            >
+              <span
+                style="word-break: break-word;"
+              >
+                <span>
+                  A header with plain list items
+                </span>
+                ...
+              </span>
+            </div>
+          </div>
+        </div>
+        <div />
+      </div>
+      <div
+        class="header"
+        data-header-id="557"
         style="padding-left: 20px; margin-left: 0px;"
       >
         <div
@@ -1000,7 +1095,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
     >
       <button
         class="btn btn--circle action-drawer__btn fas fa-lg fa-cloud action-drawer__btn--with-sub-icon btn--disabled"
-        style="opacity: 1;"
+        style="opacity: 1; pointer-events: all;"
         title="Sync changes"
       >
         <i
@@ -1009,12 +1104,12 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       </button>
       <button
         class="btn btn--circle action-drawer__btn fas fa-lg fa-calendar-alt"
-        style="opacity: 1;"
+        style="opacity: 1; pointer-events: all;"
         title="Show agenda"
       />
       <div
         class="action-drawer__arrow-buttons-container"
-        style="left: 0px;"
+        style="left: 0px; pointer-events: all;"
       >
         <button
           class="btn btn--circle action-drawer__btn action-drawer__arrow-button fas fa-lg fa-arrow-up"
@@ -1048,13 +1143,13 @@ exports[`Render all views Org Functionality Renders everything starting from an 
         />
         <button
           class="btn btn--circle action-drawer__btn action-drawer__main-arrow-button fas fa-lg fa-arrows-alt"
-          style="opacity: 1;"
+          style="opacity: 1; pointer-events: all;"
           title="Show movement buttons"
         />
       </div>
       <button
         class="btn btn--circle action-drawer__btn fas fa-lg fa-search"
-        style="opacity: 1; position: relative; z-index: 1;"
+        style="opacity: 1; position: relative; z-index: 1; pointer-events: all;"
         title="Show Search / Task List"
       />
       <div
@@ -1062,6 +1157,7 @@ exports[`Render all views Org Functionality Renders everything starting from an 
       >
         <button
           class="btn btn--circle action-drawer__btn fas fa-lg fa-plus"
+          data-testid="capture-main-button"
           style="opacity: 1; position: relative; z-index: 1;"
           title="Show capture templates"
         />

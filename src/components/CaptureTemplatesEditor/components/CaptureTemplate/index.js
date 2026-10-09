@@ -191,7 +191,7 @@ export default ({
               ? loadedFilePaths
               : [template.get('file'), ...loadedFilePaths]
             ).map((path) => (
-              <option key={path} value={path}>
+              <option key={path} value={path} selected={path === template.get('file')}>
                 {path}
               </option>
             ))}
@@ -302,6 +302,9 @@ export default ({
           </li>
           <li>
             <code>%R</code> - Raw timestamp, with date and time, no surrounding punctuation.
+          </li>
+          <li>
+            <code>%y</code> - Raw year
           </li>
           <li>
             <code>%{'<custom variable>'}</code> - A custom variable from a URL param capture. See{' '}

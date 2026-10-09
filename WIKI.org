@@ -67,38 +67,30 @@
      :END:
 
  For testing purposes, we use a Docker image with a proven and well
- documented server: Apache2 running on Debian. You can build the Docker
- image yourself - and customize the Apache configuration to your needs:
+ documented server: Apache2 running on Debian. The WebDAV service is defined
+ in the main =docker-compose.yml= file and can be used in both development
+ and production profiles.
 
- #+BEGIN_SRC shell
-   docker build -f doc/webdav/Dockerfile -t apache-webdav .
- #+END_SRC
+ You can build the Docker image yourself - and customize the Apache configuration
+ to your needs by editing =doc/webdav/Dockerfile=.
 
- or with docker-compose:
-
+ To build the WebDAV server image:
  #+begin_src shell
-   docker-compose build apache-webdav
+   docker compose --profile dev build apache-webdav # Or --profile prod
  #+end_src
 
- Then run the Apache2 WebDAV server with:
-
- #+BEGIN_SRC shell
-   docker run -dit --name apache-webdav-app -p 8080:80 apache-webdav
- #+END_SRC
-
- or with docker-compose:
-
+ Then run the Apache2 WebDAV server:
  #+begin_src shell
-   docker-compose up apache-webdav
+   docker compose --profile dev up -d apache-webdav # Or --profile prod
  #+end_src
 
  On your host machine, you can now login with any WebDAV client using
- the URL =http://localhost:8080/webdav=. There is no authentication
+ the URL =http://localhost:8080/webdav/=. There is no authentication
  configuration, so any user account works (including omitted user
  accounts). It goes without saying that if you wanted to use this for
  production, please enable authentication. Within the test image,
  you'll find the [[https://github.com/200ok-ch/organice/blob/master/sample.org][sample.org]] file, so you can get started developing and
- testing right away.
+ testing right away. The WebDAV service is available in both =dev= and =prod= profiles.
 
  For testing WebDAV outside of organice, and you're an Emacs user, you
  can open [[/dav:localhost#8080:/webdav/][this]] link (=C-c C-o=). Then, you will get a [[https://www.gnu.org/software/tramp/][TRAMP]] session
@@ -342,6 +334,93 @@ WebDAV server for your instance, you can by setting the variable
    compatible way, and the feature follows the [[#contributing][contribution guideline]],
    then: Yes, the feature can be added to organice.
 
+** Org Habits
+   :PROPERTIES:
+   :CUSTOM_ID: org_habits
+   :END:
+
+organice supports Emacs Org mode's habit tracking feature with a visual consistency graph. Habits are TODO items that you want to track consistently over time, like daily exercise or meditation.
+
+#+html: <p align="center"> <img src="https://github.com/user-attachments/assets/268c68a9-e338-44fe-a6b2-60571c7b4753"/> </p>
+
+*** Creating a habit
+
+To create a habit, add a =STYLE= property with the value =habit= to your TODO item:
+
+#+BEGIN_SRC org
+  ,* TODO Exercise
+    SCHEDULED: <2026-01-07 Wed .+1d>
+    :PROPERTIES:
+    :STYLE:    habit
+    :END:
+#+END_SRC
+
+The habit uses standard Org mode repeater syntax on the scheduled date to define when the task should repeat (e.g., =.+1d= for daily, =.+1w= for weekly). See the [[https://orgmode.org/manual/Repeated-tasks.html][upstream Org documentation]] for details on the different repeater types (=.=, =++=, =+=).
+
+Habits also support a special minimum/maximum range syntax using a slash: =.+2d/4d=. This means "do this task at most every 2 days, but at least every 4 days." The first value is when it will first appear in the agenda, and the second value is when it becomes overdue.
+
+*** Understanding the consistency graph
+
+In the agenda view, habits display a visual consistency graph below the title. This graph shows your habit completion history with color-coded days:
+
+- *Green*: You completed the habit on this day
+- *Blue*: Not due yet (in the grace period before the next scheduled date)
+- *Yellow*: Scheduled for this day, or due tomorrow
+- *Red*: Overdue (you missed this day)
+
+The graph displays the configured number of preceding days (default: 21) and following days (default: 7). Each day shows the first letter of the weekday (M T W T F S S).
+
+*** Habits vs regular tasks
+
+Habits are sorted before regular tasks in the agenda view, making them easy to find. The consistency graph only appears for items with the =STYLE: habit= property.
+
+The habit calculation uses your =:LOGBOOK:= entries to determine which days you completed the habit. When you mark a habit as DONE, a =LAST_REPEAT= property is automatically set to track when you last completed it.
+
+*** Habit settings
+
+In Settings > Base, you can configure:
+
+- =Org habit preceding days=: How many days of history to show in the graph (default: 21)
+- =Org habit following days=: How many future days to show (default: 7)
+- =Show all habits today=: When enabled, all habits appear in today's agenda view, even if not scheduled or already marked DONE
+
+These settings sync across devices when using a sync backend.
+
+*** Comparison to Emacs Org habits view
+
+#+html: <p align="center"> <img src="https://github.com/user-attachments/assets/fcf06a7f-58eb-49ee-8bb4-a1dd63b8165f"/> </p>
+
+** Can I access local files?
+:PROPERTIES:
+:CUSTOM_ID: access_local_files
+:END:
+
+Q: Can I open and edit .org files directly from my device's storage in
+organice?
+
+Currently, organice cannot directly access .org files stored on your
+device's local filesystem. This isn't a limitation of organice itself,
+but rather a fundamental security restriction of web browsers and
+Progressive Web Apps (PWAs).
+
+Web browsers intentionally restrict direct access to a device's
+filesystem to protect users' security and privacy. This means that web
+applications like organice can only access files through supported
+cloud storage services (like Dropbox, Google Drive, or WebDAV).
+
+While some newer APIs like the File System Access API exist, they have
+limited support (mainly on desktop Chrome) and don't solve the use
+case for most mobile users.
+
+This is why organice is designed to work with cloud storage services,
+ensuring your .org files remain accessible and editable across all
+your devices while respecting browser security boundaries.
+
+*Android Users:* There is a way to access local files by setting up a
+local WebDAV server using Termux. This allows you to run organice with
+access to files on your Android device. You can find the detailed
+setup instructions here: [[https://github.com/200ok-ch/organice/tree/master/contrib/organice-on-android-with-webdav-server][organice-on-android-with-webdav-server]]
+
 * Development
 ** Architecture Decision Records
 :PROPERTIES:
@@ -431,7 +510,9 @@ WebDAV server for your instance, you can by setting the variable
 
 ***** Status
 
-   Accepted
+  Accepted
+
+  (Note: This ADR was written when Create React App (CRA) and its =react-scripts= were the project's build system. The project has since migrated to Parcel (see ADR-004). The considerations around "ejecting" were specific to CRA. While the core decision of this ADR may still apply, the alternatives and their downsides would be evaluated differently with the current Parcel-based build system.)
 
 ***** Consequences
 
@@ -492,6 +573,115 @@ differentiate between the two use cases.
     that pollutes the global namespace (reminder: CSS is not component
     local by default in React). Instead, we employ SCSS and scope all
     selectors under a unique identifier.
+
+
+*** adr-003-synchronization-back-ends
+:PROPERTIES:
+:CUSTOM_ID: adr-003
+:END:
+**** Synchronization back-ends
+
+***** Context
+
+Different users like to synchronize their files using different
+back-ends. Some prefer open standards and to host the required services
+themselves - others prefer to pay for a closed source service so that
+they don't have to worry about storage of their data themselves. The
+spread of strategies employed by these back-ends couldn't be further
+apart - some work in hunks and commits, some on files, etc.
+
+To accommodate every personal synchronization strategy, organice
+should be easily extensible.
+
+***** Decision
+
+organice employs the [[https://en.wikipedia.org/wiki/Strategy_pattern][Strategy Pattern]] which is a [[https://en.wikipedia.org/wiki/Software_design_pattern][design pattern]] made
+to do the 'same thing' (like storing and retrieving files) with
+'different strategies' (like employing different APIs for Dropbox,
+GitLab, and WebDAV). 
+
+***** Status
+
+   Accepted
+
+***** Consequences
+
+Implementing a client for a new synchronization back-end is quite
+easy:
+
+1. Take any of the [[https://github.com/200ok-ch/organice/tree/master/src/sync_backend_clients][existing back-ends]] as a template. If you already
+   happen to know how the API of your new synchronization back-end
+   works, you can pick the closest one. Ultimately, it doesn't make a
+   big difference from where you start off.
+2. Implement the [[https://github.com/200ok-ch/organice/blob/d00e1e31b3c675b3be71c0e0150f8ad7292766b0/src/sync_backend_clients/webdav_sync_backend_client.js#L133-L143][8 functions defined by the strategy pattern]]:
+   1. =isSignedIn=
+   2. =getDirectoryListing=
+   3. =getMoreDirectoryListing=
+   4. =updateFile=
+   5. =createFile=
+   6. =getFileContentsAndMetadata=
+   7. =getFileContents=
+   8. =deleteFile=
+3. That's it😂
+
+
+*** adr-004-using-parcel
+:PROPERTIES:
+:CUSTOM_ID: adr-004-using-parcel
+:END:
+
+**** Context
+
+We've used Create React App as the main build tool which abstracted
+stuff like Babel config away from us. In a recent release, we upgraded
+from CRA v3 to v4 so we were able to upgrade some other dependencies.
+However, CRA is EOL:
+https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+
+There are many options given in the EOL announcement on how to
+continue.
+
+
+**** Decision
+
+We're going with one of the ways that seems both easiest and at the
+same time less tightly coupled than others. We're going with parcel
+which has the claim "The zero configuration build tool for the web.
+📦🚀"
+
+Here's the upstream migration guide that I followed:
+https://parceljs.org/migration/cra/
+
+
+**** Status
+
+   Accepted
+
+**** Consequences
+
+***** Testing
+
+We use Jest for testing. Parcel doesn't include support for that
+directly, but there's a migration path: https://parceljs.org/migration/cra/#6.-migrate-tests
+
+Since we don't have CRA anymore, we have to 'eject' and have lots of
+manual configuration files now:
+
+- babel.config.json, because jest uses babel and parcel does not
+- config directory for jest
+- jest.config.json for jest
+- various manually installed packages
+
+All of these changes to get the ejected version running can be seen in
+commit b171dcca.
+
+***** Sass
+
+We have already migrated from node-sass to sass in the past.
+
+With parcel, we have sass functionality integrated, once again. In
+case we ever need it, again, here's the commit removing all manual
+sass logic: 26fc36d0
 
 
 * Building this documentation

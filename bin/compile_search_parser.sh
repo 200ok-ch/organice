@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-npx pegjs -o src/lib/headline_filter_parser.{js,grammar.pegjs}
+npx peggy -o src/lib/headline_filter_parser.{js,grammar.pegjs}
 
-# The generated code of pegjs throws eslint warnings. Since it's not
+# The generated code of peggy throws eslint warnings. Since it's not
 # code that we're writing and we want to keep eslint warnings at 0,
 # we're telling eslint to ignore the generated file.
 PARSER_FILE=src/lib/headline_filter_parser.js

@@ -1,0 +1,107 @@
+/*
+ * Habit Consistency Graph Styles
+ * Based on Emacs org-mode habit graph colors
+ */
+
+.habit-consistency-graph {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.habit-consistency-graph__days {
+  display: flex;
+  gap: 1px;
+}
+
+.habit-consistency-graph__day {
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  line-height: 1;
+  border-radius: 2px;
+  cursor: help;
+  user-select: none;
+  font-family: var(--font-family);
+  font-weight: normal;
+
+  /* Default empty state */
+  background-color: transparent;
+  color: var(--base01);
+}
+
+/* Completed - Green */
+.habit-consistency-graph__day--done {
+  background-color: #859900; /* Solarized green */
+  color: var(--base3);
+}
+
+/* Not due yet / Future - Blue */
+.habit-consistency-graph__day--future {
+  background-color: #268bd2; /* Solarized blue */
+  color: var(--base3);
+}
+
+/* Within schedule - Green/Yellow mix */
+.habit-consistency-graph__day--scheduled {
+  background-color: #b58900; /* Solarized yellow */
+  color: var(--base3);
+}
+
+/* Overdue - Red */
+.habit-consistency-graph__day--overdue {
+  background-color: #dc322f; /* Solarized red */
+  color: var(--base3);
+}
+
+/* Missed - Light red */
+.habit-consistency-graph__day--missed {
+  background-color: #cb4b16; /* Solarized orange */
+  color: var(--base3);
+}
+
+/* Due soon - Yellow */
+.habit-consistency-graph__day--due-soon {
+  background-color: #b58900; /* Solarized yellow */
+  color: var(--base3);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Today indicator */
+.habit-consistency-graph__day--today {
+  border: 1px solid var(--base00);
+  box-shadow: 0 0 0 1px var(--base03);
+}
+
+/* Empty / Not scheduled */
+.habit-consistency-graph__day:not(.habit-consistency-graph__day--done):not(
+    .habit-consistency-graph__day--future
+  ):not(.habit-consistency-graph__day--scheduled):not(.habit-consistency-graph__day--overdue):not(
+    .habit-consistency-graph__day--missed
+  ):not(.habit-consistency-graph__day--due-soon) {
+  background-color: var(--base2);
+  color: var(--base01);
+}
+
+/* Pulse animation for due-soon items */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Compact mode for smaller screens */
+@media (max-width: 768px) {
+  .habit-consistency-graph__day {
+    width: 10px;
+    height: 10px;
+    font-size: 7px;
+  }
+}

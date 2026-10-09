@@ -5,6 +5,9 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+/playwright/.cache
 
 # production
 /build
@@ -31,5 +34,8 @@ yarn-error.log*
 /documentation.org
 
 .eslintcache
-/local.mk
-/release
+/src/components/Landing/vendor_css/template.css
+/src/components/Landing/vendor_css/template.css.map
+
+.parcel-cache
+dist

@@ -2,11 +2,11 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   deploy-stage:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
     steps:
       - checkout
       - restore_cache:
@@ -18,13 +18,13 @@ jobs:
           command: sudo apt-get update -yq && sudo apt install -yq lftp pandoc gvfs emacs
       - run:
           name: Deploy to https://staging.organice.200ok.ch
-          command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} make deploy'
+          command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} ./bin/compile_and_upload.sh'
       - run:
           name: Deploy documentation to https://staging.organice.200ok.ch/documentation.html
           command: 'FTP_USER=${FTP_USER_STAGE} FTP_PASSWD=${FTP_PASSWD_STAGE} ./bin/compile_doc_and_upload.sh'
   deploy-prod:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
     steps:
       - checkout
       - restore_cache:
@@ -43,7 +43,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
 
     working_directory: ~/repo
 
@@ -84,11 +84,58 @@ jobs:
             git reset --hard HEAD
             yarn prettier-eslint --list-different
 
-      - run: yarn test
+      - run:
+          name: Create test results directory
+          command: mkdir -p test-results
+      - run:
+          name: Run Tests
+          command: yarn test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+
+  e2e:
+    docker:
+      - image: cimg/node:20.17.0-browsers
+    resource_class: large
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Javascript Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Install Playwright Browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: Build Production Bundle
+          command: yarn build
+      - run:
+          name: Create test results directory
+          command: mkdir -p e2e/test-results
+      - run:
+          name: Run E2E Tests
+          command: PLAYWRIGHT_JUNIT_OUTPUT_NAME=e2e/test-results/results.xml yarn test:e2e --reporter=junit
+      - store_test_results:
+          path: e2e/test-results
+      - store_artifacts:
+          path: e2e/test-results
+      - store_artifacts:
+          path: e2e/playwright-report
 
   build-docs:
     docker:
-      - image: circleci/node:12.22-bullseye
+      - image: cimg/node:20.17.0
 
     working_directory: ~/repo
 
@@ -104,11 +151,12 @@ jobs:
           command: ./bin/compile_doc.sh
 
   push-image:
-    machine: true
+    machine:
+      image: default
     steps:
       - checkout
-      # Build docker image and push it to DockerHub
-      - run: docker build --rm=false -t ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} .
+      # Build production docker image and push it to DockerHub
+      - run: docker build --rm=false --target production -t ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM} .
       - run: docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PWD}
       - run: docker push ${DOCKER_HUB_USR}/organice:${CIRCLE_BUILD_NUM}
       # Re-assign latest tag to current build
@@ -116,33 +164,36 @@ jobs:
       - run: docker push ${DOCKER_HUB_USR}/organice:latest
 
 workflows:
-  version: 2
   build-deploy:
     jobs:
       - build
+      - e2e
       - build-docs
       - deploy-prod:
           requires:
             - build
+            - e2e
             - build-docs
           filters:
             branches:
               only: master
       - deploy-stage:
-          requires:
-            # - build
-            # - build-docs
+          # requires:
+          #   - build
+          #   - build-docs
           filters:
             branches:
               only: develop
+      # FIXME: This used to work and broke due to erosion
+      # Related issue: https://github.com/200ok-ch/organice/issues/909
       - push-image:
-          requires:
-            # Staging deployments are free of linting and test checks,
-            # so that we can quickly build, deploy and iterate.
-            # There's still visual feedback on Github on whether or
-            # not the tasks failed.
-            # - build # because of tests
-            # - build-docs
+          # Staging deployments are free of linting and test checks,
+          # so that we can quickly build, deploy and iterate.
+          # There's still visual feedback on Github on whether or
+          # not the tasks failed.
+          # requires:
+          #   - build # because of tests
+          #   - build-docs
           filters:
             branches:
               only: master

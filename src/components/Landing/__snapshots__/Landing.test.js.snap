@@ -18,7 +18,7 @@ exports[`<Landing /> renders 1`] = `
             <img
               alt="Logo"
               class="landing-logo"
-              src="organice.svg"
+              src="test-file-stub"
               style="height: 4rem; filter: drop-shadow(0px 0px 18px #fdf6e3);"
             />
             <button
@@ -85,6 +85,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
+                    data-testid="landing-github-link"
                     href="https://github.com/200ok-ch/organice"
                     rel="noreferrer noopener"
                     target="_blank"
@@ -97,6 +98,7 @@ exports[`<Landing /> renders 1`] = `
                 >
                   <a
                     class="nav-link navbar-brand"
+                    data-testid="landing-docs-link"
                     href="https://organice.200ok.ch/documentation.html"
                     rel="noreferrer noopener"
                     target="_blank"
@@ -107,6 +109,7 @@ exports[`<Landing /> renders 1`] = `
               </ul>
               <a
                 class="btn fw-500 ms-lg-4 btn-teal"
+                data-testid="landing-sign-in-navbar"
                 href="/sign_in"
               >
                 Sign in
@@ -165,6 +168,7 @@ exports[`<Landing /> renders 1`] = `
                   </p>
                   <a
                     class="btn btn-teal fw-500 me-2"
+                    data-testid="landing-live-demo-hero"
                     href="/sample"
                   >
                     Live demo
@@ -193,6 +197,7 @@ exports[`<Landing /> renders 1`] = `
                   </a>
                   <a
                     class="btn btn-white fw-500 me-2"
+                    data-testid="landing-sign-in-hero"
                     href="/sign_in"
                   >
                     Sign in
@@ -228,7 +233,7 @@ exports[`<Landing /> renders 1`] = `
                   <img
                     alt=""
                     class="img-fluid main-image"
-                    src="https://200ok.ch/landing_page/img/organice/screenshot-overview.png"
+                    src="test-file-stub"
                     style="filter: drop-shadow(0.5em 0.5em 0.5em #444);"
                   />
                 </div>
@@ -423,7 +428,7 @@ exports[`<Landing /> renders 1`] = `
                   class="col-md-4"
                 >
                   <i
-                    class="fab fa-firefox-browser"
+                    class="fab fa-firefox"
                   />
                 </div>
               </div>
@@ -462,7 +467,7 @@ exports[`<Landing /> renders 1`] = `
                     <img
                       alt="Sample organice document"
                       class="content-skewed-item img-fluid shadow-lg rounded-3"
-                      src="https://200ok.ch/landing_page/img/organice/screenshot-wide.png"
+                      src="test-file-stub"
                     />
                   </div>
                 </div>
@@ -587,7 +592,7 @@ exports[`<Landing /> renders 1`] = `
                     <p
                       class="testimonial-quote text-primary"
                     >
-                      "Been using organice for years. To me, it’s by far the most usable solution to interacting with org files on a mobile device."
+                      "Been using organice for years. To me, it’s by far the most usable solution for interacting with org files on a mobile device."
                     </p>
                     <div
                       class="row"
@@ -731,6 +736,7 @@ exports[`<Landing /> renders 1`] = `
                   </div>
                   <a
                     class="btn btn-teal fw-500"
+                    data-testid="landing-live-demo-bottom"
                     href="/sample"
                   >
                     Live demo
@@ -885,26 +891,6 @@ exports[`<Landing /> renders 1`] = `
                     >
                       <i
                         class="fab fa-github"
-                      />
-                    </a>
-                    <a
-                      class="icon-list-social-link"
-                      href="https://www.linkedin.com/in/alafon/"
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
-                      <i
-                        class="fab fa-linkedin"
-                      />
-                    </a>
-                    <a
-                      class="icon-list-social-link"
-                      href="https://twitter.com/munen_200ok"
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
-                      <i
-                        class="fab fa-twitter"
                       />
                     </a>
                   </div>

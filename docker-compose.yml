@@ -1,0 +1,46 @@
+services:
+  # Development service
+  organice-dev:
+    build:
+      context: .
+      target: development
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/opt/organice
+      - /opt/organice/node_modules
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
+    stdin_open: true
+    tty: true
+    command: tail -f /dev/null
+
+  # Production service
+  organice:
+    build:
+      context: .
+      target: production
+    image: 'twohundredok/organice:latest'
+    ports:
+      - '5000:5000'
+    logging:
+      driver: json-file
+    environment:
+      REACT_APP_WEBDAV_URL: http://webdav.example.com
+    profiles:
+      - prod
+
+  # WebDAV service for testing
+  apache-webdav:
+    build:
+      context: ./
+      dockerfile: ./doc/webdav/Dockerfile
+    ports:
+      - '8080:80'
+    logging:
+      driver: journald
+    profiles:
+      - prod
+      - dev

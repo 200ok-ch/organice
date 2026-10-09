@@ -2,9 +2,9 @@
 // Grammar for the parser for the headline filter.
 
 // It will automatically be compiled to the parser JavaScript file using the
-// parser generator pegjs.
+// parser generator peggy.
 
-// You can use https://pegjs.org/online to debug it.
+// You can use https://peggyjs.org/online to debug it.
 
 // Note: As suggested by alphapapa, the parser can be extended to support
 // additional types of filter terms ("predicates"), e.g. ts:on=today
@@ -100,10 +100,11 @@ TermProp "property filter term"
         };
 
 TermField "search outside of header"
-  = "date:"                   a:TimeRange { return { type: 'field', field: { type: 'date',      timerange: a } }; }
-  / "clock:"                  a:TimeRange { return { type: 'field', field: { type: 'clock',     timerange: a } }; }
-  / ("sched:" / "scheduled:") a:TimeRange { return { type: 'field', field: { type: 'scheduled', timerange: a } }; }
-  / ("dead:" / "deadline:")   a:TimeRange { return { type: 'field', field: { type: 'deadline',  timerange: a } }; }
+  = "date:"                    a:TimeRange { return { type: 'field', field: { type: 'date',        timerange: a } }; }
+  / "clock:"                   a:TimeRange { return { type: 'field', field: { type: 'clock',       timerange: a } }; }
+  / ("sched:" / "scheduled:")  a:TimeRange { return { type: 'field', field: { type: 'scheduled',   timerange: a } }; }
+  / ("dead:" / "deadline:")    a:TimeRange { return { type: 'field', field: { type: 'deadline',    timerange: a } }; }
+  / ("desc:" / "description:") a:TermText  { return { type: 'field', field: { type: 'description', text: a } }; }
 
 TimeRange "moments and timeranges"
   = a:Moment ".." b:Moment { return { type: 'range', from: a, to: b }; }
@@ -167,7 +168,7 @@ PropertyName "property name"
 
 // https://orgmode.org/manual/Tags.html
 TagName "tag name"
-  = [a-zA-Z0-9_@]+ { return text() }
+  = [a-zA-Z0-9_@#%]+ { return text() }
 
 _ "whitespace"
   = [ \t]

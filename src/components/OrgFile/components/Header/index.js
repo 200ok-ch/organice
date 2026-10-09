@@ -21,6 +21,8 @@ import { headerWithId } from '../../../../lib/org_utils';
 import { interpolateColors, rgbaObject, rgbaString, readRgbaVariable } from '../../../../lib/color';
 import { getCurrentTimestamp, millisDuration } from '../../../../lib/timestamps';
 import { Map } from 'immutable';
+import { shareContent } from '../../../../lib/share_utils';
+import { exportHeaderWithSubheaders } from '../../../../lib/export_org';
 
 class Header extends PureComponent {
   SWIPE_ACTION_ACTIVATION_DISTANCE = 80;
@@ -32,12 +34,7 @@ class Header extends PureComponent {
     _.bindAll(this, [
       'handleRef',
       'handleMouseDown',
-      'handleMouseMove',
-      'handleMouseUp',
-      'handleMouseOut',
-      'handleTouchMove',
       'handleTouchStart',
-      'handleTouchEnd',
       'handleTouchCancel',
       'handleHeaderClick',
       'handleShowTitleModal',
@@ -54,18 +51,49 @@ class Header extends PureComponent {
       'handleShareHeaderClick',
       'handleRefileHeaderRequest',
       'handleAddNoteClick',
+      'handleDuplicateHeader',
+      'handleDragStartFromPending',
     ]);
 
     this.state = {
       isDraggingFreely: false,
       dragStartX: null,
-      dragStartY: null,
       currentDragX: null,
       containerWidth: null,
       isPlayingRemoveAnimation: false,
       heightBeforeRemove: null,
       disabledBackgroundColor: readRgbaVariable('--base3'),
+      // Track vertical touch positions to detect vertical scrolling intent
+      touchStartY: null,
     };
+
+    // Store member callbacks handling global mouse/touch events to be able to handle dragging
+    // interactions outside of the current component.
+    this.globalMouseMoveHandler = this.handleMouseMove.bind(this);
+    this.globalMouseUpHandler = this.handleMouseUp.bind(this);
+    this.globalTouchMoveHandler = this.handleTouchMove.bind(this);
+    this.globalTouchEndHandler = this.handleTouchEnd.bind(this);
+    this.pendingPointerStart = null;
+  }
+
+  handleDragStartFromPending(dragX, targetElement) {
+    this.handleDragStart(targetElement, dragX);
+  }
+
+  addGlobalDragHandlers() {
+    // Begin listening for global mouse/touch events after dragging begins
+    window.addEventListener('mousemove', this.globalMouseMoveHandler);
+    window.addEventListener('mouseup', this.globalMouseUpHandler);
+    window.addEventListener('touchmove', this.globalTouchMoveHandler);
+    window.addEventListener('touchend', this.globalTouchEndHandler);
+  }
+
+  removeGlobalDragHandlers() {
+    // Stop listening for global mouse/touch events after dragging ends
+    window.removeEventListener('mousemove', this.globalMouseMoveHandler);
+    window.removeEventListener('mouseup', this.globalMouseUpHandler);
+    window.removeEventListener('touchmove', this.globalTouchMoveHandler);
+    window.removeEventListener('touchend', this.globalTouchEndHandler);
   }
 
   componentDidMount() {
@@ -74,59 +102,55 @@ class Header extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.removeGlobalDragHandlers();
+  }
+
   handleRef(containerDiv) {
     this.containerDiv = containerDiv;
     this.props.onRef(containerDiv);
   }
 
-  handleDragStart(event, dragX, dragY) {
+  handleDragStart(targetElement, dragX) {
     if (this.props.shouldDisableActions) {
       return;
     }
 
-    if (!!event.target.closest('.table-part')) {
+    if (!!targetElement?.closest('.table-part')) {
       return;
     }
 
     this.setState({
       dragStartX: dragX,
-      dragStartY: dragY,
     });
   }
 
-  handleDragMove(dragX, dragY) {
-    const { dragStartX, dragStartY } = this.state;
-    if (dragStartX === null) {
+  handleDragMove(dragX) {
+    if (this.state.dragStartX === null) {
       return;
     }
 
     if (!this.state.isDraggingFreely) {
-      if (Math.abs(dragX - dragStartX) >= this.FREE_DRAG_ACTIVATION_DISTANCE) {
+      if (Math.abs(dragX - this.state.dragStartX) >= this.FREE_DRAG_ACTIVATION_DISTANCE) {
         this.setState({ isDraggingFreely: true });
       }
     }
 
-    if (Math.abs(dragY - dragStartY) >= this.SWIPE_ACTION_ACTIVATION_DISTANCE / 2) {
-      this.setState({ dragStartX: null });
-    } else {
-      this.setState({ currentDragX: dragX });
-    }
+    this.setState({ currentDragX: dragX });
   }
 
   handleDragEnd() {
     const { dragStartX, currentDragX } = this.state;
 
     if (!!dragStartX && !!currentDragX) {
-      const swipeDistance = currentDragX - dragStartX;
-
-      if (swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
+      if (currentDragX >= 2 * dragStartX) {
         this.props.org.advanceTodoState(
           this.props.header.get('id'),
           this.props.shouldLogIntoDrawer
         );
       }
 
-      if (-1 * swipeDistance >= this.SWIPE_ACTION_ACTIVATION_DISTANCE) {
+      if (dragStartX >= 2 * currentDragX) {
         this.setState({
           isPlayingRemoveAnimation: true,
           heightBeforeRemove: this.containerDiv.offsetHeight,
@@ -139,6 +163,8 @@ class Header extends PureComponent {
       currentDragX: null,
       isDraggingFreely: false,
     });
+
+    this.removeGlobalDragHandlers();
   }
 
   handleDragCancel() {
@@ -147,37 +173,120 @@ class Header extends PureComponent {
       currentDragX: null,
       isDraggingFreely: false,
     });
+
+    this.removeGlobalDragHandlers();
   }
 
   handleMouseDown(event) {
-    this.handleDragStart(event, event.clientX, event.clientY);
+    this.pendingPointerStart = {
+      x: event.clientX,
+      y: event.clientY,
+      target: event.target,
+    };
+
+    this.props.onLongPressPointerStart(this.props.header.get('id'), event.clientX, event.clientY);
+    this.addGlobalDragHandlers();
   }
 
   handleMouseMove(event) {
+    if (this.props.isLongPressDragging) {
+      this.pendingPointerStart = null;
+      return;
+    }
+
+    if (this.pendingPointerStart && this.state.dragStartX === null) {
+      this.handleDragStartFromPending(this.pendingPointerStart.x, this.pendingPointerStart.target);
+      this.pendingPointerStart = null;
+    }
+
     this.handleDragMove(event.clientX, event.clientY);
   }
 
   handleMouseUp() {
+    this.pendingPointerStart = null;
+    this.props.onLongPressPointerEnd();
     this.handleDragEnd();
   }
 
-  handleMouseOut() {
-    this.handleDragCancel();
-  }
-
   handleTouchStart(event) {
-    this.handleDragStart(event, event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    const touch = event.changedTouches[0];
+    this.pendingPointerStart = {
+      x: touch.clientX,
+      y: touch.clientY,
+      target: event.target,
+    };
+
+    this.props.onLongPressPointerStart(this.props.header.get('id'), touch.clientX, touch.clientY);
+    this.addGlobalDragHandlers();
+
+    this.setState({
+      touchStartY: touch.clientY,
+    });
   }
 
   handleTouchMove(event) {
-    this.handleDragMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    const touch = event.changedTouches[0];
+    const currentY = touch.clientY;
+    const currentX = touch.clientX;
+
+    if (this.props.isLongPressDragging) {
+      this.pendingPointerStart = null;
+      return;
+    }
+
+    if (this.pendingPointerStart && this.state.dragStartX === null) {
+      const verticalDistance = Math.abs(currentY - this.pendingPointerStart.y);
+      const horizontalDistance = Math.abs(currentX - this.pendingPointerStart.x);
+
+      if (verticalDistance > horizontalDistance && verticalDistance > 10) {
+        this.pendingPointerStart = null;
+        return;
+      }
+
+      if (horizontalDistance < 5) {
+        return;
+      }
+
+      this.handleDragStartFromPending(this.pendingPointerStart.x, this.pendingPointerStart.target);
+      this.pendingPointerStart = null;
+    }
+
+    // Detect if this is primarily a vertical scroll gesture
+    // If the user is moving more vertically than horizontally, we should
+    // cancel the horizontal drag to allow normal page scrolling
+    if (this.state.touchStartY !== null && this.state.dragStartX !== null) {
+      const verticalDistance = Math.abs(currentY - this.state.touchStartY);
+      const horizontalDistance = Math.abs(currentX - this.state.dragStartX);
+
+      // If vertical movement is significantly greater than horizontal movement,
+      // cancel the drag operation to allow normal page scrolling
+      // The threshold of 10px ensures small movements don't trigger cancellation
+      if (verticalDistance > horizontalDistance && verticalDistance > 10) {
+        this.handleDragCancel();
+        return;
+      }
+    }
+
+    this.handleDragMove(currentX, currentY);
   }
 
   handleTouchEnd() {
+    this.pendingPointerStart = null;
+    this.props.onLongPressPointerEnd();
+
+    this.setState({
+      touchStartY: null,
+    });
     this.handleDragEnd();
   }
 
   handleTouchCancel() {
+    this.pendingPointerStart = null;
+    this.props.onLongPressPointerEnd();
+
+    this.setState({
+      touchStartY: null,
+    });
     this.handleDragCancel();
   }
 
@@ -220,6 +329,10 @@ class Header extends PureComponent {
 
   handleAddNewHeader() {
     this.props.org.addHeaderAndEdit(this.props.header.get('id'));
+  }
+
+  handleDuplicateHeader() {
+    this.props.org.duplicateHeader(this.props.header.get('id'));
   }
 
   handleRest() {
@@ -272,32 +385,26 @@ class Header extends PureComponent {
   }
 
   handleShareHeaderClick() {
-    const { header } = this.props;
+    const { header, headers } = this.props;
 
     const titleLine = header.get('titleLine');
     const todoKeyword = titleLine.get('todoKeyword');
-    const tags = titleLine.get('tags');
     const title = titleLine.get('rawTitle').trim();
-    const subject = todoKeyword ? `${todoKeyword} ${title}` : title;
-    const body = `
-${tags.isEmpty() ? '' : `Tags: ${tags.join(' ')}\n`}
-${header.get('rawDescription')}`;
-    //const titleParts = titleLine.get('title'); // List of parsed tokens in title
-    //const properties = header.get('propertyListItem'); //.get(0) .get('property') or .get('value')
-    //const planningItems = header.get('planningItems'); //.get(0) .get('type') [DEADLINE|SCHEDULED] or .get('timestamp')
-    const mailtoURI = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-      body
-    )}`;
-    // TODO: If available, use webshare
-    // Maybe there's synergy with this PR: https://github.com/200ok-ch/organice/pull/138/files
+    const fullTitle = todoKeyword ? `${todoKeyword} ${title}` : title;
 
-    window.open(mailtoURI);
-    // INFO: Alternative implementation that works without having a
-    // popup window. We didn't go this route, because it's non-trivial
-    // to mock the window object, so it's harder to test. Having
-    // slightly worse UX in favor of having a test is not optimal, as
-    // well, of course.
-    // window.location.href = mailtoURI;
+    // Export header with all sub-headers
+    const content = exportHeaderWithSubheaders(header, headers, {
+      includeSubheaders: true,
+      recursive: true,
+      includeTitle: true,
+      dontIndent: false,
+    });
+
+    // Use Web Share API with fallback to email
+    shareContent({
+      title: fullTitle,
+      text: content,
+    });
   }
 
   handleAddNoteClick() {
@@ -315,6 +422,7 @@ ${header.get('rawDescription')}`;
   render() {
     const {
       header,
+      headerIndex,
       color,
       hasContent,
       isSelected,
@@ -323,10 +431,38 @@ ${header.get('rawDescription')}`;
       isNarrowed,
       shouldDisableActions,
       showClockDisplay,
+      showDeadlineDisplay,
     } = this.props;
     const indentLevel = !!narrowedHeader
       ? header.get('nestingLevel') - narrowedHeader.get('nestingLevel') + 1
       : header.get('nestingLevel');
+
+    const headerDeadlineMap = header
+      .get('planningItems')
+      .filter((p) => p.get('type') === 'DEADLINE')
+      .map((p) => p.get('timestamp'))
+      .get(0);
+
+    let isOverdue = false;
+    let deadlineString = '';
+    if (showDeadlineDisplay && headerDeadlineMap) {
+      const year = headerDeadlineMap.get('year');
+      const month = headerDeadlineMap.get('month');
+      const day = headerDeadlineMap.get('day');
+      // Ensure parts are parsed as integers for Date constructor
+      const deadlineDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Normalize today to midnight for date-only comparison
+
+      isOverdue = deadlineDate < today;
+      deadlineString = `${year}-${month}-${day}`;
+    }
+
+    const clockDisplayString =
+      showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
+        ? millisDuration(header.get('totalTimeLoggedRecursive'))
+        : '';
 
     const {
       dragStartX,
@@ -351,6 +487,11 @@ ${header.get('rawDescription')}`;
     const className = classNames('header', {
       'header--selected': isSelected,
       'header--removing': isPlayingRemoveAnimation,
+      'header--long-press-dragging': this.props.isDraggedForReorder,
+      'header--reorder-drop-before':
+        this.props.isReorderDropTarget && this.props.reorderDropPosition === 'before',
+      'header--reorder-drop-after':
+        this.props.isReorderDropTarget && this.props.reorderDropPosition === 'after',
     });
 
     const logBookEntries = header
@@ -388,19 +529,20 @@ ${header.get('rawDescription')}`;
             headerStyle.height = this.state.heightBeforeRemove * heightFactor;
           }
 
+          if (this.props.isDraggedForReorder) {
+            headerStyle.transform = `translateY(${this.props.reorderDragOffsetY}px)`;
+            headerStyle.zIndex = 10;
+          }
+
           return (
             <div
               className={className}
               style={headerStyle}
               ref={this.handleRef}
+              data-header-id={header.get('id')}
               onClick={this.handleHeaderClick}
               onMouseDown={this.handleMouseDown}
-              onMouseMove={this.handleMouseMove}
-              onMouseUp={this.handleMouseUp}
-              onMouseOut={this.handleMouseOut}
               onTouchStart={this.handleTouchStart}
-              onTouchMove={this.handleTouchMove}
-              onTouchEnd={this.handleTouchEnd}
               onTouchCancel={this.handleTouchCancel}
             >
               <Motion style={leftSwipeActionContainerStyle}>
@@ -482,11 +624,11 @@ ${header.get('rawDescription')}`;
                 isSelected={isSelected}
                 shouldDisableExplicitWidth={swipedDistance === 0}
                 shouldDisableActions={shouldDisableActions}
-                addition={
-                  showClockDisplay && header.get('totalTimeLoggedRecursive') !== 0
-                    ? millisDuration(header.get('totalTimeLoggedRecursive'))
-                    : ''
-                }
+                addition={clockDisplayString}
+                showDeadlineDisplay={showDeadlineDisplay}
+                headerDeadlineMap={headerDeadlineMap}
+                deadlineString={deadlineString}
+                isOverdue={isOverdue}
               />
 
               <Collapse
@@ -510,10 +652,15 @@ ${header.get('rawDescription')}`;
                   onShareHeader={this.handleShareHeaderClick}
                   onRefileHeader={this.handleRefileHeaderRequest}
                   onAddNote={this.handleAddNoteClick}
+                  onDuplicateHeader={this.handleDuplicateHeader}
                 />
               </Collapse>
 
-              <HeaderContent header={header} shouldDisableActions={shouldDisableActions} />
+              <HeaderContent
+                header={header}
+                headerIndex={headerIndex}
+                shouldDisableActions={shouldDisableActions}
+              />
             </div>
           );
         }}
@@ -536,6 +683,8 @@ const mapStateToProps = (state, ownProps) => {
     narrowedHeader,
     isNarrowed: !!narrowedHeader && narrowedHeader.get('id') === ownProps.header.get('id'),
     showClockDisplay: state.org.present.get('showClockDisplay'),
+    showDeadlineDisplay: state.base.get('showDeadlineDisplay'),
+    headers: file.get('headers'),
   };
 };
 

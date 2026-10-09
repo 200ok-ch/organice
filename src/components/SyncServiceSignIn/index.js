@@ -1,9 +1,11 @@
+/* global process */
+
 import React, { PureComponent, useState } from 'react';
 
 import './stylesheet.css';
 
-import DropboxLogo from './dropbox.svg';
-import GitLabLogo from './gitlab.svg';
+import DropboxLogo from 'url:./dropbox.svg';
+import GitLabLogo from 'url:./gitlab.svg';
 
 import { persistField } from '../../util/settings_persister';
 import {
@@ -11,10 +13,8 @@ import {
   gitLabProjectIdFromURL,
 } from '../../sync_backend_clients/gitlab_sync_backend_client';
 
-import { Dropbox } from 'dropbox';
+import { DropboxAuth } from 'dropbox';
 import _ from 'lodash';
-
-import { redirectUrl } from '../../util/redirect_url';
 
 function WebDAVForm() {
   const [isVisible, setIsVisible] = useState(false);
@@ -113,13 +113,13 @@ function GitLab() {
   const defaultProject = 'https://gitlab.com/your/project';
   const [project, setProject] = useState(defaultProject);
   const handleSubmit = (evt) => {
+    evt.preventDefault();
     const projectId = gitLabProjectIdFromURL(project);
     if (projectId) {
       persistField('authenticatedSyncService', 'GitLab');
       persistField('gitLabProject', projectId);
       createGitlabOAuth().fetchAuthorizationCode();
     } else {
-      evt.preventDefault();
       alert('Project does not appear to be a valid gitlab.com URL');
     }
   };
@@ -158,14 +158,20 @@ export default class SyncServiceSignIn extends PureComponent {
 
   handleDropboxClick() {
     persistField('authenticatedSyncService', 'Dropbox');
+    const REDIRECT_URI = window.location.origin + '/';
 
-    const dropbox = new Dropbox({
+    const dbxAuth = new DropboxAuth({
       clientId: process.env.REACT_APP_DROPBOX_CLIENT_ID,
       fetch: fetch.bind(window),
     });
-    dropbox.auth.getAuthenticationUrl(redirectUrl()).then((authURL) => {
-      window.location = authURL;
-    });
+
+    dbxAuth
+      .getAuthenticationUrl(REDIRECT_URI, undefined, 'code', 'offline', undefined, undefined, true)
+      .then((authUrl) => {
+        persistField('codeVerifier', dbxAuth.codeVerifier);
+        window.location.href = authUrl;
+      })
+      .catch((error) => console.error(error));
   }
 
   render() {
@@ -190,21 +196,16 @@ export default class SyncServiceSignIn extends PureComponent {
           <WebDAVForm />
         </div>
 
-        <footer className="sync-service-sign-in__help-text">
-          <p>
-            For questions regarding synchronization back-ends, please consult the{' '}
-            <a
-              href="https://organice.200ok.ch/documentation.html#sync_backends"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>
-            .
-          </p>
-          <p style={{ 'text-align': 'center', 'font-size': '66%', 'margin-top': '3em' }}>
-            Build ORGANICE_ROLLING_RELEASE
-          </p>
+        <footer>
+          For questions regarding synchronization back-ends, please consult the{' '}
+          <a
+            href="https://organice.200ok.ch/documentation.html#sync_backends"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            documentation
+          </a>
+          .
         </footer>
       </div>
     );

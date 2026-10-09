@@ -1,0 +1,22 @@
+RewriteEngine On
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^ /index.html [L]
+
+# Prevent caching of service worker file
+<FilesMatch "sw\.js$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
+  </IfModule>
+</FilesMatch>
+
+# Cache index.html with short expiration to allow updates
+<FilesMatch "index\.html$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </IfModule>
+</FilesMatch>

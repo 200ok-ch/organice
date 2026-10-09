@@ -7,7 +7,7 @@ import _ from 'lodash';
 // TODO: Extract all match groups of `beginningRegexp` (for example
 // like `emailRegexp`), so that they can be documented and are less
 // unwieldly.
-const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|(([\s({'"]?)([*/~=_+])([^\s,'](.*)[^\s,'])\11([\s\-.,:;!?'")}]?))/;
+const beginningRegexp = /(\[\[([^\]]*)\]\]|\[\[([^\]]*)\]\[([^\]]*)\]\])|(\[((\d*%)|(\d*\/\d*))\])|((^|\s|[({'"])([*/~=_+])([^\s,'](.*?))\11([\s\-.,:;!?'")}]?))/;
 
 // Regexp taken from https://stackoverflow.com/a/3809435/999007
 const httpUrlRegexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))/;
@@ -728,10 +728,12 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
   const allKeywords = todoKeywordSets.flatMap((todoKeywordSet) => {
     return todoKeywordSet.get('keywords');
   });
-  const todoKeyword = allKeywords.filter((keyword) => titleLine.startsWith(keyword + ' ')).first();
+  const todoKeyword = allKeywords
+    .filter((keyword) => titleLine.startsWith(keyword + ' ') || titleLine === keyword)
+    .first();
   let rawTitle = titleLine;
   if (todoKeyword) {
-    rawTitle = rawTitle.substr(todoKeyword.length + 1);
+    rawTitle = rawTitle.substr(todoKeyword.length + 1).trimStart();
   }
 
   // Check for tags.

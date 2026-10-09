@@ -62,6 +62,8 @@ export default class ActionButton extends PureComponent {
       }
     );
 
+    const { dataTestId } = this.props;
+
     return (
       <button
         className={className}
@@ -69,6 +71,7 @@ export default class ActionButton extends PureComponent {
         style={style}
         title={tooltip}
         ref={onRef}
+        data-testid={dataTestId}
       >
         {!!letter && letter}
         {!!subIconName && <i className={subIconClassName} />}

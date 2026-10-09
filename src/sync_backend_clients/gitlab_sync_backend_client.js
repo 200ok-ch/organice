@@ -1,7 +1,13 @@
-import { OAuth2AuthCodePKCE } from '@bity/oauth2-auth-code-pkce';
+/* global process */
+
+import {
+  ErrorServerError,
+  ErrorTemporarilyUnavailable,
+  ErrorUnknown,
+  OAuth2AuthCodePKCE,
+} from '@bity/oauth2-auth-code-pkce';
 import { orgFileExtensions } from '../lib/org_utils';
 import { getPersistedField } from '../util/settings_persister';
-import { redirectUrl } from '../util/redirect_url';
 
 import { fromJS, Map } from 'immutable';
 
@@ -15,7 +21,7 @@ export const createGitlabOAuth = () => {
     authorizationUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     clientId: process.env.REACT_APP_GITLAB_CLIENT_ID,
-    redirectUrl: redirectUrl(),
+    redirectUrl: window.location.origin,
     scopes: ['api'],
     extraAuthorizationParams: {
       clientSecret: process.env.REACT_APP_GITLAB_SECRET,
@@ -154,6 +160,17 @@ export default (oauthClient) => {
       await oauthClient.getAccessToken();
       return true;
     } catch (e) {
+      // Network errors (e.g. while offline) surface as `ErrorUnknown`.
+      // Signing out deletes the local copies, so only sign out when
+      // GitLab rejected the token.
+      if (
+        e instanceof ErrorUnknown ||
+        e instanceof ErrorServerError ||
+        e instanceof ErrorTemporarilyUnavailable
+      ) {
+        console.warn('Could not reach GitLab to refresh the OAuth access token', e);
+        return true;
+      }
       console.error('Error trying to get OAuth access token.');
       console.error(e);
       return false;
