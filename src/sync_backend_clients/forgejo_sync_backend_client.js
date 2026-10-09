@@ -3,12 +3,59 @@ import { getPersistedField } from '../util/settings_persister';
 
 import { fromJS, Map } from 'immutable';
 
-export const forgejoRepositoryFromURL = (url) => {
-  const regex = /(?<domain>.+)\/(?<owner>[^/]+)\/(?<repository>[^/]+)$/;
-  const match = url.match(regex);
-  if (match) {
-    return match.groups;
+// First path segments of Forgejo pages below a repository, such as
+// /owner/repo/src/branch/main.
+const REPOSITORY_ROUTES = [
+  'actions',
+  'activity',
+  'blame',
+  'branches',
+  'commit',
+  'commits',
+  'compare',
+  'issues',
+  'labels',
+  'media',
+  'milestones',
+  'projects',
+  'pulls',
+  'raw',
+  'releases',
+  'settings',
+  'src',
+  'tags',
+  'wiki',
+];
+
+/**
+ * Parse the URL of a repository, or of any page in it, as copied from the
+ * browser. A path in front of owner and repository belongs to the domain, for
+ * Forgejo instances served from a subpath.
+ *
+ * @param {string} input Such as https://codeberg.org/owner/repo
+ * @returns {{domain: string, owner: string, repository: string}|undefined}
+ */
+export const forgejoRepositoryFromURL = (input) => {
+  let url;
+  try {
+    url = new URL(input.trim());
+  } catch {
+    return;
   }
+  const segments = url.pathname.split('/').filter(Boolean);
+  const routeIndex = segments.findIndex(
+    (segment, index) => index >= 2 && REPOSITORY_ROUTES.includes(segment)
+  );
+  const repositoryPath = routeIndex === -1 ? segments : segments.slice(0, routeIndex);
+  if (repositoryPath.length < 2) {
+    return;
+  }
+  const [owner, repository] = repositoryPath.slice(-2);
+  return {
+    domain: [url.origin, ...repositoryPath.slice(0, -2)].join('/'),
+    owner,
+    repository: repository.replace(/\.git$/, ''),
+  };
 };
 
 export const contentsResponseToDirectoryListing = (contents) => {
@@ -39,13 +86,15 @@ export const contentsResponseToDirectoryListing = (contents) => {
   );
 };
 
-function unicodeToBase64(str) {
+export function unicodeToBase64(str) {
   const bytes = new TextEncoder().encode(str);
-  const binString = String.fromCodePoint(...bytes);
+  // Not `String.fromCodePoint(...bytes)`: spreading a large file exceeds the
+  // maximum number of function arguments.
+  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
   return btoa(binString);
 }
 
-function base64ToUnicode(base64Str) {
+export function base64ToUnicode(base64Str) {
   const binString = atob(base64Str);
   const bytes = Uint8Array.from(binString, (n) => n.codePointAt(0));
   return new TextDecoder().decode(bytes);
@@ -56,29 +105,63 @@ function base64ToUnicode(base64Str) {
  *
  * @see https://forgejo.org/docs/latest/user/api/usage/
  */
+const SIGNED_OUT_STATUSES = [401, 403, 404];
+
 export default () => {
   const getRepositoryApi = () =>
     `${getPersistedField('forgejoDomain')}/api/v1/repos/${getPersistedField(
       'forgejoOwner'
     )}/${getPersistedField('forgejoRepository')}`;
 
+  const authorizationHeader = () => ({
+    Authorization: 'token ' + getPersistedField('forgejoAccessToken'),
+  });
+
+  const fetchRepository = () => fetch(getRepositoryApi(), { headers: authorizationHeader() });
+
   const isSignedIn = async () => {
-    const response = await fetch(getRepositoryApi(), {
-      method: 'GET',
-      headers: {
-        Authorization: 'token ' + getPersistedField('forgejoAccessToken'),
-      },
-    });
-    return response.ok;
+    try {
+      const response = await fetchRepository();
+      // Only Forgejo rejecting the token or the repository means signed
+      // out. Signing out deletes the local copies, so a server that can't
+      // be reached (e.g. while offline) must not.
+      if (SIGNED_OUT_STATUSES.includes(response.status)) {
+        return false;
+      }
+      if (!response.ok) {
+        console.warn(`Unexpected response from Forgejo. Status code: ${response.status}`);
+      }
+      return true;
+    } catch (e) {
+      console.warn('Could not reach Forgejo', e);
+      return true;
+    }
+  };
+
+  /**
+   * Check that the repository exists and the access token may push to it.
+   */
+  const isRepositoryAccessible = async () => {
+    try {
+      const response = await fetchRepository();
+      if (!response.ok) {
+        return false;
+      }
+      const repository = await response.json();
+      return !!(repository.permissions && repository.permissions.push);
+    } catch (e) {
+      console.error('Could not reach Forgejo', e);
+      return false;
+    }
   };
 
   const callContentsApi = async (path, method = 'GET', body = null) => {
-    const url = `${getRepositoryApi()}/contents${path}`;
-    const response = await fetch(url, {
+    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+    const response = await fetch(`${getRepositoryApi()}/contents${encodedPath}`, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'token ' + getPersistedField('forgejoAccessToken'),
+        ...authorizationHeader(),
       },
       body: body == null ? null : JSON.stringify(body),
     });
@@ -112,13 +195,17 @@ export default () => {
 
   const getFileContents = async (path) => (await getFileContentsAndMetadata(path)).contents;
 
+  // Two newlines because Git commits should have an empty line between
+  // title and body.
+  const commitMessage = (action, path) =>
+    `[organice] ${action} ${path.replace(/^\//, '')}\n\nAutomatic commit from organice app.`;
+
+  // Forgejo requires the blob SHA of the file that an update or delete
+  // replaces.
   const createFile = async (path, content) => {
     await callContentsApi(path, 'POST', {
       content: unicodeToBase64(content),
-      message: `[organice] Create ${path.replace(
-        /^\//,
-        ''
-      )}\n\nAutomatic commit from organice app.`,
+      message: commitMessage('Create', path),
     });
   };
 
@@ -127,10 +214,7 @@ export default () => {
     await callContentsApi(path, 'PUT', {
       content: unicodeToBase64(content),
       sha: currentFile.sha,
-      message: `[organice] Update ${path.replace(
-        /^\//,
-        ''
-      )}\n\nAutomatic commit from organice app.`,
+      message: commitMessage('Update', path),
     });
   };
 
@@ -138,16 +222,14 @@ export default () => {
     const currentFile = await callContentsApi(path);
     await callContentsApi(path, 'DELETE', {
       sha: currentFile.sha,
-      message: `[organice] Delete ${path.replace(
-        /^\//,
-        ''
-      )}\n\nAutomatic commit from organice app.`,
+      message: commitMessage('Delete', path),
     });
   };
 
   return {
     type: 'Forgejo',
     isSignedIn,
+    isRepositoryAccessible,
     getDirectoryListing,
     getMoreDirectoryListing,
     updateFile,
