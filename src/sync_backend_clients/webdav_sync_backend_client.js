@@ -83,6 +83,10 @@ export default (url, login, password) => {
   const updateFile = uploadFile;
   const createFile = uploadFile;
 
+  // A missing file rejects without an error; callers report that as "not
+  // found". Other errors (e.g. no network) are passed on.
+  const isNotFound = (error) => !!error && !!error.response && error.response.status === 404;
+
   const getFileContentsAndMetadata = (path) =>
     new Promise((resolve, reject) =>
       webdavClient
@@ -98,14 +102,14 @@ export default (url, login, password) => {
             })
             .catch((error) => {
               console.error(path, ': get file failed', error);
-              reject();
+              reject(isNotFound(error) ? undefined : error);
             });
         })
         .catch((error) => {
           if (error && error.response && [401, 403].indexOf(error.response.status) !== -1)
             alert(login + '@' + url + ': ' + error.response.statusText);
           console.error(path, ': get stat failed', error);
-          reject();
+          reject(isNotFound(error) ? undefined : error);
         })
     );
 
