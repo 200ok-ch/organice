@@ -28,7 +28,7 @@ export const localStorageAvailable = (() => {
  * GitLab doesn't allow updating a file that doesn't exist or creating one that already exists, so
  * need to figure out which to do.
  */
-const updateConfigForGitLab = async (client, contents) => {
+const updateConfigForGit = async (client, contents) => {
   const filename = '/.organice-config.json';
   let exists = false;
   try {
@@ -63,7 +63,8 @@ const debouncedPushConfigToSyncBackend = _.debounce(
           );
         break;
       case 'GitLab':
-        updateConfigForGitLab(syncBackendClient, contents).catch((error) =>
+      case 'Forgejo':
+        updateConfigForGit(syncBackendClient, contents).catch((error) =>
           alert(`There was an error trying to push settings to your sync backend: ${error}`)
         );
         break;
@@ -432,6 +433,7 @@ export const loadSettingsFromConfigFile = (dispatch, getState) => {
   switch (syncBackendClient.type) {
     case 'Dropbox':
     case 'GitLab':
+    case 'Forgejo':
     case 'WebDAV':
       fileContentsPromise = syncBackendClient.getFileContents('/.organice-config.json');
       break;

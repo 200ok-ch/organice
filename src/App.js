@@ -25,6 +25,7 @@ import createWebDAVSyncBackendClient from './sync_backend_clients/webdav_sync_ba
 import createGitLabSyncBackendClient, {
   createGitlabOAuth,
 } from './sync_backend_clients/gitlab_sync_backend_client';
+import createForgejoSyncBackendClient from './sync_backend_clients/forgejo_sync_backend_client';
 
 import './base.css';
 
@@ -97,6 +98,15 @@ export default class App extends PureComponent {
             });
           } else {
             handleGitLabAuthResponse(gitlabOAuth);
+          }
+          break;
+        case 'Forgejo':
+          if (getPersistedField('forgejoAccessToken', true)) {
+            client = createForgejoSyncBackendClient();
+            initialState.syncBackend = Map({
+              isAuthenticated: true,
+              client,
+            });
           }
           break;
         case 'WebDAV':
