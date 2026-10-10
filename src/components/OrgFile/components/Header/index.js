@@ -177,6 +177,12 @@ class Header extends PureComponent {
     this.removeGlobalDragHandlers();
   }
 
+  // Long-pressing an icon in the header action drawer is the icon's own
+  // gesture (e.g. duplicating the header), not a header reorder.
+  isInActionDrawer(target) {
+    return !!target?.closest('.header-action-drawer-container');
+  }
+
   handleMouseDown(event) {
     this.pendingPointerStart = {
       x: event.clientX,
@@ -184,7 +190,9 @@ class Header extends PureComponent {
       target: event.target,
     };
 
-    this.props.onLongPressPointerStart(this.props.header.get('id'), event.clientX, event.clientY);
+    if (!this.isInActionDrawer(event.target)) {
+      this.props.onLongPressPointerStart(this.props.header.get('id'), event.clientX, event.clientY);
+    }
     this.addGlobalDragHandlers();
   }
 
@@ -216,7 +224,9 @@ class Header extends PureComponent {
       target: event.target,
     };
 
-    this.props.onLongPressPointerStart(this.props.header.get('id'), touch.clientX, touch.clientY);
+    if (!this.isInActionDrawer(event.target)) {
+      this.props.onLongPressPointerStart(this.props.header.get('id'), touch.clientX, touch.clientY);
+    }
     this.addGlobalDragHandlers();
 
     this.setState({
