@@ -1,30 +1,21 @@
-import { test, expect } from '@playwright/test';
-import AppHelper from '../../helpers/app-helper.js';
+import { test, expect } from '../../fixtures.js';
 
 test.describe('Task List Date Toggle', () => {
-  let appHelper;
+  test('clicking a task date toggles relative and back to absolute format', async ({
+    page,
+    sample,
+  }) => {
+    await sample.openSearch('Task List');
 
-  test.beforeEach(async ({ page }) => {
-    appHelper = new AppHelper(page);
+    const planningDate = page.locator('.task-list__header-planning-date').first();
+    const absoluteDate = /^\d{2}\/\d{2}$/;
+    await expect(planningDate).toHaveText(absoluteDate);
 
-    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    await appHelper.waitForAppReady();
-  });
+    await planningDate.click();
+    await expect(planningDate).not.toHaveText(absoluteDate);
+    await expect(planningDate).toHaveText(/[a-zA-Z]/);
 
-  test('clicking a task date toggles absolute and relative display', async ({ page }) => {
-    await page.getByTitle('Show Search / Task List').click();
-    await page.locator('.tab-buttons__btn', { hasText: 'Task List' }).first().click();
-
-    const firstPlanningDate = page.locator('.task-list__header-planning-date').first();
-    await expect(firstPlanningDate).toBeVisible();
-
-    const absoluteValue = (await firstPlanningDate.innerText()).trim();
-    expect(absoluteValue).toMatch(/^\d{2}\/\d{2}$/);
-
-    await firstPlanningDate.click();
-
-    const relativeValue = (await firstPlanningDate.innerText()).trim();
-    expect(relativeValue).not.toBe(absoluteValue);
-    expect(relativeValue).toMatch(/[a-zA-Z]/);
+    await planningDate.click();
+    await expect(planningDate).toHaveText(absoluteDate);
   });
 });

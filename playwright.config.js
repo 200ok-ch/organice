@@ -11,8 +11,8 @@ export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
-  // Retry on CI and locally (1 retry locally, 2 in CI)
-  retries: process.env.CI ? 2 : 1,
+  // Retry only on CI; locally a flaky test should fail visibly
+  retries: process.env.CI ? 2 : 0,
 
   // Worker count configuration
   // CI: 4 matches the vCPUs of GitHub-hosted runners
@@ -20,7 +20,7 @@ export default defineConfig({
   workers: process.env.CI ? 4 : undefined,
 
   // Per-test timeout (60 seconds for WebDAV sync and file loading)
-  testTimeout: 60 * 1000,
+  timeout: 60 * 1000,
 
   // Reporter to use (HTML for local, JUnit for CI)
   reporter: process.env.CI

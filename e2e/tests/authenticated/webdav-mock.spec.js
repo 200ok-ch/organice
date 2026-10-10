@@ -61,14 +61,8 @@ test.describe('WebDAV Mock Tests', () => {
     // Use 'load' instead of 'networkidle' for CI reliability
     await page.reload({ waitUntil: 'load' });
 
-    // Wait for file browser or sync status to appear (indicates authentication succeeded)
-    await page.waitForSelector(
-      '.file-browser-container, .component-browser-sync__file-list, .component-browser-sync__status',
-      { state: 'attached', timeout: 10000 }
-    );
-
-    // Additional wait for WebDAV sync to complete
-    await page.waitForTimeout(2000);
+    // The file listing appears once authentication succeeded
+    await expect(page.locator('.file-browser-container')).toContainText('test.org');
   }
 
   test.describe('Authentication', () => {
@@ -192,9 +186,11 @@ test.describe('WebDAV Mock Tests', () => {
       // Verify the title was changed in the UI
       await expect(page.locator('text=Modified Sample File')).toBeVisible();
 
-      // Note: The app creates a backup file (.organice-bak) but doesn't sync
-      // the modified content to WebDAV in this test scenario.
-      // The main goal of this test is to verify the UI updates correctly.
+      // The change is pushed to the server, after a backup of the original
+      await expect
+        .poll(() => webdavMock.mockFiles.get('/test.org'))
+        .toContain('* Modified Sample File');
+      expect(webdavMock.mockFiles.get('/test.org.organice-bak')).toBe(SAMPLE_ORG_CONTENT);
     });
   });
 
@@ -221,9 +217,12 @@ test.describe('WebDAV Mock Tests', () => {
       await page.fill('#input-webdav-password', 'wrongpass');
       await page.click('text=Sign-in');
 
-      // File browser should not appear (auth failed)
-      await page.waitForTimeout(2000);
-      await expect(page.locator('.file-browser-container')).not.toBeVisible();
+      // A rejected login signs out again and returns to the landing page
+      await expect(page.getByTestId('landing-sign-in-hero')).toBeVisible();
+      await expect
+        .poll(() => page.evaluate(() => localStorage.getItem('authenticatedSyncService')))
+        .toBeNull();
+      await expect(page.locator('.file-browser-container')).toHaveCount(0);
     });
 
     test('8. should handle network errors', async ({ page }) => {
@@ -236,15 +235,9 @@ test.describe('WebDAV Mock Tests', () => {
         await route.abort('failed');
       });
 
-      // Try to click on a file - this should handle the error gracefully
+      // Opening a file now fails with an error message instead of a crash
       await page.click('text=test.org');
-
-      // Either the file loads from cache or shows an error
-      // The app should not crash
-      await page.waitForTimeout(2000);
-
-      // Verify we're still on the page (not crashed)
-      expect(await page.locator('body').count()).toBe(1);
+      await expect(page.getByText('Could not load /test.org: Error: Network Error')).toBeVisible();
     });
   });
 });

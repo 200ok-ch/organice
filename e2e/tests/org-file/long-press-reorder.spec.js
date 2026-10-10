@@ -1,5 +1,4 @@
-import { test, expect } from '@playwright/test';
-import AppHelper from '../../helpers/app-helper.js';
+import { test, expect } from '../../fixtures.js';
 
 const SOURCE_HEADER_TEXT = 'Automatic/Implicit links';
 const TARGET_HEADER_TEXT = 'Further questions?';
@@ -101,11 +100,6 @@ const visibleHeaderEntries = async (page) => {
 
 test.describe('Long Press Reorder', () => {
   test('long press shows hover state and reorders across multiple view pages', async ({ page }) => {
-    const appHelper = new AppHelper(page);
-
-    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    await appHelper.waitForAppReady();
-
     const sourceBeforeIndex = await headerIndexByText(page, SOURCE_HEADER_TEXT);
     const targetBeforeIndex = await headerIndexByText(page, TARGET_HEADER_TEXT);
     expect(sourceBeforeIndex).toBeGreaterThan(-1);
@@ -125,11 +119,6 @@ test.describe('Long Press Reorder', () => {
   test('long press keeps correct middle drop position across repeated reorders', async ({
     page,
   }) => {
-    const appHelper = new AppHelper(page);
-
-    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    await appHelper.waitForAppReady();
-
     await longPressDragHeader(page, SOURCE_HEADER_TEXT, TARGET_HEADER_TEXT, {
       position: 'after',
       scrollDirection: 'down',
@@ -155,11 +144,6 @@ test.describe('Long Press Reorder', () => {
   test('moving a parent with children keeps subtree intact with no duplicates', async ({
     page,
   }) => {
-    const appHelper = new AppHelper(page);
-
-    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    await appHelper.waitForAppReady();
-
     const captureText = 'Capture';
     const groceriesText = 'Groceries';
     const deeplyText = 'Deeply';
@@ -183,7 +167,7 @@ test.describe('Long Press Reorder', () => {
 
     const captureHeader = page.locator('.header').filter({ hasText: captureText }).first();
     await captureHeader.click();
-    await page.waitForTimeout(120);
+    await expect(page.locator('.header').filter({ hasText: groceriesText }).first()).toBeVisible();
 
     const titles = await visibleHeaderTitles(page);
     const captureIndex = titles.findIndex((title) => title.includes(captureText));
@@ -193,11 +177,6 @@ test.describe('Long Press Reorder', () => {
   });
 
   test('shows a clear insertion gap while dragging', async ({ page }, testInfo) => {
-    const appHelper = new AppHelper(page);
-
-    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    await appHelper.waitForAppReady();
-
     const target = page.locator('.header').filter({ hasText: 'Planning' }).first();
     await target.scrollIntoViewIfNeeded();
     await expect(target).toBeVisible();
@@ -258,11 +237,6 @@ test.describe('Long Press Reorder', () => {
   });
 
   test('prevents dropping a top-level header into another header child list', async ({ page }) => {
-    const appHelper = new AppHelper(page);
-
-    await page.goto('/sample', { waitUntil: 'domcontentloaded' });
-    await appHelper.waitForAppReady();
-
     const timestamps = page.locator('.header').filter({ hasText: 'Timestamps' }).first();
     await timestamps.scrollIntoViewIfNeeded();
     await timestamps.click();
