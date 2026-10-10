@@ -39,9 +39,19 @@ jobs:
         run: yarn test
       - name: Build Production Bundle
         run: yarn build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          # Source maps are not needed to run the e2e tests
+          path: |
+            dist
+            !dist/**/*.map
+          retention-days: 1
 
   e2e:
     name: e2e (${{ matrix.project }})
+    # The e2e tests run against the production bundle from the build job
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -69,9 +79,14 @@ jobs:
           key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('yarn.lock') }}
       - name: Install Playwright Browser
         run: npx playwright install --with-deps ${{ matrix.browser }}
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
       - name: Run E2E Tests
         env:
           PROJECT: ${{ matrix.project }}
+          E2E_DIST: 1
         run: yarn test:e2e --project="$PROJECT"
       - uses: actions/upload-artifact@v7
         if: failure()

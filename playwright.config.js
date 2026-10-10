@@ -2,6 +2,10 @@
 
 import { defineConfig, devices } from '@playwright/test';
 
+// E2E_DIST=1 tests the production bundle in dist/ (built by `yarn build`)
+// instead of starting the Parcel dev server. CI does this.
+const serveDist = !!process.env.E2E_DIST;
+
 export default defineConfig({
   testDir: './e2e',
 
@@ -46,6 +50,10 @@ export default defineConfig({
 
     // Navigation timeout (page.goto, etc.)
     navigationTimeout: 30 * 1000,
+
+    // The production bundle registers a service worker. page.route() does not
+    // see requests a service worker handles, so the WebDAV mocks would miss.
+    serviceWorkers: 'block',
   },
 
   // Configure projects for major browsers
@@ -84,7 +92,7 @@ export default defineConfig({
 
   // Run your local dev server before starting the tests
   webServer: {
-    command: 'yarn start',
+    command: serveDist ? 'node e2e/serve-dist.mjs' : 'yarn start',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
