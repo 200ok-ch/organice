@@ -1,0 +1,12 @@
+* Parent with logging
+  :PROPERTIES:
+  :LOGGING:  logdone
+  :END:
+** TODO Child should log
+* Sibling without logging
+** TODO Child should not log
+* Explicitly disabled
+  :PROPERTIES:
+  :LOGGING:  nologdone
+  :END:
+** TODO Child disabled

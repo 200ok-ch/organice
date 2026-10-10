@@ -1,0 +1,3 @@
+#+STARTUP: overview logdone indent
+
+* TODO Incomplete task

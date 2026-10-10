@@ -1,0 +1,3 @@
+#+STARTUP: nologdone
+
+* TODO Incomplete task
