@@ -190,7 +190,7 @@ npx playwright test --project=chromium-authenticated --list
 
 **** CI/CD Test Failures
 
-Check CircleCI logs for:
+Check the GitHub Actions logs (failed e2e jobs upload their Playwright report and traces as artifacts) for:
 - Browser installation failures
 - Network timeouts during =yarn install=
 - Playwright browser installation

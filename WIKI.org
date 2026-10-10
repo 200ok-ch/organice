@@ -696,6 +696,6 @@ which all reside in the [[https://github.com/200ok-ch/organice][organice code re
 To build the documentation locally, run =make docs=.
 
 Building the documentation and uploading it to
-https://organice.200ok.ch/documentation.html is part of the [[https://github.com/200ok-ch/organice/blob/master/.circleci/config.yml][CI/CD
+https://organice.200ok.ch/documentation.html is part of the [[https://github.com/200ok-ch/organice/blob/master/.github/workflows/ci.yml][CI/CD
 workflow]]. The actual compilation happens [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc.sh][here]] and the result gets
 uploaded [[https://github.com/200ok-ch/organice/blob/master/bin/compile_doc_and_upload.sh][here]].

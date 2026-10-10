@@ -15,7 +15,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
 
   // Worker count configuration
-  // CI: Reduced from 6 to 4 to minimize resource contention in CircleCI containers
+  // CI: 4 matches the vCPUs of GitHub-hosted runners
   // Local: undefined lets Playwright use all available CPU cores
   workers: process.env.CI ? 4 : undefined,
 
