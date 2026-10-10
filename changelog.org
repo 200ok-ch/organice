@@ -17,6 +17,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
     - Org mode allows tabs between a heading and its tags, e.g. =* TODO Example<TAB>:fun:=. organice only recognised tags after spaces, so such tags showed up as part of the title and a search for =:fun= did not find the heading.
     - PR: https://github.com/200ok-ch/organice/pull/1139
 
+* [2026-10-09 Fri]
 ** Added
 *** Forgejo as a sync back-end
     - Sync your Org files with a repository on Codeberg or any other Forgejo instance. Sign in with the repository URL and an access token that may only read and write that repository.
