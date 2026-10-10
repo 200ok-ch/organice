@@ -20,7 +20,10 @@ export default ({ buttons, titles, values, selectedButton, useEqualWidthTabs, on
       {buttons.map((buttonName, index) => {
         const value = values ? values[index] : buttonName;
         const className = classNames('tab-buttons__btn', {
-          'tab-buttons__btn--selected': value === selectedButton,
+          'tab-buttons__btn--selected':
+            typeof selectedButton === 'object'
+              ? selectedButton.includes(value)
+              : value === selectedButton,
         });
         // Optionally add a title
         let title = '';

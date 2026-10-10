@@ -35,6 +35,7 @@ function AgendaModal(props) {
     files,
     todoKeywordSets,
     agendaTimeframe,
+    agendaTimestampTypes,
     agendaDefaultDeadlineDelayValue,
     agendaDefaultDeadlineDelayUnit,
     agendaStartOnWeekday,
@@ -42,7 +43,6 @@ function AgendaModal(props) {
     orgHabitPrecedingDays,
     orgHabitFollowingDays,
   } = props;
-
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dateDisplayType, setDateDisplayType] = useState('absolute');
 
@@ -50,6 +50,16 @@ function AgendaModal(props) {
 
   function handleTimeframeTypeChange(agendaTimeframe) {
     props.base.setAgendaTimeframe(agendaTimeframe);
+  }
+
+  function handleAgendaTimestampTypesChange(timestampType) {
+    const updatedTimestampTypes = [...agendaTimestampTypes];
+    if (updatedTimestampTypes.includes(timestampType)) {
+      updatedTimestampTypes.splice(updatedTimestampTypes.indexOf(timestampType), 1);
+    } else {
+      updatedTimestampTypes.push(timestampType);
+    }
+    props.base.setAgendaTimestampTypes(updatedTimestampTypes);
   }
 
   function handleNextDateClick() {
@@ -135,6 +145,12 @@ function AgendaModal(props) {
 
       <div className="agenda__tab-container">
         <TabButtons
+          buttons={['Scheduled', 'Deadline', 'Timestamp']}
+          selectedButton={agendaTimestampTypes}
+          onSelect={handleAgendaTimestampTypesChange}
+          useEqualWidthTabs
+        />
+        <TabButtons
           buttons={['Day', 'Week', 'Month']}
           selectedButton={agendaTimeframe}
           onSelect={handleTimeframeTypeChange}
@@ -160,6 +176,7 @@ function AgendaModal(props) {
             onHeaderClick={handleHeaderClick}
             todoKeywordSets={todoKeywordSets}
             dateDisplayType={dateDisplayType}
+            agendaTimestampTypes={agendaTimestampTypes}
             onToggleDateDisplayType={handleToggleDateDisplayType}
             agendaDefaultDeadlineDelayValue={agendaDefaultDeadlineDelayValue}
             agendaDefaultDeadlineDelayUnit={agendaDefaultDeadlineDelayUnit}
@@ -185,6 +202,7 @@ const mapStateToProps = (state) => {
     files: determineIncludedFiles(allFiles, fileSettings, path, 'includeInAgenda', false),
     todoKeywordSets: !!file ? file.get('todoKeywordSets') : null,
     agendaTimeframe: state.base.get('agendaTimeframe'),
+    agendaTimestampTypes: state.base.get('agendaTimestampTypes'),
     agendaDefaultDeadlineDelayValue: state.base.get('agendaDefaultDeadlineDelayValue') || 5,
     agendaDefaultDeadlineDelayUnit: state.base.get('agendaDefaultDeadlineDelayUnit') || 'd',
     agendaStartOnWeekday: agendaStartOnWeekday == null ? 1 : +agendaStartOnWeekday,

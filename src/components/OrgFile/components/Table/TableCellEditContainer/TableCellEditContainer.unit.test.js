@@ -55,6 +55,7 @@ const testBaseState = {
     isLoading: Set(),
     finderTab: 'Search',
     agendaTimeframe: 'Week',
+    agendaTimestampTypes: ['Scheduled', 'Deadline', 'Timestamp'],
     preferEditRawValues: false,
   }),
 };

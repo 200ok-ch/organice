@@ -42,6 +42,7 @@ export default class AgendaDay extends PureComponent {
       date,
       files,
       dateDisplayType,
+      agendaTimestampTypes,
       onToggleDateDisplayType,
       agendaDefaultDeadlineDelayValue,
       agendaDefaultDeadlineDelayUnit,
@@ -60,6 +61,7 @@ export default class AgendaDay extends PureComponent {
       agendaDefaultDeadlineDelayUnit,
       dateStart,
       dateEnd,
+      agendaTimestampTypes,
       orgHabitShowAllToday,
     });
 
@@ -137,6 +139,7 @@ export default class AgendaDay extends PureComponent {
     agendaDefaultDeadlineDelayUnit,
     dateStart,
     dateEnd,
+    agendaTimestampTypes,
     orgHabitShowAllToday,
   }) {
     const headers = List().concat(
@@ -149,11 +152,27 @@ export default class AgendaDay extends PureComponent {
     );
     const todoKeywordSets = files.map((file) => file.get('todoKeywordSets'));
 
+    function mapTimestampTypeToButtonLabel(timestampType) {
+      switch (timestampType) {
+        case 'SCHEDULED':
+          return 'Scheduled';
+        case 'DEADLINE':
+          return 'Deadline';
+        default:
+          return 'Timestamp';
+      }
+    }
+
     return headers
       .flatMap((header) => {
         const planningItemsforDate = header.get('planningItems').filter((planningItem) => {
           const timestamp = planningItem.get('timestamp');
           if (!timestamp.get('isActive')) {
+            return false;
+          }
+          if (
+            !agendaTimestampTypes.includes(mapTimestampTypeToButtonLabel(planningItem.get('type')))
+          ) {
             return false;
           }
 

@@ -65,6 +65,7 @@ describe('Render all views', () => {
           isLoading: Set(),
           finderTab: 'Search',
           agendaTimeframe: 'Week',
+          agendaTimestampTypes: ['Scheduled', 'Deadline', 'Timestamp'],
           preferEditRawValues: false,
         }),
       },
