@@ -739,7 +739,8 @@ export const parseTitleLine = (titleLine, todoKeywordSets) => {
   // Check for tags.
   let tags = [];
   if (rawTitle.trimRight().endsWith(':')) {
-    const titleParts = rawTitle.trimRight().split(' ');
+    // Org mode allows any whitespace, e.g. tabs, before the tags.
+    const titleParts = rawTitle.trimRight().split(/\s/);
     const possibleTags = titleParts[titleParts.length - 1];
     if (/^:[^\s]+:$/.test(possibleTags)) {
       rawTitle = rawTitle.substr(0, rawTitle.length - possibleTags.length);

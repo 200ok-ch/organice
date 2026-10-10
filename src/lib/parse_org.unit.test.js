@@ -7,8 +7,10 @@ import {
   _parsePlanningItems,
   _parseLogNotes,
   parseMarkupAndCookies,
+  parseTitleLine,
 } from './parse_org';
 import readFixture from '../../test_helpers/index';
+import { exportOrg } from './export_org';
 
 describe('Test the parser', () => {
   const expectType = (result) => expect(result.map((x) => x.type));
@@ -193,6 +195,33 @@ describe('Parse headline with planning items and active timestamps', () => {
     const headers = parsedFile.get('headers').toJS();
     const header = headers[0];
     expect(header.planningItems.length).toEqual(3);
+  });
+});
+
+describe('Parse tags in a headline', () => {
+  const todoKeywordSets = parseOrg('* foo').get('todoKeywordSets');
+
+  test('separated by spaces', () => {
+    const titleLine = parseTitleLine('TODO Example   :fun:work:', todoKeywordSets);
+    expect(titleLine.get('tags').toJS()).toEqual(['fun', 'work']);
+    expect(titleLine.get('rawTitle').trim()).toEqual('Example');
+  });
+
+  test('separated by tabs', () => {
+    const titleLine = parseTitleLine('TODO Example\t\t:fun:', todoKeywordSets);
+    expect(titleLine.get('tags').toJS()).toEqual(['fun']);
+    expect(titleLine.get('rawTitle').trim()).toEqual('Example');
+  });
+
+  test('separated by tabs round-trip unchanged', () => {
+    const content = '* TODO Example\t\t:fun:\n';
+    const parsedFile = parseOrg(content);
+    expect(
+      exportOrg({
+        headers: parsedFile.get('headers'),
+        linesBeforeHeadings: parsedFile.get('linesBeforeHeadings'),
+      })
+    ).toEqual(content);
   });
 });
 
