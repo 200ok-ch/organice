@@ -7,6 +7,16 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-10-10 Sat]
+** Fixed
+*** Long-pressing + duplicates the header again
+    - Long-pressing the + icon in the header action drawer is meant to duplicate the header and its subtree. Since long-press reordering of headers was added, holding the icon started dragging the header instead, and nothing was duplicated.
+    - Long-presses inside the header action drawer no longer start a header drag.
+    - PR: https://github.com/200ok-ch/organice/pull/1139
+*** Tags after a tab are recognised
+    - Org mode allows tabs between a heading and its tags, e.g. =* TODO Example<TAB>:fun:=. organice only recognised tags after spaces, so such tags showed up as part of the title and a search for =:fun= did not find the heading.
+    - PR: https://github.com/200ok-ch/organice/pull/1139
+
 * [2026-10-09 Fri]
 ** Added
 *** Forgejo as a sync back-end
