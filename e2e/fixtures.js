@@ -106,6 +106,8 @@ class SampleFile {
     await this.page.getByTitle('Show Search / Task List').click();
     await this.settle();
     await this.page.locator('.tab-buttons__btn', { hasText: tab }).first().click();
+    // Both tabs have a filter input; wait for the switch before typing
+    await expect(this.page.locator('.tab-buttons__btn--selected')).toHaveText(tab);
     return this.page.getByTestId('drawer');
   }
 }
