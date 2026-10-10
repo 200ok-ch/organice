@@ -21,7 +21,9 @@ class SampleFile {
     await new AppHelper(this.page).waitForAppReady();
   }
 
-  // First header whose title contains `text` (a string or a RegExp).
+  // First header whose title contains `text`. Strings match case-insensitive
+  // substrings ('Moving headers' matches 'Adding and removing headers'); pass
+  // a RegExp such as /^Moving headers/ to be exact.
   header(text) {
     return this.page
       .locator('.header')
@@ -35,6 +37,12 @@ class SampleFile {
     return this.page
       .locator('.header .title-line-text')
       .evaluateAll((titles) => titles.map((title) => title.textContent.replace(/\.\.\.$/, '')));
+  }
+
+  // Nesting level of a header as rendered (Header indents 20px per level).
+  async level(text) {
+    const padding = await this.header(text).evaluate((header) => header.style.paddingLeft);
+    return parseFloat(padding) / 20;
   }
 
   // Selects a header, which opens it and shows the header action drawer.
@@ -60,9 +68,27 @@ class SampleFile {
     }
   }
 
+  // Waits until an open drawer has finished sliding in. Clicks into a drawer
+  // that is still moving can miss their target.
+  async settle() {
+    await this.page.waitForFunction(() => {
+      const drawer = document.querySelector('[data-testid="drawer"]');
+      return !drawer || drawer.style.transform === 'translateY(0px)';
+    });
+  }
+
   // Clicks an icon in the header action drawer or the drawer action bar.
   async action(testId) {
     await this.firefoxHelper.clickClickCatcherButton(testId);
+    await this.settle();
+  }
+
+  // Clicks a header action drawer icon that has no data-testid, by its title.
+  async actionByTitle(title) {
+    await this.page
+      .locator(`.header-action-drawer__ff-click-catcher-container[title^="${title}"]`)
+      .dispatchEvent('click');
+    await this.settle();
   }
 
   // Closes an editor drawer. Switching to the title editor first commits the
@@ -71,12 +97,14 @@ class SampleFile {
     if (commit) {
       await this.action('drawer-action-edit-title');
     }
-    await this.drawer.first().click();
+    // Click the backdrop's corner: a tall drawer covers its middle
+    await this.drawer.first().click({ position: { x: 5, y: 5 } });
     await expect(this.drawer).toHaveCount(0);
   }
 
   async openSearch(tab = 'Search') {
     await this.page.getByTitle('Show Search / Task List').click();
+    await this.settle();
     await this.page.locator('.tab-buttons__btn', { hasText: tab }).first().click();
     return this.page.getByTestId('drawer');
   }

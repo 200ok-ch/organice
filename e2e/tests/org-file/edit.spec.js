@@ -73,7 +73,7 @@ test.describe('Header Description', () => {
     await page.getByTestId('description-textarea').fill(newDescription);
     await sample.closeDrawer({ commit: false });
 
-    await expect(tapHeader.locator('..')).toContainText(newDescription);
+    await expect(tapHeader).toContainText(newDescription);
 
     // Re-open the description editor to verify the description persists
     await tapHeader.click();
@@ -129,7 +129,7 @@ test.describe('Planning Items (Timestamps)', () => {
       const dateInput = page.getByTestId('timestamp-selector');
 
       const tablesHeader = await sample.select('Tables');
-      const headerContainer = tablesHeader.locator('..');
+      const headerContainer = tablesHeader;
       await sample.action(action);
       await expect(editorTitle).toBeVisible();
 

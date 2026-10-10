@@ -4,16 +4,18 @@ import { test, expect } from '../../fixtures.js';
 // Capture > Groceries, 'Deeply nested header' prepends under
 // Capture > Deeply > Nested > Headers > Work > Too! (src/lib/sample_capture_templates.js).
 test.describe('Capture via UnifiedHeaderEditor', () => {
-  const openTemplate = async (page, templateTestId = 'capture-template-groceries') => {
+  const openTemplate = async (page, sample, templateTestId = 'capture-template-groceries') => {
     await page.getByTestId('capture-main-button').click();
     await page.getByTestId(templateTestId).click();
+    await sample.settle();
     await expect(page.getByTestId('unified-header-editor')).toBeVisible();
   };
 
   test('should open capture template and show unified editor with title editor', async ({
     page,
+    sample,
   }) => {
-    await openTemplate(page);
+    await openTemplate(page, sample);
 
     await expect(page.getByTestId('capture-header-bar')).toBeVisible();
     await expect(page.getByTestId('capture-template-description')).toHaveText('Groceries');
@@ -23,7 +25,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
   });
 
   test('should persist title when switching to tags editor and back', async ({ page, sample }) => {
-    await openTemplate(page);
+    await openTemplate(page, sample);
     await page.getByTestId('titleLineInput').fill('Buy milk and eggs');
 
     await sample.action('drawer-action-tags');
@@ -36,7 +38,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
   });
 
   test('should preserve title through description editor round-trip', async ({ page, sample }) => {
-    await openTemplate(page);
+    await openTemplate(page, sample);
     await page.getByTestId('titleLineInput').fill('Important grocery item');
 
     await sample.action('edit-header-title');
@@ -50,7 +52,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     page,
     sample,
   }) => {
-    await openTemplate(page);
+    await openTemplate(page, sample);
 
     await page.getByTestId('titleLineInput').fill('FullCaptureTest');
 
@@ -74,11 +76,11 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     await expect(captured.locator('.header-tag')).toHaveText(['review']);
 
     await sample.select('FullCaptureTest');
-    await expect(captured.locator('..')).toContainText('A detailed description for the test');
+    await expect(captured).toContainText('A detailed description for the test');
   });
 
   test('should capture header when pressing Enter in title editor', async ({ page, sample }) => {
-    await openTemplate(page);
+    await openTemplate(page, sample);
 
     await page.getByTestId('titleLineInput').fill('EnterCaptureTest');
     await page.getByTestId('titleLineInput').press('Enter');
@@ -89,7 +91,7 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
   });
 
   test('should prepend into a deeply nested header', async ({ page, sample }) => {
-    await openTemplate(page, 'capture-template-deeply-nested-header');
+    await openTemplate(page, sample, 'capture-template-deeply-nested-header');
 
     // The template is '* You can insert timestamps too! %T %?'; append to it
     const titleInput = page.getByTestId('titleLineInput');
@@ -106,8 +108,8 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     );
   });
 
-  test('should toggle prepend checkbox', async ({ page }) => {
-    await openTemplate(page);
+  test('should toggle prepend checkbox', async ({ page, sample }) => {
+    await openTemplate(page, sample);
 
     // The Groceries template has shouldPrepend: false
     const prependCheckbox = page.getByTestId('capture-prepend-checkbox');
