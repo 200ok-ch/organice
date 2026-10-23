@@ -328,7 +328,11 @@ const getInitialStateWithDefaultValues = () => {
       }),
       future: [],
     },
-    base: Map({ isLoading: Set(), finderTab: 'Search' }),
+    base: Map({
+      isLoading: Set(),
+      finderTab: 'Search',
+      agendaTimestampTypes: ['Scheduled', 'Deadline', 'Timestamp'],
+    }),
     capture: Map(),
   };
 

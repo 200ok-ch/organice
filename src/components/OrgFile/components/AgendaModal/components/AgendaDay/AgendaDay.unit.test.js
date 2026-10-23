@@ -16,6 +16,7 @@ describe('Unit Tests for AgendaDay', () => {
       date: parseISO('2019-08-27T15:50:32.624Z'),
       agendaDefaultDeadlineDelayValue: 5,
       agendaDefaultDeadlineDelayUnit: 'd',
+      agendaTimestampTypes: ['Scheduled', 'Deadline', 'Timestamp'],
       dateStart: parseISO('2019-08-26T22:00:00.000Z'),
       dateEnd: parseISO('2019-08-27T21:59:59.999Z'),
     };
@@ -73,6 +74,7 @@ describe('Unit Tests for AgendaDay', () => {
       date: parseISO('2019-08-27T15:50:32.624Z'),
       agendaDefaultDeadlineDelayValue: 5,
       agendaDefaultDeadlineDelayUnit: 'd',
+      agendaTimestampTypes: ['Scheduled', 'Deadline', 'Timestamp'],
       dateStart: parseISO('2019-08-26T22:00:00.000Z'),
       dateEnd: parseISO('2019-08-27T21:59:59.999Z'),
       orgHabitShowAllToday: false,

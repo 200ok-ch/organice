@@ -128,6 +128,9 @@ const setIsOnline = (state, action) => {
 
 const setAgendaTimeframe = (state, action) => state.set('agendaTimeframe', action.agendaTimeframe);
 
+const setAgendaTimestampTypes = (state, action) =>
+  state.set('agendaTimestampTypes', action.agendaTimestampTypes);
+
 const setFinderTab = (state, action) => state.set('finderTab', action.finderTab);
 
 const setPreferEditRawValues = (state, action) =>
@@ -227,6 +230,8 @@ export default (state = Map(), action) => {
       return setIsOnline(state, action);
     case 'SET_AGENDA_TIMEFRAME':
       return setAgendaTimeframe(state, action);
+    case 'SET_AGENDA_TIMESTAMP_TYPES':
+      return setAgendaTimestampTypes(state, action);
     case 'SET_FINDER_TAB':
       return setFinderTab(state, action);
     case 'PREFER_EDIT_RAW_VALUES':

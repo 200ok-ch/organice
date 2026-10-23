@@ -222,6 +222,12 @@ export const setAgendaTimeframe = (agendaTimeframe) => (dispatch) =>
     agendaTimeframe,
   });
 
+export const setAgendaTimestampTypes = (agendaTimestampTypes) => (dispatch) =>
+  dispatch({
+    type: 'SET_AGENDA_TIMESTAMP_TYPES',
+    agendaTimestampTypes,
+  });
+
 export const setFinderTab = (finderTab) => (dispatch) =>
   dispatch({
     type: 'SET_FINDER_TAB',
