@@ -108,6 +108,28 @@ test.describe('Capture via UnifiedHeaderEditor', () => {
     );
   });
 
+  test('should capture under a header whose title has a statistics cookie', async ({
+    page,
+    sample,
+  }) => {
+    await sample.expand('Capture');
+    await sample.select('Groceries');
+    await sample.action('drawer-action-edit-title');
+    await page.getByTestId('titleLineInput').fill('Groceries [0/0]');
+    await page.getByTestId('titleLineInput').press('Enter');
+    await expect(sample.drawer).toHaveCount(0);
+
+    // The template's header path says 'Groceries', without the cookie
+    await openTemplate(page, sample);
+    await page.getByTestId('titleLineInput').fill('CookieCaptureTest');
+    await page.getByTestId('capture-confirm-button').click();
+    await expect(sample.drawer).toHaveCount(0);
+
+    await sample.expand('Groceries [0/1]');
+    const titles = await sample.titles();
+    expect(titles[titles.indexOf('Groceries [0/1]') + 1]).toBe('CookieCaptureTest');
+  });
+
   test('should toggle prepend checkbox', async ({ page, sample }) => {
     await openTemplate(page, sample);
 

@@ -183,6 +183,49 @@ describe('Find the headline at the end of the headline-path', () => {
   });
 });
 
+describe('headerWithPath with statistics cookies', () => {
+  const titleOfHeaderWithPath = (orgFile, headerPath) => {
+    const header = headerWithPath(parseOrg(orgFile).get('headers'), fromJS(headerPath));
+    return header && header.getIn(['titleLine', 'rawTitle']);
+  };
+
+  test.each([
+    ['fraction cookie at the end', '* Task [27/32]\n', 'Task'],
+    ['percentage cookie at the end', '* Task [84%]\n', 'Task'],
+    ['cookie at the beginning', '* [27/32] Task\n', 'Task'],
+    ['cookie in the middle', '* Some [27/32] task\n', 'Some task'],
+    ['empty cookie', '* Task [/]\n', 'Task'],
+    ['cookie and tags', '* TODO Task [27/32] :tag:\n', 'Task'],
+  ])('ignores a %s in the header title', (_description, orgFile, pathTitle) => {
+    expect(titleOfHeaderWithPath(orgFile, [pathTitle])).not.toBeNull();
+  });
+
+  test('finds a header whose cookie has changed since the path was written', () => {
+    expect(titleOfHeaderWithPath('* Task [28/32]\n', ['Task [27/32]'])).toEqual('Task [28/32]');
+  });
+
+  test('ignores cookies on every level of the path', () => {
+    const orgFile = '* Project [0/1]\n** Task [50%]\n*** Step [/]\n';
+    expect(titleOfHeaderWithPath(orgFile, ['Project', 'Task', 'Step'])).toEqual('Step [/]');
+  });
+
+  test('prefers the exact title over one that only matches without cookies', () => {
+    const orgFile = '* Task [1/2]\n* Task\n* Task [3/4]\n';
+    expect(titleOfHeaderWithPath(orgFile, ['Task'])).toEqual('Task');
+    expect(titleOfHeaderWithPath(orgFile, ['Task [3/4]'])).toEqual('Task [3/4]');
+  });
+
+  test('does not match a different title', () => {
+    expect(titleOfHeaderWithPath('* Task list [1/2]\n', ['Task'])).toBeNull();
+    expect(titleOfHeaderWithPath('* Task [1/2]\n', ['Task list'])).toBeNull();
+  });
+
+  test('keeps square brackets that are not statistics cookies', () => {
+    expect(titleOfHeaderWithPath('* Task [draft]\n', ['Task'])).toBeNull();
+    expect(titleOfHeaderWithPath('* Task [draft]\n', ['Task [draft]'])).toEqual('Task [draft]');
+  });
+});
+
 describe('Table Functions', () => {
   const testOrgFile = readFixture('multiple_tables');
   const testFilePath = STATIC_FILE_PREFIX + 'fixtureTestFile.org';
