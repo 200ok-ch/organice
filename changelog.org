@@ -7,6 +7,13 @@ All user visible changes to organice will be documented in this file.
 
 When there are updates to the changelog, you will be notified and see a 'gift' icon appear on the top right corner.
 
+* [2026-11-07 Sat]
+** Fixed
+*** Tapping a property edits the right header
+    - Tapping a property or the =:END:= of a property drawer opened the property editor for the selected header, not for the header the property belongs to. Changes could end up in the wrong header.
+    - The editor now always opens for the tapped header, and selects it.
+    - PR: https://github.com/200ok-ch/organice/pull/1142
+
 * [2026-10-10 Sat]
 ** Fixed
 *** Long-pressing + duplicates the header again

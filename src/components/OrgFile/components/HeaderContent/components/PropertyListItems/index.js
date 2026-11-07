@@ -46,7 +46,11 @@ export default ({ propertyListItems, shouldDisableActions, onTimestampClick, onE
             </div>
           ))}
 
-          <div className="property-list__property" onClick={onEdit} data-testid="property-list-end">
+          <div
+            className="property-list__property"
+            onClick={shouldDisableActions ? null : onEdit}
+            data-testid="property-list-end"
+          >
             :END:
           </div>
         </Fragment>

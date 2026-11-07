@@ -176,6 +176,54 @@ test.describe('Header Properties', () => {
   });
 });
 
+test.describe('Clicking a property', () => {
+  const propertyEditorValue = (page) => page.getByTestId('property-list-editor-property-value-0');
+  const properties = async (header) => {
+    await header.getByTestId('property-list-properties-toggle').click();
+    return header.getByTestId('property-list-item-value-0');
+  };
+
+  test('should edit the clicked header, not the selected one', async ({ page, sample }) => {
+    await sample.expand('Property lists', 'Search / Task List / Clock List');
+
+    const clicked = await sample.select('Example with properties');
+    const clickedValue = await properties(clicked);
+    await sample.deselect();
+
+    // Selecting another header with properties is what used to confuse the editor
+    const selected = await sample.select(/^Example(\.\.\.)?$/);
+    const selectedValue = await properties(selected);
+    await expect(selectedValue).toHaveText('Maverick');
+
+    await clicked.getByTestId('property-list-item-property-0').click();
+    await sample.settle();
+    await expect(propertyEditorValue(page)).toHaveValue('nobody');
+
+    await propertyEditorValue(page).fill('somebody');
+    await sample.closeDrawer();
+
+    await expect(clickedValue).toHaveText('somebody');
+    await expect(selectedValue).toHaveText('Maverick');
+  });
+
+  test('should edit the clicked header when no header is selected', async ({ page, sample }) => {
+    await sample.expand('Property lists');
+
+    const header = await sample.select(/^Example(\.\.\.)?$/);
+    const value = await properties(header);
+    await sample.deselect();
+
+    await header.getByTestId('property-list-item-property-0').click();
+    await sample.settle();
+    await expect(propertyEditorValue(page)).toHaveValue('Maverick');
+
+    await propertyEditorValue(page).fill('Goose');
+    await sample.closeDrawer();
+
+    await expect(value).toHaveText('Goose');
+  });
+});
+
 test.describe('Header Title', () => {
   test('should edit header title', async ({ page, sample }) => {
     await sample.select('Tables');
