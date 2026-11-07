@@ -66,6 +66,33 @@ describe('Unit Tests for AgendaDay', () => {
     expect(JSON.parse(JSON.stringify(component.getPlanningItemsAndHeaders(input)))).toEqual(output);
   });
 
+  test('leaves out commented and archived trees', () => {
+    const orgFile = [
+      '* TODO Kept',
+      '  DEADLINE: <2019-08-27 Tue>',
+      '* COMMENT Commented',
+      '  DEADLINE: <2019-08-27 Tue>',
+      '** TODO Below commented',
+      '   DEADLINE: <2019-08-27 Tue>',
+      '* TODO Archived :ARCHIVE:',
+      '  DEADLINE: <2019-08-27 Tue>',
+      '',
+    ].join('\n');
+
+    const planningItemsAndHeaders = component.getPlanningItemsAndHeaders({
+      files: Map({ '/testfile.org': parseOrg(orgFile) }),
+      date: parseISO('2019-08-27T15:50:32.624Z'),
+      agendaDefaultDeadlineDelayValue: 5,
+      agendaDefaultDeadlineDelayUnit: 'd',
+      dateStart: parseISO('2019-08-26T22:00:00.000Z'),
+      dateEnd: parseISO('2019-08-27T21:59:59.999Z'),
+    });
+
+    expect(
+      planningItemsAndHeaders.map(([, header]) => header.getIn(['titleLine', 'rawTitle'])).toJS()
+    ).toEqual(['Kept']);
+  });
+
   test('sorts habits before non-habits in agenda', () => {
     const input = {
       headers: [],

@@ -57,6 +57,7 @@ import {
   updateListContainingListItemId,
   headerThatContainsListItemId,
   updateContentsWithListItemAddition,
+  withoutCommentedAndArchivedTrees,
 } from '../lib/org_utils';
 import { timestampForDate, getTimestampAsText, applyRepeater } from '../lib/timestamps';
 import generateId from '../lib/id_generator';
@@ -1665,6 +1666,10 @@ export const setSearchFilterInformation = (state, action) => {
         path,
         subheadersOfHeaderWithId(headers.get(path), narrowedHeaderId)
       );
+    }
+
+    if (context === 'task-list') {
+      headersToSearch = headersToSearch.map(withoutCommentedAndArchivedTrees);
     }
 
     if (hasActiveClockFilter) {

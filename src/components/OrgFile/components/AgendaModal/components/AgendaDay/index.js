@@ -11,6 +11,7 @@ import {
   getPlanningItemTypeText,
   isHabit,
   isValidHabit,
+  withoutCommentedAndArchivedTrees,
 } from '../../../../../../lib/org_utils';
 import {
   dateForTimestamp,
@@ -143,7 +144,9 @@ export default class AgendaDay extends PureComponent {
       ...files
         .mapEntries(([path, file]) => [
           path,
-          file.get('headers').map((header) => header.set('path', path)),
+          withoutCommentedAndArchivedTrees(file.get('headers')).map((header) =>
+            header.set('path', path)
+          ),
         ])
         .valueSeq()
     );

@@ -23,6 +23,7 @@ import {
   computeAllPropertyNames,
   computeAllPropertyValuesFor,
   headerWithPath,
+  withoutCommentedAndArchivedTrees,
   getTable,
   getSelectedTable,
   getTableCell,
@@ -180,6 +181,66 @@ describe('Find the headline at the end of the headline-path', () => {
     const headerPath = fromJS(['%u', '%t', 'test']);
 
     expect(headerWithPath(headers, headerPath).toJS()).toStrictEqual(expectedHeadline);
+  });
+});
+
+describe('withoutCommentedAndArchivedTrees', () => {
+  const remainingTitles = (orgFile) =>
+    withoutCommentedAndArchivedTrees(parseOrg(orgFile).get('headers'))
+      .map((header) => header.getIn(['titleLine', 'rawTitle']).trim())
+      .toJS();
+
+  test.each([
+    ['* COMMENT skipped\n'],
+    ['* COMMENT\n'],
+    ['* TODO COMMENT skipped\n'],
+    ['* [#A] COMMENT skipped\n'],
+    ['* TODO [#A] COMMENT skipped\n'],
+    ['* COMMENT skipped :tag:\n'],
+    ['* skipped :ARCHIVE:\n'],
+    ['* TODO skipped :tag:ARCHIVE:\n'],
+  ])('leaves out %j', (orgFile) => {
+    expect(remainingTitles(orgFile)).toEqual([]);
+  });
+
+  test.each([
+    ['* comment kept\n'],
+    ['* COMMENTARY kept\n'],
+    ['* A COMMENT kept\n'],
+    ['* kept :archive:\n'],
+    ['* kept :ARCHIVED:\n'],
+    ['* kept ARCHIVE\n'],
+  ])('keeps %j', (orgFile) => {
+    expect(remainingTitles(orgFile)).toHaveLength(1);
+  });
+
+  test('leaves out the whole subtree, and nothing after it', () => {
+    const orgFile = [
+      '* before',
+      '* COMMENT top',
+      '** child',
+      '*** grandchild',
+      '** archived child :ARCHIVE:',
+      '* sibling',
+      '** nested before',
+      '** nested :ARCHIVE:',
+      '*** nested child',
+      '** nested after',
+      '* after',
+      '',
+    ].join('\n');
+
+    expect(remainingTitles(orgFile)).toEqual([
+      'before',
+      'sibling',
+      'nested before',
+      'nested after',
+      'after',
+    ]);
+  });
+
+  test('keeps all headers of a file without such trees', () => {
+    expect(remainingTitles('* one\n** two\n* three\n')).toEqual(['one', 'two', 'three']);
   });
 });
 

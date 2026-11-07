@@ -753,6 +753,31 @@ export const todoKeywordSetForKeyword = (todoKeywordSets, keyword) =>
 export const isTodoKeywordCompleted = (todoKeywordSets, keyword) =>
   todoKeywordSetForKeyword(todoKeywordSets, keyword).get('completedKeywords').includes(keyword);
 
+// See Org mode `org-comment-string` and `org-archive-tag`. Both are case sensitive.
+const isCommentedHeader = (header) =>
+  /^\s*(\[#.\]\s+)?COMMENT(\s|$)/.test(header.getIn(['titleLine', 'rawTitle']));
+const isArchivedHeader = (header) => header.getIn(['titleLine', 'tags']).includes('ARCHIVE');
+
+/**
+ * Remove the trees that Org mode leaves out of its agenda views by default, see
+ * `org-agenda-skip-comment-trees` and `org-agenda-skip-archived-trees`.
+ *
+ * @param {List} headers Headers of a file, in document order.
+ * @returns {List} The headers that are not part of a commented or archived tree.
+ */
+export const withoutCommentedAndArchivedTrees = (headers) => {
+  let skippedTreeNestingLevel = null;
+  return headers.filter((header) => {
+    const nestingLevel = header.get('nestingLevel');
+    if (skippedTreeNestingLevel !== null && nestingLevel > skippedTreeNestingLevel) {
+      return false;
+    }
+    skippedTreeNestingLevel =
+      isCommentedHeader(header) || isArchivedHeader(header) ? nestingLevel : null;
+    return skippedTreeNestingLevel === null;
+  });
+};
+
 export const extractAllOrgTags = (headers) =>
   headers
     .flatMap((h) => h.getIn(['titleLine', 'tags']))

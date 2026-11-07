@@ -2290,6 +2290,42 @@ describe('org reducer', () => {
     });
   });
 
+  describe('SET_SEARCH_FILTER_INFORMATION with commented and archived trees', () => {
+    const path = 'testfile';
+    const testOrgFile = [
+      '* TODO Kept',
+      '* COMMENT Commented',
+      '** TODO Below commented',
+      '* TODO Archived :ARCHIVE:',
+      '',
+    ].join('\n');
+
+    const filteredTitles = (state, context) =>
+      reducer(state, types.setSearchFilterInformation('', 0, context))
+        .getIn(['search', 'filteredHeaders', path])
+        .map((header) => header.getIn(['titleLine', 'rawTitle']).trim())
+        .toJS();
+
+    it('leaves them out of the task list', () => {
+      const state = setUpStateForFile(path, testOrgFile).org.present;
+      expect(filteredTitles(state, 'task-list')).toEqual(['Kept']);
+    });
+
+    it.each(['search', 'refile'])('keeps them in the %s results', (context) => {
+      const state = setUpStateForFile(path, testOrgFile).org.present;
+      expect(filteredTitles(state, context)).toEqual(
+        expect.arrayContaining(['COMMENT Commented', 'Below commented', 'Archived'])
+      );
+    });
+
+    it('lists the tasks of a commented tree when it is narrowed', () => {
+      const state = setUpStateForFile(path, testOrgFile).org.present;
+      const headers = state.getIn(['files', path, 'headers']);
+      const narrowed = state.setIn(['files', path, 'narrowedHeaderId'], headers.get(1).get('id'));
+      expect(filteredTitles(narrowed, 'task-list')).toEqual(['Below commented']);
+    });
+  });
+
   describe('show clock display', () => {
     let state;
     const testOrgFile = readFixture('clock_entries');
