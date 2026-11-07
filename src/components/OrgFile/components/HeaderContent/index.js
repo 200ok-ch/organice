@@ -169,7 +169,11 @@ class HeaderContent extends PureComponent {
   }
 
   handlePropertyListEdit() {
-    const { header } = this.props;
+    // The property list editor edits the selected header, which isn't
+    // necessarily the one whose property was clicked.
+    const { header, headerIndex } = this.props;
+    this.props.org.selectHeader(header.get('id'));
+    this.props.org.selectHeaderIndex(headerIndex);
     this.props.base.activatePopup('property-list-editor', { headerId: header.get('id') });
   }
 
