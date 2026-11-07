@@ -12,6 +12,7 @@ When there are updates to the changelog, you will be notified and see a 'gift' i
 *** Agenda and task list respect =COMMENT= and =ARCHIVE=
     - Like in Org mode, the agenda and the task list now leave out headers that start with the keyword =COMMENT= or have the tag =ARCHIVE=, including all their subheaders. Use this to keep outdated tasks in your file without having them show up.
     - The search still finds these headers.
+    - PR: https://github.com/200ok-ch/organice/pull/1143
 
 * [2026-10-10 Sat]
 ** Fixed
