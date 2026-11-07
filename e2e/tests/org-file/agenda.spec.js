@@ -1,5 +1,74 @@
 import { test, expect } from '../../fixtures.js';
 
+// sample.org, "Agenda": commented and archived trees are left out.
+test.describe('Agenda and task list without commented and archived trees', () => {
+  const agendaEntry = 'Check out the organice agenda view';
+
+  const setTitle = async (page, sample, oldTitle, newTitle) => {
+    await sample.select(oldTitle);
+    await sample.action('drawer-action-edit-title');
+    await page.getByTestId('titleLineInput').fill(newTitle);
+    await page.getByTestId('titleLineInput').press('Enter');
+    await expect(sample.drawer).toHaveCount(0);
+    await sample.deselect();
+  };
+  const openAgenda = async (page, sample) => {
+    await page.getByTitle('Show agenda').click();
+    await sample.settle();
+    await expect(page.locator('.agenda__title')).toBeVisible();
+  };
+
+  test('the agenda leaves out a commented header', async ({ page, sample }) => {
+    await sample.expand('Agenda');
+    await setTitle(page, sample, agendaEntry, `COMMENT ${agendaEntry}`);
+
+    await openAgenda(page, sample);
+    await expect(sample.drawer).toContainText('Install organice to the homescreen');
+    await expect(sample.drawer).not.toContainText(agendaEntry);
+  });
+
+  test('the agenda leaves out the subheaders of a commented header', async ({ page, sample }) => {
+    await setTitle(page, sample, /^Agenda/, 'COMMENT Agenda');
+
+    await openAgenda(page, sample);
+    await expect(sample.drawer).not.toContainText(agendaEntry);
+    await expect(sample.drawer).not.toContainText('Install organice to the homescreen');
+  });
+
+  test('the agenda leaves out an archived header', async ({ page, sample }) => {
+    await sample.expand('Agenda');
+    await sample.select(agendaEntry);
+    await sample.action('drawer-action-tags');
+    await page.getByTestId('tags-editor-add-button').click();
+    await page.locator('.tag-container__textfield').last().fill('ARCHIVE');
+    await sample.closeDrawer();
+    await sample.deselect();
+
+    await openAgenda(page, sample);
+    await expect(sample.drawer).toContainText('Install organice to the homescreen');
+    await expect(sample.drawer).not.toContainText(agendaEntry);
+  });
+
+  test('the task list leaves out a commented header, the search does not', async ({
+    page,
+    sample,
+  }) => {
+    await sample.expand('Agenda');
+    await setTitle(page, sample, agendaEntry, `COMMENT ${agendaEntry}`);
+
+    const drawer = await sample.openSearch('Task List');
+    await expect(drawer).toContainText('Install organice to the homescreen');
+    await expect(drawer).not.toContainText(agendaEntry);
+
+    await drawer.locator('.tab-buttons__btn', { hasText: 'Search' }).click();
+    await expect(page.locator('.tab-buttons__btn--selected')).toHaveText('Search');
+    await page
+      .getByPlaceholder('e.g. -DONE doc|man :simple|easy :assignee:nobody|none')
+      .fill(agendaEntry);
+    await expect(drawer).toContainText(agendaEntry);
+  });
+});
+
 // sample.org, "Agenda" and "Habit tracking". The sample dates lie in the
 // past, so the overdue items show up on today's entry.
 test.describe('Agenda', () => {
