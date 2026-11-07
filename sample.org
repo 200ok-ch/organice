@@ -543,6 +543,8 @@ Due and overdue items with deadlines and a schedule show up on today's entry. En
 
 More information on that in the [[https://orgmode.org/manual/Deadlines-and-Scheduling.html][org manual]].
 
+Like in Org mode, the agenda and the task list leave out headers that start with the keyword =COMMENT= (after the TODO keyword, if any) or have the tag =ARCHIVE=, together with all of their subheaders. They can still be found with the search.
+
 Examples:
 
 ** TODO Check out the organice agenda view
