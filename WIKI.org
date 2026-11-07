@@ -684,6 +684,31 @@ case we ever need it, again, here's the commit removing all manual
 sass logic: 26fc36d0
 
 
+* Internals
+  :PROPERTIES:
+  :CUSTOM_ID: internals
+  :END:
+
+ This section will document various aspects of the internals of
+ organice, to help developers more quickly understand how it works.
+
+** Management of settings
+
+  organice stores settings in up to three different locations:
+
+  - the Redux store, e.g. ~this.store.getState().base.get('shouldLiveSync')~
+  - the browser's local storage, e.g. ~localStorage.getItem('shouldLiveSync')~
+  - an =.organice-config.json= file in the sync backend (only if the
+    =shouldStoreSettingsInSyncBackend= setting is enabled)
+
+  The flow logic is as follows:
+
+  - When the app is loaded:
+    - An initial in-memory state is formed by ~readInitialState()~
+    - If the user is signed in, ~loadSettingsFromConfigFile()~ is
+      called to retrieve =.organice-config.json= from the sync
+      backend.
+
 * Building this documentation
   :PROPERTIES:
   :CUSTOM_ID: building_docs
