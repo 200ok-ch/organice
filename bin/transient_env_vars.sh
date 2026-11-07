@@ -2,7 +2,12 @@
 
 shopt -s globstar
 
-RVARS=$(cut -d = -f 1 .env.sample)
+# Use .env if it exists, otherwise fall back to .env.sample
+ENV_FILE=".env.sample"
+if [ ! -f "$ENV_FILE" ]; then
+  ENV_FILE=".env"
+fi
+RVARS=$(cut -d = -f 1 $ENV_FILE)
 
 case $1 in
 
@@ -23,7 +28,8 @@ case $1 in
 
     for KEY in $OVARS; do
       VALUE=${!KEY}
-      sed -i "s/$KEY/$VALUE/" "$DST"/**/*.js
+      echo "Replacing $KEY with $VALUE"
+      sed -i "s|$KEY|$VALUE|g" "$DST"/**/*.js
     done
     ;;
 
