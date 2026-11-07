@@ -237,17 +237,33 @@ export const getSelectedHeader = (state) => {
   return file.getIn(['headers', headerIdx]);
 };
 
+// Statistics cookies such as [1/3] or [33%] change whenever a child header
+// does, so they can't be part of what identifies a header.
+const withoutStatisticsCookies = (title) =>
+  title
+    .replace(/\[\d*(?:\/\d*|%)\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
 export const headerWithPath = (headers, headerPath) => {
   if (headerPath.size === 0) {
     return null;
   }
 
-  const firstHeader = headers.find(
-    (header) =>
-      parentIdOfHeaderWithId(headers, header.get('id')) === null &&
-      header.getIn(['titleLine', 'rawTitle']).trim() ===
-        substituteTemplateVariables(headerPath.first())[0].trim()
-  );
+  const pathTitle = substituteTemplateVariables(headerPath.first())[0].trim();
+  const topLevelHeaderWithTitle = (titleMatches) =>
+    headers.find(
+      (header) =>
+        titleMatches(header.getIn(['titleLine', 'rawTitle']).trim()) &&
+        parentIdOfHeaderWithId(headers, header.get('id')) === null
+    );
+
+  // An exact match wins, so that a path keeps its target if a sibling only
+  // differs by its statistics cookies.
+  const pathTitleWithoutCookies = withoutStatisticsCookies(pathTitle);
+  const firstHeader =
+    topLevelHeaderWithTitle((title) => title === pathTitle) ||
+    topLevelHeaderWithTitle((title) => withoutStatisticsCookies(title) === pathTitleWithoutCookies);
   if (!firstHeader) {
     return null;
   }
