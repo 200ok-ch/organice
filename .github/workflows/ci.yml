@@ -42,7 +42,9 @@ jobs:
 
   e2e:
     name: e2e (${{ matrix.project }})
-    runs-on: ubuntu-latest
+    # Playwright 1.57 refuses to install on Ubuntu 26.04, which is what
+    # ubuntu-latest resolves to now. Unpin once Playwright is upgraded.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
